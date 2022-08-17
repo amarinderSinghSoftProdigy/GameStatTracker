@@ -83,13 +83,64 @@ fun SocialSection(
                         color = MaterialTheme.colors.primary,
                     )
                 ) {
-                    append(" "+footerText2)
+                    append(" " + footerText2)
                 }
             }, modifier = Modifier.clickable(onClick = onFooterClick), textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
     }
 }
+
+@Composable
+fun SocialLoginSection(
+    modifier: Modifier = Modifier,
+    headerText: String = stringResource(id = R.string.or_sign_in_with),
+    onAppleClick: () -> Unit,
+    onFacebookClick: () -> Unit,
+    onTwitterClick: () -> Unit,
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AppText(
+                text = headerText,
+                style = MaterialTheme.typography.h2
+            )
+        }
+        Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            SocialLoginButton(
+                icon = painterResource(id = R.drawable.ic_apple),
+            )
+            { onAppleClick() }
+
+            Spacer(modifier = Modifier.width(MaterialTheme.spacing.large))
+
+            SocialLoginButton(
+                icon = painterResource(id = R.drawable.ic_facebook)
+            ) { onFacebookClick() }
+
+            Spacer(modifier = Modifier.width(MaterialTheme.spacing.large))
+
+            SocialLoginButton(
+                icon = painterResource(id = R.drawable.ic_twitter)
+            ) { onTwitterClick() }
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraMedium))
+        }
+    }
+}
+
 
 @OptIn(ExperimentalMaterialApi::class)
 @Preview("default", "rectangle")

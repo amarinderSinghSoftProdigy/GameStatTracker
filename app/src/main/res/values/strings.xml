@@ -56,4 +56,9 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="re_enter_password">Re-enter Password</string>
     <string name="please_accept_tems">Please accept our terms and policies</string>
+    <string name="or_sign_in_with">or sign in with</string>
+    <string name="baller">Baller</string>
+
+
+
 </resources>
