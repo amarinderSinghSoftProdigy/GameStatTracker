@@ -1,62 +1,29 @@
 package com.softprodigy.deliveryapp.ui.features.welcome
 
-import android.content.res.Configuration
-import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.annotation.FloatRange
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.facebook.FacebookCallback
-import com.facebook.FacebookException
-import com.facebook.login.LoginManager
-import com.facebook.login.LoginResult
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
-import com.google.android.gms.common.api.ApiException
-import com.softprodigy.deliveryapp.LocalFacebookCallbackManager
 import com.softprodigy.deliveryapp.R
-import com.softprodigy.deliveryapp.common.CustomFBManager
-import com.softprodigy.deliveryapp.common.FacebookUserProfile
-import com.softprodigy.deliveryapp.data.FacebookUserModel
-import com.softprodigy.deliveryapp.data.GoogleUserModel
-import com.softprodigy.deliveryapp.data.response.LoginResponse
 import com.softprodigy.deliveryapp.ui.features.components.AppButton
-import com.softprodigy.deliveryapp.ui.features.components.AppOutlinedButton
 import com.softprodigy.deliveryapp.ui.features.components.AppText
-import com.softprodigy.deliveryapp.ui.features.components.SocialSection
-import com.softprodigy.deliveryapp.ui.features.components.Text
-import com.softprodigy.deliveryapp.ui.features.login.GoogleApiContract
-import com.softprodigy.deliveryapp.ui.theme.DeliveryProjectStructureDemoTheme
 import com.softprodigy.deliveryapp.ui.theme.spacing
-import timber.log.Timber
 
 //
 //@Composable
@@ -222,7 +189,7 @@ data class WelcomeScreenData(val image: Int, val title: String)
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun WelcomeScreen() {
+fun WelcomeScreen(onNextScreen: () -> Unit) {
 
     val items = ArrayList<WelcomeScreenData>()
     items.add(WelcomeScreenData(R.drawable.ball, "Balling App"))
@@ -241,10 +208,19 @@ fun WelcomeScreen() {
             .background(color = Color.White)
     ) {
 
-        Column(modifier = Modifier.fillMaxSize()) {
-            HorizontalPager(state = pagerState) { page ->
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(0.8f)
+            ) { page ->
                 Column(
-                    modifier = Modifier.align(Alignment.TopCenter),
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Image(
@@ -261,14 +237,17 @@ fun WelcomeScreen() {
                         style = MaterialTheme.typography.h1,
                         color = Color.Black
                     )
-                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
-
                 }
             }
 
             PagerIndicator(size = items.size, currentPage = pagerState.currentPage)
 
         }
+
+        Box(modifier = Modifier.align(Alignment.BottomCenter)) {
+            BottomSection(pagerState.currentPage, onNextScreen)
+        }
+
     }
 }
 
@@ -318,3 +297,43 @@ fun Indicator(isSelected: Boolean) {
             .background(if (isSelected) Color.Black else Color.Gray)
     )
 }
+
+@Composable
+fun BottomSection(currentPager: Int, onNextScreen: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .padding(bottom = 20.dp, start = 20.dp, end = 20.dp)
+            .fillMaxWidth(),
+        horizontalArrangement = if (currentPager != 2) Arrangement.SpaceBetween else Arrangement.Center
+    ) {
+        if (currentPager == 2) {
+            AppButton(
+                enabled = true,
+                onClick = {
+                    onNextScreen()
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp),
+                text = "Get Started",
+                icon = painterResource(id = R.drawable.ic_circle_next)
+            ) {}
+        } else {
+
+            AppText(
+                text = "Skip",
+                style = MaterialTheme.typography.h3,
+                color = Color.Black,
+                modifier = Modifier.clickable { onNextScreen() }
+            )
+
+            AppText(
+                text = "Next",
+                style = MaterialTheme.typography.h3,
+                color = Color.Black,
+                modifier = Modifier.clickable { })
+
+        }
+    }
+}
+

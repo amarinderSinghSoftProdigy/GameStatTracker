@@ -105,7 +105,10 @@ fun NavControllerComposable() {
 //                    }
 //                })
 
-            WelcomeScreen()
+            WelcomeScreen {
+                navController.popBackStack()
+                navController.navigate(LOGIN_SCREEN)
+            }
         }
         composable(route = LOGIN_SCREEN) {
             val context = LocalContext.current
