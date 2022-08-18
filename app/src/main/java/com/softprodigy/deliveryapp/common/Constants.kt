@@ -19,6 +19,7 @@ object Route {
     const val OTP_VERIFICATION_SCREEN = "otpVerificationScreen"
     const val NEW_PASSWORD_SCREEN = "newPasswordScreen"
     const val HOME_SCREEN = "homeScreen"
+    const val SPLASH_SCREEN = "splashScreen"
 }
 
 object ApiConstants {

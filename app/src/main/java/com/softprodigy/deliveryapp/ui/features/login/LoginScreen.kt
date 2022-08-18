@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -17,6 +18,8 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -36,6 +39,7 @@ import com.softprodigy.deliveryapp.data.response.LoginResponse
 import com.softprodigy.deliveryapp.ui.features.components.AppButton
 import com.softprodigy.deliveryapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.deliveryapp.ui.features.components.AppText
+import com.softprodigy.deliveryapp.ui.features.components.SocialLoginSection
 import com.softprodigy.deliveryapp.ui.features.components.SocialSection
 import com.softprodigy.deliveryapp.ui.theme.DeliveryProjectStructureDemoTheme
 import com.softprodigy.deliveryapp.ui.theme.spacing
@@ -54,32 +58,32 @@ fun LoginScreen(
 
     val isError = rememberSaveable { mutableStateOf(false) }
 
-    val authResultLauncher =
-        rememberLauncherForActivityResult(contract = GoogleApiContract()) { task ->
-            try {
-                val gsa = task?.getResult(ApiException::class.java)
-                Timber.i("gsa: $gsa")
-
-                if (gsa != null) {
-                    val googleUser = GoogleUserModel(
-                        email = gsa.email,
-                        name = gsa.displayName,
-                        id = gsa.id,
-                        token = gsa.idToken
-                    )
-                    vm.onEvent(LoginUIEvent.OnGoogleClick(googleUser))
-                } else {
-                    isError.value = true
-                }
-            } catch (e: ApiException) {
-                Timber.i("LoginScreen: $e")
-            }
-        }
+//    val authResultLauncher =
+//        rememberLauncherForActivityResult(contract = GoogleApiContract()) { task ->
+//            try {
+//                val gsa = task?.getResult(ApiException::class.java)
+//                Timber.i("gsa: $gsa")
+//
+//                if (gsa != null) {
+//                    val googleUser = GoogleUserModel(
+//                        email = gsa.email,
+//                        name = gsa.displayName,
+//                        id = gsa.id,
+//                        token = gsa.idToken
+//                    )
+//                    vm.onEvent(LoginUIEvent.OnGoogleClick(googleUser))
+//                } else {
+//                    isError.value = true
+//                }
+//            } catch (e: ApiException) {
+//                Timber.i("LoginScreen: $e")
+//            }
+//        }
 
 
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
-    var passwordVisibility by rememberSaveable { mutableStateOf(false) }
+    val passwordVisibility by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(key1 = Unit) {
         vm.uiEvent.collect { uiEvent ->
@@ -95,119 +99,139 @@ fun LoginScreen(
             }
         }
     }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 20.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+
+        Column {
             Image(
-                painter = painterResource(id = R.drawable.ic_login),
+                painter = painterResource(id = R.drawable.ic_ball),
                 contentDescription = "Login Icon",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(150.dp)
+                    .height(170.dp),
+                contentScale = ContentScale.FillBounds
             )
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-            AppText(
-                text = stringResource(id = R.string.log_in),
-                style = MaterialTheme.typography.h1,
-                color = MaterialTheme.colors.onSurface,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
-            AppText(
-                text = stringResource(id = R.string.enter_registered_emaila_and_pass),
-                style = MaterialTheme.typography.h2,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-            AppOutlineTextField(
-                value = email,
-                label = { Text(text = stringResource(id = R.string.email)) },
-                modifier = Modifier.fillMaxWidth(),
-                onValueChange = {
-                    email = it
-                },
-                placeholder = { Text(text = stringResource(id = R.string.enter_your_email)) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                isError = (!email.isValidEmail() && email.length >= 6),
-                errorMessage = stringResource(id = R.string.email_error)
-            )
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
-            AppOutlineTextField(
-                value = password,
-                label = { Text(text = stringResource(id = R.string.password)) },
-                modifier = Modifier.fillMaxWidth(),
-                onValueChange = {
-                    password = it
-                },
-                placeholder = { Text(text = stringResource(id = R.string.your_password)) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
-                trailingIcon = {
-                    IconButton(onClick = {
-                        passwordVisibility = !passwordVisibility
 
-                    }) {
-                        Icon(
-                            imageVector = if (passwordVisibility)
-                                Icons.Filled.Visibility
-                            else
-                                Icons.Filled.VisibilityOff, ""
-                        )
-                    }
-                },
-                isError = (!password.isValidPassword() && password.length >= 4),
-                errorMessage = stringResource(id = R.string.password_error)
-            )
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraSmall))
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 20.dp)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+
                 AppText(
-                    text = stringResource(id = R.string.forgot_password),
-                    color = MaterialTheme.colors.primary,
-                    style = MaterialTheme.typography.h3,
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .clickable(onClick = onForgetPasswordClick)
+                    text = stringResource(id = R.string.baller),
+                    style = MaterialTheme.typography.h1,
+                    color = MaterialTheme.colors.onSurface,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center
                 )
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+
+                AppText(
+                    text = stringResource(id = R.string.email),
+                    style = MaterialTheme.typography.h3,
+                    color = MaterialTheme.colors.onSurface,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Start
+                )
+
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+
+                AppOutlineTextField(
+                    value = email,
+                    modifier = Modifier.fillMaxWidth(),
+                    onValueChange = {
+                        email = it
+                    },
+                    placeholder = { Text(text = stringResource(id = R.string.enter_your_email)) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    isError = (!email.isValidEmail() && email.length >= 6),
+                    errorMessage = stringResource(id = R.string.email_error),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Color.LightGray,
+                        unfocusedBorderColor = Color.LightGray
+                    )
+                )
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+
+                AppText(
+                    text = stringResource(id = R.string.password),
+                    style = MaterialTheme.typography.h3,
+                    color = MaterialTheme.colors.onSurface,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Start
+                )
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+
+                AppOutlineTextField(
+                    value = password,
+                    modifier = Modifier.fillMaxWidth(),
+                    onValueChange = {
+                        password = it
+                    },
+                    placeholder = { Text(text = stringResource(id = R.string.your_password)) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+                    isError = (!password.isValidPassword() && password.length >= 4),
+                    errorMessage = stringResource(id = R.string.password_error),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Color.LightGray,
+                        unfocusedBorderColor = Color.LightGray
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraMedium))
+
                 AppButton(
                     enabled = email.isValidEmail() && password.isValidPassword(),
                     onClick = {
-                        vm.onEvent(
-                            LoginUIEvent.Submit(email, password)
-                        )
+//                    vm.onEvent(
+//                        LoginUIEvent.Submit(email, password)
+//                    )
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                ) {
-                    Text(text = stringResource(id = R.string.login))
+                        .height(52.dp),
+                    text = stringResource(id = R.string.login),
+                    icon = painterResource(id = R.drawable.ic_circle_next)
+                ) {}
+
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraMedium))
+
+                AppText(
+                    text = stringResource(id = R.string.forgot_password),
+                    color = Color.Black,
+                    style = MaterialTheme.typography.h3,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .clickable(onClick = onForgetPasswordClick)
+                )
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
+
+                SocialLoginSection(
+                    modifier = Modifier.fillMaxSize(),
+                    headerText = stringResource(id = R.string.or_sign_in_with),
+                    onAppleClick = { },
+                    onFacebookClick = { }) {
                 }
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-            SocialSection(
-                headerText = stringResource(id = R.string.or_login_with),
-                footerText1 = stringResource(id = R.string.dont_have_account),
-                footerText2 = stringResource(id = R.string.create_now),
-                onGoogleClick = {
-                    authResultLauncher.launch(1)
-                                },
-                onFacebookClick = onFacebookClick,
-                onFooterClick = onCreateAccountClick
-            )
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+
+            }
         }
+
         if (loginState.isDataLoading) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
-        }
     }
+}
 
 
 @Preview("default", "rectangle")

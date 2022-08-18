@@ -17,4 +17,5 @@ val heading1Color=Color(0xFF373737)
 val heading2Color=Color(0xFF666666)
 val heading2OnDarkColor=Color(0xFFFFFFFF)
 
+val heading3Color= Color(0xFFE4EBF0)
 
