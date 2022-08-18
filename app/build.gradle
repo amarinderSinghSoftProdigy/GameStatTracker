@@ -9,7 +9,7 @@ android {
     compileSdk 32
 
     defaultConfig {
-        applicationId "com.softprodigy.deliveryapp"
+        applicationId "com.softprodigy.ballerapp"
         minSdk 21
         targetSdk 32
         versionCode 1
@@ -46,29 +46,29 @@ android {
         }
     }
 
-    flavorDimensions.add("deliveryapp")
+    flavorDimensions.add("ballerapp")
     productFlavors {
         create("demo") {
-            dimension = "deliveryapp"
-            buildConfigField("String", "API_SERVER", "\"http://delivery-app.softprodigyphp.in\"")
-            buildConfigField("String", "SERVER", "\"http://delivery-app.softprodigyphp.in\"")
+            dimension = "ballerapp"
+            buildConfigField("String", "API_SERVER", "\"http://baller-app.softprodigyphp.in\"")
+            buildConfigField("String", "SERVER", "\"http://baller-app.softprodigyphp.in\"")
             buildConfigField("Integer", "CONNECT_TIMEOUT", "120")
             buildConfigField("Integer", "WRITE_TIMEOUT", "120")
             buildConfigField("Integer", "READ_TIMEOUT", "120")
             applicationIdSuffix = ".demo"
         }
         create("develop") {
-            dimension = "deliveryapp"
-            buildConfigField("String", "API_SERVER", "\"http://delivery-app.softprodigyphp.in\"")
-            buildConfigField("String", "SERVER", "\"http://delivery-app.softprodigyphp.in\"")
+            dimension = "ballerapp"
+            buildConfigField("String", "API_SERVER", "\"http://baller-app.softprodigyphp.in\"")
+            buildConfigField("String", "SERVER", "\"http://baller-app.softprodigyphp.in\"")
             buildConfigField("Integer", "CONNECT_TIMEOUT", "120")
             buildConfigField("Integer", "WRITE_TIMEOUT", "120")
             buildConfigField("Integer", "READ_TIMEOUT", "120")
         }
         create("qa") {
-            dimension = "deliveryapp"
-            buildConfigField("String", "API_SERVER", "\"http://delivery-app.softprodigyphp.in\"")
-            buildConfigField("String", "SERVER", "\"http://delivery-app.softprodigyphp.in\"")
+            dimension = "ballerapp"
+            buildConfigField("String", "API_SERVER", "\"http://baller-app.softprodigyphp.in\"")
+            buildConfigField("String", "SERVER", "\"http://baller-app.softprodigyphp.in\"")
             buildConfigField("Integer", "CONNECT_TIMEOUT", "120")
             buildConfigField("Integer", "WRITE_TIMEOUT", "120")
             buildConfigField("Integer", "READ_TIMEOUT", "120")
