@@ -3,7 +3,7 @@
     <string name="fb_login_protocol_scheme">fb1211323672975940</string>
     <string name="facebook_client_token">a3cba99f3746d07eff886155b33ebb75</string>
     <string name="google_cloud_server_client_id">310180945597-04jvckq48ar3cjbti38aadjorgu4o9hk.apps.googleusercontent.com</string>
-    <string name="app_name">Delivery App</string>
+    <string name="app_name">Baller App</string>
     <string name="dialog_button_confirm">Confirm</string>
     <string name="dialog_button_cancel">Cancel</string>
     <string name="welcome_to_the_app">Welcome to the App!</string>
@@ -56,6 +56,10 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="re_enter_password">Re-enter Password</string>
     <string name="please_accept_tems">Please accept our terms and policies</string>
+    <string name="next">Next</string>
+    <string name="setup_your_team">Setup your team</string>
+    <string name="team_logo">Team Logo</string>
+    <string name="team_name">Team Name</string>
     <string name="or_sign_in_with">or sign in with</string>
     <string name="baller">Baller</string>
 
