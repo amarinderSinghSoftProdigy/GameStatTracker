@@ -7,7 +7,7 @@ object AppConstants {
     const val KEY_USERS = "users"
     const val DEFAULT_ERROR_MESSAGE = "Something went wrong"
     const val USER_TYPE_PLAYER="Player"
-    const val USER_TYPE_PARENT="Parent"
+    const val USER_TYPE_REFEREE="Referee"
     const val USER_TYPE_COACH="Coach"
 }
 
@@ -20,6 +20,9 @@ object Route {
     const val NEW_PASSWORD_SCREEN = "newPasswordScreen"
     const val HOME_SCREEN = "homeScreen"
     const val SPLASH_SCREEN = "splashScreen"
+    const val SELECT_USER_TYPE="selectUserTypeScreen"
+    const val TEAM_SETUP_SCREEN = "teamSetupScreen"
+
 }
 
 object ApiConstants {

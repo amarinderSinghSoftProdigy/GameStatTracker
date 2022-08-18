@@ -6,8 +6,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.softprodigy.ballerapp.R
 
 @Composable
 fun CoachFlowBackground(
@@ -26,7 +28,7 @@ fun CoachFlowBackground(
             contentDescription = "Outer ball Icon",
             tint = Color.Unspecified,
             modifier = Modifier
-                .size(236.dp)
+                .size(dimensionResource(id = R.dimen.size_236dp))
                 .constrainAs(outerIconRef) {
                     top.linkTo(parent.top)
                     end.linkTo(parent.end)
@@ -38,7 +40,7 @@ fun CoachFlowBackground(
                 contentDescription = "inner ball Icon",
                 tint = Color.Unspecified,
                 modifier = Modifier
-                    .size(200.dp)
+                    .size(dimensionResource(id = R.dimen.size_200dp))
                     .constrainAs(innerIconRef) {
                         top.linkTo(parent.top)
                         end.linkTo(parent.end)
@@ -51,7 +53,7 @@ fun CoachFlowBackground(
                 contentDescription = "center ball Icon",
                 tint = Color.Unspecified,
                 modifier = Modifier
-                    .size(44.dp)
+                    .size(dimensionResource(id = R.dimen.size_44dp))
                     .constrainAs(centerIconRef) {
                         top.linkTo(innerIconRef.top)
                         end.linkTo(innerIconRef.end)

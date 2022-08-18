@@ -19,3 +19,11 @@ val heading2OnDarkColor=Color(0xFFFFFFFF)
 
 val heading3Color= Color(0xFFE4EBF0)
 
+val ColorBWBlack= Color(0xFF17191B)
+val ColorBWGrayMedium= Color(0xFF58636B)
+val ColorBWGrayBorder= Color(0xFFE4EBF0)
+val ColorBWGrayLight= Color(0xFF8A9BA8)
+val ColorPrimaryTransparent= Color(0x1A0177C1)
+val ColorMainPrimary= Color(0xFF0177C1)
+
+

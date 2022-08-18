@@ -62,7 +62,10 @@
     <string name="team_name">Team Name</string>
     <string name="or_sign_in_with">or sign in with</string>
     <string name="baller">Baller</string>
-
+    <string name="what_type_of_user_are_you">What type of user are you?</string>
+    <string name="your_team_name">Your team name</string>
+    <string name="change">Change</string>
+    <string name="upload_files">Upload Files</string>
 
 
 </resources>

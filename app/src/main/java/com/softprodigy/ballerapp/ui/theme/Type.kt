@@ -10,73 +10,44 @@ import com.softprodigy.ballerapp.R
 
 val rubikFamily = FontFamily(
     fonts = listOf(
-        Font(R.font.rubik_regular),
-        Font(R.font.rubik_bold, weight = FontWeight.Bold),
-        Font(R.font.rubik_regular, weight = FontWeight.Medium),
-    )
+        Font(R.font.rubik_regular_400, weight = FontWeight.W400),
+        Font(R.font.rubik_semi_bold_600, weight = FontWeight.W600),
+        Font(R.font.rubik_medium_500, weight = FontWeight.W500),
+        Font(R.font.rubik_light_300, weight = FontWeight.W300),
+        Font(R.font.rubik_extra_bold_800, weight = FontWeight.W800),
+        Font(R.font.rubik_bold_700, weight = FontWeight.W700),
+        Font(R.font.rubik_black_900, weight = FontWeight.W900),
+
+        )
 )
 
 // Set of Material typography styles to start with
 val Typography = Typography(
     defaultFontFamily = rubikFamily,
-    h1 = TextStyle(
-        fontWeight = FontWeight.Bold,
-        fontSize = 24.sp,
-//        color = heading1Color
-    ),
-    h2 = TextStyle(
-        fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
-//        color = heading2Color
-
-    ),
     h3 = TextStyle(
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 14.sp,
-//        color = heading2Color
-
+        fontWeight = FontWeight.W700,
+        fontSize = 18.sp
     ),
-    button = TextStyle(
-        fontWeight = FontWeight.Bold,
-        fontSize = 14.sp
+    h4 = TextStyle(
+        fontWeight = FontWeight.W600,
+        fontSize = 16.sp
     ),
-    subtitle1 = TextStyle(
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        letterSpacing = 0.15.sp
-    ),
-    subtitle2 = TextStyle(
-        fontWeight = FontWeight.Medium,
-        fontSize = 14.sp,
-        letterSpacing = 0.1.sp
-    ),
-    body1 = TextStyle(
-        fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
-//        letterSpacing = 0.5.sp
+    h6 = TextStyle(
+        fontWeight = FontWeight.W500,
+        fontSize = 12.sp,
+        color = ColorBWBlack
     ),
     body2 = TextStyle(
-        fontWeight = FontWeight.Normal,
+        fontWeight = FontWeight.W400,
         fontSize = 12.sp,
-//        letterSpacing = 0.25.sp
-    )
-/*    body1 = TextStyle(
-        fontFamily = latoFamily,
-        fontWeight = FontWeight.Bold,
-        fontSize = 14.sp
-    ),*/
-
-    /* Other default text styles to override
-    button = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.W500,
-        fontSize = 14.sp
     ),
-    caption = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
+    body1 = TextStyle(
+        fontWeight = FontWeight.W400,
         fontSize = 12.sp
-    )
-    */
+    ),
+    button = TextStyle(
+        fontWeight = FontWeight.Bold,
+        fontSize = 12.sp
+    ),
 
-)
+    )

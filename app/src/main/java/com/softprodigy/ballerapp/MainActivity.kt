@@ -17,14 +17,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.facebook.CallbackManager
+import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.Route
 import com.softprodigy.ballerapp.common.Route.FORGOT_PASSWORD_SCREEN
 import com.softprodigy.ballerapp.common.Route.HOME_SCREEN
 import com.softprodigy.ballerapp.common.Route.LOGIN_SCREEN
 import com.softprodigy.ballerapp.common.Route.NEW_PASSWORD_SCREEN
 import com.softprodigy.ballerapp.common.Route.OTP_VERIFICATION_SCREEN
+import com.softprodigy.ballerapp.common.Route.SELECT_USER_TYPE
 import com.softprodigy.ballerapp.common.Route.SIGN_UP_SCREEN
 import com.softprodigy.ballerapp.common.Route.SPLASH_SCREEN
+import com.softprodigy.ballerapp.common.Route.TEAM_SETUP_SCREEN
 import com.softprodigy.ballerapp.common.Route.WELCOME_SCREEN
 import com.softprodigy.ballerapp.ui.features.create_new_password.NewPasswordScreen
 import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordScreen
@@ -33,6 +36,8 @@ import com.softprodigy.ballerapp.ui.features.login.LoginScreen
 import com.softprodigy.ballerapp.ui.features.otp_verification.OTPVerificationScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
 import com.softprodigy.ballerapp.ui.features.splash.SplashScreen
+import com.softprodigy.ballerapp.ui.features.user_type.TeamSetupScreen
+import com.softprodigy.ballerapp.ui.features.user_type.UserTypeScreen
 import com.softprodigy.ballerapp.ui.features.welcome.WelcomeScreen
 import com.softprodigy.ballerapp.ui.theme.BallerAppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -227,6 +232,28 @@ fun NavControllerComposable() {
         composable(route = "$HOME_SCREEN/{name}") {
             val name = it.arguments?.getString("name")
             HomeScreen(name = name)
+        }
+        composable(route = SELECT_USER_TYPE) {
+
+            UserTypeScreen(onNextClick = { userType ->
+                Timber.i("onNextClick-- $userType")
+                when (userType) {
+                    AppConstants.USER_TYPE_COACH -> {
+                        navController.navigate(TEAM_SETUP_SCREEN)
+                    }
+                    AppConstants.USER_TYPE_PLAYER -> {
+
+                    }
+                    AppConstants.USER_TYPE_REFEREE -> {
+
+                    }
+
+                }
+            })
+        }
+
+        composable(route = TEAM_SETUP_SCREEN) {
+            TeamSetupScreen()
         }
     }
 }
