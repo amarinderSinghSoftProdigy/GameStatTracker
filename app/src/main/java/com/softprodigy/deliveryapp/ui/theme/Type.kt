@@ -7,17 +7,18 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.softprodigy.deliveryapp.R
-val latoFamily = FontFamily(
+
+val rubikFamily = FontFamily(
     fonts = listOf(
-        Font(R.font.lato_regular),
-        Font(R.font.lato_bold, weight = FontWeight.Bold),
-        Font(R.font.lato_regular, weight = FontWeight.Medium),
+        Font(R.font.rubik_regular),
+        Font(R.font.rubik_bold, weight = FontWeight.Bold),
+        Font(R.font.rubik_regular, weight = FontWeight.Medium),
     )
 )
 
 // Set of Material typography styles to start with
 val Typography = Typography(
-    defaultFontFamily = latoFamily,
+    defaultFontFamily = rubikFamily,
     h1 = TextStyle(
         fontWeight = FontWeight.Bold,
         fontSize = 24.sp,

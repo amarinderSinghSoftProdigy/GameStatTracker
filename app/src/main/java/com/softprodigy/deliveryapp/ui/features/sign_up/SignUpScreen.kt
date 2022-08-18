@@ -256,12 +256,12 @@ fun SignUpScreen(
                 Text(text = stringResource(id = R.string.create_account))
             }
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-            SocialSection(
-                onGoogleClick = {
-                    authResultLauncher.launch(0)
-                },
-                onFacebookClick = { onFacebookClick.invoke() },
-                onFooterClick = { onLoginClick.invoke() })
+//            SocialSection(
+//                onGoogleClick = {
+//                    authResultLauncher.launch(0)
+//                },
+//                onFacebookClick = { onFacebookClick.invoke() },
+//                onFooterClick = { onLoginClick.invoke() })
             }
         if (signUpState.isLoading) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))

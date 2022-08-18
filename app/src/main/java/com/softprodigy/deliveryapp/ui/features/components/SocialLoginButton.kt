@@ -46,6 +46,21 @@ fun SocialButton(
     }
 }
 
+@Composable
+fun SocialLoginButton(
+    icon: Painter,
+    onClick: () -> Unit
+) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(
+            painter = icon,
+            modifier = Modifier.size(24.dp),
+            contentDescription = "Social Login ",
+            tint = Color.Unspecified
+        )
+    }
+
+}
 
 @OptIn(ExperimentalMaterialApi::class)
 @Preview("default", "rectangle")

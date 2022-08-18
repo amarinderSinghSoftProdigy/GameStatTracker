@@ -1,6 +1,7 @@
 package com.softprodigy.deliveryapp
 
 import android.os.Bundle
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -24,6 +25,7 @@ import com.softprodigy.deliveryapp.common.Route.LOGIN_SCREEN
 import com.softprodigy.deliveryapp.common.Route.NEW_PASSWORD_SCREEN
 import com.softprodigy.deliveryapp.common.Route.OTP_VERIFICATION_SCREEN
 import com.softprodigy.deliveryapp.common.Route.SIGN_UP_SCREEN
+import com.softprodigy.deliveryapp.common.Route.SPLASH_SCREEN
 import com.softprodigy.deliveryapp.common.Route.WELCOME_SCREEN
 import com.softprodigy.deliveryapp.ui.features.create_new_password.NewPasswordScreen
 import com.softprodigy.deliveryapp.ui.features.forgot_password.ForgotPasswordScreen
@@ -31,6 +33,7 @@ import com.softprodigy.deliveryapp.ui.features.home.HomeScreen
 import com.softprodigy.deliveryapp.ui.features.login.LoginScreen
 import com.softprodigy.deliveryapp.ui.features.otp_verification.OTPVerificationScreen
 import com.softprodigy.deliveryapp.ui.features.sign_up.SignUpScreen
+import com.softprodigy.deliveryapp.ui.features.splash.SplashScreen
 import com.softprodigy.deliveryapp.ui.features.welcome.WelcomeScreen
 import com.softprodigy.deliveryapp.ui.theme.DeliveryProjectStructureDemoTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,7 +48,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowCompat.setDecorFitsSystemWindows(window, true)
         setContent {
             DeliveryProjectStructureDemoTheme {
                 // A surface container using the 'background' color from the theme
@@ -56,7 +59,9 @@ class MainActivity : ComponentActivity() {
                     CompositionLocalProvider(
                         LocalFacebookCallbackManager provides callbackManager
                     ) {
+
                         NavControllerComposable()
+
                     }
                 }
             }
@@ -64,47 +69,59 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
 @Composable
 fun NavControllerComposable() {
     val navController = rememberNavController()
-    NavHost(navController, startDestination = WELCOME_SCREEN) {
-        composable(route = WELCOME_SCREEN) {
-            WelcomeScreen(onCreateAccountCLick = {
-                navController.navigate(SIGN_UP_SCREEN)
-            }, onSkipCLick = {
-                navController.navigate(HOME_SCREEN + "/${null}") {
-                    popUpTo(WELCOME_SCREEN) {
-                        inclusive = true
-                    }
-                }
-            },
-                onLoginClick = {
-                    navController.navigate(LOGIN_SCREEN)
-                },
-                onFacebookClick = {
+    NavHost(navController, startDestination = SPLASH_SCREEN) {
 
-                },
-                onGoogleLogin = { userResponse ->
-                    navController.navigate(HOME_SCREEN + "/${userResponse.userInfo.firstName}") {
-                        popUpTo(WELCOME_SCREEN) {
-                            inclusive = true
-                        }
-                    }
-                })
+        composable(route = SPLASH_SCREEN) {
+            SplashScreen {
+                navController.popBackStack()
+                navController.navigate(WELCOME_SCREEN)
+            }
+        }
+
+        composable(route = WELCOME_SCREEN) {
+//            WelcomeScreen(onCreateAccountCLick = {
+//                navController.navigate(SIGN_UP_SCREEN)
+//            }, onSkipCLick = {
+//                navController.navigate(HOME_SCREEN + "/${null}") {
+//                    popUpTo(WELCOME_SCREEN) {
+//                        inclusive = true
+//                    }
+//                }
+//            },
+//                onLoginClick = {
+//                    navController.navigate(LOGIN_SCREEN)
+//                },
+//                onFacebookClick = {
+//
+//                },
+//                onGoogleLogin = { userResponse ->
+//                    navController.navigate(HOME_SCREEN + "/${userResponse.userInfo.firstName}") {
+//                        popUpTo(WELCOME_SCREEN) {
+//                            inclusive = true
+//                        }
+//                    }
+//                })
+
+            WelcomeScreen {
+                navController.popBackStack()
+                navController.navigate(LOGIN_SCREEN)
+            }
         }
         composable(route = LOGIN_SCREEN) {
             val context = LocalContext.current
             LoginScreen(
                 onLoginSuccess = { loginResponse ->
 
-                    if(loginResponse.userInfo.isEmailVerified){
-                    navController.navigate(HOME_SCREEN + "/${loginResponse.userInfo.firstName}") {
-                        popUpTo(WELCOME_SCREEN) {
-                            inclusive = true
+                    if (loginResponse.userInfo.isEmailVerified) {
+                        navController.navigate(HOME_SCREEN + "/${loginResponse.userInfo.firstName}") {
+                            popUpTo(WELCOME_SCREEN) {
+                                inclusive = true
+                            }
                         }
-                    }}
-                    else{
+                    } else {
                         val isResetIntent = "false"
                         navController.navigate(
                             OTP_VERIFICATION_SCREEN + "/${loginResponse.verifyToken}"
@@ -124,7 +141,7 @@ fun NavControllerComposable() {
         }
         composable(route = SIGN_UP_SCREEN) {
             val context = LocalContext.current
-            SignUpScreen(onSuccessfulSignUp = {signUpResponse ->
+            SignUpScreen(onSuccessfulSignUp = { signUpResponse ->
                 val isResetIntent = "false"
                 navController.navigate(
                     OTP_VERIFICATION_SCREEN + "/${signUpResponse.verifyToken}"
@@ -169,7 +186,7 @@ fun NavControllerComposable() {
 
         }
 
-        composable(route = "$OTP_VERIFICATION_SCREEN/{token}/{email}/{isResetIntent}" ) {
+        composable(route = "$OTP_VERIFICATION_SCREEN/{token}/{email}/{isResetIntent}") {
             val token = it.arguments?.getString("token")
             val email = it.arguments?.getString("email")
             val isResetIntent = it.arguments?.getString("isResetIntent") ?: "false"
@@ -181,17 +198,15 @@ fun NavControllerComposable() {
                 onSuccess = { verifyOtpResponse ->
                     Toast.makeText(context, verifyOtpResponse.message, Toast.LENGTH_LONG)
                         .show()
-                    if(isResetIntent=="true"){
+                    if (isResetIntent == "true") {
                         navController.navigate(Route.NEW_PASSWORD_SCREEN + "/$token")
-                    }
-                    else{
+                    } else {
                         navController.navigate(HOME_SCREEN + "/${verifyOtpResponse.userInfo.firstName}") {
                             popUpTo(WELCOME_SCREEN) {
                                 inclusive = true
                             }
                         }
                     }
-
                 }
             )
         }
@@ -205,7 +220,7 @@ fun NavControllerComposable() {
                     navController.navigate(LOGIN_SCREEN) {
                         popUpTo(WELCOME_SCREEN)
                     }
-                                },
+                },
                 OnSuccess = { resetPasswordResponse ->
                     Toast.makeText(context, resetPasswordResponse.message, Toast.LENGTH_LONG)
                         .show()
