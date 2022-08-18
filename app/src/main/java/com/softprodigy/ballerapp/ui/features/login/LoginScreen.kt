@@ -39,7 +39,7 @@ import com.softprodigy.ballerapp.ui.theme.spacing
 @Composable
 fun LoginScreen(
     vm: LoginViewModel = hiltViewModel(),
-    onLoginSuccess: (LoginResponse) -> Unit,
+    onLoginSuccess: (LoginResponse?) -> Unit,
     onForgetPasswordClick: () -> Unit,
     onFacebookClick: () -> Unit,
     onCreateAccountClick: () -> Unit
@@ -184,6 +184,7 @@ fun LoginScreen(
                 AppButton(
                     enabled = email.isValidEmail() && password.isValidPassword(),
                     onClick = {
+                        onLoginSuccess(null)
 //                    vm.onEvent(
 //                        LoginUIEvent.Submit(email, password)
 //                    )
@@ -193,7 +194,9 @@ fun LoginScreen(
                         .height(52.dp),
                     text = stringResource(id = R.string.login),
                     icon = painterResource(id = R.drawable.ic_circle_next)
-                ) {}
+                ) {
+
+                }
 
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraMedium))
 
