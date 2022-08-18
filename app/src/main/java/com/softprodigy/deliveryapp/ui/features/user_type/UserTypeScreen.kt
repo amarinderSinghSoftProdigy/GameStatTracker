@@ -7,15 +7,17 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.softprodigy.deliveryapp.R
+import com.softprodigy.deliveryapp.common.AppConstants
 import com.softprodigy.deliveryapp.ui.features.components.AppButton
 import com.softprodigy.deliveryapp.ui.theme.spacing
 
 @Composable
-fun UserTypeScreen() {
+fun UserTypeScreen(onNextClick: (String) -> Unit) {
     Box(
         Modifier.fillMaxWidth()
     ) {
@@ -25,23 +27,23 @@ fun UserTypeScreen() {
 //            innerIcon = painterResource(id = R.drawable.ic_ball_green),
 //            centerIcon = painterResource(id = R.drawable.ic_google),
         )
-        UserTypeSelector()
+        UserTypeSelector(onNextClick = onNextClick)
     }
 }
 
 
 @Composable
-fun UserTypeSelector() {
+fun UserTypeSelector(onNextClick: (String) -> Unit) {
     val options = listOf(
-        "Player",
-        "Parent",
-        "Coach",
+        AppConstants.USER_TYPE_PLAYER,
+        AppConstants.USER_TYPE_PARENT,
+        AppConstants.USER_TYPE_COACH,
     )
-    var selectedOption by remember {
+    var selectedUserType by remember {
         mutableStateOf("")
     }
     val onSelectionChange = { text: String ->
-        selectedOption = text
+        selectedUserType = text
     }
 
     Column(
@@ -59,12 +61,12 @@ fun UserTypeSelector() {
                 AppButton(
                     onClick = {
                         onSelectionChange(text)
-                    }, colors = if (text == selectedOption) {
+                    }, colors = if (text == selectedUserType) {
                         ButtonDefaults.buttonColors()
                     } else {
                         ButtonDefaults.outlinedButtonColors()
                     },
-                    border = if (text == selectedOption) {
+                    border = if (text == selectedUserType) {
                         null
                     } else {
                         ButtonDefaults.outlinedBorder
@@ -77,8 +79,15 @@ fun UserTypeSelector() {
         }
         Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
 
-        Row(Modifier.align(Alignment.End)) {
-            AppButton(onClick = { }) {
+        Row(
+            Modifier
+                .align(Alignment.End)
+                .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
+        ) {
+            AppButton(onClick = {
+                onNextClick.invoke(selectedUserType)
+            },
+            enabled = selectedUserType.isNotEmpty()) {
                 Text(text = stringResource(id = R.string.next))
             }
         }

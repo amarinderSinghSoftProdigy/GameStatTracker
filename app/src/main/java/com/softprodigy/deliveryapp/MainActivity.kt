@@ -17,6 +17,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.facebook.CallbackManager
+import com.softprodigy.deliveryapp.common.AppConstants
 import com.softprodigy.deliveryapp.common.Route
 import com.softprodigy.deliveryapp.common.Route.FORGOT_PASSWORD_SCREEN
 import com.softprodigy.deliveryapp.common.Route.HOME_SCREEN
@@ -31,6 +32,7 @@ import com.softprodigy.deliveryapp.ui.features.home.HomeScreen
 import com.softprodigy.deliveryapp.ui.features.login.LoginScreen
 import com.softprodigy.deliveryapp.ui.features.otp_verification.OTPVerificationScreen
 import com.softprodigy.deliveryapp.ui.features.sign_up.SignUpScreen
+import com.softprodigy.deliveryapp.ui.features.user_type.UserTypeScreen
 import com.softprodigy.deliveryapp.ui.features.welcome.WelcomeScreen
 import com.softprodigy.deliveryapp.ui.theme.DeliveryProjectStructureDemoTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -56,7 +58,22 @@ class MainActivity : ComponentActivity() {
                     CompositionLocalProvider(
                         LocalFacebookCallbackManager provides callbackManager
                     ) {
-                        NavControllerComposable()
+//                        NavControllerComposable()
+                        UserTypeScreen(onNextClick = { userType ->
+                            Timber.i("onNextClick-- $userType")
+                            when (userType) {
+                                AppConstants.USER_TYPE_COACH -> {
+
+                                }
+                                AppConstants.USER_TYPE_PLAYER -> {
+
+                                }
+                                AppConstants.USER_TYPE_PARENT -> {
+
+                                }
+
+                            }
+                        })
                     }
                 }
             }

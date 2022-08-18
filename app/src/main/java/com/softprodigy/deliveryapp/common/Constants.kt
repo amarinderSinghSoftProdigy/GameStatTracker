@@ -6,6 +6,9 @@ object AppConstants {
     const val KEY_PASSWORD = "password"
     const val KEY_USERS = "users"
     const val DEFAULT_ERROR_MESSAGE = "Something went wrong"
+    const val USER_TYPE_PLAYER="Player"
+    const val USER_TYPE_PARENT="Parent"
+    const val USER_TYPE_COACH="Coach"
 }
 
 object Route {
