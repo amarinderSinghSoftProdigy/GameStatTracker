@@ -73,7 +73,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun NavControllerComposable() {
     val navController = rememberNavController()
-    NavHost(navController, startDestination = SPLASH_SCREEN) {
+    NavHost(navController, startDestination = USER_TYPE_SCREEN) {
 
         composable(route = SPLASH_SCREEN) {
             SplashScreen {
