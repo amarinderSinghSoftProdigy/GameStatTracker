@@ -26,11 +26,11 @@
     <string name="forgot_password_heading">Forgot Password</string>
     <string name="or_login_with">Or Login With</string>
     <string name="dont_have_account">Don\'t have account?  </string>
-    <string name="create_now"> Create Now</string>
+    <string name="create_now"> Create Now?</string>
     <string name="sign_up">Sign Up</string>
     <string name="create_free_account_and_join_us">Create a free account and join us!</string>
     <string name="your_name">Full Name</string>
-    <string name="enter_your_name">Enter your full Name</string>
+    <string name="enter_your_name">Enter your Full Name</string>
     <string name="enter_valid_full_name">Enter valid full Name</string>
     <string name="create_account">Create Account</string>
     <string name="your_password">Enter your password</string>
@@ -62,7 +62,13 @@
     <string name="team_name">Team Name</string>
     <string name="or_sign_in_with">or sign in with</string>
     <string name="baller">Baller</string>
-
-
+    <string name="get_started"> Get Started</string>
+    <string name="name">Name</string>
+    <string name="birthday">Birthday</string>
+    <string name="enter_your_birthday">Enter your Birthday</string>
+    <string name="address">Address</string>
+    <string name="your_address">Enter your address</string>
+    <string name="number">Phone Number</string>
+    <string name="address_error">Enter valid address</string>
 
 </resources>
