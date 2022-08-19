@@ -80,29 +80,6 @@ fun NavControllerComposable() {
         }
 
         composable(route = WELCOME_SCREEN) {
-//            WelcomeScreen(onCreateAccountCLick = {
-//                navController.navigate(SIGN_UP_SCREEN)
-//            }, onSkipCLick = {
-//                navController.navigate(HOME_SCREEN + "/${null}") {
-//                    popUpTo(WELCOME_SCREEN) {
-//                        inclusive = true
-//                    }
-//                }
-//            },
-//                onLoginClick = {
-//                    navController.navigate(LOGIN_SCREEN)
-//                },
-//                onFacebookClick = {
-//
-//                },
-//                onGoogleLogin = { userResponse ->
-//                    navController.navigate(HOME_SCREEN + "/${userResponse.userInfo.firstName}") {
-//                        popUpTo(WELCOME_SCREEN) {
-//                            inclusive = true
-//                        }
-//                    }
-//                })
-
             WelcomeScreen {
                 navController.popBackStack()
                 navController.navigate(LOGIN_SCREEN)
@@ -135,7 +112,8 @@ fun NavControllerComposable() {
                     }
                 },
                 onForgetPasswordClick = { navController.navigate(FORGOT_PASSWORD_SCREEN) },
-                onFacebookClick = {})
+                onFacebookClick = {},
+            )
         }
         composable(route = SIGN_UP_SCREEN) {
             val context = LocalContext.current
@@ -160,7 +138,10 @@ fun NavControllerComposable() {
                     navController.navigate(LOGIN_SCREEN) {
                         popUpTo(WELCOME_SCREEN)
                     }
-                })
+                },
+                onHomeClick = {
+                }
+            )
         }
         composable(route = FORGOT_PASSWORD_SCREEN) {
             val context = LocalContext.current
