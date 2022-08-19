@@ -57,11 +57,23 @@
     <string name="re_enter_password">Re-enter Password</string>
     <string name="please_accept_tems">Please accept our terms and policies</string>
     <string name="next">Next</string>
-    <string name="setup_your_team">Setup your team</string>
+    <string name="setup_your_team">Set up your team</string>
     <string name="team_logo">Team Logo</string>
     <string name="team_name">Team Name</string>
     <string name="or_sign_in_with">or sign in with</string>
     <string name="baller">Baller</string>
+    <string name="what_type_of_user_are_you">What type of user are you?</string>
+    <string name="your_team_name">Your team name</string>
+    <string name="change">Change</string>
+    <string name="upload_files">Upload Files</string>
+    <string name="team_color">Team color</string>
+    <string name="back">Back</string>
+    <string name="colors">Colors</string>
+    <string name="add_player">Add player</string>
+    <string name="search">Search</string>
+    <string name="added_players">Added Players</string>
+    <string name="search_by_name_or_email">Search by name or email</string>
+
     <string name="get_started"> Get Started</string>
     <string name="name">Name</string>
     <string name="birthday">Birthday</string>

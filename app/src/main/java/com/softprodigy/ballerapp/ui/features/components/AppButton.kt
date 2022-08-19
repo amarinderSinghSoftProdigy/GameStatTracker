@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -37,7 +38,7 @@ fun AppButton(
     elevation: ButtonElevation? = ButtonDefaults.elevation(),
     shape: Shape = RoundedCornerShape(8.dp),
     border: BorderStroke? = null,
-    colors: ButtonColors = ButtonDefaults.buttonColors(Color.Black),
+    colors: ButtonColors = ButtonDefaults.buttonColors(ColorBWBlack),
     contentPadding: PaddingValues = PaddingValues(24.dp, vertical = 15.dp),
     text: String? = null,
     icon: Painter? = null,

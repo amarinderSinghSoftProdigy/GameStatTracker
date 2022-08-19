@@ -17,16 +17,18 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.facebook.CallbackManager
+import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.Route
+import com.softprodigy.ballerapp.common.Route.ADD_PLAYER_SCREEN
 import com.softprodigy.ballerapp.common.Route.FORGOT_PASSWORD_SCREEN
 import com.softprodigy.ballerapp.common.Route.HOME_SCREEN
 import com.softprodigy.ballerapp.common.Route.LOGIN_SCREEN
 import com.softprodigy.ballerapp.common.Route.NEW_PASSWORD_SCREEN
 import com.softprodigy.ballerapp.common.Route.OTP_VERIFICATION_SCREEN
+import com.softprodigy.ballerapp.common.Route.SELECT_USER_TYPE
 import com.softprodigy.ballerapp.common.Route.SIGN_UP_SCREEN
 import com.softprodigy.ballerapp.common.Route.SPLASH_SCREEN
 import com.softprodigy.ballerapp.common.Route.TEAM_SETUP_SCREEN
-import com.softprodigy.ballerapp.common.Route.USER_TYPE_SCREEN
 import com.softprodigy.ballerapp.common.Route.WELCOME_SCREEN
 import com.softprodigy.ballerapp.ui.features.create_new_password.NewPasswordScreen
 import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordScreen
@@ -35,6 +37,7 @@ import com.softprodigy.ballerapp.ui.features.login.LoginScreen
 import com.softprodigy.ballerapp.ui.features.otp_verification.OTPVerificationScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
 import com.softprodigy.ballerapp.ui.features.splash.SplashScreen
+import com.softprodigy.ballerapp.ui.features.user_type.AddPlayersScreen
 import com.softprodigy.ballerapp.ui.features.user_type.TeamSetupScreen
 import com.softprodigy.ballerapp.ui.features.user_type.UserTypeScreen
 import com.softprodigy.ballerapp.ui.features.welcome.WelcomeScreen
@@ -63,6 +66,7 @@ class MainActivity : ComponentActivity() {
                         LocalFacebookCallbackManager provides callbackManager
                     ) {
                         NavControllerComposable()
+
                     }
                 }
             }
@@ -73,7 +77,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun NavControllerComposable() {
     val navController = rememberNavController()
-    NavHost(navController, startDestination = USER_TYPE_SCREEN) {
+    NavHost(navController, startDestination = SPLASH_SCREEN) {
 
         composable(route = SPLASH_SCREEN) {
             SplashScreen {
@@ -92,7 +96,7 @@ fun NavControllerComposable() {
             val context = LocalContext.current
             LoginScreen(
                 onLoginSuccess = { loginResponse ->
-                    navController.navigate(USER_TYPE_SCREEN)
+                    navController.navigate(SELECT_USER_TYPE)
                     /*if (loginResponse.userInfo.isEmailVerified) {
                         navController.navigate(HOME_SCREEN + "/${loginResponse?.userInfo?.firstName}") {
                             popUpTo(WELCOME_SCREEN) {
@@ -115,8 +119,7 @@ fun NavControllerComposable() {
                     }
                 },
                 onForgetPasswordClick = { navController.navigate(FORGOT_PASSWORD_SCREEN) },
-                onFacebookClick = {},
-            )
+                onFacebookClick = {})
         }
         composable(route = SIGN_UP_SCREEN) {
             val context = LocalContext.current
@@ -212,14 +215,30 @@ fun NavControllerComposable() {
             val name = it.arguments?.getString("name")
             HomeScreen(name = name)
         }
+        composable(route = SELECT_USER_TYPE) {
+            UserTypeScreen(onNextClick = { userType ->
+                Timber.i("onNextClick-- $userType")
+                when (userType) {
+                    AppConstants.USER_TYPE_COACH -> {
+                        navController.navigate(TEAM_SETUP_SCREEN)
+                    }
+                    AppConstants.USER_TYPE_PLAYER -> {
 
-        composable(route = USER_TYPE_SCREEN) {
-            UserTypeScreen {
-                navController.navigate(TEAM_SETUP_SCREEN)
-            }
+                    }
+                    AppConstants.USER_TYPE_REFEREE -> {
+
+                    }
+
+                }
+            })
         }
         composable(route = TEAM_SETUP_SCREEN) {
-            TeamSetupScreen()
+            TeamSetupScreen(onBackClick = { navController.popBackStack() }, onNextClick = {
+                navController.navigate(ADD_PLAYER_SCREEN)
+            })
+        }
+        composable(route = ADD_PLAYER_SCREEN) {
+            AddPlayersScreen(onBackClick = {navController.popBackStack()}, onNextClick = {})
         }
     }
 }
