@@ -1,121 +1,360 @@
 package com.softprodigy.ballerapp.ui.features.user_type
 
-import androidx.compose.foundation.background
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import com.github.skydoves.colorpicker.compose.ColorEnvelope
+import com.github.skydoves.colorpicker.compose.ColorPickerController
+import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.ui.features.components.AppBasicTextField
+import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.theme.*
+import kotlinx.coroutines.launch
 
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun TeamSetupScreen() {
+fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
+    val modalBottomSheetState =
+        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+    val scope = rememberCoroutineScope()
+
     var teamName by rememberSaveable { mutableStateOf("") }
-    Box(Modifier.fillMaxSize()) {
-        CoachFlowBackground(
-            modifier = Modifier.fillMaxSize(),
-            outerIcon = painterResource(id = R.drawable.ic_ball)
-        )
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .padding(dimensionResource(id = R.dimen.size_16dp)),
-            verticalArrangement = Arrangement.Center
-        ) {
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_64dp)))
-            AppText(
-                text = stringResource(id = R.string.setup_your_team),
-                style = MaterialTheme.typography.h3,
-                color = ColorBWBlack
+    var selectedColorCode by rememberSaveable { mutableStateOf("") }
+    var selectedColor by rememberSaveable { mutableStateOf<Color?>(null) }
+
+    var imageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+    val context = LocalContext.current
+    val bitmap = remember {
+        mutableStateOf<Bitmap?>(null)
+    }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract =
+        ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        imageUri = uri
+    }
+//    val controller = rememberColorPickerController()
+    ModalBottomSheetLayout(
+        sheetContent = {
+            /*todo- color picker creating issue on navigation and image picking -- Temp adding Text compose below commented code*/
+
+            /*     ColorPickerBottomSheet(controller, colorEnvelope = { colorEnvelope ->
+                     selectedColor = colorEnvelope.color
+                     selectedColorCode = colorEnvelope.hexCode
+                 }, onDismiss = {
+                     scope.launch {
+                         modalBottomSheetState.hide()
+                     }
+                 })*/
+
+            Text(text = "")
+        },
+        sheetState = modalBottomSheetState,
+        sheetShape = RoundedCornerShape(
+            topStart = dimensionResource(id = R.dimen.size_16dp),
+            topEnd = dimensionResource(id = R.dimen.size_16dp)
+        ),
+        sheetBackgroundColor = colorResource(id = R.color.white),
+    ) {
+
+        Box(Modifier.fillMaxSize()) {
+            CoachFlowBackground(
+                modifier = Modifier.fillMaxSize(),
+                outerIcon = painterResource(id = R.drawable.ic_ball)
             )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_40dp)))
-            Card(
-                modifier = Modifier
+            Column(
+                Modifier
                     .fillMaxWidth()
+                    .padding(dimensionResource(id = R.dimen.size_16dp))
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.Center
             ) {
-                Column(
-                    Modifier
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_64dp)))
+                AppText(
+                    text = stringResource(id = R.string.setup_your_team),
+                    style = MaterialTheme.typography.h3,
+                    color = ColorBWBlack
+                )
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_40dp)))
+                Card(
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .padding(dimensionResource(id = R.dimen.size_8dp))
                 ) {
-                    AppText(
-                        text = stringResource(id = R.string.team_name),
-                        style = MaterialTheme.typography.h6,
-                        color = ColorBWBlack
-                    )
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                    AppOutlineTextField(
-                        modifier = Modifier.fillMaxWidth(),
-                        value = teamName,
-                        onValueChange = {
-                            teamName = it
-                        },
-                        placeholder = { stringResource(id = R.string.your_team_name) },
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            unfocusedBorderColor = ColorBWGrayBorder
-                        )
-                    )
-                }
-
-            }
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
-
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Column(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(dimensionResource(id = R.dimen.size_16dp))
-                ) {
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                        AppText(
-                            text = stringResource(id = R.string.team_logo),
-                            style = MaterialTheme.typography.h6
-                        )
-                        Text(text = stringResource(id = R.string.change), color = ColorBWGrayLight)
-                    }
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                    Box(
+                    Column(
                         Modifier
                             .fillMaxWidth()
-                            .height(dimensionResource(id = R.dimen.size_300dp))
-                            .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_6dp)))
-                            .background(color = ColorPrimaryTransparent)
-
+                            .padding(dimensionResource(id = R.dimen.size_8dp))
                     ) {
-                        Row(modifier = Modifier.align(Alignment.Center)) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_upload),
-                                contentDescription = null,
-                                tint = Color.Unspecified
+                        AppText(
+                            text = stringResource(id = R.string.team_name),
+                            style = MaterialTheme.typography.h6,
+                            color = ColorBWBlack
+                        )
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                        AppOutlineTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = teamName,
+                            onValueChange = {
+                                teamName = it
+                            },
+                            placeholder = { stringResource(id = R.string.your_team_name) },
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                unfocusedBorderColor = ColorBWGrayBorder
                             )
-                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+                        )
+                    }
+
+                }
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
+
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(dimensionResource(id = R.dimen.size_16dp))
+                    ) {
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
                             AppText(
-                                text = stringResource(id = R.string.upload_files),
-                                style = MaterialTheme.typography.h6,
-                                color = ColorMainPrimary
+                                text = stringResource(id = R.string.team_logo),
+                                style = MaterialTheme.typography.h6
                             )
+                            Text(
+                                text = stringResource(id = R.string.change),
+                                color = ColorBWGrayLight
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                        Box(
+                            Modifier
+                                .fillMaxWidth()
+                                .height(dimensionResource(id = R.dimen.size_300dp))
+                                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_6dp)))
+                                .background(color = ColorPrimaryTransparent)
+                                .clickable {
+                                    launcher.launch("image/*")
+                                }
+
+                        ) {
+                            Row(modifier = Modifier.align(Alignment.Center)) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_upload),
+                                    contentDescription = null,
+                                    tint = Color.Unspecified
+                                )
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+                                AppText(
+                                    text = stringResource(id = R.string.upload_files),
+                                    style = MaterialTheme.typography.h6,
+                                    color = ColorMainPrimary
+                                )
+                            }
+                            imageUri?.let {
+                                if (Build.VERSION.SDK_INT < 28) {
+                                    bitmap.value = MediaStore.Images
+                                        .Media.getBitmap(context.contentResolver, it)
+
+                                } else {
+                                    val source = ImageDecoder
+                                        .createSource(context.contentResolver, it)
+                                    bitmap.value = ImageDecoder.decodeBitmap(source)
+                                }
+
+                                bitmap.value?.let { btm ->
+                                    Image(
+                                        bitmap = btm.asImageBitmap(),
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .size(250.dp)
+                                            .align(Alignment.Center)
+                                    )
+                                }
+                            }
                         }
                     }
                 }
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
+
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Column(Modifier.fillMaxWidth()) {
+
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(dimensionResource(id = R.dimen.size_16dp)),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+
+                        ) {
+                            AppText(
+                                text = stringResource(id = R.string.team_color),
+                                style = MaterialTheme.typography.h6
+                            )
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.clickable {
+                                    scope.launch {
+//                                        modalBottomSheetState.show()
+                                    }
+                                },
+                            ) {
+                                AppBasicTextField(
+                                    modifier = Modifier
+                                        .width(dimensionResource(id = R.dimen.size_150dp))
+                                        .width(IntrinsicSize.Min)
+                                        .height(
+                                            dimensionResource(id = R.dimen.size_32dp)
+                                        )
+                                        .border(BorderStroke(1.dp, ColorBWGrayBorder))
+                                        .padding(8.dp),
+//                                    enabled = false,
+                                    value = selectedColorCode,
+                                    onValueChange = {
+                                        selectedColorCode = it
+                                    } /*text = "this is"*/)
+
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+                                (if (selectedColor != null) {
+                                    selectedColor
+                                } else {
+                                    null
+                                })?.let {
+                                    Card(
+                                        modifier = Modifier
+                                            .size(
+                                                dimensionResource(id = R.dimen.size_32dp),
+                                            ), backgroundColor = it,
+                                        shape = RoundedCornerShape(
+                                            dimensionResource(id = R.dimen.size_4dp)
+                                        )
+                                    ) {}
+                                }
+                            }
+
+
+                        }
+
+                    }
+
+                }
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_44dp)))
+                Row(
+                    Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    AppButton(
+                        onClick = onBackClick,
+                        modifier = Modifier.width(dimensionResource(id = R.dimen.size_156dp)),
+                        colors = ButtonDefaults.outlinedButtonColors(),
+                        border = ButtonDefaults.outlinedBorder,
+                        elevation = null
+                    ) {
+
+                        AppText(
+                            text = stringResource(id = R.string.back),
+                            style = MaterialTheme.typography.h4,
+                            color = Color.Gray
+                        )
+                    }
+                    AppButton(
+                        onClick = onNextClick,
+                        icon = painterResource(id = R.drawable.ic_circle_next),
+                        modifier = Modifier.width(dimensionResource(id = R.dimen.size_156dp)),
+                        enabled = teamName.isNotEmpty() /*&& imageUri != null */ && selectedColorCode.isNotEmpty()
+                    ) {
+
+                        AppText(
+                            text = stringResource(id = R.string.next),
+                            style = MaterialTheme.typography.h4,
+                            color = if (teamName.isNotEmpty() /*&& imageUri != null*/ && selectedColorCode.isNotEmpty()) {
+                                Color.White
+                            } else {
+                                Color.Gray
+                            }
+                        )
+                    }
+
+                }
             }
-            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
         }
     }
+}
+
+@Composable
+fun ColorPickerBottomSheet(
+    controller: ColorPickerController,
+    colorEnvelope: (ColorEnvelope) -> Unit,
+    onDismiss: () -> Unit
+) {
+    Column() {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .padding(dimensionResource(id = R.dimen.size_25dp))
+        ) {
+            AppText(
+                text = stringResource(id = R.string.colors),
+                style = MaterialTheme.typography.h3,
+                modifier = Modifier.align(Alignment.Center)
+            )
+            Icon(
+                painter = painterResource(id = R.drawable.ic_close_color_picker),
+                contentDescription = null,
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .size(dimensionResource(id = R.dimen.size_16dp))
+                    .clickable {
+                        onDismiss.invoke()
+                    }
+            )
+        }
+        HsvColorPicker(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(dimensionResource(id = R.dimen.size_300dp))
+                .padding(dimensionResource(id = R.dimen.size_8dp)),
+            controller = controller,
+            onColorChanged = colorEnvelope
+        )
+    }
+
 }

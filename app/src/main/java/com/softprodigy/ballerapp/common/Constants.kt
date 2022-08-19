@@ -22,6 +22,7 @@ object Route {
     const val SPLASH_SCREEN = "splashScreen"
     const val SELECT_USER_TYPE="selectUserTypeScreen"
     const val TEAM_SETUP_SCREEN = "teamSetupScreen"
+    const val ADD_PLAYER_SCREEN = "addPlayerScreen"
 
 }
 

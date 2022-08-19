@@ -66,6 +66,13 @@
     <string name="your_team_name">Your team name</string>
     <string name="change">Change</string>
     <string name="upload_files">Upload Files</string>
+    <string name="team_color">Team color</string>
+    <string name="back">Back</string>
+    <string name="colors">Colors</string>
+    <string name="add_player">Add player</string>
+    <string name="search">Search</string>
+    <string name="added_players">Added Players</string>
+    <string name="search_by_name_or_email">Search by name or email</string>
 
 
 </resources>

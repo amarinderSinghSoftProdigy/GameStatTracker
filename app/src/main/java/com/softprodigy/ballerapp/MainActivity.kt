@@ -19,6 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import com.facebook.CallbackManager
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.Route
+import com.softprodigy.ballerapp.common.Route.ADD_PLAYER_SCREEN
 import com.softprodigy.ballerapp.common.Route.FORGOT_PASSWORD_SCREEN
 import com.softprodigy.ballerapp.common.Route.HOME_SCREEN
 import com.softprodigy.ballerapp.common.Route.LOGIN_SCREEN
@@ -36,6 +37,7 @@ import com.softprodigy.ballerapp.ui.features.login.LoginScreen
 import com.softprodigy.ballerapp.ui.features.otp_verification.OTPVerificationScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
 import com.softprodigy.ballerapp.ui.features.splash.SplashScreen
+import com.softprodigy.ballerapp.ui.features.user_type.AddPlayersScreen
 import com.softprodigy.ballerapp.ui.features.user_type.TeamSetupScreen
 import com.softprodigy.ballerapp.ui.features.user_type.UserTypeScreen
 import com.softprodigy.ballerapp.ui.features.welcome.WelcomeScreen
@@ -234,7 +236,6 @@ fun NavControllerComposable() {
             HomeScreen(name = name)
         }
         composable(route = SELECT_USER_TYPE) {
-
             UserTypeScreen(onNextClick = { userType ->
                 Timber.i("onNextClick-- $userType")
                 when (userType) {
@@ -251,9 +252,13 @@ fun NavControllerComposable() {
                 }
             })
         }
-
         composable(route = TEAM_SETUP_SCREEN) {
-            TeamSetupScreen()
+            TeamSetupScreen(onBackClick = { navController.popBackStack() }, onNextClick = {
+                navController.navigate(ADD_PLAYER_SCREEN)
+            })
+        }
+        composable(route = ADD_PLAYER_SCREEN) {
+            AddPlayersScreen(onBackClick = {navController.popBackStack()}, onNextClick = {})
         }
     }
 }

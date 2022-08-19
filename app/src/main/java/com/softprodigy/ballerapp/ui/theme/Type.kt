@@ -26,25 +26,32 @@ val Typography = Typography(
     defaultFontFamily = rubikFamily,
     h3 = TextStyle(
         fontWeight = FontWeight.W700,
-        fontSize = 18.sp
+        fontSize = 18.sp,
+        color = ColorBWBlack
     ),
     h4 = TextStyle(
         fontWeight = FontWeight.W600,
         fontSize = 16.sp
+    ),
+    h5 = TextStyle(
+        fontWeight = FontWeight.W500,
+        fontSize = 14.sp,
+        color = ColorBWBlack
+
     ),
     h6 = TextStyle(
         fontWeight = FontWeight.W500,
         fontSize = 12.sp,
         color = ColorBWBlack
     ),
-    body2 = TextStyle(
+/*    body2 = TextStyle(
         fontWeight = FontWeight.W400,
         fontSize = 12.sp,
     ),
     body1 = TextStyle(
         fontWeight = FontWeight.W400,
         fontSize = 12.sp
-    ),
+    ),*/
     button = TextStyle(
         fontWeight = FontWeight.Bold,
         fontSize = 12.sp
