@@ -67,7 +67,7 @@ fun AppOutlineTextField(
             maxLines = maxLines,
             interactionSource = interactionSource,
             shape = shape,
-            colors = colors
+            colors = colors,
         )
         if (isError) {
             androidx.compose.material.Text(

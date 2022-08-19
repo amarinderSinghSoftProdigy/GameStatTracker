@@ -111,7 +111,7 @@ fun SocialLoginSection(
         ) {
             AppText(
                 text = headerText,
-                style = MaterialTheme.typography.h2
+                style = MaterialTheme.typography.h3
             )
         }
         Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
