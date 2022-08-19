@@ -25,6 +25,8 @@ import com.softprodigy.ballerapp.common.Route.NEW_PASSWORD_SCREEN
 import com.softprodigy.ballerapp.common.Route.OTP_VERIFICATION_SCREEN
 import com.softprodigy.ballerapp.common.Route.SIGN_UP_SCREEN
 import com.softprodigy.ballerapp.common.Route.SPLASH_SCREEN
+import com.softprodigy.ballerapp.common.Route.TEAM_SETUP_SCREEN
+import com.softprodigy.ballerapp.common.Route.USER_TYPE_SCREEN
 import com.softprodigy.ballerapp.common.Route.WELCOME_SCREEN
 import com.softprodigy.ballerapp.ui.features.create_new_password.NewPasswordScreen
 import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordScreen
@@ -33,6 +35,8 @@ import com.softprodigy.ballerapp.ui.features.login.LoginScreen
 import com.softprodigy.ballerapp.ui.features.otp_verification.OTPVerificationScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
 import com.softprodigy.ballerapp.ui.features.splash.SplashScreen
+import com.softprodigy.ballerapp.ui.features.user_type.TeamSetupScreen
+import com.softprodigy.ballerapp.ui.features.user_type.UserTypeScreen
 import com.softprodigy.ballerapp.ui.features.welcome.WelcomeScreen
 import com.softprodigy.ballerapp.ui.theme.BallerAppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -59,7 +63,6 @@ class MainActivity : ComponentActivity() {
                         LocalFacebookCallbackManager provides callbackManager
                     ) {
                         NavControllerComposable()
-
                     }
                 }
             }
@@ -70,7 +73,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun NavControllerComposable() {
     val navController = rememberNavController()
-    NavHost(navController, startDestination = SPLASH_SCREEN) {
+    NavHost(navController, startDestination = USER_TYPE_SCREEN) {
 
         composable(route = SPLASH_SCREEN) {
             SplashScreen {
@@ -89,9 +92,9 @@ fun NavControllerComposable() {
             val context = LocalContext.current
             LoginScreen(
                 onLoginSuccess = { loginResponse ->
-
-                    if (loginResponse.userInfo.isEmailVerified) {
-                        navController.navigate(HOME_SCREEN + "/${loginResponse.userInfo.firstName}") {
+                    navController.navigate(USER_TYPE_SCREEN)
+                    /*if (loginResponse.userInfo.isEmailVerified) {
+                        navController.navigate(HOME_SCREEN + "/${loginResponse?.userInfo?.firstName}") {
                             popUpTo(WELCOME_SCREEN) {
                                 inclusive = true
                             }
@@ -99,12 +102,12 @@ fun NavControllerComposable() {
                     } else {
                         val isResetIntent = "false"
                         navController.navigate(
-                            OTP_VERIFICATION_SCREEN + "/${loginResponse.verifyToken}"
-                                    + "/${loginResponse.userInfo.email}"
+                            OTP_VERIFICATION_SCREEN + "/${loginResponse?.verifyToken}"
+                                    + "/${loginResponse?.userInfo?.email}"
                                     + "/${isResetIntent}"
 
                         )
-                    }
+                    }*/
                 },
                 onCreateAccountClick = {
                     navController.navigate(SIGN_UP_SCREEN) {
@@ -208,6 +211,15 @@ fun NavControllerComposable() {
         composable(route = "$HOME_SCREEN/{name}") {
             val name = it.arguments?.getString("name")
             HomeScreen(name = name)
+        }
+
+        composable(route = USER_TYPE_SCREEN) {
+            UserTypeScreen {
+                navController.navigate(TEAM_SETUP_SCREEN)
+            }
+        }
+        composable(route = TEAM_SETUP_SCREEN) {
+            TeamSetupScreen()
         }
     }
 }

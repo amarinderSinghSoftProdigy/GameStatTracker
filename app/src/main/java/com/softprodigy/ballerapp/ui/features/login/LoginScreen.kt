@@ -42,7 +42,7 @@ import com.softprodigy.ballerapp.ui.theme.spacing
 @Composable
 fun LoginScreen(
     vm: LoginViewModel = hiltViewModel(),
-    onLoginSuccess: (LoginResponse) -> Unit,
+    onLoginSuccess: (LoginResponse?) -> Unit,
     onForgetPasswordClick: () -> Unit,
     onFacebookClick: () -> Unit,
     onCreateAccountClick: () -> Unit

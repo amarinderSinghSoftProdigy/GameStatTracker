@@ -20,6 +20,8 @@ object Route {
     const val NEW_PASSWORD_SCREEN = "newPasswordScreen"
     const val HOME_SCREEN = "homeScreen"
     const val SPLASH_SCREEN = "splashScreen"
+    const val USER_TYPE_SCREEN = "userTypeScreen"
+    const val TEAM_SETUP_SCREEN = "teamSetupScreen"
 }
 
 object ApiConstants {
