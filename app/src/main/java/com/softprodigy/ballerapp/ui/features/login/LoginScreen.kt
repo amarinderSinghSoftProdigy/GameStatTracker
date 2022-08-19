@@ -151,6 +151,7 @@ fun LoginScreen(
             AppButton(
                 enabled = email.isValidEmail() && password.isValidPassword(),
                 onClick = {
+                    onLoginSuccess(null)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -165,7 +166,8 @@ fun LoginScreen(
                 color = Color.Black,
                 style = MaterialTheme.typography.h6,
                 modifier = Modifier
-                    .align(Alignment.End).padding(10.dp)
+                    .align(Alignment.End)
+                    .padding(10.dp)
                     .clickable(onClick = onCreateAccountClick)
             )
 

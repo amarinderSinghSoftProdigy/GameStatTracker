@@ -16,6 +16,8 @@ import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
+import com.softprodigy.ballerapp.ui.theme.button_text_disable
+import com.softprodigy.ballerapp.ui.theme.button_text_enable
 import com.softprodigy.ballerapp.ui.theme.spacing
 
 @Composable
@@ -23,12 +25,7 @@ fun UserTypeScreen(onNextClick: (String) -> Unit) {
     Box(
         Modifier.fillMaxWidth()
     ) {
-        CoachFlowBackground(
-            modifier = Modifier.fillMaxSize(),
-            outerIcon = painterResource(id = R.drawable.ic_ball),
-//            innerIcon = painterResource(id = R.drawable.ic_ball_green),
-//            centerIcon = painterResource(id = R.drawable.ic_google),
-        )
+        CoachFlowBackground()
         UserTypeSelector(onNextClick = onNextClick)
     }
 }
@@ -135,9 +132,9 @@ fun UserTypeSelector(onNextClick: (String) -> Unit) {
                 AppText(
                     text = stringResource(id = R.string.next),
                     color = if (selectedUserType.isNotEmpty()) {
-                        Color.White
+                        button_text_enable
                     } else {
-                        Color.Gray
+                        button_text_disable
                     }
                 )
             }

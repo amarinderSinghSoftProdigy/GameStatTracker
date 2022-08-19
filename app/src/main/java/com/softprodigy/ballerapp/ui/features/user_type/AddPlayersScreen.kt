@@ -41,10 +41,7 @@ fun AddPlayersScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
     val selectedPlayer by rememberSaveable { mutableStateOf(ArrayList<String>()) }
 
     Box(Modifier.fillMaxSize()) {
-        CoachFlowBackground(
-            modifier = Modifier.fillMaxSize(),
-            outerIcon = painterResource(id = R.drawable.ic_ball)
-        )
+        CoachFlowBackground()
         Column(
             Modifier
                 .fillMaxSize()
