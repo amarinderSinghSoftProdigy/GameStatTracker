@@ -29,8 +29,6 @@ import com.softprodigy.ballerapp.common.Route.SELECT_USER_TYPE
 import com.softprodigy.ballerapp.common.Route.SIGN_UP_SCREEN
 import com.softprodigy.ballerapp.common.Route.SPLASH_SCREEN
 import com.softprodigy.ballerapp.common.Route.TEAM_SETUP_SCREEN
-import com.softprodigy.ballerapp.common.Route.TEAM_SETUP_SCREEN
-import com.softprodigy.ballerapp.common.Route.USER_TYPE_SCREEN
 import com.softprodigy.ballerapp.common.Route.WELCOME_SCREEN
 import com.softprodigy.ballerapp.ui.features.create_new_password.NewPasswordScreen
 import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordScreen
@@ -40,8 +38,6 @@ import com.softprodigy.ballerapp.ui.features.otp_verification.OTPVerificationScr
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
 import com.softprodigy.ballerapp.ui.features.splash.SplashScreen
 import com.softprodigy.ballerapp.ui.features.user_type.AddPlayersScreen
-import com.softprodigy.ballerapp.ui.features.user_type.TeamSetupScreen
-import com.softprodigy.ballerapp.ui.features.user_type.UserTypeScreen
 import com.softprodigy.ballerapp.ui.features.user_type.TeamSetupScreen
 import com.softprodigy.ballerapp.ui.features.user_type.UserTypeScreen
 import com.softprodigy.ballerapp.ui.features.welcome.WelcomeScreen
@@ -100,7 +96,7 @@ fun NavControllerComposable() {
             val context = LocalContext.current
             LoginScreen(
                 onLoginSuccess = { loginResponse ->
-                    navController.navigate(USER_TYPE_SCREEN)
+                    navController.navigate(SELECT_USER_TYPE)
                     /*if (loginResponse.userInfo.isEmailVerified) {
                         navController.navigate(HOME_SCREEN + "/${loginResponse?.userInfo?.firstName}") {
                             popUpTo(WELCOME_SCREEN) {

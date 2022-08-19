@@ -24,14 +24,12 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.github.skydoves.colorpicker.compose.ColorEnvelope
 import com.github.skydoves.colorpicker.compose.ColorPickerController
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.ui.features.components.AppBasicTextField
-import com.softprodigy.ballerapp.ui.features.components.AppButton
-import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
-import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.theme.*
 import kotlinx.coroutines.launch
 
@@ -125,7 +123,7 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                             onValueChange = {
                                 teamName = it
                             },
-                            placeholder = { stringResource(id = R.string.your_team_name) },
+                            placeholder = { AppText(text =  stringResource(id = R.string.your_team_name)) },
                             colors = TextFieldDefaults.outlinedTextFieldColors(
                                 unfocusedBorderColor = ColorBWGrayBorder
                             )
@@ -154,7 +152,8 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                             )
                             Text(
                                 text = stringResource(id = R.string.change),
-                                color = ColorBWGrayLight
+                                color = ColorBWGrayLight,
+                                fontSize = dimensionResource(id = R.dimen.txt_size_13).value.sp
                             )
                         }
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
@@ -291,7 +290,6 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
 
                         AppText(
                             text = stringResource(id = R.string.back),
-                            style = MaterialTheme.typography.h4,
                             color = Color.Gray
                         )
                     }
@@ -304,7 +302,6 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
 
                         AppText(
                             text = stringResource(id = R.string.next),
-                            style = MaterialTheme.typography.h4,
                             color = if (teamName.isNotEmpty() /*&& imageUri != null*/ && selectedColorCode.isNotEmpty()) {
                                 Color.White
                             } else {

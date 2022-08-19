@@ -22,7 +22,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppSearchOutlinedTextField
@@ -111,7 +113,9 @@ fun AddPlayersScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                     ) {
                         AppText(
                             text = stringResource(id = R.string.added_players),
-                            style = MaterialTheme.typography.h5
+                            fontWeight = FontWeight.W500,
+                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                            color = ColorBWBlack
                         )
                         Icon(
                             painter = painterResource(id = R.drawable.ic_info),
@@ -157,7 +161,6 @@ fun AddPlayersScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
 
                     AppText(
                         text = stringResource(id = R.string.back),
-                        style = MaterialTheme.typography.h4,
                         color = Color.Gray
                     )
                 }
@@ -169,7 +172,6 @@ fun AddPlayersScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
 
                     AppText(
                         text = stringResource(id = R.string.next),
-                        style = MaterialTheme.typography.h4,
                         color = Color.White
 
                     )
@@ -221,7 +223,12 @@ fun PlayerListItem(countryText: String, onItemClick: (String) -> Unit) {
             .clickable(onClick = { onItemClick(countryText) })
             .height(IntrinsicSize.Min)
             .fillMaxWidth()
-            .padding(PaddingValues(dimensionResource(id = R.dimen.size_12dp), dimensionResource(id = R.dimen.size_8dp))), verticalAlignment = Alignment.CenterVertically
+            .padding(
+                PaddingValues(
+                    dimensionResource(id = R.dimen.size_12dp),
+                    dimensionResource(id = R.dimen.size_8dp)
+                )
+            ), verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_google), contentDescription = "",

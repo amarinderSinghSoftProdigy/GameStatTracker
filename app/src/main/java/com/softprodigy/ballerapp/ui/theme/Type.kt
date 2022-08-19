@@ -12,11 +12,11 @@ import com.softprodigy.ballerapp.R
 
 val rubikFamily = FontFamily(
 
-    Font(R.font.rubik_bold, weight = FontWeight.W500),
-    Font(R.font.rubik_medium, weight = FontWeight.Medium),
-    Font(R.font.rubik_regular, weight = FontWeight.Normal),
+    Font(R.font.rubik_bold_700, weight = FontWeight.W500),
+    Font(R.font.rubik_medium_500, weight = FontWeight.Medium),
+    Font(R.font.rubik_regular_400, weight = FontWeight.Normal),
     Font(R.font.rubik_italic, weight = FontWeight.Normal, style = FontStyle.Italic),
-    Font(R.font.rubik_black),
+    Font(R.font.rubik_black_900),
 
     )
 
@@ -35,8 +35,8 @@ val Typography = Typography(
 
     ),
     h3 = TextStyle(
-        fontWeight = FontWeight.Normal,
-        fontSize = 14.sp,
+        fontWeight = FontWeight.W700,
+        fontSize = 18.sp,
         fontFamily = rubikFamily
 
     ),

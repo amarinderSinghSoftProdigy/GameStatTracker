@@ -104,8 +104,7 @@ fun UserTypeSelector(onNextClick: (String) -> Unit) {
                                 Color.White
                             } else {
                                 Color.Gray
-                            },
-                            style = MaterialTheme.typography.h4
+                            }
                         )
                     }
                 }
@@ -135,7 +134,6 @@ fun UserTypeSelector(onNextClick: (String) -> Unit) {
 
                 AppText(
                     text = stringResource(id = R.string.next),
-                    style = MaterialTheme.typography.h4,
                     color = if (selectedUserType.isNotEmpty()) {
                         Color.White
                     } else {
