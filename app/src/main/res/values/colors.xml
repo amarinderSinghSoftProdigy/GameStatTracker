@@ -10,5 +10,6 @@
     <color name="transparent">#00FFFFFF</color>
     <color name="grey">#202124</color>
     <color name="gray_border">#D7D7D7</color>
+    <color name="ball_color">#FF923D</color>
 
 </resources>

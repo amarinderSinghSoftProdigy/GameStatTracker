@@ -11,7 +11,7 @@ import com.google.android.gms.tasks.Task
 import com.softprodigy.ballerapp.R
 
 class GoogleApiContract : ActivityResultContract<Int, Task<GoogleSignInAccount>?>() {
-    override fun createIntent(context: Context, input: Int?): Intent {
+    override fun createIntent(context: Context, input: Int): Intent {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(context.getString(R.string.google_cloud_server_client_id))
             .requestEmail()

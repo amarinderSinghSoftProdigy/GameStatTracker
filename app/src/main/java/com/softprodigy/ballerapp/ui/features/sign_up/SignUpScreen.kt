@@ -1,12 +1,17 @@
 package com.softprodigy.ballerapp.ui.features.sign_up
 
+import android.app.DatePickerDialog
 import android.content.res.Configuration
 import android.util.Log
+import android.widget.DatePicker
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -18,15 +23,18 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,16 +44,25 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.isValidEmail
 import com.softprodigy.ballerapp.common.isValidFullName
 import com.softprodigy.ballerapp.common.isValidPassword
+import com.softprodigy.ballerapp.common.passwordMatches
 import com.softprodigy.ballerapp.data.GoogleUserModel
 import com.softprodigy.ballerapp.data.response.LoginResponse
 import com.softprodigy.ballerapp.data.response.SignUpResponse
 import com.softprodigy.ballerapp.ui.features.components.AppButton
+import com.softprodigy.ballerapp.ui.features.components.AppOutlineDateField
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.SocialLoginSection
 import com.softprodigy.ballerapp.ui.features.login.GoogleApiContract
 import com.softprodigy.ballerapp.ui.theme.BallerAppTheme
 import com.softprodigy.ballerapp.ui.theme.spacing
+import com.togitech.ccp.component.TogiCountryCodePicker
+import com.togitech.ccp.component.TogiRoundedPicker
+import com.togitech.ccp.data.utils.getDefaultLangCode
+import com.togitech.ccp.data.utils.getDefaultPhoneCode
+import com.togitech.ccp.data.utils.getLibCountries
 import timber.log.Timber
+import java.util.*
 
 @Composable
 fun SignUpScreen(
@@ -54,11 +71,58 @@ fun SignUpScreen(
     onGoogleClick: (LoginResponse) -> Unit,
     onFacebookClick: () -> Unit,
     onLoginClick: () -> Unit,
+    onHomeClick: () -> Unit
 ) {
-    val uriHandler = LocalUriHandler.current
-    val signUpState = vm.signUpUIState.value
     val context = LocalContext.current
+    var email by rememberSaveable { mutableStateOf("") }
 
+    var password by rememberSaveable { mutableStateOf("") }
+    var name by rememberSaveable {
+        mutableStateOf("")
+    }
+    var birthday by rememberSaveable {
+        mutableStateOf("Enter your Birthday")
+    }
+    var address by rememberSaveable {
+        mutableStateOf("")
+    }
+    var mobileNumber by rememberSaveable {
+        mutableStateOf("")
+    }
+    var confirmPassword by rememberSaveable {
+        mutableStateOf("")
+    }
+    var defaultLang by rememberSaveable { mutableStateOf(getDefaultLangCode(context)) }
+    val phoneNumber = rememberSaveable { mutableStateOf("") }
+    val getDefaultPhoneCode = getDefaultPhoneCode(context)
+    var phoneCode by rememberSaveable { mutableStateOf(getDefaultPhoneCode) }
+
+    // Declaring integer values
+    // for year, month and day
+    val mYear: Int
+    val mMonth: Int
+    val mDay: Int
+
+    // Initializing a Calendar
+    val mCalendar = Calendar.getInstance()
+
+    // Fetching current year, month and day
+    mYear = mCalendar.get(Calendar.YEAR)
+    mMonth = mCalendar.get(Calendar.MONTH)
+    mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
+
+    mCalendar.time = Date()
+
+    val mDate = remember { mutableStateOf("") }
+
+    // Declaring DatePickerDialog and setting
+    // initial values as current values (present year, month and day)
+    val mDatePickerDialog = DatePickerDialog(
+        context,
+        { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
+            birthday = "$mDayOfMonth/${mMonth + 1}/$mYear"
+        }, mYear, mMonth, mDay
+    )
 
     val authResultLauncher =
         rememberLauncherForActivityResult(contract = GoogleApiContract()) { task ->
@@ -77,14 +141,6 @@ fun SignUpScreen(
                 Timber.i(e.toString())
             }
         }
-
-    var email by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
-    var passwordVisibility by rememberSaveable { mutableStateOf(false) }
-    var termsConditions by rememberSaveable { mutableStateOf(false) }
-    var name by rememberSaveable {
-        mutableStateOf("")
-    }
 
     LaunchedEffect(key1 = true) {
         vm.uiEvent.collect { uiEvent ->
@@ -106,167 +162,242 @@ fun SignUpScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 20.dp)
     ) {
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(horizontal = 20.dp)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
+
             Image(
-                painter = painterResource(id = R.drawable.ic_sign_up),
-                contentDescription = "Sign up Icon",
+                painter = painterResource(id = R.drawable.ic_logo),
+                contentDescription = null,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(150.dp)
+                    .height(95.dp)
+                    .width(160.dp),
             )
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
+
             AppText(
-                text = stringResource(id = R.string.sign_up),
-                style = MaterialTheme.typography.h1,
+                text = stringResource(id = R.string.name),
+                style = MaterialTheme.typography.h6,
                 color = MaterialTheme.colors.onSurface,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Start
             )
+
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
-            AppText(
-                text = stringResource(id = R.string.create_free_account_and_join_us),
-                style = MaterialTheme.typography.h2,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+
             AppOutlineTextField(
                 value = name,
-                label = { Text(text = stringResource(id = R.string.your_name)) },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = Color.White),
                 onValueChange = {
                     name = it
                 },
                 placeholder = { Text(text = stringResource(id = R.string.enter_your_name)) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                isError = (!name.isValidFullName() && name.length > 4),
-                errorMessage = stringResource(id = R.string.enter_valid_full_name)
-            )
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                isError = (!name.isValidFullName() && name.isNotEmpty()),
+                errorMessage = stringResource(id = R.string.enter_valid_full_name),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color.LightGray,
+                    unfocusedBorderColor = Color.LightGray
+                ),
+
+                )
+
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+
+            AppText(
+                text = stringResource(id = R.string.email),
+                style = MaterialTheme.typography.h6,
+                color = MaterialTheme.colors.onSurface,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Start
+            )
+
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+
             AppOutlineTextField(
                 value = email,
-                label = { Text(text = stringResource(id = R.string.email)) },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = Color.White),
                 onValueChange = {
                     email = it
                 },
-                placeholder = { Text(text = stringResource(id = R.string.enter_your_email)) },
+                placeholder = { Text(text = stringResource(id = R.string.email)) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color.LightGray,
+                    unfocusedBorderColor = Color.LightGray
+                ),
                 isError = (!email.isValidEmail() && email.length >= 6),
                 errorMessage = stringResource(id = R.string.email_error),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            )
+
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+
+            AppText(
+                text = stringResource(id = R.string.birthday),
+                style = MaterialTheme.typography.h6,
+                color = MaterialTheme.colors.onSurface,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Start
+            )
+
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+
+            AppOutlineDateField(value = birthday, onClick = { mDatePickerDialog.show() })
+
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+
+            AppText(
+                text = stringResource(id = R.string.address),
+                style = MaterialTheme.typography.h6,
+                color = MaterialTheme.colors.onSurface,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Start
+            )
+
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+
+            AppOutlineTextField(
+                value = address,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+                    .background(color = Color.White),
+                onValueChange = {
+                    address = it
+                },
+                placeholder = { Text(text = stringResource(id = R.string.your_address)) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                errorMessage = stringResource(id = R.string.address_error),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color.LightGray,
+                    unfocusedBorderColor = Color.LightGray
+                ),
+                singleLine = false,
+                maxLines = 5,
+                isError = (address.isNotEmpty() && address.length <= 4),
+            )
+
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+
+            AppText(
+                text = stringResource(id = R.string.number),
+                style = MaterialTheme.typography.h6,
+                color = MaterialTheme.colors.onSurface,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Start
+            )
+
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+
+            TogiRoundedPicker(
+                pickedCountry = {
+                    phoneCode = it.countryPhoneCode
+                    defaultLang = it.countryCode
+                },
+                defaultCountry = getLibCountries().single { it.countryCode == defaultLang },
+                focusedBorderColor = Color.LightGray,
+                dialogAppBarTextColor = Color.Black,
+                dialogAppBarColor = Color.White,
+                value = phoneNumber.value,
+                error = true,
+                onValueChange = { phoneNumber.value = it },
+                rowPadding = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier.fillMaxWidth(),
+                unFocusedBorderColor = Color.LightGray,
+            )
+
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+
+            AppText(
+                text = stringResource(id = R.string.password),
+                style = MaterialTheme.typography.h6,
+                color = MaterialTheme.colors.onSurface,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Start
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+
             AppOutlineTextField(
                 value = password,
-                label = { Text(text = stringResource(id = R.string.password)) },
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = Color.White),
                 onValueChange = {
                     password = it
                 },
-                placeholder = { Text(text = stringResource(id = R.string.create_password)) },
+                placeholder = { Text(text = stringResource(id = R.string.your_password)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 isError = (!password.isValidPassword() && password.length >= 4),
                 errorMessage = stringResource(id = R.string.password_error),
-                visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
-                trailingIcon = {
-                    IconButton(onClick = {
-                        passwordVisibility = !passwordVisibility
-                    }) {
-                        Icon(
-                            imageVector = if (passwordVisibility)
-                                Icons.Filled.Visibility
-                            else
-                                Icons.Filled.VisibilityOff, ""
-                        )
-                    }
-                })
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraSmall))
-            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(
-                    checked = termsConditions,
-                    onCheckedChange = {
-                        termsConditions = !termsConditions
-                    }
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color.LightGray,
+                    unfocusedBorderColor = Color.LightGray
                 )
+            )
 
-                val annotatedString = buildAnnotatedString {
-                    append(stringResource(id = R.string.by_creating_an_accound_you_agree))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
 
-                    pushStringAnnotation(tag = "terms", annotation = "https://google.com/terms")
-                    withStyle(style = SpanStyle(color = MaterialTheme.colors.primary)) {
-                        append(stringResource(id = R.string.terms_of_service))
-                    }
-                    pop()
+            AppText(
+                text = stringResource(id = R.string.confirm_password),
+                style = MaterialTheme.typography.h6,
+                color = MaterialTheme.colors.onSurface,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Start
+            )
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
 
-                    append(" and ")
+            AppOutlineTextField(
+                value = confirmPassword,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = Color.White),
+                onValueChange = {
+                    confirmPassword = it
+                },
+                placeholder = { Text(text = stringResource(id = R.string.re_enter_password)) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                isError = (!confirmPassword.isValidPassword() && confirmPassword.length >= 4 && confirmPassword.passwordMatches(
+                    password
+                )),
+                errorMessage = stringResource(id = R.string.confirm_password_error),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = Color.LightGray,
+                    unfocusedBorderColor = Color.LightGray
+                )
+            )
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraMedium))
 
-                    pushStringAnnotation(
-                        tag = "policy",
-                        annotation = "https://google.com/privacy"
-                    )
+            AppButton(
+                enabled = email.isValidEmail() && password.isValidPassword() && confirmPassword.passwordMatches(
+                    password
+                ) && birthday.isNotEmpty() && phoneNumber.value.isNotEmpty() && address.isNotEmpty(),
+                onClick = {
+                    onLoginClick()
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                text = stringResource(id = R.string.create_now),
+                icon = painterResource(id = R.drawable.ic_circle_next)
+            ) {}
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraMedium))
 
-                    withStyle(style = SpanStyle(color = MaterialTheme.colors.primary)) {
-                        append(stringResource(id = R.string.privacy_policy))
-                    }
-                    pop()
-                }
-                ClickableText(
-                    text = annotatedString,
-                    style = MaterialTheme.typography.h2,
-                    onClick = { offset ->
-                        annotatedString.getStringAnnotations(
-                            tag = "policy",
-                            start = offset,
-                            end = offset
-                        ).firstOrNull()?.let {
-                            Log.d("policy URL", it.item)
-                            uriHandler.openUri(it.item)
-
-                        }
-                        annotatedString.getStringAnnotations(
-                            tag = "terms",
-                            start = offset,
-                            end = offset
-                        ).firstOrNull()?.let {
-                            Log.d("terms URL", it.item)
-                            uriHandler.openUri(it.item)
-
-                        }
-                    })
-
-            }
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-
-                AppButton(
-                    onClick = {
-                        vm.onEvent(SignUpUIEvent.Submit(name, email, password))
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    enabled = email.isValidEmail() && password.isValidPassword() && name.isValidFullName() && termsConditions
-            ) {
-                Text(text = stringResource(id = R.string.create_account))
-            }
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-//            SocialSection(
-//                onGoogleClick = {
-//                    authResultLauncher.launch(0)
-//                },
-//                onFacebookClick = { onFacebookClick.invoke() },
-//                onFooterClick = { onLoginClick.invoke() })
-            }
-        if (signUpState.isLoading) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
-        }
-
+    }
 }
 
 @Preview("default", "rectangle")

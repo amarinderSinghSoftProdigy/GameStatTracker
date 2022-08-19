@@ -29,6 +29,8 @@ import com.softprodigy.ballerapp.common.Route.SELECT_USER_TYPE
 import com.softprodigy.ballerapp.common.Route.SIGN_UP_SCREEN
 import com.softprodigy.ballerapp.common.Route.SPLASH_SCREEN
 import com.softprodigy.ballerapp.common.Route.TEAM_SETUP_SCREEN
+import com.softprodigy.ballerapp.common.Route.TEAM_SETUP_SCREEN
+import com.softprodigy.ballerapp.common.Route.USER_TYPE_SCREEN
 import com.softprodigy.ballerapp.common.Route.WELCOME_SCREEN
 import com.softprodigy.ballerapp.ui.features.create_new_password.NewPasswordScreen
 import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordScreen
@@ -38,6 +40,8 @@ import com.softprodigy.ballerapp.ui.features.otp_verification.OTPVerificationScr
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
 import com.softprodigy.ballerapp.ui.features.splash.SplashScreen
 import com.softprodigy.ballerapp.ui.features.user_type.AddPlayersScreen
+import com.softprodigy.ballerapp.ui.features.user_type.TeamSetupScreen
+import com.softprodigy.ballerapp.ui.features.user_type.UserTypeScreen
 import com.softprodigy.ballerapp.ui.features.user_type.TeamSetupScreen
 import com.softprodigy.ballerapp.ui.features.user_type.UserTypeScreen
 import com.softprodigy.ballerapp.ui.features.welcome.WelcomeScreen
@@ -87,29 +91,6 @@ fun NavControllerComposable() {
         }
 
         composable(route = WELCOME_SCREEN) {
-//            WelcomeScreen(onCreateAccountCLick = {
-//                navController.navigate(SIGN_UP_SCREEN)
-//            }, onSkipCLick = {
-//                navController.navigate(HOME_SCREEN + "/${null}") {
-//                    popUpTo(WELCOME_SCREEN) {
-//                        inclusive = true
-//                    }
-//                }
-//            },
-//                onLoginClick = {
-//                    navController.navigate(LOGIN_SCREEN)
-//                },
-//                onFacebookClick = {
-//
-//                },
-//                onGoogleLogin = { userResponse ->
-//                    navController.navigate(HOME_SCREEN + "/${userResponse.userInfo.firstName}") {
-//                        popUpTo(WELCOME_SCREEN) {
-//                            inclusive = true
-//                        }
-//                    }
-//                })
-
             WelcomeScreen {
                 navController.popBackStack()
                 navController.navigate(LOGIN_SCREEN)
@@ -119,9 +100,9 @@ fun NavControllerComposable() {
             val context = LocalContext.current
             LoginScreen(
                 onLoginSuccess = { loginResponse ->
-
-                    if (loginResponse.userInfo.isEmailVerified) {
-                        navController.navigate(HOME_SCREEN + "/${loginResponse.userInfo.firstName}") {
+                    navController.navigate(USER_TYPE_SCREEN)
+                    /*if (loginResponse.userInfo.isEmailVerified) {
+                        navController.navigate(HOME_SCREEN + "/${loginResponse?.userInfo?.firstName}") {
                             popUpTo(WELCOME_SCREEN) {
                                 inclusive = true
                             }
@@ -129,12 +110,12 @@ fun NavControllerComposable() {
                     } else {
                         val isResetIntent = "false"
                         navController.navigate(
-                            OTP_VERIFICATION_SCREEN + "/${loginResponse.verifyToken}"
-                                    + "/${loginResponse.userInfo.email}"
+                            OTP_VERIFICATION_SCREEN + "/${loginResponse?.verifyToken}"
+                                    + "/${loginResponse?.userInfo?.email}"
                                     + "/${isResetIntent}"
 
                         )
-                    }
+                    }*/
                 },
                 onCreateAccountClick = {
                     navController.navigate(SIGN_UP_SCREEN) {
@@ -167,7 +148,10 @@ fun NavControllerComposable() {
                     navController.navigate(LOGIN_SCREEN) {
                         popUpTo(WELCOME_SCREEN)
                     }
-                })
+                },
+                onHomeClick = {
+                }
+            )
         }
         composable(route = FORGOT_PASSWORD_SCREEN) {
             val context = LocalContext.current

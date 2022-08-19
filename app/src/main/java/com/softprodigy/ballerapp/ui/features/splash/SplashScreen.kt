@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -43,30 +45,17 @@ fun SplashScreen(onNextClick: () -> Unit) {
     // Image
     Column(
         modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         Image(
-            painter = painterResource(id = R.drawable.ic_ball_center),
-            contentDescription = "",
+            painter = painterResource(R.drawable.ic_logo),
+            contentDescription = null,
             modifier = Modifier
                 .scale(scale.value)
-                .fillMaxWidth()
-                .height(170.dp),
-            contentScale = ContentScale.FillBounds
+                .height(96.dp)
+                .width(160.dp)
         )
-
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                painter = painterResource(R.drawable.ic_baller),
-                contentDescription = null,
-                modifier = Modifier
-                    .padding(bottom = 130.dp)
-                    .scale(scale.value)
-            )
-        }
     }
 }
