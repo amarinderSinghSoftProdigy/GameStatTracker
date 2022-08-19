@@ -68,5 +68,7 @@
     <string name="enter_your_birthday">Enter your Birthday</string>
     <string name="address">Address</string>
     <string name="your_address">Enter your address</string>
+    <string name="number">Phone Number</string>
+    <string name="address_error">Enter valid address</string>
 
 </resources>

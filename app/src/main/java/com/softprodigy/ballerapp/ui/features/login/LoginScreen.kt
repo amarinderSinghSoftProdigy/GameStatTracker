@@ -51,7 +51,6 @@ fun LoginScreen(
     val context = LocalContext.current
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
-    val passwordVisibility by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(key1 = Unit) {
         vm.uiEvent.collect { uiEvent ->
@@ -137,9 +136,8 @@ fun LoginScreen(
                 onValueChange = {
                     password = it
                 },
-                placeholder = { Text(text = stringResource(id = R.string.your_password)) },
+                placeholder = { Text(text = stringResource(id = R.string.re_enter_password)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
                 isError = (!password.isValidPassword() && password.length >= 4),
                 errorMessage = stringResource(id = R.string.password_error),
                 colors = TextFieldDefaults.outlinedTextFieldColors(

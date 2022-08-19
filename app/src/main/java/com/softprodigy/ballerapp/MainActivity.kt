@@ -113,7 +113,7 @@ fun NavControllerComposable() {
                 },
                 onForgetPasswordClick = { navController.navigate(FORGOT_PASSWORD_SCREEN) },
                 onFacebookClick = {},
-                )
+            )
         }
         composable(route = SIGN_UP_SCREEN) {
             val context = LocalContext.current
@@ -138,7 +138,10 @@ fun NavControllerComposable() {
                     navController.navigate(LOGIN_SCREEN) {
                         popUpTo(WELCOME_SCREEN)
                     }
-                })
+                },
+                onHomeClick = {
+                }
+            )
         }
         composable(route = FORGOT_PASSWORD_SCREEN) {
             val context = LocalContext.current

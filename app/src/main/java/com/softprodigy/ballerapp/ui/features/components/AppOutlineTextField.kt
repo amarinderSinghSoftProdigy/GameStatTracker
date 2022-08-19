@@ -1,5 +1,8 @@
 package com.softprodigy.ballerapp.ui.features.components
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,9 +16,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.softprodigy.ballerapp.ui.theme.spacing
 
@@ -40,11 +46,12 @@ fun AppOutlineTextField(
     maxLines: Int = Int.MAX_VALUE,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     shape: Shape = RoundedCornerShape(MaterialTheme.spacing.small),
-    colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors()
+    colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(),
 ) {
 
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -80,5 +87,33 @@ fun AppOutlineTextField(
             )
         }
     }
+}
+
+@Composable
+fun AppOutlineDateField(
+    value: String,
+    onClick: () -> Unit = {},
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(52.dp)
+            .border(width = 0.7.dp, color = Color.LightGray, shape = RoundedCornerShape(8.dp))
+            .clickable {
+                onClick()
+            }
+            .background(color = Color.White)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize().padding(start = 10.dp),
+            verticalArrangement = Arrangement.Center,
+        ) {
+
+            AppText(text = value, textAlign = TextAlign.Center)
+
+        }
+
+    }
 
 }
+

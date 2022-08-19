@@ -41,16 +41,13 @@ fun AppCard(
     Surface(
         onClick = onClick,
         modifier = modifier,
+        enabled = enabled,
         shape = shape,
         color = backgroundColor,
         contentColor = contentColor,
         border = border,
         elevation = elevation,
         interactionSource = interactionSource,
-        indication = indication,
-        enabled = enabled,
-        onClickLabel = onClickLabel,
-        role = role,
         content = content
     )
 }
