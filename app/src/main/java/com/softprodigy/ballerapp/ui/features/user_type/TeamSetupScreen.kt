@@ -151,7 +151,7 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                                 fontSize = dimensionResource(id = R.dimen.txt_size_13).value.sp
                             )
                         }
-                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                        Spacer(modifier = Modifier.height(48.dp))
                         Box(
                             Modifier
                                 .fillMaxWidth()

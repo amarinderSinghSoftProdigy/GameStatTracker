@@ -37,6 +37,9 @@ import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.SocialLoginSection
 import com.softprodigy.ballerapp.ui.theme.BallerAppTheme
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
+import com.softprodigy.ballerapp.ui.theme.ColorGrayBackground
 import com.softprodigy.ballerapp.ui.theme.spacing
 
 @Composable
@@ -69,9 +72,11 @@ fun LoginScreen(
 
     Box(
         modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
+            .fillMaxSize()
+            .background(color = ColorGrayBackground),
+        contentAlignment = Alignment.Center,
+
+        ) {
 
         Column(
             modifier = Modifier
@@ -102,8 +107,7 @@ fun LoginScreen(
             AppOutlineTextField(
                 value = email,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = Color.White),
+                    .fillMaxWidth(),
                 onValueChange = {
                     email = it
                 },
@@ -112,11 +116,11 @@ fun LoginScreen(
                 isError = (!email.isValidEmail() && email.length >= 6),
                 errorMessage = stringResource(id = R.string.email_error),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = Color.LightGray,
-                    unfocusedBorderColor = Color.LightGray
+                    focusedBorderColor = ColorBWGrayBorder,
+                    unfocusedBorderColor = ColorBWGrayBorder,
+                    backgroundColor = Color.White
                 )
             )
-
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
 
             AppText(
@@ -131,8 +135,7 @@ fun LoginScreen(
             AppOutlineTextField(
                 value = password,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = Color.White),
+                    .fillMaxWidth(),
                 onValueChange = {
                     password = it
                 },
@@ -141,8 +144,9 @@ fun LoginScreen(
                 isError = (!password.isValidPassword() && password.length >= 4),
                 errorMessage = stringResource(id = R.string.password_error),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = Color.LightGray,
-                    unfocusedBorderColor = Color.LightGray
+                    focusedBorderColor = ColorBWGrayBorder,
+                    unfocusedBorderColor = ColorBWGrayBorder,
+                    backgroundColor = Color.White
                 )
             )
 
@@ -183,7 +187,6 @@ fun LoginScreen(
             )
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraXLarge))
-
 
             SocialLoginSection(
                 headerText = stringResource(id = R.string.or_sign_in_with),

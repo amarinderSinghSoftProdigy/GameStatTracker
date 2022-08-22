@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.softprodigy.ballerapp.ui.theme.BallerAppTheme
 import com.softprodigy.ballerapp.ui.theme.spacing
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
 
 @Composable
 fun SocialSection(
@@ -111,7 +112,8 @@ fun SocialLoginSection(
         ) {
             AppText(
                 text = headerText,
-                style = MaterialTheme.typography.h3
+                style = MaterialTheme.typography.h4,
+                color = ColorBWGrayLight
             )
         }
         Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
@@ -122,16 +124,17 @@ fun SocialLoginSection(
         ) {
             SocialLoginButton(
                 icon = painterResource(id = R.drawable.ic_apple),
+
             )
             { onAppleClick() }
 
-            Spacer(modifier = Modifier.width(MaterialTheme.spacing.large))
+            Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
 
             SocialLoginButton(
                 icon = painterResource(id = R.drawable.ic_facebook)
             ) { onFacebookClick() }
 
-            Spacer(modifier = Modifier.width(MaterialTheme.spacing.large))
+            Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
 
             SocialLoginButton(
                 icon = painterResource(id = R.drawable.ic_twitter)

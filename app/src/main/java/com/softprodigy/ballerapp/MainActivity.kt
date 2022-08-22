@@ -25,6 +25,7 @@ import com.softprodigy.ballerapp.common.Route.HOME_SCREEN
 import com.softprodigy.ballerapp.common.Route.LOGIN_SCREEN
 import com.softprodigy.ballerapp.common.Route.NEW_PASSWORD_SCREEN
 import com.softprodigy.ballerapp.common.Route.OTP_VERIFICATION_SCREEN
+import com.softprodigy.ballerapp.common.Route.PROFILE_SETUP_SCREEN
 import com.softprodigy.ballerapp.common.Route.SELECT_USER_TYPE
 import com.softprodigy.ballerapp.common.Route.SIGN_UP_SCREEN
 import com.softprodigy.ballerapp.common.Route.SPLASH_SCREEN
@@ -35,7 +36,7 @@ import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordScree
 import com.softprodigy.ballerapp.ui.features.home.HomeScreen
 import com.softprodigy.ballerapp.ui.features.login.LoginScreen
 import com.softprodigy.ballerapp.ui.features.otp_verification.OTPVerificationScreen
-import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
+import com.softprodigy.ballerapp.ui.features.sign_up.ProfileSetUpScreen
 import com.softprodigy.ballerapp.ui.features.splash.SplashScreen
 import com.softprodigy.ballerapp.ui.features.user_type.AddPlayersScreen
 import com.softprodigy.ballerapp.ui.features.user_type.TeamSetupScreen
@@ -114,40 +115,16 @@ fun NavControllerComposable() {
                     }*/
                 },
                 onCreateAccountClick = {
-                    navController.navigate(SIGN_UP_SCREEN) {
-                        popUpTo(WELCOME_SCREEN)
-                    }
                 },
                 onForgetPasswordClick = { navController.navigate(FORGOT_PASSWORD_SCREEN) },
                 onFacebookClick = {})
         }
-        composable(route = SIGN_UP_SCREEN) {
+        composable(route = PROFILE_SETUP_SCREEN) {
             val context = LocalContext.current
-            SignUpScreen(onSuccessfulSignUp = { signUpResponse ->
-                val isResetIntent = "false"
-                navController.navigate(
-                    OTP_VERIFICATION_SCREEN + "/${signUpResponse.verifyToken}"
-                            + "/${signUpResponse.userInfo.email}"
-                            + "/${isResetIntent}"
 
-                )
-            },
-                onGoogleClick = { name ->
-                    navController.navigate(HOME_SCREEN + "/${name}") {
-                        popUpTo(WELCOME_SCREEN) {
-                            inclusive = true
-                        }
-                    }
-                },
-                onFacebookClick = {},
-                onLoginClick = {
-                    navController.navigate(LOGIN_SCREEN) {
-                        popUpTo(WELCOME_SCREEN)
-                    }
-                },
-                onHomeClick = {
-                }
-            )
+            ProfileSetUpScreen(onNext = { navController.navigate(TEAM_SETUP_SCREEN) }, onBack = {
+                navController.popBackStack()
+            })
         }
         composable(route = FORGOT_PASSWORD_SCREEN) {
             val context = LocalContext.current
@@ -220,7 +197,7 @@ fun NavControllerComposable() {
                 Timber.i("onNextClick-- $userType")
                 when (userType) {
                     AppConstants.USER_TYPE_COACH -> {
-                        navController.navigate(TEAM_SETUP_SCREEN)
+                        navController.navigate(PROFILE_SETUP_SCREEN)
                     }
                     AppConstants.USER_TYPE_PLAYER -> {
 
@@ -238,7 +215,7 @@ fun NavControllerComposable() {
             })
         }
         composable(route = ADD_PLAYER_SCREEN) {
-            AddPlayersScreen(onBackClick = {navController.popBackStack()}, onNextClick = {})
+            AddPlayersScreen(onBackClick = { navController.popBackStack() }, onNextClick = {})
         }
     }
 }

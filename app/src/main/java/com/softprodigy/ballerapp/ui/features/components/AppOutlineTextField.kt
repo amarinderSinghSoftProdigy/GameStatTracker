@@ -10,9 +10,11 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldColors
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,9 +22,11 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.spacing
 
 @Composable
@@ -117,3 +121,42 @@ fun AppOutlineDateField(
 
 }
 
+@Composable
+fun EditFields(
+    data: MutableState<String>,
+    head: String,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+) {
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+
+        AppText(
+            text = head,
+            style = MaterialTheme.typography.h6,
+            color = ColorBWBlack,
+            modifier = Modifier.padding(start = 16.dp)
+        )
+
+        TextField(
+            value = data.value, onValueChange = {
+                data.value = it
+            },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                backgroundColor = Color.Transparent,
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent
+            ),
+            textStyle = androidx.compose.material.LocalTextStyle.current.copy(textAlign = TextAlign.End),
+            singleLine = true,
+            keyboardActions = keyboardActions,
+            keyboardOptions = keyboardOptions
+        )
+
+    }
+}

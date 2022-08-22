@@ -82,5 +82,11 @@
     <string name="your_address">Enter your address</string>
     <string name="number">Phone Number</string>
     <string name="address_error">Enter valid address</string>
+    <string name="desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua</string>
+    <string name="set_your_profile">Set up Profile</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="phone_num">Phone Number</string>
+
 
 </resources>

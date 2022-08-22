@@ -1,10 +1,14 @@
 package com.softprodigy.ballerapp.ui.features.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -51,10 +55,20 @@ fun SocialLoginButton(
     icon: Painter,
     onClick: () -> Unit
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .background(
+                shape = RoundedCornerShape(8.dp),
+                color = MaterialTheme.colors.onPrimary
+            )
+            .padding(10.dp)
+    ) {
         Icon(
             painter = icon,
-            modifier = Modifier.size(24.dp),
+            modifier = Modifier
+                .height(16.dp)
+                .width(20.dp),
             contentDescription = "Social Login ",
             tint = Color.Unspecified
         )

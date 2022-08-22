@@ -52,4 +52,7 @@
     <dimen name="size_300dp">300dp</dimen>
     <dimen name="size_button">45dp</dimen>
 
+    <dimen name="size_160dp">170dp</dimen>
+    <dimen name="size_95dp">95dp</dimen>
+
 </resources>
