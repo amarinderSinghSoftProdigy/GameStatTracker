@@ -29,6 +29,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppButton
+import com.softprodigy.ballerapp.ui.features.components.AppDivider
+import com.softprodigy.ballerapp.ui.features.components.AppSpacer
 import com.softprodigy.ballerapp.ui.theme.appColors
 import com.softprodigy.ballerapp.ui.theme.text_field_indicator
 
@@ -101,7 +103,8 @@ fun BottomButtons(
     secondText: String = stringResource(id = R.string.next),
     onBackClick: () -> Unit,
     onNextClick: () -> Unit,
-    enableState: Boolean
+    enableState: Boolean,
+    showOnlyNext: Boolean = false
 ) {
     Row(
         Modifier
@@ -113,18 +116,31 @@ fun BottomButtons(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        AppButton(
-            text = firstText,
-            icon = null,
-            onClick = onBackClick,
-            modifier = Modifier.width(dimensionResource(id = R.dimen.size_156dp)),
-            border = ButtonDefaults.outlinedBorder,
+        if (!showOnlyNext) {
+            AppButton(
+                text = firstText,
+                icon = null,
+                onClick = onBackClick,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1F),
+                border = ButtonDefaults.outlinedBorder,
+            )
+        } else {
+            AppSpacer(modifier = Modifier
+                .fillMaxWidth()
+                .weight(1F))
+        }
+        AppSpacer(
+            modifier = Modifier.width(dimensionResource(id = R.dimen.size_30dp)),
         )
         AppButton(
             text = secondText,
             onClick = onNextClick,
             icon = painterResource(id = R.drawable.ic_circle_next),
-            modifier = Modifier.width(dimensionResource(id = R.dimen.size_156dp)),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1F),
             enabled = enableState
         )
     }
