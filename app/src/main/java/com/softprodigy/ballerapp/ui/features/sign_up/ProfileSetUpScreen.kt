@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -30,15 +29,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.EditFields
-import com.softprodigy.ballerapp.ui.features.user_type.CoachFlowBackground
+import com.softprodigy.ballerapp.ui.features.components.BottomButtons
+import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
+import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
-import com.softprodigy.ballerapp.ui.theme.ColorGrayBackground
-import com.softprodigy.ballerapp.ui.theme.ColorPicBackground
 import com.softprodigy.ballerapp.ui.theme.ColorPrimaryTransparent
-import com.softprodigy.ballerapp.ui.theme.spacing
+import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
 fun ProfileSetUpScreen(
@@ -47,7 +45,9 @@ fun ProfileSetUpScreen(
 ) {
 
     Box(
-        Modifier.fillMaxWidth().background(color = ColorGrayBackground)
+        Modifier
+            .fillMaxWidth()
+
     ) {
         CoachFlowBackground()
         SetUpProfile(onNext, onBack)
@@ -86,7 +86,6 @@ fun SetUpProfile(onNext: () -> Unit, onBack: () -> Unit) {
     Column(
         Modifier
             .fillMaxWidth()
-            .padding(dimensionResource(id = R.dimen.size_16dp))
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center
     ) {
@@ -94,11 +93,12 @@ fun SetUpProfile(onNext: () -> Unit, onBack: () -> Unit) {
         AppText(
             text = stringResource(id = R.string.set_your_profile),
             style = MaterialTheme.typography.h3,
-            color = ColorBWBlack
+            color = ColorBWBlack,
+            modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_40dp)))
 
-        Card(modifier = Modifier.fillMaxWidth()) {
+        UserFlowBackground(color = MaterialTheme.appColors.material.onSecondary) {
 
             Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center) {
 
@@ -109,7 +109,7 @@ fun SetUpProfile(onNext: () -> Unit, onBack: () -> Unit) {
                         .width(dimensionResource(id = R.dimen.size_200dp))
                         .height(dimensionResource(id = R.dimen.size_200dp))
                         .clip(shape = CircleShape)
-                        .background(color = ColorPicBackground)
+                        .background(color = ColorPrimaryTransparent)
                         .clickable {
                             launcher.launch("image/*")
                         }
@@ -145,8 +145,7 @@ fun SetUpProfile(onNext: () -> Unit, onBack: () -> Unit) {
                                 contentDescription = null,
                                 modifier = Modifier
                                     .size(250.dp)
-                                    .align(Alignment.Center),
-                                contentScale = ContentScale.FillBounds
+                                    .align(Alignment.Center)
                             )
                         }
                     }
@@ -175,58 +174,25 @@ fun SetUpProfile(onNext: () -> Unit, onBack: () -> Unit) {
                     stringResource(id = R.string.phone_num),
                     KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
+
             }
         }
 
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_44dp)))
 
-        Row(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        BottomButtons(
+            onBackClick = { onBack() },
+            onNextClick = { onNext() },
+            enableState = fName.value.isNotEmpty()
+                    && imageUri != null
+                    && lName.value.isNotEmpty()
+                    && phoneNumber.value.isNotEmpty()
+                    && email.value.isNotEmpty(),
+            firstText = stringResource(id = R.string.back),
+            secondText = stringResource(id = R.string.next)
+        )
 
-            AppButton(
-                onClick = { onBack() },
-                modifier = Modifier.width(dimensionResource(id = R.dimen.size_156dp)),
-                colors = ButtonDefaults.outlinedButtonColors(),
-                border = ButtonDefaults.outlinedBorder,
-                elevation = null
-            ) {
-
-                AppText(
-                    text = stringResource(id = R.string.back),
-                    color = Color.Gray
-                )
-            }
-            AppButton(
-                onClick = { onNext() },
-                icon = painterResource(id = R.drawable.ic_circle_next),
-                modifier = Modifier.width(dimensionResource(id = R.dimen.size_156dp)),
-                enabled = fName.value.isNotEmpty()
-                        && imageUri != null
-                        && lName.value.isNotEmpty()
-                        && phoneNumber.value.isNotEmpty()
-                        && email.value.isNotEmpty()
-            ) {
-
-                AppText(
-                    text = stringResource(id = R.string.next),
-                    color = if (fName.value.isNotEmpty()
-                        && imageUri != null
-                        && lName.value.isNotEmpty()
-                        && phoneNumber.value.isNotEmpty()
-                        && email.value.isNotEmpty()
-                    ) {
-                        Color.White
-                    } else {
-                        Color.Gray
-                    }
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_44dp)))
 
     }
 }

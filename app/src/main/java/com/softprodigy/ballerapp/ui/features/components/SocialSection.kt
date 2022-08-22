@@ -22,75 +22,6 @@ import com.softprodigy.ballerapp.ui.theme.spacing
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
 
-@Composable
-fun SocialSection(
-    modifier: Modifier = Modifier,
-    headerText: String = stringResource(id = R.string.or_sign_up_with),
-    footerText1: String = stringResource(id = R.string.already_have_an_account),
-    footerText2: String = stringResource(id = R.string.login),
-    onGoogleClick: () -> Unit,
-    onFacebookClick: () -> Unit,
-    onFooterClick: () -> Unit
-) {
-    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
-        Row(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            AppDivider(
-                Modifier
-                    .width(60.dp)
-                    .height(1.dp)
-            )
-            Spacer(modifier = Modifier.width(5.dp))
-            AppText(
-                text = headerText,
-                style = MaterialTheme.typography.h2
-            )
-            Spacer(modifier = Modifier.width(5.dp))
-            AppDivider(
-                Modifier
-                    .width(60.dp)
-                    .height(1.dp)
-            )
-        }
-        Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
-        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            SocialButton(
-                text = stringResource(id = R.string.google),
-                icon = painterResource(id = R.drawable.ic_google),
-                modifier = Modifier
-                    .weight(1.0f)
-                    .padding(MaterialTheme.spacing.small), onClick = onGoogleClick
-            )
-            Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
-            SocialButton(
-                text = stringResource(id = R.string.facebook),
-                icon = painterResource(id = R.drawable.ic_facbook),
-                modifier = Modifier
-                    .weight(1.0f)
-                    .padding(MaterialTheme.spacing.small), onClick = onFacebookClick
-            )
-        }
-        Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
-
-        Text(
-            buildAnnotatedString {
-                append(footerText1)
-                withStyle(
-                    style = SpanStyle(
-                        color = MaterialTheme.colors.primary,
-                    )
-                ) {
-                    append(" " + footerText2)
-                }
-            }, modifier = Modifier.clickable(onClick = onFooterClick), textAlign = TextAlign.Center
-        )
-        Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
-    }
-}
 
 @Composable
 fun SocialLoginSection(
@@ -124,7 +55,6 @@ fun SocialLoginSection(
         ) {
             SocialLoginButton(
                 icon = painterResource(id = R.drawable.ic_apple),
-
             )
             { onAppleClick() }
 
@@ -145,19 +75,3 @@ fun SocialLoginSection(
 }
 
 
-@OptIn(ExperimentalMaterialApi::class)
-@Preview("default", "rectangle")
-@Preview("dark theme", "rectangle", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview("large font", "rectangle", fontScale = 2f)
-@Composable
-private fun RectangleButtonPreview() {
-    BallerAppTheme() {
-        Surface() {
-            SocialSection(
-                modifier = Modifier.fillMaxWidth(),
-                onFooterClick = {},
-                onFacebookClick = {},
-                onGoogleClick = {})
-        }
-    }
-}

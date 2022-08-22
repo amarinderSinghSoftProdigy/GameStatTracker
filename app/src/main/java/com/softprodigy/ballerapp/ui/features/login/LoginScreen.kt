@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -31,49 +32,31 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.isValidEmail
 import com.softprodigy.ballerapp.common.isValidPassword
-import com.softprodigy.ballerapp.data.response.LoginResponse
 import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.SocialLoginSection
-import com.softprodigy.ballerapp.ui.theme.BallerAppTheme
+
+import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
-import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
-import com.softprodigy.ballerapp.ui.theme.ColorGrayBackground
+import com.softprodigy.ballerapp.ui.theme.appColors
+
 import com.softprodigy.ballerapp.ui.theme.spacing
 
 @Composable
 fun LoginScreen(
-    vm: LoginViewModel = hiltViewModel(),
-    onLoginSuccess: (LoginResponse?) -> Unit,
+    onLoginSuccess: () -> Unit,
     onForgetPasswordClick: () -> Unit,
-    onFacebookClick: () -> Unit,
-    onCreateAccountClick: () -> Unit
 ) {
-    val loginState = vm.loginUiState.value
+
     val context = LocalContext.current
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
 
-    LaunchedEffect(key1 = Unit) {
-        vm.uiEvent.collect { uiEvent ->
-            when (uiEvent) {
-                is LoginChannel.ShowToast -> {
-                    Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
-                        .show()
-                }
-                is LoginChannel.OnLoginSuccess -> {
-                    onLoginSuccess.invoke(uiEvent.loginResponse)
-                }
-                else -> Unit
-            }
-        }
-    }
 
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .background(color = ColorGrayBackground),
+            .fillMaxSize(),
         contentAlignment = Alignment.Center,
 
         ) {
@@ -97,7 +80,7 @@ fun LoginScreen(
             AppText(
                 text = stringResource(id = R.string.email),
                 style = MaterialTheme.typography.h6,
-                color = MaterialTheme.colors.onSurface,
+                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
             )
@@ -118,15 +101,18 @@ fun LoginScreen(
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = ColorBWGrayBorder,
                     unfocusedBorderColor = ColorBWGrayBorder,
-                    backgroundColor = Color.White
+                    backgroundColor = Color.White,
+                    textColor = ColorBWBlack,
+                    placeholderColor = MaterialTheme.appColors.textField.label
+                ),
+
                 )
-            )
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
 
             AppText(
                 text = stringResource(id = R.string.password),
                 style = MaterialTheme.typography.h6,
-                color = MaterialTheme.colors.onSurface,
+                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
             )
@@ -139,23 +125,26 @@ fun LoginScreen(
                 onValueChange = {
                     password = it
                 },
-                placeholder = { Text(text = stringResource(id = R.string.re_enter_password)) },
+                placeholder = { Text(text = stringResource(id = R.string.your_password)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 isError = (!password.isValidPassword() && password.length >= 4),
                 errorMessage = stringResource(id = R.string.password_error),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = ColorBWGrayBorder,
                     unfocusedBorderColor = ColorBWGrayBorder,
-                    backgroundColor = Color.White
+                    backgroundColor = Color.White,
+                    textColor = ColorBWBlack,
+                    placeholderColor = MaterialTheme.appColors.textField.label
+                ),
+                visualTransformation = PasswordVisualTransformation(),
                 )
-            )
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraMedium))
 
             AppButton(
                 enabled = email.isValidEmail() && password.isValidPassword(),
                 onClick = {
-                    onLoginSuccess(null)
+                    onLoginSuccess()
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -163,18 +152,6 @@ fun LoginScreen(
                 text = stringResource(id = R.string.login),
                 icon = painterResource(id = R.drawable.ic_circle_next)
             )
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraSmall))
-
-            AppText(
-                text = stringResource(id = R.string.create_now),
-                color = Color.Black,
-                style = MaterialTheme.typography.h6,
-                modifier = Modifier
-                    .align(Alignment.End)
-                    .padding(10.dp)
-                    .clickable(onClick = onCreateAccountClick)
-            )
-
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
 
             AppText(
@@ -195,20 +172,6 @@ fun LoginScreen(
             }
 
         }
-        if (loginState.isDataLoading) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-        }
-    }
-}
 
-
-@Preview("default", "rectangle")
-@Preview("dark theme", "rectangle", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview("large font", "rectangle", fontScale = 2f)
-@Composable
-private fun RectangleButtonPreview() {
-    BallerAppTheme {
-        Surface {
-        }
     }
 }

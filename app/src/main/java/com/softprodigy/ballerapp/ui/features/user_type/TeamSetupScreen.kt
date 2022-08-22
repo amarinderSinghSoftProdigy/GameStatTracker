@@ -245,8 +245,6 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                         }
 
 
-                        }
-
                     }
 
                 }
@@ -256,10 +254,10 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                     secondText = stringResource(id = R.string.next),
                     onBackClick = onBackClick,
                     onNextClick = onNextClick,
-                    enableState = teamName.value.isNotEmpty() && imageUri != null && selectedColorCode.value.isNotEmpty(),
-                    showOnlyNext = true
+                    enableState = teamName.value.isNotEmpty() && imageUri != null && selectedColorCode.value.isNotEmpty()
                 )
             }
+
         }
     }
 }

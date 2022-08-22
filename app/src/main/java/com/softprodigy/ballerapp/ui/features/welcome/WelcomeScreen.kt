@@ -4,10 +4,8 @@ import androidx.annotation.FloatRange
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -28,6 +26,7 @@ import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.theme.spacing
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.ui.features.components.BottomButtons
 
 data class WelcomeScreenData(val image: Int, val title: String, val description: String)
 
@@ -67,15 +66,18 @@ fun WelcomeScreen(onNextScreen: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.White)
+            .background(Color.White)
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Top,
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             HorizontalPager(
                 state = pagerState,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.8f)
             ) { page ->
                 Column(
                     modifier = Modifier
@@ -113,17 +115,15 @@ fun WelcomeScreen(onNextScreen: () -> Unit) {
                     )
                 }
             }
-
-        }
-        Box(modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 10.dp)) {
-
             PagerIndicator(size = items.size, currentPage = pagerState.currentPage)
-
         }
-        Box(modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 20.dp)) {
 
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 5.dp)
+        ) {
             BottomSection(pagerState.currentPage, onNextScreen)
-
         }
 
     }
@@ -180,9 +180,8 @@ fun Indicator(isSelected: Boolean) {
 fun BottomSection(currentPager: Int, onNextScreen: () -> Unit) {
     Row(
         modifier = Modifier
-            .padding(bottom = 20.dp, start = 20.dp, end = 20.dp)
             .fillMaxWidth(),
-        horizontalArrangement = if (currentPager != 2) Arrangement.SpaceBetween else Arrangement.Center
+        horizontalArrangement = Arrangement.Center
     ) {
         if (currentPager == 2) {
             AppButton(
@@ -192,35 +191,24 @@ fun BottomSection(currentPager: Int, onNextScreen: () -> Unit) {
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(52.dp),
+                    .height(52.dp)
+                    .padding(
+                        start = dimensionResource(id = R.dimen.size_16dp),
+                        end = dimensionResource(id = R.dimen.size_16dp),
+                    ),
                 text = stringResource(id = R.string.get_started),
                 icon = painterResource(id = R.drawable.ic_circle_next)
             )
         } else {
-            AppButton(
-                onClick = { onNextScreen() },
-                modifier = Modifier.width(dimensionResource(id = R.dimen.size_156dp)),
-                icon = painterResource(id = R.drawable.ic_circle_next),
-                enabled = true
-            ) {
-                AppText(
-                    text = stringResource(id = R.string.skip),
-                    color = Color.White
-                )
-            }
+            BottomButtons(
+                onBackClick = { onNextScreen() },
+                onNextClick = {
 
-            AppButton(
-                onClick = { currentPager + 1 },
-                icon = painterResource(id = R.drawable.ic_circle_next),
-                modifier = Modifier.width(dimensionResource(id = R.dimen.size_156dp)),
-                enabled = true
-            ) {
-
-                AppText(
-                    text = stringResource(id = R.string.next),
-                    color = Color.White
-                )
-            }
+                },
+                enableState = true,
+                firstText = stringResource(id = R.string.skip),
+                secondText = stringResource(id = R.string.next)
+            )
         }
     }
 }

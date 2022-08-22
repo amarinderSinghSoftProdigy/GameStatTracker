@@ -1,8 +1,7 @@
-package com.softprodigy.ballerapp.ui.features.user_type
+package com.softprodigy.ballerapp.ui.features.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -22,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -32,7 +30,6 @@ import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppDivider
 import com.softprodigy.ballerapp.ui.features.components.AppSpacer
 import com.softprodigy.ballerapp.ui.theme.appColors
-import com.softprodigy.ballerapp.ui.theme.text_field_indicator
 
 @Composable
 fun CoachFlowBackground(
@@ -82,6 +79,7 @@ fun CoachFlowBackground(
 
 @Composable
 fun UserFlowBackground(
+    color: Color = MaterialTheme.appColors.material.surface,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Surface(
@@ -89,7 +87,7 @@ fun UserFlowBackground(
             .fillMaxSize()
             .padding(all = dimensionResource(id = R.dimen.size_16dp)),
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
-        color = MaterialTheme.appColors.material.surface
+        color = color
     ) {
         Column(modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp))) {
             content()
@@ -127,9 +125,11 @@ fun BottomButtons(
                 border = ButtonDefaults.outlinedBorder,
             )
         } else {
-            AppSpacer(modifier = Modifier
-                .fillMaxWidth()
-                .weight(1F))
+            AppSpacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1F)
+            )
         }
         AppSpacer(
             modifier = Modifier.width(dimensionResource(id = R.dimen.size_30dp)),
