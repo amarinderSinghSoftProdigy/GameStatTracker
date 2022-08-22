@@ -19,7 +19,7 @@ val heading2OnDarkColor=Color(0xFFFFFFFF)
 
 val heading3Color= Color(0xFFE4EBF0)
 
-val md_theme_light_primary = Color(0xFF3E4FE5)
+val md_theme_light_primary = Color(0xFFD7D7D7)
 val md_theme_light_onPrimary =Color(0xFFffffff)
 val md_theme_light_primaryContainer = Color(0xFF1066FF)
 val md_theme_light_onPrimaryContainer = Color(0xFF170066)
@@ -78,7 +78,7 @@ val ol_field_border_focused = Color(0xFF3E4FE5)
 val ol_field_border_unfocused = Color(0xFF353131)
 val ol_field_border_error = Color(0xFFED7E49)
 
-val text_field_label =  Color(0x80FFFFFF)
+val text_field_label =  Color(0x808A9BA8)
 val text_field_indicator =  Color(0xB3FFFFFF)
 
 val spiner_popup_background = Color(0XFF363443)
@@ -96,5 +96,5 @@ val ColorBWGrayLight= Color(0xFF8A9BA8)
 val ColorPrimaryTransparent= Color(0x1A0177C1)
 val ColorMainPrimary = Color(0xFF0177C1)
 val ColorPrimaryOrange = Color(0xFFFF923D)
-val ColorGrayBackground = Color(0xFFD7D7D7)
-val ColorPicBackground = Color(0xFFF1F6FA)
+
+
