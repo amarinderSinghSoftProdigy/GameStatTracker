@@ -49,7 +49,7 @@ fun AddPlayersScreen(
     val selectedPlayer = vm.selectedPlayer
 
     Box(Modifier.fillMaxSize()) {
-        CoachFlowBackground(teamLogo = UserStorage.uri)
+        CoachFlowBackground(/*teamLogo = UserStorage.uri*/)
         Column(
             Modifier
                 .fillMaxSize()
