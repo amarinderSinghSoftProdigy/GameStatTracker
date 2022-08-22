@@ -150,32 +150,17 @@ fun AddPlayersScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
 
                 AppButton(
                     onClick = onBackClick,
+                    text = stringResource(id = R.string.back),
                     modifier = Modifier.width(dimensionResource(id = R.dimen.size_156dp)),
-                    colors = ButtonDefaults.outlinedButtonColors(),
                     border = ButtonDefaults.outlinedBorder,
-                    elevation = null
-                ) {
-
-                    AppText(
-                        text = stringResource(id = R.string.back),
-                        color = Color.Gray
-                    )
-                }
+                )
                 AppButton(
+                    text = stringResource(id = R.string.next),
                     onClick = onNextClick,
                     icon = painterResource(id = R.drawable.ic_circle_next),
                     modifier = Modifier.width(dimensionResource(id = R.dimen.size_156dp)),
-                ) {
-
-                    AppText(
-                        text = stringResource(id = R.string.next),
-                        color = Color.White
-
-                    )
-                }
-
+                )
             }
-
         }
     }
 }
