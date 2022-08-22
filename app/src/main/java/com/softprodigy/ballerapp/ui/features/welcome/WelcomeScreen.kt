@@ -195,7 +195,7 @@ fun BottomSection(currentPager: Int, onNextScreen: () -> Unit) {
                     .height(52.dp),
                 text = stringResource(id = R.string.get_started),
                 icon = painterResource(id = R.drawable.ic_circle_next)
-            ) {}
+            )
         } else {
             AppButton(
                 onClick = { onNextScreen() },

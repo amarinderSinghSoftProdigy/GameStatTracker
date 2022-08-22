@@ -190,10 +190,9 @@ fun OTPVerificationScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth(),
-                enabled = otp.isNotEmpty() && otp.length >= 6
-            ) {
-                Text(text = stringResource(id = R.string.verify))
-            }
+                enabled = otp.isNotEmpty() && otp.length >= 6,
+                text = stringResource(id = R.string.verify)
+            )
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
             AppText(
                 text = stringResource(id = R.string.resend_code),

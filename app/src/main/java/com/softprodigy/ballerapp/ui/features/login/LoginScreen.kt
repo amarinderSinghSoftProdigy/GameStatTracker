@@ -162,7 +162,7 @@ fun LoginScreen(
                     .height(56.dp),
                 text = stringResource(id = R.string.login),
                 icon = painterResource(id = R.drawable.ic_circle_next)
-            ) {}
+            )
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraSmall))
 
             AppText(

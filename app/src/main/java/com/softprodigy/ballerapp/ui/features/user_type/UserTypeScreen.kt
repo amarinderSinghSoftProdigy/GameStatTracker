@@ -80,34 +80,22 @@ fun UserTypeSelector(onNextClick: (String) -> Unit) {
                     AppButton(
                         onClick = {
                             onSelectionChange(text)
-                        }, colors = if (text == selectedUserType) {
+                        },/* colors = if (text == selectedUserType) {
                             ButtonDefaults.buttonColors(ColorBWBlack)
                         } else {
                             ButtonDefaults.outlinedButtonColors()
-                        },
+                        },*/
                         border = if (text == selectedUserType) {
                             null
                         } else {
                             ButtonDefaults.outlinedBorder
                         },
-                        elevation = null,
                         modifier = Modifier
                             .fillMaxWidth(0.8f)
                             .height(dimensionResource(id = R.dimen.size_56dp))
-                    ) {
-                        AppText(
-                            text = text,
-                            color = if (text == selectedUserType) {
-                                Color.White
-                            } else {
-                                Color.Gray
-                            }
-                        )
-                    }
+                    )
                 }
             }
-
-
         }
 
 
@@ -127,18 +115,7 @@ fun UserTypeSelector(onNextClick: (String) -> Unit) {
                 enabled = selectedUserType.isNotEmpty(),
                 icon = painterResource(id = R.drawable.ic_circle_next),
                 modifier = Modifier.width(dimensionResource(id = R.dimen.size_156dp))
-            ) {
-
-                AppText(
-                    text = stringResource(id = R.string.next),
-                    color = if (selectedUserType.isNotEmpty()) {
-                        button_text_enable
-                    } else {
-                        button_text_disable
-                    }
-                )
-            }
-
+            )
         }
     }
 }

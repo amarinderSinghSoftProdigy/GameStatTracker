@@ -118,10 +118,9 @@ fun ForgotPasswordScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth(),
-                enabled = email.isValidEmail()
-            ) {
-                Text(text = stringResource(id = R.string.send))
-            }
+                enabled = email.isValidEmail(),
+                text = stringResource(id = R.string.send)
+            )
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
             AppText(
                 text = stringResource(id = R.string.back_to_login),
