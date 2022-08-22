@@ -167,6 +167,7 @@ fun NewPasswordScreen(
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
             AppButton(
+                text = stringResource(id = R.string.save),
                 onClick = {
                     resetPasswordViewModel.onEvent(
                         ResetPasswordUIEvent.Submit(
@@ -178,9 +179,7 @@ fun NewPasswordScreen(
                 modifier = Modifier
                     .fillMaxWidth(),
                 enabled = confirmPassword.passwordMatches(password)
-            ) {
-                Text(text = stringResource(id = R.string.save))
-            }
+            )
         }
 
         if (forgotPassState.isLoading) {
