@@ -1,5 +1,7 @@
 package com.softprodigy.ballerapp.data
 
+import android.net.Uri
+
 object UserStorage {
     var token = ""
     var verifyToken = ""
@@ -7,4 +9,5 @@ object UserStorage {
     var deviceDescription = ""
     var transactionId: String? = null
     var otp: String = ""
+    var uri: String? = null
 }

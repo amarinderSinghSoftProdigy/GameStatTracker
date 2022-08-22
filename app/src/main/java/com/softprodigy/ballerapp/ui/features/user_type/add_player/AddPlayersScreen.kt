@@ -1,7 +1,7 @@
 package com.softprodigy.ballerapp.ui.features.user_type
 
 import android.annotation.SuppressLint
-import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -25,23 +26,30 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppSearchOutlinedTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.user_type.add_player.AddPlayerViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
 import java.util.*
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
-fun AddPlayersScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
+fun AddPlayersScreen(
+    vm: AddPlayerViewModel = hiltViewModel(),
+    onBackClick: () -> Unit,
+    onNextClick: () -> Unit
+) {
     var search by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
-    val selectedPlayer by rememberSaveable { mutableStateOf(ArrayList<String>()) }
+    val selectedPlayer = vm.selectedPlayer
 
     Box(Modifier.fillMaxSize()) {
-        CoachFlowBackground()
+        CoachFlowBackground(teamLogo = UserStorage.uri)
         Column(
             Modifier
                 .fillMaxSize()
@@ -51,7 +59,7 @@ fun AddPlayersScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
         ) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_64dp)))
             AppText(
-                text = stringResource(id = R.string.add_player),
+                text = stringResource(id = R.string.add_players),
                 style = MaterialTheme.typography.h3,
                 color = ColorBWBlack
             )
@@ -59,7 +67,8 @@ fun AddPlayersScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
+                    .weight(1f),
+                backgroundColor = MaterialTheme.colors.surface.copy(alpha = 0.90f)
             ) {
                 Column(
                     Modifier
@@ -100,14 +109,16 @@ fun AddPlayersScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                         searchedText = search,
                         onPlayerClick = {
                             selectedPlayer.add(it)
-                            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
                         })
                     Divider()
                     Row(
-                        Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .padding(dimensionResource(id = R.dimen.size_16dp))
+                            .fillMaxWidth(),
+
+                        ) {
                         AppText(
                             text = stringResource(id = R.string.added_players),
                             fontWeight = FontWeight.W500,
@@ -117,7 +128,6 @@ fun AddPlayersScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_info),
                             contentDescription = "",
-                            modifier = Modifier.padding(dimensionResource(id = R.dimen.size_20dp)),
                             tint = Color.Unspecified
                         )
                     }
@@ -127,9 +137,10 @@ fun AddPlayersScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                     ) {
                         items(selectedPlayer) { filteredCountry ->
                             PlayerListItem(
+                                painterResource(id = R.drawable.ic_remove),
                                 countryText = filteredCountry,
-                                onItemClick = { selectedCountry ->
-//                                    onPlayerClick.invoke(selectedCountry)
+                                onItemClick = { player ->
+                                    selectedPlayer.remove(player)
                                 }
                             )
                         }
@@ -204,6 +215,7 @@ fun PlayerListUI(
         }
         items(filteredCountries) { filteredCountry ->
             PlayerListItem(
+                painterResource(id = R.drawable.ic_add_player),
                 countryText = filteredCountry,
                 onItemClick = { selectedCountry ->
                     onPlayerClick.invoke(selectedCountry)
@@ -214,10 +226,9 @@ fun PlayerListUI(
 }
 
 @Composable
-fun PlayerListItem(countryText: String, onItemClick: (String) -> Unit) {
+fun PlayerListItem(icon: Painter, countryText: String, onItemClick: (String) -> Unit) {
     Row(
         modifier = Modifier
-            .clickable(onClick = { onItemClick(countryText) })
             .height(IntrinsicSize.Min)
             .fillMaxWidth()
             .padding(
@@ -227,13 +238,12 @@ fun PlayerListItem(countryText: String, onItemClick: (String) -> Unit) {
                 )
             ), verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_google), contentDescription = "",
+        Image(
+            painter = painterResource(id = R.drawable.user_demo),
+            contentDescription = "",
             modifier = Modifier
                 .size(32.dp)
                 .clip(androidx.compose.foundation.shape.CircleShape),
-            tint = Color.Unspecified
-
         )
         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
         Text(
@@ -243,11 +253,11 @@ fun PlayerListItem(countryText: String, onItemClick: (String) -> Unit) {
         )
         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
         Icon(
-            painter = painterResource(id = R.drawable.ic_add_player), contentDescription = "",
+            painter = icon, contentDescription = "",
             modifier = Modifier
-                .size(dimensionResource(id = R.dimen.size_20dp)),
-            tint = Color.Unspecified
-
+                .size(dimensionResource(id = R.dimen.size_20dp))
+                .clickable(onClick = { onItemClick(countryText) }),
+            tint = Color.Unspecified,
         )
     }
 }

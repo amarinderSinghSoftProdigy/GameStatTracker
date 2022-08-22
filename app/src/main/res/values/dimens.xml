@@ -49,6 +49,7 @@
     <dimen name="size_200dp">100dp</dimen>
     <dimen name="size_225dp">112.5dp</dimen>
     <dimen name="size_236dp">118dp</dimen>
+    <dimen name="size_250dp">125dp</dimen>
     <dimen name="size_300dp">150dp</dimen>
     <dimen name="size_button">35dp</dimen>
 

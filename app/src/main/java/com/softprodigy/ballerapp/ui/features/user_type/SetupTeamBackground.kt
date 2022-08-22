@@ -1,7 +1,10 @@
 package com.softprodigy.ballerapp.ui.features.user_type
 
+import android.net.Uri
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,8 +22,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
@@ -28,12 +33,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import coil.compose.rememberImagePainter
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
 fun CoachFlowBackground(
     colorCode: String? = null,
+    teamLogo: String?=null
 ) {
     val ballColor = colorResource(id = R.color.ball_color)
     Surface {
@@ -68,7 +75,7 @@ fun CoachFlowBackground(
                         contentDescription = "center ball Icon",
                         tint = colorResource(id = R.color.black),
                         modifier = Modifier
-                            .size(dimensionResource(id = R.dimen.size_200dp))
+                            .size(dimensionResource(id = R.dimen.size_200dp)).align(Alignment.Center)
                     )
                 }
             }

@@ -9,6 +9,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -17,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
@@ -24,11 +26,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberImagePainter
 import com.github.skydoves.colorpicker.compose.ColorEnvelope
 import com.github.skydoves.colorpicker.compose.ColorPickerController
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.theme.*
 import kotlinx.coroutines.launch
@@ -180,7 +184,9 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                                 )
                             }
                             imageUri?.let {
-                                if (Build.VERSION.SDK_INT < 28) {
+                                UserStorage.uri=it.toString()
+
+                                    if (Build.VERSION.SDK_INT < 28) {
                                     bitmap.value = MediaStore.Images
                                         .Media.getBitmap(context.contentResolver, it)
 
@@ -192,10 +198,12 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
 
                                 bitmap.value?.let { btm ->
                                     Image(
-                                        bitmap = btm.asImageBitmap(),
+                                        painter = rememberImagePainter(data = Uri.parse(it.toString())  ),
                                         contentDescription = null,
+                                        contentScale = ContentScale.Crop,
                                         modifier = Modifier
-                                            .size(250.dp)
+                                            .size(dimensionResource(id = R.dimen.size_300dp))
+                                            .clip(CircleShape)
                                             .align(Alignment.Center)
                                     )
                                 }
@@ -324,7 +332,7 @@ fun ColorPickerBottomSheet(
                 .padding(dimensionResource(id = R.dimen.size_25dp))
         ) {
             AppText(
-                text = stringResource(id = R.string.colors),
+                text = stringResource(id = R.string.team_color),
                 style = MaterialTheme.typography.h3,
                 modifier = Modifier.align(Alignment.Center)
             )
