@@ -29,6 +29,16 @@ fun AppDivider(
     )
 }
 
+@Composable
+fun AppSpacer(
+    modifier: Modifier = Modifier,
+) {
+    Spacer(
+        modifier = modifier,
+    )
+}
+
+
 private const val DividerAlpha = 0.12f
 
 @Preview("default", showBackground = true)
