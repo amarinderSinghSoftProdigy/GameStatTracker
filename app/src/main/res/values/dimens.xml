@@ -14,6 +14,7 @@
 
     <dimen name="size_1dp">0.5dp</dimen>
     <dimen name="size_2dp">1dp</dimen>
+    <dimen name="size_3dp">1.5dp</dimen>
     <dimen name="size_4dp">2dp</dimen>
     <dimen name="size_5dp">2.5dp</dimen>
     <dimen name="size_6dp">3dp</dimen>

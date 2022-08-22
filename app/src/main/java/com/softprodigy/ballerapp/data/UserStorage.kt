@@ -10,4 +10,6 @@ object UserStorage {
     var transactionId: String? = null
     var otp: String = ""
     var uri: String? = null
+    var teamColor:String?=null
+    var teamLogo:String?=null
 }

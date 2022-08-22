@@ -72,27 +72,6 @@ fun UserTypeSelector(onNextClick: (String) -> Unit) {
                             all = dimensionResource(id = R.dimen.size_8dp),
                         ),
                 ) {
-/*                    AppButton(
-                        onClick = {
-                            onSelectionChange(text)
-                        },
-//                        enabled = text!=selectedUserType,
-                         colors = if (text != selectedUserType) {
-//                            ButtonDefaults.buttonColors(ColorBWBlack)
-                            MaterialTheme.appColors.buttonColor.copy(bckgroundEnabled = ColorBWBlack)
-                        } else {
-                             MaterialTheme.appColors.buttonColor
-                        },
-                        border = if (text == selectedUserType) {
-                            null
-                        } else {
-                            ButtonDefaults.outlinedBorder
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth(0.8f)
-                            .height(dimensionResource(id = R.dimen.size_56dp)), text = text
-                    )*/
-
                     UserSelectionSurface(
                         modifier = Modifier.fillMaxWidth(0.8f),
                         text = text,
@@ -102,26 +81,6 @@ fun UserTypeSelector(onNextClick: (String) -> Unit) {
                 }
             }
         }
-
-
-        /*      Row(
-                  Modifier
-                      .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
-                      .constrainAs(button) {
-                          top.linkTo(column.bottom)
-                          end.linkTo(parent.end)
-                          bottom.linkTo(parent.bottom)
-                      }
-              ) {
-                  AppButton(
-                      onClick = {
-                          onNextClick.invoke(selectedUserType)
-                      },
-                      enabled = selectedUserType.isNotEmpty(),
-                      icon = painterResource(id = R.drawable.ic_circle_next),
-                      modifier = Modifier.width(dimensionResource(id = R.dimen.size_156dp))
-                  )
-              }*/
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_30dp)))
         Box(
             Modifier
@@ -135,8 +94,9 @@ fun UserTypeSelector(onNextClick: (String) -> Unit) {
                 firstText = stringResource(id = R.string.back),
                 secondText = stringResource(id = R.string.next),
                 onBackClick = { },
-                onNextClick = { },
-                enableState = options.isNotEmpty()
+                onNextClick = { onNextClick.invoke(selectedUserType) },
+                enableState = selectedUserType.isNotEmpty(),
+                showOnlyNext = true,
             )
         }
 
