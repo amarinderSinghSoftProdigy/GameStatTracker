@@ -393,7 +393,7 @@ fun SignUpScreen(
                     .height(56.dp),
                 text = stringResource(id = R.string.create_now),
                 icon = painterResource(id = R.drawable.ic_circle_next)
-            ) {}
+            )
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraMedium))
 
         }

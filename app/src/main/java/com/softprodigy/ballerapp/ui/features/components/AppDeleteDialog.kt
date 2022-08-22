@@ -9,6 +9,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.theme.BallerAppTheme
+import com.softprodigy.ballerapp.ui.theme.text_field_label
 
 @Composable
 fun <T> DeleteDialog(
@@ -24,17 +25,15 @@ fun <T> DeleteDialog(
         text = { Text(text = message) },
         confirmButton = {
             AppButton(
+                text = stringResource(R.string.dialog_button_confirm),
                 onClick = { onDelete(item) }
-            ) {
-                AppText(stringResource(R.string.dialog_button_confirm))
-            }
+            )
         },
         dismissButton = {
             AppButton(
+                text = stringResource(R.string.dialog_button_cancel),
                 onClick = onDismiss
-            ) {
-                AppText(stringResource(R.string.dialog_button_cancel))
-            }
+            )
         }
     )
 }
