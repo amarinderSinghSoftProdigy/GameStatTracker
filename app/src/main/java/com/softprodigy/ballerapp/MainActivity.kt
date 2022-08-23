@@ -18,24 +18,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.facebook.CallbackManager
 import com.softprodigy.ballerapp.common.AppConstants
-import com.softprodigy.ballerapp.common.Route
 import com.softprodigy.ballerapp.common.Route.ADD_PLAYER_SCREEN
-import com.softprodigy.ballerapp.common.Route.FORGOT_PASSWORD_SCREEN
 import com.softprodigy.ballerapp.common.Route.HOME_SCREEN
 import com.softprodigy.ballerapp.common.Route.LOGIN_SCREEN
-import com.softprodigy.ballerapp.common.Route.NEW_PASSWORD_SCREEN
-import com.softprodigy.ballerapp.common.Route.OTP_VERIFICATION_SCREEN
+import com.softprodigy.ballerapp.common.Route.PROFILE_SETUP_SCREEN
 import com.softprodigy.ballerapp.common.Route.SELECT_USER_TYPE
-import com.softprodigy.ballerapp.common.Route.SIGN_UP_SCREEN
 import com.softprodigy.ballerapp.common.Route.SPLASH_SCREEN
 import com.softprodigy.ballerapp.common.Route.TEAM_SETUP_SCREEN
 import com.softprodigy.ballerapp.common.Route.WELCOME_SCREEN
-import com.softprodigy.ballerapp.ui.features.create_new_password.NewPasswordScreen
-import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordScreen
 import com.softprodigy.ballerapp.ui.features.home.HomeScreen
 import com.softprodigy.ballerapp.ui.features.login.LoginScreen
-import com.softprodigy.ballerapp.ui.features.otp_verification.OTPVerificationScreen
-import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
+import com.softprodigy.ballerapp.ui.features.sign_up.ProfileSetUpScreen
 import com.softprodigy.ballerapp.ui.features.splash.SplashScreen
 import com.softprodigy.ballerapp.ui.features.user_type.AddPlayersScreen
 import com.softprodigy.ballerapp.ui.features.user_type.TeamSetupScreen
@@ -95,121 +88,19 @@ fun NavControllerComposable() {
         composable(route = LOGIN_SCREEN) {
             val context = LocalContext.current
             LoginScreen(
-                onLoginSuccess = { loginResponse ->
+                onLoginSuccess = {
                     navController.navigate(SELECT_USER_TYPE)
-                    /*if (loginResponse.userInfo.isEmailVerified) {
-                        navController.navigate(HOME_SCREEN + "/${loginResponse?.userInfo?.firstName}") {
-                            popUpTo(WELCOME_SCREEN) {
-                                inclusive = true
-                            }
-                        }
-                    } else {
-                        val isResetIntent = "false"
-                        navController.navigate(
-                            OTP_VERIFICATION_SCREEN + "/${loginResponse?.verifyToken}"
-                                    + "/${loginResponse?.userInfo?.email}"
-                                    + "/${isResetIntent}"
+                },
 
-                        )
-                    }*/
-                },
-                onCreateAccountClick = {
-                    navController.navigate(SIGN_UP_SCREEN) {
-                        popUpTo(WELCOME_SCREEN)
-                    }
-                },
-                onForgetPasswordClick = { navController.navigate(FORGOT_PASSWORD_SCREEN) },
-                onFacebookClick = {})
-        }
-        composable(route = SIGN_UP_SCREEN) {
-            val context = LocalContext.current
-            SignUpScreen(onSuccessfulSignUp = { signUpResponse ->
-                val isResetIntent = "false"
-                navController.navigate(
-                    OTP_VERIFICATION_SCREEN + "/${signUpResponse.verifyToken}"
-                            + "/${signUpResponse.userInfo.email}"
-                            + "/${isResetIntent}"
-
-                )
-            },
-                onGoogleClick = { name ->
-                    navController.navigate(HOME_SCREEN + "/${name}") {
-                        popUpTo(WELCOME_SCREEN) {
-                            inclusive = true
-                        }
-                    }
-                },
-                onFacebookClick = {},
-                onLoginClick = {
-                    navController.navigate(LOGIN_SCREEN) {
-                        popUpTo(WELCOME_SCREEN)
-                    }
-                },
-                onHomeClick = {
-                }
+                onForgetPasswordClick = { },
             )
         }
-        composable(route = FORGOT_PASSWORD_SCREEN) {
+        composable(route = PROFILE_SETUP_SCREEN) {
             val context = LocalContext.current
-            ForgotPasswordScreen(
-                onOtpClick = { forgotPasswordResponse ->
-                    Timber.d("NavControllerComposable: " + forgotPasswordResponse.userInfo.email)
-                    val isResetIntent = "true"
-                    navController.navigate(
-                        OTP_VERIFICATION_SCREEN + "/${forgotPasswordResponse.verifyToken}"
-                                + "/${forgotPasswordResponse.userInfo.email}"
-                                + "/${isResetIntent}"
 
-                    )
-                },
-                onSuccess = { forgotPasswordResponse ->
-                    Toast.makeText(context, forgotPasswordResponse.message, Toast.LENGTH_LONG)
-                        .show()
-                },
-
-                onLoginClick = { navController.navigate(LOGIN_SCREEN) })
-
-        }
-
-        composable(route = "$OTP_VERIFICATION_SCREEN/{token}/{email}/{isResetIntent}") {
-            val token = it.arguments?.getString("token")
-            val email = it.arguments?.getString("email")
-            val isResetIntent = it.arguments?.getString("isResetIntent") ?: "false"
-
-            val context = LocalContext.current
-            OTPVerificationScreen(
-                token = token!!,
-                email = email!!,
-                onSuccess = { verifyOtpResponse ->
-                    Toast.makeText(context, verifyOtpResponse.message, Toast.LENGTH_LONG)
-                        .show()
-                    if (isResetIntent == "true") {
-                        navController.navigate(Route.NEW_PASSWORD_SCREEN + "/$token")
-                    } else {
-                        navController.navigate(HOME_SCREEN + "/${verifyOtpResponse.userInfo.firstName}") {
-                            popUpTo(WELCOME_SCREEN) {
-                                inclusive = true
-                            }
-                        }
-                    }
-                }
-            )
-        }
-
-        composable(route = "$NEW_PASSWORD_SCREEN/{token}") {
-            val token = it.arguments?.getString("token")
-            val context = LocalContext.current
-            NewPasswordScreen(
-                token = token!!,
-                OnLoginScreen = {
-                    navController.navigate(LOGIN_SCREEN) {
-                        popUpTo(WELCOME_SCREEN)
-                    }
-                },
-                OnSuccess = { resetPasswordResponse ->
-                    Toast.makeText(context, resetPasswordResponse.message, Toast.LENGTH_LONG)
-                        .show()
-                })
+            ProfileSetUpScreen(onNext = { navController.navigate(TEAM_SETUP_SCREEN) }, onBack = {
+                navController.popBackStack()
+            })
         }
         composable(route = "$HOME_SCREEN/{name}") {
             val name = it.arguments?.getString("name")
@@ -220,7 +111,7 @@ fun NavControllerComposable() {
                 Timber.i("onNextClick-- $userType")
                 when (userType) {
                     AppConstants.USER_TYPE_COACH -> {
-                        navController.navigate(TEAM_SETUP_SCREEN)
+                        navController.navigate(PROFILE_SETUP_SCREEN)
                     }
                     AppConstants.USER_TYPE_PLAYER -> {
 

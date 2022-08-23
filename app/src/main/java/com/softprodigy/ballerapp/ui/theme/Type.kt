@@ -40,6 +40,11 @@ val Typography = Typography(
         fontFamily = rubikFamily
 
     ),
+    h4 = TextStyle(
+        fontWeight = FontWeight.W400,
+        fontSize = 12.sp,
+        fontFamily = rubikFamily
+    ),
     h6 = TextStyle(
         fontWeight = FontWeight.W500,
         fontSize = 12.sp,

@@ -1,23 +1,20 @@
 package com.softprodigy.ballerapp.ui.features.user_type
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
-import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.BottomButtons
+import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
+import com.softprodigy.ballerapp.ui.features.components.UserSelectionSurface
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
-import com.softprodigy.ballerapp.ui.theme.button_text_disable
-import com.softprodigy.ballerapp.ui.theme.button_text_enable
 import com.softprodigy.ballerapp.ui.theme.spacing
 
 @Composable
@@ -77,45 +74,34 @@ fun UserTypeSelector(onNextClick: (String) -> Unit) {
                             all = dimensionResource(id = R.dimen.size_8dp),
                         ),
                 ) {
-                    AppButton(
-                        onClick = {
-                            onSelectionChange(text)
-                        },/* colors = if (text == selectedUserType) {
-                            ButtonDefaults.buttonColors(ColorBWBlack)
-                        } else {
-                            ButtonDefaults.outlinedButtonColors()
-                        },*/
-                        border = if (text == selectedUserType) {
-                            null
-                        } else {
-                            ButtonDefaults.outlinedBorder
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth(0.8f)
-                            .height(dimensionResource(id = R.dimen.size_56dp))
+                    UserSelectionSurface(
+                        modifier = Modifier.fillMaxWidth(0.8f),
+                        text = text,
+                        isSelected = text == selectedUserType,
+                        onClick = { onSelectionChange(text) }
                     )
                 }
             }
         }
-
-
-        Row(
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_30dp)))
+        Box(
             Modifier
-                .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
+                .fillMaxWidth()
                 .constrainAs(button) {
                     top.linkTo(column.bottom)
                     end.linkTo(parent.end)
                     bottom.linkTo(parent.bottom)
-                }
-        ) {
-            AppButton(
-                onClick = {
-                    onNextClick.invoke(selectedUserType)
-                },
-                enabled = selectedUserType.isNotEmpty(),
-                icon = painterResource(id = R.drawable.ic_circle_next),
-                modifier = Modifier.width(dimensionResource(id = R.dimen.size_156dp))
+                }) {
+            BottomButtons(
+                firstText = stringResource(id = R.string.back),
+                secondText = stringResource(id = R.string.next),
+                onBackClick = { },
+                onNextClick = { onNextClick.invoke(selectedUserType) },
+                enableState = selectedUserType.isNotEmpty(),
+                showOnlyNext = true,
             )
         }
+
+
     }
 }
