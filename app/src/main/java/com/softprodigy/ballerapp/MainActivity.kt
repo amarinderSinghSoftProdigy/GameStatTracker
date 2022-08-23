@@ -129,7 +129,7 @@ fun NavControllerComposable() {
             })
         }
         composable(route = ADD_PLAYER_SCREEN) {
-            AddPlayersScreen(onBackClick = { navController.popBackStack() }, onNextClick = {})
+            AddPlayersScreen(onBackClick = {navController.popBackStack()}, onNextClick = {})
         }
     }
 }
