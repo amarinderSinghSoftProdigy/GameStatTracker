@@ -83,4 +83,10 @@
     <string name="number">Phone Number</string>
     <string name="address_error">Enter valid address</string>
 
+    <string name="events_label">Events</string>
+    <string name="teams_label">Teams</string>
+    <string name="player_label">Player</string>
+    <string name="coach_label">Coach</string>
+    <string name="referee_label">Referee</string>
+
 </resources>

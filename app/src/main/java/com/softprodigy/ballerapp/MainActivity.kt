@@ -1,5 +1,6 @@
 package com.softprodigy.ballerapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -32,6 +33,7 @@ import com.softprodigy.ballerapp.common.Route.TEAM_SETUP_SCREEN
 import com.softprodigy.ballerapp.common.Route.WELCOME_SCREEN
 import com.softprodigy.ballerapp.ui.features.create_new_password.NewPasswordScreen
 import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordScreen
+import com.softprodigy.ballerapp.ui.features.home.HomeActivity
 import com.softprodigy.ballerapp.ui.features.home.HomeScreen
 import com.softprodigy.ballerapp.ui.features.login.LoginScreen
 import com.softprodigy.ballerapp.ui.features.otp_verification.OTPVerificationScreen
@@ -66,7 +68,7 @@ class MainActivity : ComponentActivity() {
                     CompositionLocalProvider(
                         LocalFacebookCallbackManager provides callbackManager
                     ) {
-                        NavControllerComposable()
+                        NavControllerComposable(this)
                     }
                 }
             }
@@ -75,9 +77,9 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun NavControllerComposable() {
+fun NavControllerComposable(activity: MainActivity) {
     val navController = rememberNavController()
-    NavHost(navController, startDestination = TEAM_SETUP_SCREEN) {
+    NavHost(navController, startDestination = ADD_PLAYER_SCREEN) {
 
         composable(route = SPLASH_SCREEN) {
             SplashScreen {
@@ -123,15 +125,16 @@ fun NavControllerComposable() {
         }
         composable(route = SIGN_UP_SCREEN) {
             val context = LocalContext.current
-            SignUpScreen(onSuccessfulSignUp = { signUpResponse ->
-                val isResetIntent = "false"
-                navController.navigate(
-                    OTP_VERIFICATION_SCREEN + "/${signUpResponse.verifyToken}"
-                            + "/${signUpResponse.userInfo.email}"
-                            + "/${isResetIntent}"
+            SignUpScreen(
+                onSuccessfulSignUp = { signUpResponse ->
+                    val isResetIntent = "false"
+                    navController.navigate(
+                        OTP_VERIFICATION_SCREEN + "/${signUpResponse.verifyToken}"
+                                + "/${signUpResponse.userInfo.email}"
+                                + "/${isResetIntent}"
 
-                )
-            },
+                    )
+                },
                 onGoogleClick = { name ->
                     navController.navigate(HOME_SCREEN + "/${name}") {
                         popUpTo(WELCOME_SCREEN) {
@@ -238,7 +241,11 @@ fun NavControllerComposable() {
             })
         }
         composable(route = ADD_PLAYER_SCREEN) {
-            AddPlayersScreen(onBackClick = {navController.popBackStack()}, onNextClick = {})
+            AddPlayersScreen(onBackClick = { navController.popBackStack() }, onNextClick = {
+                val intent = Intent(activity, HomeActivity::class.java)
+                activity.startActivity(intent)
+                activity.finish()
+            })
         }
     }
 }

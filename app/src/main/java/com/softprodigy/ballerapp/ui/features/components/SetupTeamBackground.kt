@@ -121,9 +121,6 @@ fun BottomButtons(
                 text = firstText,
                 icon = null,
                 onClick = onBackClick,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1F),
                 border = ButtonDefaults.outlinedBorder,
             )
         } else {
@@ -138,9 +135,6 @@ fun BottomButtons(
             text = secondText,
             onClick = onNextClick,
             icon = painterResource(id = R.drawable.ic_circle_next),
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1F),
             enabled = enableState
         )
     }
