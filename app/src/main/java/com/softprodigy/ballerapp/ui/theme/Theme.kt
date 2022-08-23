@@ -49,8 +49,8 @@ data class appColors(
 )
 
 private val LightThemeColors = lightColors(
-    primary = md_theme_light_primary,
-    primaryVariant = md_theme_light_primaryContainer,
+    primary = md_theme_light_primary, // Will be used for the base background
+    primaryVariant = md_theme_light_primaryContainer,//Will be used for Selected theme color.
     onPrimary = md_theme_light_onPrimary,
     secondary = md_theme_light_secondary,
     secondaryVariant = md_theme_light_secondaryContainer,

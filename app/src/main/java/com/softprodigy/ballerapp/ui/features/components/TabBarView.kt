@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,6 +50,7 @@ fun BottomNavigationBar(
     navController: NavController,
     height: Dp = dimensionResource(id = R.dimen.size_64dp),
 ) {
+    val selected: MutableState<BottomNavKey> = remember { mutableStateOf(BottomNavKey.EVENTS) }
     Surface(
         elevation = dimensionResource(id = R.dimen.size_12dp),
         color = Color.White,
@@ -76,6 +78,7 @@ fun BottomNavigationBar(
                             .height(height)
                             .align(Alignment.CenterHorizontally)
                             .clickable {
+                                selected.value = item.key
                                 navController.navigate(item.key.route)
                             },
                         contentAlignment = Alignment.Center
@@ -86,7 +89,7 @@ fun BottomNavigationBar(
                                 modifier = Modifier.align(Alignment.CenterHorizontally),
                                 painter = painterResource(id = item.icon),
                                 contentDescription = null,
-                                tint = if (item.selected.value) MaterialTheme.appColors.material.primaryVariant else ColorBWGrayLight
+                                tint = if (selected.value == item.key) MaterialTheme.appColors.material.primaryVariant else ColorBWGrayLight
                             )
                             Text(
                                 modifier = Modifier
@@ -95,7 +98,7 @@ fun BottomNavigationBar(
                                 textAlign = TextAlign.Center,
                                 text = stringResourceByName(item.key.resId),
                                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                                color = if (item.selected.value) MaterialTheme.appColors.material.primaryVariant else ColorBWGrayLight
+                                color = if (selected.value == item.key) MaterialTheme.appColors.material.primaryVariant else ColorBWGrayLight
                             )
                         }
                     }
@@ -111,27 +114,24 @@ fun BottomNavigationBar(
  */
 sealed class BottomNavigationItem(
     var icon: Int,
-    var selected: MutableState<Boolean>,
     var key: BottomNavKey,
 ) {
     object Events :
         BottomNavigationItem(
             R.drawable.ic_events,
-            mutableStateOf(true),
             key = BottomNavKey.EVENTS,
         )
 
     object Teams :
         BottomNavigationItem(
             R.drawable.ic_teams,
-            mutableStateOf(false),
             key = BottomNavKey.TEAMS,
         )
 }
 
 enum class BottomNavKey(val resId: String, val route: String) {
-    EVENTS("events_label", "events"),
-    TEAMS("teams_label", "teams")
+    EVENTS("events_label", "eventsScreen"),
+    TEAMS("teams_label", "teamsScreen")
     //Add items to add in the bottom navigation
 }
 

@@ -19,6 +19,8 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -94,15 +96,16 @@ fun CoachFlowBackground(
 @Composable
 fun UserFlowBackground(
     modifier: Modifier = Modifier,
+    padding: Dp? = dimensionResource(id = R.dimen.size_16dp),
+    color: Color? = MaterialTheme.appColors.material.surface,
     content: @Composable ColumnScope.() -> Unit,
-
-    ) {
+) {
     Surface(
         modifier = modifier
             .fillMaxSize()
-            .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+            .padding(all = padding ?: 0.dp),
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
-        color = MaterialTheme.appColors.material.surface
+        color = color ?: MaterialTheme.appColors.material.surface
     ) {
         Column(modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp))) {
             content()

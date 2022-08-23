@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -37,10 +39,12 @@ fun AppButton(
     border: BorderStroke? = null,
     colors: ButtonColor = MaterialTheme.appColors.buttonColor,// = ButtonDefaults.buttonColors(ColorBWBlack),
     contentPadding: PaddingValues = PaddingValues(
-        vertical = dimensionResource(id = R.dimen.size_16dp)
+        vertical = dimensionResource(id = R.dimen.size_16dp),
+        horizontal = dimensionResource(id = R.dimen.size_24dp),
     ),
     text: String? = null,
     icon: Painter? = null,
+    singleButton: Boolean = false
 ) {
     val contentColor = if (enabled) colors.textEnabled else colors.textDisabled
 
@@ -63,36 +67,79 @@ fun AppButton(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
 
-                    Box(
-                        modifier = Modifier
-                            .weight(0.7F)
-                            .fillMaxWidth()
-                            .align(Alignment.CenterVertically),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        AppText(
-                            textAlign = TextAlign.Center,
-                            text = text ?: "",
-                            color = if (icon != null) contentColor else colors.textDisabled
-                        )
-                    }
-
                     if (icon != null) {
-                        Icon(
-                            painter = icon,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .size(dimensionResource(R.dimen.size_24dp))
-                                .weight(0.3F),
-                            contentDescription = null,
-                            tint = if (enabled) Color.White else contentColor.copy(
-                                alpha = 0.5f
+                        if (singleButton) {
+                            SingleButtonView(
+                                text = text ?: "",
+                                color = contentColor,
+                                painter = icon,
+                                iconColor = if (enabled) Color.White else contentColor
                             )
-                        )
+                        } else {
+                            ButtonView(text = text ?: "", color = contentColor)
+                            Icon(
+                                painter = icon,
+                                modifier = Modifier
+                                    .size(dimensionResource(R.dimen.size_20dp)),
+                                contentDescription = null,
+                                tint = if (enabled) Color.White else contentColor.copy(
+                                    alpha = 0.5f
+                                )
+                            )
+                        }
+
+                    } else {
+                        ButtonView(text = text ?: "", color = colors.textDisabled)
                     }
                 }
             }
         }
     }
+}
+
+@Composable
+fun RowScope.ButtonView(text: String, color: Color) {
+    Box(
+        modifier = Modifier
+            .padding(
+                start = dimensionResource(id = R.dimen.size_20dp),
+                end = dimensionResource(id = R.dimen.size_20dp)
+            )
+            .align(Alignment.CenterVertically),
+        contentAlignment = Alignment.Center,
+    ) {
+        AppText(
+            textAlign = TextAlign.Center,
+            text = text,
+            color = color
+        )
+    }
+}
+
+
+@Composable
+fun RowScope.SingleButtonView(text: String, color: Color, painter: Painter, iconColor: Color) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .weight(1F)
+            .align(Alignment.CenterVertically),
+        contentAlignment = Alignment.Center,
+    ) {
+        AppText(
+            textAlign = TextAlign.Center,
+            text = text,
+            color = color
+        )
+        Icon(
+            painter = painter,
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .size(dimensionResource(R.dimen.size_20dp)),
+            contentDescription = null,
+            tint = iconColor
+        )
+    }
+
 }
 
