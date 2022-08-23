@@ -5,6 +5,7 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
@@ -29,9 +30,13 @@ import com.github.skydoves.colorpicker.compose.ColorPickerController
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.softprodigy.ballerapp.R
+
+import com.softprodigy.ballerapp.common.getRealPathFromURI
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.theme.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.io.File
 
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -177,6 +182,12 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                                 bitmap.value = ImageDecoder.decodeBitmap(source)
                             }
 
+                            val finalFile = getRealPathFromURI(context,it)?.let { it1 -> File(it1) }
+
+                            if (finalFile != null) {
+                                Timber.d("TeamSetupScreen: " + finalFile.)
+                            }
+
                             bitmap.value?.let { btm ->
                                 Image(
                                     bitmap = btm.asImageBitmap(),
@@ -190,8 +201,6 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                     }
 
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
-
-
 
                     Row(
                         Modifier
