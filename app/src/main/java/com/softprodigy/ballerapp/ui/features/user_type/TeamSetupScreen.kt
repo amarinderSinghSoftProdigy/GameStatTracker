@@ -1,14 +1,12 @@
 package com.softprodigy.ballerapp.ui.features.user_type
 
 import android.graphics.Bitmap
-import android.graphics.ImageDecoder
 import android.net.Uri
-import android.os.Build
-import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -16,7 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
@@ -24,12 +23,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberImagePainter
 import com.github.skydoves.colorpicker.compose.ColorEnvelope
 import com.github.skydoves.colorpicker.compose.ColorPickerController
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.data.UserStorage
+import com.softprodigy.ballerapp.ui.features.components.AppBasicTextField
+import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
+import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.theme.*
 import kotlinx.coroutines.launch
 
@@ -120,9 +123,24 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                             )
                         )
                     }
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
+                    Divider(modifier = Modifier
+                        .layout() { measurable, constraints ->
+                            val placeable = measurable.measure(
+                                constraints.copy(
+                                    maxWidth = constraints.maxWidth + (context.resources.getDimension(
+                                        R.dimen.size_32dp
+                                    )).dp.roundToPx(),
+                                    //It will ignore parent column padding and occupy whole space
+                                )
+                            )
+                            layout(placeable.width, placeable.height) {
+                                placeable.place(0, 0) //starting position of divider
+                            }
+                        })
 
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
                     Row(
                         Modifier.fillMaxWidth(),
@@ -167,31 +185,36 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                             )
                         }
                         imageUri?.let {
-                            if (Build.VERSION.SDK_INT < 28) {
-                                bitmap.value = MediaStore.Images
-                                    .Media.getBitmap(context.contentResolver, it)
-
-                            } else {
-                                val source = ImageDecoder
-                                    .createSource(context.contentResolver, it)
-                                bitmap.value = ImageDecoder.decodeBitmap(source)
-                            }
-
-                            bitmap.value?.let { btm ->
                                 Image(
-                                    bitmap = btm.asImageBitmap(),
+                                    painter = rememberImagePainter(data = Uri.parse(it.toString())),
                                     contentDescription = null,
+                                    contentScale = ContentScale.Crop,
                                     modifier = Modifier
-                                        .size(250.dp)
+                                        .size(dimensionResource(id = R.dimen.size_300dp))
+                                        .clip(CircleShape)
                                         .align(Alignment.Center)
                                 )
-                            }
+
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
 
+                    Divider(modifier = Modifier
+                        .layout() { measurable, constraints ->
+                            val placeable = measurable.measure(
+                                constraints.copy(
+                                    maxWidth = constraints.maxWidth + (context.resources.getDimension(
+                                        R.dimen.size_32dp
+                                    )).dp.roundToPx(),
+                                    //It will ignore parent column padding and occupy whole space
+                                )
+                            )
+                            layout(placeable.width, placeable.height) {
+                                placeable.place(0, 0) //starting position of divider
+                            }
+                        })
 
                     Row(
                         Modifier
@@ -247,14 +270,18 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
 
                     }
                 }
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_30dp)))
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
                 BottomButtons(
                     firstText = stringResource(id = R.string.back),
                     secondText = stringResource(id = R.string.next),
                     onBackClick = onBackClick,
-                    onNextClick = onNextClick,
+                    onNextClick = {
+                        onNextClick.invoke()
+                        UserStorage.teamColor = selectedColorCode.value
+                        UserStorage.teamLogo = imageUri.toString()
+                    },
                     enableState = teamName.value.isNotEmpty() && imageUri != null && selectedColorCode.value.isNotEmpty(),
-                    showOnlyNext = true
+                    showOnlyNext = false
                 )
             }
         }
