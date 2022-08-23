@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -29,7 +30,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.UserStorage
-import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppSearchOutlinedTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.user_type.add_player.AddPlayerViewModel
@@ -56,27 +56,21 @@ fun AddPlayersScreen(
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(dimensionResource(id = R.dimen.size_16dp))
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Center
         ) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_64dp)))
             AppText(
+                modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp)),
                 text = stringResource(id = R.string.add_players),
                 style = MaterialTheme.typography.h3,
                 color = ColorBWBlack
             )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_40dp)))
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                backgroundColor = MaterialTheme.colors.surface.copy(alpha = 0.90f)
-            ) {
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+            UserFlowBackground(modifier = Modifier.weight(1f)) {
                 Column(
                     Modifier
-                        .fillMaxWidth()
-                        .padding(dimensionResource(id = R.dimen.size_8dp))
+                        .weight(1f)
                 ) {
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
@@ -113,7 +107,21 @@ fun AddPlayersScreen(
                         onPlayerClick = {
                             selectedPlayer.add(it)
                         })
-                    Divider()
+                    Divider(modifier = Modifier
+                        .layout() { measurable, constraints ->
+                            val placeable = measurable.measure(
+                                constraints.copy(
+                                    maxWidth = constraints.maxWidth + (context.resources.getDimension(
+                                        R.dimen.size_32dp
+                                    )).dp.roundToPx(),
+                                    //It will ignore parent column padding and occupy whole space
+                                )
+                            )
+                            layout(placeable.width, placeable.height) {
+                                placeable.place(0, 0) //starting position of divider
+                            }
+                        })
+
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
@@ -152,29 +160,15 @@ fun AddPlayersScreen(
 
                 }
 
-
             }
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_44dp)))
-            Row(
-                Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
+            BottomButtons(
+                onBackClick = { onBackClick.invoke() },
+                onNextClick = { onNextClick.invoke() },
+                enableState = vm.selectedPlayer.isNotEmpty()
+            )
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
 
-                AppButton(
-                    onClick = onBackClick,
-                    text = stringResource(id = R.string.back),
-                    modifier = Modifier.width(dimensionResource(id = R.dimen.size_156dp)),
-                    border = ButtonDefaults.outlinedBorder,
-                )
-                AppButton(
-                    text = stringResource(id = R.string.next),
-                    onClick = onNextClick,
-                    icon = painterResource(id = R.drawable.ic_circle_next),
-                    modifier = Modifier.width(dimensionResource(id = R.dimen.size_156dp)),
-                )
-            }
         }
     }
 }

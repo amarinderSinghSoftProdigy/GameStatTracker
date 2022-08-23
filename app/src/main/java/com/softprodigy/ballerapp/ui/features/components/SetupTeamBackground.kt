@@ -97,10 +97,11 @@ fun CoachFlowBackground(
 
 @Composable
 fun UserFlowBackground(
+    modifier: Modifier=Modifier,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Surface(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(all = dimensionResource(id = R.dimen.size_16dp)),
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
