@@ -11,6 +11,9 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -18,9 +21,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -31,79 +36,68 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.isValidEmail
 import com.softprodigy.ballerapp.common.isValidPassword
-import com.softprodigy.ballerapp.data.response.LoginResponse
 import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.SocialLoginSection
-import com.softprodigy.ballerapp.ui.theme.BallerAppTheme
+
+import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
+import com.softprodigy.ballerapp.ui.theme.appColors
+
 import com.softprodigy.ballerapp.ui.theme.spacing
 
 @Composable
 fun LoginScreen(
-    vm: LoginViewModel = hiltViewModel(),
-    onLoginSuccess: (LoginResponse?) -> Unit,
+    onLoginSuccess: () -> Unit,
     onForgetPasswordClick: () -> Unit,
-    onFacebookClick: () -> Unit,
-    onCreateAccountClick: () -> Unit
 ) {
-    val loginState = vm.loginUiState.value
+
     val context = LocalContext.current
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
-
-    LaunchedEffect(key1 = Unit) {
-        vm.uiEvent.collect { uiEvent ->
-            when (uiEvent) {
-                is LoginChannel.ShowToast -> {
-                    Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
-                        .show()
-                }
-                is LoginChannel.OnLoginSuccess -> {
-                    onLoginSuccess.invoke(uiEvent.loginResponse)
-                }
-                else -> Unit
-            }
-        }
-    }
+    var passwordVisibility by rememberSaveable { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
             .fillMaxSize(),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
 
         Column(
             modifier = Modifier
-                .padding(all = 20.dp),
-            verticalArrangement = Arrangement.Center,
+                .padding(horizontal = dimensionResource(id = R.dimen.size_20dp))
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_60dp)))
+
             Image(
                 painter = painterResource(id = R.drawable.ic_logo),
                 contentDescription = null,
                 modifier = Modifier
-                    .height(95.dp)
-                    .width(160.dp),
+                    .height(dimensionResource(id = R.dimen.size_95dp))
+                    .width(dimensionResource(id = R.dimen.size_160dp)),
             )
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_60dp)))
+
 
             AppText(
                 text = stringResource(id = R.string.email),
                 style = MaterialTheme.typography.h6,
-                color = MaterialTheme.colors.onSurface,
+                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
             )
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
             AppOutlineTextField(
                 value = email,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = Color.White),
+                    .fillMaxWidth(),
                 onValueChange = {
                     email = it
                 },
@@ -112,46 +106,66 @@ fun LoginScreen(
                 isError = (!email.isValidEmail() && email.length >= 6),
                 errorMessage = stringResource(id = R.string.email_error),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = Color.LightGray,
-                    unfocusedBorderColor = Color.LightGray
-                )
+                    focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
+                    unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
+                    backgroundColor = MaterialTheme.appColors.material.background,
+                    textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    placeholderColor = MaterialTheme.appColors.textField.label
+                ),
             )
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
 
             AppText(
                 text = stringResource(id = R.string.password),
                 style = MaterialTheme.typography.h6,
-                color = MaterialTheme.colors.onSurface,
+                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
             )
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+
 
             AppOutlineTextField(
                 value = password,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = Color.White),
+                    .fillMaxWidth(),
                 onValueChange = {
                     password = it
                 },
-                placeholder = { Text(text = stringResource(id = R.string.re_enter_password)) },
+                placeholder = { Text(text = stringResource(id = R.string.your_password)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 isError = (!password.isValidPassword() && password.length >= 4),
                 errorMessage = stringResource(id = R.string.password_error),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = Color.LightGray,
-                    unfocusedBorderColor = Color.LightGray
-                )
+                    focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
+                    unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
+                    backgroundColor = MaterialTheme.appColors.material.background,
+                    textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    placeholderColor = MaterialTheme.appColors.textField.label
+                ),
+                visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(onClick = {
+                        passwordVisibility = !passwordVisibility
+
+                    }) {
+                        Icon(
+                            imageVector = if (passwordVisibility)
+                                Icons.Filled.Visibility
+                            else
+                                Icons.Filled.VisibilityOff, ""
+                        )
+                    }
+                },
             )
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraMedium))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
 
             AppButton(
                 enabled = email.isValidEmail() && password.isValidPassword(),
                 onClick = {
-                    onLoginSuccess(null)
+                    onLoginSuccess()
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -159,31 +173,18 @@ fun LoginScreen(
                 text = stringResource(id = R.string.login),
                 icon = painterResource(id = R.drawable.ic_circle_next)
             )
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraSmall))
-
-            AppText(
-                text = stringResource(id = R.string.create_now),
-                color = Color.Black,
-                style = MaterialTheme.typography.h6,
-                modifier = Modifier
-                    .align(Alignment.End)
-                    .padding(10.dp)
-                    .clickable(onClick = onCreateAccountClick)
-            )
-
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_32dp)))
 
             AppText(
                 text = stringResource(id = R.string.forgot_password),
-                color = Color.Black,
+                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                 style = MaterialTheme.typography.h6,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .clickable(onClick = onForgetPasswordClick)
             )
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraXLarge))
-
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_100dp)))
 
             SocialLoginSection(
                 headerText = stringResource(id = R.string.or_sign_in_with),
@@ -191,21 +192,8 @@ fun LoginScreen(
                 onFacebookClick = { }) {
             }
 
-        }
-        if (loginState.isDataLoading) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-        }
-    }
-}
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))
 
-
-@Preview("default", "rectangle")
-@Preview("dark theme", "rectangle", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview("large font", "rectangle", fontScale = 2f)
-@Composable
-private fun RectangleButtonPreview() {
-    BallerAppTheme {
-        Surface {
         }
     }
 }

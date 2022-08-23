@@ -1,10 +1,15 @@
 package com.softprodigy.ballerapp.ui.features.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -22,54 +27,29 @@ import com.softprodigy.ballerapp.ui.theme.BallerAppTheme
 import com.softprodigy.ballerapp.ui.theme.spacing
 
 @Composable
-fun SocialButton(
-    text: String,
-    icon: Painter,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
-) {
-    AppOutlinedButton(onClick = onClick, modifier = modifier) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                painter = icon,
-                modifier = Modifier.size(24.dp),
-                contentDescription = "Social Login ",
-                tint = Color.Unspecified
-            )
-            Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
-            Text(
-                text = text,
-                color = MaterialTheme.colors.onBackground,
-                style = MaterialTheme.typography.button
-            )
-        }
-    }
-}
-
-@Composable
 fun SocialLoginButton(
     icon: Painter,
     onClick: () -> Unit
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .background(
+                shape = RoundedCornerShape(8.dp),
+                color = MaterialTheme.colors.onPrimary
+            )
+            .size(44.dp)
+    ) {
         Icon(
             painter = icon,
-            modifier = Modifier.size(24.dp),
+            modifier = Modifier
+                .height(16.dp)
+                .width(20.dp),
             contentDescription = "Social Login ",
             tint = Color.Unspecified
         )
     }
-
 }
 
-@OptIn(ExperimentalMaterialApi::class)
-@Preview("default", "rectangle")
-@Preview("dark theme", "rectangle", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Preview("large font", "rectangle", fontScale = 2f)
-@Composable
-private fun RectangleButtonPreview() {
-    BallerAppTheme {
-        SocialButton(text = "Google", icon = painterResource(id = R.drawable.ic_google)) {
-        }
-    }
-}
+

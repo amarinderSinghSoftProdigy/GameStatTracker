@@ -74,11 +74,11 @@ val md_theme_dark_inverseSurface = Color(0xFFe5e1e5)
 val seed = Color(0xFF4f0fff)
 val error = Color(0xFFba1b1b)
 
-val ol_field_border_focused = Color(0xFF3E4FE5)
-val ol_field_border_unfocused = Color(0xFF353131)
+val ol_field_border_focused = Color(0xFFE4EBF0)
+val ol_field_border_unfocused = Color(0xFFE4EBF0)
 val ol_field_border_error = Color(0xFFED7E49)
 
-val text_field_label =  Color(0x80FFFFFF)
+val text_field_label =  Color(0x808A9BA8)
 val text_field_indicator =  Color(0xB3FFFFFF)
 
 val spiner_popup_background = Color(0XFF363443)

@@ -1,4 +1,4 @@
-package com.softprodigy.ballerapp.ui.features.user_type
+package com.softprodigy.ballerapp.ui.features.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -19,11 +19,8 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.ui.features.components.AppButton
-import com.softprodigy.ballerapp.ui.features.components.AppSpacer
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
@@ -89,7 +86,6 @@ fun CoachFlowBackground(
                     }
                 }
             }
-
         }
     }
 }
@@ -97,9 +93,10 @@ fun CoachFlowBackground(
 
 @Composable
 fun UserFlowBackground(
-    modifier: Modifier=Modifier,
+    modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit,
-) {
+
+    ) {
     Surface(
         modifier = modifier
             .fillMaxSize()
@@ -143,9 +140,11 @@ fun BottomButtons(
                 border = ButtonDefaults.outlinedBorder,
             )
         } else {
-            AppSpacer(modifier = Modifier
-                .fillMaxWidth()
-                .weight(1F))
+            AppSpacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1F)
+            )
         }
         AppSpacer(
             modifier = Modifier.width(dimensionResource(id = R.dimen.size_30dp)),
