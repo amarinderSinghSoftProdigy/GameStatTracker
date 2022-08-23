@@ -8,7 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.baller_app.core.util.UiText
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.ResultWrapper.GenericError
-import com.softprodigy.ballerapp.data.response.LoginResponse
+import com.softprodigy.ballerapp.data.UserInfo
+import com.softprodigy.ballerapp.domain.repository.IUserRepository
 import com.softprodigy.ballerapp.ui.features.welcome.SocialLoginRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -18,7 +19,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private var loginRepository: LoginRepository,
+    private var IUserRepository: IUserRepository,
     private var socialLoginRepo: SocialLoginRepo,
     application: Application
 ) :
@@ -60,7 +61,7 @@ class LoginViewModel @Inject constructor(
             _loginUiState.value = LoginUIState(isDataLoading = true)
 
             val loginResponse =
-                loginRepository.loginWithEmailAndPass(
+                IUserRepository.loginWithEmailAndPass(
                     email = email,
                     password = password
                 )
@@ -68,18 +69,18 @@ class LoginViewModel @Inject constructor(
                 is ResultWrapper.Success ->{
                     loginResponse.value.let { response ->
 
-                        if (response.status == 200) {
+                        if (response.status) {
                             _loginUiState.value =
                                 LoginUIState(
-                                    user = response.userInfo,
+                                    user = response.data,
                                     isDataLoading = false,
                                     errorMessage = null
                                 )
-                            _loginChannel.send(LoginChannel.OnLoginSuccess(response))
+                            _loginChannel.send(LoginChannel.OnLoginSuccess(response.data))
                         } else {
                             _loginUiState.value = LoginUIState(
                                 user=null,
-                                errorMessage = response.message ?: "Something went wrong",
+                                errorMessage = response.statusMessage ?: "Something went wrong",
                                 isDataLoading = false
                             )
                         }
@@ -112,6 +113,6 @@ class LoginViewModel @Inject constructor(
     }
 sealed class LoginChannel {
     data class ShowToast(val message: UiText) : LoginChannel()
-    data class OnLoginSuccess(val loginResponse: LoginResponse) : LoginChannel()
+    data class OnLoginSuccess(val loginResponse: UserInfo) : LoginChannel()
 
 }

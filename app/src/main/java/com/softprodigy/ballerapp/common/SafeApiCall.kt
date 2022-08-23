@@ -1,7 +1,7 @@
 package com.softprodigy.ballerapp.common
 
-import com.softprodigy.ballerapp.data.ErrorResponse
 import com.google.gson.Gson
+import com.softprodigy.ballerapp.domain.BaseResponse
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -25,9 +25,9 @@ suspend fun <T> safeApiCall(
                     val errorBody = throwable.response()?.errorBody()?.string()
                     val gsonErrorBody = Gson().fromJson(
                         errorBody,
-                        ErrorResponse::class.java
+                        BaseResponse::class.java
                     )
-                    val message = gsonErrorBody.Error
+                    val message = gsonErrorBody.statusMessage
                     ResultWrapper.GenericError(code, message)
                 }
                 else -> {

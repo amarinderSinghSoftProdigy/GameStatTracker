@@ -7,8 +7,8 @@ import com.softprodigy.ballerapp.ui.features.create_new_password.ResetPasswordRe
 import com.softprodigy.ballerapp.ui.features.create_new_password.ResetPasswordRepository
 import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordRepoImpl
 import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordRepository
-import com.softprodigy.ballerapp.ui.features.login.LoginRepository
-import com.softprodigy.ballerapp.ui.features.login.RepositoryImpl
+import com.softprodigy.ballerapp.data.repository.UserRepository
+import com.softprodigy.ballerapp.domain.repository.IUserRepository
 import com.softprodigy.ballerapp.ui.features.otp_verification.VerifyOtpRepoImpl
 import com.softprodigy.ballerapp.ui.features.otp_verification.VerifyOtpRepository
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpRepoImpl
@@ -30,8 +30,8 @@ object RepositoryModule {
     fun provideLoginRepo(
         apiService: APIService,
         dataStoreManager: DataStoreManager,
-    ): LoginRepository {
-        return RepositoryImpl(service = apiService, dataStoreManager = dataStoreManager)
+    ): IUserRepository {
+        return UserRepository(service = apiService, dataStoreManager = dataStoreManager)
     }
 
     @Provides

@@ -46,7 +46,7 @@ import com.softprodigy.ballerapp.common.isValidFullName
 import com.softprodigy.ballerapp.common.isValidPassword
 import com.softprodigy.ballerapp.common.passwordMatches
 import com.softprodigy.ballerapp.data.GoogleUserModel
-import com.softprodigy.ballerapp.data.response.LoginResponse
+import com.softprodigy.ballerapp.data.UserInfo
 import com.softprodigy.ballerapp.data.response.SignUpResponse
 import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineDateField
@@ -68,7 +68,7 @@ import java.util.*
 fun SignUpScreen(
     vm: SignupViewModel = hiltViewModel(),
     onSuccessfulSignUp: (SignUpResponse) -> Unit,
-    onGoogleClick: (LoginResponse) -> Unit,
+    onGoogleClick: (UserInfo) -> Unit,
     onFacebookClick: () -> Unit,
     onLoginClick: () -> Unit,
     onHomeClick: () -> Unit

@@ -4,10 +4,10 @@ import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.safeApiCall
 import com.softprodigy.ballerapp.data.GoogleUserModel
+import com.softprodigy.ballerapp.data.UserInfo
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.SocialLoginRequest
-import com.softprodigy.ballerapp.data.response.LoginResponse
 import com.softprodigy.ballerapp.network.APIService
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -16,7 +16,7 @@ import javax.inject.Singleton
 
 @Singleton
 interface SocialLoginRepo {
-    suspend fun loginWithGoogle(googleUser: GoogleUserModel): ResultWrapper<LoginResponse>
+    suspend fun loginWithGoogle(googleUser: GoogleUserModel): ResultWrapper<UserInfo>
 }
 
 @Singleton
@@ -25,7 +25,7 @@ class SocialLoginRepoImpl @Inject constructor(
     private val service: APIService,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ):SocialLoginRepo {
-    override suspend fun loginWithGoogle(googleUser: GoogleUserModel): ResultWrapper<LoginResponse> {
+    override suspend fun loginWithGoogle(googleUser: GoogleUserModel): ResultWrapper<UserInfo> {
         val requestBody =
             SocialLoginRequest(
                 firstName = googleUser.name,

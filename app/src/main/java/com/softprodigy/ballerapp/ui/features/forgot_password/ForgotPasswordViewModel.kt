@@ -32,11 +32,9 @@ class ForgotPasswordViewModel @Inject constructor(
 
     fun onEvent(event: ForgotPasswordUIEvent) {
         when (event) {
-
             is ForgotPasswordUIEvent.Submit -> {
                 submit(event.email)
             }
-
         }
     }
 

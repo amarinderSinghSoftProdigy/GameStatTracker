@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.common.ResultWrapper
-import com.softprodigy.ballerapp.data.response.LoginResponse
+import com.softprodigy.ballerapp.data.UserInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -47,6 +47,6 @@ class WelcomeViewModel @Inject constructor(private val socialLoginRepo: SocialLo
 }
 
 sealed class WelcomeChannel {
-    data class OnGoogleLoginSuccess(val loginResponse: LoginResponse) : WelcomeChannel()
+    data class OnGoogleLoginSuccess(val loginResponse: UserInfo) : WelcomeChannel()
     data class OnFailure(val message: String) : WelcomeChannel()
 }

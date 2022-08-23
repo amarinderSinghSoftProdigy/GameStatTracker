@@ -4,8 +4,12 @@ import com.google.gson.annotations.SerializedName
 
 
 data class LoginRequest(
-    @SerializedName("email") var email: String? = null,
-    @SerializedName("password") var password: String? = null,
-    @SerializedName("device_type") var deviceType: String? = null,
-    @SerializedName("device_token") var deviceToken: String? = null
+    @SerializedName("email") val email: String? = null,
+    @SerializedName("password") val password: String? = null,
+    @SerializedName("loginType") val loginType: String? = null,
+    @SerializedName("facebookId") val facebookId: String? = null,
+    @SerializedName("twitterId") val twitterId: String? = null,
+    @SerializedName("appleId") val appleId: String? = null,
+    @SerializedName("firstName") val firstName: String? = null,
+    @SerializedName("lastName") val lastName: String? = null
 )

@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.baller_app.core.util.UiText
 import com.softprodigy.ballerapp.common.*
-import com.softprodigy.ballerapp.data.response.LoginResponse
+import com.softprodigy.ballerapp.data.UserInfo
 import com.softprodigy.ballerapp.data.response.SignUpResponse
 import com.softprodigy.ballerapp.ui.features.welcome.SocialLoginRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -158,6 +158,6 @@ class SignupViewModel @Inject constructor(
 sealed class SignUpChannel {
     data class ShowToast(val message: UiText) : SignUpChannel()
     data class OnSignUpSuccess(val signUpResponse: SignUpResponse) : SignUpChannel()
-    data class OnLoginSuccess(val loginResponse: LoginResponse) : SignUpChannel()
+    data class OnLoginSuccess(val loginResponse: UserInfo) : SignUpChannel()
 
 }

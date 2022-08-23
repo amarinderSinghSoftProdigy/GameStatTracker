@@ -1,6 +1,5 @@
 package com.softprodigy.ballerapp.ui.features.forgot_password
 
-
 import com.softprodigy.ballerapp.data.request.ForgotPasswordRequest
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.safeApiCall
