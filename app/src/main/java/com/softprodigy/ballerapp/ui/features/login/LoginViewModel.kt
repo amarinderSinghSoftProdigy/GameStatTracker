@@ -10,7 +10,6 @@ import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.ResultWrapper.GenericError
 import com.softprodigy.ballerapp.data.UserInfo
 import com.softprodigy.ballerapp.domain.repository.IUserRepository
-import com.softprodigy.ballerapp.ui.features.welcome.SocialLoginRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -20,7 +19,6 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private var IUserRepository: IUserRepository,
-    private var socialLoginRepo: SocialLoginRepo,
     application: Application
 ) :
     AndroidViewModel(application) {
@@ -34,24 +32,6 @@ class LoginViewModel @Inject constructor(
         when (event) {
             is LoginUIEvent.Submit -> {
                 login(event.email, event.password)
-            }
-            is LoginUIEvent.OnGoogleClick -> {
-                viewModelScope.launch {
-                    _loginUiState.value = LoginUIState(isDataLoading = true)
-                    when (val response = socialLoginRepo.loginWithGoogle(event.googleUser)) {
-                        is ResultWrapper.Success -> {
-                            _loginChannel.send(LoginChannel.OnLoginSuccess(response.value))
-                        }
-                        is ResultWrapper.GenericError -> {
-                            _loginChannel.send(LoginChannel.ShowToast(UiText.DynamicString("${response.code} ${response.message}")))
-                        }
-                        is ResultWrapper.NetworkError -> {
-                            _loginChannel.send(LoginChannel.ShowToast(UiText.DynamicString("${response.message}")))
-                        }
-                    }
-                    _loginUiState.value = LoginUIState(isDataLoading = false)
-
-                }
             }
         }
     }
