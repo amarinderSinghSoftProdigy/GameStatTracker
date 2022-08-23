@@ -4,7 +4,6 @@ import androidx.annotation.FloatRange
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
@@ -15,8 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -25,17 +26,36 @@ import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.theme.spacing
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.ui.features.components.BottomButtons
 
-data class WelcomeScreenData(val image: Int, val title: String)
+data class WelcomeScreenData(val image: Int, val title: String, val description: String)
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun WelcomeScreen(onNextScreen: () -> Unit) {
 
     val items = ArrayList<WelcomeScreenData>()
-    items.add(WelcomeScreenData(R.drawable.ball, stringResource(id = R.string.baller)))
-    items.add(WelcomeScreenData(R.drawable.ball, stringResource(id = R.string.baller)))
-    items.add(WelcomeScreenData(R.drawable.ball, stringResource(id = R.string.baller)))
+    items.add(
+        WelcomeScreenData(
+            R.drawable.ball, stringResource(id = R.string.welcome_to_the_app), stringResource(
+                id = R.string.desc
+            )
+        )
+    )
+    items.add(
+        WelcomeScreenData(
+            R.drawable.ball, stringResource(id = R.string.welcome_to_the_app), stringResource(
+                id = R.string.desc
+            )
+        )
+    )
+    items.add(
+        WelcomeScreenData(
+            R.drawable.ball, stringResource(id = R.string.welcome_to_the_app), stringResource(
+                id = R.string.desc
+            )
+        )
+    )
     val pagerState = rememberPagerState(
         pageCount = items.size,
         initialOffScreenLimit = 2,
@@ -46,9 +66,8 @@ fun WelcomeScreen(onNextScreen: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.White)
+            .background(Color.White)
     ) {
-
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
@@ -57,17 +76,24 @@ fun WelcomeScreen(onNextScreen: () -> Unit) {
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier
-                    .fillMaxSize()
-                    .weight(0.8f)
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.8f)
             ) { page ->
                 Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(10.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Image(
                         painter = painterResource(id = items[page].image),
                         contentDescription = items[page].title,
-                        modifier = Modifier.size(200.dp),
+                        modifier = Modifier
+                            .width(dimensionResource(id = R.dimen.size_200dp))
+                            .height(
+                                dimensionResource(id = R.dimen.size_200dp)
+                            ),
                         contentScale = ContentScale.FillBounds
                     )
 
@@ -78,13 +104,25 @@ fun WelcomeScreen(onNextScreen: () -> Unit) {
                         style = MaterialTheme.typography.h1,
                         color = Color.Black
                     )
+
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+
+                    AppText(
+                        text = items[page].description,
+                        style = MaterialTheme.typography.body1,
+                        color = Color.Black,
+                        textAlign = TextAlign.Center
+                    )
                 }
             }
-
             PagerIndicator(size = items.size, currentPage = pagerState.currentPage)
         }
 
-        Box(modifier = Modifier.align(Alignment.BottomCenter)) {
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 5.dp)
+        ) {
             BottomSection(pagerState.currentPage, onNextScreen)
         }
 
@@ -126,7 +164,7 @@ fun PagerIndicator(size: Int, currentPage: Int) {
 
 @Composable
 fun Indicator(isSelected: Boolean) {
-    val width = animateDpAsState(targetValue = if (isSelected) 15.dp else 10.dp)
+    val width = animateDpAsState(targetValue = if (isSelected) 10.dp else 10.dp)
 
     Box(
         modifier = Modifier
@@ -142,9 +180,8 @@ fun Indicator(isSelected: Boolean) {
 fun BottomSection(currentPager: Int, onNextScreen: () -> Unit) {
     Row(
         modifier = Modifier
-            .padding(bottom = 20.dp, start = 20.dp, end = 20.dp)
             .fillMaxWidth(),
-        horizontalArrangement = if (currentPager != 2) Arrangement.SpaceBetween else Arrangement.Center
+        horizontalArrangement = Arrangement.Center
     ) {
         if (currentPager == 2) {
             AppButton(
@@ -154,25 +191,24 @@ fun BottomSection(currentPager: Int, onNextScreen: () -> Unit) {
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(52.dp),
+                    .height(52.dp)
+                    .padding(
+                        start = dimensionResource(id = R.dimen.size_16dp),
+                        end = dimensionResource(id = R.dimen.size_16dp),
+                    ),
                 text = stringResource(id = R.string.get_started),
                 icon = painterResource(id = R.drawable.ic_circle_next)
             )
         } else {
+            BottomButtons(
+                onBackClick = { onNextScreen() },
+                onNextClick = {
 
-            AppText(
-                text = stringResource(id = R.string.skip),
-                style = MaterialTheme.typography.h3,
-                color = Color.Black,
-                modifier = Modifier.clickable { onNextScreen() }
+                },
+                enableState = true,
+                firstText = stringResource(id = R.string.skip),
+                secondText = stringResource(id = R.string.next)
             )
-
-            AppText(
-                text = stringResource(id = R.string.next),
-                style = MaterialTheme.typography.h3,
-                color = Color.Black,
-                modifier = Modifier.clickable { })
-
         }
     }
 }

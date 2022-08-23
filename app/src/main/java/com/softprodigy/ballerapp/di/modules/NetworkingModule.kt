@@ -1,6 +1,5 @@
 package com.softprodigy.ballerapp.di.modules
 
-import com.softprodigy.ballerapp.network.APIService
 import com.slack.eithernet.ApiResultCallAdapterFactory
 import com.slack.eithernet.ApiResultConverterFactory
 import com.softprodigy.ballerapp.BuildConfig.*
@@ -34,18 +33,18 @@ object NetworkingModule {
         return okHttpClient.build()
     }
 
-    @Provides
-    @Singleton
-    fun provideRestApiService(okHttpClient: OkHttpClient): APIService {
-        return Retrofit.Builder()
-            .baseUrl(API_SERVER)
-            .client(okHttpClient)
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .addCallAdapterFactory(ApiResultCallAdapterFactory)
-            .addConverterFactory(ApiResultConverterFactory)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(APIService::class.java)
-    }
+//    @Provides
+//    @Singleton
+//    fun provideRestApiService(okHttpClient: OkHttpClient): APIService {
+//        return Retrofit.Builder()
+//            .baseUrl(API_SERVER)
+//            .client(okHttpClient)
+//            .addConverterFactory(ScalarsConverterFactory.create())
+//            .addCallAdapterFactory(ApiResultCallAdapterFactory)
+//            .addConverterFactory(ApiResultConverterFactory)
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+//            .create(APIService::class.java)
+//    }
 
 }

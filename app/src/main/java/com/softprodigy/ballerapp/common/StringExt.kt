@@ -15,7 +15,7 @@ fun String.isValidEmail(): Boolean {
 }
 
 fun String.isValidPassword(): Boolean {
-    val regex = ("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{6,}$")
+    val regex = ("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*[@#\$%^&+=])(?=\\S+$).{6,16}$")
     val p = regex.toRegex()
     return p.matches(this) && this.length >= 6
 }
@@ -33,4 +33,14 @@ fun String.isValidFullName(): Boolean {
         return false
     }
     return (this.trim().contains(" ") && this.length >= 5)
+}
+
+fun validName(name: String): Boolean {
+    val regex = "^[A-Za-z]+$"
+    return name.matches(regex.toRegex())
+}
+
+fun validPhoneNumber(number: String): Boolean {
+    val regex = "^+[0-9]{10,13}$"
+    return number.matches(regex.toRegex())
 }

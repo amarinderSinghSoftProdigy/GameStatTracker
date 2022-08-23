@@ -32,6 +32,9 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.ui.features.components.AppSearchOutlinedTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.BottomButtons
+import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
+import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
 import com.softprodigy.ballerapp.ui.features.user_type.add_player.AddPlayerViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
@@ -139,6 +142,7 @@ fun AddPlayersScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_info),
                             contentDescription = "",
+                            modifier = Modifier.padding(dimensionResource(id = R.dimen.size_20dp)),
                             tint = Color.Unspecified
                         )
                     }

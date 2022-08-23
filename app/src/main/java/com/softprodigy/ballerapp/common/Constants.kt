@@ -25,7 +25,7 @@ object Route {
     const val SELECT_USER_TYPE="selectUserTypeScreen"
     const val TEAM_SETUP_SCREEN = "teamSetupScreen"
     const val ADD_PLAYER_SCREEN = "addPlayerScreen"
-
+    const val PROFILE_SETUP_SCREEN = "profileSetupScreen"
 }
 
 object ApiConstants {
