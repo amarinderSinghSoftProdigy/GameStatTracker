@@ -109,16 +109,16 @@ fun AppOutlineDateField(
             .background(color = Color.White)
     ) {
         Column(
-            modifier = Modifier.fillMaxSize().padding(start = 10.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(start = 10.dp),
             verticalArrangement = Arrangement.Center,
         ) {
 
             AppText(text = value, textAlign = TextAlign.Center)
 
         }
-
     }
-
 }
 
 @Composable
@@ -127,36 +127,51 @@ fun EditFields(
     head: String,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
     keyboardActions: KeyboardActions = KeyboardActions.Default,
+    isError: Boolean = false,
+    errorMessage: String = "",
 ) {
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
+    Column( modifier = Modifier
+        .fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
 
-        AppText(
-            text = head,
-            style = MaterialTheme.typography.h6,
-            color = ColorBWBlack,
-            modifier = Modifier.padding(start = 16.dp)
-        )
+            AppText(
+                text = head,
+                style = MaterialTheme.typography.h6,
+                color = ColorBWBlack,
+                modifier = Modifier.padding(start = 16.dp)
+            )
+            TextField(
+                value = data.value, onValueChange = {
+                    data.value = it
+                },
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    backgroundColor = Color.Transparent,
+                    focusedBorderColor = Color.Transparent,
+                    unfocusedBorderColor = Color.Transparent
+                ),
+                textStyle = androidx.compose.material.LocalTextStyle.current.copy(textAlign = TextAlign.End),
+                singleLine = true,
+                keyboardActions = keyboardActions,
+                keyboardOptions = keyboardOptions
+            )
+        }
 
-        TextField(
-            value = data.value, onValueChange = {
-                data.value = it
-            },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                backgroundColor = Color.Transparent,
-                focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent
-            ),
-            textStyle = androidx.compose.material.LocalTextStyle.current.copy(textAlign = TextAlign.End),
-            singleLine = true,
-            keyboardActions = keyboardActions,
-            keyboardOptions = keyboardOptions
-        )
-
+        if (isError) {
+            androidx.compose.material.Text(
+                text = errorMessage,
+                color = MaterialTheme.colors.error,
+                style = MaterialTheme.typography.caption,
+                modifier = Modifier
+                    .padding(4.dp)
+                    .fillMaxWidth(),
+                textAlign = TextAlign.End
+            )
+        }
     }
 }

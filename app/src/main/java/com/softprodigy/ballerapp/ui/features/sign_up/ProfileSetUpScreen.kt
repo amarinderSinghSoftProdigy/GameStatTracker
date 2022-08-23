@@ -27,8 +27,12 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.isValidEmail
+import com.softprodigy.ballerapp.common.validName
+import com.softprodigy.ballerapp.common.validPhoneNumber
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.EditFields
 import com.softprodigy.ballerapp.ui.features.components.BottomButtons
@@ -151,30 +155,56 @@ fun SetUpProfile(onNext: () -> Unit, onBack: () -> Unit) {
                     }
                 }
 
-                Spacer(modifier = Modifier.height(48.dp))
+                if (imageUri == null) {
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+                    Text(
+                        text = stringResource(id = R.string.valid_image),
+                        color = MaterialTheme.colors.error,
+                        style = MaterialTheme.typography.caption,
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_48dp)))
 
                 Divider()
 
-                EditFields(fName, stringResource(id = R.string.first_name))
+                EditFields(
+                    fName,
+                    stringResource(id = R.string.first_name),
+                    isError = !validName(fName.value) && fName.value.length >= 2,
+                    errorMessage = stringResource(id = R.string.valid_first_name)
+                )
 
                 Divider()
 
-                EditFields(lName, stringResource(id = R.string.last_name))
+                EditFields(
+                    lName,
+                    stringResource(id = R.string.last_name),
+                    isError = !validName(lName.value) && lName.value.length >= 2,
+                    errorMessage = stringResource(id = R.string.valid_last_name)
+                )
                 Divider()
 
                 EditFields(
                     email,
                     stringResource(id = R.string.email),
-                    KeyboardOptions(keyboardType = KeyboardType.Email)
+                    KeyboardOptions(keyboardType = KeyboardType.Email),
+                    isError = (!email.value.isValidEmail() && email.value.length >= 6),
+                    errorMessage = stringResource(id = R.string.email_error)
                 )
                 Divider()
 
                 EditFields(
                     phoneNumber,
                     stringResource(id = R.string.phone_num),
-                    KeyboardOptions(keyboardType = KeyboardType.Number)
+                    KeyboardOptions(keyboardType = KeyboardType.Number),
+                    isError = (!validPhoneNumber(phoneNumber.value) && phoneNumber.value.length >= 5),
+                    errorMessage = stringResource(id = R.string.valid_phone_number)
                 )
-
             }
         }
 
@@ -183,11 +213,10 @@ fun SetUpProfile(onNext: () -> Unit, onBack: () -> Unit) {
         BottomButtons(
             onBackClick = { onBack() },
             onNextClick = { onNext() },
-            enableState = fName.value.isNotEmpty()
-                    && imageUri != null
-                    && lName.value.isNotEmpty()
-                    && phoneNumber.value.isNotEmpty()
-                    && email.value.isNotEmpty(),
+            enableState = validName(fName.value)
+                    && validName(lName.value)
+                    && validPhoneNumber(phoneNumber.value)
+                    && email.value.isValidEmail(),
             firstText = stringResource(id = R.string.back),
             secondText = stringResource(id = R.string.next)
         )

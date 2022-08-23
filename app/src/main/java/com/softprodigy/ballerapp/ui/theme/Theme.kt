@@ -18,8 +18,7 @@ data class EditField(
     val borderFocused: Color,
     val borderUnFocused: Color,
     val borderError: Color,
-
-    )
+)
 
 data class TextFieldColor(
     val label: Color,
@@ -37,7 +36,6 @@ data class ButtonColor(
     val textEnabled: Color,
     val textDisabled: Color
 )
-
 
 data class appColors(
     val material: Colors,

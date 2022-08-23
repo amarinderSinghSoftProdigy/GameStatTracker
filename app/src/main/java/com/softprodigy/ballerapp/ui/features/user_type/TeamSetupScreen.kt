@@ -184,9 +184,9 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
 
                             val finalFile = getRealPathFromURI(context,it)?.let { it1 -> File(it1) }
 
-                            if (finalFile != null) {
-                                Timber.d("TeamSetupScreen: " + finalFile.)
-                            }
+//                            if (finalFile != null) {
+//                                Timber.d("TeamSetupScreen: " + finalFile.)
+//                            }
 
                             bitmap.value?.let { btm ->
                                 Image(
