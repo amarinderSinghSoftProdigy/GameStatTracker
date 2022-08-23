@@ -40,7 +40,6 @@ import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
 import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorPrimaryTransparent
-import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
 fun ProfileSetUpScreen(
@@ -102,7 +101,7 @@ fun SetUpProfile(onNext: () -> Unit, onBack: () -> Unit) {
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_40dp)))
 
-        UserFlowBackground(color = MaterialTheme.appColors.material.onSecondary) {
+        UserFlowBackground(modifier = Modifier.fillMaxWidth()) {
 
             Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center) {
 
