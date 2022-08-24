@@ -1,14 +1,17 @@
 package com.softprodigy.ballerapp.common
 
+import androidx.compose.ui.graphics.Color
+
 object AppConstants {
     const val ANDROID = "android"
     const val GOOGLE = "google"
     const val KEY_PASSWORD = "password"
     const val KEY_USERS = "users"
     const val DEFAULT_ERROR_MESSAGE = "Something went wrong"
-    const val USER_TYPE_PLAYER="Player"
-    const val USER_TYPE_REFEREE="Referee"
-    const val USER_TYPE_COACH="Coach"
+    const val USER_TYPE_PLAYER = "Player"
+    const val USER_TYPE_REFEREE = "Referee"
+    const val USER_TYPE_COACH = "Coach"
+    var SELECTED_COLOR: Color = Color.White
 }
 
 object Route {
@@ -22,7 +25,7 @@ object Route {
     const val EVENTS_SCREEN = "eventsScreen"
     const val TEAMS_SCREEN = "teamsScreen"
     const val SPLASH_SCREEN = "splashScreen"
-    const val SELECT_USER_TYPE="selectUserTypeScreen"
+    const val SELECT_USER_TYPE = "selectUserTypeScreen"
     const val TEAM_SETUP_SCREEN = "teamSetupScreen"
     const val ADD_PLAYER_SCREEN = "addPlayerScreen"
     const val PROFILE_SETUP_SCREEN = "profileSetupScreen"
@@ -37,9 +40,9 @@ object ApiConstants {
     const val VERIFY_OTP = "/verifyOtp/"
     const val RESET_PASS = "/reset/password/"
     const val RESEND_OTP = "/resendOtp"
-    const val first_name="first_name"
-    const val last_name="lastName"
-    const val mobile="mobile"
-    const val email="email"
-    const val token="token"
+    const val first_name = "first_name"
+    const val last_name = "lastName"
+    const val mobile = "mobile"
+    const val email = "email"
+    const val token = "token"
 }

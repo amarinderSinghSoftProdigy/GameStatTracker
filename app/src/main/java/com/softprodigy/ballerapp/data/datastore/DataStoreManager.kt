@@ -17,7 +17,7 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
 
     private val settingsDataStore = appContext.dataStore
 
-    suspend fun setUserInfo(userInfo: String) {
+    suspend fun setUserType(userInfo: String) {
         settingsDataStore.edit { settings ->
             settings[USER_KEY] = userInfo
         }
