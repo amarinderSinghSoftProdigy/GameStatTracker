@@ -105,7 +105,7 @@ fun LoginScreen(
                 onValueChange = {
                     email = it
                 },
-                placeholder = { Text(text = stringResource(id = R.string.enter_your_email)) },
+                placeholder = { Text(text = stringResource(id = R.string.your_email)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 isError = (!email.isValidEmail() && email.length >= 6),
                 errorMessage = stringResource(id = R.string.email_error),
@@ -119,7 +119,6 @@ fun LoginScreen(
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
-
             AppText(
                 text = stringResource(id = R.string.password),
                 style = MaterialTheme.typography.h6,
@@ -128,7 +127,6 @@ fun LoginScreen(
                 textAlign = TextAlign.Start
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-
 
             AppOutlineTextField(
                 value = password,

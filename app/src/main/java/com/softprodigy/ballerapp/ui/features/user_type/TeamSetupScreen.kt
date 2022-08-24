@@ -29,6 +29,7 @@ import com.github.skydoves.colorpicker.compose.ColorPickerController
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.validTeamName
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.ui.features.components.AppBasicTextField
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
@@ -123,7 +124,9 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                             placeholder = { AppText(text = stringResource(id = R.string.your_team_name)) },
                             colors = TextFieldDefaults.outlinedTextFieldColors(
                                 unfocusedBorderColor = ColorBWGrayBorder
-                            )
+                            ),
+                            isError = !validTeamName(teamName.value) && teamName.value.length >= 4,
+                            errorMessage = stringResource(id = R.string.valid_team_name)
                         )
                     }
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
@@ -188,15 +191,15 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                             )
                         }
                         imageUri?.let {
-                                Image(
-                                    painter = rememberImagePainter(data = Uri.parse(it.toString())),
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .size(dimensionResource(id = R.dimen.size_300dp))
-                                        .clip(CircleShape)
-                                        .align(Alignment.Center)
-                                )
+                            Image(
+                                painter = rememberImagePainter(data = Uri.parse(it.toString())),
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .size(dimensionResource(id = R.dimen.size_300dp))
+                                    .clip(CircleShape)
+                                    .align(Alignment.Center)
+                            )
 
                         }
                     }
@@ -270,7 +273,6 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                             ) {}
                         }
 
-
                     }
                 }
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
@@ -283,9 +285,10 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                         UserStorage.teamColor = selectedColorCode.value
                         UserStorage.teamLogo = imageUri.toString()
                     },
-                    enableState = teamName.value.isNotEmpty() && imageUri != null && selectedColorCode.value.isNotEmpty(),
+                    enableState = validTeamName(teamName.value) && imageUri != null && selectedColorCode.value.isNotEmpty(),
                     showOnlyNext = false
                 )
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             }
         }
     }

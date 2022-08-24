@@ -132,7 +132,6 @@ fun WelcomeScreen(onNextScreen: () -> Unit) {
                 }
             }
         }
-
     }
 }
 
