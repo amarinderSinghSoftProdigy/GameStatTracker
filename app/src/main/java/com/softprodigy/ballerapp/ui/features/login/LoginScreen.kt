@@ -46,9 +46,11 @@ fun LoginScreen(
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordVisibility by rememberSaveable { mutableStateOf(false) }
+    val loginState = vm.loginUiState.value
+
 
     LaunchedEffect(key1 = Unit) {
-        vm.uiEvent.collect { uiEvent ->
+        vm.loginChannel.collect { uiEvent ->
             when (uiEvent) {
                 is LoginChannel.ShowToast -> {
                     Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
@@ -199,6 +201,9 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))
 
+        }
+        if (loginState.isDataLoading) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
     }
 }

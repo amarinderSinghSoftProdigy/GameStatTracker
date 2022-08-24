@@ -23,7 +23,7 @@ class LoginViewModel @Inject constructor(
 ) :
     AndroidViewModel(application) {
     private val _loginChannel = Channel<LoginChannel>()
-    val uiEvent = _loginChannel.receiveAsFlow()
+    val loginChannel = _loginChannel.receiveAsFlow()
 
     private val _loginUiState = mutableStateOf(LoginUIState())
     val loginUiState: State<LoginUIState> = _loginUiState
