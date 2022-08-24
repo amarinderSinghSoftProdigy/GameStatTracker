@@ -129,7 +129,7 @@ fun SignUpScreen(onSignUpSuccess: () -> Unit) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 20.dp)
+                .padding(horizontal = dimensionResource(id = R.dimen.size_20dp))
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -178,7 +178,6 @@ fun SignUpScreen(onSignUpSuccess: () -> Unit) {
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
-
             AppText(
                 text = stringResource(id = R.string.email),
                 style = MaterialTheme.typography.h6,
@@ -188,7 +187,6 @@ fun SignUpScreen(onSignUpSuccess: () -> Unit) {
             )
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-
 
             AppOutlineTextField(
                 value = email,
@@ -206,7 +204,7 @@ fun SignUpScreen(onSignUpSuccess: () -> Unit) {
                     textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                     placeholderColor = MaterialTheme.appColors.textField.label
                 ),
-                isError = (!email.isValidEmail() && email.length >= 6),
+                isError = (!email.isValidEmail() && email.isNotEmpty()),
                 errorMessage = stringResource(id = R.string.email_error),
             )
 
@@ -240,7 +238,7 @@ fun SignUpScreen(onSignUpSuccess: () -> Unit) {
                 value = address,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(100.dp),
+                    .height(dimensionResource(id = R.dimen.size_100dp)),
                 onValueChange = {
                     address = it
                 },
@@ -318,7 +316,7 @@ fun SignUpScreen(onSignUpSuccess: () -> Unit) {
                     placeholderColor = MaterialTheme.appColors.textField.label
                 ),
                 singleLine = true,
-                isError = (!validPhoneNumber(phoneNumber.value) && phoneNumber.value.length >= 5),
+                isError = (!validPhoneNumber(phoneNumber.value) && phoneNumber.value.isNotEmpty()),
             )
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
@@ -388,7 +386,7 @@ fun SignUpScreen(onSignUpSuccess: () -> Unit) {
                     placeholderColor = MaterialTheme.appColors.textField.label
                 ),
                 singleLine = true,
-                isError = !(phoneNumber.value).passwordMatches(confirmNumber.value),
+                isError = !(phoneNumber.value).passwordMatches(confirmNumber.value) && confirmNumber.value.isNotEmpty(),
             )
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
@@ -403,7 +401,7 @@ fun SignUpScreen(onSignUpSuccess: () -> Unit) {
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
+                    .height(dimensionResource(id = R.dimen.size_56dp)),
                 text = stringResource(id = R.string.create_now),
                 icon = painterResource(id = R.drawable.ic_circle_next)
             )

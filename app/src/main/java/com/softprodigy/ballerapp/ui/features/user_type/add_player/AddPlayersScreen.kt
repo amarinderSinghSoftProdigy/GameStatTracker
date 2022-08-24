@@ -109,13 +109,13 @@ fun AddPlayersScreen(
                         )
                     }
 
-                    if (!validName(search.value) && search.value.length >= 4) {
+                    if (!validName(search.value) && search.value.isNotEmpty()) {
                         Text(
                             text = stringResource(id = R.string.valid_search),
                             color = MaterialTheme.colors.error,
                             style = MaterialTheme.typography.caption,
                             modifier = Modifier
-                                .padding(4.dp)
+                                .padding(dimensionResource(id = R.dimen.size_4dp))
                                 .fillMaxWidth(),
                             textAlign = TextAlign.Center
                         )

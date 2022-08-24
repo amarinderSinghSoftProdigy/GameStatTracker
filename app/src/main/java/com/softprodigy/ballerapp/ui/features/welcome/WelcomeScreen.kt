@@ -19,7 +19,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -124,7 +123,7 @@ fun WelcomeScreen(onNextScreen: () -> Unit) {
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 5.dp)
+                .padding(bottom = dimensionResource(id = R.dimen.size_5dp))
         ) {
             BottomSection(pagerState.currentPage, onNextScreen) {
                 scope.launch {
@@ -170,12 +169,12 @@ fun PagerIndicator(size: Int, currentPage: Int) {
 
 @Composable
 fun Indicator(isSelected: Boolean) {
-    val width = animateDpAsState(targetValue = if (isSelected) 10.dp else 10.dp)
+    val width = animateDpAsState(targetValue = dimensionResource(id = R.dimen.size_10dp))
 
     Box(
         modifier = Modifier
-            .padding(1.dp)
-            .height(10.dp)
+            .padding(dimensionResource(id = R.dimen.size_1dp))
+            .height(dimensionResource(id = R.dimen.size_10dp))
             .width(width = width.value)
             .clip(CircleShape)
             .background(if (isSelected) Color.Black else Color.Gray)
@@ -198,7 +197,7 @@ fun BottomSection(currentPager: Int, onNextScreen: () -> Unit, onNextPage: () ->
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(52.dp)
+                    .height(dimensionResource(id = R.dimen.size_50dp))
                     .padding(
                         start = dimensionResource(id = R.dimen.size_16dp),
                         end = dimensionResource(id = R.dimen.size_16dp),

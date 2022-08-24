@@ -125,7 +125,7 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                             colors = TextFieldDefaults.outlinedTextFieldColors(
                                 unfocusedBorderColor = ColorBWGrayBorder
                             ),
-                            isError = !validTeamName(teamName.value) && teamName.value.length >= 4,
+                            isError = !validTeamName(teamName.value) && teamName.value.isNotEmpty(),
                             errorMessage = stringResource(id = R.string.valid_team_name)
                         )
                     }
@@ -250,8 +250,13 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                                     .height(
                                         dimensionResource(id = R.dimen.size_32dp)
                                     )
-                                    .border(BorderStroke(1.dp, ColorBWGrayBorder))
-                                    .padding(8.dp),
+                                    .border(
+                                        BorderStroke(
+                                            dimensionResource(id = R.dimen.size_1dp),
+                                            ColorBWGrayBorder
+                                        )
+                                    )
+                                    .padding(dimensionResource(id = R.dimen.size_1dp)),
                                 enabled = false,
                                 value = editTextColorValue.value,
                                 onValueChange = {
@@ -331,5 +336,4 @@ fun ColorPickerBottomSheet(
             onColorChanged = colorEnvelope
         )
     }
-
 }

@@ -24,7 +24,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.isValidEmail
@@ -105,7 +104,7 @@ fun SetUpProfile(onNext: () -> Unit, onBack: () -> Unit) {
 
             Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center) {
 
-                Spacer(modifier = Modifier.height(48.dp))
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_48dp)))
 
                 Box(
                     Modifier
@@ -127,8 +126,8 @@ fun SetUpProfile(onNext: () -> Unit, onBack: () -> Unit) {
                             contentDescription = null,
                             tint = Color.Unspecified,
                             modifier = Modifier
-                                .width(36.dp)
-                                .height(32.dp)
+                                .width(dimensionResource(id = R.dimen.size_35dp))
+                                .height(dimensionResource(id = R.dimen.size_35dp))
                         )
                     }
                     imageUri?.let {
@@ -160,7 +159,7 @@ fun SetUpProfile(onNext: () -> Unit, onBack: () -> Unit) {
                 EditFields(
                     fName,
                     stringResource(id = R.string.first_name),
-                    isError = !validName(fName.value) && fName.value.length >= 2,
+                    isError = !validName(fName.value) && fName.value.isNotEmpty(),
                     errorMessage = stringResource(id = R.string.valid_first_name)
                 )
 
@@ -169,7 +168,7 @@ fun SetUpProfile(onNext: () -> Unit, onBack: () -> Unit) {
                 EditFields(
                     lName,
                     stringResource(id = R.string.last_name),
-                    isError = !validName(lName.value) && lName.value.length >= 2,
+                    isError = !validName(lName.value) && lName.value.isNotEmpty(),
                     errorMessage = stringResource(id = R.string.valid_last_name)
                 )
                 Divider()
@@ -177,7 +176,7 @@ fun SetUpProfile(onNext: () -> Unit, onBack: () -> Unit) {
                 EditFields(
                     email,
                     stringResource(id = R.string.email),
-                    isError = (!email.value.isValidEmail() && email.value.length >= 6),
+                    isError = (!email.value.isValidEmail() && email.value.isNotEmpty()),
                     errorMessage = stringResource(id = R.string.email_error)
                 )
                 Divider()
@@ -186,7 +185,7 @@ fun SetUpProfile(onNext: () -> Unit, onBack: () -> Unit) {
                     phoneNumber,
                     stringResource(id = R.string.phone_num),
                     KeyboardOptions(keyboardType = KeyboardType.Number),
-                    isError = (!validPhoneNumber(phoneNumber.value) && phoneNumber.value.length >= 5),
+                    isError = (!validPhoneNumber(phoneNumber.value) && phoneNumber.value.isNotEmpty()),
                     errorMessage = stringResource(id = R.string.valid_phone_number)
                 )
             }
