@@ -167,6 +167,7 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
 
             AppButton(
+                singleButton = true,
                 enabled = email.isValidEmail() && password.isValidPassword(),
                 onClick = {
                     vm.onEvent(LoginUIEvent.Submit(email, password))
