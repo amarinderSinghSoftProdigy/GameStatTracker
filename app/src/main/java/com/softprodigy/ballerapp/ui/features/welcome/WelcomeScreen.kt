@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +28,7 @@ import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.theme.spacing
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.BottomButtons
+import kotlinx.coroutines.launch
 
 data class WelcomeScreenData(val image: Int, val title: String, val description: String)
 
@@ -34,6 +36,7 @@ data class WelcomeScreenData(val image: Int, val title: String, val description:
 @Composable
 fun WelcomeScreen(onNextScreen: () -> Unit) {
 
+    val scope = rememberCoroutineScope()
     val items = ArrayList<WelcomeScreenData>()
     items.add(
         WelcomeScreenData(
@@ -66,7 +69,7 @@ fun WelcomeScreen(onNextScreen: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .padding(all = dimensionResource(id = R.dimen.size_16dp))
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -82,7 +85,7 @@ fun WelcomeScreen(onNextScreen: () -> Unit) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(10.dp),
+                        .padding(dimensionResource(id = R.dimen.size_12dp)),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -123,7 +126,11 @@ fun WelcomeScreen(onNextScreen: () -> Unit) {
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 5.dp)
         ) {
-            BottomSection(pagerState.currentPage, onNextScreen)
+            BottomSection(pagerState.currentPage, onNextScreen) {
+                scope.launch {
+                    pagerState.scrollToPage(pagerState.currentPage + 1)
+                }
+            }
         }
 
     }
@@ -177,7 +184,7 @@ fun Indicator(isSelected: Boolean) {
 }
 
 @Composable
-fun BottomSection(currentPager: Int, onNextScreen: () -> Unit) {
+fun BottomSection(currentPager: Int, onNextScreen: () -> Unit, onNextPage: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
@@ -185,6 +192,7 @@ fun BottomSection(currentPager: Int, onNextScreen: () -> Unit) {
     ) {
         if (currentPager == 2) {
             AppButton(
+                singleButton = true,
                 enabled = true,
                 onClick = {
                     onNextScreen()
@@ -203,7 +211,7 @@ fun BottomSection(currentPager: Int, onNextScreen: () -> Unit) {
             BottomButtons(
                 onBackClick = { onNextScreen() },
                 onNextClick = {
-
+                    onNextPage()
                 },
                 enableState = true,
                 firstText = stringResource(id = R.string.skip),
