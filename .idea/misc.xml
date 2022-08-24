@@ -17,6 +17,8 @@
         <entry key="app/src/main/res/drawable/ic_remove.xml" value="0.104" />
         <entry key="app/src/main/res/drawable/ic_scanner.xml" value="0.131" />
         <entry key="app/src/main/res/drawable/ic_upload.xml" value="0.131" />
+        <entry key="app/src/main/res/layout/activity_details.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/twitter_login.xml" value="0.25" />
       </map>
     </option>
   </component>
