@@ -2,16 +2,19 @@ package com.softprodigy.ballerapp.ui.features.user_type
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -38,6 +41,7 @@ import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
 import com.softprodigy.ballerapp.ui.features.user_type.add_player.AddPlayerViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
+import com.softprodigy.ballerapp.ui.theme.appColors
 import java.util.*
 
 @SuppressLint("MutableCollectionMutableState")
@@ -47,7 +51,7 @@ fun AddPlayersScreen(
     onBackClick: () -> Unit,
     onNextClick: () -> Unit
 ) {
-    var search by rememberSaveable { mutableStateOf("") }
+    var search = remember { mutableStateOf("") }
     val context = LocalContext.current
     val selectedPlayer = vm.selectedPlayer
 
@@ -80,9 +84,9 @@ fun AddPlayersScreen(
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                         AppSearchOutlinedTextField(
                             modifier = Modifier.weight(1.0f),
-                            value = search,
+                            value = search.value,
                             onValueChange = {
-                                search = it
+                                search.value = it
                             },
                             leadingIcon = {
                                 Icon(
@@ -103,36 +107,35 @@ fun AddPlayersScreen(
                             tint = Color.Unspecified
                         )
                     }
-                    PlayerListUI(modifier = Modifier
-                        .fillMaxWidth()
-                        .height(dimensionResource(id = R.dimen.size_200dp)),
-                        searchedText = search,
-                        onPlayerClick = {
-                            selectedPlayer.add(it)
-                        })
-                    Divider(modifier = Modifier
-                        .layout() { measurable, constraints ->
-                            val placeable = measurable.measure(
-                                constraints.copy(
-                                    maxWidth = constraints.maxWidth + (context.resources.getDimension(
-                                        R.dimen.size_32dp
-                                    )).dp.roundToPx(),
-                                    //It will ignore parent column padding and occupy whole space
-                                )
-                            )
-                            layout(placeable.width, placeable.height) {
-                                placeable.place(0, 0) //starting position of divider
-                            }
-                        })
 
+                    if (search.value.isNotEmpty()) {
+                        PlayerListUI(modifier = Modifier
+                            .fillMaxWidth()
+                            .height(dimensionResource(id = R.dimen.size_200dp)),
+                            searchedText = search.value,
+                            onPlayerClick = {
+                                selectedPlayer.add(it)
+                            })
+                        Divider(modifier = Modifier
+                            .layout { measurable, constraints ->
+                                val placeable = measurable.measure(
+                                    constraints.copy(
+                                        maxWidth = constraints.maxWidth + (context.resources.getDimension(
+                                            R.dimen.size_32dp
+                                        )).dp.roundToPx(),
+                                        //It will ignore parent column padding and occupy whole space
+                                    )
+                                )
+                                layout(placeable.width, placeable.height) {
+                                    placeable.place(0, 0) //starting position of divider
+                                }
+                            })
+
+                    }
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .padding(dimensionResource(id = R.dimen.size_16dp))
-                            .fillMaxWidth(),
-
-                        ) {
+                        modifier = Modifier.fillMaxWidth(),) {
                         AppText(
                             text = stringResource(id = R.string.added_players),
                             fontWeight = FontWeight.W500,
@@ -228,7 +231,7 @@ fun PlayerListItem(icon: Painter, countryText: String, onItemClick: (String) -> 
             painter = painterResource(id = R.drawable.user_demo),
             contentDescription = "",
             modifier = Modifier
-                .size(32.dp)
+                .size(dimensionResource(id = R.dimen.size_32dp))
                 .clip(androidx.compose.foundation.shape.CircleShape),
         )
         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
@@ -238,15 +241,31 @@ fun PlayerListItem(icon: Painter, countryText: String, onItemClick: (String) -> 
             modifier = Modifier.weight(1f)
         )
         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+        AddRemoveButton(icon) { onItemClick(countryText) }
+    }
+}
+
+@Composable
+fun AddRemoveButton(icon: Painter, onItemClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .size(dimensionResource(id = R.dimen.size_24dp))
+            .background(
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_5dp)),
+                color = MaterialTheme.appColors.material.primaryVariant
+            )
+    ) {
         Icon(
             painter = icon, contentDescription = "",
             modifier = Modifier
+                .align(Alignment.Center)
                 .size(dimensionResource(id = R.dimen.size_20dp))
-                .clickable(onClick = { onItemClick(countryText) }),
-            tint = Color.Unspecified,
+                .clickable(onClick = { onItemClick() }),
+            tint = Color.White
         )
     }
 }
+
 
 fun getListOfPlayers(): ArrayList<String> {
     val isoCountryCodes = Locale.getISOCountries()

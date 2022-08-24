@@ -1,28 +1,47 @@
 package com.softprodigy.ballerapp.ui.features.home
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.sp
+import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
+import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
 fun HomeScreen(name: String?) {
     Box(Modifier.fillMaxSize()) {
-        if (name != null && name != "null")
-            Text(
-                text = "Welcome $name",
-                fontSize = 20.sp,
-                modifier = Modifier.align(Alignment.Center)
+
+        Column(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                painter = painterResource(id = R.drawable.ic_teams_large),
+                contentDescription = null,
             )
-        else {
             Text(
-                text = "HOME SCREEN -- User not logged in",
-                fontSize = 20.sp,
-                modifier = Modifier.align(Alignment.Center)
+                text = "No players in your team",
+                fontSize = 16.sp,
             )
+            Text(
+                text = "Add new players to lorem ipsum dolor sit amet.",
+                fontSize = 12.sp,
+            )
+
+
         }
     }
 }

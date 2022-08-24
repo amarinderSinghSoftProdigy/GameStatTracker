@@ -75,7 +75,7 @@ fun UserTypeSelector(onNextClick: (String) -> Unit) {
                         ),
                 ) {
                     UserSelectionSurface(
-                        modifier = Modifier.fillMaxWidth(0.8f),
+                        modifier = Modifier.fillMaxWidth(0.9f),
                         text = text,
                         isSelected = text == selectedUserType,
                         onClick = { onSelectionChange(text) }
