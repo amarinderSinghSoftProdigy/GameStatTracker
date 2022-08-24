@@ -9,6 +9,9 @@ object AppConstants {
     const val USER_TYPE_PLAYER="Player"
     const val USER_TYPE_REFEREE="Referee"
     const val USER_TYPE_COACH="Coach"
+    const val PUBLIC_PROFILE="public_profile"
+    const val EMAIL="email"
+
 }
 
 object Route {
@@ -40,6 +43,7 @@ object ApiConstants {
     const val first_name="first_name"
     const val last_name="lastName"
     const val mobile="mobile"
-    const val email="email"
+    const val EMAIL="email"
+    const val FACEBOOK="facebook"
     const val token="token"
 }

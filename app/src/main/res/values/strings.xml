@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">Baller App</string>
+    <string name="facebook_app_id">486006362864421</string>
+    <string name="fb_login_protocol_scheme">fb486006362864421</string>
+    <string name="facebook_client_token">d8ec9dfd5e83b29b3e3d14ebf82736cb</string>
     <string name="dialog_button_confirm">Confirm</string>
     <string name="dialog_button_cancel">Cancel</string>
     <string name="welcome_to_the_app">Welcome to the App!</string>

@@ -2,6 +2,7 @@ package com.softprodigy.ballerapp.ui.features.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,16 +38,17 @@ fun SocialLoginButton(
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier
             .background(
-                shape = RoundedCornerShape(8.dp),
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
                 color = MaterialTheme.colors.onPrimary
             )
-            .size(44.dp)
+            .clickable { onClick.invoke() }
+            .size(dimensionResource(id = R.dimen.size_44dp))
     ) {
         Icon(
             painter = icon,
             modifier = Modifier
-                .height(16.dp)
-                .width(20.dp),
+                .height(dimensionResource(id = R.dimen.size_16dp))
+                .width(dimensionResource(id = R.dimen.size_20dp)),
             contentDescription = "Social Login ",
             tint = Color.Unspecified
         )

@@ -1,6 +1,7 @@
 package com.softprodigy.ballerapp.ui.features.login
 
 import android.widget.Toast
+import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -25,15 +26,21 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
+import com.softprodigy.ballerapp.LocalFacebookCallbackManager
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.common.isValidEmail
-import com.softprodigy.ballerapp.common.isValidPassword
-import com.softprodigy.ballerapp.data.UserInfo
+import com.softprodigy.ballerapp.common.*
+import com.softprodigy.ballerapp.data.FacebookUserModel
+import com.softprodigy.ballerapp.data.response.UserInfo
 import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.SocialLoginSection
 import com.softprodigy.ballerapp.ui.theme.appColors
+import timber.log.Timber
 
 @Composable
 fun LoginScreen(
@@ -46,8 +53,39 @@ fun LoginScreen(
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordVisibility by rememberSaveable { mutableStateOf(false) }
-    val loginState = vm.loginUiState.value
+    val callbackManager = LocalFacebookCallbackManager.current
 
+    val loginState = vm.loginUiState.value
+    DisposableEffect(Unit) {
+
+        LoginManager.getInstance().registerCallback(
+            callbackManager,
+            object : FacebookCallback<LoginResult> {
+                override fun onSuccess(result: LoginResult) {
+
+                    CustomFBManager.getFacebookUserProfile(result.accessToken, object :
+                        FacebookUserProfile {
+                        override fun onFacebookUserFetch(fbUser: FacebookUserModel) {
+                            Timber.i("FacebookUserModel-- $fbUser")
+                            vm.onEvent(LoginUIEvent.OnFacebookClick(fbUser))
+
+                        }
+                    })
+                }
+
+                override fun onCancel() {
+                    println("onCancel")
+                }
+
+                override fun onError(error: FacebookException) {
+                    println("onError $error")
+                }
+            }
+        )
+        onDispose {
+            LoginManager.getInstance().unregisterCallback(callbackManager)
+        }
+    }
 
     LaunchedEffect(key1 = Unit) {
         vm.loginChannel.collect { uiEvent ->
@@ -196,7 +234,14 @@ fun LoginScreen(
             SocialLoginSection(
                 headerText = stringResource(id = R.string.or_sign_in_with),
                 onAppleClick = { },
-                onFacebookClick = { }) {
+                onFacebookClick = {
+                    LoginManager.getInstance()
+                        .logInWithReadPermissions(
+                            context as ActivityResultRegistryOwner,
+                            callbackManager,
+                            listOf(AppConstants.PUBLIC_PROFILE, AppConstants.EMAIL)
+                        )
+                }) {
             }
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))

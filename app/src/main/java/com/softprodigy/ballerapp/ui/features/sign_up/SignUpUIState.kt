@@ -1,6 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.sign_up
 
-import com.softprodigy.ballerapp.data.UserInfo
+import com.softprodigy.ballerapp.data.response.UserInfo
 
 
 data class SignUpUIState(
