@@ -63,7 +63,6 @@ import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.validTeamName
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.request.GlobalRequest
-import com.softprodigy.ballerapp.data.request.SignUpRequest
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.BottomButtons
@@ -90,7 +89,6 @@ fun TeamSetupScreen(
 
     val teamName = remember { mutableStateOf(viewModel.teamData.teamName) }
     val selectedColorCode = remember { mutableStateOf(viewModel.teamData.teamColor) }
-    val selectedColor = remember { mutableStateOf<Color?>(null) }
     val editTextColorValue = remember { mutableStateOf(viewModel.teamData.teamColor) }
 
     var imageUri by remember(false) {
@@ -109,7 +107,6 @@ fun TeamSetupScreen(
     ModalBottomSheetLayout(
         sheetContent = {
             ColorPickerBottomSheet(controller, colorEnvelope = { colorEnvelope ->
-                selectedColor.value = colorEnvelope.color
                 AppConstants.SELECTED_COLOR = colorEnvelope.color
                 editTextColorValue.value = colorEnvelope.hexCode
             }, onDismiss = {

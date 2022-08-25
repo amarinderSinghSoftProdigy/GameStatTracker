@@ -100,7 +100,7 @@ fun NavControllerComposable(activity: MainActivity) {
                 onLoginSuccess = {
                     navController.navigate(SELECT_USER_TYPE)
                 },
-
+                onRegister = { navController.navigate(SIGN_UP_SCREEN) },
                 onForgetPasswordClick = { },
             )
         }

@@ -194,7 +194,7 @@ fun SetUpProfile(onNext: () -> Unit, onBack: () -> Unit, viewModel: UserTypeView
                     email,
                     stringResource(id = R.string.email),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                    //isError = (!email.value.isValidEmail() && email.value.isNotEmpty()),
+                    isError = (!email.value.isValidEmail() && email.value.isNotEmpty()),
                     errorMessage = stringResource(id = R.string.email_error)
                 )
                 Divider(thickness = dimensionResource(id = R.dimen.divider))

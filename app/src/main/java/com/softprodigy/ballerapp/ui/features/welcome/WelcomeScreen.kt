@@ -4,7 +4,17 @@ import androidx.annotation.FloatRange
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -22,11 +32,11 @@ import androidx.compose.ui.text.style.TextAlign
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
+import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.theme.spacing
-import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.BottomButtons
+import com.softprodigy.ballerapp.ui.theme.spacing
 import kotlinx.coroutines.launch
 
 data class WelcomeScreenData(val image: Int, val title: String, val description: String)
@@ -39,21 +49,21 @@ fun WelcomeScreen(onNextScreen: () -> Unit) {
     val items = ArrayList<WelcomeScreenData>()
     items.add(
         WelcomeScreenData(
-            R.drawable.ball, stringResource(id = R.string.welcome_to_the_app), stringResource(
+            R.drawable.ic_logo, stringResource(id = R.string.welcome_to_the_app), stringResource(
                 id = R.string.desc
             )
         )
     )
     items.add(
         WelcomeScreenData(
-            R.drawable.ball, stringResource(id = R.string.welcome_to_the_app), stringResource(
+            R.drawable.ic_logo, stringResource(id = R.string.welcome_to_the_app), stringResource(
                 id = R.string.desc
             )
         )
     )
     items.add(
         WelcomeScreenData(
-            R.drawable.ball, stringResource(id = R.string.welcome_to_the_app), stringResource(
+            R.drawable.ic_logo, stringResource(id = R.string.welcome_to_the_app), stringResource(
                 id = R.string.desc
             )
         )
