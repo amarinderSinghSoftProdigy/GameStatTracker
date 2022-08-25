@@ -85,8 +85,8 @@ val text_field_indicator = Color(0xB3FFFFFF)
 val spiner_popup_background = Color(0XFF363443)
 val spiner_popup_border = Color(0x26FFFFFF)
 
-val button_background_enable = Color(0xFF1066FF)
-val button_background_disable = Color(0xFF1066FF)
+val button_background_enable = Color(0xFF17191B)
+val button_background_disable = Color(0xFFE4EBF0)
 
 val button_text_enable = Color(0xFFFFFFFF)
 val button_text_disable = Color(0xBF58636B)
