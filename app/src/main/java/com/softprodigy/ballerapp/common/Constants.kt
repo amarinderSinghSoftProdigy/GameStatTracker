@@ -33,7 +33,7 @@ object Route {
 
 object ApiConstants {
     const val BASE_URL = "http://baller-app.softprodigyphp.in"
-    const val LOGIN = "/login"
+    const val LOGIN = "v1/auth/login"
     const val SOCIAL_LOGIN = "/social_login"
     const val SIGNUP = "/register"
     const val FORGOT_PASSWORD = "/forgot/password"

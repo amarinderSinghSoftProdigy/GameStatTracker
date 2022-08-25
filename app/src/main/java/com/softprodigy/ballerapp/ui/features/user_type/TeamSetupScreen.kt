@@ -61,6 +61,7 @@ import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
+import com.softprodigy.ballerapp.common.validTeamName
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.ui.features.components.AppBasicTextField
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
@@ -160,7 +161,9 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                             placeholder = { AppText(text = stringResource(id = R.string.your_team_name)) },
                             colors = TextFieldDefaults.outlinedTextFieldColors(
                                 unfocusedBorderColor = ColorBWGrayBorder
-                            )
+                            ),
+                            isError = !validTeamName(teamName.value) && teamName.value.isNotEmpty(),
+                            errorMessage = stringResource(id = R.string.valid_team_name)
                         )
                     }
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
@@ -287,8 +290,13 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                                     .height(
                                         dimensionResource(id = R.dimen.size_32dp)
                                     )
-                                    .border(BorderStroke(1.dp, ColorBWGrayBorder))
-                                    .padding(8.dp),
+                                    .border(
+                                        BorderStroke(
+                                            dimensionResource(id = R.dimen.size_1dp),
+                                            ColorBWGrayBorder
+                                        )
+                                    )
+                                    .padding(dimensionResource(id = R.dimen.size_1dp)),
                                 enabled = false,
                                 value = editTextColorValue.value,
                                 onValueChange = {
@@ -310,7 +318,6 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                             ) {}
                         }
 
-
                     }
                 }
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
@@ -323,9 +330,10 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                         UserStorage.teamColor = selectedColorCode.value
                         UserStorage.teamLogo = imageUri.toString()
                     },
-                    enableState = teamName.value.isNotEmpty() && imageUri != null && selectedColorCode.value.isNotEmpty(),
+                    enableState = validTeamName(teamName.value) && imageUri != null && selectedColorCode.value.isNotEmpty(),
                     showOnlyNext = false
                 )
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             }
         }
     }
@@ -368,5 +376,4 @@ fun ColorPickerBottomSheet(
             onColorChanged = colorEnvelope
         )
     }
-
 }

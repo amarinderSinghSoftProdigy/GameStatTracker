@@ -1,4 +1,4 @@
-package com.softprodigy.ballerapp.ui.features.user_type
+package com.softprodigy.ballerapp.ui.features.user_type.add_player
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
@@ -41,18 +41,20 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.validName
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.ui.features.components.AppSearchOutlinedTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.BottomButtons
 import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
+import com.softprodigy.ballerapp.ui.features.components.DeleteDialog
 import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
-import com.softprodigy.ballerapp.ui.features.user_type.add_player.AddPlayerViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
 import java.util.*
@@ -64,10 +66,11 @@ fun AddPlayersScreen(
     onBackClick: () -> Unit,
     onNextClick: () -> Unit
 ) {
-    var search = remember { mutableStateOf("") }
+    val search = remember { mutableStateOf("") }
     val context = LocalContext.current
     val selectedPlayer = vm.selectedPlayer
-
+    val showDialog = remember { mutableStateOf(false) }
+    val removePlayer = remember { mutableStateOf("") }
     Box(Modifier.fillMaxSize()) {
         CoachFlowBackground(
             colorCode = UserStorage.teamColor,
@@ -111,13 +114,26 @@ fun AddPlayersScreen(
                                 focusedBorderColor = ColorBWGrayBorder,
                                 unfocusedBorderColor = ColorBWGrayBorder
                             ),
-                            placeholder = { Text(text = stringResource(id = R.string.search_by_name_or_email)) }
+                            placeholder = { Text(text = stringResource(id = R.string.search_by_name_or_email)) },
+                            singleLine = true
                         )
                         Icon(
                             painter = painterResource(id = R.drawable.ic_scanner),
                             contentDescription = "",
                             modifier = Modifier.padding(dimensionResource(id = R.dimen.size_16dp)),
                             tint = Color.Unspecified
+                        )
+                    }
+
+                    if (!validName(search.value) && search.value.isNotEmpty()) {
+                        Text(
+                            text = stringResource(id = R.string.valid_search),
+                            color = MaterialTheme.colors.error,
+                            style = MaterialTheme.typography.caption,
+                            modifier = Modifier
+                                .padding(dimensionResource(id = R.dimen.size_4dp))
+                                .fillMaxWidth(),
+                            textAlign = TextAlign.Center
                         )
                     }
 
@@ -143,7 +159,6 @@ fun AddPlayersScreen(
                                     placeable.place(0, 0) //starting position of divider
                                 }
                             })
-
                     }
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -172,15 +187,13 @@ fun AddPlayersScreen(
                                 painterResource(id = R.drawable.ic_remove),
                                 countryText = filteredCountry,
                                 onItemClick = { player ->
-                                    selectedPlayer.remove(player)
+                                    removePlayer.value = player
+                                    showDialog.value = true
                                 }
                             )
                         }
                     }
-
-
                 }
-
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
             BottomButtons(
@@ -189,8 +202,19 @@ fun AddPlayersScreen(
                 enableState = vm.selectedPlayer.isNotEmpty()
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
-
         }
+    }
+
+    if (showDialog.value) {
+        DeleteDialog(
+            item = removePlayer.value,
+            message = stringResource(id = R.string.alert_remove_player),
+            onDismiss = { showDialog.value = false },
+            onDelete = {
+                selectedPlayer.remove(removePlayer.value)
+                showDialog.value = false
+            }
+        )
     }
 }
 
@@ -279,7 +303,6 @@ fun AddRemoveButton(icon: Painter, onItemClick: () -> Unit) {
         )
     }
 }
-
 
 fun getListOfPlayers(): ArrayList<String> {
     val isoCountryCodes = Locale.getISOCountries()
