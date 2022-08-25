@@ -12,6 +12,7 @@
     <dimen name="txt_size_24">12sp</dimen>
     <dimen name="txt_size_31">15.5sp</dimen>
 
+    <dimen name="divider">0.3dp</dimen>
     <dimen name="size_1dp">0.5dp</dimen>
     <dimen name="size_2dp">1dp</dimen>
     <dimen name="size_3dp">1.5dp</dimen>
@@ -51,6 +52,7 @@
     <dimen name="size_225dp">112.5dp</dimen>
     <dimen name="size_236dp">118dp</dimen>
     <dimen name="size_250dp">125dp</dimen>
+    <dimen name="size_270dp">135dp</dimen>
     <dimen name="size_300dp">150dp</dimen>
     <dimen name="size_button">35dp</dimen>
 
