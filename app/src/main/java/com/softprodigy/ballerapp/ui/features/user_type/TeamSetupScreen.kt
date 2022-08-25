@@ -4,24 +4,53 @@ import android.graphics.Bitmap
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Card
+import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
 import com.github.skydoves.colorpicker.compose.ColorEnvelope
@@ -29,14 +58,19 @@ import com.github.skydoves.colorpicker.compose.ColorPickerController
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.AppConstants
+import com.softprodigy.ballerapp.common.validTeamName
 import com.softprodigy.ballerapp.data.UserStorage
-import com.softprodigy.ballerapp.ui.features.components.AppBasicTextField
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.BottomButtons
 import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
 import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
-import com.softprodigy.ballerapp.ui.theme.*
+import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
+import com.softprodigy.ballerapp.ui.theme.ColorMainPrimary
+import com.softprodigy.ballerapp.ui.theme.ColorPrimaryTransparent
 import kotlinx.coroutines.launch
 
 
@@ -69,6 +103,7 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
         sheetContent = {
             ColorPickerBottomSheet(controller, colorEnvelope = { colorEnvelope ->
                 selectedColor.value = colorEnvelope.color
+                AppConstants.SELECTED_COLOR = colorEnvelope.color
                 editTextColorValue.value = colorEnvelope.hexCode
             }, onDismiss = {
                 scope.launch {
@@ -107,6 +142,7 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                     Column(
                         Modifier
                             .fillMaxWidth()
+                            .padding(all = dimensionResource(id = R.dimen.size_16dp))
                     ) {
                         AppText(
                             text = stringResource(id = R.string.team_name),
@@ -123,30 +159,19 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                             placeholder = { AppText(text = stringResource(id = R.string.your_team_name)) },
                             colors = TextFieldDefaults.outlinedTextFieldColors(
                                 unfocusedBorderColor = ColorBWGrayBorder
-                            )
+                            ),
+                            isError = !validTeamName(teamName.value) && teamName.value.isNotEmpty(),
+                            errorMessage = stringResource(id = R.string.valid_team_name)
                         )
                     }
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
-                    Divider(modifier = Modifier
-                        .layout() { measurable, constraints ->
-                            val placeable = measurable.measure(
-                                constraints.copy(
-                                    maxWidth = constraints.maxWidth + (context.resources.getDimension(
-                                        R.dimen.size_32dp
-                                    )).dp.roundToPx(),
-                                    //It will ignore parent column padding and occupy whole space
-                                )
-                            )
-                            layout(placeable.width, placeable.height) {
-                                placeable.place(0, 0) //starting position of divider
-                            }
-                        })
+                    Divider(thickness = dimensionResource(id = R.dimen.divider))
 
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
                     Row(
-                        Modifier.fillMaxWidth(),
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         AppText(
@@ -156,21 +181,36 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                         Text(
                             text = stringResource(id = R.string.change),
                             color = ColorBWGrayLight,
+                            modifier = Modifier.clickable {
+                                if (imageUri != null) {
+                                    scope.launch {
+                                        modalBottomSheetState.hide()
+                                    }
+                                    launcher.launch("image/*")
+                                }
+                            },
                             fontSize = dimensionResource(id = R.dimen.txt_size_13).value.sp
                         )
                     }
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                     Box(
                         Modifier
                             .fillMaxWidth()
+                            .padding(
+                                start = dimensionResource(id = R.dimen.size_16dp),
+                                end = dimensionResource(id = R.dimen.size_16dp)
+                            )
                             .height(dimensionResource(id = R.dimen.size_300dp))
-                            .background(color = ColorPrimaryTransparent)
-                            .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_6dp)))
+                            .background(
+                                color = ColorPrimaryTransparent,
+                                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+                            )
                             .clickable {
-                                scope.launch {
-                                    modalBottomSheetState.hide()
+                                if (imageUri == null) {
+                                    scope.launch {
+                                        modalBottomSheetState.hide()
+                                    }
+                                    launcher.launch("image/*")
                                 }
-                                launcher.launch("image/*")
                             }
 
                     ) {
@@ -188,41 +228,27 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                             )
                         }
                         imageUri?.let {
-                                Image(
-                                    painter = rememberImagePainter(data = Uri.parse(it.toString())),
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop,
-                                    modifier = Modifier
-                                        .size(dimensionResource(id = R.dimen.size_300dp))
-                                        .clip(CircleShape)
-                                        .align(Alignment.Center)
-                                )
-
+                            Image(
+                                painter = rememberImagePainter(data = Uri.parse(it.toString())),
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .align(Alignment.Center)
+                                    .size(dimensionResource(id = R.dimen.size_270dp))
+                                    .clip(CircleShape)
+                                    .align(Alignment.Center)
+                            )
                         }
                     }
 
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
 
-                    Divider(modifier = Modifier
-                        .layout() { measurable, constraints ->
-                            val placeable = measurable.measure(
-                                constraints.copy(
-                                    maxWidth = constraints.maxWidth + (context.resources.getDimension(
-                                        R.dimen.size_32dp
-                                    )).dp.roundToPx(),
-                                    //It will ignore parent column padding and occupy whole space
-                                )
-                            )
-                            layout(placeable.width, placeable.height) {
-                                placeable.place(0, 0) //starting position of divider
-                            }
-                        })
-
+                    Divider(thickness = dimensionResource(id = R.dimen.divider))
                     Row(
                         Modifier
                             .fillMaxWidth()
-                            .padding(dimensionResource(id = R.dimen.size_16dp)),
+                            .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
 
@@ -240,21 +266,30 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                                 }
                             },
                         ) {
-                            AppBasicTextField(
+
+                            Box(
                                 modifier = Modifier
                                     .width(dimensionResource(id = R.dimen.size_150dp))
-                                    .width(IntrinsicSize.Min)
-                                    .height(
-                                        dimensionResource(id = R.dimen.size_32dp)
+                                    .height(dimensionResource(id = R.dimen.size_32dp))
+                                    .border(
+                                        BorderStroke(
+                                            dimensionResource(id = R.dimen.size_1dp),
+                                            ColorBWGrayBorder
+                                        )
                                     )
-                                    .border(BorderStroke(1.dp, ColorBWGrayBorder))
-                                    .padding(8.dp),
-                                enabled = false,
-                                value = editTextColorValue.value,
-                                onValueChange = {
-                                    editTextColorValue.value = it
-                                } /*text = "this is"*/)
-
+                                    .background(
+                                        color = Color.Transparent, shape = RoundedCornerShape(
+                                            dimensionResource(id = R.dimen.size_16dp)
+                                        )
+                                    )
+                                    .padding(dimensionResource(id = R.dimen.size_1dp))
+                            ) {
+                                AppText(
+                                    modifier = Modifier.align(Alignment.Center),
+                                    textAlign = TextAlign.Center,
+                                    text = "#"+editTextColorValue.value,
+                                )
+                            }
                             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
 
                             Card(
@@ -270,7 +305,6 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                             ) {}
                         }
 
-
                     }
                 }
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
@@ -283,9 +317,10 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                         UserStorage.teamColor = selectedColorCode.value
                         UserStorage.teamLogo = imageUri.toString()
                     },
-                    enableState = teamName.value.isNotEmpty() && imageUri != null && selectedColorCode.value.isNotEmpty(),
+                    enableState = validTeamName(teamName.value) && imageUri != null && selectedColorCode.value.isNotEmpty(),
                     showOnlyNext = false
                 )
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             }
         }
     }
@@ -328,5 +363,4 @@ fun ColorPickerBottomSheet(
             onColorChanged = colorEnvelope
         )
     }
-
 }

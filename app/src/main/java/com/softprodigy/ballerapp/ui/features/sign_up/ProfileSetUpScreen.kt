@@ -1,45 +1,59 @@
 package com.softprodigy.ballerapp.ui.features.sign_up
 
 import android.graphics.Bitmap
-import android.graphics.ImageDecoder
 import android.net.Uri
-import android.os.Build
-import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
+import coil.compose.rememberImagePainter
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.isValidEmail
 import com.softprodigy.ballerapp.common.validName
 import com.softprodigy.ballerapp.common.validPhoneNumber
 import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.EditFields
 import com.softprodigy.ballerapp.ui.features.components.BottomButtons
 import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
+import com.softprodigy.ballerapp.ui.features.components.EditFields
 import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorPrimaryTransparent
+import timber.log.Timber
+import java.io.File
+
 
 @Composable
 fun ProfileSetUpScreen(
@@ -99,13 +113,13 @@ fun SetUpProfile(onNext: () -> Unit, onBack: () -> Unit) {
             color = ColorBWBlack,
             modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
         )
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_40dp)))
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
 
-        UserFlowBackground(modifier = Modifier.fillMaxWidth()) {
+        UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
 
             Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center) {
 
-                Spacer(modifier = Modifier.height(48.dp))
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_48dp)))
 
                 Box(
                     Modifier
@@ -117,6 +131,7 @@ fun SetUpProfile(onNext: () -> Unit, onBack: () -> Unit) {
                             launcher.launch("image/*")
                         }
                         .align(Alignment.CenterHorizontally),
+
                     contentAlignment = Alignment.Center
 
                 ) {
@@ -126,82 +141,67 @@ fun SetUpProfile(onNext: () -> Unit, onBack: () -> Unit) {
                             contentDescription = null,
                             tint = Color.Unspecified,
                             modifier = Modifier
-                                .width(36.dp)
-                                .height(32.dp)
+                                .width(dimensionResource(id = R.dimen.size_35dp))
+                                .height(dimensionResource(id = R.dimen.size_35dp))
                         )
-
                     }
                     imageUri?.let {
-                        if (Build.VERSION.SDK_INT < 28) {
-                            bitmap.value = MediaStore.Images
-                                .Media.getBitmap(context.contentResolver, it)
-
-                        } else {
-                            val source = ImageDecoder
-                                .createSource(context.contentResolver, it)
-                            bitmap.value = ImageDecoder.decodeBitmap(source)
-                        }
-
-                        bitmap.value?.let { btm ->
-                            Image(
-                                bitmap = btm.asImageBitmap(),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(250.dp)
-                                    .align(Alignment.Center)
-                            )
-                        }
+                        Image(
+                            painter = rememberImagePainter(data = Uri.parse(it.toString())),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(dimensionResource(id = R.dimen.size_300dp))
+                                .clip(CircleShape)
+                                .align(Alignment.Center)
+                        )
                     }
                 }
-
-                if (imageUri == null) {
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
-                    Text(
-                        text = stringResource(id = R.string.valid_image),
-                        color = MaterialTheme.colors.error,
-                        style = MaterialTheme.typography.caption,
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
-                }
+                val file = imageUri?.path?.let { File(it) }
+//                val fileSizeInBytes = file!!.length()
+//                val fileSizeInKB: Long = fileSizeInBytes / 1024
+//                // Convert the KB to MegaBytes (1 MB = 1024 KBytes)
+//                // Convert the KB to MegaBytes (1 MB = 1024 KBytes)
+//                val fileSizeInMB = fileSizeInKB / 1024
+//
+//                val calString = fileSizeInMB.toString()
+                Timber.d("SetUpProfilevalue: " + (file?.length()))
 
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_48dp)))
 
-                Divider()
+                Divider(thickness = dimensionResource(id = R.dimen.divider))
 
                 EditFields(
                     fName,
                     stringResource(id = R.string.first_name),
-                    isError = !validName(fName.value) && fName.value.length >= 2,
+                    isError = !validName(fName.value) && fName.value.isNotEmpty(),
                     errorMessage = stringResource(id = R.string.valid_first_name)
                 )
 
-                Divider()
+                Divider(thickness = dimensionResource(id = R.dimen.divider))
 
                 EditFields(
                     lName,
                     stringResource(id = R.string.last_name),
-                    isError = !validName(lName.value) && lName.value.length >= 2,
+                    isError = !validName(lName.value) && lName.value.isNotEmpty(),
                     errorMessage = stringResource(id = R.string.valid_last_name)
                 )
-                Divider()
+                Divider(thickness = dimensionResource(id = R.dimen.divider))
 
                 EditFields(
                     email,
                     stringResource(id = R.string.email),
-                    KeyboardOptions(keyboardType = KeyboardType.Email),
-                    isError = (!email.value.isValidEmail() && email.value.length >= 6),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    //isError = (!email.value.isValidEmail() && email.value.isNotEmpty()),
                     errorMessage = stringResource(id = R.string.email_error)
                 )
-                Divider()
+                Divider(thickness = dimensionResource(id = R.dimen.divider))
 
                 EditFields(
                     phoneNumber,
                     stringResource(id = R.string.phone_num),
                     KeyboardOptions(keyboardType = KeyboardType.Number),
-                    isError = (!validPhoneNumber(phoneNumber.value) && phoneNumber.value.length >= 5),
+                    isError = (!validPhoneNumber(phoneNumber.value) && phoneNumber.value.isNotEmpty()),
                     errorMessage = stringResource(id = R.string.valid_phone_number)
                 )
             }
@@ -215,12 +215,12 @@ fun SetUpProfile(onNext: () -> Unit, onBack: () -> Unit) {
             enableState = validName(fName.value)
                     && validName(lName.value)
                     && validPhoneNumber(phoneNumber.value)
-                    && email.value.isValidEmail(),
+                    && email.value.isValidEmail() && imageUri != null,
             firstText = stringResource(id = R.string.back),
             secondText = stringResource(id = R.string.next)
         )
 
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_44dp)))
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
     }
 }

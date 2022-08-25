@@ -2,7 +2,6 @@ package com.softprodigy.ballerapp.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.Colors
-import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
@@ -13,6 +12,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.softprodigy.ballerapp.common.AppConstants
 
 data class EditField(
     val borderFocused: Color,
@@ -122,6 +122,34 @@ fun BallerAppTheme(
     SideEffect {
         sysUiController.setStatusBarColor(
             color = Color.Transparent,
+            darkIcons = !darkTheme
+        )
+    }
+
+    CompositionLocalProvider(LocalColors provides colors) {
+        MaterialTheme(
+            colors = colors.material,
+            typography = Typography,
+            shapes = Shapes,
+            content = content
+        )
+    }
+}
+
+@Composable
+fun BallerAppMainTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit
+) {
+    val colors = if (darkTheme) {
+        DarkColorPalette.copy(material = LightThemeColors.copy(primaryVariant = AppConstants.SELECTED_COLOR))
+    } else {
+        LightColorPalette.copy(material = LightThemeColors.copy(primaryVariant = AppConstants.SELECTED_COLOR))
+    }
+    val sysUiController = rememberSystemUiController()
+    SideEffect {
+        sysUiController.setStatusBarColor(
+            color = colors.material.primaryVariant,
             darkIcons = !darkTheme
         )
     }

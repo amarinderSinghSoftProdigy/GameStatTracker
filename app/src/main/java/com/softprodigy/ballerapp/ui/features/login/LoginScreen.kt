@@ -25,7 +25,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -170,9 +169,9 @@ fun LoginScreen(
                 onValueChange = {
                     email = it
                 },
-                placeholder = { Text(text = stringResource(id = R.string.enter_your_email)) },
+                placeholder = { Text(text = stringResource(id = R.string.your_email)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                isError = (!email.isValidEmail() && email.length >= 6),
+                isError = (!email.isValidEmail() && email.isNotEmpty()),
                 errorMessage = stringResource(id = R.string.email_error),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
@@ -184,7 +183,6 @@ fun LoginScreen(
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
-
             AppText(
                 text = stringResource(id = R.string.password),
                 style = MaterialTheme.typography.h6,
@@ -193,7 +191,6 @@ fun LoginScreen(
                 textAlign = TextAlign.Start
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-
 
             AppOutlineTextField(
                 value = password,
@@ -204,7 +201,7 @@ fun LoginScreen(
                 },
                 placeholder = { Text(text = stringResource(id = R.string.your_password)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                isError = (!password.isValidPassword() && password.length >= 4),
+                isError = (!password.isValidPassword() && password.isNotEmpty()),
                 errorMessage = stringResource(id = R.string.password_error),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
@@ -239,7 +236,7 @@ fun LoginScreen(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
+                    .height(dimensionResource(id = R.dimen.size_56dp)),
                 text = stringResource(id = R.string.login),
                 icon = painterResource(id = R.drawable.ic_circle_next)
             )

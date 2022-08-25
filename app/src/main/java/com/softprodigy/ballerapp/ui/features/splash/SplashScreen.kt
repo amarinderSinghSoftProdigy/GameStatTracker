@@ -18,9 +18,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import com.softprodigy.ballerapp.R
 import kotlinx.coroutines.delay
 
@@ -54,8 +53,8 @@ fun SplashScreen(onNextClick: () -> Unit) {
             contentDescription = null,
             modifier = Modifier
                 .scale(scale.value)
-                .height(96.dp)
-                .width(160.dp)
+                .height(dimensionResource(id = R.dimen.size_95dp))
+                .width(dimensionResource(id = R.dimen.size_160dp))
         )
     }
 }

@@ -40,8 +40,6 @@ fun HomeScreen(name: String?) {
                 text = "Add new players to lorem ipsum dolor sit amet.",
                 fontSize = 12.sp,
             )
-
-
         }
     }
 }

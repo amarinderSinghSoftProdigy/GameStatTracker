@@ -29,10 +29,11 @@ fun String.idFromParameter(): String {
 }
 
 fun String.isValidFullName(): Boolean {
+    val regex = "^([^0-9]*)$"
     if (this.isEmpty()) {
         return false
     }
-    return (this.trim().contains(" ") && this.length >= 5)
+    return (this.trim().contains(" ") && this.length >= 5 && this.matches(regex.toRegex()) )
 }
 
 fun validName(name: String): Boolean {
@@ -41,6 +42,11 @@ fun validName(name: String): Boolean {
 }
 
 fun validPhoneNumber(number: String): Boolean {
-    val regex = "^+[0-9]{10,13}$"
+    val regex = "^+[0-9+]{10,13}$"
     return number.matches(regex.toRegex())
+}
+
+fun validTeamName(name: String): Boolean {
+    val regex = "^[A-Za-z0-9@$]*$"
+    return name.matches(regex = regex.toRegex())
 }
