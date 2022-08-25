@@ -53,9 +53,10 @@ fun TabBar(
 @Composable
 fun BoxScope.CommonTabView(
     canMoveBack: Boolean = true,
-    user: UserType,
+    user: BottomNavKey,
     label: String = "",
     icon: Painter,
+    onLabelClick: () -> Unit,
     iconClick: () -> Unit
 ) {
 
@@ -75,9 +76,8 @@ fun BoxScope.CommonTabView(
             .align(Alignment.Center)
             .background(Color.Transparent)
             .clickable {
-                if (user == UserType.COACH) {
-                    iconClick()
-                }
+                if (user == BottomNavKey.TEAMS)
+                    onLabelClick()
             }
             .padding(all = dimensionResource(id = R.dimen.size_16dp)),
         verticalAlignment = Alignment.CenterVertically,
@@ -88,7 +88,7 @@ fun BoxScope.CommonTabView(
             style = MaterialTheme.typography.h3,
             color = Color.White
         )
-        if (user == UserType.COACH) {
+        if (user == BottomNavKey.TEAMS) {
             AppSpacer(Modifier.size(dimensionResource(id = R.dimen.size_5dp)))
             Icon(
                 painter = painterResource(id = R.drawable.ic_arrow_down),

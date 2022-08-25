@@ -92,6 +92,7 @@
     <string name="coach_label">Coach</string>
     <string name="referee_label">Referee</string>
     <string name="create_now">Create Now</string>
+    <string name="pick_team">Pick Team</string>
 
 
 </resources>
