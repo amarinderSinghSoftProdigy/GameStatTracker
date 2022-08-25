@@ -142,7 +142,11 @@ dependencies {
     // Color picker
     implementation "com.github.skydoves:colorpicker-compose:1.0.0"
 
+    //For image loading
     implementation "io.coil-kt:coil-compose:2.0.0"
+
+    // twitter login
+    implementation 'org.twitter4j:twitter4j-core:4.0.7'
 
 
 }

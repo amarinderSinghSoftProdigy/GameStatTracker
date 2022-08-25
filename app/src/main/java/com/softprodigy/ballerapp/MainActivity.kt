@@ -98,7 +98,9 @@ fun NavControllerComposable(activity: MainActivity) {
             val context = LocalContext.current
             LoginScreen(
                 onLoginSuccess = {
-                    navController.navigate(SELECT_USER_TYPE)
+                    navController.navigate(SELECT_USER_TYPE){
+                        navController.popBackStack()
+                    }
                 },
                 onRegister = { navController.navigate(SIGN_UP_SCREEN) },
                 onForgetPasswordClick = { },
