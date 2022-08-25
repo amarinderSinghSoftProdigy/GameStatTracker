@@ -8,6 +8,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowCompat
@@ -19,10 +21,11 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.Route.EVENTS_SCREEN
 import com.softprodigy.ballerapp.common.Route.TEAMS_SCREEN
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
+import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
 import com.softprodigy.ballerapp.ui.features.components.BottomNavigationBar
 import com.softprodigy.ballerapp.ui.features.components.CommonTabView
+import com.softprodigy.ballerapp.ui.features.components.SelectTeamDialog
 import com.softprodigy.ballerapp.ui.features.components.TabBar
-import com.softprodigy.ballerapp.ui.features.components.UserType
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
 import com.softprodigy.ballerapp.ui.theme.appColors
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,28 +43,38 @@ class HomeActivity : ComponentActivity() {
                 Surface(
                     color = MaterialTheme.appColors.material.primary
                 ) {
+                    val showDialog = remember { mutableStateOf(false) }
                     val dataStoreManager = DataStoreManager(this)
-                    val userType =
-                        UserType.COACH//dataStoreManager.userInfo.collectAsState(initial = "").value
+                    val userType = remember { mutableStateOf(BottomNavKey.EVENTS) }
+                    //UserType.COACH//dataStoreManager.userInfo.collectAsState(initial = "").value
                     // Scaffold Component
                     Scaffold(
                         topBar = {
-                            TabBar(color = MaterialTheme.appColors.material.primaryVariant){
+                            TabBar(color = MaterialTheme.appColors.material.primaryVariant) {
                                 CommonTabView(
                                     false,
-                                    UserType.COACH,
+                                    userType.value,
                                     stringResource(id = R.string.coach_label),
-                                    painterResource(id = R.drawable.ic_settings)
-                                ) {
-
-                                }
+                                    painterResource(id = R.drawable.ic_settings), {
+                                        showDialog.value = true
+                                    }, {})
                             }
                         },
                         content = {
                             NavControllerComposable(navController = navController)
+                            if (showDialog.value) {
+                                SelectTeamDialog(
+                                    item = "",
+                                    message = stringResource(id = R.string.alert_remove_player),
+                                    onDismiss = { showDialog.value = false },
+                                    onDelete = { showDialog.value = false }
+                                )
+                            }
                         },
                         bottomBar = {
-                            BottomNavigationBar(navController = navController)
+                            BottomNavigationBar(navController = navController) {
+                                userType.value = it
+                            }
                         },
                     )
                 }

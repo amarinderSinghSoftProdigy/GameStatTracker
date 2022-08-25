@@ -37,7 +37,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
 import com.softprodigy.ballerapp.ui.theme.appColors
 
@@ -49,6 +48,7 @@ import com.softprodigy.ballerapp.ui.theme.appColors
 fun BottomNavigationBar(
     navController: NavController,
     height: Dp = dimensionResource(id = R.dimen.size_64dp),
+    selectedValue: (BottomNavKey) -> Unit
 ) {
     val selected: MutableState<BottomNavKey> = remember { mutableStateOf(BottomNavKey.EVENTS) }
     Surface(
@@ -79,6 +79,7 @@ fun BottomNavigationBar(
                             .align(Alignment.CenterHorizontally)
                             .clickable {
                                 selected.value = item.key
+                                selectedValue(item.key)
                                 navController.navigate(item.key.route)
                             },
                         contentAlignment = Alignment.Center
