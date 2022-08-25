@@ -39,16 +39,19 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.isValidEmail
 import com.softprodigy.ballerapp.common.validName
 import com.softprodigy.ballerapp.common.validPhoneNumber
+import com.softprodigy.ballerapp.data.request.GlobalRequest
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.BottomButtons
 import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
 import com.softprodigy.ballerapp.ui.features.components.EditFields
 import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
+import com.softprodigy.ballerapp.ui.features.user_type.UserTypeViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorPrimaryTransparent
 import timber.log.Timber
@@ -58,25 +61,24 @@ import java.io.File
 @Composable
 fun ProfileSetUpScreen(
     onNext: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    viewModel: UserTypeViewModel = hiltViewModel()
 ) {
-
     Box(
         Modifier
             .fillMaxWidth()
 
     ) {
         CoachFlowBackground()
-        SetUpProfile(onNext, onBack)
+        SetUpProfile(onNext, onBack, viewModel)
     }
-
 }
 
 @Composable
-fun SetUpProfile(onNext: () -> Unit, onBack: () -> Unit) {
+fun SetUpProfile(onNext: () -> Unit, onBack: () -> Unit, viewModel: UserTypeViewModel) {
 
     var imageUri by remember(false) {
-        mutableStateOf<Uri?>(null)
+        mutableStateOf<Uri?>(viewModel.profileData.image)
     }
     val context = LocalContext.current
     val bitmap = remember(false) {
@@ -84,16 +86,16 @@ fun SetUpProfile(onNext: () -> Unit, onBack: () -> Unit) {
     }
 
     val fName = remember {
-        mutableStateOf("")
+        mutableStateOf(viewModel.profileData.fName)
     }
     val lName = remember {
-        mutableStateOf("")
+        mutableStateOf(viewModel.profileData.lName)
     }
     val email = remember {
-        mutableStateOf("")
+        mutableStateOf(viewModel.profileData.email)
     }
     val phoneNumber = remember {
-        mutableStateOf("")
+        mutableStateOf(viewModel.profileData.phoneNumber)
     }
 
     val launcher =
@@ -211,7 +213,18 @@ fun SetUpProfile(onNext: () -> Unit, onBack: () -> Unit) {
 
         BottomButtons(
             onBackClick = { onBack() },
-            onNextClick = { onNext() },
+            onNextClick = {
+                onNext()
+                val request =
+                    GlobalRequest.SetupProfile(
+                        fName = fName.value,
+                        lName = lName.value,
+                        email = email.value,
+                        phoneNumber = phoneNumber.value,
+                        image = imageUri
+                    )
+                viewModel.saveProfileData(request = request)
+            },
             enableState = validName(fName.value)
                     && validName(lName.value)
                     && validPhoneNumber(phoneNumber.value)
