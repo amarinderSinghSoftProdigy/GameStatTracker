@@ -47,7 +47,6 @@ import com.softprodigy.ballerapp.common.isValidFullName
 import com.softprodigy.ballerapp.common.isValidPassword
 import com.softprodigy.ballerapp.common.passwordMatches
 import com.softprodigy.ballerapp.common.validPhoneNumber
-import com.softprodigy.ballerapp.data.GoogleUserModel
 
 import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineDateField
