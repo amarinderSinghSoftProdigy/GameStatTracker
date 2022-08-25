@@ -7,13 +7,28 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -100,7 +115,7 @@ fun SetUpProfile(onNext: () -> Unit, onBack: () -> Unit) {
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
 
-        UserFlowBackground(modifier = Modifier.fillMaxWidth()) {
+        UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
 
             Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center) {
 
@@ -154,7 +169,7 @@ fun SetUpProfile(onNext: () -> Unit, onBack: () -> Unit) {
 
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_48dp)))
 
-                Divider()
+                Divider(thickness = dimensionResource(id = R.dimen.divider))
 
                 EditFields(
                     fName,
@@ -163,7 +178,7 @@ fun SetUpProfile(onNext: () -> Unit, onBack: () -> Unit) {
                     errorMessage = stringResource(id = R.string.valid_first_name)
                 )
 
-                Divider()
+                Divider(thickness = dimensionResource(id = R.dimen.divider))
 
                 EditFields(
                     lName,
@@ -171,15 +186,16 @@ fun SetUpProfile(onNext: () -> Unit, onBack: () -> Unit) {
                     isError = !validName(lName.value) && lName.value.isNotEmpty(),
                     errorMessage = stringResource(id = R.string.valid_last_name)
                 )
-                Divider()
+                Divider(thickness = dimensionResource(id = R.dimen.divider))
 
                 EditFields(
                     email,
                     stringResource(id = R.string.email),
-                    isError = (!email.value.isValidEmail() && email.value.isNotEmpty()),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    //isError = (!email.value.isValidEmail() && email.value.isNotEmpty()),
                     errorMessage = stringResource(id = R.string.email_error)
                 )
-                Divider()
+                Divider(thickness = dimensionResource(id = R.dimen.divider))
 
                 EditFields(
                     phoneNumber,

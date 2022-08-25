@@ -1,4 +1,4 @@
-package com.softprodigy.ballerapp.ui.features.user_type
+package com.softprodigy.ballerapp.ui.features.components
 
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.LinearEasing
