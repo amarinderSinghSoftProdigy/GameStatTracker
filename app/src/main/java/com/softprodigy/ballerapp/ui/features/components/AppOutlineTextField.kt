@@ -27,6 +27,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
+import com.softprodigy.ballerapp.ui.theme.appColors
 import com.softprodigy.ballerapp.ui.theme.spacing
 
 @Composable
@@ -102,21 +103,27 @@ fun AppOutlineDateField(
         modifier = Modifier
             .fillMaxWidth()
             .height(52.dp)
-            .border(width = 0.7.dp, color = Color.LightGray, shape = RoundedCornerShape(8.dp))
+            .background(
+                shape = RoundedCornerShape(8.dp),
+                color = MaterialTheme.appColors.material.background
+            )
             .clickable {
                 onClick()
-            }
-            .background(color = Color.White)
+            },
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(start = 10.dp),
+                .padding(start = 13.dp),
             verticalArrangement = Arrangement.Center,
         ) {
 
-            AppText(text = value, textAlign = TextAlign.Center)
-
+            AppText(
+                text = value,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.appColors.textField.label,
+                style = androidx.compose.material.LocalTextStyle.current
+            )
         }
     }
 }
@@ -131,8 +138,10 @@ fun EditFields(
     errorMessage: String = "",
 ) {
 
-    Column( modifier = Modifier
-        .fillMaxWidth()) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()

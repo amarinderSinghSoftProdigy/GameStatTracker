@@ -10,7 +10,8 @@
     <string name="facebook">Facebook</string>
     <string name="log_in">Log In</string>
     <string name="email">Email</string>
-    <string name="enter_your_email">Your email</string>
+    <string name="your_email">Your email</string>
+    <string name="enter_your_email">Enter your email</string>
     <string name="enter_valid_email">Please enter a valid e-mail</string>
     <string name="password">Password</string>
     <string name="create_password">Create Password</string>
@@ -72,11 +73,21 @@
     <string name="valid_last_name">Enter valid Last Name</string>
     <string name="valid_phone_number">Phone number must contain country code and minimum 10 digits</string>
     <string name="valid_image">Please select an image</string>
+    <string name="valid_team_name">Team name must contain alphanumeric character and special character like @ and $</string>
+    <string name="valid_search">Enter valid keywords</string>
+    <string name="alert_remove_player">Are you sure you want to remove the player?</string>
+    <string name="enter_valid_full_name">Enter valid Full Name</string>
+    <string name="enter_full_name">Enter Full Name</string>
+    <string name="verify_number">Verify Phone Number</string>
+    <string name="number_same_as_confirm">Verify Number must be same as Phone number</string>
+    <string name="enter_number">Enter your phone number</string>
 
     <string name="events_label">Events</string>
     <string name="teams_label">Teams</string>
     <string name="player_label">Player</string>
     <string name="coach_label">Coach</string>
     <string name="referee_label">Referee</string>
+    <string name="create_now">Create Now</string>
+
 
 </resources>

@@ -1,13 +1,10 @@
 package com.softprodigy.ballerapp.ui.features.login
 
-import android.content.res.Configuration
 import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
@@ -18,38 +15,29 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.isValidEmail
 import com.softprodigy.ballerapp.common.isValidPassword
+import com.softprodigy.ballerapp.data.UserInfo
 import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.SocialLoginSection
-
-import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
-import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
 import com.softprodigy.ballerapp.ui.theme.appColors
-
-import com.softprodigy.ballerapp.ui.theme.spacing
 
 @Composable
 fun LoginScreen(
-    onLoginSuccess: () -> Unit,
+    vm: LoginViewModel = hiltViewModel(),
+    onLoginSuccess: (UserInfo?) -> Unit,
     onForgetPasswordClick: () -> Unit,
 ) {
 
@@ -57,6 +45,21 @@ fun LoginScreen(
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordVisibility by rememberSaveable { mutableStateOf(false) }
+
+    LaunchedEffect(key1 = Unit) {
+        vm.uiEvent.collect { uiEvent ->
+            when (uiEvent) {
+                is LoginChannel.ShowToast -> {
+                    Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
+                        .show()
+                }
+                is LoginChannel.OnLoginSuccess -> {
+                    onLoginSuccess.invoke(uiEvent.loginResponse)
+                }
+                else -> Unit
+            }
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -101,9 +104,9 @@ fun LoginScreen(
                 onValueChange = {
                     email = it
                 },
-                placeholder = { Text(text = stringResource(id = R.string.enter_your_email)) },
+                placeholder = { Text(text = stringResource(id = R.string.your_email)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                isError = (!email.isValidEmail() && email.length >= 6),
+                isError = (!email.isValidEmail() && email.isNotEmpty()),
                 errorMessage = stringResource(id = R.string.email_error),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
@@ -115,7 +118,6 @@ fun LoginScreen(
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
-
             AppText(
                 text = stringResource(id = R.string.password),
                 style = MaterialTheme.typography.h6,
@@ -124,7 +126,6 @@ fun LoginScreen(
                 textAlign = TextAlign.Start
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-
 
             AppOutlineTextField(
                 value = password,
@@ -135,7 +136,7 @@ fun LoginScreen(
                 },
                 placeholder = { Text(text = stringResource(id = R.string.your_password)) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                isError = (!password.isValidPassword() && password.length >= 4),
+                isError = (!password.isValidPassword() && password.isNotEmpty()),
                 errorMessage = stringResource(id = R.string.password_error),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
@@ -166,11 +167,11 @@ fun LoginScreen(
                 singleButton = true,
                 enabled = email.isValidEmail() && password.isValidPassword(),
                 onClick = {
-                    onLoginSuccess()
+                    vm.onEvent(LoginUIEvent.Submit(email, password))
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
+                    .height(dimensionResource(id = R.dimen.size_56dp)),
                 text = stringResource(id = R.string.login),
                 icon = painterResource(id = R.drawable.ic_circle_next)
             )

@@ -50,7 +50,7 @@ android {
     productFlavors {
         create("demo") {
             dimension = "ballerapp"
-            buildConfigField("String", "API_SERVER", "\"http://baller-app.softprodigyphp.in\"")
+            buildConfigField("String", "API_SERVER", "\"http://ballerapp-env.eba-8pvskbs2.us-east-2.elasticbeanstalk.com/api/\"")
             buildConfigField("String", "SERVER", "\"http://baller-app.softprodigyphp.in\"")
             buildConfigField("Integer", "CONNECT_TIMEOUT", "120")
             buildConfigField("Integer", "WRITE_TIMEOUT", "120")
@@ -59,7 +59,7 @@ android {
         }
         create("develop") {
             dimension = "ballerapp"
-            buildConfigField("String", "API_SERVER", "\"http://baller-app.softprodigyphp.in\"")
+            buildConfigField("String", "API_SERVER", "\"http://ballerapp-env.eba-8pvskbs2.us-east-2.elasticbeanstalk.com/api/\"")
             buildConfigField("String", "SERVER", "\"http://baller-app.softprodigyphp.in\"")
             buildConfigField("Integer", "CONNECT_TIMEOUT", "120")
             buildConfigField("Integer", "WRITE_TIMEOUT", "120")
@@ -67,7 +67,7 @@ android {
         }
         create("qa") {
             dimension = "ballerapp"
-            buildConfigField("String", "API_SERVER", "\"http://baller-app.softprodigyphp.in\"")
+            buildConfigField("String", "API_SERVER", "\"http://ballerapp-env.eba-8pvskbs2.us-east-2.elasticbeanstalk.com/api/\"")
             buildConfigField("String", "SERVER", "\"http://baller-app.softprodigyphp.in\"")
             buildConfigField("Integer", "CONNECT_TIMEOUT", "120")
             buildConfigField("Integer", "WRITE_TIMEOUT", "120")

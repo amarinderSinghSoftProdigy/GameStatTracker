@@ -41,15 +41,3 @@ fun AppSpacer(
 
 private const val DividerAlpha = 0.12f
 
-@Preview("default", showBackground = true)
-@Preview("dark theme", uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
-@Composable
-private fun DividerPreview() {
-    BallerAppTheme() {
-        Surface() {
-            Box(Modifier.size(height = 10.dp, width = 100.dp)) {
-                AppDivider(Modifier.align(Alignment.Center))
-            }
-        }
-    }
-}
