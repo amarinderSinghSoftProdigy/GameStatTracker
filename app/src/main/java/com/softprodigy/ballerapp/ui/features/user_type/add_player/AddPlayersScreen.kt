@@ -49,6 +49,7 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.validName
 import com.softprodigy.ballerapp.data.UserStorage
+import com.softprodigy.ballerapp.data.request.GlobalRequest
 import com.softprodigy.ballerapp.ui.features.components.AppSearchOutlinedTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.BottomButtons
@@ -66,7 +67,7 @@ fun AddPlayersScreen(
     onBackClick: () -> Unit,
     onNextClick: () -> Unit
 ) {
-    val search = remember { mutableStateOf("") }
+    val search = remember { mutableStateOf(vm.teamData.search) }
     val context = LocalContext.current
     val selectedPlayer = vm.selectedPlayer
     val showDialog = remember { mutableStateOf(false) }
@@ -198,7 +199,10 @@ fun AddPlayersScreen(
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
             BottomButtons(
                 onBackClick = { onBackClick.invoke() },
-                onNextClick = { onNextClick.invoke() },
+                onNextClick = { onNextClick.invoke()
+                              val request = GlobalRequest.AddPlayers(search.value)
+                    vm.saveTeamData(request)
+                              },
                 enableState = vm.selectedPlayer.isNotEmpty()
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
