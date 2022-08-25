@@ -52,6 +52,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
 import com.github.skydoves.colorpicker.compose.ColorEnvelope
 import com.github.skydoves.colorpicker.compose.ColorPickerController
@@ -61,6 +62,8 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.validTeamName
 import com.softprodigy.ballerapp.data.UserStorage
+import com.softprodigy.ballerapp.data.request.GlobalRequest
+import com.softprodigy.ballerapp.data.request.SignUpRequest
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.BottomButtons
@@ -76,18 +79,22 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
+fun TeamSetupScreen(
+    onBackClick: () -> Unit,
+    onNextClick: () -> Unit,
+    viewModel: UserTypeViewModel = hiltViewModel()
+) {
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
 
-    val teamName = remember { mutableStateOf("") }
-    val selectedColorCode = remember { mutableStateOf("") }
-    val editTextColorValue = remember { mutableStateOf("") }
+    val teamName = remember { mutableStateOf(viewModel.teamData.teamName) }
+    val selectedColorCode = remember { mutableStateOf(viewModel.teamData.teamColor) }
     val selectedColor = remember { mutableStateOf<Color?>(null) }
+    val editTextColorValue = remember { mutableStateOf(viewModel.teamData.teamColor) }
 
     var imageUri by remember(false) {
-        mutableStateOf<Uri?>(null)
+        mutableStateOf<Uri?>(viewModel.teamData.teamLogo)
     }
     val context = LocalContext.current
     val bitmap = remember(false) {
@@ -287,7 +294,7 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                                 AppText(
                                     modifier = Modifier.align(Alignment.Center),
                                     textAlign = TextAlign.Center,
-                                    text = "#"+editTextColorValue.value,
+                                    text = "#" + editTextColorValue.value,
                                 )
                             }
                             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
@@ -316,6 +323,12 @@ fun TeamSetupScreen(onBackClick: () -> Unit, onNextClick: () -> Unit) {
                         onNextClick.invoke()
                         UserStorage.teamColor = selectedColorCode.value
                         UserStorage.teamLogo = imageUri.toString()
+                        val request = GlobalRequest.SetUpTeam(
+                            teamName.value,
+                            imageUri,
+                            selectedColorCode.value
+                        )
+                        viewModel.saveTeamData(request)
                     },
                     enableState = validTeamName(teamName.value) && imageUri != null && selectedColorCode.value.isNotEmpty(),
                     showOnlyNext = false

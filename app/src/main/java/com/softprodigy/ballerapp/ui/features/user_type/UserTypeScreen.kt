@@ -1,5 +1,7 @@
 package com.softprodigy.ballerapp.ui.features.user_type
 
+import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
@@ -8,8 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
+import com.softprodigy.ballerapp.data.request.GlobalRequest
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.BottomButtons
 import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
@@ -17,27 +21,31 @@ import com.softprodigy.ballerapp.ui.features.components.UserSelectionSurface
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.spacing
 
+
 @Composable
-fun UserTypeScreen(onNextClick: (String) -> Unit) {
+fun UserTypeScreen(onNextClick: (String) -> Unit, viewModel: UserTypeViewModel = hiltViewModel()) {
     Box(
         Modifier.fillMaxWidth()
     ) {
         CoachFlowBackground()
-        UserTypeSelector(onNextClick = onNextClick)
+        UserTypeSelector(onNextClick = onNextClick, viewModel)
     }
 }
 
-
+@SuppressLint("RememberReturnType")
 @Composable
-fun UserTypeSelector(onNextClick: (String) -> Unit) {
+fun UserTypeSelector(onNextClick: (String) -> Unit, viewModel: UserTypeViewModel) {
     val options = listOf(
         AppConstants.USER_TYPE_PLAYER,
         AppConstants.USER_TYPE_COACH,
         AppConstants.USER_TYPE_REFEREE
     )
+
+
     var selectedUserType by remember {
-        mutableStateOf("")
+        mutableStateOf(viewModel.userRole)
     }
+
     val onSelectionChange = { text: String ->
         selectedUserType = text
     }
@@ -96,12 +104,14 @@ fun UserTypeSelector(onNextClick: (String) -> Unit) {
                 firstText = stringResource(id = R.string.back),
                 secondText = stringResource(id = R.string.next),
                 onBackClick = { },
-                onNextClick = { onNextClick.invoke(selectedUserType) },
+                onNextClick = {
+                    onNextClick.invoke(selectedUserType)
+                    val userRole = GlobalRequest.Users(selectedUserType)
+                    viewModel.saveData(userRole)
+                },
                 enableState = selectedUserType.isNotEmpty(),
                 showOnlyNext = true,
             )
         }
-
-
     }
 }
