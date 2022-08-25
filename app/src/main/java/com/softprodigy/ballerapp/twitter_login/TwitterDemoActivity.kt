@@ -14,6 +14,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.softprodigy.ballerapp.R
 import kotlinx.coroutines.*
 import twitter4j.Twitter
@@ -40,8 +41,8 @@ class TwitterDemoActivity : AppCompatActivity() {
         twitter_login_btn=findViewById(R.id.twitter_login_btn)
 
 
-        GlobalScope.launch {
-            val results = GlobalScope.async { isLoggedIn() }
+        lifecycleScope.launch {
+            val results = lifecycleScope.async { isLoggedIn() }
             val result = results.await()
             if (result) {
                 // Show the Activity with the logged in user
@@ -59,12 +60,12 @@ class TwitterDemoActivity : AppCompatActivity() {
     }
 
     private fun getRequestToken() {
-        GlobalScope.launch(Dispatchers.Default) {
+        lifecycleScope.launch(Dispatchers.Default) {
             val builder = ConfigurationBuilder()
                 .setDebugEnabled(true)
                 .setOAuthConsumerKey(TwitterConstants.CONSUMER_KEY)
                 .setOAuthConsumerSecret(TwitterConstants.CONSUMER_SECRET)
-                .setIncludeEmailEnabled(true)
+//                .setIncludeEmailEnabled(true)
             val config = builder.build()
             val factory = TwitterFactory(config)
             twitter = factory.instance
@@ -134,7 +135,7 @@ class TwitterDemoActivity : AppCompatActivity() {
         private fun handleUrl(url: String) {
             val uri = Uri.parse(url)
             val oauthVerifier = uri.getQueryParameter("oauth_verifier") ?: ""
-            GlobalScope.launch(Dispatchers.Main) {
+            lifecycleScope.launch(Dispatchers.Main) {
                 accToken =
                     withContext(Dispatchers.IO) { twitter.getOAuthAccessToken(oauthVerifier) }
                 getUserProfile()

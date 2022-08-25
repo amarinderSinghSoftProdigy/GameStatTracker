@@ -147,7 +147,6 @@ dependencies {
 
     // twitter login
     implementation 'org.twitter4j:twitter4j-core:4.0.7'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
 
 
 }

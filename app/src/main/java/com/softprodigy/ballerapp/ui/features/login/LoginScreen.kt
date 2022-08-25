@@ -1,6 +1,7 @@
 package com.softprodigy.ballerapp.ui.features.login
 
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -30,10 +31,11 @@ import com.facebook.FacebookCallback
 import com.facebook.FacebookException
 import com.facebook.login.LoginManager
 import com.facebook.login.LoginResult
+import com.google.android.gms.common.api.ApiException
 import com.softprodigy.ballerapp.LocalFacebookCallbackManager
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.*
-import com.softprodigy.ballerapp.data.FacebookUserModel
+import com.softprodigy.ballerapp.data.SocialUserModel
 import com.softprodigy.ballerapp.data.response.UserInfo
 import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
@@ -65,7 +67,7 @@ fun LoginScreen(
 
                     CustomFBManager.getFacebookUserProfile(result.accessToken, object :
                         FacebookUserProfile {
-                        override fun onFacebookUserFetch(fbUser: FacebookUserModel) {
+                        override fun onFacebookUserFetch(fbUser: SocialUserModel) {
                             Timber.i("FacebookUserModel-- $fbUser")
                             vm.onEvent(LoginUIEvent.OnFacebookClick(fbUser))
 
@@ -87,6 +89,30 @@ fun LoginScreen(
         }
     }
 
+    val authResultLauncher =
+        rememberLauncherForActivityResult(contract = GoogleApiContract()) { task ->
+            try {
+                val gsa = task?.getResult(ApiException::class.java)
+                if (gsa != null) {
+                    val googleUser = SocialUserModel(
+                        email = gsa.email,
+                        name = gsa.displayName,
+                        id = gsa.id,
+                        token = gsa.idToken
+                    )
+                    vm.onEvent(LoginUIEvent.OnGoogleClick(googleUser))
+                }
+                else{
+                    Timber.i("gsa null")
+                    Toast.makeText(context, "gsa null", Toast.LENGTH_SHORT).show()
+                }
+
+            } catch (e: ApiException) {
+                Timber.i(e.toString())
+            }
+
+        }
+
     LaunchedEffect(key1 = Unit) {
         vm.loginChannel.collect { uiEvent ->
             when (uiEvent) {
@@ -97,7 +123,6 @@ fun LoginScreen(
                 is LoginChannel.OnLoginSuccess -> {
                     onLoginSuccess.invoke(uiEvent.loginResponse)
                 }
-                else -> Unit
             }
         }
     }
@@ -233,7 +258,9 @@ fun LoginScreen(
 
             SocialLoginSection(
                 headerText = stringResource(id = R.string.or_sign_in_with),
-                onAppleClick = { },
+                onGoogleClick = {
+                    authResultLauncher.launch(RequestCode.GOOGLE_ACCESS)
+                },
                 onFacebookClick = {
                     LoginManager.getInstance()
                         .logInWithReadPermissions(

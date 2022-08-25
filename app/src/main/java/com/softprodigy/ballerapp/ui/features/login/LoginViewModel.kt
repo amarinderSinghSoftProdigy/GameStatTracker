@@ -44,9 +44,18 @@ class LoginViewModel @Inject constructor(
             is LoginUIEvent.OnFacebookClick -> {
                 login(
                     LoginRequest(
-                        email = event.fbUser.email,
+                        email = event.socialUser.email,
                         loginType = ApiConstants.FACEBOOK,
-                        facebookId = event.fbUser.id
+                        facebookId = event.socialUser.id
+                    )
+                )
+            }
+            is LoginUIEvent.OnGoogleClick -> {
+                login(
+                    LoginRequest(
+                        email = event.socialUser.email,
+                        loginType = ApiConstants.GOOGLE,
+                        googleId = event.socialUser.id
                     )
                 )
             }

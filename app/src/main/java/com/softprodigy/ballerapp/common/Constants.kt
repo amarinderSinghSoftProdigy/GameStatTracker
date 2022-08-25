@@ -45,5 +45,11 @@ object ApiConstants {
     const val mobile="mobile"
     const val EMAIL="email"
     const val FACEBOOK="facebook"
+    const val GOOGLE="google"
     const val token="token"
+}
+
+object RequestCode{
+    const val GOOGLE_ACCESS = 100
+
 }
