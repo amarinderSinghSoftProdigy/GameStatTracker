@@ -46,8 +46,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.common.validName
 import com.softprodigy.ballerapp.common.AppConstants
+import com.softprodigy.ballerapp.common.validName
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.ui.features.components.AppSearchOutlinedTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
@@ -94,6 +94,7 @@ fun AddPlayersScreen(
                 Column(
                     Modifier
                         .weight(1f)
+                        .padding(all = dimensionResource(id = R.dimen.size_16dp))
                 ) {
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
@@ -152,11 +153,10 @@ fun AddPlayersScreen(
                                         maxWidth = constraints.maxWidth + (context.resources.getDimension(
                                             R.dimen.size_32dp
                                         )).dp.roundToPx(),
-                                        //It will ignore parent column padding and occupy whole space
                                     )
                                 )
                                 layout(placeable.width, placeable.height) {
-                                    placeable.place(0, 0) //starting position of divider
+                                    placeable.place(0, 0)
                                 }
                             })
                     }
