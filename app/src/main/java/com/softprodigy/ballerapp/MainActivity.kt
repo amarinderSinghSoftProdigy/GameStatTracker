@@ -2,7 +2,9 @@ package com.softprodigy.ballerapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
@@ -94,6 +96,7 @@ fun NavControllerComposable(activity: MainActivity) {
                 navController.navigate(LOGIN_SCREEN)
             }
         }
+
         composable(route = LOGIN_SCREEN) {
             val context = LocalContext.current
             LoginScreen(
@@ -116,6 +119,11 @@ fun NavControllerComposable(activity: MainActivity) {
             HomeScreen(name = name)
         }
         composable(route = SELECT_USER_TYPE) {
+
+            BackHandler(true) {
+
+            }
+
             UserTypeScreen(onNextClick = { userType ->
                 Timber.i("onNextClick-- $userType")
                 when (userType) {
@@ -123,12 +131,9 @@ fun NavControllerComposable(activity: MainActivity) {
                         navController.navigate(PROFILE_SETUP_SCREEN)
                     }
                     AppConstants.USER_TYPE_PLAYER -> {
-
                     }
                     AppConstants.USER_TYPE_REFEREE -> {
-
                     }
-
                 }
             })
         }

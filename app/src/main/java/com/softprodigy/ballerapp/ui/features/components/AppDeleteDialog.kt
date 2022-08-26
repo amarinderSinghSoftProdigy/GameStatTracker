@@ -35,6 +35,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.theme.BallerAppTheme
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -50,8 +51,14 @@ fun <T> DeleteDialog(
     BallerAppTheme {
         AlertDialog(
             onDismissRequest = onDismiss,
+            backgroundColor = Color.White,
             title = title,
-            text = { Text(text = message) },
+            text = {
+                Text(
+                    text = message,
+                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp
+                )
+            },
             buttons = {
                 Row(
                     modifier = Modifier

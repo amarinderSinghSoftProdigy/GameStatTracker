@@ -54,7 +54,7 @@ fun SocialLoginSection(
             horizontalArrangement = Arrangement.Center
         ) {
             SocialLoginButton(
-                icon = painterResource(id = R.drawable.ic_apple),
+                icon = painterResource(id = R.drawable.ic_google),
             )
             { onAppleClick() }
 

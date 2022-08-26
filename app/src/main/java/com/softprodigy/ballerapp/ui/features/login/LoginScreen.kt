@@ -38,6 +38,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.isValidEmail
@@ -85,8 +86,7 @@ fun LoginScreen(
 
         Column(
             modifier = Modifier
-                .padding(horizontal = dimensionResource(id = R.dimen.size_20dp))
-                .verticalScroll(rememberScrollState()),
+                .padding(horizontal = dimensionResource(id = R.dimen.size_20dp)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -101,7 +101,6 @@ fun LoginScreen(
             )
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_60dp)))
-
 
             AppText(
                 text = stringResource(id = R.string.email),
@@ -120,7 +119,15 @@ fun LoginScreen(
                 onValueChange = {
                     email = it
                 },
-                placeholder = { Text(text = stringResource(id = R.string.your_email)) },
+                placeholder = {
+                    Text(
+                        text = stringResource(id = R.string.your_email),
+                        fontSize = dimensionResource(
+                            id =
+                            R.dimen.txt_size_12
+                        ).value.sp
+                    )
+                },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 isError = (!email.isValidEmail() && email.isNotEmpty()),
                 errorMessage = stringResource(id = R.string.email_error),
@@ -129,7 +136,8 @@ fun LoginScreen(
                     unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
                     backgroundColor = MaterialTheme.appColors.material.background,
                     textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                    placeholderColor = MaterialTheme.appColors.textField.label
+                    placeholderColor = MaterialTheme.appColors.textField.label,
+                    cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
                 ),
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
@@ -150,7 +158,12 @@ fun LoginScreen(
                 onValueChange = {
                     password = it
                 },
-                placeholder = { Text(text = stringResource(id = R.string.your_password)) },
+                placeholder = {
+                    Text(
+                        text = stringResource(id = R.string.your_password),
+                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
+                    )
+                },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 isError = (!password.isValidPassword() && password.isNotEmpty()),
                 errorMessage = stringResource(id = R.string.password_error),
@@ -159,7 +172,9 @@ fun LoginScreen(
                     unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
                     backgroundColor = MaterialTheme.appColors.material.background,
                     textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                    placeholderColor = MaterialTheme.appColors.textField.label
+                    placeholderColor = MaterialTheme.appColors.textField.label,
+                    cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+
                 ),
                 visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
@@ -212,14 +227,16 @@ fun LoginScreen(
                     .align(Alignment.CenterHorizontally)
                     .clickable(onClick = onRegister)
             )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_100dp)))
+
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_60dp)))
+
             SocialLoginSection(
                 headerText = stringResource(id = R.string.or_sign_in_with),
                 onAppleClick = { },
                 onFacebookClick = { }) {
             }
 
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))
+//            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))
 
         }
     }
