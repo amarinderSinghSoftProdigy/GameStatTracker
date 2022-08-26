@@ -82,13 +82,22 @@
     <string name="number_same_as_confirm">Verify Number must be same as Phone number</string>
     <string name="enter_number">Enter your phone number</string>
 
+    <string name="home_label">Home</string>
     <string name="events_label">Events</string>
     <string name="teams_label">Teams</string>
     <string name="player_label">Player</string>
+    <string name="parent_label">Parent</string>
+    <string name="game_staff_label">Game Staff</string>
+    <string name="program_label">Program Staff</string>
+    <string name="fan_label">Fan</string>
     <string name="coach_label">Coach</string>
     <string name="referee_label">Referee</string>
     <string name="create_now">Create Now</string>
     <string name="pick_team">Pick Team</string>
+    <string name="welcome_back">Welcome Back!</string>
+    <string name="hey_label">Hey name,</string>
+    <string name="pending_rsvp_label">Pending RSVPs</string>
+    <string name="opportunities_label">Opportunities to play</string>
 
 
 </resources>

@@ -11,7 +11,7 @@ object AppConstants {
     const val USER_TYPE_PLAYER = "Player"
     const val USER_TYPE_REFEREE = "Referee"
     const val USER_TYPE_COACH = "Coach"
-    var SELECTED_COLOR: Color = Color.White
+    var SELECTED_COLOR: Color = Color(0xFF0177C1)
 }
 
 object Route {

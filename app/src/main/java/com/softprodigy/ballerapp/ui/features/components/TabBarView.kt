@@ -50,7 +50,7 @@ fun BottomNavigationBar(
     height: Dp = dimensionResource(id = R.dimen.size_64dp),
     selectedValue: (BottomNavKey) -> Unit
 ) {
-    val selected: MutableState<BottomNavKey> = remember { mutableStateOf(BottomNavKey.EVENTS) }
+    val selected: MutableState<BottomNavKey> = remember { mutableStateOf(BottomNavKey.HOME) }
     Surface(
         elevation = dimensionResource(id = R.dimen.size_12dp),
         color = Color.White,
@@ -64,6 +64,7 @@ fun BottomNavigationBar(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             val mBottomNavItems: List<BottomNavigationItem> = listOf(
+                BottomNavigationItem.Home,
                 BottomNavigationItem.Events,
                 BottomNavigationItem.Teams,
             )
@@ -117,6 +118,12 @@ sealed class BottomNavigationItem(
     var icon: Int,
     var key: BottomNavKey,
 ) {
+    object Home :
+        BottomNavigationItem(
+            R.drawable.ic_events,
+            key = BottomNavKey.HOME,
+        )
+
     object Events :
         BottomNavigationItem(
             R.drawable.ic_events,
@@ -131,13 +138,20 @@ sealed class BottomNavigationItem(
 }
 
 enum class BottomNavKey(val resId: String, val route: String) {
+    HOME("home_label", "homeScreen"),
     EVENTS("events_label", "eventsScreen"),
     TEAMS("teams_label", "teamsScreen")
     //Add items to add in the bottom navigation
 }
 
-enum class UserType {
-    PLAYER, COACH, REFEREE //Add items to add in the usertypes in the app.
+enum class UserType(stringId: String, key: String) {
+    PLAYER("player_label", "player"),
+    COACH("coach_label", "coach"),
+    REFEREE("home_label", "referee"),
+    PARENT("parent_label", "parent"),
+    GAME_STAFF("game_staff_label", "gameStaff"),
+    PROGRAM_STAFF("program_label", "programStaff"),
+    FAN("fan_label", "fan")//Add items to add in the usertypes in the app.
 }
 
 @Composable
