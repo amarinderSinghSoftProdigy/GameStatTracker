@@ -93,6 +93,8 @@
     <string name="referee_label">Referee</string>
     <string name="create_now">Create Now</string>
     <string name="pick_team">Pick Team</string>
+    <string name="player_already_added">Player already added</string>
+    <string name="something_went_wrong">Something went wrong</string>
 
 
 </resources>

@@ -1,35 +1,15 @@
-package com.softprodigy.ballerapp.ui.features.user_type.add_player
+package com.softprodigy.ballerapp.ui.features.user_type.team_setup
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import android.widget.Toast
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,38 +24,39 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.validName
-import com.softprodigy.ballerapp.data.UserStorage
-import com.softprodigy.ballerapp.data.request.GlobalRequest
-import com.softprodigy.ballerapp.ui.features.components.AppSearchOutlinedTextField
-import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.BottomButtons
-import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
-import com.softprodigy.ballerapp.ui.features.components.DeleteDialog
-import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
+import com.softprodigy.ballerapp.data.response.Player
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
-import java.util.*
+import timber.log.Timber
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun AddPlayersScreen(
-    vm: AddPlayerViewModel = hiltViewModel(),
+    vm: SetupTeamViewModel,
     onBackClick: () -> Unit,
     onNextClick: () -> Unit
 ) {
-    val search = remember { mutableStateOf(vm.teamData.search) }
     val context = LocalContext.current
-    val selectedPlayer = vm.selectedPlayer
-    val showDialog = remember { mutableStateOf(false) }
-    val removePlayer = remember { mutableStateOf("") }
+    val state = vm.teamSetupUiState.value
+
+    LaunchedEffect(key1 = Unit) {
+        vm.teamSetupChannel.collect { uiEvent ->
+            when (uiEvent) {
+                is TeamSetupChannel.ShowToast -> {
+                    Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
+        }
+    }
+
     Box(Modifier.fillMaxSize()) {
         CoachFlowBackground(
-            colorCode = UserStorage.teamColor,
-            teamLogo = UserStorage.teamLogo
+            colorCode = state.teamColor,
+            teamLogo = state.teamImageUri
         )
         Column(
             Modifier
@@ -102,9 +83,10 @@ fun AddPlayersScreen(
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                         AppSearchOutlinedTextField(
                             modifier = Modifier.weight(1.0f),
-                            value = search.value,
+                            value = state.search,
                             onValueChange = {
-                                search.value = it
+                                vm.onEvent(TeamSetupUIEvent.OnSearchPlayer(it))
+//                                search.value = it
                             },
                             leadingIcon = {
                                 Icon(
@@ -127,7 +109,7 @@ fun AddPlayersScreen(
                         )
                     }
 
-                    if (!validName(search.value) && search.value.isNotEmpty()) {
+                    if (!validName(state.search) && state.search.isNotEmpty()) {
                         Text(
                             text = stringResource(id = R.string.valid_search),
                             color = MaterialTheme.colors.error,
@@ -139,27 +121,29 @@ fun AddPlayersScreen(
                         )
                     }
 
-                    if (search.value.isNotEmpty()) {
-                        PlayerListUI(modifier = Modifier
+                    if (state.search.isNotEmpty()) {
+                        PlayerListUI(state.players, modifier = Modifier
                             .fillMaxWidth()
                             .height(dimensionResource(id = R.dimen.size_200dp)),
-                            searchedText = search.value,
+                            searchedText = state.search,
+                            teamColor = state.teamColor,
                             onPlayerClick = {
-                                selectedPlayer.add(it)
+                                vm.onEvent(TeamSetupUIEvent.OnAddPlayerClick(it))
                             })
-                        Divider(modifier = Modifier
-                            .layout { measurable, constraints ->
-                                val placeable = measurable.measure(
-                                    constraints.copy(
-                                        maxWidth = constraints.maxWidth + (context.resources.getDimension(
-                                            R.dimen.size_32dp
-                                        )).dp.roundToPx(),
+                        Divider(
+                            modifier = Modifier
+                                .layout { measurable, constraints ->
+                                    val placeable = measurable.measure(
+                                        constraints.copy(
+                                            maxWidth = constraints.maxWidth + (context.resources.getDimension(
+                                                R.dimen.size_32dp
+                                            )).dp.roundToPx(),
+                                        )
                                     )
-                                )
-                                layout(placeable.width, placeable.height) {
-                                    placeable.place(0, 0)
-                                }
-                            })
+                                    layout(placeable.width, placeable.height) {
+                                        placeable.place(0, 0)
+                                    }
+                                })
                     }
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -183,13 +167,14 @@ fun AddPlayersScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
-                        items(selectedPlayer) { filteredCountry ->
+//                        items(selectedPlayer) { filteredCountry ->
+                        items(state.selectedPlayers) { filteredCountry ->
                             PlayerListItem(
                                 painterResource(id = R.drawable.ic_remove),
-                                countryText = filteredCountry,
+                                player = filteredCountry,
+                                teamColor = state.teamColor,
                                 onItemClick = { player ->
-                                    removePlayer.value = player
-                                    showDialog.value = true
+                                    vm.onEvent(TeamSetupUIEvent.OnRemovePlayerClick(player))
                                 }
                             )
                         }
@@ -199,24 +184,26 @@ fun AddPlayersScreen(
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
             BottomButtons(
                 onBackClick = { onBackClick.invoke() },
-                onNextClick = { onNextClick.invoke()
-                              val request = GlobalRequest.AddPlayers(search.value)
-                    vm.saveTeamData(request)
-                              },
-                enableState = vm.selectedPlayer.isNotEmpty()
+                onNextClick = {
+                    onNextClick.invoke()
+                },
+                enableState = state.selectedPlayers.isNotEmpty()
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
         }
     }
 
-    if (showDialog.value) {
+    if (state.showDialog) {
         DeleteDialog(
-            item = removePlayer.value,
+            item = state.removePlayer,
             message = stringResource(id = R.string.alert_remove_player),
-            onDismiss = { showDialog.value = false },
+            onDismiss = {
+                vm.onEvent(TeamSetupUIEvent.OnDismissDialogCLick(false))
+            },
             onDelete = {
-                selectedPlayer.remove(removePlayer.value)
-                showDialog.value = false
+                if (state.removePlayer != null) {
+                    vm.onEvent(TeamSetupUIEvent.OnRemovePlayerConfirmClick(state.removePlayer))
+                }
             }
         )
     }
@@ -224,22 +211,25 @@ fun AddPlayersScreen(
 
 @Composable
 fun PlayerListUI(
+    players: List<Player>,
     modifier: Modifier = Modifier,
-    onPlayerClick: (String) -> Unit,
-    searchedText: String
+    onPlayerClick: (Player) -> Unit,
+    searchedText: String,
+    teamColor: String
 ) {
-    val countries = getListOfPlayers()
-    var filteredCountries: ArrayList<String>
+    var filteredCountries: ArrayList<Player>
     LazyColumn(modifier = modifier) {
         filteredCountries = if (searchedText.isEmpty()) {
             ArrayList()
         } else {
-            val resultList = ArrayList<String>()
-            for (country in countries) {
-                if (country.lowercase(Locale.getDefault())
-                        .contains(searchedText.lowercase(Locale.getDefault()))
+            val resultList = ArrayList<Player>()
+            for (player in players) {
+                if (player.name.lowercase()
+                        .contains(searchedText.lowercase())
+                    || player.email.lowercase()
+                        .contains(searchedText.lowercase())
                 ) {
-                    resultList.add(country)
+                    resultList.add(player)
                 }
             }
             resultList
@@ -247,9 +237,10 @@ fun PlayerListUI(
         items(filteredCountries) { filteredCountry ->
             PlayerListItem(
                 painterResource(id = R.drawable.ic_add_player),
-                countryText = filteredCountry,
-                onItemClick = { selectedCountry ->
-                    onPlayerClick.invoke(selectedCountry)
+                player = filteredCountry,
+                teamColor = teamColor,
+                onItemClick = { selectedPlayer ->
+                    onPlayerClick.invoke(selectedPlayer)
                 }
             )
         }
@@ -257,7 +248,12 @@ fun PlayerListUI(
 }
 
 @Composable
-fun PlayerListItem(icon: Painter, countryText: String, onItemClick: (String) -> Unit) {
+fun PlayerListItem(
+    icon: Painter,
+    player: Player,
+    teamColor: String,
+    onItemClick: (Player) -> Unit
+) {
     Row(
         modifier = Modifier
             .height(IntrinsicSize.Min)
@@ -278,25 +274,26 @@ fun PlayerListItem(icon: Painter, countryText: String, onItemClick: (String) -> 
         )
         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
         Text(
-            text = countryText,
+            text = player.name,
             style = MaterialTheme.typography.h6,
             modifier = Modifier.weight(1f)
         )
         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
-        AddRemoveButton(icon) { onItemClick(countryText) }
+        AddRemoveButton(icon, teamColor = teamColor) { onItemClick(player) }
     }
 }
 
 @Composable
-fun AddRemoveButton(icon: Painter, onItemClick: () -> Unit) {
+fun AddRemoveButton(icon: Painter, teamColor: String, onItemClick: () -> Unit) {
     Box(
         modifier = Modifier
             .size(dimensionResource(id = R.dimen.size_24dp))
             .background(
                 shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_5dp)),
-                color = AppConstants.SELECTED_COLOR
+                color = Color(android.graphics.Color.parseColor("#$teamColor"))
             )
     ) {
+
         Icon(
             painter = icon, contentDescription = "",
             modifier = Modifier
@@ -306,21 +303,4 @@ fun AddRemoveButton(icon: Painter, onItemClick: () -> Unit) {
             tint = Color.White
         )
     }
-}
-
-fun getListOfPlayers(): ArrayList<String> {
-    val isoCountryCodes = Locale.getISOCountries()
-    val countryListWithEmojis = ArrayList<String>()
-    for (countryCode in isoCountryCodes) {
-        val locale = Locale("", countryCode)
-        val countryName = locale.displayCountry
-        val flagOffset = 0x1F1E6
-        val asciiOffset = 0x41
-        val firstChar = Character.codePointAt(countryCode, 0) - asciiOffset + flagOffset
-        val secondChar = Character.codePointAt(countryCode, 1) - asciiOffset + flagOffset
-        val flag =
-            (String(Character.toChars(firstChar)) + String(Character.toChars(secondChar)))
-        countryListWithEmojis.add("$countryName $flag")
-    }
-    return countryListWithEmojis
 }

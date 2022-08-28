@@ -1,58 +1,27 @@
 package com.softprodigy.ballerapp.ui.features.user_type
 
-import android.graphics.Bitmap
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Card
-import androidx.compose.material.Divider
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
 import com.github.skydoves.colorpicker.compose.ColorEnvelope
 import com.github.skydoves.colorpicker.compose.ColorPickerController
@@ -60,19 +29,12 @@ import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
+import com.softprodigy.ballerapp.common.argbToHexString
 import com.softprodigy.ballerapp.common.validTeamName
-import com.softprodigy.ballerapp.data.UserStorage
-import com.softprodigy.ballerapp.data.request.GlobalRequest
-import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
-import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.BottomButtons
-import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
-import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
-import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
-import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
-import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
-import com.softprodigy.ballerapp.ui.theme.ColorMainPrimary
-import com.softprodigy.ballerapp.ui.theme.ColorPrimaryTransparent
+import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.SetupTeamViewModel
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.TeamSetupUIEvent
+import com.softprodigy.ballerapp.ui.theme.*
 import kotlinx.coroutines.launch
 
 
@@ -81,38 +43,30 @@ import kotlinx.coroutines.launch
 fun TeamSetupScreen(
     onBackClick: () -> Unit,
     onNextClick: () -> Unit,
-    viewModel: UserTypeViewModel = hiltViewModel()
+    vm: SetupTeamViewModel
 ) {
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
 
-    val teamName = remember { mutableStateOf(viewModel.teamData.teamName) }
-    val selectedColorCode = remember { mutableStateOf(viewModel.teamData.teamColor) }
-    val editTextColorValue = remember { mutableStateOf(viewModel.teamData.teamColor) }
-
-    var imageUri by remember(false) {
-        mutableStateOf<Uri?>(viewModel.teamData.teamLogo)
-    }
-    val context = LocalContext.current
-    val bitmap = remember(false) {
-        mutableStateOf<Bitmap?>(null)
-    }
+    val state = vm.teamSetupUiState.value
 
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
-            imageUri = uri
+            vm.onEvent(TeamSetupUIEvent.OnImageSelected(uri.toString()))
         }
     val controller = rememberColorPickerController()
+
     ModalBottomSheetLayout(
         sheetContent = {
             ColorPickerBottomSheet(controller, colorEnvelope = { colorEnvelope ->
                 AppConstants.SELECTED_COLOR = colorEnvelope.color
-                editTextColorValue.value = colorEnvelope.hexCode
+                if (!colorEnvelope.hexCode.contentEquals(AppConstants.PICKER_DEFAULT_COLOR)) {
+                    vm.onEvent(TeamSetupUIEvent.OnColorSelected(colorEnvelope.hexCode))
+                }
             }, onDismiss = {
                 scope.launch {
                     modalBottomSheetState.hide()
-                    selectedColorCode.value = editTextColorValue.value
                 }
             })
         },
@@ -121,12 +75,12 @@ fun TeamSetupScreen(
             topStart = dimensionResource(id = R.dimen.size_16dp),
             topEnd = dimensionResource(id = R.dimen.size_16dp)
         ),
-        sheetBackgroundColor = colorResource(id = R.color.white),
+        sheetBackgroundColor = colorResource(id = R.color.white)
     ) {
 
         Box(Modifier.fillMaxSize()) {
             CoachFlowBackground(
-                colorCode = selectedColorCode.value.ifEmpty { null }
+                colorCode = state.teamColor
             )
             Column(
                 Modifier
@@ -156,15 +110,15 @@ fun TeamSetupScreen(
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                         AppOutlineTextField(
                             modifier = Modifier.fillMaxWidth(),
-                            value = teamName.value,
+                            value = state.teamName,
                             onValueChange = {
-                                teamName.value = it
+                                vm.onEvent(TeamSetupUIEvent.OnTeamNameChange(it))
                             },
                             placeholder = { AppText(text = stringResource(id = R.string.your_team_name)) },
                             colors = TextFieldDefaults.outlinedTextFieldColors(
                                 unfocusedBorderColor = ColorBWGrayBorder
                             ),
-                            isError = !validTeamName(teamName.value) && teamName.value.isNotEmpty(),
+                            isError = !validTeamName(state.teamName) && state.teamName.isNotEmpty(),
                             errorMessage = stringResource(id = R.string.valid_team_name)
                         )
                     }
@@ -186,7 +140,7 @@ fun TeamSetupScreen(
                             text = stringResource(id = R.string.change),
                             color = ColorBWGrayLight,
                             modifier = Modifier.clickable {
-                                if (imageUri != null) {
+                                if (state.teamImageUri != null) {
                                     scope.launch {
                                         modalBottomSheetState.hide()
                                     }
@@ -209,7 +163,7 @@ fun TeamSetupScreen(
                                 shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                             )
                             .clickable {
-                                if (imageUri == null) {
+                                if (state.teamImageUri == null) {
                                     scope.launch {
                                         modalBottomSheetState.hide()
                                     }
@@ -231,9 +185,9 @@ fun TeamSetupScreen(
                                 color = ColorMainPrimary
                             )
                         }
-                        imageUri?.let {
+                        state.teamImageUri?.let {
                             Image(
-                                painter = rememberImagePainter(data = Uri.parse(it.toString())),
+                                painter = rememberImagePainter(data = Uri.parse(it)),
                                 contentDescription = null,
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
@@ -291,17 +245,22 @@ fun TeamSetupScreen(
                                 AppText(
                                     modifier = Modifier.align(Alignment.Center),
                                     textAlign = TextAlign.Center,
-                                    text = "#" + editTextColorValue.value,
+                                    text = if (state.teamColor.isNotEmpty()) {
+                                        "#" + state.teamColor
+                                    } else {
+                                        ColorPrimaryOrange.toArgb().argbToHexString()
+                                    }
+
                                 )
                             }
                             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
 
                             Card(
                                 modifier = Modifier.size(dimensionResource(id = R.dimen.size_32dp)),
-                                backgroundColor = if (editTextColorValue.value.isEmpty()) {
-                                    Color.White
+                                backgroundColor = if (state.teamColor.isEmpty()) {
+                                    ColorPrimaryOrange
                                 } else {
-                                    Color(android.graphics.Color.parseColor("#" + editTextColorValue.value))
+                                    Color(android.graphics.Color.parseColor("#" + state.teamColor))
                                 },
                                 shape = RoundedCornerShape(
                                     dimensionResource(id = R.dimen.size_4dp)
@@ -318,16 +277,8 @@ fun TeamSetupScreen(
                     onBackClick = onBackClick,
                     onNextClick = {
                         onNextClick.invoke()
-                        UserStorage.teamColor = selectedColorCode.value
-                        UserStorage.teamLogo = imageUri.toString()
-                        val request = GlobalRequest.SetUpTeam(
-                            teamName.value,
-                            imageUri,
-                            selectedColorCode.value
-                        )
-                        viewModel.saveTeamData(request)
                     },
-                    enableState = validTeamName(teamName.value) && imageUri != null && selectedColorCode.value.isNotEmpty(),
+                    enableState = validTeamName(state.teamName) && state.teamImageUri != null && state.teamColor.isNotEmpty(),
                     showOnlyNext = false
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))

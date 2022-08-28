@@ -1,6 +1,8 @@
 package com.softprodigy.ballerapp.di.modules
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
+import com.softprodigy.ballerapp.data.repository.TeamRepository
 import com.softprodigy.ballerapp.data.repository.UserRepository
+import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import com.softprodigy.ballerapp.domain.repository.IUserRepository
 import com.softprodigy.ballerapp.network.APIService
 import dagger.Module
@@ -20,5 +22,14 @@ object RepositoryModule {
         dataStoreManager: DataStoreManager,
     ): IUserRepository {
         return UserRepository(service = apiService, dataStoreManager = dataStoreManager)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTeamRepo(
+        apiService: APIService,
+        dataStoreManager: DataStoreManager,
+    ): ITeamRepository {
+        return TeamRepository(service = apiService, dataStoreManager = dataStoreManager)
     }
 }
