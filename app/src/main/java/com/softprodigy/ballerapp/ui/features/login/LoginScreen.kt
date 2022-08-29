@@ -13,9 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -25,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,7 +48,13 @@ import com.facebook.login.LoginResult
 import com.google.android.gms.common.api.ApiException
 import com.softprodigy.ballerapp.LocalFacebookCallbackManager
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.common.*
+import com.softprodigy.ballerapp.common.AppConstants
+import com.softprodigy.ballerapp.common.CustomFBManager
+import com.softprodigy.ballerapp.common.FacebookUserProfile
+import com.softprodigy.ballerapp.common.GoogleApiContract
+import com.softprodigy.ballerapp.common.RequestCode
+import com.softprodigy.ballerapp.common.isValidEmail
+import com.softprodigy.ballerapp.common.isValidPassword
 import com.softprodigy.ballerapp.data.SocialUserModel
 import com.softprodigy.ballerapp.data.response.UserInfo
 import com.softprodigy.ballerapp.ui.features.components.AppButton
@@ -314,7 +319,7 @@ fun LoginScreen(
 
         }
         if (loginState.isDataLoading) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            //CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
     }
 }

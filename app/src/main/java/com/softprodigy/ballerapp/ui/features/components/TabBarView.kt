@@ -144,7 +144,7 @@ enum class BottomNavKey(val resId: String, val route: String) {
     //Add items to add in the bottom navigation
 }
 
-enum class UserType(stringId: String, key: String) {
+enum class UserType(val stringId: String,val key: String) {
     PLAYER("player_label", "player"),
     COACH("coach_label", "coach"),
     REFEREE("home_label", "referee"),
