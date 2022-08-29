@@ -8,13 +8,31 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,7 +53,13 @@ import com.facebook.login.LoginResult
 import com.google.android.gms.common.api.ApiException
 import com.softprodigy.ballerapp.LocalFacebookCallbackManager
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.common.*
+import com.softprodigy.ballerapp.common.AppConstants
+import com.softprodigy.ballerapp.common.CustomFBManager
+import com.softprodigy.ballerapp.common.FacebookUserProfile
+import com.softprodigy.ballerapp.common.GoogleApiContract
+import com.softprodigy.ballerapp.common.RequestCode
+import com.softprodigy.ballerapp.common.isValidEmail
+import com.softprodigy.ballerapp.common.isValidPassword
 import com.softprodigy.ballerapp.data.SocialUserModel
 import com.softprodigy.ballerapp.data.response.UserInfo
 import com.softprodigy.ballerapp.ui.features.components.AppButton
@@ -70,6 +94,7 @@ fun LoginScreen(
                     CustomFBManager.getFacebookUserProfile(result.accessToken, object :
                         FacebookUserProfile {
                         override fun onFacebookUserFetch(fbUser: SocialUserModel) {
+                            Timber.i("FacebookUserModel-- $fbUser")
                             vm.onEvent(LoginUIEvent.OnFacebookClick(fbUser))
 
                         }
