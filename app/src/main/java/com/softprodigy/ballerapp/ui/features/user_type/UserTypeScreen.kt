@@ -31,7 +31,6 @@ import com.softprodigy.ballerapp.ui.features.components.UserSelectionSurface
 import com.softprodigy.ballerapp.ui.features.components.UserType
 import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
-import com.softprodigy.ballerapp.ui.theme.spacing
 
 
 @Composable
@@ -95,7 +94,7 @@ fun UserTypeSelector(onNextClick: (String) -> Unit, viewModel: UserTypeViewModel
                             vertical = dimensionResource(id = R.dimen.size_4dp)
                         ),
                 ) {
-                    val name=stringResourceByName(name = it.name)
+                    val name = stringResourceByName(name = it.stringId)
                     UserSelectionSurface(
                         modifier = Modifier.fillMaxWidth(0.9f),
                         text = name,

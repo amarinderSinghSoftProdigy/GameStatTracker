@@ -55,7 +55,13 @@ import com.facebook.login.LoginResult
 import com.google.android.gms.common.api.ApiException
 import com.softprodigy.ballerapp.LocalFacebookCallbackManager
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.common.*
+import com.softprodigy.ballerapp.common.AppConstants
+import com.softprodigy.ballerapp.common.CustomFBManager
+import com.softprodigy.ballerapp.common.FacebookUserProfile
+import com.softprodigy.ballerapp.common.GoogleApiContract
+import com.softprodigy.ballerapp.common.RequestCode
+import com.softprodigy.ballerapp.common.isValidEmail
+import com.softprodigy.ballerapp.common.isValidPassword
 import com.softprodigy.ballerapp.data.SocialUserModel
 import com.softprodigy.ballerapp.data.response.UserInfo
 import com.softprodigy.ballerapp.ui.features.components.AppButton
@@ -355,7 +361,7 @@ fun LoginScreen(
 
         }
         if (loginState.isDataLoading) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            //CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
     }
 }
