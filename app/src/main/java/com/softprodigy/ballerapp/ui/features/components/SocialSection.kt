@@ -1,23 +1,12 @@
 package com.softprodigy.ballerapp.ui.features.components
 
-import android.content.res.Configuration
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.softprodigy.ballerapp.ui.theme.BallerAppTheme
 import com.softprodigy.ballerapp.ui.theme.spacing
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
@@ -27,7 +16,7 @@ import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
 fun SocialLoginSection(
     modifier: Modifier = Modifier,
     headerText: String = stringResource(id = R.string.or_sign_in_with),
-    onAppleClick: () -> Unit,
+    onGoogleClick: () -> Unit,
     onFacebookClick: () -> Unit,
     onTwitterClick: () -> Unit,
 ) {
@@ -56,7 +45,7 @@ fun SocialLoginSection(
             SocialLoginButton(
                 icon = painterResource(id = R.drawable.ic_google),
             )
-            { onAppleClick() }
+            { onGoogleClick() }
 
             Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
 

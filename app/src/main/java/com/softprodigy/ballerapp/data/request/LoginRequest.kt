@@ -9,7 +9,7 @@ data class LoginRequest(
     @SerializedName("loginType") val loginType: String? = null,
     @SerializedName("facebookId") val facebookId: String? = null,
     @SerializedName("twitterId") val twitterId: String? = null,
-    @SerializedName("appleId") val appleId: String? = null,
+    @SerializedName("googleId") val googleId: String? = null,
     @SerializedName("firstName") val firstName: String? = null,
     @SerializedName("lastName") val lastName: String? = null
 )
