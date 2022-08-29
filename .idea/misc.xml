@@ -6,7 +6,6 @@
         <entry key="../../../../layout/compose-model-1660742464153.xml" value="0.6637931034482759" />
         <entry key="../../../../layout/compose-model-1660911269847.xml" value="0.6450617283950617" />
         <entry key="../../../../layout/compose-model-1661253814152.xml" value="0.5" />
-        <entry key="app/src/main/res/drawable/ic_add_player.xml" value="0.131" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_add_player.xml" value="0.2335" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_ball.xml" value="0.2265" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_ball_center.xml" value="0.2265" />
@@ -17,6 +16,11 @@
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_logo.xml" value="0.2265" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_remove.xml" value="0.2335" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_teams.xml" value="0.1955" />
+        <entry key="..\:/Users/user/baller-app/app/src/main/res/drawable/ic_baseline_calendar_month_24.xml" value="0.1" />
+        <entry key="..\:/Users/user/baller-app/app/src/main/res/drawable/splash_background.xml" value="0.1" />
+        <entry key="..\:/Users/user/baller-app/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1" />
+        <entry key="..\:/Users/user/baller-app/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_add_player.xml" value="0.131" />
         <entry key="app/src/main/res/drawable/ic_ball.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_ball_center.xml" value="0.144" />
         <entry key="app/src/main/res/drawable/ic_ball_green.xml" value="0.1" />
@@ -24,6 +28,13 @@
         <entry key="app/src/main/res/drawable/ic_circle_next.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_circle_shadow.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_default_ball_without_lines.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_facebook.xml" value="0.136" />
+        <entry key="app/src/main/res/drawable/ic_logo.xml" value="0.136" />
+        <entry key="app/src/main/res/drawable/ic_remove.xml" value="0.104" />
+        <entry key="app/src/main/res/drawable/ic_scanner.xml" value="0.131" />
+        <entry key="app/src/main/res/drawable/ic_upload.xml" value="0.131" />
+        <entry key="app/src/main/res/layout/activity_details.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/twitter_login.xml" value="0.25" />
       </map>
     </option>
   </component>

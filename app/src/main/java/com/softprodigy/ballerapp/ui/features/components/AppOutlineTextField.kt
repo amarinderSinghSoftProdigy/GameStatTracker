@@ -1,5 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -27,11 +29,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -104,6 +109,7 @@ fun AppOutlineTextField(
 @Composable
 fun AppOutlineDateField(
     value: String,
+    data: String = "",
     onClick: () -> Unit = {},
 ) {
     Box(
@@ -112,24 +118,40 @@ fun AppOutlineDateField(
             .height(52.dp)
             .background(
                 shape = RoundedCornerShape(8.dp),
-                color = MaterialTheme.appColors.material.background
+                color = MaterialTheme.appColors.material.background,
             )
             .clickable {
                 onClick()
             },
     ) {
-        Column(
+        Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(start = 13.dp),
-            verticalArrangement = Arrangement.Center,
+                .padding(start = 13.dp, end = 13.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
+            if (data.isEmpty()) {
+                AppText(
+                    text = value,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.appColors.textField.label,
+                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
 
-            AppText(
-                text = value,
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.appColors.textField.label,
-                style = androidx.compose.material.LocalTextStyle.current
+                )
+            } else {
+                AppText(
+                    text = data,
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    style = androidx.compose.material.LocalTextStyle.current
+                )
+            }
+
+            Image(
+                painter = painterResource(id = R.drawable.ic_baseline_calendar_month_24),
+                contentDescription = null,
+                modifier = Modifier.size(24.dp)
             )
         }
     }
@@ -170,7 +192,8 @@ fun EditFields(
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     backgroundColor = Color.Transparent,
                     focusedBorderColor = Color.Transparent,
-                    unfocusedBorderColor = Color.Transparent
+                    unfocusedBorderColor = Color.Transparent,
+                    cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
                 ),
                 textStyle = TextStyle(textAlign = TextAlign.End),
                 singleLine = true,

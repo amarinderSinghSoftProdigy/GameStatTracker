@@ -30,6 +30,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -39,6 +40,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.gms.common.api.ApiException
 import com.softprodigy.ballerapp.R
@@ -47,7 +49,6 @@ import com.softprodigy.ballerapp.common.isValidFullName
 import com.softprodigy.ballerapp.common.isValidPassword
 import com.softprodigy.ballerapp.common.passwordMatches
 import com.softprodigy.ballerapp.common.validPhoneNumber
-import com.softprodigy.ballerapp.data.GoogleUserModel
 
 import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineDateField
@@ -72,22 +73,23 @@ fun SignUpScreen(onSignUpSuccess: () -> Unit) {
     val context = LocalContext.current
     var email by rememberSaveable { mutableStateOf("") }
 
-    var password by rememberSaveable { mutableStateOf("") }
-    var name by rememberSaveable {
+    var gender by rememberSaveable {
         mutableStateOf("")
     }
     var birthday by rememberSaveable {
-        mutableStateOf("Enter your Birthday")
+        mutableStateOf("")
     }
     var address by rememberSaveable {
         mutableStateOf("")
     }
-    val confirmNumber = rememberSaveable {
+    val confirmPassword = rememberSaveable {
         mutableStateOf("")
     }
     var defaultLang by rememberSaveable { mutableStateOf(getDefaultLangCode(context)) }
     val phoneNumber = rememberSaveable { mutableStateOf("") }
     val getDefaultPhoneCode = getDefaultPhoneCode(context)
+    var password by rememberSaveable { mutableStateOf("") }
+    var passwordVisibility by rememberSaveable { mutableStateOf(false) }
     var phoneCode by rememberSaveable { mutableStateOf(getDefaultPhoneCode) }
 
     var verifyPhoneCode by rememberSaveable {
@@ -147,38 +149,6 @@ fun SignUpScreen(onSignUpSuccess: () -> Unit) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_60dp)))
 
             AppText(
-                text = stringResource(id = R.string.name),
-                style = MaterialTheme.typography.h6,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Start
-            )
-
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-
-            AppOutlineTextField(
-                value = name,
-                modifier = Modifier
-                    .fillMaxWidth(),
-                onValueChange = {
-                    name = it
-                },
-                placeholder = { Text(text = stringResource(id = R.string.enter_full_name)) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                isError = (!name.isValidFullName() && name.isNotEmpty()),
-                errorMessage = stringResource(id = R.string.enter_valid_full_name),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
-                    unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
-                    backgroundColor = MaterialTheme.appColors.material.background,
-                    textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                    placeholderColor = MaterialTheme.appColors.textField.label
-                ),
-            )
-
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-
-            AppText(
                 text = stringResource(id = R.string.email),
                 style = MaterialTheme.typography.h6,
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
@@ -195,33 +165,24 @@ fun SignUpScreen(onSignUpSuccess: () -> Unit) {
                 onValueChange = {
                     email = it
                 },
-                placeholder = { Text(text = stringResource(id = R.string.enter_your_email)) },
+                placeholder = {
+                    Text(
+                        text = stringResource(id = R.string.enter_your_email),
+                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
+                    )
+                },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
                     unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
                     backgroundColor = MaterialTheme.appColors.material.background,
                     textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                    placeholderColor = MaterialTheme.appColors.textField.label
+                    placeholderColor = MaterialTheme.appColors.textField.label,
+                    cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
                 ),
                 isError = (!email.isValidEmail() && email.isNotEmpty()),
                 errorMessage = stringResource(id = R.string.email_error),
             )
-
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-
-            AppText(
-                text = stringResource(id = R.string.birthday),
-                style = MaterialTheme.typography.h6,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Start
-            )
-
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-
-            AppOutlineDateField(value = birthday, onClick = { mDatePickerDialog.show() })
-
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
             AppText(
@@ -242,7 +203,12 @@ fun SignUpScreen(onSignUpSuccess: () -> Unit) {
                 onValueChange = {
                     address = it
                 },
-                placeholder = { Text(text = stringResource(id = R.string.your_address)) },
+                placeholder = {
+                    Text(
+                        text = stringResource(id = R.string.your_address),
+                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
+                    )
+                },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                 errorMessage = stringResource(id = R.string.address_error),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -250,7 +216,8 @@ fun SignUpScreen(onSignUpSuccess: () -> Unit) {
                     unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
                     backgroundColor = MaterialTheme.appColors.material.background,
                     textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                    placeholderColor = MaterialTheme.appColors.textField.label
+                    placeholderColor = MaterialTheme.appColors.textField.label,
+                    cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
                 ),
                 singleLine = false,
                 maxLines = 5,
@@ -258,9 +225,8 @@ fun SignUpScreen(onSignUpSuccess: () -> Unit) {
             )
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-
             AppText(
-                text = stringResource(id = R.string.number),
+                text = stringResource(id = R.string.gender),
                 style = MaterialTheme.typography.h6,
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                 modifier = Modifier.fillMaxWidth(),
@@ -269,60 +235,36 @@ fun SignUpScreen(onSignUpSuccess: () -> Unit) {
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
-            /*  TogiRoundedPicker(
-                  pickedCountry = {
-                      phoneCode = it.countryPhoneCode
-                      defaultLang = it.countryCode
-                  },
-                  defaultCountry = getLibCountries().single { it.countryCode == defaultLang },
-                  focusedBorderColor = if (!validPhoneNumber(phoneCode + phoneNumber.value) && phoneNumber.value.length >= 5)
-                      MaterialTheme.colors.error
-                  else
-                      MaterialTheme.appColors.editField.borderFocused,
-                  dialogAppBarTextColor = Color.Black,
-                  value = phoneNumber.value,
-                  error = true,
-                  onValueChange = { phoneNumber.value = it },
-                  rowPadding = Modifier.fillMaxWidth(),
-                  modifier = Modifier
-                      .fillMaxWidth()
-                      .background(
-                          color = MaterialTheme.appColors.material.background,
-                          shape = RoundedCornerShape(8.dp)
-                      ),
-                  unFocusedBorderColor = if (!validPhoneNumber(phoneCode + phoneNumber.value) && phoneNumber.value.length >= 5)
-                      MaterialTheme.colors.error
-                  else
-                      MaterialTheme.appColors.editField.borderUnFocused,
-                  color = Color.Transparent,
-                  shape = RoundedCornerShape(8.dp)
-              )*/
-
             AppOutlineTextField(
-                value = phoneNumber.value,
+                value = gender,
                 modifier = Modifier
                     .fillMaxWidth(),
                 onValueChange = {
-                    phoneNumber.value = it
+                    gender = it
                 },
-                placeholder = { Text(text = stringResource(id = R.string.enter_number)) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                errorMessage = stringResource(id = R.string.valid_phone_number),
+                placeholder = {
+                    Text(
+                        text = stringResource(id = R.string.select_gender),
+                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
+                    )
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
                     unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
                     backgroundColor = MaterialTheme.appColors.material.background,
                     textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                    placeholderColor = MaterialTheme.appColors.textField.label
+                    placeholderColor = MaterialTheme.appColors.textField.label,
+                    cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
                 ),
-                singleLine = true,
-                isError = (!validPhoneNumber(phoneNumber.value) && phoneNumber.value.isNotEmpty()),
+                singleLine = false,
+                maxLines = 5,
             )
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
             AppText(
-                text = stringResource(id = R.string.verify_number),
+                text = stringResource(id = R.string.birthdate),
                 style = MaterialTheme.typography.h6,
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                 modifier = Modifier.fillMaxWidth(),
@@ -331,62 +273,112 @@ fun SignUpScreen(onSignUpSuccess: () -> Unit) {
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
-            /*TogiRoundedPicker(
-                pickedCountry = {
-                    verifyPhoneCode = it.countryPhoneCode
-                    defaultLang = it.countryCode
-                },
-                defaultCountry = getLibCountries().single { it.countryCode == defaultLang },
-                focusedBorderColor = if (!(phoneCode + phoneNumber.value).passwordMatches(
-                        verifyPhoneCode + confirmNumber.value
-                    )
-                )
-                    MaterialTheme.colors.error
-                else
-                    MaterialTheme.appColors.editField.borderFocused,
-                dialogAppBarTextColor = Color.Black,
-                value = confirmNumber.value,
-                onValueChange = {
-                    confirmNumber.value = it
+            AppOutlineDateField(
+                value = stringResource(id = R.string.select_birthdate),
+                data = birthday,
+                onClick = { mDatePickerDialog.show() })
 
-                },
-                rowPadding = Modifier.fillMaxWidth(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        color = MaterialTheme.appColors.material.background,
-                        shape = RoundedCornerShape(8.dp)
-                    ),
-                unFocusedBorderColor = if (!(phoneCode + phoneNumber.value).passwordMatches(
-                        verifyPhoneCode + confirmNumber.value
-                    )
-                )
-                    MaterialTheme.colors.error
-                else
-                    MaterialTheme.appColors.editField.borderUnFocused,
-                color = Color.Transparent,
-                shape = RoundedCornerShape(8.dp),
-                error = true
-            )*/
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+
+            AppText(
+                text = stringResource(id = R.string.password),
+                style = MaterialTheme.typography.h6,
+                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Start
+            )
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+
             AppOutlineTextField(
-                value = confirmNumber.value,
+                value = password,
                 modifier = Modifier
                     .fillMaxWidth(),
                 onValueChange = {
-                    confirmNumber.value = it
+                    password = it
                 },
-                placeholder = { Text(text = stringResource(id = R.string.verify_number)) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                errorMessage = stringResource(id = R.string.number_same_as_confirm),
+                placeholder = {
+                    Text(
+                        text = stringResource(id = R.string.your_password),
+                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
+                    )
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                isError = (!password.isValidPassword() && password.isNotEmpty()),
+                errorMessage = stringResource(id = R.string.password_error),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
                     unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
                     backgroundColor = MaterialTheme.appColors.material.background,
                     textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                    placeholderColor = MaterialTheme.appColors.textField.label
+                    placeholderColor = MaterialTheme.appColors.textField.label,
+                    cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+
                 ),
-                singleLine = true,
-                isError = !(phoneNumber.value).passwordMatches(confirmNumber.value) && confirmNumber.value.isNotEmpty(),
+                visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(onClick = {
+                        passwordVisibility = !passwordVisibility
+
+                    }) {
+                        Icon(
+                            imageVector = if (passwordVisibility)
+                                Icons.Filled.Visibility
+                            else
+                                Icons.Filled.VisibilityOff, ""
+                        )
+                    }
+                },
+            )
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+
+            AppText(
+                text = stringResource(id = R.string.confirm_password),
+                style = MaterialTheme.typography.h6,
+                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Start
+            )
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+
+            AppOutlineTextField(
+                value = confirmPassword.value,
+                modifier = Modifier
+                    .fillMaxWidth(),
+                onValueChange = {
+                    confirmPassword.value = it
+                },
+                placeholder = {
+                    Text(
+                        text = stringResource(id = R.string.confirm_your_password),
+                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
+                    )
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                isError = !password.passwordMatches(confirmPassword.value) && confirmPassword.value.isNotEmpty(),
+                errorMessage = stringResource(id = R.string.confirm_password_error),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
+                    unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
+                    backgroundColor = MaterialTheme.appColors.material.background,
+                    textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    placeholderColor = MaterialTheme.appColors.textField.label,
+                    cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+
+                ),
+                visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(onClick = {
+                        passwordVisibility = !passwordVisibility
+
+                    }) {
+                        Icon(
+                            imageVector = if (passwordVisibility)
+                                Icons.Filled.Visibility
+                            else
+                                Icons.Filled.VisibilityOff, ""
+                        )
+                    }
+                },
             )
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
@@ -395,7 +387,7 @@ fun SignUpScreen(onSignUpSuccess: () -> Unit) {
                 singleButton = true,
                 enabled = email.isValidEmail() && birthday.isNotEmpty() && validPhoneNumber(
                     phoneNumber.value
-                ) && confirmNumber.value.passwordMatches(phoneNumber.value) && address.isNotEmpty(),
+                ) && confirmPassword.value.passwordMatches(password) && address.isNotEmpty(),
                 onClick = {
                     onSignUpSuccess()
                 },

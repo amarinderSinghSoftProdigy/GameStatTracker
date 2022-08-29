@@ -47,8 +47,8 @@
         <activity
             android:name=".ui.features.home.HomeActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:label="@string/app_name"
-            android:exported="true">
+            android:exported="true"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -60,13 +60,24 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
+        <activity android:name=".twitter_login.TwitterDemoActivity"/>
+ <!--               android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.AppCompat.DayNight"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>-->
+        <activity android:name=".twitter_login.DetailsActivity"/>
     </application>
 
 </manifest>

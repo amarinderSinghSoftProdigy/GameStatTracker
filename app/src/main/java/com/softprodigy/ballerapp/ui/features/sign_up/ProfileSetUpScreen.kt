@@ -159,15 +159,6 @@ fun SetUpProfile(onNext: () -> Unit, onBack: () -> Unit, viewModel: UserTypeView
                         )
                     }
                 }
-                val file = imageUri?.path?.let { File(it) }
-//                val fileSizeInBytes = file!!.length()
-//                val fileSizeInKB: Long = fileSizeInBytes / 1024
-//                // Convert the KB to MegaBytes (1 MB = 1024 KBytes)
-//                // Convert the KB to MegaBytes (1 MB = 1024 KBytes)
-//                val fileSizeInMB = fileSizeInKB / 1024
-//
-//                val calString = fileSizeInMB.toString()
-                Timber.d("SetUpProfilevalue: " + (file?.length()))
 
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_48dp)))
 

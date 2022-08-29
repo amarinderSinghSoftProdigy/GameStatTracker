@@ -2,12 +2,12 @@ package com.softprodigy.ballerapp.common
 
 import android.os.Bundle
 import com.facebook.*
-import com.softprodigy.ballerapp.data.FacebookUserModel
+import com.softprodigy.ballerapp.data.SocialUserModel
 import timber.log.Timber
 
 
 interface FacebookUserProfile {
-    fun onFacebookUserFetch(fbUser: FacebookUserModel)
+    fun onFacebookUserFetch(fbUser: SocialUserModel)
 }
 
 object CustomFBManager {
@@ -74,7 +74,7 @@ object CustomFBManager {
                     }
                 }
                 fbUserProfile.onFacebookUserFetch(
-                    FacebookUserModel(
+                    SocialUserModel(
                         name = "$fName $lName",
                         email = email,
                         id = id,

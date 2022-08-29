@@ -56,7 +56,6 @@ fun UserTypeSelector(onNextClick: (String) -> Unit, viewModel: UserTypeViewModel
         UserType.FAN,
     )
 
-
     var selectedUserType by remember {
         mutableStateOf(viewModel.userRole)
     }
@@ -64,7 +63,6 @@ fun UserTypeSelector(onNextClick: (String) -> Unit, viewModel: UserTypeViewModel
     val onSelectionChange = { text: String ->
         selectedUserType = text
     }
-
 
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val column = createRef()
@@ -79,22 +77,22 @@ fun UserTypeSelector(onNextClick: (String) -> Unit, viewModel: UserTypeViewModel
                 bottom.linkTo(parent.bottom)
                 start.linkTo(parent.start)
                 end.linkTo(parent.end)
-
             },
         ) {
-
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
             AppText(
                 text = stringResource(id = R.string.what_type_of_user_are_you),
                 style = MaterialTheme.typography.h3,
                 color = ColorBWBlack
             )
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_30dp)))
 
             options.forEach { it ->
                 Row(
                     modifier = Modifier
                         .padding(
-                            all = dimensionResource(id = R.dimen.size_8dp),
+                            horizontal = dimensionResource(id = R.dimen.size_8dp),
+                            vertical = dimensionResource(id = R.dimen.size_4dp)
                         ),
                 ) {
                     val name=stringResourceByName(name = it.name)
