@@ -21,12 +21,9 @@ class UserRepository @Inject constructor(
     private val service: APIService,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : IUserRepository {
+
     override suspend fun userLogin(
         loginRequest: LoginRequest
-
-    override suspend fun loginWithEmailAndPass(
-        email: String,
-        password: String,
     ): ResultWrapper<BaseResponse<UserInfo>> {
         return safeApiCall(dispatcher) { service.userLogin(loginRequest) }
     }

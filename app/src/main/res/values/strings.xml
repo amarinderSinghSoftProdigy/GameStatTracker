@@ -88,6 +88,7 @@
     <string name="verify_number">Verify Phone Number</string>
     <string name="number_same_as_confirm">Verify Number must be same as Phone number</string>
     <string name="enter_number">Enter your phone number</string>
+    <string name="verified">Verified</string>
 
     <string name="home_label">Home</string>
     <string name="events_label">Events</string>

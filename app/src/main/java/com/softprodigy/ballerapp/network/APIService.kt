@@ -1,7 +1,6 @@
 package com.softprodigy.ballerapp.network
 
 import com.softprodigy.ballerapp.common.ApiConstants
-import com.softprodigy.ballerapp.data.UserInfo
 import com.softprodigy.ballerapp.data.request.ConfirmPhoneRequest
 import com.softprodigy.ballerapp.data.request.LoginRequest
 import com.softprodigy.ballerapp.data.response.UserInfo

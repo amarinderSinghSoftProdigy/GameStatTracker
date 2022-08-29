@@ -87,6 +87,7 @@ fun ProfileSetUpScreen(
         mutableStateOf(viewModel.profileData.phoneNumber)
     }
     val context = LocalContext.current
+    val verified = viewModel.verified.value
 
     LaunchedEffect(key1 = Unit) {
         viewModel.uiEvent.collect { uiEvent ->
@@ -248,7 +249,7 @@ fun ProfileSetUpScreen(
                             errorMessage = stringResource(id = R.string.valid_phone_number)
                         )
 
-                        if (validPhoneNumber(phoneNumber.value)) {
+                        if (validPhoneNumber(phoneNumber.value) && !verified) {
 
                             AppText(
                                 text = stringResource(id = R.string.verify),
@@ -263,6 +264,18 @@ fun ProfileSetUpScreen(
                                             modalBottomSheetState.animateTo(ModalBottomSheetValue.Expanded)
                                         }
                                     },
+                                textAlign = TextAlign.End
+                            )
+                        }
+
+                        if (verified) {
+                            AppText(
+                                text = stringResource(id = R.string.verified),
+                                style = MaterialTheme.typography.h6,
+                                color = MaterialTheme.colors.error,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(end = dimensionResource(id = R.dimen.size_20dp)),
                                 textAlign = TextAlign.End
                             )
                         }

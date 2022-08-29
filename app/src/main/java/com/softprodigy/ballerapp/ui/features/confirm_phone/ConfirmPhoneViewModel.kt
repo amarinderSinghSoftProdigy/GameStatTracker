@@ -28,13 +28,14 @@ class ConfirmPhoneViewModel @Inject constructor(
 
     private val _verifyPhoneUiState = mutableStateOf(VerifyPhoneUIState())
     val verifyPhoneUiState: State<VerifyPhoneUIState> = _verifyPhoneUiState
-
+    val verified = mutableStateOf(false)
     var profileData by mutableStateOf(GlobalRequest.SetupProfile())
         private set
 
     fun saveProfileData(request: GlobalRequest.SetupProfile) {
         profileData = request
     }
+
 
     fun onEvent(event: VerifyPhoneUIEvent) {
         when (event) {
@@ -129,6 +130,8 @@ class ConfirmPhoneViewModel @Inject constructor(
                                     errorMessage = null,
                                     successMessage = response.statusMessage
                                 )
+
+                            verified.value = response.status
 
                             _verifyPhoneChannel.send(
                                 VerifyPhoneChannel.ShowToast(

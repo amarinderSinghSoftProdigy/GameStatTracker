@@ -1,6 +1,7 @@
 package com.softprodigy.ballerapp
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
@@ -18,7 +19,9 @@ import androidx.core.view.WindowCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.facebook.CallbackManager
+import com.google.gson.Gson
 import com.softprodigy.ballerapp.common.Route.ADD_PLAYER_SCREEN
 import com.softprodigy.ballerapp.common.Route.LOGIN_SCREEN
 import com.softprodigy.ballerapp.common.Route.PROFILE_SETUP_SCREEN
@@ -31,7 +34,9 @@ import com.softprodigy.ballerapp.ui.features.confirm_phone.ConfirmPhoneScreen
 import com.softprodigy.ballerapp.ui.features.home.HomeActivity
 import com.softprodigy.ballerapp.ui.features.login.LoginScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.ProfileSetUpScreen
+import com.softprodigy.ballerapp.ui.features.sign_up.SignUpData
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
+import com.softprodigy.ballerapp.ui.features.sign_up.SignUpType
 import com.softprodigy.ballerapp.ui.features.splash.SplashScreen
 import com.softprodigy.ballerapp.ui.features.user_type.TeamSetupScreen
 import com.softprodigy.ballerapp.ui.features.user_type.UserTypeScreen
@@ -73,9 +78,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun NavControllerComposable(activity: MainActivity) {
     val navController = rememberNavController()
+
     NavHost(navController, startDestination = PROFILE_SETUP_SCREEN) {
-    val context = LocalContext.current
-    NavHost(navController, startDestination = SPLASH_SCREEN) {
 
         composable(route = SPLASH_SCREEN) {
             SplashScreen {
@@ -88,7 +92,8 @@ fun NavControllerComposable(activity: MainActivity) {
 
         composable(route = SIGN_UP_SCREEN) {
             SignUpScreen(onSignUpSuccess = {
-                navController.navigate(SELECT_USER_TYPE)
+                val json = Uri.encode(Gson().toJson(it))
+                navController.navigate("${SELECT_USER_TYPE}/${json}")
             })
         }
 
@@ -102,7 +107,7 @@ fun NavControllerComposable(activity: MainActivity) {
         composable(route = LOGIN_SCREEN) {
             LoginScreen(
                 onLoginSuccess = {
-                    navController.navigate(SELECT_USER_TYPE){
+                    navController.navigate(SELECT_USER_TYPE) {
                         navController.popBackStack()
                     }
                 },
@@ -110,13 +115,19 @@ fun NavControllerComposable(activity: MainActivity) {
                 onForgetPasswordClick = { },
             )
         }
+
         composable(route = PROFILE_SETUP_SCREEN) {
             ProfileSetUpScreen(onNext = { navController.navigate(TEAM_SETUP_SCREEN) }, onBack = {
                 navController.popBackStack()
             })
         }
-        composable(route = SELECT_USER_TYPE) {
 
+        composable(
+            route = SELECT_USER_TYPE,
+            arguments = listOf(navArgument("signUp") { type = SignUpType() })
+        ) {
+
+            val signUpData = it.arguments?.getParcelable<SignUpData>("signUp")
             BackHandler(true) {
 
             }
@@ -126,6 +137,7 @@ fun NavControllerComposable(activity: MainActivity) {
                 navController.navigate(PROFILE_SETUP_SCREEN)
             })
         }
+
         composable(route = TEAM_SETUP_SCREEN) {
             TeamSetupScreen(onBackClick = { navController.popBackStack() }, onNextClick = {
                 navController.navigate(ADD_PLAYER_SCREEN)

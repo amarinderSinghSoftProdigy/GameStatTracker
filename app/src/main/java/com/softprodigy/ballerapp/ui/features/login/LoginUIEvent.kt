@@ -1,6 +1,5 @@
 package com.softprodigy.ballerapp.ui.features.login
 
-import com.softprodigy.ballerapp.data.GoogleUserModel
 
 import com.softprodigy.ballerapp.data.SocialUserModel
 

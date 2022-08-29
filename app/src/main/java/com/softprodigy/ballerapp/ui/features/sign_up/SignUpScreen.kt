@@ -54,7 +54,7 @@ import com.togitech.ccp.data.utils.getDefaultPhoneCode
 import java.util.*
 
 @Composable
-fun SignUpScreen(onSignUpSuccess: () -> Unit) {
+fun SignUpScreen(onSignUpSuccess: (SignUpData) -> Unit) {
     val context = LocalContext.current
     var email by rememberSaveable { mutableStateOf("") }
 
@@ -408,9 +408,17 @@ fun SignUpScreen(onSignUpSuccess: () -> Unit) {
                 singleButton = true,
                 enabled = email.isValidEmail() && birthday.isNotEmpty() && confirmPassword.value.passwordMatches(
                     password
-                ) && address.isNotEmpty() && gender.isNotEmpty(),
+                ) && address.isNotEmpty() && gender.isNotEmpty() && password.isNotEmpty() && confirmPassword.value.isNotEmpty(),
                 onClick = {
-                    onSignUpSuccess()
+                    val signUpData = SignUpData(
+                        email = email,
+                        address = address,
+                        birthdate = birthday,
+                        gender = gender,
+                        password = password,
+                        repeatPassword = confirmPassword.value
+                    )
+                    onSignUpSuccess(signUpData)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
