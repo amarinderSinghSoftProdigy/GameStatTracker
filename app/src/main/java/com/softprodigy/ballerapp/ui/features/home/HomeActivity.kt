@@ -26,6 +26,7 @@ import com.softprodigy.ballerapp.ui.features.components.BottomNavigationBar
 import com.softprodigy.ballerapp.ui.features.components.CommonTabView
 import com.softprodigy.ballerapp.ui.features.components.SelectTeamDialog
 import com.softprodigy.ballerapp.ui.features.components.TabBar
+import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
 import com.softprodigy.ballerapp.ui.theme.appColors
 import dagger.hilt.android.AndroidEntryPoint
@@ -65,11 +66,7 @@ class HomeActivity : ComponentActivity() {
                         NavControllerComposable(navController = navController)
                         if (showDialog.value) {
                             SelectTeamDialog(
-                                item = "",
-                                message = stringResource(id = R.string.alert_remove_player),
-                                onDismiss = { showDialog.value = false },
-                                onDelete = { showDialog.value = false }
-                            )
+                                onDismiss = { showDialog.value = false })
                         }
                     },
                     bottomBar = {

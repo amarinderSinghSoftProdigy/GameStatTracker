@@ -47,7 +47,7 @@ fun CoachFlowBackground(
                 shape = CircleShape,
                 color = (if (colorCode.isNullOrEmpty()) ballColor else Color(
                     android.graphics.Color.parseColor(
-                        "$colorCode"
+                        "#$colorCode"
                     )
                 )).copy(alpha = 0.05F),
                 modifier = Modifier

@@ -3,10 +3,7 @@ package com.softprodigy.ballerapp.network
 import com.softprodigy.ballerapp.common.ApiConstants
 import com.softprodigy.ballerapp.data.request.CreateTeamRequest
 import com.softprodigy.ballerapp.data.request.LoginRequest
-import com.softprodigy.ballerapp.data.response.CreateTeamResponse
-import com.softprodigy.ballerapp.data.response.ImageUpload
-import com.softprodigy.ballerapp.data.response.Player
-import com.softprodigy.ballerapp.data.response.UserInfo
+import com.softprodigy.ballerapp.data.response.*
 import com.softprodigy.ballerapp.domain.BaseResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -33,5 +30,10 @@ interface APIService {
 
     @POST(ApiConstants.CREATE_TEAM)
     suspend fun createTeam(@Body request:CreateTeamRequest):BaseResponse<CreateTeamResponse>
+
+    @GET(ApiConstants.GET_TEAMS)
+    suspend fun getTeams(   @Query("page") page: Int,
+                            @Query("limit") limit: Int,
+                            @Query("sort") sort: String):BaseResponse<ArrayList<Team>>
 
 }
