@@ -56,6 +56,7 @@ import com.softprodigy.ballerapp.common.isValidEmail
 import com.softprodigy.ballerapp.common.validName
 import com.softprodigy.ballerapp.common.validPhoneNumber
 import com.softprodigy.ballerapp.data.request.GlobalRequest
+import com.softprodigy.ballerapp.data.request.SignUpData
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.BottomButtons
 import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
@@ -65,19 +66,21 @@ import com.softprodigy.ballerapp.ui.features.confirm_phone.ConfirmPhoneScreen
 import com.softprodigy.ballerapp.ui.features.confirm_phone.ConfirmPhoneViewModel
 import com.softprodigy.ballerapp.ui.features.confirm_phone.VerifyPhoneChannel
 import com.softprodigy.ballerapp.ui.features.confirm_phone.VerifyPhoneUIEvent
-import com.softprodigy.ballerapp.ui.features.user_type.UserTypeViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorPrimaryTransparent
 import com.softprodigy.ballerapp.ui.theme.appColors
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ProfileSetUpScreen(
+    signUpData: SignUpData?,
     onNext: () -> Unit,
     onBack: () -> Unit,
-    viewModel: ConfirmPhoneViewModel = hiltViewModel()
+    viewModel: ConfirmPhoneViewModel = hiltViewModel(),
+    signUpViewModel: SignUpViewModel = hiltViewModel()
 ) {
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
@@ -93,6 +96,17 @@ fun ProfileSetUpScreen(
         viewModel.uiEvent.collect { uiEvent ->
             when (uiEvent) {
                 is VerifyPhoneChannel.ShowToast -> {
+                    Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
+                        .show()
+                }
+                else -> Unit
+            }
+        }
+
+        signUpViewModel.uiEvent.collect { uiEvent ->
+
+            when (uiEvent) {
+                is SignUpChannel.ShowToast -> {
                     Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
                         .show()
                 }
@@ -131,6 +145,7 @@ fun ProfileSetUpScreen(
                 mutableStateOf<Uri?>(viewModel.profileData.image)
             }
             val context = LocalContext.current
+
             val bitmap = remember(false) {
                 mutableStateOf<Bitmap?>(null)
             }
@@ -145,6 +160,9 @@ fun ProfileSetUpScreen(
                 mutableStateOf(viewModel.profileData.email)
             }
 
+            if (signUpData?.email?.isNotEmpty() == true) {
+                email.value = signUpData.email!!
+            }
 
             val launcher =
                 rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -287,6 +305,23 @@ fun ProfileSetUpScreen(
                 BottomButtons(
                     onBackClick = { onBack() },
                     onNextClick = {
+
+                        val signUpDataRequest = SignUpData(
+                            email = email.value,
+                            firstName = fName.value,
+                            lastName = lName.value,
+                            phone = "+${phoneNumber.value}",
+                            profileImage = "",
+                            phoneVerified = verified,
+                            gender = signUpData?.gender,
+                            birthdate = signUpData?.birthdate,
+                            role = signUpData?.role,
+                            password = signUpData?.password,
+                            repeatPassword = signUpData?.repeatPassword,
+                            address = signUpData?.address
+                        )
+
+                        signUpViewModel.onEvent(SignUpUIEvent.Submit(signUpDataRequest))
                         onNext()
                         val request =
                             GlobalRequest.SetupProfile(
@@ -301,7 +336,7 @@ fun ProfileSetUpScreen(
                     enableState = validName(fName.value)
                             && validName(lName.value)
                             && validPhoneNumber(phoneNumber.value)
-                            && email.value.isValidEmail() && imageUri != null,
+                            && email.value.isValidEmail() && imageUri != null && verified,
                     firstText = stringResource(id = R.string.back),
                     secondText = stringResource(id = R.string.next)
                 )

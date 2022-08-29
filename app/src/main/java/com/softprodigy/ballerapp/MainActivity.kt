@@ -3,7 +3,6 @@ package com.softprodigy.ballerapp
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
@@ -14,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -30,13 +28,12 @@ import com.softprodigy.ballerapp.common.Route.SIGN_UP_SCREEN
 import com.softprodigy.ballerapp.common.Route.SPLASH_SCREEN
 import com.softprodigy.ballerapp.common.Route.TEAM_SETUP_SCREEN
 import com.softprodigy.ballerapp.common.Route.WELCOME_SCREEN
-import com.softprodigy.ballerapp.ui.features.confirm_phone.ConfirmPhoneScreen
 import com.softprodigy.ballerapp.ui.features.home.HomeActivity
 import com.softprodigy.ballerapp.ui.features.login.LoginScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.ProfileSetUpScreen
-import com.softprodigy.ballerapp.ui.features.sign_up.SignUpData
+import com.softprodigy.ballerapp.data.request.SignUpData
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
-import com.softprodigy.ballerapp.ui.features.sign_up.SignUpType
+import com.softprodigy.ballerapp.data.request.SignUpType
 import com.softprodigy.ballerapp.ui.features.splash.SplashScreen
 import com.softprodigy.ballerapp.ui.features.user_type.TeamSetupScreen
 import com.softprodigy.ballerapp.ui.features.user_type.UserTypeScreen
@@ -45,7 +42,6 @@ import com.softprodigy.ballerapp.ui.features.welcome.WelcomeScreen
 import com.softprodigy.ballerapp.ui.theme.BallerAppTheme
 import com.softprodigy.ballerapp.ui.theme.appColors
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 val LocalFacebookCallbackManager =
     staticCompositionLocalOf<CallbackManager> { error("No CallbackManager provided") }
@@ -79,7 +75,7 @@ class MainActivity : ComponentActivity() {
 fun NavControllerComposable(activity: MainActivity) {
     val navController = rememberNavController()
 
-    NavHost(navController, startDestination = PROFILE_SETUP_SCREEN) {
+    NavHost(navController, startDestination = SPLASH_SCREEN) {
 
         composable(route = SPLASH_SCREEN) {
             SplashScreen {
@@ -116,25 +112,34 @@ fun NavControllerComposable(activity: MainActivity) {
             )
         }
 
-        composable(route = PROFILE_SETUP_SCREEN) {
-            ProfileSetUpScreen(onNext = { navController.navigate(TEAM_SETUP_SCREEN) }, onBack = {
-                navController.popBackStack()
-            })
+        composable(
+            route = "${PROFILE_SETUP_SCREEN}/{signUp}",
+            arguments = listOf(navArgument("signUp") { type = SignUpType() })
+        ) {
+            val signUpData = it.arguments?.getParcelable<SignUpData>("signUp")
+
+            ProfileSetUpScreen(
+                signUpData,
+                onNext = { navController.navigate(TEAM_SETUP_SCREEN) },
+                onBack = {
+                    navController.popBackStack()
+                })
         }
 
         composable(
-            route = SELECT_USER_TYPE,
+            route = "${SELECT_USER_TYPE}/{signUp}",
             arguments = listOf(navArgument("signUp") { type = SignUpType() })
         ) {
 
             val signUpData = it.arguments?.getParcelable<SignUpData>("signUp")
+
             BackHandler(true) {
 
             }
 
-            UserTypeScreen(onNextClick = { userType ->
-                Timber.i("onNextClick-- $userType")
-                navController.navigate(PROFILE_SETUP_SCREEN)
+            UserTypeScreen(signUpData, onNextClick = { userType, signUpData ->
+                val json = Uri.encode(Gson().toJson(signUpData))
+                navController.navigate("${PROFILE_SETUP_SCREEN}/${json}")
             })
         }
 

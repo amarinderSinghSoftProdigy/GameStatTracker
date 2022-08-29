@@ -3,6 +3,7 @@ package com.softprodigy.ballerapp.network
 import com.softprodigy.ballerapp.common.ApiConstants
 import com.softprodigy.ballerapp.data.request.ConfirmPhoneRequest
 import com.softprodigy.ballerapp.data.request.LoginRequest
+import com.softprodigy.ballerapp.data.request.SignUpData
 import com.softprodigy.ballerapp.data.response.UserInfo
 import com.softprodigy.ballerapp.data.request.VerifyPhoneRequest
 import com.softprodigy.ballerapp.domain.BaseResponse
@@ -19,5 +20,8 @@ interface APIService {
 
     @POST(ApiConstants.CONFIRM_PHONE)
     suspend fun confirmPhone(@Body confirmPhoneRequest: ConfirmPhoneRequest): BaseResponse<Any>
+
+    @POST(ApiConstants.SIGNUP)
+    suspend fun signUp(@Body signUpData: SignUpData): BaseResponse<Any>
 
 }

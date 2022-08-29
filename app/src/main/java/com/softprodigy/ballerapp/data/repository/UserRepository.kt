@@ -5,6 +5,7 @@ import com.softprodigy.ballerapp.common.safeApiCall
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.ConfirmPhoneRequest
 import com.softprodigy.ballerapp.data.request.LoginRequest
+import com.softprodigy.ballerapp.data.request.SignUpData
 import com.softprodigy.ballerapp.data.request.VerifyPhoneRequest
 import com.softprodigy.ballerapp.data.response.UserInfo
 import com.softprodigy.ballerapp.domain.BaseResponse
@@ -40,4 +41,8 @@ class UserRepository @Inject constructor(
         val requestBody = ConfirmPhoneRequest(phone = phone, otp = otp)
         return safeApiCall(dispatcher = dispatcher) { service.confirmPhone(requestBody) }
     }
+
+    override suspend fun signUp(signUpData: SignUpData): ResultWrapper<BaseResponse<Any>> =
+        safeApiCall(dispatcher = dispatcher) { service.signUp(signUpData) }
+
 }

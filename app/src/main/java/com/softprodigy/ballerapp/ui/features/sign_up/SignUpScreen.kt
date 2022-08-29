@@ -40,7 +40,7 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.isValidEmail
 import com.softprodigy.ballerapp.common.isValidPassword
 import com.softprodigy.ballerapp.common.passwordMatches
-import com.softprodigy.ballerapp.common.validPhoneNumber
+import com.softprodigy.ballerapp.data.request.SignUpData
 
 
 import com.softprodigy.ballerapp.ui.features.components.AppButton
@@ -48,8 +48,6 @@ import com.softprodigy.ballerapp.ui.features.components.AppOutlineDateField
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.theme.appColors
-import com.togitech.ccp.data.utils.getDefaultLangCode
-import com.togitech.ccp.data.utils.getDefaultPhoneCode
 
 import java.util.*
 
@@ -100,7 +98,7 @@ fun SignUpScreen(onSignUpSuccess: (SignUpData) -> Unit) {
     val mDatePickerDialog = DatePickerDialog(
         context,
         { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
-            birthday = "$mDayOfMonth/${mMonth + 1}/$mYear"
+            birthday = "$mYear-${mMonth + 1}-$mDayOfMonth"
         }, mYear, mMonth, mDay
     )
 

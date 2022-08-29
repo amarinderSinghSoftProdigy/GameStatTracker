@@ -41,7 +41,7 @@ object ApiConstants {
     const val BASE_URL = "http://baller-app.softprodigyphp.in"
     const val LOGIN = "v1/auth/login"
     const val SOCIAL_LOGIN = "/social_login"
-    const val SIGNUP = "/register"
+    const val SIGNUP = "v1/auth/register"
     const val FORGOT_PASSWORD = "/forgot/password"
     const val VERIFY_PHONE = "v1/auth/verifyPhone"
     const val CONFIRM_PHONE = "v1/auth/confirmPhone"

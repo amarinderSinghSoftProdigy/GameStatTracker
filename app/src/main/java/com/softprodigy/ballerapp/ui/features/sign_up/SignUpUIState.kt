@@ -6,5 +6,6 @@ import com.softprodigy.ballerapp.data.response.UserInfo
 data class SignUpUIState(
     var isLoading: Boolean = false,
     var errorMessage: String? = null,
+    var successMessage: String? = null,
     var user: UserInfo? = null
 )
