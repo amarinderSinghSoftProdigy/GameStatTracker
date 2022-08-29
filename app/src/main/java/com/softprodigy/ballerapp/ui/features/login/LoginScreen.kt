@@ -1,6 +1,8 @@
 package com.softprodigy.ballerapp.ui.features.login
 
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -44,15 +46,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginManager
+import com.facebook.login.LoginResult
+import com.google.android.gms.common.api.ApiException
+import com.softprodigy.ballerapp.LocalFacebookCallbackManager
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.common.isValidEmail
-import com.softprodigy.ballerapp.common.isValidPassword
-import com.softprodigy.ballerapp.data.UserInfo
+import com.softprodigy.ballerapp.common.*
+import com.softprodigy.ballerapp.data.SocialUserModel
+import com.softprodigy.ballerapp.data.response.UserInfo
 import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.SocialLoginSection
 import com.softprodigy.ballerapp.ui.theme.appColors
+import timber.log.Timber
 
 @Composable
 fun LoginScreen(
@@ -66,9 +75,66 @@ fun LoginScreen(
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordVisibility by rememberSaveable { mutableStateOf(false) }
+    val callbackManager = LocalFacebookCallbackManager.current
+
+    val loginState = vm.loginUiState.value
+    DisposableEffect(Unit) {
+
+        LoginManager.getInstance().registerCallback(
+            callbackManager,
+            object : FacebookCallback<LoginResult> {
+                override fun onSuccess(result: LoginResult) {
+
+                    CustomFBManager.getFacebookUserProfile(result.accessToken, object :
+                        FacebookUserProfile {
+                        override fun onFacebookUserFetch(fbUser: SocialUserModel) {
+                            Timber.i("FacebookUserModel-- $fbUser")
+                            vm.onEvent(LoginUIEvent.OnFacebookClick(fbUser))
+
+                        }
+                    })
+                }
+
+                override fun onCancel() {
+                    println("onCancel")
+                }
+
+                override fun onError(error: FacebookException) {
+                    println("onError $error")
+                }
+            }
+        )
+        onDispose {
+            LoginManager.getInstance().unregisterCallback(callbackManager)
+        }
+    }
+
+    val authResultLauncher =
+        rememberLauncherForActivityResult(contract = GoogleApiContract()) { task ->
+            try {
+                val gsa = task?.getResult(ApiException::class.java)
+                if (gsa != null) {
+                    val googleUser = SocialUserModel(
+                        email = gsa.email,
+                        name = gsa.displayName,
+                        id = gsa.id,
+                        token = gsa.idToken
+                    )
+                    vm.onEvent(LoginUIEvent.OnGoogleClick(googleUser))
+                }
+                else{
+                    Timber.i("gsa null")
+                    Toast.makeText(context, "gsa null", Toast.LENGTH_SHORT).show()
+                }
+
+            } catch (e: ApiException) {
+                Timber.i(e.toString())
+            }
+
+        }
 
     LaunchedEffect(key1 = Unit) {
-        vm.uiEvent.collect { uiEvent ->
+        vm.loginChannel.collect { uiEvent ->
             when (uiEvent) {
                 is LoginChannel.ShowToast -> {
                     Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
@@ -77,7 +143,6 @@ fun LoginScreen(
                 is LoginChannel.OnLoginSuccess -> {
                     onLoginSuccess.invoke(uiEvent.loginResponse)
                 }
-                else -> Unit
             }
         }
     }
@@ -271,12 +336,24 @@ fun LoginScreen(
 
             SocialLoginSection(
                 headerText = stringResource(id = R.string.or_sign_in_with),
-                onAppleClick = { },
-                onFacebookClick = { }) {
+                onGoogleClick = {
+                    authResultLauncher.launch(RequestCode.GOOGLE_ACCESS)
+                },
+                onFacebookClick = {
+                    LoginManager.getInstance()
+                        .logInWithReadPermissions(
+                            context as ActivityResultRegistryOwner,
+                            callbackManager,
+                            listOf(AppConstants.PUBLIC_PROFILE, AppConstants.EMAIL)
+                        )
+                }) {
             }
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))
 
+        }
+        if (loginState.isDataLoading) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
     }
 }

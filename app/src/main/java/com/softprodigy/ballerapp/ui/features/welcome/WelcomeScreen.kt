@@ -1,9 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.welcome
 
-import androidx.annotation.FloatRange
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,14 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
@@ -31,11 +25,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.BottomButtons
+import com.softprodigy.ballerapp.ui.features.components.PagerIndicator
+import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
 import com.softprodigy.ballerapp.ui.theme.spacing
 import kotlinx.coroutines.launch
 
@@ -141,52 +136,6 @@ fun WelcomeScreen(onNextScreen: () -> Unit) {
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
-@Composable
-fun rememberPagerState(
-    @androidx.annotation.IntRange(from = 0) pageCount: Int,
-    @androidx.annotation.IntRange(from = 0) initialPage: Int = 0,
-    @FloatRange(from = 0.0, to = 1.0) initialPageOffset: Float = 0f,
-    @androidx.annotation.IntRange(from = 1) initialOffScreenLimit: Int = 1,
-    infiniteLoop: Boolean = false
-): PagerState = rememberSaveable(saver = PagerState.Saver) {
-
-    PagerState(
-        pageCount = pageCount,
-        currentPage = initialPage,
-        currentPageOffset = initialPageOffset,
-        offscreenLimit = initialOffScreenLimit,
-        infiniteLoop = infiniteLoop
-    )
-
-}
-
-@Composable
-fun PagerIndicator(size: Int, currentPage: Int) {
-
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-    ) {
-        repeat(size) {
-            Indicator(isSelected = it == currentPage)
-        }
-    }
-
-}
-
-@Composable
-fun Indicator(isSelected: Boolean) {
-    val width = animateDpAsState(targetValue = dimensionResource(id = R.dimen.size_10dp))
-
-    Box(
-        modifier = Modifier
-            .padding(dimensionResource(id = R.dimen.size_1dp))
-            .height(dimensionResource(id = R.dimen.size_10dp))
-            .width(width = width.value)
-            .clip(CircleShape)
-            .background(if (isSelected) Color.Black else Color.Gray)
-    )
-}
 
 @Composable
 fun BottomSection(currentPager: Int, onNextScreen: () -> Unit, onNextPage: () -> Unit) {

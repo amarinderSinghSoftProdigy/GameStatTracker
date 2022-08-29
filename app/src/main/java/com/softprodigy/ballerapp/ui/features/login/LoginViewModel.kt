@@ -6,9 +6,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.baller_app.core.util.UiText
+import com.softprodigy.ballerapp.common.ApiConstants
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.ResultWrapper.GenericError
-import com.softprodigy.ballerapp.data.UserInfo
+import com.softprodigy.ballerapp.data.request.LoginRequest
+import com.softprodigy.ballerapp.data.response.UserInfo
 import com.softprodigy.ballerapp.domain.repository.IUserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -23,7 +25,7 @@ class LoginViewModel @Inject constructor(
 ) :
     AndroidViewModel(application) {
     private val _loginChannel = Channel<LoginChannel>()
-    val uiEvent = _loginChannel.receiveAsFlow()
+    val loginChannel = _loginChannel.receiveAsFlow()
 
     private val _loginUiState = mutableStateOf(LoginUIState())
     val loginUiState: State<LoginUIState> = _loginUiState
@@ -31,24 +33,45 @@ class LoginViewModel @Inject constructor(
     fun onEvent(event: LoginUIEvent) {
         when (event) {
             is LoginUIEvent.Submit -> {
-                login(event.email, event.password)
+                login(
+                    LoginRequest(
+                        email = event.email,
+                        password = event.password,
+                        loginType = ApiConstants.EMAIL
+                    )
+                )
+            }
+            is LoginUIEvent.OnFacebookClick -> {
+                login(
+                    LoginRequest(
+                        email = event.socialUser.email,
+                        loginType = ApiConstants.FACEBOOK,
+                        facebookId = event.socialUser.id
+                    )
+                )
+            }
+            is LoginUIEvent.OnGoogleClick -> {
+                login(
+                    LoginRequest(
+                        email = event.socialUser.email,
+                        loginType = ApiConstants.GOOGLE,
+                        googleId = event.socialUser.id
+                    )
+                )
             }
         }
     }
 
-    private fun login(email: String, password: String) {
+    private fun login(loginRequest: LoginRequest) {
         viewModelScope.launch {
             _loginUiState.value = LoginUIState(isDataLoading = true)
 
             val loginResponse =
-                IUserRepository.loginWithEmailAndPass(
-                    email = email,
-                    password = password
-                )
+                IUserRepository.userLogin(loginRequest)
+
             when (loginResponse) {
                 is ResultWrapper.Success -> {
                     loginResponse.value.let { response ->
-
                         if (response.status) {
                             _loginUiState.value =
                                 LoginUIState(
@@ -59,18 +82,18 @@ class LoginViewModel @Inject constructor(
                             _loginChannel.send(LoginChannel.OnLoginSuccess(response.data))
                         } else {
                             _loginUiState.value = LoginUIState(
-                                user = null,
+                                user=null,
                                 errorMessage = response.statusMessage ?: "Something went wrong",
                                 isDataLoading = false
                             )
                         }
-                    }
+                }
                 }
                 is GenericError -> {
                     _loginUiState.value = loginUiState.value.copy(isDataLoading = false)
                     _loginUiState.value =
                         LoginUIState(
-                            user = null,
+                            user=null,
                             errorMessage = "${loginResponse.code} ${loginResponse.message}",
                             isDataLoading = false
                         )
@@ -80,7 +103,7 @@ class LoginViewModel @Inject constructor(
                     _loginUiState.value =
                         LoginUIState(
                             user = null,
-                            errorMessage = "${loginResponse.message}",
+                            errorMessage = loginResponse.message,
                             isDataLoading = false
                         )
                     _loginChannel.send(LoginChannel.ShowToast(UiText.DynamicString(loginResponse.message)))
@@ -94,5 +117,4 @@ class LoginViewModel @Inject constructor(
 sealed class LoginChannel {
     data class ShowToast(val message: UiText) : LoginChannel()
     data class OnLoginSuccess(val loginResponse: UserInfo) : LoginChannel()
-
 }

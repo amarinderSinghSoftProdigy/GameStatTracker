@@ -1,13 +1,12 @@
 package com.softprodigy.ballerapp.data.repository
 
-import com.softprodigy.ballerapp.common.ApiConstants
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.safeApiCall
-import com.softprodigy.ballerapp.data.UserInfo
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.ConfirmPhoneRequest
 import com.softprodigy.ballerapp.data.request.LoginRequest
 import com.softprodigy.ballerapp.data.request.VerifyPhoneRequest
+import com.softprodigy.ballerapp.data.response.UserInfo
 import com.softprodigy.ballerapp.domain.BaseResponse
 import com.softprodigy.ballerapp.domain.repository.IUserRepository
 import com.softprodigy.ballerapp.network.APIService
@@ -22,18 +21,14 @@ class UserRepository @Inject constructor(
     private val service: APIService,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : IUserRepository {
+    override suspend fun userLogin(
+        loginRequest: LoginRequest
 
     override suspend fun loginWithEmailAndPass(
         email: String,
         password: String,
     ): ResultWrapper<BaseResponse<UserInfo>> {
-        val requestBody =
-            LoginRequest(
-                email = email,
-                password = password,
-                loginType = ApiConstants.email
-            )
-        return safeApiCall(dispatcher) { service.userLogin(requestBody) }
+        return safeApiCall(dispatcher) { service.userLogin(loginRequest) }
     }
 
     override suspend fun verifyPhone(phone: String): ResultWrapper<BaseResponse<Any>> {
