@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.baller_app.core.util.UiText
+import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.ResultWrapper
@@ -189,7 +190,7 @@ class SetupTeamViewModel @Inject constructor(
                 uploadLogoResponse.value.let { response ->
                     if (response.status) {
                         _teamSetupUiState.value =
-                            _teamSetupUiState.value.copy(teamImageServerUrl = uploadLogoResponse.value.data.data)
+                            _teamSetupUiState.value.copy(teamImageServerUrl = "${BuildConfig.IMAGE_SERVER}${uploadLogoResponse.value.data.data}")
                         _teamSetupChannel.send(
                             TeamSetupChannel.OnLogoUpload
                         )
