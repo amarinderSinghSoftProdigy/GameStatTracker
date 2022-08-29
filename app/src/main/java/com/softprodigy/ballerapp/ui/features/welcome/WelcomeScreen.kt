@@ -89,7 +89,7 @@ fun WelcomeScreen(onNextScreen: () -> Unit) {
                 state = pagerState,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.8f)
+                    .fillMaxHeight(0.74f)
             ) { page ->
                 Column(
                     modifier = Modifier
@@ -99,14 +99,11 @@ fun WelcomeScreen(onNextScreen: () -> Unit) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Image(
-                        painter = painterResource(id = items[page].image),
-                        contentDescription = items[page].title,
+                        painter = painterResource(id = R.drawable.ic_logo),
+                        contentDescription = null,
                         modifier = Modifier
-                            .width(dimensionResource(id = R.dimen.size_200dp))
-                            .height(
-                                dimensionResource(id = R.dimen.size_200dp)
-                            ),
-                        contentScale = ContentScale.FillBounds
+                            .height(dimensionResource(id = R.dimen.size_95dp))
+                            .width(dimensionResource(id = R.dimen.size_160dp)),
                     )
 
                     Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))

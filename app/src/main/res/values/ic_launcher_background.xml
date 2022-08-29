@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="otp_verifcation">OTP Verification</string>
+    <color name="ic_launcher_background">#F1F3F3</color>
 </resources>

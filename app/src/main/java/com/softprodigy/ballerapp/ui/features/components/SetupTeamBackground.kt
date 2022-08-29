@@ -65,7 +65,13 @@ fun CoachFlowBackground(
                         )
                     ),
                     modifier = Modifier
-                        .padding(all = dimensionResource(id = R.dimen.size_20dp))
+                        .padding(
+                            start = dimensionResource(id = R.dimen.size_30dp),
+                            end = dimensionResource(id = R.dimen.size_20dp),
+                            top = dimensionResource(id = R.dimen.size_20dp),
+                            bottom = dimensionResource(id = R.dimen.size_20dp)
+
+                        )
                         .size(dimensionResource(id = R.dimen.size_200dp))
                 ) {
                     Box(
@@ -148,6 +154,7 @@ fun BottomButtons(
                 icon = null,
                 onClick = onBackClick,
                 border = ButtonDefaults.outlinedBorder,
+                modifier = Modifier.weight(1f)
             )
         } else {
             AppSpacer(
@@ -163,7 +170,8 @@ fun BottomButtons(
             text = secondText,
             onClick = onNextClick,
             icon = painterResource(id = R.drawable.ic_circle_next),
-            enabled = enableState
+            enabled = enableState,
+            modifier = Modifier.weight(1f)
         )
     }
 }
