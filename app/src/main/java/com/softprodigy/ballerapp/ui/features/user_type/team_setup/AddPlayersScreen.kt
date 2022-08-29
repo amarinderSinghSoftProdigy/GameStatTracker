@@ -30,6 +30,8 @@ import com.softprodigy.ballerapp.data.response.Player
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
+import com.softprodigy.ballerapp.ui.theme.appColors
+import java.util.*
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
@@ -102,9 +104,15 @@ fun AddPlayersScreen(
                             },
                             colors = TextFieldDefaults.outlinedTextFieldColors(
                                 focusedBorderColor = ColorBWGrayBorder,
-                                unfocusedBorderColor = ColorBWGrayBorder
+                                unfocusedBorderColor = ColorBWGrayBorder,
+                                cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
                             ),
-                            placeholder = { Text(text = stringResource(id = R.string.search_by_name_or_email)) },
+                            placeholder = {
+                                Text(
+                                    text = stringResource(id = R.string.search_by_name_or_email),
+                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
+                                )
+                            },
                             singleLine = true
                         )
                         Icon(
@@ -128,6 +136,8 @@ fun AddPlayersScreen(
                     }
 
                     if (state.search.isNotEmpty()) {
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
+
                         PlayerListUI(state.players, modifier = Modifier
                             .fillMaxWidth()
                             .height(dimensionResource(id = R.dimen.size_200dp)),
@@ -151,24 +161,40 @@ fun AddPlayersScreen(
                                     }
                                 })
                     }
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        AppText(
-                            text = stringResource(id = R.string.added_players),
-                            fontWeight = FontWeight.W500,
-                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                            color = ColorBWBlack
-                        )
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_info),
-                            contentDescription = "",
-                            modifier = Modifier.padding(dimensionResource(id = R.dimen.size_20dp)),
-                            tint = Color.Unspecified
-                        )
+
+                    if (state.selectedPlayers.isNotEmpty()) {
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Row {
+                                AppText(
+                                    text = stringResource(id = R.string.added_players),
+                                    fontWeight = FontWeight.W500,
+                                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                                    color = ColorBWBlack
+                                )
+
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_4dp)))
+
+                                AppText(
+                                    text = state.selectedPlayers.size.toString(),
+                                    fontWeight = FontWeight.W500,
+                                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                                    color = MaterialTheme.appColors.textField.label
+                                )
+                            }
+
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_info),
+                                contentDescription = "",
+                                modifier = Modifier.padding(dimensionResource(id = R.dimen.size_20dp)),
+                                tint = Color.Unspecified
+                            )
+                        }
                     }
+
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -181,7 +207,8 @@ fun AddPlayersScreen(
                                 teamColor = state.teamColor,
                                 onItemClick = { player ->
                                     vm.onEvent(TeamSetupUIEvent.OnRemovePlayerClick(player))
-                                }
+                                },
+                                showBackground = true
                             )
                         }
                     }
@@ -248,7 +275,8 @@ fun PlayerListUI(
                 teamColor = teamColor,
                 onItemClick = { selectedPlayer ->
                     onPlayerClick.invoke(selectedPlayer)
-                }
+                },
+                showBackground = false
             )
         }
     }
@@ -259,19 +287,29 @@ fun PlayerListItem(
     icon: Painter,
     player: Player,
     teamColor: String,
-    onItemClick: (Player) -> Unit
+    onItemClick: (Player) -> Unit,
+    showBackground: Boolean
 ) {
     Row(
         modifier = Modifier
-            .height(IntrinsicSize.Min)
+            .height(dimensionResource(id = R.dimen.size_48dp))
             .fillMaxWidth()
-            .padding(
-                PaddingValues(
-                    dimensionResource(id = R.dimen.size_12dp),
-                    dimensionResource(id = R.dimen.size_8dp)
-                )
-            ), verticalAlignment = Alignment.CenterVertically
+            .background(
+                color = if (showBackground) {
+                    MaterialTheme.appColors.material.primary
+                } else {
+                    Color.White
+                },
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+            ),
+        verticalAlignment = Alignment.CenterVertically
     ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
         Image(
             painter = painterResource(id = R.drawable.user_demo),
             contentDescription = "",
@@ -288,15 +326,17 @@ fun PlayerListItem(
         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
         AddRemoveButton(icon, teamColor = teamColor) { onItemClick(player) }
     }
+    }
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
 }
 
 @Composable
 fun AddRemoveButton(icon: Painter, teamColor: String, onItemClick: () -> Unit) {
     Box(
         modifier = Modifier
-            .size(dimensionResource(id = R.dimen.size_24dp))
+            .size(dimensionResource(id = R.dimen.size_16dp))
             .background(
-                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_5dp)),
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)),
                 color = Color(android.graphics.Color.parseColor("#$teamColor"))
             )
     ) {
@@ -305,7 +345,7 @@ fun AddRemoveButton(icon: Painter, teamColor: String, onItemClick: () -> Unit) {
             painter = icon, contentDescription = "",
             modifier = Modifier
                 .align(Alignment.Center)
-                .size(dimensionResource(id = R.dimen.size_20dp))
+                .size(dimensionResource(id = R.dimen.size_12dp))
                 .clickable(onClick = { onItemClick() }),
             tint = Color.White
         )

@@ -20,7 +20,7 @@ val heading2OnDarkColor = Color(0xFFFFFFFF)
 
 val heading3Color = Color(0xFFE4EBF0)
 
-val md_theme_light_primary = Color(0xFFD7D7D7)
+val md_theme_light_primary = Color(0xFFF1F6FA)
 val md_theme_light_onPrimary = Color(0xFFffffff)
 val md_theme_light_primaryContainer = Color(0xFF1066FF)
 val md_theme_light_onPrimaryContainer = Color(0xFF170066)

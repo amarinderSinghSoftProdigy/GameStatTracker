@@ -35,6 +35,19 @@ import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.SetupTeamViewModel
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.TeamSetupUIEvent
 import com.softprodigy.ballerapp.ui.theme.*
+import com.softprodigy.ballerapp.data.UserStorage
+import com.softprodigy.ballerapp.data.request.GlobalRequest
+import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
+import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.BottomButtons
+import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
+import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
+import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
+import com.softprodigy.ballerapp.ui.theme.ColorMainPrimary
+import com.softprodigy.ballerapp.ui.theme.ColorPrimaryTransparent
+import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
 
 
@@ -114,9 +127,16 @@ fun TeamSetupScreen(
                             onValueChange = {
                                 vm.onEvent(TeamSetupUIEvent.OnTeamNameChange(it))
                             },
-                            placeholder = { AppText(text = stringResource(id = R.string.your_team_name)) },
+                            placeholder = {
+                                AppText(
+                                    text = stringResource(id = R.string.your_team_name),
+                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
+                                )
+                            },
                             colors = TextFieldDefaults.outlinedTextFieldColors(
-                                unfocusedBorderColor = ColorBWGrayBorder
+                                unfocusedBorderColor = ColorBWGrayBorder,
+                                cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+
                             ),
                             isError = !validTeamName(state.teamName) && state.teamName.isNotEmpty(),
                             errorMessage = stringResource(id = R.string.valid_team_name)

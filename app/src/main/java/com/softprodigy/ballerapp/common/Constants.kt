@@ -13,10 +13,13 @@ object AppConstants {
     const val USER_TYPE_PLAYER = "Player"
     const val USER_TYPE_REFEREE = "Referee"
     const val USER_TYPE_COACH = "Coach"
-    var SELECTED_COLOR: Color = Color.White
+    const val USER_TYPE_PARENT = "Parent"
+    const val USER_TYPE_GAME_STAFF = "Game Staff"
+    const val USER_TYPE_PROGRAM_STAFF = "Program Staff"
+    const val USER_TYPE_FAN = "Fan"
     const val PUBLIC_PROFILE="public_profile"
     const val EMAIL="email"
-
+    var SELECTED_COLOR: Color = Color(0xFF0177C1)
 }
 
 object Route {
