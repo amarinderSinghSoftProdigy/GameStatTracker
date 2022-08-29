@@ -3,7 +3,7 @@ package com.softprodigy.ballerapp.data.response
 import com.google.gson.annotations.SerializedName
 
 data class Player(
-    @SerializedName("_id") val Id: String? = null,
+    @SerializedName("_id") val Id: String = "",
     @SerializedName("firstName") val firstName: String? = null,
     @SerializedName("lastName") val lastName: String? = null,
     @SerializedName("profileImage") val profileImage: String? = null,

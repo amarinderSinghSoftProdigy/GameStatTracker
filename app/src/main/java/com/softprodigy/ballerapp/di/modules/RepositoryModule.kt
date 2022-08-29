@@ -1,7 +1,9 @@
 package com.softprodigy.ballerapp.di.modules
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
+import com.softprodigy.ballerapp.data.repository.ImageUploadRepo
 import com.softprodigy.ballerapp.data.repository.TeamRepository
 import com.softprodigy.ballerapp.data.repository.UserRepository
+import com.softprodigy.ballerapp.domain.repository.IImageUploadRepo
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import com.softprodigy.ballerapp.domain.repository.IUserRepository
 import com.softprodigy.ballerapp.network.APIService
@@ -31,5 +33,13 @@ object RepositoryModule {
         dataStoreManager: DataStoreManager,
     ): ITeamRepository {
         return TeamRepository(service = apiService, dataStoreManager = dataStoreManager)
+    }
+    @Provides
+    @Singleton
+    fun provideImageUploadRepo(
+        apiService: APIService,
+        dataStoreManager: DataStoreManager,
+    ): IImageUploadRepo {
+        return ImageUploadRepo(service = apiService, dataStoreManager = dataStoreManager)
     }
 }

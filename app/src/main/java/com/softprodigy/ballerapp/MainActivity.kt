@@ -77,7 +77,7 @@ class MainActivity : ComponentActivity() {
 fun NavControllerComposable(activity: MainActivity) {
     val navController = rememberNavController()
     val setupTeamViewModel: SetupTeamViewModel = viewModel()
-    NavHost(navController, startDestination = SPLASH_SCREEN) {
+    NavHost(navController, startDestination = TEAM_SETUP_SCREEN) {
 
         composable(route = SPLASH_SCREEN) {
             SplashScreen {

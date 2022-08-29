@@ -1,23 +1,32 @@
 package com.softprodigy.ballerapp.ui.features.user_type.team_setup
 
+import android.app.Application
+import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.baller_app.core.util.UiText
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.ResultWrapper
+import com.softprodigy.ballerapp.common.getFileFromUri
+import com.softprodigy.ballerapp.data.request.CreateTeamRequest
 import com.softprodigy.ballerapp.data.response.Player
+import com.softprodigy.ballerapp.domain.repository.IImageUploadRepo
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class SetupTeamViewModel @Inject constructor(private val teamRepo: ITeamRepository) : ViewModel() {
+class SetupTeamViewModel @Inject constructor(
+    private val teamRepo: ITeamRepository,
+    private val imageUploadRepo: IImageUploadRepo,
+    application: Application
+) : AndroidViewModel(application) {
 
     private val _teamSetupChannel = Channel<TeamSetupChannel>()
     val teamSetupChannel = _teamSetupChannel.receiveAsFlow()
@@ -91,6 +100,14 @@ class SetupTeamViewModel @Inject constructor(private val teamRepo: ITeamReposito
                 )
 
             }
+            TeamSetupUIEvent.OnAddPlayerScreenNext -> {
+                viewModelScope.launch {
+                    uploadTeamLogo()
+                }
+            }
+            TeamSetupUIEvent.OnLogoUploadSuccess -> {
+                viewModelScope.launch { createTeam() }
+            }
         }
     }
 
@@ -140,10 +157,121 @@ class SetupTeamViewModel @Inject constructor(private val teamRepo: ITeamReposito
         }
 
     }
+
+    private suspend fun uploadTeamLogo() {
+        val uri = Uri.parse(teamSetupUiState.value.teamImageUri)
+
+        val file = getFileFromUri(getApplication<Application>().applicationContext, uri)
+
+        when (val uploadLogoResponse = imageUploadRepo.uploadSingleImage(
+            type = AppConstants.TEAM_LOGO,
+            file
+        )) {
+            is ResultWrapper.GenericError -> {
+                _teamSetupChannel.send(
+                    TeamSetupChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${uploadLogoResponse.code} ${uploadLogoResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _teamSetupChannel.send(
+                    TeamSetupChannel.ShowToast(
+                        UiText.DynamicString(
+                            uploadLogoResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                uploadLogoResponse.value.let { response ->
+                    if (response.status) {
+                        _teamSetupUiState.value =
+                            _teamSetupUiState.value.copy(teamImageServerUrl = uploadLogoResponse.value.data.data)
+                        _teamSetupChannel.send(
+                            TeamSetupChannel.OnLogoUpload
+                        )
+                    } else {
+                        _teamSetupUiState.value =
+                            _teamSetupUiState.value.copy(isLoading = false)
+                        _teamSetupChannel.send(
+                            TeamSetupChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun createTeam() {
+
+        val playersId = _teamSetupUiState.value.selectedPlayers.map {
+            it.Id
+        }
+        val request = CreateTeamRequest(
+            name = _teamSetupUiState.value.teamName,
+            colorCode = _teamSetupUiState.value.teamColor,
+            players = playersId as ArrayList<String>,
+            coaches = arrayListOf("6304540bb9165453b9859fa1"),
+            logo = _teamSetupUiState.value.teamImageServerUrl
+        )
+
+        when (val createTeamResponse = teamRepo.createTeamAPI(
+            request
+        )) {
+            is ResultWrapper.GenericError -> {
+                _teamSetupChannel.send(
+                    TeamSetupChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${createTeamResponse.code} ${createTeamResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _teamSetupChannel.send(
+                    TeamSetupChannel.ShowToast(
+                        UiText.DynamicString(
+                            createTeamResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                createTeamResponse.value.let { response ->
+                    if (response.status) {
+                        /*   _teamSetupUiState.value =
+                               _teamSetupUiState.value.copy(teamImageUri = createTeamResponse.value.data)*/
+                        _teamSetupChannel.send(
+                            TeamSetupChannel.OnTeamCreate(response.data.Id)
+                        )
+                    } else {
+                        _teamSetupUiState.value =
+                            _teamSetupUiState.value.copy(isLoading = false)
+                        _teamSetupChannel.send(
+                            TeamSetupChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
 }
-
-
 sealed class TeamSetupChannel {
     data class ShowToast(val message: UiText) : TeamSetupChannel()
     object OnTeamSetupNextClick : TeamSetupChannel()
+    object OnLogoUpload : TeamSetupChannel()
+    data class OnTeamCreate(val teamId: String) : TeamSetupChannel()
+
 }

@@ -14,6 +14,7 @@ sealed class TeamSetupUIEvent {
     data class OnRemovePlayerClick(val player: Player) : TeamSetupUIEvent()
     data class OnRemovePlayerConfirmClick(val player: Player) : TeamSetupUIEvent()
     data class OnDismissDialogCLick(val showDialog: Boolean) : TeamSetupUIEvent()
-
+    object OnAddPlayerScreenNext : TeamSetupUIEvent()
+    object OnLogoUploadSuccess : TeamSetupUIEvent()
 
 }

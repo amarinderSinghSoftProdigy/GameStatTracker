@@ -30,14 +30,13 @@ import com.softprodigy.ballerapp.data.response.Player
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
-import timber.log.Timber
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun AddPlayersScreen(
     vm: SetupTeamViewModel,
     onBackClick: () -> Unit,
-    onNextClick: () -> Unit
+    onNextClick: (String) -> Unit
 ) {
     val context = LocalContext.current
     val state = vm.teamSetupUiState.value
@@ -49,6 +48,13 @@ fun AddPlayersScreen(
                     Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
                         .show()
                 }
+                TeamSetupChannel.OnLogoUpload -> {
+                    vm.onEvent(TeamSetupUIEvent.OnLogoUploadSuccess)
+                }
+                is TeamSetupChannel.OnTeamCreate -> {
+                    onNextClick.invoke(uiEvent.teamId)
+                }
+                else -> Unit
             }
         }
     }
@@ -185,7 +191,8 @@ fun AddPlayersScreen(
             BottomButtons(
                 onBackClick = { onBackClick.invoke() },
                 onNextClick = {
-                    onNextClick.invoke()
+                    vm.onEvent(TeamSetupUIEvent.OnAddPlayerScreenNext)
+
                 },
                 enableState = state.selectedPlayers.isNotEmpty()
             )

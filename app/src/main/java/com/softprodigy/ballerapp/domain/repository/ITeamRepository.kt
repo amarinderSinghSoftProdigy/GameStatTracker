@@ -1,6 +1,8 @@
 package com.softprodigy.ballerapp.domain.repository
 
 import com.softprodigy.ballerapp.common.ResultWrapper
+import com.softprodigy.ballerapp.data.request.CreateTeamRequest
+import com.softprodigy.ballerapp.data.response.CreateTeamResponse
 import com.softprodigy.ballerapp.data.response.Player
 import com.softprodigy.ballerapp.domain.BaseResponse
 import javax.inject.Singleton
@@ -12,4 +14,6 @@ interface ITeamRepository {
         limit: Int = 10,
         searchPlayer: String
     ): ResultWrapper<BaseResponse<ArrayList<Player>>>
+
+    suspend fun createTeamAPI(request: CreateTeamRequest): ResultWrapper<BaseResponse<CreateTeamResponse>>
 }

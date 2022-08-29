@@ -3,6 +3,8 @@ package com.softprodigy.ballerapp.data.repository
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.safeApiCall
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
+import com.softprodigy.ballerapp.data.request.CreateTeamRequest
+import com.softprodigy.ballerapp.data.response.CreateTeamResponse
 import com.softprodigy.ballerapp.data.response.Player
 import com.softprodigy.ballerapp.domain.BaseResponse
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
@@ -24,5 +26,9 @@ class TeamRepository @Inject constructor(
         searchPlayer: String
     ): ResultWrapper<BaseResponse<ArrayList<Player>>> {
         return safeApiCall(dispatcher) { service.getAllPlayers(page, limit, searchPlayer) }
+    }
+
+    override suspend fun createTeamAPI(request: CreateTeamRequest): ResultWrapper<BaseResponse<CreateTeamResponse>> {
+        return safeApiCall(dispatcher){service.createTeam(request)}
     }
 }
