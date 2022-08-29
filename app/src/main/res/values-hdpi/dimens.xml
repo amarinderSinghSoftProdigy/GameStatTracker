@@ -11,6 +11,7 @@
     <dimen name="txt_size_20">15sp</dimen>
     <dimen name="txt_size_24">18sp</dimen>
     <dimen name="txt_size_31">23.25sp</dimen>
+    <dimen name="txt_size_36">27sp</dimen>
 
     <dimen name="size_1dp">0.75dp</dimen>
     <dimen name="size_2dp">1.5dp</dimen>

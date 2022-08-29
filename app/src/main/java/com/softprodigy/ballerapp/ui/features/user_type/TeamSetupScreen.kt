@@ -127,7 +127,11 @@ fun TeamSetupScreen(
 
         Box(Modifier.fillMaxSize()) {
             CoachFlowBackground(
-                colorCode = selectedColorCode.value.ifEmpty { null }
+                colorCode = if (selectedColorCode.value.isNotEmpty()) {
+                    AppConstants.SELECTED_COLOR
+                } else {
+                    null
+                }
             )
             Column(
                 Modifier

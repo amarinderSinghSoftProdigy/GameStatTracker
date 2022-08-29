@@ -75,7 +75,7 @@ fun AddPlayersScreen(
     val removePlayer = remember { mutableStateOf("") }
     Box(Modifier.fillMaxSize()) {
         CoachFlowBackground(
-            colorCode = UserStorage.teamColor,
+            colorCode = AppConstants.SELECTED_COLOR,
             teamLogo = UserStorage.teamLogo
         )
         Column(
