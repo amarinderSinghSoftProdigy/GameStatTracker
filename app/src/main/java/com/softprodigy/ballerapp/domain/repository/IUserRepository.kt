@@ -12,4 +12,8 @@ interface IUserRepository {
         email: String,
         password: String
     ): ResultWrapper<BaseResponse<UserInfo>>
+
+    suspend fun verifyPhone(phone: String): ResultWrapper<BaseResponse<Any>>
+
+    suspend fun confirmPhone(phone: String, otp: String): ResultWrapper<BaseResponse<Any>>
 }

@@ -29,6 +29,7 @@ import com.softprodigy.ballerapp.common.Route.SIGN_UP_SCREEN
 import com.softprodigy.ballerapp.common.Route.SPLASH_SCREEN
 import com.softprodigy.ballerapp.common.Route.TEAM_SETUP_SCREEN
 import com.softprodigy.ballerapp.common.Route.WELCOME_SCREEN
+import com.softprodigy.ballerapp.ui.features.confirm_phone.ConfirmPhoneScreen
 import com.softprodigy.ballerapp.ui.features.home.HomeActivity
 import com.softprodigy.ballerapp.ui.features.home.HomeScreen
 import com.softprodigy.ballerapp.ui.features.login.LoginScreen
@@ -75,13 +76,15 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun NavControllerComposable(activity: MainActivity) {
     val navController = rememberNavController()
-    NavHost(navController, startDestination = SPLASH_SCREEN) {
+    NavHost(navController, startDestination = PROFILE_SETUP_SCREEN) {
 
         composable(route = SPLASH_SCREEN) {
             SplashScreen {
                 navController.popBackStack()
                 navController.navigate(WELCOME_SCREEN)
             }
+
+            //  ConfirmPhoneScreen()
         }
 
         composable(route = SIGN_UP_SCREEN) {

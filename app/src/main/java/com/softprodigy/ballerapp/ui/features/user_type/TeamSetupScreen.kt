@@ -349,7 +349,7 @@ fun ColorPickerBottomSheet(
     colorEnvelope: (ColorEnvelope) -> Unit,
     onDismiss: () -> Unit
 ) {
-    Column() {
+    Column {
         Box(
             Modifier
                 .fillMaxWidth()

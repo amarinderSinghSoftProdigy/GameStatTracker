@@ -46,7 +46,7 @@ class LoginViewModel @Inject constructor(
                     password = password
                 )
             when (loginResponse) {
-                is ResultWrapper.Success ->{
+                is ResultWrapper.Success -> {
                     loginResponse.value.let { response ->
 
                         if (response.status) {
@@ -59,18 +59,18 @@ class LoginViewModel @Inject constructor(
                             _loginChannel.send(LoginChannel.OnLoginSuccess(response.data))
                         } else {
                             _loginUiState.value = LoginUIState(
-                                user=null,
+                                user = null,
                                 errorMessage = response.statusMessage ?: "Something went wrong",
                                 isDataLoading = false
                             )
                         }
-                }
+                    }
                 }
                 is GenericError -> {
                     _loginUiState.value = loginUiState.value.copy(isDataLoading = false)
                     _loginUiState.value =
                         LoginUIState(
-                            user=null,
+                            user = null,
                             errorMessage = "${loginResponse.code} ${loginResponse.message}",
                             isDataLoading = false
                         )
@@ -79,18 +79,18 @@ class LoginViewModel @Inject constructor(
                 is ResultWrapper.NetworkError -> {
                     _loginUiState.value =
                         LoginUIState(
-                            user=null,
+                            user = null,
                             errorMessage = "${loginResponse.message}",
                             isDataLoading = false
                         )
                     _loginChannel.send(LoginChannel.ShowToast(UiText.DynamicString(loginResponse.message)))
                 }
 
-
+            }
         }
     }
 }
-    }
+
 sealed class LoginChannel {
     data class ShowToast(val message: UiText) : LoginChannel()
     data class OnLoginSuccess(val loginResponse: UserInfo) : LoginChannel()

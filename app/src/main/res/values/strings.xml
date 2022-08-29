@@ -92,5 +92,10 @@
     <string name="referee_label">Referee</string>
     <string name="create_now">Create Now</string>
     <string name="pick_team">Pick Team</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="sign_up">Signup</string>
+    <string name="dont_have_account">Don\'t have an account?</string>
+    <string name="enter_otp">Enter OTP</string>
 
 </resources>
