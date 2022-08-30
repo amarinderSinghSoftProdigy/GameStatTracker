@@ -1,6 +1,5 @@
 package com.softprodigy.ballerapp.ui.features.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -8,7 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -79,20 +78,15 @@ fun <T> DeleteDialog(
 @Composable
 fun SelectTeamDialog(
     onDismiss: () -> Unit,
-    onClick: (Team) -> Unit,
+    onConfirmClick: () -> Unit,
+    onSelectionChange: (Team) -> Unit,
+    selected: Team,
     teams: ArrayList<Team>
 ) {
     BallerAppTheme {
         AlertDialog(
             onDismissRequest = onDismiss,
             buttons = {
-                var selected by remember {
-                    mutableStateOf(Team())
-                }
-                val onSelectionChange = { team: Team ->
-                    selected = team
-                }
-
                 Column(
                     modifier = Modifier
                         .background(color = Color.White)
@@ -129,7 +123,6 @@ fun SelectTeamDialog(
                             teams.forEach {
                                 TeamListItem(team = it, selected = selected == it) { team ->
                                     onSelectionChange.invoke(team)
-                                    onClick.invoke(team)
                                 }
                             }
                         }
@@ -155,12 +148,16 @@ fun SelectTeamDialog(
                     )
                     AppButton(
                         text = stringResource(R.string.dialog_button_confirm),
-                        onClick = { onDismiss() },
+                        onClick = {
+                            onConfirmClick.invoke()
+                            onDismiss.invoke()
+                        },
                         modifier = Modifier
                             .weight(1f),
                         border = ButtonDefaults.outlinedBorder,
                         enabled = selected.name.isNotEmpty(),
-                        singleButton = true
+                        singleButton = false,
+                        isForceEnableNeeded = true
                     )
                 }
             },

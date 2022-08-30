@@ -18,5 +18,11 @@ interface ITeamRepository {
 
     suspend fun createTeamAPI(request: CreateTeamRequest): ResultWrapper<BaseResponse<CreateTeamResponse>>
 
-    suspend fun getTeams(page: Int=1, limit: Int=5, sort: String=""): ResultWrapper<BaseResponse<ArrayList<Team>>>
+    suspend fun getTeams(
+        page: Int = 1,
+        limit: Int = 5,
+        sort: String = ""
+    ): ResultWrapper<BaseResponse<ArrayList<Team>>>
+
+    suspend fun getTeamsByTeamID(teamId: String): ResultWrapper<BaseResponse<Team>>
 }
