@@ -8,9 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,6 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.Team
 import com.softprodigy.ballerapp.ui.theme.BallerAppTheme
@@ -80,15 +79,19 @@ fun <T> DeleteDialog(
 @Composable
 fun SelectTeamDialog(
     onDismiss: () -> Unit,
-//    teams:ArrayList<Team>
+    onClick: (Team) -> Unit,
+    teams: ArrayList<Team>
 ) {
     BallerAppTheme {
         AlertDialog(
             onDismissRequest = onDismiss,
             buttons = {
-                val list = ArrayList<String>()
-                list.add("Springfield Bucks")
-                list.add("Springfield Sprouts")
+                var selected by remember {
+                    mutableStateOf(Team())
+                }
+                val onSelectionChange = { team: Team ->
+                    selected = team
+                }
 
                 Column(
                     modifier = Modifier
@@ -117,17 +120,16 @@ fun SelectTeamDialog(
                         )
                     }
                     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
-                    val selected = remember {
-                        mutableStateOf("")
-                    }
+
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
                         item {
-                            list.forEach {
-                                TeamListItem(it, selected.value == it) {
-                                    selected.value = it
+                            teams.forEach {
+                                TeamListItem(team = it, selected = selected == it) { team ->
+                                    onSelectionChange.invoke(team)
+                                    onClick.invoke(team)
                                 }
                             }
                         }
@@ -157,7 +159,7 @@ fun SelectTeamDialog(
                         modifier = Modifier
                             .weight(1f),
                         border = ButtonDefaults.outlinedBorder,
-                        enabled = true,
+                        enabled = selected.name.isNotEmpty(),
                         singleButton = true
                     )
                 }
@@ -168,10 +170,10 @@ fun SelectTeamDialog(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun TeamListItem(name: String, selected: Boolean, onClick: (String) -> Unit) {
+fun TeamListItem(team: Team, selected: Boolean, onClick: (Team) -> Unit) {
     Surface(
         modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.size_16dp)),
-        onClick = { onClick(name) },
+        onClick = { onClick(team) },
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_10dp)),
         elevation = if (selected) dimensionResource(id = R.dimen.size_10dp) else 0.dp,
         color = if (selected) MaterialTheme.appColors.buttonColor.bckgroundEnabled else Color.White,
@@ -187,8 +189,8 @@ fun TeamListItem(name: String, selected: Boolean, onClick: (String) -> Unit) {
                     )
                 ), verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.user_demo),
+            AsyncImage(
+                model = team.logo,
                 contentDescription = "",
                 modifier = Modifier
                     .size(dimensionResource(id = R.dimen.size_32dp))
@@ -196,9 +198,14 @@ fun TeamListItem(name: String, selected: Boolean, onClick: (String) -> Unit) {
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
             Text(
-                text = name,
+                text = team.name,
                 style = MaterialTheme.typography.h6,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                color = if (selected) {
+                    MaterialTheme.appColors.buttonColor.textEnabled
+                } else {
+                    MaterialTheme.appColors.buttonColor.textDisabled
+                }
             )
         }
     }

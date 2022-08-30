@@ -33,6 +33,7 @@ suspend fun <T> safeApiCall(
                 }
                 else -> {
                     Timber.e("GenericError", throwable.message)
+                    throwable.printStackTrace()
                     ResultWrapper.GenericError(null, throwable.message)
                 }
             }
