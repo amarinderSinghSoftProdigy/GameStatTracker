@@ -43,7 +43,7 @@ import com.softprodigy.ballerapp.ui.theme.appColors
 @Composable
 fun HomeScreen(name: String?) {
     Box {
-        CoachFlowBackground(colorCode = MaterialTheme.appColors.material.primaryVariant)
+        CoachFlowBackground(/*colorCode = MaterialTheme.appColors.material.primaryVariant*/)
         Column(
             Modifier
                 .fillMaxWidth()

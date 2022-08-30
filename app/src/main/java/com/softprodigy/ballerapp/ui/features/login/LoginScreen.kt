@@ -1,10 +1,13 @@
 package com.softprodigy.ballerapp.ui.features.login
 
+import android.content.res.Resources
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +21,8 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -26,13 +31,13 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -131,8 +136,7 @@ fun LoginScreen(
                     vm.onEvent(LoginUIEvent.OnGoogleClick(googleUser))
                 }
                 else{
-                    Timber.i("gsa null")
-                    Toast.makeText(context, "gsa null", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, context.resources.getString(R.string.something_went_wrong), Toast.LENGTH_SHORT).show()
                 }
 
             } catch (e: ApiException) {
@@ -275,8 +279,8 @@ fun LoginScreen(
                 singleButton = true,
                 enabled = email.isValidEmail() && password.isValidPassword(),
                 onClick = {
-                    onLoginSuccess(null)
-                    //vm.onEvent(LoginUIEvent.Submit(email, password))
+//                    onLoginSuccess(null)
+                    vm.onEvent(LoginUIEvent.Submit(email, password))
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -361,7 +365,7 @@ fun LoginScreen(
 
         }
         if (loginState.isDataLoading) {
-            //CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.softprodigy.ballerapp.ui.features.home
+package com.softprodigy.ballerapp.ui.features.home.teams
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box

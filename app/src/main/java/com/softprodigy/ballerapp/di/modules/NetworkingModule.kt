@@ -29,6 +29,7 @@ object NetworkingModule {
         okHttpClient.readTimeout(READ_TIMEOUT.toLong(), TimeUnit.SECONDS)
         okHttpClient.writeTimeout(WRITE_TIMEOUT.toLong(), TimeUnit.SECONDS)
         okHttpClient.addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+        okHttpClient.addInterceptor(AuthInterceptor())
         okHttpClient.followSslRedirects(true)
         okHttpClient.build()
         return okHttpClient.build()
