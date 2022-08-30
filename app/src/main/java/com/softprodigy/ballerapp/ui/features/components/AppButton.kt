@@ -43,7 +43,12 @@ fun AppButton(
         modifier = modifier,
         enabled = enabled,
         shape = shape,
-        color = if (icon == null && !isForceEnableNeeded) Color.Transparent else if (enabled) colors.bckgroundEnabled else colors.bckgroundDisabled,
+        color = if (icon == null && !isForceEnableNeeded)
+            Color.Transparent
+        else if (enabled)
+            colors.bckgroundEnabled
+        else
+            colors.bckgroundDisabled,
         contentColor = contentColor.copy(alpha = 1f),
         border = border,
     ) {
@@ -78,7 +83,11 @@ fun AppButton(
                             )
                         }
 
-                    } else {
+                    }
+                    else if(isForceEnableNeeded && enabled) {
+                        ButtonView(text = text ?: "", color = colors.textEnabled)
+                    }
+                    else {
                         ButtonView(text = text ?: "", color = colors.textDisabled)
                     }
                 }

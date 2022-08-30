@@ -5,8 +5,8 @@ import com.softprodigy.ballerapp.common.safeApiCall
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.CreateTeamRequest
 import com.softprodigy.ballerapp.data.response.CreateTeamResponse
-import com.softprodigy.ballerapp.data.response.Player
 import com.softprodigy.ballerapp.data.response.Team
+import com.softprodigy.ballerapp.data.response.Player
 import com.softprodigy.ballerapp.domain.BaseResponse
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import com.softprodigy.ballerapp.network.APIService
@@ -30,7 +30,7 @@ class TeamRepository @Inject constructor(
     }
 
     override suspend fun createTeamAPI(request: CreateTeamRequest): ResultWrapper<BaseResponse<CreateTeamResponse>> {
-        return safeApiCall(dispatcher) { service.createTeam(request) }
+        return safeApiCall(dispatcher){service.createTeam(request)}
     }
 
     override suspend fun getTeams(
@@ -38,11 +38,11 @@ class TeamRepository @Inject constructor(
         limit: Int,
         sort: String
     ): ResultWrapper<BaseResponse<ArrayList<Team>>> {
-        return safeApiCall(dispatcher) { service.getTeams(page, limit, sort) }
+        return safeApiCall(dispatcher){service.getTeams(page,limit,sort)}
     }
 
     override suspend fun getTeamsByTeamID(teamId: String): ResultWrapper<BaseResponse<Team>> {
-        return safeApiCall(dispatcher) { service.getTeamsByTeamId(teamId) }
+        return safeApiCall(dispatcher){service.getTeamsByTeamId(teamId)}
 
     }
 }
