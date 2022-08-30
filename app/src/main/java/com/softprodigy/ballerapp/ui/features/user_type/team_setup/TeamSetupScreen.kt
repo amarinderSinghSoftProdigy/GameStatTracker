@@ -205,7 +205,7 @@ fun TeamSetupScreen(
                                 color = ColorMainPrimary
                             )
                         }
-                        state.teamImageUri?.let {
+                        state.teamImageUri.let {
                             Image(
                                 painter = rememberImagePainter(data = Uri.parse(it)),
                                 contentDescription = null,

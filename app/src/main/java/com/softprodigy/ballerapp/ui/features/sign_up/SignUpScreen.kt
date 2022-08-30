@@ -3,11 +3,13 @@ package com.softprodigy.ballerapp.ui.features.sign_up
 import android.app.DatePickerDialog
 import androidx.compose.ui.geometry.Size
 import android.widget.DatePicker
+import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
@@ -27,16 +29,23 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import com.facebook.login.LoginManager
 
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.AppConstants
+import com.softprodigy.ballerapp.common.RequestCode
 import com.softprodigy.ballerapp.common.isValidEmail
 import com.softprodigy.ballerapp.common.isValidPassword
 import com.softprodigy.ballerapp.common.passwordMatches
@@ -47,12 +56,13 @@ import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineDateField
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.SocialLoginSection
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 import java.util.*
 
 @Composable
-fun SignUpScreen(onSignUpSuccess: (SignUpData) -> Unit) {
+fun SignUpScreen(onLoginScreen: () -> Unit, onSignUpSuccess: (SignUpData) -> Unit) {
     val context = LocalContext.current
     var email by rememberSaveable { mutableStateOf("") }
 
@@ -424,7 +434,70 @@ fun SignUpScreen(onSignUpSuccess: (SignUpData) -> Unit) {
                 text = stringResource(id = R.string.sign_up),
                 icon = painterResource(id = R.drawable.ic_circle_next)
             )
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_30dp)))
+
+
+            val annotatedText = buildAnnotatedString {
+
+                withStyle(
+                    style = SpanStyle(
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    )
+                ) {
+                    append(stringResource(id = R.string.already_registered))
+                }
+                append(" ")
+                pushStringAnnotation(
+                    tag = stringResource(id = R.string.signin),
+                    annotation = stringResource(id = R.string.signin)
+                )
+                withStyle(
+                    style = SpanStyle(
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        textDecoration = TextDecoration.Underline
+                    )
+                ) {
+                    append(stringResource(id = R.string.signin))
+                }
+
+                pop()
+
+            }
+
+            ClickableText(
+                text = annotatedText,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally),
+                onClick = {
+                    annotatedText.getStringAnnotations(
+                        tag = "SignIn",
+                        start = it,
+                        end = it
+                    ).forEach { _ ->
+                        onLoginScreen()
+                    }
+                },
+                style = MaterialTheme.typography.h4
+            )
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_30dp)))
+
+            SocialLoginSection(
+                headerText = stringResource(id = R.string.or_sign_up_with),
+                onGoogleClick = {
+//                    authResultLauncher.launch(RequestCode.GOOGLE_ACCESS)
+                },
+                onFacebookClick = {
+//                    LoginManager.getInstance()
+//                        .logInWithReadPermissions(
+//                            context as ActivityResultRegistryOwner,
+//                            callbackManager,
+//                            listOf(AppConstants.PUBLIC_PROFILE, AppConstants.EMAIL)
+//                        )
+                }) {
+            }
+
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))
+
         }
     }
 }

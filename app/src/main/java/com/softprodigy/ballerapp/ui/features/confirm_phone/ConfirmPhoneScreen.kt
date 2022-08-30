@@ -56,6 +56,8 @@ import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.login.LoginChannel
+import com.softprodigy.ballerapp.ui.features.sign_up.SignUpUIEvent
+import com.softprodigy.ballerapp.ui.features.sign_up.SignUpViewModel
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -64,7 +66,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ConfirmPhoneScreen(
     onDismiss: () -> Unit,
-    viewModel: ConfirmPhoneViewModel = hiltViewModel(),
+    viewModel: SignUpViewModel = hiltViewModel(),
     phoneNumber: String
 ) {
 
@@ -94,6 +96,7 @@ fun ConfirmPhoneScreen(
                     onDismiss.invoke()
                 }
         )
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -177,19 +180,17 @@ fun ConfirmPhoneScreen(
                 singleButton = true,
                 enabled = otp.isNotEmpty() && otp.length >= 6,
                 onClick = {
-
                     viewModel.onEvent(
-                        VerifyPhoneUIEvent.Confirm(
+                        SignUpUIEvent.OnConfirmNumber(
                             phoneNumber = "+$phoneNumber",
                             otp = otp
                         )
                     )
-                    onDismiss.invoke()
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(dimensionResource(id = R.dimen.size_56dp)),
-                text = stringResource(id = R.string.login),
+                text = stringResource(id = R.string.verify),
                 icon = painterResource(id = R.drawable.ic_circle_next)
             )
         }

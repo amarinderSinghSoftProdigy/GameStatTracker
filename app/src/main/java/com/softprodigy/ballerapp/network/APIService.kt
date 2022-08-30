@@ -3,6 +3,7 @@ package com.softprodigy.ballerapp.network
 import com.softprodigy.ballerapp.common.ApiConstants
 import com.softprodigy.ballerapp.data.request.CreateTeamRequest
 import com.softprodigy.ballerapp.data.request.ConfirmPhoneRequest
+import com.softprodigy.ballerapp.data.request.ForgotPasswordRequest
 import com.softprodigy.ballerapp.data.request.LoginRequest
 import com.softprodigy.ballerapp.data.response.*
 import com.softprodigy.ballerapp.data.request.SignUpData
@@ -33,12 +34,14 @@ interface APIService {
     ): BaseResponse<ImageUpload>
 
     @POST(ApiConstants.CREATE_TEAM)
-    suspend fun createTeam(@Body request:CreateTeamRequest):BaseResponse<CreateTeamResponse>
+    suspend fun createTeam(@Body request: CreateTeamRequest): BaseResponse<CreateTeamResponse>
 
     @GET(ApiConstants.GET_TEAMS)
-    suspend fun getTeams(   @Query("page") page: Int,
-                            @Query("limit") limit: Int,
-                            @Query("sort") sort: String):BaseResponse<ArrayList<Team>>
+    suspend fun getTeams(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int,
+        @Query("sort") sort: String
+    ): BaseResponse<ArrayList<Team>>
 
 
     @POST(ApiConstants.VERIFY_PHONE)
@@ -49,5 +52,8 @@ interface APIService {
 
     @POST(ApiConstants.SIGNUP)
     suspend fun signUp(@Body signUpData: SignUpData): BaseResponse<Any>
+
+    @POST(ApiConstants.FORGOT_PASSWORD)
+    suspend fun forgotPassword(@Body forgotPasswordRequest: ForgotPasswordRequest): BaseResponse<Any>
 
 }

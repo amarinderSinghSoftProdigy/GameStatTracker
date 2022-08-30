@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 
 object AppConstants {
     const val TEAM_LOGO: String = "teamLogo"
+    const val PROFILE_IMAGE: String = "profileImage"
     const val PICKER_DEFAULT_COLOR = "FFFFFFFF"
     const val ANDROID = "android"
     const val GOOGLE = "google"
@@ -48,10 +49,9 @@ object ApiConstants {
     const val GET_TEAMS = "v1/team"
 
 
-    const val SIGNUP = "/register"
     const val SOCIAL_LOGIN = "/social_login"
     const val SIGNUP = "v1/auth/register"
-    const val FORGOT_PASSWORD = "/forgot/password"
+    const val FORGOT_PASSWORD = "v1/auth/forgotPassword"
     const val VERIFY_PHONE = "v1/auth/verifyPhone"
     const val CONFIRM_PHONE = "v1/auth/confirmPhone"
     const val RESET_PASS = "/reset/password/"

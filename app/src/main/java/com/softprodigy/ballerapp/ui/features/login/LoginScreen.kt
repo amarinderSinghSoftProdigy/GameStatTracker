@@ -50,6 +50,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -134,9 +135,12 @@ fun LoginScreen(
                         token = gsa.idToken
                     )
                     vm.onEvent(LoginUIEvent.OnGoogleClick(googleUser))
-                }
-                else{
-                    Toast.makeText(context, context.resources.getString(R.string.something_went_wrong), Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(
+                        context,
+                        context.resources.getString(R.string.something_went_wrong),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
             } catch (e: ApiException) {
@@ -298,7 +302,7 @@ fun LoginScreen(
                         color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                     )
                 ) {
-                    append(stringResource(id = R.string.dont_have_account))
+                    append(stringResource(id = R.string.new_user))
                 }
                 append(" ")
                 pushStringAnnotation(
@@ -308,6 +312,7 @@ fun LoginScreen(
                 withStyle(
                     style = SpanStyle(
                         color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        textDecoration = TextDecoration.Underline
                     )
                 ) {
                     append(stringResource(id = R.string.sign_up))
@@ -365,7 +370,10 @@ fun LoginScreen(
 
         }
         if (loginState.isDataLoading) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center),
+                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+            )
         }
     }
 }

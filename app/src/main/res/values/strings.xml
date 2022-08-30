@@ -8,7 +8,6 @@
     <string name="dialog_button_cancel">Cancel</string>
     <string name="welcome_to_the_app">Welcome to the App!</string>
     <string name="skip">Skip</string>
-    <string name="or_sign_up_with">Or Sign up With</string>
     <string name="login">Login</string>
     <string name="already_have_an_account">Already have an account? </string>
     <string name="facebook">Facebook</string>
@@ -48,6 +47,7 @@
     <string name="team_logo">Team Logo</string>
     <string name="team_name">Team Name</string>
     <string name="or_sign_in_with">or sign in with</string>
+    <string name="or_sign_up_with">or sign up with</string>
     <string name="baller">Baller</string>
     <string name="what_type_of_user_are_you">What type of user are you?</string>
     <string name="your_team_name">Your team name</string>
@@ -105,7 +105,8 @@
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="sign_up">Signup</string>
-    <string name="dont_have_account">Don\'t have an account?</string>
+    <string name="new_user">New User?</string>
+    <string name="already_registered">Already Registered?</string>
     <string name="enter_otp">Enter OTP</string>
     <string name="welcome_back">Welcome Back!</string>
     <string name="hey_label">Hey name,</string>
@@ -113,6 +114,7 @@
     <string name="opportunities_label">Opportunities to play</string>
     <string name="player_already_added">Player already added</string>
     <string name="something_went_wrong">Something went wrong</string>
+    <string name="signin">SignIn</string>
 
 
 </resources>

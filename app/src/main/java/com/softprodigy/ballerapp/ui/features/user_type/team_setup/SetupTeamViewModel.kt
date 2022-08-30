@@ -32,10 +32,8 @@ class SetupTeamViewModel @Inject constructor(
     private val _teamSetupChannel = Channel<TeamSetupChannel>()
     val teamSetupChannel = _teamSetupChannel.receiveAsFlow()
 
-
     private val _teamSetupUiState = mutableStateOf(TeamSetupUIState())
     val teamSetupUiState: State<TeamSetupUIState> = _teamSetupUiState
-
 
     fun onEvent(event: TeamSetupUIEvent) {
         when (event) {
@@ -269,6 +267,7 @@ class SetupTeamViewModel @Inject constructor(
     }
 
 }
+
 sealed class TeamSetupChannel {
     data class ShowToast(val message: UiText) : TeamSetupChannel()
     object OnTeamSetupNextClick : TeamSetupChannel()

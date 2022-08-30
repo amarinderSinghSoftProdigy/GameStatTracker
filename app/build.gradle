@@ -51,7 +51,7 @@ android {
     productFlavors {
         create("demo") {
             dimension = "ballerapp"
-            buildConfigField("String", "API_SERVER", "\"http://ballerapp-env.eba-8pvskbs2.us-east-2.elasticbeanstalk.com/api/\"")
+            buildConfigField("String", "API_SERVER", "\"https://ballerapi.softprodigy.in/api/\"")
             buildConfigField("String", "SERVER", "\"http://baller-app.softprodigyphp.in\"")
             buildConfigField("String", "IMAGE_SERVER", "\"http://ballerapp.s3.us-east-2.amazonaws.com/\"")
             buildConfigField("Integer", "CONNECT_TIMEOUT", "120")
