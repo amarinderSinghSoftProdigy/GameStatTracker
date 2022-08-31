@@ -139,12 +139,13 @@ fun BallerAppTheme(
 @Composable
 fun BallerAppMainTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
+    customColor: Color = AppConstants.SELECTED_COLOR,
     content: @Composable () -> Unit
 ) {
     val colors = if (darkTheme) {
-        DarkColorPalette.copy(material = LightThemeColors.copy(primaryVariant = AppConstants.SELECTED_COLOR))
+        DarkColorPalette.copy(material = LightThemeColors.copy(primaryVariant = customColor))
     } else {
-        LightColorPalette.copy(material = LightThemeColors.copy(primaryVariant = AppConstants.SELECTED_COLOR))
+        LightColorPalette.copy(material = LightThemeColors.copy(primaryVariant = customColor))
     }
     val sysUiController = rememberSystemUiController()
     SideEffect {

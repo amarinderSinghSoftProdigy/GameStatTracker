@@ -9,9 +9,11 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -28,17 +30,24 @@ import com.softprodigy.ballerapp.ui.features.components.SelectTeamDialog
 import com.softprodigy.ballerapp.ui.features.components.TabBar
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
 import com.softprodigy.ballerapp.ui.theme.appColors
+import com.softprodigy.ballerapp.ui.theme.md_theme_dark_onPrimary
+import com.softprodigy.ballerapp.ui.theme.md_theme_light_error
+import com.softprodigy.ballerapp.ui.theme.ol_field_border_error
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class HomeActivity : ComponentActivity() {
+
 
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, true)
         setContent {
-            BallerAppMainTheme {
+            val homeViewModel: HomeViewModel = hiltViewModel()
+            val state = homeViewModel.state.value
+
+            BallerAppMainTheme(customColor = state.color ?: Color.White) {
                 val navController = rememberNavController()
                 val showDialog = remember { mutableStateOf(false) }
                 val dataStoreManager = DataStoreManager(this)
@@ -73,8 +82,22 @@ class HomeActivity : ComponentActivity() {
                         }
                     },
                     bottomBar = {
-                        BottomNavigationBar(navController = navController) {
+                        BottomNavigationBar(
+                            navController = navController,
+                            selectionColor = state.color ?: Color.Black
+                        ) {
                             userType.value = it
+                            when (it) {
+                                BottomNavKey.HOME -> {
+                                    homeViewModel.setColor(ol_field_border_error)
+                                }
+                                BottomNavKey.TEAMS -> {
+                                    homeViewModel.setColor(md_theme_dark_onPrimary)
+                                }
+                                BottomNavKey.EVENTS -> {
+                                    homeViewModel.setColor(md_theme_light_error)
+                                }
+                            }
                         }
                     },
                 )
