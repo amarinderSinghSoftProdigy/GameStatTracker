@@ -79,29 +79,14 @@ fun ProfileSetUpScreen(
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
-
-    val phoneNumber = remember {
-        mutableStateOf("")
-    }
+    val state = signUpViewModel.signUpUiState.value
 
     val context = LocalContext.current
 
-    val fName = remember {
-        mutableStateOf("")
-    }
-    val lName = remember {
-        mutableStateOf("")
-    }
-
-    val email = remember {
-        mutableStateOf("")
-    }
-
     if (signUpData?.email?.isNotEmpty() == true) {
-        email.value = signUpData.email!!
+        state.email = signUpData.email!!
     }
 
-    val state = signUpViewModel.signUpUiState.value
     val verified = signUpViewModel.verified.value
 
     LaunchedEffect(key1 = Unit) {
@@ -145,7 +130,7 @@ fun ProfileSetUpScreen(
                         modalBottomSheetState.hide()
                     }
                 },
-                phoneNumber = phoneNumber.value
+                phoneNumber = state.phoneNumber
             )
         },
         sheetState = modalBottomSheetState,
@@ -168,6 +153,7 @@ fun ProfileSetUpScreen(
                 rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
                     signUpViewModel.onEvent(SignUpUIEvent.OnImageSelected(uri.toString()))
                 }
+
             Column(
                 Modifier
                     .fillMaxWidth()
@@ -234,40 +220,58 @@ fun ProfileSetUpScreen(
                         Divider(thickness = dimensionResource(id = R.dimen.divider))
 
                         EditFields(
-                            fName,
+                            state.firstName,
+                            onValueChange = {
+                                signUpViewModel.onEvent(
+                                    SignUpUIEvent.OnFirstNameChanged(
+                                        it
+                                    )
+                                )
+                            },
                             stringResource(id = R.string.first_name),
-                            isError = !validName(fName.value) && fName.value.isNotEmpty(),
+                            isError = !validName(state.firstName) && state.firstName.isNotEmpty(),
                             errorMessage = stringResource(id = R.string.valid_first_name)
                         )
 
                         Divider(thickness = dimensionResource(id = R.dimen.divider))
 
                         EditFields(
-                            lName,
+                            state.lastName,
+                            onValueChange = {
+                                signUpViewModel.onEvent(SignUpUIEvent.OnLastNameChanged(it))
+                            },
                             stringResource(id = R.string.last_name),
-                            isError = !validName(lName.value) && lName.value.isNotEmpty(),
+                            isError = !validName(state.lastName) && state.lastName.isNotEmpty(),
                             errorMessage = stringResource(id = R.string.valid_last_name)
                         )
                         Divider(thickness = dimensionResource(id = R.dimen.divider))
 
                         EditFields(
-                            email,
+                            state.email,
+                            onValueChange = {
+                                signUpViewModel.onEvent(SignUpUIEvent.OnEmailChanged(it))
+
+                            },
                             stringResource(id = R.string.email),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                            isError = (!email.value.isValidEmail() && email.value.isNotEmpty()),
+                            isError = (!state.email.isValidEmail() && state.email.isNotEmpty()),
                             errorMessage = stringResource(id = R.string.email_error)
                         )
                         Divider(thickness = dimensionResource(id = R.dimen.divider))
 
                         EditFields(
-                            phoneNumber,
+                            state.phoneNumber,
+                            onValueChange = {
+                                signUpViewModel.onEvent(SignUpUIEvent.OnPhoneNumberChanged(it))
+                            },
                             stringResource(id = R.string.phone_num),
                             KeyboardOptions(keyboardType = KeyboardType.Number),
-                            isError = (!validPhoneNumber(phoneNumber.value) && phoneNumber.value.isNotEmpty()),
-                            errorMessage = stringResource(id = R.string.valid_phone_number)
+                            isError = (!validPhoneNumber(state.phoneNumber) && state.phoneNumber.isNotEmpty()),
+                            errorMessage = stringResource(id = R.string.valid_phone_number),
+                            enabled = !verified
                         )
 
-                        if (validPhoneNumber(phoneNumber.value) && !verified) {
+                        if (validPhoneNumber(state.phoneNumber) && !verified) {
 
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
@@ -282,9 +286,7 @@ fun ProfileSetUpScreen(
                                         .clickable {
                                             scope.launch {
                                                 signUpViewModel.onEvent(
-                                                    SignUpUIEvent.OnVerifyNumber(
-                                                        "+" + phoneNumber.value
-                                                    )
+                                                    SignUpUIEvent.OnVerifyNumber
                                                 )
                                             }
                                         },
@@ -297,7 +299,7 @@ fun ProfileSetUpScreen(
                             AppText(
                                 text = stringResource(id = R.string.verified),
                                 style = MaterialTheme.typography.h6,
-                                color = MaterialTheme.colors.error,
+                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(end = dimensionResource(id = R.dimen.size_20dp)),
@@ -314,11 +316,6 @@ fun ProfileSetUpScreen(
                     onNextClick = {
 
                         val signUpDataRequest = SignUpData(
-                            email = email.value,
-                            firstName = fName.value,
-                            lastName = lName.value,
-                            phone = "+${phoneNumber.value}",
-                            profileImage = "",
                             phoneVerified = verified,
                             gender = signUpData?.gender,
                             birthdate = signUpData?.birthdate,
@@ -327,15 +324,14 @@ fun ProfileSetUpScreen(
                             repeatPassword = signUpData?.repeatPassword,
                             address = signUpData?.address
                         )
-
                         signUpViewModel.onEvent(SignUpUIEvent.OnSignUpDataSelected(signUpDataRequest))
                         signUpViewModel.onEvent(SignUpUIEvent.OnScreenNext)
                     },
 
-                    enableState = validName(fName.value)
-                            && validName(lName.value)
-                            && validPhoneNumber(phoneNumber.value)
-                            && email.value.isValidEmail() && state.profileImageUri != null && verified,
+                    enableState = validName(state.firstName)
+                            && validName(state.lastName)
+                            && validPhoneNumber(state.phoneNumber)
+                            && state.email.isValidEmail() && state.profileImageUri != null && verified,
                     firstText = stringResource(id = R.string.back),
                     secondText = stringResource(id = R.string.next)
                 )

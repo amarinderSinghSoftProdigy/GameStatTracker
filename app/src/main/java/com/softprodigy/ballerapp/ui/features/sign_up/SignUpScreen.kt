@@ -22,6 +22,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -155,7 +156,9 @@ fun SignUpScreen(onLoginScreen: () -> Unit, onSignUpSuccess: (SignUpData) -> Uni
                 text = stringResource(id = R.string.email),
                 style = MaterialTheme.typography.h6,
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = dimensionResource(id = R.dimen.size_3dp)),
                 textAlign = TextAlign.Start
             )
 
@@ -171,7 +174,8 @@ fun SignUpScreen(onLoginScreen: () -> Unit, onSignUpSuccess: (SignUpData) -> Uni
                 placeholder = {
                     Text(
                         text = stringResource(id = R.string.enter_your_email),
-                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
+                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                        textAlign = TextAlign.Center
                     )
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
@@ -192,7 +196,9 @@ fun SignUpScreen(onLoginScreen: () -> Unit, onSignUpSuccess: (SignUpData) -> Uni
                 text = stringResource(id = R.string.address),
                 style = MaterialTheme.typography.h6,
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = dimensionResource(id = R.dimen.size_3dp)),
                 textAlign = TextAlign.Start
             )
 
@@ -201,15 +207,15 @@ fun SignUpScreen(onLoginScreen: () -> Unit, onSignUpSuccess: (SignUpData) -> Uni
             AppOutlineTextField(
                 value = address,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(dimensionResource(id = R.dimen.size_100dp)),
+                    .fillMaxWidth(),
                 onValueChange = {
                     address = it
                 },
                 placeholder = {
                     Text(
                         text = stringResource(id = R.string.your_address),
-                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
+                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                        textAlign = TextAlign.Center
                     )
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
@@ -222,23 +228,25 @@ fun SignUpScreen(onLoginScreen: () -> Unit, onSignUpSuccess: (SignUpData) -> Uni
                     placeholderColor = MaterialTheme.appColors.textField.label,
                     cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
                 ),
-                singleLine = false,
-                maxLines = 5,
                 isError = (address.isNotEmpty() && address.length <= 4),
             )
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+
             AppText(
                 text = stringResource(id = R.string.gender),
                 style = MaterialTheme.typography.h6,
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = dimensionResource(id = R.dimen.size_3dp)),
+
                 textAlign = TextAlign.Start
             )
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
-            Column {
+            Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center) {
                 AppOutlineTextField(
                     value = gender,
                     modifier = Modifier
@@ -252,7 +260,8 @@ fun SignUpScreen(onLoginScreen: () -> Unit, onSignUpSuccess: (SignUpData) -> Uni
                     placeholder = {
                         Text(
                             text = stringResource(id = R.string.select_gender),
-                            fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
+                            fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                            textAlign = TextAlign.Center
                         )
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
@@ -264,7 +273,6 @@ fun SignUpScreen(onLoginScreen: () -> Unit, onSignUpSuccess: (SignUpData) -> Uni
                         placeholderColor = MaterialTheme.appColors.textField.label,
                         cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
                     ),
-                    singleLine = false,
                     trailingIcon = {
                         Icon(
                             icon,
@@ -284,7 +292,7 @@ fun SignUpScreen(onLoginScreen: () -> Unit, onSignUpSuccess: (SignUpData) -> Uni
                             gender = label
                             expanded = false
                         }) {
-                            Text(text = label)
+                            Text(text = label, textAlign = TextAlign.Center)
                         }
                     }
                 }
@@ -297,7 +305,9 @@ fun SignUpScreen(onLoginScreen: () -> Unit, onSignUpSuccess: (SignUpData) -> Uni
                 text = stringResource(id = R.string.birthdate),
                 style = MaterialTheme.typography.h6,
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = dimensionResource(id = R.dimen.size_3dp)),
                 textAlign = TextAlign.Start
             )
 
@@ -314,7 +324,9 @@ fun SignUpScreen(onLoginScreen: () -> Unit, onSignUpSuccess: (SignUpData) -> Uni
                 text = stringResource(id = R.string.password),
                 style = MaterialTheme.typography.h6,
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = dimensionResource(id = R.dimen.size_3dp)),
                 textAlign = TextAlign.Start
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
@@ -365,7 +377,10 @@ fun SignUpScreen(onLoginScreen: () -> Unit, onSignUpSuccess: (SignUpData) -> Uni
                 text = stringResource(id = R.string.confirm_password),
                 style = MaterialTheme.typography.h6,
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = dimensionResource(id = R.dimen.size_3dp)),
+
                 textAlign = TextAlign.Start
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
@@ -434,8 +449,7 @@ fun SignUpScreen(onLoginScreen: () -> Unit, onSignUpSuccess: (SignUpData) -> Uni
                 text = stringResource(id = R.string.sign_up),
                 icon = painterResource(id = R.drawable.ic_circle_next)
             )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_30dp)))
-
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
 
             val annotatedText = buildAnnotatedString {
 

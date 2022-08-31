@@ -16,11 +16,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldColors
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
@@ -147,24 +153,20 @@ fun AppOutlineDateField(
                     style = androidx.compose.material.LocalTextStyle.current
                 )
             }
-
-            Image(
-                painter = painterResource(id = R.drawable.ic_baseline_calendar_month_24),
-                contentDescription = null,
-                modifier = Modifier.size(24.dp)
-            )
         }
     }
 }
 
 @Composable
 fun EditFields(
-    data: MutableState<String>,
+    data: String,
+    onValueChange: (String) -> Unit,
     head: String,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     isError: Boolean = false,
     errorMessage: String = "",
+    enabled: Boolean = true,
 ) {
 
     Column(
@@ -186,9 +188,7 @@ fun EditFields(
                 modifier = Modifier.padding(start = 16.dp)
             )
             TextField(
-                value = data.value, onValueChange = {
-                    data.value = it
-                },
+                value = data, onValueChange = onValueChange,
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     backgroundColor = Color.Transparent,
                     focusedBorderColor = Color.Transparent,
@@ -198,7 +198,8 @@ fun EditFields(
                 textStyle = TextStyle(textAlign = TextAlign.End),
                 singleLine = true,
                 keyboardActions = keyboardActions,
-                keyboardOptions = keyboardOptions
+                keyboardOptions = keyboardOptions,
+                enabled = enabled
             )
         }
 

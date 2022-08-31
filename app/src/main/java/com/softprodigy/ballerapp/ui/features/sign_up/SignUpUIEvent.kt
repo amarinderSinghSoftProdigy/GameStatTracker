@@ -8,6 +8,10 @@ sealed class SignUpUIEvent {
     object OnImageUploadSuccess : SignUpUIEvent()
     object OnScreenNext : SignUpUIEvent()
     data class OnSignUpDataSelected(val signUpData: SignUpData) : SignUpUIEvent()
-    data class OnVerifyNumber(val phoneNumber: String) : SignUpUIEvent()
+    object OnVerifyNumber : SignUpUIEvent()
     data class OnConfirmNumber(val phoneNumber: String, val otp: String) : SignUpUIEvent()
+    data class OnFirstNameChanged(val firstName: String) : SignUpUIEvent()
+    data class OnLastNameChanged(val lastName: String) : SignUpUIEvent()
+    data class OnEmailChanged(val email: String) : SignUpUIEvent()
+    data class OnPhoneNumberChanged(val phoneNumber: String) : SignUpUIEvent()
 }
