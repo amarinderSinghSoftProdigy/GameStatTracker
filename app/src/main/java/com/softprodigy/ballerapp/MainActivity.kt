@@ -15,7 +15,12 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
@@ -29,7 +34,6 @@ import com.facebook.CallbackManager
 import com.google.gson.Gson
 import com.softprodigy.ballerapp.common.Route.ADD_PLAYER_SCREEN
 import com.softprodigy.ballerapp.common.Route.FORGOT_PASSWORD_SCREEN
-import com.softprodigy.ballerapp.common.Route.HOME_SCREEN
 import com.softprodigy.ballerapp.common.Route.LOGIN_SCREEN
 import com.softprodigy.ballerapp.common.Route.PROFILE_SETUP_SCREEN
 import com.softprodigy.ballerapp.common.Route.SELECT_USER_TYPE
@@ -39,14 +43,15 @@ import com.softprodigy.ballerapp.common.Route.TEAM_SETUP_SCREEN
 import com.softprodigy.ballerapp.common.Route.WELCOME_SCREEN
 import com.softprodigy.ballerapp.data.SocialUserModel
 import com.softprodigy.ballerapp.data.UserStorage
+import com.softprodigy.ballerapp.data.datastore.DataStoreManager
+import com.softprodigy.ballerapp.data.request.SignUpData
+import com.softprodigy.ballerapp.data.request.SignUpType
 import com.softprodigy.ballerapp.twitter_login.TwitterConstants
+import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordScreen
 import com.softprodigy.ballerapp.ui.features.home.HomeActivity
 import com.softprodigy.ballerapp.ui.features.login.LoginScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.ProfileSetUpScreen
-import com.softprodigy.ballerapp.data.request.SignUpData
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
-import com.softprodigy.ballerapp.data.request.SignUpType
-import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordScreen
 import com.softprodigy.ballerapp.ui.features.splash.SplashScreen
 import com.softprodigy.ballerapp.ui.features.user_type.TeamSetupScreen
 import com.softprodigy.ballerapp.ui.features.user_type.UserTypeScreen
@@ -96,7 +101,7 @@ class MainActivity : ComponentActivity() {
                     CompositionLocalProvider(
                         LocalFacebookCallbackManager provides callbackManager
                     ) {
-                        NavControllerComposable(this, twitterUser.value)
+                        NavControllerComposable(this)
                     }
                 }
             }
@@ -127,7 +132,7 @@ class MainActivity : ComponentActivity() {
     // Show twitter login page in a dialog
     @SuppressLint("SetJavaScriptEnabled")
     fun setupTwitterWebviewDialog(url: String) {
-        twitterDialog = Dialog(this,android.R.style.Theme)
+        twitterDialog = Dialog(this, android.R.style.Theme)
         val webView = WebView(this)
         webView.isVerticalScrollBarEnabled = false
         webView.isHorizontalScrollBarEnabled = false
@@ -151,7 +156,6 @@ class MainActivity : ComponentActivity() {
             ) {
                 Log.d("Authorization URL: ", request?.url.toString())
                 handleUrl(request?.url.toString())
-
                 // Close the dialog after getting the oauth_verifier
                 if (request?.url.toString()
                         .contains(TwitterConstants.CALLBACK_URL, ignoreCase = true)
@@ -195,50 +199,24 @@ class MainActivity : ComponentActivity() {
 
         private suspend fun getUserProfile() {
             val usr = withContext(Dispatchers.IO) { twitter.verifyCredentials() }
-
-            //Twitter Id
             val twitterId = usr.id.toString()
             Timber.d("Twitter Id: ", twitterId)
             id = twitterId
-
-            //Twitter Handle
             val twitterHandle = usr.screenName
             Timber.d("Twitter Handle: ", twitterHandle)
             handle = twitterHandle
-
-            //Twitter Name
             val twitterName = usr.name
             Timber.d("Twitter Name: ", twitterName)
             name = twitterName
-
-            //Twitter Email
             val twitterEmail = usr.email
-            Timber.d(
-                "Twitter Email: ",
-                twitterEmail
-                    ?: "'Request email address from users' on the Twitter dashboard is disabled"
-            )
             email = twitterEmail
                 ?: "'Request email address from users' on the Twitter dashboard is disabled"
-
-            // Twitter Profile Pic URL
             val twitterProfilePic = usr.profileImageURLHttps.replace("_normal", "")
             Timber.d("Twitter Profile URL: ", twitterProfilePic)
             profilePicURL = twitterProfilePic
-
-
-            // Twitter Access Token
             Timber.d("Twitter Access Token", accToken?.token ?: "")
             accessToken = accToken?.token ?: ""
-
-
-            // Save the Access Token (accToken.token) and Access Token Secret (accToken.tokenSecret) using SharedPreferences
-            // This will allow us to check user's logging state every time they open the app after cold start.
-//        val sharedPref = this.getPreferences(Context.MODE_PRIVATE)
-//        sharedPref.edit().putString("oauth_token", accToken?.token ?: "").apply()
-//        sharedPref.edit().putString("oauth_token_secret", accToken?.tokenSecret ?: "").apply()
-
-            val socialUserModel = SocialUserModel(id = twitterId, email = twitterEmail)
+            val socialUserModel = SocialUserModel(name=name,id = twitterId, email = twitterEmail)
             twitterUser.value = socialUserModel
         }
 
@@ -246,16 +224,22 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun NavControllerComposable(activity: MainActivity, twitterUser: SocialUserModel) {
+fun NavControllerComposable(activity: MainActivity) {
     val navController = rememberNavController()
     val setupTeamViewModel: SetupTeamViewModel = viewModel()
     val context = LocalContext.current
+    val dataStoreManager = DataStoreManager(activity)
+    val userToken = dataStoreManager.userToken.collectAsState(initial = "")
     NavHost(navController, startDestination = SPLASH_SCREEN) {
 
         composable(route = SPLASH_SCREEN) {
             SplashScreen {
-                navController.popBackStack()
-                navController.navigate(WELCOME_SCREEN)
+                if (userToken.value.isNotEmpty()) {
+                    moveToHome(activity)
+                } else {
+                    navController.popBackStack()
+                    navController.navigate(WELCOME_SCREEN)
+                }
             }
         }
 
@@ -275,22 +259,18 @@ fun NavControllerComposable(activity: MainActivity, twitterUser: SocialUserModel
             }
         }
         composable(route = LOGIN_SCREEN) {
-            val context = LocalContext.current
             val scope = rememberCoroutineScope()
-
             LoginScreen(
                 onLoginSuccess = {
                     UserStorage.token = it?.token.toString()
                     /*navController.navigate(SELECT_USER_TYPE){
                         navController.popBackStack()
                     }*/
-                    val intent = Intent(activity, HomeActivity::class.java)
-                    activity.startActivity(intent)
-                    activity.finish()
+                    moveToHome(activity)
                 },
                 onRegister = {
                     navController.navigate(SIGN_UP_SCREEN)
-                             },
+                },
                 onForgetPasswordClick = {
                     navController.navigate(FORGOT_PASSWORD_SCREEN)
                 },
@@ -300,13 +280,11 @@ fun NavControllerComposable(activity: MainActivity, twitterUser: SocialUserModel
                     }
 
                 },
-                twitterUser =
-                twitterUser
+                twitterUser = activity.twitterUser.value
             )
         }
 
         composable(route = FORGOT_PASSWORD_SCREEN) {
-
             ForgotPasswordScreen(onNextClick = {
                 navController.navigate(LOGIN_SCREEN) {
                     navController.popBackStack()
@@ -321,7 +299,6 @@ fun NavControllerComposable(activity: MainActivity, twitterUser: SocialUserModel
             arguments = listOf(navArgument("signUp") { type = SignUpType() })
         ) {
             val signUpData = it.arguments?.getParcelable<SignUpData>("signUp")
-
             ProfileSetUpScreen(
                 signUpData,
                 onNext = {
@@ -364,11 +341,16 @@ fun NavControllerComposable(activity: MainActivity, twitterUser: SocialUserModel
                 vm = setupTeamViewModel,
                 onBackClick = { navController.popBackStack() },
                 onNextClick = {
-                    val intent = Intent(activity, HomeActivity::class.java)
-                    activity.startActivity(intent)
-                    activity.finish()
+                    moveToHome(activity)
                 })
         }
     }
 
+}
+
+
+fun moveToHome(activity: MainActivity){
+    val intent = Intent(activity, HomeActivity::class.java)
+    activity.startActivity(intent)
+    activity.finish()
 }

@@ -20,7 +20,6 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.Route.EVENTS_SCREEN
 import com.softprodigy.ballerapp.common.Route.HOME_SCREEN
 import com.softprodigy.ballerapp.common.Route.TEAMS_SCREEN
-import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
 import com.softprodigy.ballerapp.ui.features.components.BottomNavigationBar
 import com.softprodigy.ballerapp.ui.features.components.CommonTabView
@@ -41,7 +40,6 @@ class HomeActivity : ComponentActivity() {
             BallerAppMainTheme {
                 val navController = rememberNavController()
                 val showDialog = remember { mutableStateOf(false) }
-                val dataStoreManager = DataStoreManager(this)
                 val userType = remember { mutableStateOf(BottomNavKey.HOME) }
 
                 Scaffold(

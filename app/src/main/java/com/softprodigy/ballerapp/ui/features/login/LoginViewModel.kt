@@ -9,6 +9,7 @@ import com.baller_app.core.util.UiText
 import com.softprodigy.ballerapp.common.ApiConstants
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.ResultWrapper.GenericError
+import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.LoginRequest
 import com.softprodigy.ballerapp.data.response.UserInfo
 import com.softprodigy.ballerapp.domain.repository.IUserRepository
@@ -21,6 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val IUserRepository: IUserRepository,
+    private val dataStore: DataStoreManager,
     application: Application
 ) :
     AndroidViewModel(application) {
@@ -82,24 +84,43 @@ class LoginViewModel @Inject constructor(
                 is ResultWrapper.Success -> {
                     loginResponse.value.let { response ->
                         if (response.status) {
-                            _loginUiState.value =_loginUiState.value.copy(user = response.data, isDataLoading = false)
+                            setToken(response.data.token)
+                            _loginUiState.value = _loginUiState.value.copy(
+                                user = response.data,
+                                isDataLoading = false
+                            )
                             _loginChannel.send(LoginChannel.OnLoginSuccess(response.data))
                         } else {
-                            _loginUiState.value =_loginUiState.value.copy(errorMessage = response.statusMessage, isDataLoading = false)
+                            _loginUiState.value = _loginUiState.value.copy(
+                                errorMessage = response.statusMessage,
+                                isDataLoading = false
+                            )
 
                         }
-                }
+                    }
                 }
                 is GenericError -> {
-                    _loginUiState.value =_loginUiState.value.copy(errorMessage ="${loginResponse.code} ${loginResponse.message}", isDataLoading = false )
+                    _loginUiState.value = _loginUiState.value.copy(
+                        errorMessage = "${loginResponse.code} ${loginResponse.message}",
+                        isDataLoading = false
+                    )
                     _loginChannel.send(LoginChannel.ShowToast(UiText.DynamicString("${loginResponse.code} ${loginResponse.message}")))
                 }
                 is ResultWrapper.NetworkError -> {
-                    _loginUiState.value = _loginUiState.value.copy(errorMessage = loginResponse.message, isDataLoading = false)
+                    _loginUiState.value = _loginUiState.value.copy(
+                        errorMessage = loginResponse.message,
+                        isDataLoading = false
+                    )
                     _loginChannel.send(LoginChannel.ShowToast(UiText.DynamicString(loginResponse.message)))
                 }
 
             }
+        }
+    }
+
+    private fun setToken(string: String) {
+        viewModelScope.launch {
+            dataStore.saveToken(string)
         }
     }
 }
