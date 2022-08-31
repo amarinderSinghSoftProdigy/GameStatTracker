@@ -21,9 +21,8 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name="com.softprodigy.ballerapp.MainActivity"/>
-       <!--     android:exported="true"
-            android:label="@string/app_name"
+            android:name="com.softprodigy.ballerapp.MainActivity"
+            android:exported="true"
             android:theme="@style/Theme.BallerApp"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -31,7 +30,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>-->
+        </activity>
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -44,17 +43,7 @@
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
-<!--        <activity
-            android:name=".ui.features.home.HomeActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:exported="true"
-            android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>  -->
         <activity
             android:name=".ui.features.home.HomeActivity"
             android:exported="true"
@@ -64,7 +53,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
@@ -77,20 +66,6 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-<!--        <activity android:name=".twitter_login.TwitterDemoActivity"
-                android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.AppCompat.DayNight"
-            android:windowSoftInputMode="adjustResize">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
-        </activity>
-        <activity android:name=".twitter_login.DetailsActivity"
-            android:theme="@style/Theme.AppCompat.DayNight"/>-->
     </application>
 
 </manifest>

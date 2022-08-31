@@ -1,11 +1,9 @@
 package com.softprodigy.ballerapp
 
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.app.Dialog
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.webkit.WebResourceRequest
@@ -21,8 +19,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -35,8 +33,8 @@ import com.softprodigy.ballerapp.common.Route.SIGN_UP_SCREEN
 import com.softprodigy.ballerapp.common.Route.SPLASH_SCREEN
 import com.softprodigy.ballerapp.common.Route.TEAM_SETUP_SCREEN
 import com.softprodigy.ballerapp.common.Route.WELCOME_SCREEN
-import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.SocialUserModel
+import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.twitter_login.TwitterConstants
 import com.softprodigy.ballerapp.ui.features.home.HomeActivity
 import com.softprodigy.ballerapp.ui.features.login.LoginScreen
@@ -98,7 +96,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun getRequestToken() {
+    fun getRequestToken() {
         lifecycleScope.launch(Dispatchers.Default) {
             val builder = ConfigurationBuilder()
                 .setDebugEnabled(true)
@@ -137,7 +135,6 @@ class MainActivity : ComponentActivity() {
     // For API 21 and above
     @Suppress("OverridingDeprecatedMember")
     inner class TwitterWebViewClient : WebViewClient() {
-        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         override fun shouldOverrideUrlLoading(
             view: WebView?,
             request: WebResourceRequest?
@@ -160,9 +157,10 @@ class MainActivity : ComponentActivity() {
         }
 
         // For API 19 and below
+        @Deprecated("Deprecated in Java")
         override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
             if (url.startsWith(TwitterConstants.CALLBACK_URL, ignoreCase = true)) {
-                Log.d("Authorization URL: ", url)
+                Timber.d("Authorization URL: ", url)
                 lifecycleScope.launch(Dispatchers.Main) {
                     handleUrl(url)
                 }
@@ -193,22 +191,22 @@ class MainActivity : ComponentActivity() {
 
             //Twitter Id
             val twitterId = usr.id.toString()
-            Log.d("Twitter Id: ", twitterId)
+            Timber.d("Twitter Id: ", twitterId)
             id = twitterId
 
             //Twitter Handle
             val twitterHandle = usr.screenName
-            Log.d("Twitter Handle: ", twitterHandle)
+            Timber.d("Twitter Handle: ", twitterHandle)
             handle = twitterHandle
 
             //Twitter Name
             val twitterName = usr.name
-            Log.d("Twitter Name: ", twitterName)
+            Timber.d("Twitter Name: ", twitterName)
             name = twitterName
 
             //Twitter Email
             val twitterEmail = usr.email
-            Log.d(
+            Timber.d(
                 "Twitter Email: ",
                 twitterEmail
                     ?: "'Request email address from users' on the Twitter dashboard is disabled"
@@ -218,12 +216,12 @@ class MainActivity : ComponentActivity() {
 
             // Twitter Profile Pic URL
             val twitterProfilePic = usr.profileImageURLHttps.replace("_normal", "")
-            Log.d("Twitter Profile URL: ", twitterProfilePic)
+            Timber.d("Twitter Profile URL: ", twitterProfilePic)
             profilePicURL = twitterProfilePic
 
 
             // Twitter Access Token
-            Log.d("Twitter Access Token", accToken?.token ?: "")
+            Timber.d("Twitter Access Token", accToken?.token ?: "")
             accessToken = accToken?.token ?: ""
 
 
@@ -233,20 +231,19 @@ class MainActivity : ComponentActivity() {
 //        sharedPref.edit().putString("oauth_token", accToken?.token ?: "").apply()
 //        sharedPref.edit().putString("oauth_token_secret", accToken?.tokenSecret ?: "").apply()
 
-//        openDetailsActivity()
             val socialUserModel = SocialUserModel(id = twitterId, email = twitterEmail)
-//        twitterUser.onTwitterUserFetch(socialUserModel)
             twitterUser.value = socialUserModel
         }
 
     }
+}
 
 @Composable
-fun NavControllerComposable(activity: MainActivity) {
+fun NavControllerComposable(activity: MainActivity, twitterUser: SocialUserModel) {
     val navController = rememberNavController()
     val setupTeamViewModel: SetupTeamViewModel = viewModel()
     val context = LocalContext.current
-    NavHost(navController, startDestination = TEAM_SETUP_SCREEN) {
+    NavHost(navController, startDestination = SPLASH_SCREEN) {
 
         composable(route = SPLASH_SCREEN) {
             SplashScreen {
