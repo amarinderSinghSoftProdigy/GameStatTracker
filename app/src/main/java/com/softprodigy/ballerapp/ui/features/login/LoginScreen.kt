@@ -1,5 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.login
 
+import android.content.res.Resources
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultRegistryOwner
@@ -192,7 +193,9 @@ fun LoginScreen(
                 text = stringResource(id = R.string.email),
                 style = MaterialTheme.typography.h6,
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = dimensionResource(id = R.dimen.size_3dp)),
                 textAlign = TextAlign.Start
             )
 
@@ -211,7 +214,8 @@ fun LoginScreen(
                         fontSize = dimensionResource(
                             id =
                             R.dimen.txt_size_12
-                        ).value.sp
+                        ).value.sp,
+                        textAlign = TextAlign.Center
                     )
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
@@ -232,7 +236,9 @@ fun LoginScreen(
                 text = stringResource(id = R.string.password),
                 style = MaterialTheme.typography.h6,
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = dimensionResource(id = R.dimen.size_3dp)),
                 textAlign = TextAlign.Start
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
@@ -247,7 +253,8 @@ fun LoginScreen(
                 placeholder = {
                     Text(
                         text = stringResource(id = R.string.your_password),
-                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
+                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                        textAlign = TextAlign.Center
                     )
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),

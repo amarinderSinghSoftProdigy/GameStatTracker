@@ -66,8 +66,8 @@ fun ForgotPasswordScreen(
                         .show()
                 }
                 is ForgotPasswordChannel.OnSuccess -> {
-//                    Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
-//                        .show()
+                    Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
+                        .show()
                     onNextClick()
                 }
             }
@@ -101,7 +101,9 @@ fun ForgotPasswordScreen(
                 text = stringResource(id = R.string.email),
                 style = MaterialTheme.typography.h6,
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = dimensionResource(id = R.dimen.size_3dp)),
                 textAlign = TextAlign.Start
             )
 
@@ -120,7 +122,9 @@ fun ForgotPasswordScreen(
                         fontSize = dimensionResource(
                             id =
                             R.dimen.txt_size_12
-                        ).value.sp
+                        ).value.sp,
+                        textAlign = TextAlign.Center
+
                     )
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
