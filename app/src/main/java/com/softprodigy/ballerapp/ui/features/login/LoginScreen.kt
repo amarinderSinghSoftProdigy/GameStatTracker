@@ -16,7 +16,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.Icon
@@ -40,10 +44,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.facebook.FacebookCallback
@@ -127,9 +135,12 @@ fun LoginScreen(
                         token = gsa.idToken
                     )
                     vm.onEvent(LoginUIEvent.OnGoogleClick(googleUser))
-                }
-                else{
-                    Toast.makeText(context, context.resources.getString(R.string.something_went_wrong), Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(
+                        context,
+                        context.resources.getString(R.string.something_went_wrong),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
             } catch (e: ApiException) {
@@ -281,6 +292,52 @@ fun LoginScreen(
                 text = stringResource(id = R.string.login),
                 icon = painterResource(id = R.drawable.ic_circle_next)
             )
+
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+
+            val annotatedText = buildAnnotatedString {
+
+                withStyle(
+                    style = SpanStyle(
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    )
+                ) {
+                    append(stringResource(id = R.string.new_user))
+                }
+                append(" ")
+                pushStringAnnotation(
+                    tag = stringResource(id = R.string.sign_up),
+                    annotation = stringResource(id = R.string.sign_up)
+                )
+                withStyle(
+                    style = SpanStyle(
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        textDecoration = TextDecoration.Underline
+                    )
+                ) {
+                    append(stringResource(id = R.string.sign_up))
+                }
+
+                pop()
+
+            }
+
+            ClickableText(
+                text = annotatedText,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally),
+                onClick = {
+                    annotatedText.getStringAnnotations(
+                        tag = "Signup",
+                        start = it,
+                        end = it
+                    ).forEach { _ ->
+                        onRegister()
+                    }
+                },
+                style = MaterialTheme.typography.h4
+            )
+
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_32dp)))
 
             AppText(
@@ -290,16 +347,6 @@ fun LoginScreen(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .clickable(onClick = onForgetPasswordClick)
-            )
-
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_30dp)))
-            AppText(
-                text = stringResource(id = com.baller_app.core.R.string.scr_sign_up),
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                style = MaterialTheme.typography.h3,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .clickable(onClick = onRegister)
             )
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_60dp)))
@@ -319,11 +366,14 @@ fun LoginScreen(
                 }) {
             }
 
-//            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))
 
         }
         if (loginState.isDataLoading) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center),
+                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+            )
         }
     }
 }

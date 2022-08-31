@@ -15,6 +15,7 @@ plugins {
     id 'com.android.application' version '7.1.3' apply false
     id 'com.android.library' version '7.1.3' apply false
     id 'org.jetbrains.kotlin.android' version '1.5.31' apply false
+    id "org.jetbrains.kotlin.plugin.parcelize" version "1.5.30-M1" apply false
 //    id 'com.google.dagger:hilt-android-gradle-plugin' version '2.38.1' apply false
 }
 

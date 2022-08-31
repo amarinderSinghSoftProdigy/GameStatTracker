@@ -2,8 +2,13 @@ package com.softprodigy.ballerapp.network
 
 import com.softprodigy.ballerapp.common.ApiConstants
 import com.softprodigy.ballerapp.data.request.CreateTeamRequest
+import com.softprodigy.ballerapp.data.request.ConfirmPhoneRequest
+import com.softprodigy.ballerapp.data.request.ForgotPasswordRequest
 import com.softprodigy.ballerapp.data.request.LoginRequest
 import com.softprodigy.ballerapp.data.response.*
+import com.softprodigy.ballerapp.data.request.SignUpData
+import com.softprodigy.ballerapp.data.response.UserInfo
+import com.softprodigy.ballerapp.data.request.VerifyPhoneRequest
 import com.softprodigy.ballerapp.domain.BaseResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -32,15 +37,25 @@ interface APIService {
     suspend fun createTeam(@Body request: CreateTeamRequest): BaseResponse<CreateTeamResponse>
 
     @GET(ApiConstants.GET_TEAMS)
-    suspend fun getTeams(
-        @Query("page") page: Int,
-        @Query("limit") limit: Int,
-        @Query("sort") sort: String
-    ): BaseResponse<ArrayList<Team>>
+    suspend fun getTeams(   @Query("page") page: Int,
+                            @Query("limit") limit: Int,
+                            @Query("sort") sort: String):BaseResponse<ArrayList<Team>>
 
     @GET("${ApiConstants.GET_TEAMS}/{id}")
     suspend fun getTeamsByTeamId(
         @Path("id") id: String
     ): BaseResponse<Team>
+
+    @POST(ApiConstants.VERIFY_PHONE)
+    suspend fun verifyPhone(@Body verifyPhoneRequest: VerifyPhoneRequest): BaseResponse<Any>
+
+    @POST(ApiConstants.CONFIRM_PHONE)
+    suspend fun confirmPhone(@Body confirmPhoneRequest: ConfirmPhoneRequest): BaseResponse<Any>
+
+    @POST(ApiConstants.SIGNUP)
+    suspend fun signUp(@Body signUpData: SignUpData): BaseResponse<Any>
+
+    @POST(ApiConstants.FORGOT_PASSWORD)
+    suspend fun forgotPassword(@Body forgotPasswordRequest: ForgotPasswordRequest): BaseResponse<Any>
 
 }

@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 
 object AppConstants {
     const val TEAM_LOGO: String = "teamLogo"
+    const val PROFILE_IMAGE: String = "profileImage"
     const val PICKER_DEFAULT_COLOR = "FFFFFFFF"
     const val ANDROID = "android"
     const val GOOGLE = "google"
@@ -17,8 +18,8 @@ object AppConstants {
     const val USER_TYPE_GAME_STAFF = "Game Staff"
     const val USER_TYPE_PROGRAM_STAFF = "Program Staff"
     const val USER_TYPE_FAN = "Fan"
-    const val PUBLIC_PROFILE="public_profile"
-    const val EMAIL="email"
+    const val PUBLIC_PROFILE = "public_profile"
+    const val EMAIL = "email"
     var SELECTED_COLOR: Color = Color(0xFF0177C1)
 }
 
@@ -48,9 +49,11 @@ object ApiConstants {
     const val GET_TEAMS = "v1/team"
 
 
-    const val SIGNUP = "/register"
-    const val FORGOT_PASSWORD = "/forgot/password"
-    const val VERIFY_OTP = "/verifyOtp/"
+    const val SOCIAL_LOGIN = "/social_login"
+    const val SIGNUP = "v1/auth/register"
+    const val FORGOT_PASSWORD = "v1/auth/forgotPassword"
+    const val VERIFY_PHONE = "v1/auth/verifyPhone"
+    const val CONFIRM_PHONE = "v1/auth/confirmPhone"
     const val RESET_PASS = "/reset/password/"
     const val RESEND_OTP = "/resendOtp"
     const val first_name = "first_name"
@@ -63,7 +66,7 @@ object ApiConstants {
     const val token = "token"
 }
 
-object RequestCode{
+object RequestCode {
     const val GOOGLE_ACCESS = 100
 
 }

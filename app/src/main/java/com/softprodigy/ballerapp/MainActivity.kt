@@ -1,6 +1,7 @@
 package com.softprodigy.ballerapp
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -18,8 +19,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.facebook.CallbackManager
+import com.google.gson.Gson
 import com.softprodigy.ballerapp.common.Route.ADD_PLAYER_SCREEN
+import com.softprodigy.ballerapp.common.Route.FORGOT_PASSWORD_SCREEN
+import com.softprodigy.ballerapp.common.Route.HOME_SCREEN
 import com.softprodigy.ballerapp.common.Route.LOGIN_SCREEN
 import com.softprodigy.ballerapp.common.Route.PROFILE_SETUP_SCREEN
 import com.softprodigy.ballerapp.common.Route.SELECT_USER_TYPE
@@ -31,7 +36,10 @@ import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.ui.features.home.HomeActivity
 import com.softprodigy.ballerapp.ui.features.login.LoginScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.ProfileSetUpScreen
+import com.softprodigy.ballerapp.data.request.SignUpData
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
+import com.softprodigy.ballerapp.data.request.SignUpType
+import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordScreen
 import com.softprodigy.ballerapp.ui.features.splash.SplashScreen
 import com.softprodigy.ballerapp.ui.features.user_type.TeamSetupScreen
 import com.softprodigy.ballerapp.ui.features.user_type.UserTypeScreen
@@ -41,7 +49,6 @@ import com.softprodigy.ballerapp.ui.features.welcome.WelcomeScreen
 import com.softprodigy.ballerapp.ui.theme.BallerAppTheme
 import com.softprodigy.ballerapp.ui.theme.appColors
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 val LocalFacebookCallbackManager =
     staticCompositionLocalOf<CallbackManager> { error("No CallbackManager provided") }
@@ -76,7 +83,8 @@ fun NavControllerComposable(activity: MainActivity) {
     val navController = rememberNavController()
     val setupTeamViewModel: SetupTeamViewModel = viewModel()
     val context = LocalContext.current
-    NavHost(navController, startDestination = TEAM_SETUP_SCREEN) {
+
+    NavHost(navController, startDestination = SPLASH_SCREEN) {
 
         composable(route = SPLASH_SCREEN) {
             SplashScreen {
@@ -86,8 +94,11 @@ fun NavControllerComposable(activity: MainActivity) {
         }
 
         composable(route = SIGN_UP_SCREEN) {
-            SignUpScreen(onSignUpSuccess = {
-                navController.navigate(SELECT_USER_TYPE)
+            SignUpScreen(onLoginScreen = {
+                navController.navigate(LOGIN_SCREEN)
+            }, onSignUpSuccess = {
+                val json = Uri.encode(Gson().toJson(it))
+                navController.navigate("${SELECT_USER_TYPE}/${json}")
             })
         }
 
@@ -106,25 +117,58 @@ fun NavControllerComposable(activity: MainActivity) {
                     }
                 },
                 onRegister = { navController.navigate(SIGN_UP_SCREEN) },
-                onForgetPasswordClick = { },
+                onForgetPasswordClick = {
+                    navController.navigate(FORGOT_PASSWORD_SCREEN)
+                },
             )
         }
-        composable(route = PROFILE_SETUP_SCREEN) {
-            ProfileSetUpScreen(onNext = { navController.navigate(TEAM_SETUP_SCREEN) }, onBack = {
-                navController.popBackStack()
+
+        composable(route = FORGOT_PASSWORD_SCREEN) {
+
+            ForgotPasswordScreen(onNextClick = {
+                navController.navigate(LOGIN_SCREEN) {
+                    navController.popBackStack()
+
+                }
             })
+
         }
-        composable(route = SELECT_USER_TYPE) {
+
+        composable(
+            route = "${PROFILE_SETUP_SCREEN}/{signUp}",
+            arguments = listOf(navArgument("signUp") { type = SignUpType() })
+        ) {
+            val signUpData = it.arguments?.getParcelable<SignUpData>("signUp")
+
+            ProfileSetUpScreen(
+                signUpData,
+                onNext = {
+                    navController.navigate(TEAM_SETUP_SCREEN) {
+                        navController.popBackStack()
+
+                    }
+                },
+                onBack = {
+                    navController.popBackStack()
+                })
+        }
+
+        composable(
+            route = "${SELECT_USER_TYPE}/{signUp}",
+            arguments = listOf(navArgument("signUp") { type = SignUpType() })
+        ) {
+
+            val mSignUpData = it.arguments?.getParcelable<SignUpData>("signUp")
 
             BackHandler(true) {
-
             }
 
-            UserTypeScreen(onNextClick = { userType ->
-                Timber.i("onNextClick-- $userType")
-                navController.navigate(PROFILE_SETUP_SCREEN)
+            UserTypeScreen(mSignUpData, onNextClick = { userType, signUpData ->
+                val json = Uri.encode(Gson().toJson(signUpData))
+                navController.navigate("${PROFILE_SETUP_SCREEN}/${json}")
             })
         }
+
         composable(route = TEAM_SETUP_SCREEN) {
             TeamSetupScreen(
                 vm = setupTeamViewModel,

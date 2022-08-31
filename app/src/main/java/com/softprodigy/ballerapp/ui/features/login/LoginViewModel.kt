@@ -109,11 +109,11 @@ class LoginViewModel @Inject constructor(
                     _loginChannel.send(LoginChannel.ShowToast(UiText.DynamicString(loginResponse.message)))
                 }
 
-
+            }
         }
     }
 }
-    }
+
 sealed class LoginChannel {
     data class ShowToast(val message: UiText) : LoginChannel()
     data class OnLoginSuccess(val loginResponse: UserInfo) : LoginChannel()
