@@ -5,6 +5,7 @@ import com.softprodigy.ballerapp.domain.BaseResponse
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
+import timber.log.Timber
 import java.io.IOException
 
 suspend fun <T> safeApiCall(
@@ -31,7 +32,9 @@ suspend fun <T> safeApiCall(
                     ResultWrapper.GenericError(code, message)
                 }
                 else -> {
-                    ResultWrapper.GenericError(null, null)
+                    Timber.e("GenericError", throwable.message)
+                    throwable.printStackTrace()
+                    ResultWrapper.GenericError(null, throwable.message)
                 }
             }
 

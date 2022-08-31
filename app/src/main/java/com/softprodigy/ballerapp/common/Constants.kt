@@ -3,6 +3,9 @@ package com.softprodigy.ballerapp.common
 import androidx.compose.ui.graphics.Color
 
 object AppConstants {
+    const val TEAM_LOGO: String = "teamLogo"
+    const val PROFILE_IMAGE: String = "profileImage"
+    const val PICKER_DEFAULT_COLOR = "FFFFFFFF"
     const val ANDROID = "android"
     const val GOOGLE = "google"
     const val KEY_PASSWORD = "password"
@@ -15,8 +18,8 @@ object AppConstants {
     const val USER_TYPE_GAME_STAFF = "Game Staff"
     const val USER_TYPE_PROGRAM_STAFF = "Program Staff"
     const val USER_TYPE_FAN = "Fan"
-    const val PUBLIC_PROFILE="public_profile"
-    const val EMAIL="email"
+    const val PUBLIC_PROFILE = "public_profile"
+    const val EMAIL = "email"
     var SELECTED_COLOR: Color = Color(0xFF0177C1)
 }
 
@@ -40,23 +43,30 @@ object Route {
 object ApiConstants {
     const val BASE_URL = "http://baller-app.softprodigyphp.in"
     const val LOGIN = "v1/auth/login"
+    const val GET_ALL_PLAYERS = "v1/player/getAllPlayers"
+    const val UPLOAD_SINGLE_IMAGE = "v1/upload/single"
+    const val CREATE_TEAM = "v1/team"
+    const val GET_TEAMS = "v1/team"
+
+
     const val SOCIAL_LOGIN = "/social_login"
-    const val SIGNUP = "/register"
-    const val FORGOT_PASSWORD = "/forgot/password"
-    const val VERIFY_OTP = "/verifyOtp/"
+    const val SIGNUP = "v1/auth/register"
+    const val FORGOT_PASSWORD = "v1/auth/forgotPassword"
+    const val VERIFY_PHONE = "v1/auth/verifyPhone"
+    const val CONFIRM_PHONE = "v1/auth/confirmPhone"
     const val RESET_PASS = "/reset/password/"
     const val RESEND_OTP = "/resendOtp"
-    const val first_name="first_name"
-    const val last_name="lastName"
-    const val mobile="mobile"
-    const val EMAIL="email"
-    const val FACEBOOK="facebook"
-    const val GOOGLE="google"
+    const val first_name = "first_name"
+    const val last_name = "lastName"
+    const val mobile = "mobile"
+    const val EMAIL = "email"
+    const val FACEBOOK = "facebook"
+    const val GOOGLE = "google"
     const val email = "email"
     const val token = "token"
 }
 
-object RequestCode{
+object RequestCode {
     const val GOOGLE_ACCESS = 100
 
 }

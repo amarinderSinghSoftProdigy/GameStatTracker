@@ -2,10 +2,10 @@ package com.softprodigy.ballerapp.data.response
 
 import com.google.gson.annotations.SerializedName
 data class UserInfo(
-    @SerializedName("token") var token: String? = null,
-    @SerializedName("tokenExpireAt") var tokenExpireAt: Int? = null,
-    @SerializedName("refreshToken") var refreshToken: String? = null,
-    @SerializedName("refreshTokenExpireAt") var refreshTokenExpireAt: Int? = null
+    @SerializedName("token") val token: String = "",
+    @SerializedName("tokenExpireAt") val tokenExpireAt: Int? = null,
+    @SerializedName("refreshToken") val refreshToken: String? = null,
+    @SerializedName("refreshTokenExpireAt") val refreshTokenExpireAt: Int? = null
 
 )
 

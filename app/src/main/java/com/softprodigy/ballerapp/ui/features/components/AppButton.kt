@@ -1,22 +1,11 @@
 package com.softprodigy.ballerapp.ui.features.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,9 +14,9 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.theme.ButtonColor
 import com.softprodigy.ballerapp.ui.theme.appColors
-import com.softprodigy.ballerapp.R
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -44,7 +33,8 @@ fun AppButton(
     ),
     text: String? = null,
     icon: Painter? = null,
-    singleButton: Boolean = false
+    singleButton: Boolean = false,
+    isForceEnableNeeded: Boolean = false
 ) {
     val contentColor = if (enabled) colors.textEnabled else colors.textDisabled
 
@@ -53,7 +43,12 @@ fun AppButton(
         modifier = modifier,
         enabled = enabled,
         shape = shape,
-        color = if (icon == null) Color.Transparent else if (enabled) colors.bckgroundEnabled else colors.bckgroundDisabled,
+        color = if (icon == null && !isForceEnableNeeded)
+            Color.Transparent
+        else if (enabled)
+            colors.bckgroundEnabled
+        else
+            colors.bckgroundDisabled,
         contentColor = contentColor.copy(alpha = 1f),
         border = border,
     ) {
@@ -88,7 +83,11 @@ fun AppButton(
                             )
                         }
 
-                    } else {
+                    }
+                    else if(isForceEnableNeeded && enabled) {
+                        ButtonView(text = text ?: "", color = colors.textEnabled)
+                    }
+                    else {
                         ButtonView(text = text ?: "", color = colors.textDisabled)
                     }
                 }

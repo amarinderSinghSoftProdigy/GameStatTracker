@@ -1,6 +1,7 @@
 package com.softprodigy.ballerapp.ui.features.user_type
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,22 +31,31 @@ import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
 import com.softprodigy.ballerapp.ui.features.components.UserSelectionSurface
 import com.softprodigy.ballerapp.ui.features.components.UserType
 import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
+import com.softprodigy.ballerapp.data.request.SignUpData
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 
 
 @Composable
-fun UserTypeScreen(onNextClick: (String) -> Unit, viewModel: UserTypeViewModel = hiltViewModel()) {
+fun UserTypeScreen(
+    signUpData: SignUpData?,
+    onNextClick: (String, SignUpData) -> Unit,
+    viewModel: UserTypeViewModel = hiltViewModel()
+) {
     Box(
         Modifier.fillMaxWidth()
     ) {
         CoachFlowBackground()
-        UserTypeSelector(onNextClick = onNextClick, viewModel)
+        UserTypeSelector(onNextClick = onNextClick, viewModel, signUpData)
     }
 }
 
 @SuppressLint("RememberReturnType")
 @Composable
-fun UserTypeSelector(onNextClick: (String) -> Unit, viewModel: UserTypeViewModel) {
+fun UserTypeSelector(
+    onNextClick: (String, SignUpData) -> Unit,
+    viewModel: UserTypeViewModel,
+    signUpData: SignUpData?
+) {
     val options = listOf(
         UserType.PLAYER,
         UserType.COACH,
@@ -62,6 +72,7 @@ fun UserTypeSelector(onNextClick: (String) -> Unit, viewModel: UserTypeViewModel
     val onSelectionChange = { text: String ->
         selectedUserType = text
     }
+
 
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val column = createRef()
@@ -84,6 +95,7 @@ fun UserTypeSelector(onNextClick: (String) -> Unit, viewModel: UserTypeViewModel
                 style = MaterialTheme.typography.h3,
                 color = ColorBWBlack
             )
+
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_30dp)))
 
             options.forEach { it ->
@@ -118,7 +130,16 @@ fun UserTypeSelector(onNextClick: (String) -> Unit, viewModel: UserTypeViewModel
                 secondText = stringResource(id = R.string.next),
                 onBackClick = { },
                 onNextClick = {
-                    onNextClick.invoke(selectedUserType)
+                    val signUpData = SignUpData(
+                        email = signUpData?.email,
+                        address = signUpData?.address,
+                        birthdate = signUpData?.birthdate,
+                        gender = signUpData?.gender,
+                        password = signUpData?.password,
+                        repeatPassword = signUpData?.repeatPassword,
+                        role = selectedUserType
+                    )
+                    onNextClick.invoke(selectedUserType, signUpData)
                     val userRole = GlobalRequest.Users(selectedUserType)
                     viewModel.saveData(userRole)
                 },

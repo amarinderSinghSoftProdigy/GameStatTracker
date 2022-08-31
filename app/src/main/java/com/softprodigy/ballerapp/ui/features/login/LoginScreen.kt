@@ -5,6 +5,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,7 +14,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.CircularProgressIndicator
+
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -22,23 +26,27 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.facebook.FacebookCallback
@@ -122,10 +130,12 @@ fun LoginScreen(
                         token = gsa.idToken
                     )
                     vm.onEvent(LoginUIEvent.OnGoogleClick(googleUser))
-                }
-                else{
-                    Timber.i("gsa null")
-                    Toast.makeText(context, "gsa null", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(
+                        context,
+                        context.resources.getString(R.string.something_went_wrong),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
             } catch (e: ApiException) {
@@ -176,7 +186,9 @@ fun LoginScreen(
                 text = stringResource(id = R.string.email),
                 style = MaterialTheme.typography.h6,
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = dimensionResource(id = R.dimen.size_3dp)),
                 textAlign = TextAlign.Start
             )
 
@@ -195,7 +207,8 @@ fun LoginScreen(
                         fontSize = dimensionResource(
                             id =
                             R.dimen.txt_size_12
-                        ).value.sp
+                        ).value.sp,
+                        textAlign = TextAlign.Center
                     )
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
@@ -216,7 +229,9 @@ fun LoginScreen(
                 text = stringResource(id = R.string.password),
                 style = MaterialTheme.typography.h6,
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = dimensionResource(id = R.dimen.size_3dp)),
                 textAlign = TextAlign.Start
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
@@ -231,7 +246,8 @@ fun LoginScreen(
                 placeholder = {
                     Text(
                         text = stringResource(id = R.string.your_password),
-                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
+                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                        textAlign = TextAlign.Center
                     )
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -268,8 +284,8 @@ fun LoginScreen(
                 singleButton = true,
                 enabled = email.isValidEmail() && password.isValidPassword(),
                 onClick = {
-                    onLoginSuccess(null)
-                    //vm.onEvent(LoginUIEvent.Submit(email, password))
+//                    onLoginSuccess(null)
+                    vm.onEvent(LoginUIEvent.Submit(email, password))
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -277,6 +293,52 @@ fun LoginScreen(
                 text = stringResource(id = R.string.login),
                 icon = painterResource(id = R.drawable.ic_circle_next)
             )
+
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+
+            val annotatedText = buildAnnotatedString {
+
+                withStyle(
+                    style = SpanStyle(
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    )
+                ) {
+                    append(stringResource(id = R.string.new_user))
+                }
+                append(" ")
+                pushStringAnnotation(
+                    tag = stringResource(id = R.string.sign_up),
+                    annotation = stringResource(id = R.string.sign_up)
+                )
+                withStyle(
+                    style = SpanStyle(
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        textDecoration = TextDecoration.Underline
+                    )
+                ) {
+                    append(stringResource(id = R.string.sign_up))
+                }
+
+                pop()
+
+            }
+
+            ClickableText(
+                text = annotatedText,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally),
+                onClick = {
+                    annotatedText.getStringAnnotations(
+                        tag = "Signup",
+                        start = it,
+                        end = it
+                    ).forEach { _ ->
+                        onRegister()
+                    }
+                },
+                style = MaterialTheme.typography.h4
+            )
+
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_32dp)))
 
             AppText(
@@ -286,16 +348,6 @@ fun LoginScreen(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .clickable(onClick = onForgetPasswordClick)
-            )
-
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_30dp)))
-            AppText(
-                text = stringResource(id = com.baller_app.core.R.string.scr_sign_up),
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                style = MaterialTheme.typography.h3,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .clickable(onClick = onRegister)
             )
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_60dp)))
@@ -315,11 +367,14 @@ fun LoginScreen(
                 }) {
             }
 
-//            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))
 
         }
         if (loginState.isDataLoading) {
-            //CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center),
+                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+            )
         }
     }
 }

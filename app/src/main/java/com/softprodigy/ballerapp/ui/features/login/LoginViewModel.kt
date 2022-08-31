@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private var IUserRepository: IUserRepository,
+    private val IUserRepository: IUserRepository,
     application: Application
 ) :
     AndroidViewModel(application) {
@@ -82,8 +82,8 @@ class LoginViewModel @Inject constructor(
                             _loginChannel.send(LoginChannel.OnLoginSuccess(response.data))
                         } else {
                             _loginUiState.value = LoginUIState(
-                                user=null,
-                                errorMessage = response.statusMessage ?: "Something went wrong",
+                                user = null,
+                                errorMessage = response.statusMessage,
                                 isDataLoading = false
                             )
                         }
@@ -109,11 +109,11 @@ class LoginViewModel @Inject constructor(
                     _loginChannel.send(LoginChannel.ShowToast(UiText.DynamicString(loginResponse.message)))
                 }
 
-
+            }
         }
     }
 }
-    }
+
 sealed class LoginChannel {
     data class ShowToast(val message: UiText) : LoginChannel()
     data class OnLoginSuccess(val loginResponse: UserInfo) : LoginChannel()
