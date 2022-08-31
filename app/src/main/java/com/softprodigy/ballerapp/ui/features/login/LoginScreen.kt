@@ -1,13 +1,11 @@
 package com.softprodigy.ballerapp.ui.features.login
 
-import android.content.res.Resources
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,13 +14,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
+
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -191,7 +186,9 @@ fun LoginScreen(
                 text = stringResource(id = R.string.email),
                 style = MaterialTheme.typography.h6,
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = dimensionResource(id = R.dimen.size_3dp)),
                 textAlign = TextAlign.Start
             )
 
@@ -210,7 +207,8 @@ fun LoginScreen(
                         fontSize = dimensionResource(
                             id =
                             R.dimen.txt_size_12
-                        ).value.sp
+                        ).value.sp,
+                        textAlign = TextAlign.Center
                     )
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
@@ -231,7 +229,9 @@ fun LoginScreen(
                 text = stringResource(id = R.string.password),
                 style = MaterialTheme.typography.h6,
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = dimensionResource(id = R.dimen.size_3dp)),
                 textAlign = TextAlign.Start
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
@@ -246,7 +246,8 @@ fun LoginScreen(
                 placeholder = {
                     Text(
                         text = stringResource(id = R.string.your_password),
-                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
+                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                        textAlign = TextAlign.Center
                     )
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),

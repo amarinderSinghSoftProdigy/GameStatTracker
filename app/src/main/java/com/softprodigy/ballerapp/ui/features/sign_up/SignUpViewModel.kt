@@ -35,25 +35,48 @@ class SignUpViewModel @Inject constructor(
 
     val verified = mutableStateOf(false)
 
+
     fun onEvent(event: SignUpUIEvent) {
         when (event) {
+
+            is SignUpUIEvent.OnFirstNameChanged -> {
+                _signUpUiState.value = _signUpUiState.value.copy(firstName = event.firstName)
+            }
+
+            is SignUpUIEvent.OnLastNameChanged -> {
+                _signUpUiState.value = _signUpUiState.value.copy(lastName = event.lastName)
+            }
+
+            is SignUpUIEvent.OnEmailChanged -> {
+                _signUpUiState.value = _signUpUiState.value.copy(email = event.email)
+            }
+
+            is SignUpUIEvent.OnPhoneNumberChanged -> {
+                _signUpUiState.value = _signUpUiState.value.copy(phoneNumber = event.phoneNumber)
+            }
+
             is SignUpUIEvent.OnImageSelected -> {
                 _signUpUiState.value =
                     _signUpUiState.value.copy(profileImageUri = event.profileImageUri)
             }
+
             is SignUpUIEvent.OnImageUploadSuccess -> {
                 viewModelScope.launch { signUp() }
             }
+
             is SignUpUIEvent.OnScreenNext -> {
                 viewModelScope.launch { uploadTeamLogo() }
             }
+
             is SignUpUIEvent.OnSignUpDataSelected -> {
                 _signUpUiState.value =
                     _signUpUiState.value.copy(signUpData = event.signUpData)
             }
+
             is SignUpUIEvent.OnVerifyNumber -> {
-                verifyPhone(event.phoneNumber)
+                verifyPhone()
             }
+
             is SignUpUIEvent.OnConfirmNumber -> {
                 confirmPhone(event.phoneNumber, event.otp)
             }
@@ -116,11 +139,11 @@ class SignUpViewModel @Inject constructor(
     private suspend fun signUp() {
         val signUpData = signUpUiState.value.signUpData
         val signUpDataRequest = SignUpData(
-            firstName = signUpData.firstName,
-            lastName = signUpData.lastName,
-            email = signUpData.email,
+            firstName = signUpUiState.value.firstName,
+            lastName = signUpUiState.value.lastName,
+            email = signUpUiState.value.email,
             profileImage = signUpUiState.value.profileImageServerUrl,
-            phone = signUpData.phone,
+            phone = "+" + signUpUiState.value.phoneNumber,
             address = signUpData.address,
             phoneVerified = signUpData.phoneVerified,
             gender = signUpData.gender,
@@ -131,7 +154,8 @@ class SignUpViewModel @Inject constructor(
         )
 
         viewModelScope.launch {
-            _signUpUiState.value = SignUpUIState(isLoading = true)
+            _signUpUiState.value = _signUpUiState.value.copy(isLoading = true)
+
 
             val verifyResponseResponse =
                 IUserRepository.signUp(signUpDataRequest)
@@ -142,12 +166,11 @@ class SignUpViewModel @Inject constructor(
                     verifyResponseResponse.value.let { response ->
 
                         if (response.status) {
-                            _signUpUiState.value =
-                                SignUpUIState(
-                                    isLoading = false,
-                                    errorMessage = null,
-                                    successMessage = response.statusMessage
-                                )
+                            _signUpUiState.value = _signUpUiState.value.copy(
+                                isLoading = false,
+                                errorMessage = null,
+                                successMessage = response.statusMessage
+                            )
 
                             _signUpChannel.send(
                                 SignUpChannel.ShowToast(
@@ -165,7 +188,7 @@ class SignUpViewModel @Inject constructor(
                             )
 
                         } else {
-                            _signUpUiState.value = SignUpUIState(
+                            _signUpUiState.value = _signUpUiState.value.copy(
                                 errorMessage = response.statusMessage ?: "Something went wrong",
                                 isLoading = false
                             )
@@ -173,9 +196,9 @@ class SignUpViewModel @Inject constructor(
                     }
                 }
                 is ResultWrapper.GenericError -> {
-                    _signUpUiState.value = signUpUiState.value.copy(isLoading = false)
+                    _signUpUiState.value = _signUpUiState.value.copy(isLoading = false)
                     _signUpUiState.value =
-                        SignUpUIState(
+                        _signUpUiState.value.copy(
                             errorMessage = "${verifyResponseResponse.code} ${verifyResponseResponse.message}",
                             isLoading = false
                         )
@@ -183,7 +206,7 @@ class SignUpViewModel @Inject constructor(
                 }
                 is ResultWrapper.NetworkError -> {
                     _signUpUiState.value =
-                        SignUpUIState(
+                        _signUpUiState.value.copy(
                             errorMessage = "${verifyResponseResponse.message}",
                             isLoading = false
                         )
@@ -199,12 +222,12 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    private fun verifyPhone(phone: String) {
+    private fun verifyPhone() {
         viewModelScope.launch {
-            _signUpUiState.value = SignUpUIState(isLoading = true)
+            _signUpUiState.value = _signUpUiState.value.copy(isLoading = true)
 
             val verifyResponseResponse =
-                IUserRepository.verifyPhone(phone = phone)
+                IUserRepository.verifyPhone(phone = "+" + _signUpUiState.value.phoneNumber)
 
             when (verifyResponseResponse) {
 
@@ -213,7 +236,7 @@ class SignUpViewModel @Inject constructor(
 
                         if (response.status) {
                             _signUpUiState.value =
-                                SignUpUIState(
+                                _signUpUiState.value.copy(
                                     isLoading = false,
                                     errorMessage = null,
                                     successMessage = response.statusMessage
@@ -229,7 +252,7 @@ class SignUpViewModel @Inject constructor(
                             _signUpChannel.send(SignUpChannel.OnOTPScreen)
 
                         } else {
-                            _signUpUiState.value = SignUpUIState(
+                            _signUpUiState.value = _signUpUiState.value.copy(
                                 errorMessage = response.statusMessage ?: "Something went wrong",
                                 isLoading = false
                             )
@@ -237,18 +260,16 @@ class SignUpViewModel @Inject constructor(
                     }
                 }
                 is ResultWrapper.GenericError -> {
-                    _signUpUiState.value = signUpUiState.value.copy(isLoading = false)
-                    _signUpUiState.value =
-                        SignUpUIState(
-                            errorMessage = "${verifyResponseResponse.code} ${verifyResponseResponse.message}",
-                            isLoading = false
-                        )
+                    _signUpUiState.value = _signUpUiState.value.copy(
+                        isLoading = false,
+                        errorMessage = "${verifyResponseResponse.code} ${verifyResponseResponse.message}"
+                    )
                     _signUpChannel.send(SignUpChannel.ShowToast(UiText.DynamicString("${verifyResponseResponse.code} ${verifyResponseResponse.message}")))
 
                 }
                 is ResultWrapper.NetworkError -> {
                     _signUpUiState.value =
-                        SignUpUIState(
+                        _signUpUiState.value.copy(
                             errorMessage = "${verifyResponseResponse.message}",
                             isLoading = false
                         )
@@ -266,7 +287,8 @@ class SignUpViewModel @Inject constructor(
 
     private fun confirmPhone(phone: String, otp: String) {
         viewModelScope.launch {
-            _signUpUiState.value = SignUpUIState(isLoading = true)
+            _signUpUiState.value = _signUpUiState.value.copy(isLoading = true)
+
 
             val verifyResponseResponse =
                 IUserRepository.confirmPhone(phone = phone, otp = otp)
@@ -278,7 +300,7 @@ class SignUpViewModel @Inject constructor(
 
                         if (response.status) {
                             _signUpUiState.value =
-                                SignUpUIState(
+                                _signUpUiState.value.copy(
                                     isLoading = false,
                                     errorMessage = null,
                                     successMessage = response.statusMessage
@@ -295,7 +317,7 @@ class SignUpViewModel @Inject constructor(
                             )
 
                         } else {
-                            _signUpUiState.value = SignUpUIState(
+                            _signUpUiState.value = _signUpUiState.value.copy(
                                 errorMessage = response.statusMessage ?: "Something went wrong",
                                 isLoading = false
                             )
@@ -303,18 +325,16 @@ class SignUpViewModel @Inject constructor(
                     }
                 }
                 is ResultWrapper.GenericError -> {
-                    _signUpUiState.value = signUpUiState.value.copy(isLoading = false)
-                    _signUpUiState.value =
-                        SignUpUIState(
-                            errorMessage = "${verifyResponseResponse.code} ${verifyResponseResponse.message}",
-                            isLoading = false
-                        )
+                    _signUpUiState.value = _signUpUiState.value.copy(
+                        isLoading = false,
+                        errorMessage = "${verifyResponseResponse.code} ${verifyResponseResponse.message}",
+                    )
                     _signUpChannel.send(SignUpChannel.ShowToast(UiText.DynamicString("${verifyResponseResponse.code} ${verifyResponseResponse.message}")))
                 }
                 is ResultWrapper.NetworkError -> {
                     _signUpUiState.value =
-                        SignUpUIState(
-                            errorMessage = "${verifyResponseResponse.message}",
+                        _signUpUiState.value.copy(
+                            errorMessage = verifyResponseResponse.message,
                             isLoading = false
                         )
                     _signUpChannel.send(

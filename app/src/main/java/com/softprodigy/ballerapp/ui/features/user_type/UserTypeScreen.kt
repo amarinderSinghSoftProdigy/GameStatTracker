@@ -130,7 +130,6 @@ fun UserTypeSelector(
                 secondText = stringResource(id = R.string.next),
                 onBackClick = { },
                 onNextClick = {
-                    Log.d("harsh", "UserTypeSelector: " + selectedUserType)
                     val signUpData = SignUpData(
                         email = signUpData?.email,
                         address = signUpData?.address,
