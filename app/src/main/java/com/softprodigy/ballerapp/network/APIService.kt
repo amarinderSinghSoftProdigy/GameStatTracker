@@ -37,12 +37,14 @@ interface APIService {
     suspend fun createTeam(@Body request: CreateTeamRequest): BaseResponse<CreateTeamResponse>
 
     @GET(ApiConstants.GET_TEAMS)
-    suspend fun getTeams(
-        @Query("page") page: Int,
-        @Query("limit") limit: Int,
-        @Query("sort") sort: String
-    ): BaseResponse<ArrayList<Team>>
+    suspend fun getTeams(   @Query("page") page: Int,
+                            @Query("limit") limit: Int,
+                            @Query("sort") sort: String):BaseResponse<ArrayList<Team>>
 
+    @GET("${ApiConstants.GET_TEAMS}/{id}")
+    suspend fun getTeamsByTeamId(
+        @Path("id") id: String
+    ): BaseResponse<Team>
 
     @POST(ApiConstants.VERIFY_PHONE)
     suspend fun verifyPhone(@Body verifyPhoneRequest: VerifyPhoneRequest): BaseResponse<Any>

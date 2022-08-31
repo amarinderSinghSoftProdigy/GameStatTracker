@@ -40,4 +40,9 @@ class TeamRepository @Inject constructor(
     ): ResultWrapper<BaseResponse<ArrayList<Team>>> {
         return safeApiCall(dispatcher){service.getTeams(page,limit,sort)}
     }
+
+    override suspend fun getTeamsByTeamID(teamId: String): ResultWrapper<BaseResponse<Team>> {
+        return safeApiCall(dispatcher){service.getTeamsByTeamId(teamId)}
+
+    }
 }

@@ -21,8 +21,8 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name="com.softprodigy.ballerapp.MainActivity"
-            android:exported="true"
+            android:name="com.softprodigy.ballerapp.MainActivity"/>
+       <!--     android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.BallerApp"
             android:windowSoftInputMode="adjustResize">
@@ -31,7 +31,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity>-->
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -44,7 +44,7 @@
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
-        <activity
+<!--        <activity
             android:name=".ui.features.home.HomeActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:exported="true"
@@ -53,6 +53,18 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>  -->
+        <activity
+            android:name=".ui.features.home.HomeActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.BallerApp"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
