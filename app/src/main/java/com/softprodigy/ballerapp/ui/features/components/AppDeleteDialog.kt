@@ -3,11 +3,27 @@ package com.softprodigy.ballerapp.ui.features.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,6 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.Team
 import com.softprodigy.ballerapp.ui.theme.BallerAppTheme
@@ -87,7 +104,7 @@ fun SelectTeamDialog(
 ) {
     BallerAppTheme {
         AlertDialog(
-            modifier =  Modifier.clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+            modifier = Modifier.clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
             onDismissRequest = onDismiss,
             buttons = {
                 Column(
@@ -141,16 +158,17 @@ fun SelectTeamDialog(
                             vertical = dimensionResource(id = R.dimen.size_16dp)
                         )
                 ) {
-                    AppButton(
+                    DialogButton(
                         text = stringResource(R.string.dialog_button_cancel),
                         onClick = onDismiss,
                         modifier = Modifier
                             .weight(1f)
                             .padding(end = dimensionResource(id = R.dimen.size_10dp)),
                         border = ButtonDefaults.outlinedBorder,
-                        singleButton = true
+                        onlyBorder = true,
+                        enabled = false
                     )
-                    AppButton(
+                    DialogButton(
                         text = stringResource(R.string.dialog_button_confirm),
                         onClick = {
                             onConfirmClick.invoke()
@@ -160,8 +178,7 @@ fun SelectTeamDialog(
                             .weight(1f),
                         border = ButtonDefaults.outlinedBorder,
                         enabled = selected.name.isNotEmpty(),
-                        singleButton = true,
-                        isForceEnableNeeded = true
+                        onlyBorder = false,
                     )
                 }
             },
@@ -173,11 +190,10 @@ fun SelectTeamDialog(
 @Composable
 fun TeamListItem(team: Team, selected: Boolean, onClick: (Team) -> Unit) {
     Surface(
-//        modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.size_8dp)),
         onClick = { onClick(team) },
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_10dp)),
         elevation = if (selected) dimensionResource(id = R.dimen.size_10dp) else 0.dp,
-        color = if (selected) MaterialTheme.appColors.buttonColor.bckgroundEnabled else Color.Transparent,
+        color = if (selected) MaterialTheme.appColors.material.primaryVariant else Color.Transparent,
     ) {
         Row(
             modifier = Modifier
@@ -191,9 +207,8 @@ fun TeamListItem(team: Team, selected: Boolean, onClick: (Team) -> Unit) {
                 ), verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = team.logo,
+                model = BuildConfig.API_SERVER + "/" + team.logo,
                 contentDescription = "",
-
                 modifier = Modifier
                     .size(dimensionResource(id = R.dimen.size_32dp))
                     .clip(CircleShape)

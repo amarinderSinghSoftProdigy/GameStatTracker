@@ -19,10 +19,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.Route.EVENTS_SCREEN
 import com.softprodigy.ballerapp.common.Route.HOME_SCREEN
 import com.softprodigy.ballerapp.common.Route.TEAMS_SCREEN
-import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
 import com.softprodigy.ballerapp.ui.features.components.BottomNavigationBar
 import com.softprodigy.ballerapp.ui.features.components.CommonTabView
@@ -30,9 +30,6 @@ import com.softprodigy.ballerapp.ui.features.components.TabBar
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
 import com.softprodigy.ballerapp.ui.theme.appColors
-import com.softprodigy.ballerapp.ui.theme.md_theme_dark_onPrimary
-import com.softprodigy.ballerapp.ui.theme.md_theme_light_error
-import com.softprodigy.ballerapp.ui.theme.ol_field_border_error
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -50,7 +47,6 @@ class HomeActivity : ComponentActivity() {
             BallerAppMainTheme(customColor = state.color ?: Color.White) {
                 val navController = rememberNavController()
                 val showDialog = remember { mutableStateOf(false) }
-                val dataStoreManager = DataStoreManager(this)
                 val userType = remember { mutableStateOf(BottomNavKey.HOME) }
 
                 Scaffold(
@@ -61,7 +57,17 @@ class HomeActivity : ComponentActivity() {
                                 CommonTabView(
                                     canMoveBack = false,
                                     user = userType.value,
-                                    label = stringResource(id = R.string.coach_label),
+                                    label = when (userType.value) {
+                                        BottomNavKey.TEAMS -> {
+                                            stringResource(id = R.string.teams_label)
+                                        }
+                                        BottomNavKey.EVENTS -> {
+                                            stringResource(id = R.string.events_label)
+                                        }
+                                        else -> {
+                                            ""
+                                        }
+                                    },
                                     icon = painterResource(id = R.drawable.ic_settings),
                                     onLabelClick = {
                                         showDialog.value = true
@@ -71,7 +77,6 @@ class HomeActivity : ComponentActivity() {
                         }
                     },
                     content = {
-
                         NavControllerComposable(
                             navController = navController,
                             showDialog = showDialog.value,
@@ -85,17 +90,7 @@ class HomeActivity : ComponentActivity() {
                             selectionColor = state.color ?: Color.Black
                         ) {
                             userType.value = it
-                            when (it) {
-                                BottomNavKey.HOME -> {
-                                    homeViewModel.setColor(ol_field_border_error)
-                                }
-                                BottomNavKey.TEAMS -> {
-                                    homeViewModel.setColor(md_theme_dark_onPrimary)
-                                }
-                                BottomNavKey.EVENTS -> {
-                                    homeViewModel.setColor(md_theme_light_error)
-                                }
-                            }
+                            homeViewModel.setColor(AppConstants.SELECTED_COLOR)
                         }
                     },
                 )

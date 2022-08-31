@@ -115,6 +115,14 @@
     <string name="player_already_added">Player already added</string>
     <string name="something_went_wrong">Something went wrong</string>
     <string name="signin">SignIn</string>
+    <string name="no_players_in_team">No players in your team</string>
+    <string name="add_players_to_use_app">Add new players to create teams and events.</string>
+    <string name="no_upcoming_events">No Upcoming Events</string>
+    <string name="add_events_to_use_app">Add eveents to other features of app.</string>
+    <string name="add_events">Add Event</string>
+    <string name="my_events">My Events</string>
+    <string name="my_leagues">My Leagues</string>
+    <string name="opportunities">Opportunities</string>
 
 
 </resources>
