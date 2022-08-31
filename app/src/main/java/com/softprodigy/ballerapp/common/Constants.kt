@@ -52,6 +52,7 @@ object ApiConstants {
     const val EMAIL="email"
     const val FACEBOOK="facebook"
     const val GOOGLE="google"
+    const val TWITTER="google"
     const val email = "email"
     const val token = "token"
 }

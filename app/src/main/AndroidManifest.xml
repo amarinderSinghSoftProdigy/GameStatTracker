@@ -21,8 +21,8 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name="com.softprodigy.ballerapp.MainActivity"/>
-   <!--         android:exported="true"
+            android:name="com.softprodigy.ballerapp.MainActivity"
+            android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.BallerApp"
             android:windowSoftInputMode="adjustResize">
@@ -31,7 +31,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>-->
+        </activity>
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -65,7 +65,7 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".twitter_login.TwitterDemoActivity"
+<!--        <activity android:name=".twitter_login.TwitterDemoActivity"
                 android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat.DayNight"
@@ -77,7 +77,8 @@
             </intent-filter>
 
         </activity>
-        <activity android:name=".twitter_login.DetailsActivity"/>
+        <activity android:name=".twitter_login.DetailsActivity"
+            android:theme="@style/Theme.AppCompat.DayNight"/>-->
     </application>
 
 </manifest>
