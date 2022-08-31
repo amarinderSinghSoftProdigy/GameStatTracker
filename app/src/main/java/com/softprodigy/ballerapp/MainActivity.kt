@@ -111,11 +111,9 @@ fun NavControllerComposable(activity: MainActivity) {
         composable(route = LOGIN_SCREEN) {
             LoginScreen(
                 onLoginSuccess = {
-                    navController.navigate(SELECT_USER_TYPE) {
-                        UserStorage.token = it?.token.toString()
-                        navController.navigate(SELECT_USER_TYPE) {
-                            navController.popBackStack()
-                        }
+                    UserStorage.token = it?.token.toString()
+                    navController.navigate(SELECT_USER_TYPE){
+                        navController.popBackStack()
                     }
                 },
                 onRegister = { navController.navigate(SIGN_UP_SCREEN) },

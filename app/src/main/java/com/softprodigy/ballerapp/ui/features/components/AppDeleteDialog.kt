@@ -1,14 +1,14 @@
 package com.softprodigy.ballerapp.ui.features.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -79,20 +80,16 @@ fun <T> DeleteDialog(
 @Composable
 fun SelectTeamDialog(
     onDismiss: () -> Unit,
-    onClick: (Team) -> Unit,
+    onConfirmClick: () -> Unit,
+    onSelectionChange: (Team) -> Unit,
+    selected: Team,
     teams: ArrayList<Team>
 ) {
     BallerAppTheme {
         AlertDialog(
+            modifier =  Modifier.clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
             onDismissRequest = onDismiss,
             buttons = {
-                var selected by remember {
-                    mutableStateOf(Team())
-                }
-                val onSelectionChange = { team: Team ->
-                    selected = team
-                }
-
                 Column(
                     modifier = Modifier
                         .background(color = Color.White)
@@ -105,14 +102,15 @@ fun SelectTeamDialog(
                     Box(modifier = Modifier.fillMaxWidth()) {
                         Text(
                             text = stringResource(id = R.string.pick_team),
-                            style = MaterialTheme.typography.h3,
+                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                            fontWeight = FontWeight.W600,
                         )
 
                         Icon(
                             painter = painterResource(id = R.drawable.ic_close_color_picker),
                             contentDescription = "",
                             modifier = Modifier
-                                .size(dimensionResource(id = R.dimen.size_24dp))
+                                .size(dimensionResource(id = R.dimen.size_12dp))
                                 .align(Alignment.TopEnd)
                                 .clickable {
                                     onDismiss()
@@ -129,7 +127,6 @@ fun SelectTeamDialog(
                             teams.forEach {
                                 TeamListItem(team = it, selected = selected == it) { team ->
                                     onSelectionChange.invoke(team)
-                                    onClick.invoke(team)
                                 }
                             }
                         }
@@ -155,12 +152,16 @@ fun SelectTeamDialog(
                     )
                     AppButton(
                         text = stringResource(R.string.dialog_button_confirm),
-                        onClick = { onDismiss() },
+                        onClick = {
+                            onConfirmClick.invoke()
+                            onDismiss.invoke()
+                        },
                         modifier = Modifier
                             .weight(1f),
                         border = ButtonDefaults.outlinedBorder,
                         enabled = selected.name.isNotEmpty(),
-                        singleButton = true
+                        singleButton = true,
+                        isForceEnableNeeded = true
                     )
                 }
             },
@@ -172,11 +173,11 @@ fun SelectTeamDialog(
 @Composable
 fun TeamListItem(team: Team, selected: Boolean, onClick: (Team) -> Unit) {
     Surface(
-        modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.size_16dp)),
+//        modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.size_8dp)),
         onClick = { onClick(team) },
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_10dp)),
         elevation = if (selected) dimensionResource(id = R.dimen.size_10dp) else 0.dp,
-        color = if (selected) MaterialTheme.appColors.buttonColor.bckgroundEnabled else Color.White,
+        color = if (selected) MaterialTheme.appColors.buttonColor.bckgroundEnabled else Color.Transparent,
     ) {
         Row(
             modifier = Modifier
@@ -185,21 +186,28 @@ fun TeamListItem(team: Team, selected: Boolean, onClick: (Team) -> Unit) {
                 .padding(
                     PaddingValues(
                         dimensionResource(id = R.dimen.size_12dp),
-                        dimensionResource(id = R.dimen.size_8dp)
+                        dimensionResource(id = R.dimen.size_12dp)
                     )
                 ), verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
                 model = team.logo,
                 contentDescription = "",
+
                 modifier = Modifier
                     .size(dimensionResource(id = R.dimen.size_32dp))
-                    .clip(CircleShape),
+                    .clip(CircleShape)
+                    .border(
+                        dimensionResource(id = R.dimen.size_2dp),
+                        MaterialTheme.colors.surface,
+                        CircleShape
+                    )
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
             Text(
                 text = team.name,
-                style = MaterialTheme.typography.h6,
+                fontWeight = FontWeight.W400,
+                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                 modifier = Modifier.weight(1f),
                 color = if (selected) {
                     MaterialTheme.appColors.buttonColor.textEnabled
