@@ -24,8 +24,8 @@ import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
 import com.softprodigy.ballerapp.ui.features.components.BottomNavigationBar
 import com.softprodigy.ballerapp.ui.features.components.CommonTabView
-import com.softprodigy.ballerapp.ui.features.components.SelectTeamDialog
 import com.softprodigy.ballerapp.ui.features.components.TabBar
+import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
 import com.softprodigy.ballerapp.ui.theme.appColors
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,34 +43,32 @@ class HomeActivity : ComponentActivity() {
                 val showDialog = remember { mutableStateOf(false) }
                 val dataStoreManager = DataStoreManager(this)
                 val userType = remember { mutableStateOf(BottomNavKey.HOME) }
-                //UserType.COACH//dataStoreManager.userInfo.collectAsState(initial = "").value
+
                 Scaffold(
                     backgroundColor = MaterialTheme.appColors.material.primary,
                     topBar = {
                         if (userType.value != BottomNavKey.HOME) {
                             TabBar(color = MaterialTheme.appColors.material.primaryVariant) {
                                 CommonTabView(
-                                    false,
-                                    userType.value,
-                                    stringResource(id = R.string.coach_label),
-                                    painterResource(id = R.drawable.ic_settings), {
+                                    canMoveBack = false,
+                                    user = userType.value,
+                                    label = stringResource(id = R.string.coach_label),
+                                    icon = painterResource(id = R.drawable.ic_settings),
+                                    onLabelClick = {
                                         showDialog.value = true
-                                    }, {
-
+                                    }, iconClick = {
                                     })
                             }
                         }
                     },
                     content = {
-                        NavControllerComposable(navController = navController)
-                        if (showDialog.value) {
-                            SelectTeamDialog(
-                                item = "",
-                                message = stringResource(id = R.string.alert_remove_player),
-                                onDismiss = { showDialog.value = false },
-                                onDelete = { showDialog.value = false }
-                            )
-                        }
+
+                        NavControllerComposable(
+                            navController = navController,
+                            showDialog = showDialog.value,
+                            dismissDialog = {
+                                showDialog.value = it
+                            })
                     },
                     bottomBar = {
                         BottomNavigationBar(navController = navController) {
@@ -84,13 +82,17 @@ class HomeActivity : ComponentActivity() {
 }
 
 @Composable
-fun NavControllerComposable(navController: NavHostController = rememberNavController()) {
+fun NavControllerComposable(
+    showDialog: Boolean = false,
+    dismissDialog: (Boolean) -> Unit,
+    navController: NavHostController = rememberNavController()
+) {
     NavHost(navController, startDestination = HOME_SCREEN) {
         composable(route = HOME_SCREEN) {
             HomeScreen(name = "")
         }
         composable(route = TEAMS_SCREEN) {
-            TeamsScreen(name = "")
+            TeamsScreen(name = "", showDialog = showDialog, dismissDialog = dismissDialog)
         }
         composable(route = EVENTS_SCREEN) {
             EventsScreen(name = "")

@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private var IUserRepository: IUserRepository,
+    private val IUserRepository: IUserRepository,
     application: Application
 ) :
     AndroidViewModel(application) {

@@ -105,5 +105,8 @@
     <string name="hey_label">Hey name,</string>
     <string name="pending_rsvp_label">Pending RSVPs</string>
     <string name="opportunities_label">Opportunities to play</string>
+    <string name="player_already_added">Player already added</string>
+    <string name="something_went_wrong">Something went wrong</string>
+
 
 </resources>

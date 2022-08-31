@@ -21,6 +21,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -34,6 +35,7 @@ import com.softprodigy.ballerapp.common.Route.SIGN_UP_SCREEN
 import com.softprodigy.ballerapp.common.Route.SPLASH_SCREEN
 import com.softprodigy.ballerapp.common.Route.TEAM_SETUP_SCREEN
 import com.softprodigy.ballerapp.common.Route.WELCOME_SCREEN
+import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.SocialUserModel
 import com.softprodigy.ballerapp.twitter_login.TwitterConstants
 import com.softprodigy.ballerapp.ui.features.home.HomeActivity
@@ -43,7 +45,8 @@ import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
 import com.softprodigy.ballerapp.ui.features.splash.SplashScreen
 import com.softprodigy.ballerapp.ui.features.user_type.TeamSetupScreen
 import com.softprodigy.ballerapp.ui.features.user_type.UserTypeScreen
-import com.softprodigy.ballerapp.ui.features.user_type.add_player.AddPlayersScreen
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.AddPlayersScreen
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.SetupTeamViewModel
 import com.softprodigy.ballerapp.ui.features.welcome.WelcomeScreen
 import com.softprodigy.ballerapp.ui.theme.BallerAppTheme
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -238,39 +241,40 @@ class MainActivity : ComponentActivity() {
 
     }
 
-    @Composable
-    fun NavControllerComposable(activity: MainActivity, twitterUser: SocialUserModel) {
-        val navController = rememberNavController()
-        val context = LocalContext.current
-        NavHost(navController, startDestination = SPLASH_SCREEN) {
+@Composable
+fun NavControllerComposable(activity: MainActivity) {
+    val navController = rememberNavController()
+    val setupTeamViewModel: SetupTeamViewModel = viewModel()
+    val context = LocalContext.current
+    NavHost(navController, startDestination = TEAM_SETUP_SCREEN) {
 
-            composable(route = SPLASH_SCREEN) {
-                SplashScreen {
-                    navController.popBackStack()
-                    navController.navigate(WELCOME_SCREEN)
-                }
+        composable(route = SPLASH_SCREEN) {
+            SplashScreen {
+                navController.popBackStack()
+                navController.navigate(WELCOME_SCREEN)
             }
+        }
 
-            composable(route = SIGN_UP_SCREEN) {
-                SignUpScreen(onSignUpSuccess = {
-                    navController.navigate(SELECT_USER_TYPE)
-                })
+        composable(route = SIGN_UP_SCREEN) {
+            SignUpScreen(onSignUpSuccess = {
+                navController.navigate(SELECT_USER_TYPE)
+            })
+        }
+
+        composable(route = WELCOME_SCREEN) {
+            WelcomeScreen {
+                navController.popBackStack()
+                navController.navigate(LOGIN_SCREEN)
             }
-
-            composable(route = WELCOME_SCREEN) {
-                WelcomeScreen {
-                    navController.popBackStack()
-                    navController.navigate(LOGIN_SCREEN)
-                }
-            }
-
+        }
         composable(route = LOGIN_SCREEN) {
             val context = LocalContext.current
             val scope = rememberCoroutineScope()
 
             LoginScreen(
                 onLoginSuccess = {
-                    navController.navigate(SELECT_USER_TYPE) {
+                    UserStorage.token = it?.token.toString()
+                    navController.navigate(SELECT_USER_TYPE){
                         navController.popBackStack()
                     }
                 },
@@ -301,18 +305,23 @@ class MainActivity : ComponentActivity() {
                 navController.navigate(PROFILE_SETUP_SCREEN)
             })
         }
-            composable(route = TEAM_SETUP_SCREEN) {
-                TeamSetupScreen(onBackClick = { navController.popBackStack() }, onNextClick = {
+        composable(route = TEAM_SETUP_SCREEN) {
+            TeamSetupScreen(
+                vm = setupTeamViewModel,
+                onBackClick = { navController.popBackStack() },
+                onNextClick = {
                     navController.navigate(ADD_PLAYER_SCREEN)
                 })
-            }
-            composable(route = ADD_PLAYER_SCREEN) {
-                AddPlayersScreen(onBackClick = { navController.popBackStack() }, onNextClick = {
+        }
+        composable(route = ADD_PLAYER_SCREEN) {
+            AddPlayersScreen(
+                vm = setupTeamViewModel,
+                onBackClick = { navController.popBackStack() },
+                onNextClick = {
                     val intent = Intent(activity, HomeActivity::class.java)
                     activity.startActivity(intent)
                     activity.finish()
                 })
-            }
         }
     }
 }
