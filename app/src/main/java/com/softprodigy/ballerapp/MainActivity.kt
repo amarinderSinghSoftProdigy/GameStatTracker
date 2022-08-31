@@ -281,11 +281,16 @@ fun NavControllerComposable(activity: MainActivity, twitterUser: SocialUserModel
             LoginScreen(
                 onLoginSuccess = {
                     UserStorage.token = it?.token.toString()
-                    navController.navigate(SELECT_USER_TYPE){
+                    /*navController.navigate(SELECT_USER_TYPE){
                         navController.popBackStack()
-                    }
+                    }*/
+                    val intent = Intent(activity, HomeActivity::class.java)
+                    activity.startActivity(intent)
+                    activity.finish()
                 },
-                onRegister = { navController.navigate(SIGN_UP_SCREEN) },
+                onRegister = {
+                    navController.navigate(SIGN_UP_SCREEN)
+                             },
                 onForgetPasswordClick = {
                     navController.navigate(FORGOT_PASSWORD_SCREEN)
                 },
@@ -295,7 +300,8 @@ fun NavControllerComposable(activity: MainActivity, twitterUser: SocialUserModel
                     }
 
                 },
-                twitterUser = twitterUser
+                twitterUser =
+                twitterUser
             )
         }
 
@@ -364,4 +370,5 @@ fun NavControllerComposable(activity: MainActivity, twitterUser: SocialUserModel
                 })
         }
     }
+
 }
