@@ -148,6 +148,7 @@ fun BottomButtons(
                 icon = null,
                 onClick = onBackClick,
                 border = ButtonDefaults.outlinedBorder,
+                modifier = Modifier.weight(1f)
             )
         } else {
             AppSpacer(
@@ -163,7 +164,8 @@ fun BottomButtons(
             text = secondText,
             onClick = onNextClick,
             icon = painterResource(id = R.drawable.ic_circle_next),
-            enabled = enableState
+            enabled = enableState,
+            modifier = Modifier.weight(1f)
         )
     }
 }

@@ -16,8 +16,6 @@ class UserTypeViewModel @Inject constructor(application: Application) :
     var userRole by mutableStateOf("")
         private set
 
-    var profileData by mutableStateOf(GlobalRequest.SetupProfile())
-        private set
 
     var teamData by mutableStateOf(GlobalRequest.SetUpTeam())
         private set
@@ -26,9 +24,6 @@ class UserTypeViewModel @Inject constructor(application: Application) :
         userRole = request.role
     }
 
-    fun saveProfileData(request: GlobalRequest.SetupProfile) {
-        profileData = request
-    }
 
     fun saveTeamData(request: GlobalRequest.SetUpTeam) {
         teamData = request

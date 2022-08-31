@@ -219,7 +219,6 @@ fun AddPlayersScreen(
                 onBackClick = { onBackClick.invoke() },
                 onNextClick = {
                     vm.onEvent(TeamSetupUIEvent.OnAddPlayerScreenNext)
-
                 },
                 enableState = state.selectedPlayers.isNotEmpty()
             )
@@ -310,22 +309,22 @@ fun PlayerListItem(
                 .padding(horizontal = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-        Image(
-            painter = painterResource(id = R.drawable.user_demo),
-            contentDescription = "",
-            modifier = Modifier
-                .size(dimensionResource(id = R.dimen.size_32dp))
-                .clip(androidx.compose.foundation.shape.CircleShape),
-        )
-        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
-        Text(
-            text = player.name,
-            style = MaterialTheme.typography.h6,
-            modifier = Modifier.weight(1f)
-        )
-        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
-        AddRemoveButton(icon, teamColor = teamColor) { onItemClick(player) }
-    }
+            Image(
+                painter = painterResource(id = R.drawable.user_demo),
+                contentDescription = "",
+                modifier = Modifier
+                    .size(dimensionResource(id = R.dimen.size_32dp))
+                    .clip(androidx.compose.foundation.shape.CircleShape),
+            )
+            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+            Text(
+                text = player.name,
+                style = MaterialTheme.typography.h6,
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+            AddRemoveButton(icon, teamColor = teamColor) { onItemClick(player) }
+        }
     }
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
 }
