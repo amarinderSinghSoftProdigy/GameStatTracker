@@ -19,9 +19,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Card
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
@@ -55,12 +59,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.KeyboardCapitalization
+
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import com.facebook.FacebookCallback
@@ -87,6 +93,7 @@ import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.SocialLoginSection
 import com.softprodigy.ballerapp.ui.theme.appColors
+import com.softprodigy.ballerapp.ui.theme.spacing
 import timber.log.Timber
 import java.util.*
 
@@ -324,7 +331,7 @@ fun SignUpScreen(
                     placeholderColor = MaterialTheme.appColors.textField.label,
                     cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
                 ),
-                isError = (!email.isValidEmail() && email.isNotEmpty()),
+                isError = (!email.isValidEmail() && email.isNotEmpty() || email.length > 45),
                 errorMessage = stringResource(id = R.string.email_error),
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
@@ -386,43 +393,50 @@ fun SignUpScreen(
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
-            Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center) {
-                AppOutlineTextField(
-                    value = gender,
+            Column {
+                Card(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .height(52.dp)
+                        .clickable {
+                            expanded = !expanded
+                        }
                         .onGloballyPositioned {
                             textFieldSize = it.size.toSize()
                         },
-                    onValueChange = {
-                        gender = it
-                    },
-                    placeholder = {
-                        Text(
-                            text = stringResource(id = R.string.select_gender),
-                            fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                            textAlign = TextAlign.Center
-                        )
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        capitalization = KeyboardCapitalization.Sentences
+                    border = BorderStroke(
+                        0.5.dp,
+                        MaterialTheme.appColors.editField.borderUnFocused
                     ),
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
-                        unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
-                        backgroundColor = MaterialTheme.appColors.material.background,
-                        textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                        placeholderColor = MaterialTheme.appColors.textField.label,
-                        cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
-                    ),
-                    trailingIcon = {
-                        Icon(
-                            icon,
-                            contentDescription = null,
-                            modifier = Modifier.clickable { expanded = !expanded })
+                    backgroundColor = MaterialTheme.appColors.material.background,
+                    shape = RoundedCornerShape(MaterialTheme.spacing.small),
+                    elevation = 0.dp
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(start = 13.dp, end = 13.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        if (gender.isEmpty()) {
+                            AppText(
+                                text = stringResource(id = R.string.select_gender),
+                                textAlign = TextAlign.Center,
+                                color = MaterialTheme.appColors.textField.label,
+                                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
+                            )
+                        } else {
+                            AppText(
+                                text = gender,
+                                textAlign = TextAlign.Center,
+                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                style = androidx.compose.material.LocalTextStyle.current
+                            )
+                        }
                     }
-                )
+                }
+
                 DropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false },

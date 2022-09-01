@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
@@ -46,8 +47,12 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.R
@@ -193,6 +198,54 @@ fun ConfirmPhoneScreen(
                 text = stringResource(id = R.string.verify),
                 icon = painterResource(id = R.drawable.ic_circle_next)
             )
+
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+
+            val annotatedText = buildAnnotatedString {
+
+                withStyle(
+                    style = SpanStyle(
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    )
+                ) {
+                    append(stringResource(id = R.string.did_not_recieve_sms))
+                }
+                append(" ")
+                pushStringAnnotation(
+                    tag = stringResource(id = R.string.code),
+                    annotation = stringResource(id = R.string.code)
+                )
+                withStyle(
+                    style = SpanStyle(
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        textDecoration = TextDecoration.Underline
+                    )
+                ) {
+                    append(stringResource(id = R.string.code))
+                }
+
+                pop()
+
+            }
+
+            ClickableText(
+                text = annotatedText,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally),
+                onClick = {
+                    annotatedText.getStringAnnotations(
+                        tag = "Resend Code",
+                        start = it,
+                        end = it
+                    ).forEach { _ ->
+                        viewModel.onEvent(
+                            SignUpUIEvent.OnVerifyNumber
+                        )
+                    }
+                },
+                style = MaterialTheme.typography.h4
+            )
+
         }
     }
 }

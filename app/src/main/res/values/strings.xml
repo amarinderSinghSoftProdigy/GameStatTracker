@@ -107,6 +107,7 @@
     <string name="female">Female</string>
     <string name="sign_up">Signup</string>
     <string name="new_user">New User?</string>
+
     <string name="already_registered">Already Registered?</string>
     <string name="enter_otp">Enter OTP</string>
     <string name="welcome_back">Welcome Back!</string>
@@ -125,6 +126,8 @@
     <string name="my_leagues">My Leagues</string>
     <string name="opportunities">Opportunities</string>
     <string name="no_team_selected">Please select a team first.</string>
+    <string name="did_not_recieve_sms">"Didn't receive SMS? "</string>
+    <string name="code">Resend Code</string>
 
 
 </resources>
