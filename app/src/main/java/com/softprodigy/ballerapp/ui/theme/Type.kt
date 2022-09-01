@@ -1,7 +1,6 @@
 package com.softprodigy.ballerapp.ui.theme
 
 import androidx.compose.material.Typography
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -39,6 +38,11 @@ val Typography = Typography(
         fontSize = 18.sp,
         fontFamily = rubikFamily
 
+    ),
+    h5 = TextStyle(
+        fontWeight = FontWeight.W400,
+        fontSize = 14.sp,
+        fontFamily = rubikFamily
     ),
     h4 = TextStyle(
         fontWeight = FontWeight.W400,

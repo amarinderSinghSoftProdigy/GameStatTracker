@@ -5,7 +5,6 @@ import android.app.Dialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -72,10 +71,11 @@ val LocalFacebookCallbackManager =
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private var callbackManager = CallbackManager.Factory.create();
+    private var callbackManager = CallbackManager.Factory.create()
     lateinit var twitterDialog: Dialog
     lateinit var twitter: Twitter
     var accToken: AccessToken? = null
+    private var user = "login"
     private var id = ""
     private var handle = ""
     private var name = ""
@@ -83,6 +83,7 @@ class MainActivity : ComponentActivity() {
     private var profilePicURL = ""
     private var accessToken = ""
     val twitterUser = mutableStateOf(SocialUserModel())
+    val twitterUserRegister = mutableStateOf(SocialUserModel())
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -105,7 +106,8 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    fun getRequestToken() {
+    fun getRequestToken(type: String) {
+        user = type
         lifecycleScope.launch(Dispatchers.Default) {
             val builder = ConfigurationBuilder()
                 .setDebugEnabled(true)
@@ -121,7 +123,7 @@ class MainActivity : ComponentActivity() {
                     setupTwitterWebviewDialog(requestToken.authorizationURL)
                 }
             } catch (e: IllegalStateException) {
-                Log.e("ERROR: ", e.toString())
+                e.printStackTrace()
             }
         }
     }
@@ -151,7 +153,7 @@ class MainActivity : ComponentActivity() {
             if (request?.url.toString()
                     .startsWith(TwitterConstants.CALLBACK_URL, ignoreCase = true)
             ) {
-                Log.d("Authorization URL: ", request?.url.toString())
+                Timber.e("Authorization URL: ", ""+request?.url.toString())
                 handleUrl(request?.url.toString())
                 // Close the dialog after getting the oauth_verifier
                 if (request?.url.toString()
@@ -214,7 +216,11 @@ class MainActivity : ComponentActivity() {
             Timber.d("Twitter Access Token", accToken?.token ?: "")
             accessToken = accToken?.token ?: ""
             val socialUserModel = SocialUserModel(name = name, id = twitterId, email = twitterEmail)
-            twitterUser.value = socialUserModel
+            if (user == "login") {
+                twitterUser.value = socialUserModel
+            } else {
+                twitterUserRegister.value = socialUserModel
+            }
         }
 
     }
@@ -250,11 +256,11 @@ fun NavControllerComposable(activity: MainActivity) {
             },
                 onTwitterClick = {
                     scope.launch {
-                        (context as MainActivity).getRequestToken()
+                        (context as MainActivity).getRequestToken("signup")
                     }
 
                 },
-                twitterUser = activity.twitterUser.value,
+                twitterUser = activity.twitterUserRegister.value,
                 onLoginSuccess = { userInfo ->
                     if (!userInfo.user.role.equals(
                             AppConstants.USER_TYPE_USER,
@@ -295,7 +301,7 @@ fun NavControllerComposable(activity: MainActivity) {
                 },
                 onTwitterClick = {
                     scope.launch {
-                        (context as MainActivity).getRequestToken()
+                        (context as MainActivity).getRequestToken("login")
                     }
 
                 },
