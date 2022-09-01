@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.baller_app.core.util.UiText
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.TeamSetupUIEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -45,13 +44,6 @@ class TeamViewModel @Inject constructor(
             }
             is TeamUIEvent.OnTeamSelected -> {
                 _teamUiState.value = _teamUiState.value.copy(selectedTeam = event.team)
-                TeamSetupUIEvent.OnColorSelected(
-                    event.team.colorCode.replace(
-                        "#",
-                        ""
-                    )
-
-                )
             }
         }
     }

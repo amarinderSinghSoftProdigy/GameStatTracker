@@ -24,12 +24,15 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.Team
 import com.softprodigy.ballerapp.ui.features.components.LeadingIconAppButton
 import com.softprodigy.ballerapp.ui.features.components.SelectTeamDialog
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.SetupTeamViewModel
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.TeamSetupUIEvent
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
 fun TeamsScreen(
     name: String?,
     showDialog: Boolean,
+    setupTeamViewModel: SetupTeamViewModel,
     dismissDialog: (Boolean) -> Unit,
     addPlayerClick: (Team) -> Unit
 ) {
@@ -38,6 +41,14 @@ fun TeamsScreen(
     val state = vm.teamUiState.value
     val onTeamSelectionChange = { team: Team ->
         vm.onEvent(TeamUIEvent.OnTeamSelected(team))
+        setupTeamViewModel.onEvent(
+            TeamSetupUIEvent.OnColorSelected(
+                team.colorCode.replace(
+                    "#",
+                    ""
+                )
+            )
+        )
     }
     val message = stringResource(id = R.string.no_team_selected)
     LaunchedEffect(key1 = Unit) {
