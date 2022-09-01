@@ -143,17 +143,20 @@ fun NavControllerComposable(
                 dismissDialog = dismissDialog,
                 setupTeamViewModel = setupTeamViewModel
             ) {
-                navController.navigate(Route.ADD_PLAYER_SCREEN)
+                navController.navigate(Route.ADD_PLAYER_SCREEN + "/${it.Id}")
             }
         }
         composable(route = Route.EVENTS_SCREEN) {
             EventsScreen(name = "")
         }
 
-        composable(route = Route.ADD_PLAYER_SCREEN+"/{teamId}",arguments = listOf(
-            navArgument("teamId") {
-                type = NavType.StringType
-            }),) {
+        composable(
+            route = Route.ADD_PLAYER_SCREEN + "/{teamId}",
+            arguments = listOf(
+                navArgument("teamId") {
+                    type = NavType.StringType
+                }),
+        ) {
             homeViewModel.setScreen(true)
             val teamId = it.arguments?.getString("teamId")
             AddPlayersScreen(
