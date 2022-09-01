@@ -6,6 +6,6 @@ import com.softprodigy.ballerapp.data.response.Team
 data class TeamUIState(
     val isLoading: Boolean = false,
     val teams: ArrayList<Team> = ArrayList(),
-    val selectedTeam: Team = Team(),
+    val selectedTeam: Team? = null,
     val showDialog: Boolean = false,
 )

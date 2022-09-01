@@ -27,13 +27,19 @@ import com.softprodigy.ballerapp.ui.features.components.SelectTeamDialog
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun TeamsScreen(name: String?, showDialog: Boolean, dismissDialog: (Boolean) -> Unit) {
+fun TeamsScreen(
+    name: String?,
+    showDialog: Boolean,
+    dismissDialog: (Boolean) -> Unit,
+    addPlayerClick: (Team) -> Unit
+) {
     val vm: TeamViewModel = hiltViewModel()
     val context = LocalContext.current
     val state = vm.teamUiState.value
     val onTeamSelectionChange = { team: Team ->
         vm.onEvent(TeamUIEvent.OnTeamSelected(team))
     }
+    val message = stringResource(id = R.string.no_team_selected)
     LaunchedEffect(key1 = Unit) {
         vm.teamChannel.collect { uiEvent ->
             when (uiEvent) {
@@ -42,8 +48,7 @@ fun TeamsScreen(name: String?, showDialog: Boolean, dismissDialog: (Boolean) -> 
                         context,
                         uiEvent.message.asString(context),
                         Toast.LENGTH_LONG
-                    )
-                        .show()
+                    ).show()
                 }
             }
         }
@@ -86,10 +91,17 @@ fun TeamsScreen(name: String?, showDialog: Boolean, dismissDialog: (Boolean) -> 
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
+
             LeadingIconAppButton(
                 icon = painterResource(id = R.drawable.ic_add_player),
                 text = stringResource(id = R.string.add_players),
-                onClick = {},
+                onClick = {
+                    if (state.selectedTeam == null) {
+                        vm.onEvent(TeamUIEvent.ShowToast(message))
+                    } else {
+                        addPlayerClick(state.selectedTeam)
+                    }
+                },
             )
         }
     }

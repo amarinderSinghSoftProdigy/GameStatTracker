@@ -99,7 +99,7 @@ fun SelectTeamDialog(
     onDismiss: () -> Unit,
     onConfirmClick: () -> Unit,
     onSelectionChange: (Team) -> Unit,
-    selected: Team,
+    selected: Team?,
     teams: ArrayList<Team>
 ) {
     BallerAppTheme {
@@ -177,7 +177,7 @@ fun SelectTeamDialog(
                         modifier = Modifier
                             .weight(1f),
                         border = ButtonDefaults.outlinedBorder,
-                        enabled = selected.name.isNotEmpty(),
+                        enabled = (selected?.name ?: "").isNotEmpty(),
                         onlyBorder = false,
                     )
                 }
@@ -207,7 +207,7 @@ fun TeamListItem(team: Team, selected: Boolean, onClick: (Team) -> Unit) {
                 ), verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = BuildConfig.API_SERVER + "/" + team.logo,
+                model = BuildConfig.IMAGE_SERVER  + team.logo,
                 contentDescription = "",
                 modifier = Modifier
                     .size(dimensionResource(id = R.dimen.size_32dp))

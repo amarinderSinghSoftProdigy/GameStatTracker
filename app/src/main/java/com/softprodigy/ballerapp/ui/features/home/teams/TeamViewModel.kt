@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.baller_app.core.util.UiText
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.TeamSetupUIEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -33,15 +34,36 @@ class TeamViewModel @Inject constructor(
 
     fun onEvent(event: TeamUIEvent) {
         when (event) {
-            TeamUIEvent.OnConfirmTeamClick -> {
+            is TeamUIEvent.OnConfirmTeamClick -> {
                 viewModelScope.launch { getTeamByTeamId() }
-
             }
-            TeamUIEvent.OnDismissClick -> {}
+            is TeamUIEvent.OnDismissClick -> {}
+            is TeamUIEvent.ShowToast -> {
+                viewModelScope.launch {
+                    showToast(event.message)
+                }
+            }
             is TeamUIEvent.OnTeamSelected -> {
                 _teamUiState.value = _teamUiState.value.copy(selectedTeam = event.team)
+                TeamSetupUIEvent.OnColorSelected(
+                    event.team.colorCode.replace(
+                        "#",
+                        ""
+                    )
+
+                )
             }
         }
+    }
+
+    private suspend fun showToast(message: String) {
+        _teamChannel.send(
+            TeamChannel.ShowToast(
+                UiText.DynamicString(
+                    message
+                )
+            )
+        )
     }
 
     private suspend fun getTeams() {
@@ -86,7 +108,8 @@ class TeamViewModel @Inject constructor(
     }
 
     private suspend fun getTeamByTeamId() {
-        when (val teamResponse = teamRepo.getTeamsByTeamID(_teamUiState.value.selectedTeam.Id)) {
+        when (val teamResponse =
+            teamRepo.getTeamsByTeamID(_teamUiState.value.selectedTeam?.Id ?: "")) {
             is ResultWrapper.GenericError -> {
                 _teamChannel.send(
                     TeamChannel.ShowToast(

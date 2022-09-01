@@ -51,6 +51,7 @@ fun stringResourceByName(name: String): String {
     }.getOrNull()?.let { stringResource(id = it) } ?: name else ""
 }
 
+fun fromHex(color: String? = "0177C1") = Color(android.graphics.Color.parseColor("#" + color))
 
 @Composable
 fun TabBar(

@@ -123,6 +123,7 @@
     <string name="my_events">My Events</string>
     <string name="my_leagues">My Leagues</string>
     <string name="opportunities">Opportunities</string>
+    <string name="no_team_selected">Please select a team first.</string>
 
 
 </resources>

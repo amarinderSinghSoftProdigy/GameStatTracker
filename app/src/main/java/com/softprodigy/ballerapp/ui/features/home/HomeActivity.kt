@@ -3,13 +3,16 @@ package com.softprodigy.ballerapp.ui.features.home
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowCompat
@@ -20,21 +23,22 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
-import com.softprodigy.ballerapp.common.Route.EVENTS_SCREEN
-import com.softprodigy.ballerapp.common.Route.HOME_SCREEN
-import com.softprodigy.ballerapp.common.Route.TEAMS_SCREEN
+import com.softprodigy.ballerapp.common.Route
+import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
 import com.softprodigy.ballerapp.ui.features.components.BottomNavigationBar
 import com.softprodigy.ballerapp.ui.features.components.CommonTabView
 import com.softprodigy.ballerapp.ui.features.components.TabBar
+import com.softprodigy.ballerapp.ui.features.components.fromHex
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.AddPlayersScreen
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.SetupTeamViewModel
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
 import com.softprodigy.ballerapp.ui.theme.appColors
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class HomeActivity : ComponentActivity() {
-
 
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +47,10 @@ class HomeActivity : ComponentActivity() {
         setContent {
             val homeViewModel: HomeViewModel = hiltViewModel()
             val state = homeViewModel.state.value
-
+            val dataStoreManager = DataStoreManager(LocalContext.current)
+            val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
+            AppConstants.SELECTED_COLOR = fromHex(color.value)
+            homeViewModel.setColor(AppConstants.SELECTED_COLOR)
             BallerAppMainTheme(customColor = state.color ?: Color.White) {
                 val navController = rememberNavController()
                 val showDialog = remember { mutableStateOf(false) }
@@ -52,7 +59,7 @@ class HomeActivity : ComponentActivity() {
                 Scaffold(
                     backgroundColor = MaterialTheme.appColors.material.primary,
                     topBar = {
-                        if (userType.value != BottomNavKey.HOME) {
+                        if (userType.value != BottomNavKey.HOME || state.screen) {
                             TabBar(color = MaterialTheme.appColors.material.primaryVariant) {
                                 CommonTabView(
                                     canMoveBack = false,
@@ -78,6 +85,7 @@ class HomeActivity : ComponentActivity() {
                     },
                     content = {
                         NavControllerComposable(
+                            homeViewModel,
                             navController = navController,
                             showDialog = showDialog.value,
                             dismissDialog = {
@@ -85,13 +93,13 @@ class HomeActivity : ComponentActivity() {
                             })
                     },
                     bottomBar = {
-                        BottomNavigationBar(
-                            navController = navController,
-                            selectionColor = state.color ?: Color.Black
-                        ) {
-                            userType.value = it
-                            homeViewModel.setColor(AppConstants.SELECTED_COLOR)
-                        }
+                        if (!state.screen)
+                            BottomNavigationBar(
+                                navController = navController,
+                                selectionColor = state.color ?: Color.Black
+                            ) {
+                                userType.value = it
+                            }
                     },
                 )
             }
@@ -101,19 +109,38 @@ class HomeActivity : ComponentActivity() {
 
 @Composable
 fun NavControllerComposable(
+    homeViewModel: HomeViewModel,
     showDialog: Boolean = false,
     dismissDialog: (Boolean) -> Unit,
     navController: NavHostController = rememberNavController()
 ) {
-    NavHost(navController, startDestination = HOME_SCREEN) {
-        composable(route = HOME_SCREEN) {
+    val setupTeamViewModel: SetupTeamViewModel = hiltViewModel()
+    NavHost(navController, startDestination = Route.HOME_SCREEN) {
+        composable(route = Route.HOME_SCREEN) {
             HomeScreen(name = "")
         }
-        composable(route = TEAMS_SCREEN) {
-            TeamsScreen(name = "", showDialog = showDialog, dismissDialog = dismissDialog)
+        composable(route = Route.TEAMS_SCREEN) {
+            BackHandler {
+                homeViewModel.setScreen(false)
+            }
+            TeamsScreen(name = "", showDialog = showDialog, dismissDialog = dismissDialog) {
+                navController.navigate(Route.ADD_PLAYER_SCREEN)
+            }
         }
-        composable(route = EVENTS_SCREEN) {
+        composable(route = Route.EVENTS_SCREEN) {
             EventsScreen(name = "")
+        }
+
+        composable(route = Route.ADD_PLAYER_SCREEN) {
+            homeViewModel.setScreen(true)
+            AddPlayersScreen(
+                vm = setupTeamViewModel,
+                onBackClick = { navController.popBackStack() },
+                onNextClick = {
+                    homeViewModel.setScreen(false)
+                    navController.popBackStack()
+                    //navController.navigate(TEAMS_SCREEN)
+                })
         }
     }
 }

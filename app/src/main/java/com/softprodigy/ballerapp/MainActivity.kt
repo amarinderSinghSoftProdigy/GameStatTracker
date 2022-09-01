@@ -14,7 +14,12 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
@@ -24,7 +29,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.facebook.CallbackManager
-import com.google.gson.Gson
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.Route.ADD_PLAYER_SCREEN
 import com.softprodigy.ballerapp.common.Route.FORGOT_PASSWORD_SCREEN
@@ -209,7 +213,7 @@ class MainActivity : ComponentActivity() {
             profilePicURL = twitterProfilePic
             Timber.d("Twitter Access Token", accToken?.token ?: "")
             accessToken = accToken?.token ?: ""
-            val socialUserModel = SocialUserModel(name=name,id = twitterId, email = twitterEmail)
+            val socialUserModel = SocialUserModel(name = name, id = twitterId, email = twitterEmail)
             twitterUser.value = socialUserModel
         }
 
@@ -243,14 +247,11 @@ fun NavControllerComposable(activity: MainActivity) {
                 navController.navigate(LOGIN_SCREEN)
             }, onSignUpSuccess = {
                 navController.navigate(SELECT_USER_TYPE)
-            },
-                onTwitterClick = {
-                    scope.launch {
-                        (context as MainActivity).getRequestToken()
-                    }
-
-                },
-                twitterUser = activity.twitterUser.value,
+            }, onTwitterClick = {
+                scope.launch {
+                    (context as MainActivity).getRequestToken()
+                }
+            }, twitterUser = activity.twitterUser.value,
                 onLoginSuccess = { userInfo ->
                     if (!userInfo.user.role.equals(
                             AppConstants.USER_TYPE_USER,
@@ -355,7 +356,7 @@ fun NavControllerComposable(activity: MainActivity) {
 }
 
 
-fun moveToHome(activity: MainActivity){
+fun moveToHome(activity: MainActivity) {
     val intent = Intent(activity, HomeActivity::class.java)
     activity.startActivity(intent)
     activity.finish()

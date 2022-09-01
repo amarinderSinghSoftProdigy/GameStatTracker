@@ -18,4 +18,8 @@ class HomeViewModel @Inject constructor(application: Application) :
     fun setColor(color: Color) {
         _state.value = HomeState(color = color)
     }
+
+    fun setScreen(screen: Boolean) {
+        _state.value = HomeState(screen = screen)
+    }
 }

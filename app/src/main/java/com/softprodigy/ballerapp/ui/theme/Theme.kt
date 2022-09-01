@@ -121,7 +121,7 @@ fun BallerAppTheme(
     val sysUiController = rememberSystemUiController()
     SideEffect {
         sysUiController.setStatusBarColor(
-            color = Color.Transparent,
+            color = md_theme_light_primary,
             darkIcons = !darkTheme
         )
     }
