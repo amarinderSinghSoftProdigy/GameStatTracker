@@ -9,14 +9,17 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.Route.EVENTS_SCREEN
 import com.softprodigy.ballerapp.common.Route.HOME_SCREEN
 import com.softprodigy.ballerapp.common.Route.TEAMS_SCREEN
@@ -32,12 +35,16 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class HomeActivity : ComponentActivity() {
 
+
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, true)
         setContent {
-            BallerAppMainTheme {
+            val homeViewModel: HomeViewModel = hiltViewModel()
+            val state = homeViewModel.state.value
+
+            BallerAppMainTheme(customColor = state.color ?: Color.White) {
                 val navController = rememberNavController()
                 val showDialog = remember { mutableStateOf(false) }
                 val userType = remember { mutableStateOf(BottomNavKey.HOME) }
@@ -50,7 +57,17 @@ class HomeActivity : ComponentActivity() {
                                 CommonTabView(
                                     canMoveBack = false,
                                     user = userType.value,
-                                    label = stringResource(id = R.string.coach_label),
+                                    label = when (userType.value) {
+                                        BottomNavKey.TEAMS -> {
+                                            stringResource(id = R.string.teams_label)
+                                        }
+                                        BottomNavKey.EVENTS -> {
+                                            stringResource(id = R.string.events_label)
+                                        }
+                                        else -> {
+                                            ""
+                                        }
+                                    },
                                     icon = painterResource(id = R.drawable.ic_settings),
                                     onLabelClick = {
                                         showDialog.value = true
@@ -60,7 +77,6 @@ class HomeActivity : ComponentActivity() {
                         }
                     },
                     content = {
-
                         NavControllerComposable(
                             navController = navController,
                             showDialog = showDialog.value,
@@ -69,8 +85,12 @@ class HomeActivity : ComponentActivity() {
                             })
                     },
                     bottomBar = {
-                        BottomNavigationBar(navController = navController) {
+                        BottomNavigationBar(
+                            navController = navController,
+                            selectionColor = state.color ?: Color.Black
+                        ) {
                             userType.value = it
+                            homeViewModel.setColor(AppConstants.SELECTED_COLOR)
                         }
                     },
                 )

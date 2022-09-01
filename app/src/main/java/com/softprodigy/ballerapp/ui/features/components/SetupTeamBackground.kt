@@ -1,6 +1,7 @@
 package com.softprodigy.ballerapp.ui.features.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -41,8 +42,10 @@ fun CoachFlowBackground(
     teamLogo: String? = null
 ) {
     val ballColor = colorResource(id = R.color.ball_color)
-    Surface() {
-        Box(modifier = Modifier.fillMaxSize()) {
+    Surface(color = Color.Transparent) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.Transparent)) {
             Surface(
                 shape = CircleShape,
                 color = (if (colorCode.isNullOrEmpty()) ballColor else Color(

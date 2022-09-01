@@ -137,9 +137,6 @@ dependencies {
 
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
 
-    // Horizontal Pager
-    implementation 'com.google.accompanist:accompanist-pager:0.12.0'
-
     // Country Code Picker
     implementation 'com.github.togisoft:jetpack_compose_country_code_picker:1.1.3'
 
@@ -154,4 +151,8 @@ dependencies {
 
     //Paging 3.0
     implementation 'androidx.paging:paging-compose:1.0.0-alpha10'
+
+    // Paging Compose
+    implementation "com.google.accompanist:accompanist-pager:0.13.0"
+    implementation "com.google.accompanist:accompanist-pager-indicators:0.13.0"
 }

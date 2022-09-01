@@ -12,6 +12,7 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.getFileFromUri
+import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.CreateTeamRequest
 import com.softprodigy.ballerapp.data.response.Player
 import com.softprodigy.ballerapp.domain.repository.IImageUploadRepo
@@ -26,6 +27,7 @@ import javax.inject.Inject
 class SetupTeamViewModel @Inject constructor(
     private val teamRepo: ITeamRepository,
     private val imageUploadRepo: IImageUploadRepo,
+    private val dataStoreManager: DataStoreManager,
     application: Application
 ) : AndroidViewModel(application) {
 
@@ -40,6 +42,9 @@ class SetupTeamViewModel @Inject constructor(
             is TeamSetupUIEvent.OnColorSelected -> {
                 _teamSetupUiState.value =
                     _teamSetupUiState.value.copy(teamColor = event.selectedColor)
+                viewModelScope.launch {
+                    dataStoreManager.setColor(event.selectedColor)
+                }
             }
             is TeamSetupUIEvent.OnImageSelected -> {
                 _teamSetupUiState.value =

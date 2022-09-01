@@ -48,6 +48,7 @@ import com.softprodigy.ballerapp.ui.theme.appColors
 fun BottomNavigationBar(
     navController: NavController,
     height: Dp = dimensionResource(id = R.dimen.size_64dp),
+    selectionColor: Color = MaterialTheme.appColors.material.primaryVariant,
     selectedValue: (BottomNavKey) -> Unit
 ) {
     val selected: MutableState<BottomNavKey> = remember { mutableStateOf(BottomNavKey.HOME) }
@@ -91,7 +92,7 @@ fun BottomNavigationBar(
                                 modifier = Modifier.align(Alignment.CenterHorizontally),
                                 painter = painterResource(id = item.icon),
                                 contentDescription = null,
-                                tint = if (selected.value == item.key) MaterialTheme.appColors.material.primaryVariant else ColorBWGrayLight
+                                tint = if (selected.value == item.key) selectionColor else ColorBWGrayLight
                             )
                             Text(
                                 modifier = Modifier
@@ -100,7 +101,7 @@ fun BottomNavigationBar(
                                 textAlign = TextAlign.Center,
                                 text = stringResourceByName(item.key.resId),
                                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                                color = if (selected.value == item.key) MaterialTheme.appColors.material.primaryVariant else ColorBWGrayLight
+                                color = if (selected.value == item.key) selectionColor else ColorBWGrayLight
                             )
                         }
                     }
@@ -144,7 +145,7 @@ enum class BottomNavKey(val resId: String, val route: String) {
     //Add items to add in the bottom navigation
 }
 
-enum class UserType(val stringId: String,val key: String) {
+enum class UserType(val stringId: String, val key: String) {
     PLAYER("player_label", "player"),
     COACH("coach_label", "coach"),
     REFEREE("home_label", "referee"),

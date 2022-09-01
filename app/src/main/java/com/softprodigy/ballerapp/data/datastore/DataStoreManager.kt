@@ -58,9 +58,14 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
         preferences[USER_NAME] ?: ""
     }
 
-    /*val getPassword: Flow<String> = settingsDataStore.data.map { preferences ->
-        preferences[PASSWORD] ?: ""
-    }*/
+    val getColor: Flow<String> = settingsDataStore.data.map { preferences ->
+        preferences[COLOR] ?: ""
+    }
+    suspend fun setColor(color: String) {
+        settingsDataStore.edit { settings ->
+            settings[COLOR] = color
+        }
+    }
 
     companion object {
         val USER_TOKEN = stringPreferencesKey("USER_TOKEN")
@@ -68,6 +73,6 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
         val LOGOUT = stringPreferencesKey("LOGOUT")
         val USER_TAP = stringPreferencesKey("USER_TAP")
         val USER_NAME = stringPreferencesKey("USER_NAME")
-        val PASSWORD = stringPreferencesKey("PASSWORD")
+        val COLOR = stringPreferencesKey("COLOR")
     }
 }

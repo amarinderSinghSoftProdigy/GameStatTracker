@@ -19,10 +19,12 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -31,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
 import com.softprodigy.ballerapp.ui.features.components.PagerIndicator
@@ -42,8 +45,10 @@ import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
 fun HomeScreen(name: String?) {
+    val dataStoreManager = DataStoreManager(LocalContext.current)
+    val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
     Box {
-        CoachFlowBackground(/*colorCode = MaterialTheme.appColors.material.primaryVariant*/)
+        CoachFlowBackground(colorCode = color.value.ifEmpty { "0177C1" })
         Column(
             Modifier
                 .fillMaxWidth()
