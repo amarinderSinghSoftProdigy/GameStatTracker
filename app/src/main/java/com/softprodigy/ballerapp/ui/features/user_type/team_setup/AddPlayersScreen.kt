@@ -2,12 +2,30 @@ package com.softprodigy.ballerapp.ui.features.user_type.team_setup
 
 import android.annotation.SuppressLint
 import android.widget.Toast
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -27,11 +45,15 @@ import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.validName
 import com.softprodigy.ballerapp.data.response.Player
-import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.components.AppSearchOutlinedTextField
+import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.BottomButtons
+import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
+import com.softprodigy.ballerapp.ui.features.components.DeleteDialog
+import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
 import com.softprodigy.ballerapp.ui.theme.appColors
-import java.util.*
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
@@ -115,12 +137,12 @@ fun AddPlayersScreen(
                             },
                             singleLine = true
                         )
-                        Icon(
+                        /*Icon(
                             painter = painterResource(id = R.drawable.ic_scanner),
                             contentDescription = "",
                             modifier = Modifier.padding(dimensionResource(id = R.dimen.size_16dp)),
                             tint = Color.Unspecified
-                        )
+                        )*/
                     }
 
                     if (!validName(state.search) && state.search.isNotEmpty()) {
