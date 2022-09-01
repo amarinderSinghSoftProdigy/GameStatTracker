@@ -104,11 +104,9 @@ fun AddPlayersScreen(
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
 
-            UserFlowBackground(modifier = Modifier.fillMaxSize()) {
+            UserFlowBackground(modifier = Modifier.weight(1F)) {
                 Column(
-                    Modifier
-                        .fillMaxSize()
-                        .padding(all = dimensionResource(id = R.dimen.size_16dp))
+                    Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp))
                 ) {
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
