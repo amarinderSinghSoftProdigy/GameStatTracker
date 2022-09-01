@@ -10,17 +10,11 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
@@ -29,9 +23,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.facebook.CallbackManager
 import com.google.gson.Gson
+import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.Route.ADD_PLAYER_SCREEN
 import com.softprodigy.ballerapp.common.Route.FORGOT_PASSWORD_SCREEN
 import com.softprodigy.ballerapp.common.Route.LOGIN_SCREEN
@@ -44,14 +38,13 @@ import com.softprodigy.ballerapp.common.Route.WELCOME_SCREEN
 import com.softprodigy.ballerapp.data.SocialUserModel
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.data.request.SignUpData
-import com.softprodigy.ballerapp.data.request.SignUpType
 import com.softprodigy.ballerapp.twitter_login.TwitterConstants
 import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordScreen
 import com.softprodigy.ballerapp.ui.features.home.HomeActivity
 import com.softprodigy.ballerapp.ui.features.login.LoginScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.ProfileSetUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
+import com.softprodigy.ballerapp.ui.features.sign_up.SignUpViewModel
 import com.softprodigy.ballerapp.ui.features.splash.SplashScreen
 import com.softprodigy.ballerapp.ui.features.user_type.TeamSetupScreen
 import com.softprodigy.ballerapp.ui.features.user_type.UserTypeScreen
@@ -227,9 +220,11 @@ class MainActivity : ComponentActivity() {
 fun NavControllerComposable(activity: MainActivity) {
     val navController = rememberNavController()
     val setupTeamViewModel: SetupTeamViewModel = viewModel()
+    val signUpViewModel: SignUpViewModel = viewModel()
     val context = LocalContext.current
     val dataStoreManager = DataStoreManager(activity)
     val userToken = dataStoreManager.userToken.collectAsState(initial = "")
+    val scope = rememberCoroutineScope()
     NavHost(navController, startDestination = SPLASH_SCREEN) {
 
         composable(route = SPLASH_SCREEN) {
@@ -244,12 +239,31 @@ fun NavControllerComposable(activity: MainActivity) {
         }
 
         composable(route = SIGN_UP_SCREEN) {
-            SignUpScreen(onLoginScreen = {
+            SignUpScreen(vm = signUpViewModel, onLoginScreen = {
                 navController.navigate(LOGIN_SCREEN)
             }, onSignUpSuccess = {
-                val json = Uri.encode(Gson().toJson(it))
-                navController.navigate("${SELECT_USER_TYPE}/${json}")
-            })
+                navController.navigate(SELECT_USER_TYPE)
+            },
+                onTwitterClick = {
+                    scope.launch {
+                        (context as MainActivity).getRequestToken()
+                    }
+
+                },
+                twitterUser = activity.twitterUser.value,
+                onLoginSuccess = { userInfo ->
+                    if (!userInfo.user.role.equals(
+                            AppConstants.USER_TYPE_USER,
+                            ignoreCase = true
+                        )
+                    ) {
+                        moveToHome(activity)
+                    } else {
+                        navController.navigate(SELECT_USER_TYPE) {
+                            navController.popBackStack()
+                        }
+                    }
+                })
         }
 
         composable(route = WELCOME_SCREEN) {
@@ -259,7 +273,6 @@ fun NavControllerComposable(activity: MainActivity) {
             }
         }
         composable(route = LOGIN_SCREEN) {
-            val scope = rememberCoroutineScope()
             LoginScreen(
                 onLoginSuccess = {
                     UserStorage.token = it?.token.toString()
@@ -295,12 +308,10 @@ fun NavControllerComposable(activity: MainActivity) {
         }
 
         composable(
-            route = "${PROFILE_SETUP_SCREEN}/{signUp}",
-            arguments = listOf(navArgument("signUp") { type = SignUpType() })
+            route = PROFILE_SETUP_SCREEN,
         ) {
-            val signUpData = it.arguments?.getParcelable<SignUpData>("signUp")
             ProfileSetUpScreen(
-                signUpData,
+                signUpViewModel = signUpViewModel,
                 onNext = {
                     navController.navigate(TEAM_SETUP_SCREEN) {
                         navController.popBackStack()
@@ -313,19 +324,14 @@ fun NavControllerComposable(activity: MainActivity) {
         }
 
         composable(
-            route = "${SELECT_USER_TYPE}/{signUp}",
-            arguments = listOf(navArgument("signUp") { type = SignUpType() })
+            route = SELECT_USER_TYPE
         ) {
-
-            val mSignUpData = it.arguments?.getParcelable<SignUpData>("signUp")
-
-            BackHandler(true) {
-            }
-
-            UserTypeScreen(mSignUpData, onNextClick = { userType, signUpData ->
-                val json = Uri.encode(Gson().toJson(signUpData))
-                navController.navigate("${PROFILE_SETUP_SCREEN}/${json}")
-            })
+            UserTypeScreen(
+                signUpvm = signUpViewModel,
+                onNextClick = {
+                    navController.navigate(PROFILE_SETUP_SCREEN)
+                }
+            )
         }
 
         composable(route = TEAM_SETUP_SCREEN) {

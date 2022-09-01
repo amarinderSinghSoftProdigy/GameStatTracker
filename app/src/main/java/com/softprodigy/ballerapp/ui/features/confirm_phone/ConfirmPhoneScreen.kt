@@ -66,7 +66,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ConfirmPhoneScreen(
     onDismiss: () -> Unit,
-    viewModel: SignUpViewModel = hiltViewModel(),
+    viewModel: SignUpViewModel,
     phoneNumber: String
 ) {
 

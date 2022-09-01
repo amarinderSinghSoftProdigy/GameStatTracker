@@ -1,6 +1,7 @@
 package com.softprodigy.ballerapp.common
 
 import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import com.softprodigy.ballerapp.domain.BaseResponse
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
@@ -24,11 +25,17 @@ suspend fun <T> safeApiCall(
                 is HttpException -> {
                     val code = throwable.code()
                     val errorBody = throwable.response()?.errorBody()?.string()
-                    val gsonErrorBody = Gson().fromJson(
-                        errorBody,
-                        BaseResponse::class.java
-                    )
-                    val message = gsonErrorBody.statusMessage
+                    var gsonErrorBody: BaseResponse<*>? = null
+                    try {
+                        gsonErrorBody = Gson().fromJson(
+                            errorBody,
+                            BaseResponse::class.java
+                        )
+                    } catch (e: JsonSyntaxException) {
+                        e.printStackTrace()
+                    }
+
+                    val message = gsonErrorBody?.statusMessage ?: AppConstants.DEFAULT_ERROR_MESSAGE
                     ResultWrapper.GenericError(code, message)
                 }
                 else -> {

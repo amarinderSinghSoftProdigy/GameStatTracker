@@ -1,17 +1,15 @@
 package com.softprodigy.ballerapp.ui.features.sign_up
 
+
 import android.app.DatePickerDialog
-import androidx.compose.ui.geometry.Size
 import android.widget.DatePicker
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultRegistryOwner
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -22,48 +20,48 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
-
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
 import com.facebook.login.LoginManager
-
+import com.facebook.login.LoginResult
+import com.google.android.gms.common.api.ApiException
+import com.softprodigy.ballerapp.LocalFacebookCallbackManager
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.common.AppConstants
-import com.softprodigy.ballerapp.common.RequestCode
-import com.softprodigy.ballerapp.common.isValidEmail
-import com.softprodigy.ballerapp.common.isValidPassword
-import com.softprodigy.ballerapp.common.passwordMatches
+import com.softprodigy.ballerapp.common.*
+import com.softprodigy.ballerapp.data.SocialUserModel
 import com.softprodigy.ballerapp.data.request.SignUpData
-
-
-import com.softprodigy.ballerapp.ui.features.components.AppButton
-import com.softprodigy.ballerapp.ui.features.components.AppOutlineDateField
-import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
-import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.SocialLoginSection
+import com.softprodigy.ballerapp.data.response.UserInfo
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.theme.appColors
-
+import timber.log.Timber
 import java.util.*
 
 @Composable
-fun SignUpScreen(onLoginScreen: () -> Unit, onSignUpSuccess: (SignUpData) -> Unit) {
+fun SignUpScreen(
+    vm: SignUpViewModel,
+    onLoginScreen: () -> Unit,
+    onSignUpSuccess: () -> Unit,
+    onLoginSuccess: (UserInfo) -> Unit,
+    onTwitterClick: () -> Unit,
+    twitterUser: SocialUserModel
+) {
     val context = LocalContext.current
     var email by rememberSaveable { mutableStateOf("") }
 
@@ -126,6 +124,89 @@ fun SignUpScreen(onLoginScreen: () -> Unit, onSignUpSuccess: (SignUpData) -> Uni
         Icons.Filled.KeyboardArrowUp
     else
         Icons.Filled.KeyboardArrowDown
+
+    val callbackManager = LocalFacebookCallbackManager.current
+
+    val state = vm.signUpUiState.value
+    DisposableEffect(Unit) {
+
+        LoginManager.getInstance().registerCallback(
+            callbackManager,
+            object : FacebookCallback<LoginResult> {
+                override fun onSuccess(result: LoginResult) {
+
+                    CustomFBManager.getFacebookUserProfile(result.accessToken, object :
+                        FacebookUserProfile {
+                        override fun onFacebookUserFetch(fbUser: SocialUserModel) {
+                            Timber.i("FacebookUserModel-- $fbUser")
+                            vm.onEvent(SignUpUIEvent.OnFacebookClick(fbUser))
+
+                        }
+                    })
+                }
+
+                override fun onCancel() {
+                    println("onCancel")
+                }
+
+                override fun onError(error: FacebookException) {
+                    println("onError $error")
+                }
+            }
+        )
+        onDispose {
+            LoginManager.getInstance().unregisterCallback(callbackManager)
+        }
+    }
+    LaunchedEffect(key1 = twitterUser) {
+        twitterUser.id?.let {
+            if (it.isNotEmpty())
+                vm.onEvent(SignUpUIEvent.OnTwitterClick(twitterUser))
+        }
+    }
+    val authResultLauncher =
+        rememberLauncherForActivityResult(contract = GoogleApiContract()) { task ->
+            try {
+                val gsa = task?.getResult(ApiException::class.java)
+                if (gsa != null) {
+                    val googleUser = SocialUserModel(
+                        email = gsa.email,
+                        name = gsa.displayName,
+                        id = gsa.id,
+                        token = gsa.idToken
+                    )
+                    vm.onEvent(SignUpUIEvent.OnGoogleClick(googleUser))
+                } else {
+                    Toast.makeText(
+                        context,
+                        context.resources.getString(R.string.something_went_wrong),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+            } catch (e: ApiException) {
+                Timber.i(e.toString())
+            }
+
+        }
+
+    LaunchedEffect(key1 = Unit) {
+        vm.signUpChannel.collect { uiEvent ->
+            when (uiEvent) {
+                is SignUpChannel.ShowToast -> {
+                    Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
+                        .show()
+                }
+                is SignUpChannel.OnLoginSuccess -> {
+                    onLoginSuccess.invoke(uiEvent.loginResponse)
+                }
+                SignUpChannel.OnSignUpSelected -> {
+                    onSignUpSuccess.invoke()
+                }
+                else -> Unit
+            }
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -441,7 +522,7 @@ fun SignUpScreen(onLoginScreen: () -> Unit, onSignUpSuccess: (SignUpData) -> Uni
                         password = password,
                         repeatPassword = confirmPassword.value
                     )
-                    onSignUpSuccess(signUpData)
+                    vm.onEvent(SignUpUIEvent.OnSignUpDataSelected(signUpData = signUpData))
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -498,17 +579,17 @@ fun SignUpScreen(onLoginScreen: () -> Unit, onSignUpSuccess: (SignUpData) -> Uni
             SocialLoginSection(
                 headerText = stringResource(id = R.string.or_sign_up_with),
                 onGoogleClick = {
-//                    authResultLauncher.launch(RequestCode.GOOGLE_ACCESS)
+                    authResultLauncher.launch(RequestCode.GOOGLE_ACCESS)
                 },
                 onFacebookClick = {
-//                    LoginManager.getInstance()
-//                        .logInWithReadPermissions(
-//                            context as ActivityResultRegistryOwner,
-//                            callbackManager,
-//                            listOf(AppConstants.PUBLIC_PROFILE, AppConstants.EMAIL)
-//                        )
-                }) {
-            }
+                    LoginManager.getInstance()
+                        .logInWithReadPermissions(
+                            context as ActivityResultRegistryOwner,
+                            callbackManager,
+                            listOf(AppConstants.PUBLIC_PROFILE, AppConstants.EMAIL)
+                        )
+                }, onTwitterClick = onTwitterClick
+            )
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))
 

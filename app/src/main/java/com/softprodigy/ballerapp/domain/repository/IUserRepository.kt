@@ -22,4 +22,6 @@ interface IUserRepository {
 
     suspend fun forgotPassword(email: String): ResultWrapper<BaseResponse<Any>>
 
+    suspend fun updateUserProfile(userProfile: SignUpData): ResultWrapper<BaseResponse<Any>>
+
 }
