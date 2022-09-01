@@ -96,7 +96,7 @@ fun SignUpScreen(
     vm: SignUpViewModel,
     onLoginScreen: () -> Unit,
     onSignUpSuccess: () -> Unit,
-    onLoginSuccess: (UserInfo) -> Unit,
+    onSocialLoginSuccess: (UserInfo) -> Unit,
     onTwitterClick: () -> Unit,
     twitterUser: SocialUserModel
 ) {
@@ -236,7 +236,7 @@ fun SignUpScreen(
                         .show()
                 }
                 is SignUpChannel.OnLoginSuccess -> {
-                    onLoginSuccess.invoke(uiEvent.loginResponse)
+                    onSocialLoginSuccess.invoke(uiEvent.loginResponse)
                 }
                 SignUpChannel.OnSignUpSelected -> {
                     onSignUpSuccess.invoke()
