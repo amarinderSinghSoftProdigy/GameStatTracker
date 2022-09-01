@@ -465,9 +465,6 @@ class SignUpViewModel @Inject constructor(
 
                             _signUpUiState.value = _signUpUiState.value.copy(
                                 isLoading = false,
-                                signUpData = _signUpUiState.value.signUpData.copy(
-                                    phoneVerified = response.status
-                                )
                             )
 
                             _signUpChannel.send(
@@ -531,7 +528,10 @@ class SignUpViewModel @Inject constructor(
                                 _signUpUiState.value.copy(
                                     isLoading = false,
                                     errorMessage = null,
-                                    successMessage = response.statusMessage
+                                    successMessage = response.statusMessage,
+                                    signUpData = _signUpUiState.value.signUpData.copy(
+                                        phoneVerified = response.status
+                                    )
                                 )
 
                             verified.value = response.status

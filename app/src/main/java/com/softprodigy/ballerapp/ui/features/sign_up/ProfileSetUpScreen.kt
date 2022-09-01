@@ -129,7 +129,7 @@ fun ProfileSetUpScreen(
     val mDatePickerDialog = DatePickerDialog(
         context,
         { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
-            signUpViewModel.onEvent(SignUpUIEvent.OnGenderChange("$mYear-${mMonth + 1}-$mDayOfMonth"))
+            signUpViewModel.onEvent(SignUpUIEvent.OnBirthdayChanged("$mYear-${mMonth + 1}-$mDayOfMonth"))
         }, mYear, mMonth, mDay
     )
 
@@ -311,7 +311,7 @@ fun ProfileSetUpScreen(
                                 keyboardType = KeyboardType.Email,
                                 capitalization = KeyboardCapitalization.Sentences
                             ),
-                            isError = (!state.signUpData.email.isValidEmail() && state.signUpData.email.isNotEmpty()),
+                            isError = (!state.signUpData.email.isValidEmail() && state.signUpData.email.isNotEmpty() || state.signUpData.email.length > 45),
                             errorMessage = stringResource(id = R.string.email_error),
                             enabled = true
                         )
@@ -333,6 +333,7 @@ fun ProfileSetUpScreen(
                             errorMessage = stringResource(id = R.string.valid_phone_number),
                             enabled = state.signUpData.phoneVerified
                         )
+
                         if (validPhoneNumber(state.signUpData.phone) && !state.signUpData.phoneVerified) {
 
                             Column(
@@ -355,12 +356,6 @@ fun ProfileSetUpScreen(
                                     modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_20dp)),
                                     textAlign = TextAlign.End
                                 )
-                                Spacer(
-                                    modifier =
-                                    Modifier.height(dimensionResource(id = R.dimen.size_10dp))
-                                )
-
-
                             }
                         }
 
@@ -374,7 +369,6 @@ fun ProfileSetUpScreen(
                                     .padding(all = dimensionResource(id = R.dimen.size_20dp)),
                                 textAlign = TextAlign.End
                             )
-                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
                         }
 
                         state.signUpData.token?.let { _ ->
@@ -411,7 +405,8 @@ fun ProfileSetUpScreen(
                                             icon,
                                             contentDescription = null,
                                             modifier = Modifier.clickable { expanded = !expanded })
-                                    }
+                                    },
+                                    enabled = true
                                 )
                                 DropdownMenu(
                                     expanded = expanded,
@@ -443,10 +438,11 @@ fun ProfileSetUpScreen(
                                     signUpViewModel.onEvent(SignUpUIEvent.OnBirthdayChanged(it))
                                 },
                                 stringResource(id = R.string.birthdate),
-//                                isError = (!validPhoneNumber(state.phoneNumber) && state.phoneNumber.isNotEmpty()),
-//                                errorMessage = stringResource(id = R.string.valid_phone_number),
-//                                enabled = !verified
+                                modifier = Modifier.clickable {
+                                    mDatePickerDialog.show()
+                                }
                             )
+
                         }
 
                     }
@@ -483,6 +479,7 @@ fun ProfileSetUpScreen(
         }
     }
 }
+
 
 
 

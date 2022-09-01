@@ -220,7 +220,7 @@ fun LoginScreen(
                     )
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                isError = (!email.isValidEmail() && email.isNotEmpty()),
+                isError = (!email.isValidEmail() && email.isNotEmpty() || email.length > 45),
                 errorMessage = stringResource(id = R.string.email_error),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
