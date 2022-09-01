@@ -7,6 +7,7 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
@@ -18,9 +19,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.Route
@@ -56,34 +59,8 @@ class HomeActivity : ComponentActivity() {
                 val showDialog = remember { mutableStateOf(false) }
                 val userType = remember { mutableStateOf(BottomNavKey.HOME) }
 
-                Scaffold(
-                    backgroundColor = MaterialTheme.appColors.material.primary,
-                    topBar = {
-                        if (userType.value != BottomNavKey.HOME || state.screen) {
-                            TabBar(color = MaterialTheme.appColors.material.primaryVariant) {
-                                CommonTabView(
-                                    canMoveBack = false,
-                                    user = userType.value,
-                                    label = when (userType.value) {
-                                        BottomNavKey.TEAMS -> {
-                                            stringResource(id = R.string.teams_label)
-                                        }
-                                        BottomNavKey.EVENTS -> {
-                                            stringResource(id = R.string.events_label)
-                                        }
-                                        else -> {
-                                            ""
-                                        }
-                                    },
-                                    icon = painterResource(id = R.drawable.ic_settings),
-                                    onLabelClick = {
-                                        showDialog.value = true
-                                    }, iconClick = {
-                                    })
-                            }
-                        }
-                    },
-                    content = {
+                if (state.screen) {
+                    Surface {
                         NavControllerComposable(
                             homeViewModel,
                             navController = navController,
@@ -91,17 +68,54 @@ class HomeActivity : ComponentActivity() {
                             dismissDialog = {
                                 showDialog.value = it
                             })
-                    },
-                    bottomBar = {
-                        if (!state.screen)
+                    }
+                } else {
+                    Scaffold(
+                        backgroundColor = MaterialTheme.appColors.material.primary,
+                        topBar = {
+                            if (userType.value != BottomNavKey.HOME) {
+                                TabBar(color = MaterialTheme.appColors.material.primaryVariant) {
+                                    CommonTabView(
+                                        canMoveBack = false,
+                                        user = userType.value,
+                                        label = when (userType.value) {
+                                            BottomNavKey.TEAMS -> {
+                                                stringResource(id = R.string.teams_label)
+                                            }
+                                            BottomNavKey.EVENTS -> {
+                                                stringResource(id = R.string.events_label)
+                                            }
+                                            else -> {
+                                                ""
+                                            }
+                                        },
+                                        icon = painterResource(id = R.drawable.ic_settings),
+                                        onLabelClick = {
+                                            showDialog.value = true
+                                        }, iconClick = {
+                                        })
+                                }
+                            }
+                        },
+                        content = {
+                            NavControllerComposable(
+                                homeViewModel,
+                                navController = navController,
+                                showDialog = showDialog.value,
+                                dismissDialog = {
+                                    showDialog.value = it
+                                })
+                        },
+                        bottomBar = {
                             BottomNavigationBar(
                                 navController = navController,
                                 selectionColor = state.color ?: Color.Black
                             ) {
                                 userType.value = it
                             }
-                    },
-                )
+                        },
+                    )
+                }
             }
         }
     }
@@ -129,16 +143,21 @@ fun NavControllerComposable(
                 dismissDialog = dismissDialog,
                 setupTeamViewModel = setupTeamViewModel
             ) {
-                //navController.navigate(Route.ADD_PLAYER_SCREEN)
+                navController.navigate(Route.ADD_PLAYER_SCREEN)
             }
         }
         composable(route = Route.EVENTS_SCREEN) {
             EventsScreen(name = "")
         }
 
-        composable(route = Route.ADD_PLAYER_SCREEN) {
+        composable(route = Route.ADD_PLAYER_SCREEN+"/{teamId}",arguments = listOf(
+            navArgument("teamId") {
+                type = NavType.StringType
+            }),) {
             homeViewModel.setScreen(true)
+            val teamId = it.arguments?.getString("teamId")
             AddPlayersScreen(
+                teamId,
                 vm = setupTeamViewModel,
                 onBackClick = { navController.popBackStack() },
                 onNextClick = {
