@@ -1,11 +1,11 @@
 package com.softprodigy.ballerapp.ui.features.login
 
+import android.content.res.Resources
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.CircularProgressIndicator
-
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -26,13 +25,13 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -78,6 +77,8 @@ fun LoginScreen(
     onRegister: () -> Unit,
     onLoginSuccess: (UserInfo?) -> Unit,
     onForgetPasswordClick: () -> Unit,
+    onTwitterClick: () -> Unit,
+    twitterUser:SocialUserModel
 ) {
 
     val context = LocalContext.current
@@ -115,6 +116,12 @@ fun LoginScreen(
         )
         onDispose {
             LoginManager.getInstance().unregisterCallback(callbackManager)
+        }
+    }
+    LaunchedEffect(key1 = twitterUser){
+        twitterUser.id?.let {
+            if (it.isNotEmpty())
+                vm.onEvent(LoginUIEvent.OnTwitterClick(twitterUser))
         }
     }
 
@@ -350,6 +357,16 @@ fun LoginScreen(
                     .clickable(onClick = onForgetPasswordClick)
             )
 
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_30dp)))
+            AppText(
+                text = stringResource(id = com.baller_app.core.R.string.scr_sign_up),
+                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                style = MaterialTheme.typography.h3,
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .clickable(onClick = onRegister)
+            )
+
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_60dp)))
 
             SocialLoginSection(
@@ -364,8 +381,9 @@ fun LoginScreen(
                             callbackManager,
                             listOf(AppConstants.PUBLIC_PROFILE, AppConstants.EMAIL)
                         )
-                }) {
-            }
+                }, onTwitterClick = {
+                    onTwitterClick()
+                })
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))
 

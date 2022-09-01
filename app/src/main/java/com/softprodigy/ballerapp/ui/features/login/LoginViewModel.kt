@@ -9,6 +9,7 @@ import com.baller_app.core.util.UiText
 import com.softprodigy.ballerapp.common.ApiConstants
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.ResultWrapper.GenericError
+import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.LoginRequest
 import com.softprodigy.ballerapp.data.response.UserInfo
 import com.softprodigy.ballerapp.domain.repository.IUserRepository
@@ -21,6 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val IUserRepository: IUserRepository,
+    private val dataStore: DataStoreManager,
     application: Application
 ) :
     AndroidViewModel(application) {
@@ -59,12 +61,21 @@ class LoginViewModel @Inject constructor(
                     )
                 )
             }
+            is LoginUIEvent.OnTwitterClick -> {
+                login(
+                    LoginRequest(
+                        email = event.socialUser.email,
+                        loginType = ApiConstants.TWITTER,
+                        twitterId = event.socialUser.id
+                    )
+                )
+            }
         }
     }
 
     private fun login(loginRequest: LoginRequest) {
         viewModelScope.launch {
-            _loginUiState.value = LoginUIState(isDataLoading = true)
+            _loginUiState.value = _loginUiState.value.copy(isDataLoading = true)
 
             val loginResponse =
                 IUserRepository.userLogin(loginRequest)
@@ -73,43 +84,43 @@ class LoginViewModel @Inject constructor(
                 is ResultWrapper.Success -> {
                     loginResponse.value.let { response ->
                         if (response.status) {
-                            _loginUiState.value =
-                                LoginUIState(
-                                    user = response.data,
-                                    isDataLoading = false,
-                                    errorMessage = null
-                                )
+                            setToken(response.data.token)
+                            _loginUiState.value = _loginUiState.value.copy(
+                                user = response.data,
+                                isDataLoading = false
+                            )
                             _loginChannel.send(LoginChannel.OnLoginSuccess(response.data))
                         } else {
-                            _loginUiState.value = LoginUIState(
-                                user = null,
+                            _loginUiState.value = _loginUiState.value.copy(
                                 errorMessage = response.statusMessage,
                                 isDataLoading = false
                             )
+
                         }
-                }
+                    }
                 }
                 is GenericError -> {
-                    _loginUiState.value = loginUiState.value.copy(isDataLoading = false)
-                    _loginUiState.value =
-                        LoginUIState(
-                            user=null,
-                            errorMessage = "${loginResponse.code} ${loginResponse.message}",
-                            isDataLoading = false
-                        )
+                    _loginUiState.value = _loginUiState.value.copy(
+                        errorMessage = "${loginResponse.code} ${loginResponse.message}",
+                        isDataLoading = false
+                    )
                     _loginChannel.send(LoginChannel.ShowToast(UiText.DynamicString("${loginResponse.code} ${loginResponse.message}")))
                 }
                 is ResultWrapper.NetworkError -> {
-                    _loginUiState.value =
-                        LoginUIState(
-                            user = null,
-                            errorMessage = loginResponse.message,
-                            isDataLoading = false
-                        )
+                    _loginUiState.value = _loginUiState.value.copy(
+                        errorMessage = loginResponse.message,
+                        isDataLoading = false
+                    )
                     _loginChannel.send(LoginChannel.ShowToast(UiText.DynamicString(loginResponse.message)))
                 }
 
             }
+        }
+    }
+
+    private fun setToken(string: String) {
+        viewModelScope.launch {
+            dataStore.saveToken(string)
         }
     }
 }
