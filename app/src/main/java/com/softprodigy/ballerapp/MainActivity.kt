@@ -229,7 +229,7 @@ fun NavControllerComposable(activity: MainActivity) {
     val dataStoreManager = DataStoreManager(activity)
     val userToken = dataStoreManager.userToken.collectAsState(initial = "")
     val scope = rememberCoroutineScope()
-    NavHost(navController, startDestination = SPLASH_SCREEN) {
+    NavHost(navController, startDestination = PROFILE_SETUP_SCREEN) {
 
         composable(route = SPLASH_SCREEN) {
             SplashScreen {

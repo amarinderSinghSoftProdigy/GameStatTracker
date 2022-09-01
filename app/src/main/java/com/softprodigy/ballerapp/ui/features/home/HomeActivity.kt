@@ -123,7 +123,12 @@ fun NavControllerComposable(
             BackHandler {
                 homeViewModel.setScreen(false)
             }
-            TeamsScreen(name = "", showDialog = showDialog, dismissDialog = dismissDialog) {
+            TeamsScreen(
+                name = "",
+                showDialog = showDialog,
+                dismissDialog = dismissDialog,
+                setupTeamViewModel = setupTeamViewModel
+            ) {
                 //navController.navigate(Route.ADD_PLAYER_SCREEN)
             }
         }
