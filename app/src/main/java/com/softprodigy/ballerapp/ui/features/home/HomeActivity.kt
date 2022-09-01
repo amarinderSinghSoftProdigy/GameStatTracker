@@ -49,7 +49,7 @@ class HomeActivity : ComponentActivity() {
             val state = homeViewModel.state.value
             val dataStoreManager = DataStoreManager(LocalContext.current)
             val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
-            AppConstants.SELECTED_COLOR = fromHex(color.value)
+            AppConstants.SELECTED_COLOR = fromHex(color.value.ifEmpty { "0177C1" })
             homeViewModel.setColor(AppConstants.SELECTED_COLOR)
             BallerAppMainTheme(customColor = state.color ?: Color.White) {
                 val navController = rememberNavController()
@@ -124,7 +124,7 @@ fun NavControllerComposable(
                 homeViewModel.setScreen(false)
             }
             TeamsScreen(name = "", showDialog = showDialog, dismissDialog = dismissDialog) {
-                navController.navigate(Route.ADD_PLAYER_SCREEN)
+                //navController.navigate(Route.ADD_PLAYER_SCREEN)
             }
         }
         composable(route = Route.EVENTS_SCREEN) {
