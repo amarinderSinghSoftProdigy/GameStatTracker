@@ -122,7 +122,7 @@ class SetupTeamViewModel @Inject constructor(
                 _teamSetupChannel.send(
                     TeamSetupChannel.ShowToast(
                         UiText.DynamicString(
-                            "${playersResponse.code} ${playersResponse.message}"
+                            "${playersResponse.message}"
                         )
                     )
                 )
@@ -175,7 +175,7 @@ class SetupTeamViewModel @Inject constructor(
                 _teamSetupChannel.send(
                     TeamSetupChannel.ShowToast(
                         UiText.DynamicString(
-                            "${uploadLogoResponse.code} ${uploadLogoResponse.message}"
+                            "${uploadLogoResponse.message}"
                         )
                     )
                 )
@@ -233,7 +233,7 @@ class SetupTeamViewModel @Inject constructor(
                 _teamSetupChannel.send(
                     TeamSetupChannel.ShowToast(
                         UiText.DynamicString(
-                            "${createTeamResponse.code} ${createTeamResponse.message}"
+                            "${createTeamResponse.message}"
                         )
                     )
                 )

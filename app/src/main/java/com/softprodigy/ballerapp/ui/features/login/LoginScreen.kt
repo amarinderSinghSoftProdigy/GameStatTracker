@@ -46,6 +46,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.facebook.FacebookCallback
@@ -78,7 +79,7 @@ fun LoginScreen(
     onLoginSuccess: (UserInfo?) -> Unit,
     onForgetPasswordClick: () -> Unit,
     onTwitterClick: () -> Unit,
-    twitterUser:SocialUserModel
+    twitterUser: SocialUserModel
 ) {
 
     val context = LocalContext.current
@@ -118,7 +119,7 @@ fun LoginScreen(
             LoginManager.getInstance().unregisterCallback(callbackManager)
         }
     }
-    LaunchedEffect(key1 = twitterUser){
+    LaunchedEffect(key1 = twitterUser) {
         twitterUser.id?.let {
             if (it.isNotEmpty())
                 vm.onEvent(LoginUIEvent.OnTwitterClick(twitterUser))
@@ -252,7 +253,7 @@ fun LoginScreen(
                 },
                 placeholder = {
                     Text(
-                        text = stringResource(id = R.string.your_password),
+                        text = stringResource(id = R.string.ur_password),
                         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                         textAlign = TextAlign.Center
                     )
@@ -271,6 +272,7 @@ fun LoginScreen(
                 ),
                 visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
+
                     IconButton(onClick = {
                         passwordVisibility = !passwordVisibility
 
@@ -281,6 +283,7 @@ fun LoginScreen(
                             else
                                 Icons.Filled.VisibilityOff, ""
                         )
+
                     }
                 },
             )
@@ -298,7 +301,7 @@ fun LoginScreen(
                     .fillMaxWidth()
                     .height(dimensionResource(id = R.dimen.size_56dp)),
                 text = stringResource(id = R.string.login),
-                icon = painterResource(id = R.drawable.ic_circle_next)
+                icon = painterResource(id = R.drawable.ic_circle_next),
             )
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
@@ -355,16 +358,6 @@ fun LoginScreen(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
                     .clickable(onClick = onForgetPasswordClick)
-            )
-
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_30dp)))
-            AppText(
-                text = stringResource(id = com.baller_app.core.R.string.scr_sign_up),
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                style = MaterialTheme.typography.h3,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .clickable(onClick = onRegister)
             )
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_60dp)))

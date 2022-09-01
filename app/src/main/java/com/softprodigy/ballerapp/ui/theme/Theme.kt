@@ -114,6 +114,7 @@ fun BallerAppTheme(
     content: @Composable () -> Unit
 ) {
     val colors = if (darkTheme) {
+
         DarkColorPalette
     } else {
         LightColorPalette
@@ -125,6 +126,7 @@ fun BallerAppTheme(
             darkIcons = !darkTheme
         )
     }
+
 
     CompositionLocalProvider(LocalColors provides colors) {
         MaterialTheme(
