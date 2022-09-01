@@ -161,10 +161,12 @@ class SignUpViewModel @Inject constructor(
                 )
             }
             is SignUpUIEvent.OnTwitterClick -> {
-                LoginRequest(
-                    email = event.socialUser.email,
-                    loginType = ApiConstants.TWITTER,
-                    twitterId = event.socialUser.id
+                login(
+                    LoginRequest(
+                        email = event.socialUser.email,
+                        loginType = ApiConstants.TWITTER,
+                        twitterId = event.socialUser.id
+                    )
                 )
             }
             is SignUpUIEvent.OnGenderChange -> {
