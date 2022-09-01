@@ -13,12 +13,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
@@ -250,7 +245,8 @@ fun NavControllerComposable(activity: MainActivity) {
 
         composable(route = SIGN_UP_SCREEN) {
             SignUpScreen(vm = signUpViewModel, onLoginScreen = {
-                navController.navigate(LOGIN_SCREEN)
+//                navController.navigate(LOGIN_SCREEN)
+                navController.popBackStack()
             }, onSignUpSuccess = {
                 navController.navigate(SELECT_USER_TYPE)
             },
@@ -261,7 +257,7 @@ fun NavControllerComposable(activity: MainActivity) {
 
                 },
                 twitterUser = activity.twitterUserRegister.value,
-                onLoginSuccess = { userInfo ->
+                onSocialLoginSuccess = { userInfo ->
                     if (!userInfo.user.role.equals(
                             AppConstants.USER_TYPE_USER,
                             ignoreCase = true
