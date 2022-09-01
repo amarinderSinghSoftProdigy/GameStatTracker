@@ -6,20 +6,46 @@ import android.widget.DatePicker
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultRegistryOwner
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
@@ -49,11 +75,22 @@ import com.facebook.login.LoginResult
 import com.google.android.gms.common.api.ApiException
 import com.softprodigy.ballerapp.LocalFacebookCallbackManager
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.common.*
+import com.softprodigy.ballerapp.common.AppConstants
+import com.softprodigy.ballerapp.common.CustomFBManager
+import com.softprodigy.ballerapp.common.FacebookUserProfile
+import com.softprodigy.ballerapp.common.GoogleApiContract
+import com.softprodigy.ballerapp.common.RequestCode
+import com.softprodigy.ballerapp.common.isValidEmail
+import com.softprodigy.ballerapp.common.isValidPassword
+import com.softprodigy.ballerapp.common.passwordMatches
 import com.softprodigy.ballerapp.data.SocialUserModel
 import com.softprodigy.ballerapp.data.request.SignUpData
 import com.softprodigy.ballerapp.data.response.UserInfo
-import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.components.AppButton
+import com.softprodigy.ballerapp.ui.features.components.AppOutlineDateField
+import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
+import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.SocialLoginSection
 import com.softprodigy.ballerapp.ui.theme.appColors
 import com.softprodigy.ballerapp.ui.theme.spacing
 import timber.log.Timber
@@ -65,7 +102,7 @@ fun SignUpScreen(
     vm: SignUpViewModel,
     onLoginScreen: () -> Unit,
     onSignUpSuccess: () -> Unit,
-    onLoginSuccess: (UserInfo) -> Unit,
+    onSocialLoginSuccess: (UserInfo) -> Unit,
     onTwitterClick: () -> Unit,
     twitterUser: SocialUserModel
 ) {
@@ -205,7 +242,7 @@ fun SignUpScreen(
                         .show()
                 }
                 is SignUpChannel.OnLoginSuccess -> {
-                    onLoginSuccess.invoke(uiEvent.loginResponse)
+                    onSocialLoginSuccess.invoke(uiEvent.loginResponse)
                 }
                 SignUpChannel.OnSignUpSelected -> {
                     onSignUpSuccess.invoke()
@@ -573,7 +610,7 @@ fun SignUpScreen(
                 text = stringResource(id = R.string.sign_up),
                 icon = painterResource(id = R.drawable.ic_circle_next),
             )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
 
             val annotatedText = buildAnnotatedString {
 
@@ -615,7 +652,7 @@ fun SignUpScreen(
                         onLoginScreen()
                     }
                 },
-                style = MaterialTheme.typography.h4
+                style = MaterialTheme.typography.h5
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_30dp)))
 

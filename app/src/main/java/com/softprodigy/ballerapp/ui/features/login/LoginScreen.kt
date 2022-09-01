@@ -1,6 +1,5 @@
 package com.softprodigy.ballerapp.ui.features.login
 
-import android.content.res.Resources
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultRegistryOwner
@@ -46,7 +45,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.facebook.FacebookCallback
@@ -304,7 +302,7 @@ fun LoginScreen(
                 icon = painterResource(id = R.drawable.ic_circle_next),
             )
 
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
 
             val annotatedText = buildAnnotatedString {
 
@@ -332,7 +330,6 @@ fun LoginScreen(
                 pop()
 
             }
-
             ClickableText(
                 text = annotatedText,
                 modifier = Modifier
@@ -346,7 +343,7 @@ fun LoginScreen(
                         onRegister()
                     }
                 },
-                style = MaterialTheme.typography.h4
+                style = MaterialTheme.typography.h5
             )
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_32dp)))

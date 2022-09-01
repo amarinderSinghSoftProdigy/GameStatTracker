@@ -110,8 +110,10 @@ class SignUpViewModel @Inject constructor(
             }
 
             is SignUpUIEvent.OnImageUploadSuccess -> {
-                if (_signUpUiState.value.signUpData.token?.isEmpty() == true) {
-                    viewModelScope.launch { signUp() }
+                if (_signUpUiState.value.signUpData.token == null) {
+                    viewModelScope.launch {
+                        signUp()
+                    }
                 } else {
                     viewModelScope.launch {
                         updateUserProfile()
@@ -159,10 +161,12 @@ class SignUpViewModel @Inject constructor(
                 )
             }
             is SignUpUIEvent.OnTwitterClick -> {
-                LoginRequest(
-                    email = event.socialUser.email,
-                    loginType = ApiConstants.TWITTER,
-                    twitterId = event.socialUser.id
+                login(
+                    LoginRequest(
+                        email = event.socialUser.email,
+                        loginType = ApiConstants.TWITTER,
+                        twitterId = event.socialUser.id
+                    )
                 )
             }
             is SignUpUIEvent.OnGenderChange -> {
@@ -387,7 +391,7 @@ class SignUpViewModel @Inject constructor(
         val signUpDataRequest = SignUpData(
             firstName = updateUserRequestData.firstName,
             lastName = updateUserRequestData.lastName,
-            email = updateUserRequestData.email,
+//            email = updateUserRequestData.email,
             profileImage = updateUserRequestData.profileImage,
             phone = "+" + updateUserRequestData.phone,
             address = updateUserRequestData.address,
@@ -395,8 +399,8 @@ class SignUpViewModel @Inject constructor(
             gender = updateUserRequestData.gender,
             birthdate = updateUserRequestData.birthdate,
             role = updateUserRequestData.role?.lowercase(),
-            password = updateUserRequestData.password,
-            repeatPassword = updateUserRequestData.repeatPassword
+//            password = updateUserRequestData.password,
+//            repeatPassword = updateUserRequestData.repeatPassword
         )
         when (val updateProfileResp = IUserRepository.updateUserProfile(signUpDataRequest)) {
             is ResultWrapper.GenericError -> {
