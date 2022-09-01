@@ -64,7 +64,7 @@ class TeamViewModel @Inject constructor(
                 _teamChannel.send(
                     TeamChannel.ShowToast(
                         UiText.DynamicString(
-                            "${teamResponse.code} ${teamResponse.message}"
+                            "${teamResponse.message}"
                         )
                     )
                 )
@@ -106,7 +106,7 @@ class TeamViewModel @Inject constructor(
                 _teamChannel.send(
                     TeamChannel.ShowToast(
                         UiText.DynamicString(
-                            "${teamResponse.code} ${teamResponse.message}"
+                            "${teamResponse.message}"
                         )
                     )
                 )

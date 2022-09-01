@@ -169,7 +169,7 @@ fun BottomSection(currentPager: Int, onNextScreen: () -> Unit, onNextPage: () ->
                 },
                 enableState = true,
                 firstText = stringResource(id = R.string.skip),
-                secondText = stringResource(id = R.string.next)
+                secondText = stringResource(id = R.string.next),
             )
         }
     }

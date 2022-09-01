@@ -80,13 +80,13 @@ class ForgotPasswordViewModel @Inject constructor(
                         forgotPasswordUiState.value.copy(isLoading = false)
                     _forgotPasswordUiState.value =
                         ForgotPasswordUIState(
-                            errorMessage = "${forgotResponse.code} ${forgotResponse.message}",
+                            errorMessage = "${forgotResponse.message}",
                             isLoading = false
                         )
                     _forgotPasswordChannel.send(
                         ForgotPasswordChannel.ShowToast(
                             UiText.DynamicString(
-                                "${forgotResponse.code} ${forgotResponse.message}"
+                                "${forgotResponse.message}"
                             )
                         )
                     )

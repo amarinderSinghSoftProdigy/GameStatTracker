@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.theme.ButtonColor
@@ -34,7 +35,7 @@ fun AppButton(
     text: String? = null,
     icon: Painter? = null,
     singleButton: Boolean = false,
-    isForceEnableNeeded: Boolean = false
+    isForceEnableNeeded: Boolean = false,
 ) {
     val contentColor = if (enabled) colors.textEnabled else colors.textDisabled
 
@@ -51,6 +52,11 @@ fun AppButton(
             colors.bckgroundDisabled,
         contentColor = contentColor.copy(alpha = 1f),
         border = border,
+        elevation = if (enabled && icon != null) {
+            dimensionResource(id = R.dimen.size_5dp)
+        } else {
+            0.dp
+        }
     ) {
         CompositionLocalProvider(LocalContentColor provides contentColor) {
             ProvideTextStyle(
@@ -83,11 +89,9 @@ fun AppButton(
                             )
                         }
 
-                    }
-                    else if(isForceEnableNeeded && enabled) {
+                    } else if (isForceEnableNeeded && enabled) {
                         ButtonView(text = text ?: "", color = colors.textEnabled)
-                    }
-                    else {
+                    } else {
                         ButtonView(text = text ?: "", color = colors.textDisabled)
                     }
                 }

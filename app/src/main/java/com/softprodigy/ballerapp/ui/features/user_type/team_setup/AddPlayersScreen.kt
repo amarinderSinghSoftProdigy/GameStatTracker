@@ -102,10 +102,11 @@ fun AddPlayersScreen(
                 color = ColorBWBlack
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
-            UserFlowBackground(modifier = Modifier.weight(1f)) {
+
+            UserFlowBackground(modifier = Modifier.fillMaxSize()) {
                 Column(
                     Modifier
-                        .weight(1f)
+                        .fillMaxSize()
                         .padding(all = dimensionResource(id = R.dimen.size_16dp))
                 ) {
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
@@ -236,6 +237,7 @@ fun AddPlayersScreen(
                     }
                 }
             }
+
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
             BottomButtons(
                 onBackClick = { onBackClick.invoke() },

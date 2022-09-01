@@ -133,7 +133,7 @@ fun BottomButtons(
     onBackClick: () -> Unit,
     onNextClick: () -> Unit,
     enableState: Boolean,
-    showOnlyNext: Boolean = false
+    showOnlyNext: Boolean = false,
 ) {
     Row(
         Modifier
@@ -168,7 +168,7 @@ fun BottomButtons(
             onClick = onNextClick,
             icon = painterResource(id = R.drawable.ic_circle_next),
             enabled = enableState,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         )
     }
 }
