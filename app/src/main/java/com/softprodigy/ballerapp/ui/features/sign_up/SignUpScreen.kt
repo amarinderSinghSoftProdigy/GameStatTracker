@@ -12,6 +12,7 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Visibility
@@ -29,6 +30,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.input.KeyboardCapitalization
+
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -55,6 +58,7 @@ import java.util.*
 
 @Composable
 fun SignUpScreen(
+    onPreviousClick: () -> Unit,
     vm: SignUpViewModel,
     onLoginScreen: () -> Unit,
     onSignUpSuccess: () -> Unit,
@@ -62,6 +66,7 @@ fun SignUpScreen(
     onTwitterClick: () -> Unit,
     twitterUser: SocialUserModel
 ) {
+
     val context = LocalContext.current
     var email by rememberSaveable { mutableStateOf("") }
 
@@ -81,7 +86,6 @@ fun SignUpScreen(
     var password by rememberSaveable { mutableStateOf("") }
     var passwordVisibility by rememberSaveable { mutableStateOf(false) }
     var confirmPasswordVisibility by rememberSaveable { mutableStateOf(false) }
-
 
     // Declaring integer values
     // for year, month and day
@@ -211,16 +215,31 @@ fun SignUpScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .verticalScroll(rememberScrollState())
     ) {
-
+        Image(
+            imageVector = Icons.Default.ArrowBack,
+            contentDescription = "",
+            modifier = Modifier
+                .padding(
+                    start = dimensionResource(id = R.dimen.size_5dp), top = dimensionResource(
+                        id = R.dimen.size_5dp
+                    )
+                )
+                .clickable {
+                    onPreviousClick()
+                },
+            alignment = Alignment.TopStart
+        )
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = dimensionResource(id = R.dimen.size_20dp))
-                .verticalScroll(rememberScrollState()),
+                .padding(horizontal = dimensionResource(id = R.dimen.size_20dp)),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
+
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_60dp)))
 
             Image(
@@ -259,7 +278,10 @@ fun SignUpScreen(
                         textAlign = TextAlign.Center
                     )
                 },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    capitalization = KeyboardCapitalization.Sentences
+                ),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
                     unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
@@ -299,7 +321,10 @@ fun SignUpScreen(
                         textAlign = TextAlign.Center
                     )
                 },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    capitalization = KeyboardCapitalization.Sentences
+                ),
                 errorMessage = stringResource(id = R.string.address_error),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
@@ -345,7 +370,10 @@ fun SignUpScreen(
                             textAlign = TextAlign.Center
                         )
                     },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        capitalization = KeyboardCapitalization.Sentences
+                    ),
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
                         unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
@@ -378,7 +406,6 @@ fun SignUpScreen(
                     }
                 }
             }
-
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
@@ -425,7 +452,10 @@ fun SignUpScreen(
                         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
                     )
                 },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    capitalization = KeyboardCapitalization.Words
+                ),
                 isError = (!password.isValidPassword() && password.isNotEmpty()),
                 errorMessage = stringResource(id = R.string.password_error),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -479,7 +509,10 @@ fun SignUpScreen(
                         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
                     )
                 },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Sentences,
+                    keyboardType = KeyboardType.Password,
+                ),
                 isError = !password.passwordMatches(confirmPassword.value) && confirmPassword.value.isNotEmpty(),
                 errorMessage = stringResource(id = R.string.confirm_password_error),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -528,7 +561,7 @@ fun SignUpScreen(
                     .fillMaxWidth()
                     .height(dimensionResource(id = R.dimen.size_56dp)),
                 text = stringResource(id = R.string.sign_up),
-                icon = painterResource(id = R.drawable.ic_circle_next)
+                icon = painterResource(id = R.drawable.ic_circle_next),
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
 

@@ -299,7 +299,7 @@ fun TeamSetupScreen(
                         onNextClick.invoke()
                     },
                     enableState = validTeamName(state.teamName) && state.teamImageUri != null && state.teamColor.isNotEmpty(),
-                    showOnlyNext = false
+                    showOnlyNext = false,
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             }

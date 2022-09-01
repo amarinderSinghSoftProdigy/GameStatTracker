@@ -60,6 +60,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.toSize
@@ -280,7 +281,8 @@ fun ProfileSetUpScreen(
                             },
                             stringResource(id = R.string.first_name),
                             isError = !validName(state.signUpData.firstName) && state.signUpData.firstName.isNotEmpty(),
-                            errorMessage = stringResource(id = R.string.valid_first_name)
+                            errorMessage = stringResource(id = R.string.valid_first_name),
+                            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
                         )
 
                         Divider(thickness = dimensionResource(id = R.dimen.divider))
@@ -292,7 +294,9 @@ fun ProfileSetUpScreen(
                             },
                             stringResource(id = R.string.last_name),
                             isError = !validName(state.signUpData.lastName) && state.signUpData.lastName.isNotEmpty(),
-                            errorMessage = stringResource(id = R.string.valid_last_name)
+                            errorMessage = stringResource(id = R.string.valid_last_name),
+                            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
+
                         )
                         Divider(thickness = dimensionResource(id = R.dimen.divider))
 
@@ -303,10 +307,16 @@ fun ProfileSetUpScreen(
 
                             },
                             stringResource(id = R.string.email),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Email,
+                                capitalization = KeyboardCapitalization.Sentences
+                            ),
                             isError = (!state.signUpData.email.isValidEmail() && state.signUpData.email.isNotEmpty()),
-                            errorMessage = stringResource(id = R.string.email_error)
+                            errorMessage = stringResource(id = R.string.email_error),
+                            enabled = true
                         )
+
+
                         Divider(thickness = dimensionResource(id = R.dimen.divider))
 
                         EditFields(
@@ -315,10 +325,13 @@ fun ProfileSetUpScreen(
                                 signUpViewModel.onEvent(SignUpUIEvent.OnPhoneNumberChanged(it))
                             },
                             stringResource(id = R.string.phone_num),
-                            KeyboardOptions(keyboardType = KeyboardType.Number),
                             isError = (!validPhoneNumber(state.signUpData.phone) && state.signUpData.phone.isNotEmpty()),
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number,
+                                capitalization = KeyboardCapitalization.Sentences
+                            ),
                             errorMessage = stringResource(id = R.string.valid_phone_number),
-                            enabled = !state.signUpData.phoneVerified
+                            enabled = state.signUpData.phoneVerified
                         )
                         if (validPhoneNumber(state.signUpData.phone) && !state.signUpData.phoneVerified) {
 
@@ -342,6 +355,12 @@ fun ProfileSetUpScreen(
                                     modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_20dp)),
                                     textAlign = TextAlign.End
                                 )
+                                Spacer(
+                                    modifier =
+                                    Modifier.height(dimensionResource(id = R.dimen.size_10dp))
+                                )
+
+
                             }
                         }
 
@@ -355,53 +374,69 @@ fun ProfileSetUpScreen(
                                     .padding(all = dimensionResource(id = R.dimen.size_20dp)),
                                 textAlign = TextAlign.End
                             )
+                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
                         }
 
                         state.signUpData.token?.let { _ ->
+                            Divider(thickness = dimensionResource(id = R.dimen.divider))
+
                             EditFields(
                                 state.signUpData.address,
                                 onValueChange = {
                                     signUpViewModel.onEvent(SignUpUIEvent.OnAddressChanged(it))
                                 },
                                 stringResource(id = R.string.address),
-                                KeyboardOptions(keyboardType = KeyboardType.Text),
-//                                isError = (!validPhoneNumber(state.phoneNumber) && state.phoneNumber.isNotEmpty()),
-//                                errorMessage = stringResource(id = R.string.valid_phone_number),
-//                                enabled = !verified
+                                KeyboardOptions(
+                                    keyboardType = KeyboardType.Text,
+                                    capitalization = KeyboardCapitalization.Sentences
+                                ),
+                                isError = (state.signUpData.address.isNotEmpty() && state.signUpData.address.length <= 4),
+                                errorMessage = stringResource(id = R.string.address_error),
                             )
-                            EditFields(
-                                state.signUpData.gender,
-                                onValueChange = {
-                                    signUpViewModel.onEvent(SignUpUIEvent.OnGenderChange(it))
-                                },
-                                stringResource(id = R.string.gender),
-                                KeyboardOptions(keyboardType = KeyboardType.Text),
+                            Divider(thickness = dimensionResource(id = R.dimen.divider))
 
-//                                isError = (!validPhoneNumber(state.phoneNumber) && state.phoneNumber.isNotEmpty()),
-//                                errorMessage = stringResource(id = R.string.valid_phone_number),
-//                                enabled = !verified,
-                                modifier = Modifier.onGloballyPositioned {
-                                    textFieldSize = it.size.toSize()
-                                }
+                            Column {
+                                EditFields(
+                                    state.signUpData.gender,
+                                    onValueChange = {
+                                        signUpViewModel.onEvent(SignUpUIEvent.OnGenderChange(it))
+                                    },
+                                    stringResource(id = R.string.gender),
+                                    KeyboardOptions(keyboardType = KeyboardType.Text),
+                                    modifier = Modifier.onGloballyPositioned {
+                                        textFieldSize = it.size.toSize()
+                                    },
+                                    trailingIcon = {
+                                        Icon(
+                                            icon,
+                                            contentDescription = null,
+                                            modifier = Modifier.clickable { expanded = !expanded })
+                                    }
+                                )
+                                DropdownMenu(
+                                    expanded = expanded,
+                                    onDismissRequest = { expanded = false },
+                                    modifier = Modifier
+                                        .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+                                        .background(MaterialTheme.colors.background)
+                                ) {
+                                    genderList.forEach { label ->
+                                        DropdownMenuItem(onClick = {
+                                            signUpViewModel.onEvent(
+                                                SignUpUIEvent.OnGenderChange(
+                                                    label
+                                                )
+                                            )
 
-                            )
-                            DropdownMenu(
-                                expanded = expanded,
-                                onDismissRequest = { expanded = false },
-                                modifier = Modifier
-                                    .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
-                                    .background(MaterialTheme.colors.background)
-                            ) {
-                                genderList.forEach { label ->
-                                    DropdownMenuItem(onClick = {
-                                        signUpViewModel.onEvent(SignUpUIEvent.OnGenderChange(label))
-
-                                        expanded = false
-                                    }) {
-                                        Text(text = label, textAlign = TextAlign.Center)
+                                            expanded = false
+                                        }) {
+                                            Text(text = label, textAlign = TextAlign.Center)
+                                        }
                                     }
                                 }
                             }
+                            Divider(thickness = dimensionResource(id = R.dimen.divider))
+
                             EditFields(
                                 state.signUpData.birthdate,
                                 onValueChange = {

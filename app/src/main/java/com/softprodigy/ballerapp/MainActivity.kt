@@ -247,11 +247,14 @@ fun NavControllerComposable(activity: MainActivity) {
                 navController.navigate(LOGIN_SCREEN)
             }, onSignUpSuccess = {
                 navController.navigate(SELECT_USER_TYPE)
-            }, onTwitterClick = {
-                scope.launch {
-                    (context as MainActivity).getRequestToken()
-                }
-            }, twitterUser = activity.twitterUser.value,
+            },
+                onTwitterClick = {
+                    scope.launch {
+                        (context as MainActivity).getRequestToken()
+                    }
+
+                },
+                twitterUser = activity.twitterUser.value,
                 onLoginSuccess = { userInfo ->
                     if (!userInfo.user.role.equals(
                             AppConstants.USER_TYPE_USER,
@@ -264,6 +267,8 @@ fun NavControllerComposable(activity: MainActivity) {
                             navController.popBackStack()
                         }
                     }
+                }, onPreviousClick = {
+                    navController.popBackStack()
                 })
         }
 
@@ -304,6 +309,8 @@ fun NavControllerComposable(activity: MainActivity) {
                     navController.popBackStack()
 
                 }
+            }, onPreviousClick = {
+                navController.popBackStack()
             })
 
         }
