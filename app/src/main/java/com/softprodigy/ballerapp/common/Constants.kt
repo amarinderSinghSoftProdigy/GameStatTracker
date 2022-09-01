@@ -14,6 +14,7 @@ object AppConstants {
     const val USER_TYPE_PLAYER = "Player"
     const val USER_TYPE_REFEREE = "Referee"
     const val USER_TYPE_COACH = "Coach"
+    const val USER_TYPE_USER = "user"
     const val USER_TYPE_PARENT = "Parent"
     const val USER_TYPE_GAME_STAFF = "Game Staff"
     const val USER_TYPE_PROGRAM_STAFF = "Program Staff"
@@ -52,6 +53,7 @@ object ApiConstants {
     const val SOCIAL_LOGIN = "/social_login"
     const val SIGNUP = "v1/auth/register"
     const val FORGOT_PASSWORD = "v1/auth/forgotPassword"
+    const val UPDATE_PROFILE = "v1/auth/updateUserProfile"
     const val VERIFY_PHONE = "v1/auth/verifyPhone"
     const val CONFIRM_PHONE = "v1/auth/confirmPhone"
     const val RESET_PASS = "/reset/password/"
@@ -62,6 +64,7 @@ object ApiConstants {
     const val EMAIL = "email"
     const val FACEBOOK = "facebook"
     const val GOOGLE = "google"
+    const val TWITTER="twitter"
     const val email = "email"
     const val token = "token"
 }

@@ -9,18 +9,22 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class SignUpData(
-    @SerializedName("firstName") val firstName: String? = null,
-    @SerializedName("lastName") val lastName: String? = null,
-    @SerializedName("profileImage") val profileImage: String? = null,
-    @SerializedName("email") var email: String? = null,
-    @SerializedName("phone") val phone: String? = null,
-    @SerializedName("address") val address: String? = null,
-    @SerializedName("phoneVerified") val phoneVerified: Boolean? = null,
-    @SerializedName("gender") val gender: String? = null,
-    @SerializedName("birthdate") val birthdate: String? = null,
+    @SerializedName("firstName") val firstName: String = "",
+    @SerializedName("lastName") val lastName: String = "",
+    @SerializedName("profileImage") val profileImage: String? = null,//serverImage
+    @SerializedName("profileImageUri") val profileImageUri: String? = null,//localUriImage
+    @SerializedName("email") var email: String = "",
+    @SerializedName("phone") val phone: String = "",
+    @SerializedName("address") val address: String = "",
+    @SerializedName("phoneVerified") val phoneVerified: Boolean = false,
+    @SerializedName("gender") val gender: String = "",
+    @SerializedName("birthdate") val birthdate: String = "",
     @SerializedName("role") val role: String? = null,
     @SerializedName("password") val password: String? = null,
     @SerializedName("repeat_password") val repeatPassword: String? = null,
+    @SerializedName("token") val token: String? = null,
+    @SerializedName("id") val id: String? = null,
+
 ) : Parcelable
 
 

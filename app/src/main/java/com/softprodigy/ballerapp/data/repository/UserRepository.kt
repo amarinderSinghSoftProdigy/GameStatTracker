@@ -3,11 +3,7 @@ package com.softprodigy.ballerapp.data.repository
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.safeApiCall
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.data.request.ConfirmPhoneRequest
-import com.softprodigy.ballerapp.data.request.ForgotPasswordRequest
-import com.softprodigy.ballerapp.data.request.LoginRequest
-import com.softprodigy.ballerapp.data.request.SignUpData
-import com.softprodigy.ballerapp.data.request.VerifyPhoneRequest
+import com.softprodigy.ballerapp.data.request.*
 import com.softprodigy.ballerapp.data.response.UserInfo
 import com.softprodigy.ballerapp.domain.BaseResponse
 import com.softprodigy.ballerapp.domain.repository.IUserRepository
@@ -50,4 +46,11 @@ class UserRepository @Inject constructor(
         val requestBody = ForgotPasswordRequest(email)
         return safeApiCall(dispatcher = dispatcher) { service.forgotPassword(requestBody) }
     }
+
+    override suspend fun updateUserProfile(userProfile: SignUpData): ResultWrapper<BaseResponse<Any>> {
+        return safeApiCall(dispatcher = dispatcher) {
+            service.updateUserProfile(userProfile = userProfile)
+        }
+    }
+
 }

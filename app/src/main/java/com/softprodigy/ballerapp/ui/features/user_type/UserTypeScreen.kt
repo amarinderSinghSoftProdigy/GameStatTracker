@@ -32,30 +32,30 @@ import com.softprodigy.ballerapp.ui.features.components.UserSelectionSurface
 import com.softprodigy.ballerapp.ui.features.components.UserType
 import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
 import com.softprodigy.ballerapp.data.request.SignUpData
+import com.softprodigy.ballerapp.ui.features.sign_up.SignUpViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 
 
 @Composable
 fun UserTypeScreen(
-    signUpData: SignUpData?,
-    onNextClick: (String, SignUpData) -> Unit,
-    viewModel: UserTypeViewModel = hiltViewModel()
+    onNextClick: () -> Unit,
+    signUpvm: SignUpViewModel
 ) {
     Box(
         Modifier.fillMaxWidth()
     ) {
         CoachFlowBackground()
-        UserTypeSelector(onNextClick = onNextClick, viewModel, signUpData)
+        UserTypeSelector(onNextClick = onNextClick, signUpvm/*, signUpData*/)
     }
 }
 
 @SuppressLint("RememberReturnType")
 @Composable
 fun UserTypeSelector(
-    onNextClick: (String, SignUpData) -> Unit,
-    viewModel: UserTypeViewModel,
-    signUpData: SignUpData?
+    onNextClick: () -> Unit,
+    signUpvm: SignUpViewModel,
 ) {
+
     val options = listOf(
         UserType.PLAYER,
         UserType.COACH,
@@ -66,7 +66,7 @@ fun UserTypeSelector(
     )
 
     var selectedUserType by remember {
-        mutableStateOf(viewModel.userRole)
+        mutableStateOf(signUpvm.userRole)
     }
 
     val onSelectionChange = { text: String ->
@@ -130,18 +130,9 @@ fun UserTypeSelector(
                 secondText = stringResource(id = R.string.next),
                 onBackClick = { },
                 onNextClick = {
-                    val signUpData = SignUpData(
-                        email = signUpData?.email,
-                        address = signUpData?.address,
-                        birthdate = signUpData?.birthdate,
-                        gender = signUpData?.gender,
-                        password = signUpData?.password,
-                        repeatPassword = signUpData?.repeatPassword,
-                        role = selectedUserType
-                    )
-                    onNextClick.invoke(selectedUserType, signUpData)
+                    onNextClick.invoke()
                     val userRole = GlobalRequest.Users(selectedUserType)
-                    viewModel.saveData(userRole)
+                    signUpvm.saveData(userRole)
                 },
                 enableState = selectedUserType.isNotEmpty(),
                 showOnlyNext = true,
