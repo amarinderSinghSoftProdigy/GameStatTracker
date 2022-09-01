@@ -35,7 +35,7 @@ fun UserSelectionSurface(
         .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
         .border(
             width = 1.dp,
-            MaterialTheme.appColors.material.primary,
+            MaterialTheme.appColors.buttonColor.bckgroundDisabled,
             shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
         )
         .background(

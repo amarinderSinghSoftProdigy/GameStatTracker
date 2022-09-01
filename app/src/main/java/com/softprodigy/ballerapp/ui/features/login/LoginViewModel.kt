@@ -101,10 +101,10 @@ class LoginViewModel @Inject constructor(
                 }
                 is GenericError -> {
                     _loginUiState.value = _loginUiState.value.copy(
-                        errorMessage = "${loginResponse.code} ${loginResponse.message}",
+                        errorMessage = "${loginResponse.message}",
                         isDataLoading = false
                     )
-                    _loginChannel.send(LoginChannel.ShowToast(UiText.DynamicString("${loginResponse.code} ${loginResponse.message}")))
+                    _loginChannel.send(LoginChannel.ShowToast(UiText.DynamicString("${loginResponse.message}")))
                 }
                 is ResultWrapper.NetworkError -> {
                     _loginUiState.value = _loginUiState.value.copy(

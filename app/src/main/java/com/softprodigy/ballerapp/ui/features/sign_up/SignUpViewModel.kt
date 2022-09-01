@@ -219,10 +219,10 @@ class SignUpViewModel @Inject constructor(
                 }
                 is ResultWrapper.GenericError -> {
                     _signUpUiState.value = _signUpUiState.value.copy(
-                        errorMessage = "${loginResponse.code} ${loginResponse.message}",
+                        errorMessage = "${loginResponse.message}",
                         isLoading = false
                     )
-                    _signUpChannel.send(SignUpChannel.ShowToast(UiText.DynamicString("${loginResponse.code} ${loginResponse.message}")))
+                    _signUpChannel.send(SignUpChannel.ShowToast(UiText.DynamicString("${loginResponse.message}")))
                 }
                 is ResultWrapper.NetworkError -> {
                     _signUpUiState.value = _signUpUiState.value.copy(
@@ -262,7 +262,7 @@ class SignUpViewModel @Inject constructor(
                 _signUpChannel.send(
                     SignUpChannel.ShowToast(
                         UiText.DynamicString(
-                            "${uploadLogoResponse.code} ${uploadLogoResponse.message}"
+                            "${uploadLogoResponse.message}"
                         )
                     )
                 )
@@ -279,7 +279,7 @@ class SignUpViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 uploadLogoResponse.value.let { response ->
                     if (response.status) {
-                 _signUpUiState.value =
+                        _signUpUiState.value =
                             _signUpUiState.value.copy(
                                 signUpData = _signUpUiState.value.signUpData.copy(
                                     profileImage = "${BuildConfig.IMAGE_SERVER}${uploadLogoResponse.value.data.data}"
@@ -359,10 +359,10 @@ class SignUpViewModel @Inject constructor(
                     _signUpUiState.value = _signUpUiState.value.copy(isLoading = false)
                     _signUpUiState.value =
                         _signUpUiState.value.copy(
-                            errorMessage = "${signUpResponse.code} ${signUpResponse.message}",
+                            errorMessage = "${signUpResponse.message}",
                             isLoading = false
                         )
-                    _signUpChannel.send(SignUpChannel.ShowToast(UiText.DynamicString("${signUpResponse.code} ${signUpResponse.message}")))
+                    _signUpChannel.send(SignUpChannel.ShowToast(UiText.DynamicString("${signUpResponse.message}")))
                 }
                 is ResultWrapper.NetworkError -> {
                     _signUpUiState.value =
@@ -404,7 +404,7 @@ class SignUpViewModel @Inject constructor(
                     isLoading = false,
                     errorMessage = "${updateProfileResp.message}"
                 )
-                _signUpChannel.send(SignUpChannel.ShowToast(UiText.DynamicString("${updateProfileResp.code} ${updateProfileResp.message}")))
+                _signUpChannel.send(SignUpChannel.ShowToast(UiText.DynamicString("${updateProfileResp.message}")))
 
             }
             is ResultWrapper.NetworkError -> {
@@ -490,9 +490,9 @@ class SignUpViewModel @Inject constructor(
                 is ResultWrapper.GenericError -> {
                     _signUpUiState.value = _signUpUiState.value.copy(
                         isLoading = false,
-                        errorMessage = "${verifyResponseResponse.code} ${verifyResponseResponse.message}"
+                        errorMessage = "${verifyResponseResponse.message}"
                     )
-                    _signUpChannel.send(SignUpChannel.ShowToast(UiText.DynamicString("${verifyResponseResponse.code} ${verifyResponseResponse.message}")))
+                    _signUpChannel.send(SignUpChannel.ShowToast(UiText.DynamicString("${verifyResponseResponse.message}")))
 
                 }
                 is ResultWrapper.NetworkError -> {
@@ -555,9 +555,9 @@ class SignUpViewModel @Inject constructor(
                 is ResultWrapper.GenericError -> {
                     _signUpUiState.value = _signUpUiState.value.copy(
                         isLoading = false,
-                        errorMessage = "${verifyResponseResponse.code} ${verifyResponseResponse.message}",
+                        errorMessage = "${verifyResponseResponse.message}",
                     )
-                    _signUpChannel.send(SignUpChannel.ShowToast(UiText.DynamicString("${verifyResponseResponse.code} ${verifyResponseResponse.message}")))
+                    _signUpChannel.send(SignUpChannel.ShowToast(UiText.DynamicString("${verifyResponseResponse.message}")))
                 }
                 is ResultWrapper.NetworkError -> {
                     _signUpUiState.value =

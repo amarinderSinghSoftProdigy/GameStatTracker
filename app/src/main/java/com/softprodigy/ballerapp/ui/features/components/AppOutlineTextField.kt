@@ -1,5 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -8,6 +9,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.LocalContentColor
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldColors
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -66,7 +79,9 @@ fun AppOutlineTextField(
             label = label,
             placeholder = placeholder,
             leadingIcon = leadingIcon,
-            trailingIcon = trailingIcon,
+            trailingIcon = if (value.isNotEmpty()) {
+                trailingIcon
+            } else null,
             isError = isError,
             visualTransformation = visualTransformation,
             keyboardOptions = keyboardOptions,
@@ -96,24 +111,27 @@ fun AppOutlineDateField(
     data: String = "",
     onClick: () -> Unit = {},
 ) {
-    Box(
+    Card(
         modifier = Modifier
             .fillMaxWidth()
             .height(52.dp)
-            .background(
-                shape = RoundedCornerShape(8.dp),
-                color = MaterialTheme.appColors.material.background,
-            )
             .clickable {
                 onClick()
             },
+        border = BorderStroke(
+            0.5.dp,
+            MaterialTheme.appColors.editField.borderUnFocused
+        ),
+        backgroundColor = MaterialTheme.appColors.material.background,
+        shape = RoundedCornerShape(MaterialTheme.spacing.small),
+        elevation = 0.dp
     ) {
         Row(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(start = 13.dp, end = 13.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             if (data.isEmpty()) {
                 AppText(
@@ -121,7 +139,6 @@ fun AppOutlineDateField(
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.appColors.textField.label,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
-
                 )
             } else {
                 AppText(
@@ -135,6 +152,7 @@ fun AppOutlineDateField(
     }
 }
 
+
 @Composable
 fun EditFields(
     data: String,
@@ -144,9 +162,10 @@ fun EditFields(
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     isError: Boolean = false,
     errorMessage: String = "",
-    enabled: Boolean = true,
+    enabled: Boolean = false,
     modifier: Modifier = Modifier,
-    ) {
+    trailingIcon: @Composable (() -> Unit)? = null,
+) {
 
     Column(
         modifier = modifier
@@ -171,13 +190,14 @@ fun EditFields(
                     backgroundColor = Color.Transparent,
                     focusedBorderColor = Color.Transparent,
                     unfocusedBorderColor = Color.Transparent,
-                    cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                    cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                 ),
                 textStyle = TextStyle(textAlign = TextAlign.End),
                 singleLine = true,
                 keyboardActions = keyboardActions,
                 keyboardOptions = keyboardOptions,
-                enabled = enabled
+                readOnly = enabled,
+                trailingIcon = trailingIcon
             )
         }
 
