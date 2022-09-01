@@ -63,10 +63,8 @@ class SetupTeamViewModel @Inject constructor(
             is TeamSetupUIEvent.OnSearchPlayer -> {
                 _teamSetupUiState.value =
                     _teamSetupUiState.value.copy(search = event.searchPlayerQuery)
-                if (event.searchPlayerQuery.length > 2) {
-                    viewModelScope.launch {
-                        getPlayers(event.searchPlayerQuery)
-                    }
+                viewModelScope.launch {
+                    getPlayers(event.searchPlayerQuery)
                 }
             }
             is TeamSetupUIEvent.OnAddPlayerClick -> {

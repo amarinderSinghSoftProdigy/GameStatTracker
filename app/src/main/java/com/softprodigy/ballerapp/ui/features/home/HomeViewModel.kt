@@ -16,10 +16,10 @@ class HomeViewModel @Inject constructor(application: Application) :
     val state: State<HomeState> = _state
 
     fun setColor(color: Color) {
-        _state.value = HomeState(color = color)
+        _state.value = _state.value.copy(color = color)
     }
 
     fun setScreen(screen: Boolean) {
-        _state.value = HomeState(screen = screen)
+        _state.value = _state.value.copy(screen = screen)
     }
 }

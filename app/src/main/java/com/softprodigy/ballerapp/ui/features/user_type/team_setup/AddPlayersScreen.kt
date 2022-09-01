@@ -58,6 +58,7 @@ import com.softprodigy.ballerapp.ui.theme.appColors
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun AddPlayersScreen(
+    teamId: String? = "",
     vm: SetupTeamViewModel,
     onBackClick: () -> Unit,
     onNextClick: (String) -> Unit
@@ -240,7 +241,11 @@ fun AddPlayersScreen(
             BottomButtons(
                 onBackClick = { onBackClick.invoke() },
                 onNextClick = {
-                    vm.onEvent(TeamSetupUIEvent.OnAddPlayerScreenNext)
+                    if(teamId.isNullOrEmpty()) {
+                        vm.onEvent(TeamSetupUIEvent.OnAddPlayerScreenNext)
+                    }else{
+                        //TODO Add uupdate team api and add the newly selected player in the api.
+                    }
                 },
                 enableState = state.selectedPlayers.isNotEmpty()
             )
