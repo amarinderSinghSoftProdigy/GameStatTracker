@@ -516,19 +516,19 @@ fun SignUpScreen(
 
                 ),
                 visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
-                trailingIcon = {
-                    IconButton(onClick = {
-                        passwordVisibility = !passwordVisibility
-
-                    }) {
-                        Icon(
-                            imageVector = if (passwordVisibility)
-                                Icons.Filled.Visibility
-                            else
-                                Icons.Filled.VisibilityOff, ""
-                        )
-                    }
-                },
+//                trailingIcon = {
+//                    IconButton(onClick = {
+//                        passwordVisibility = !passwordVisibility
+//
+//                    }) {
+//                        Icon(
+//                            imageVector = if (passwordVisibility)
+//                                Icons.Filled.Visibility
+//                            else
+//                                Icons.Filled.VisibilityOff, ""
+//                        )
+//                    }
+//                },
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
@@ -572,19 +572,19 @@ fun SignUpScreen(
                     cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
                 ),
                 visualTransformation = if (confirmPasswordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
-                trailingIcon = {
-                    IconButton(onClick = {
-                        confirmPasswordVisibility = !confirmPasswordVisibility
-
-                    }) {
-                        Icon(
-                            imageVector = if (confirmPasswordVisibility)
-                                Icons.Filled.Visibility
-                            else
-                                Icons.Filled.VisibilityOff, ""
-                        )
-                    }
-                },
+//                trailingIcon = {
+//                    IconButton(onClick = {
+//                        confirmPasswordVisibility = !confirmPasswordVisibility
+//
+//                    }) {
+//                        Icon(
+//                            imageVector = if (confirmPasswordVisibility)
+//                                Icons.Filled.Visibility
+//                            else
+//                                Icons.Filled.VisibilityOff, ""
+//                        )
+//                    }
+//                },
             )
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
@@ -630,7 +630,6 @@ fun SignUpScreen(
                 withStyle(
                     style = SpanStyle(
                         color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                        textDecoration = TextDecoration.Underline
                     )
                 ) {
                     append(stringResource(id = R.string.signin))
@@ -653,7 +652,7 @@ fun SignUpScreen(
                         onLoginScreen()
                     }
                 },
-                style = MaterialTheme.typography.h5
+                style = MaterialTheme.typography.h4
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_30dp)))
 
