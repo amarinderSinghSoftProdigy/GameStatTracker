@@ -42,7 +42,7 @@ fun validName(name: String): Boolean {
 }
 
 fun validPhoneNumber(number: String): Boolean {
-    val regex = "^+[0-9+]{10,13}$"
+    val regex = "^+[0-9+]{10}$"
     return number.matches(regex.toRegex())
 }
 

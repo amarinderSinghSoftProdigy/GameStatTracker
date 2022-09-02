@@ -8,7 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00FFFFFF</color>
-    <color name="grey">#202124</color>
+    <color name="grey">#3E3F42</color>
     <color name="gray_border">#D7D7D7</color>
     <color name="ball_color">#FF923D</color>
     <color name="background_color">#80D7D7D7</color>

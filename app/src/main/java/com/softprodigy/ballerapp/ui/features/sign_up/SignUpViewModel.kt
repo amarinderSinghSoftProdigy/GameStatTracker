@@ -55,7 +55,6 @@ class SignUpViewModel @Inject constructor(
         userRole = request.role
     }
 
-
     fun saveTeamData(request: GlobalRequest.SetUpTeam) {
         teamData = request
 
@@ -194,8 +193,6 @@ class SignUpViewModel @Inject constructor(
                     )
             }
         }
-
-
     }
 
     private fun login(loginRequest: LoginRequest) {
@@ -315,7 +312,7 @@ class SignUpViewModel @Inject constructor(
             lastName = signUpData.lastName,
             email = signUpData.email,
             profileImage = signUpData.profileImage,
-            phone = "+" + signUpData.phone,
+            phone = signUpUiState.value.phoneCode + signUpData.phone,
             address = signUpData.address,
             phoneVerified = signUpData.phoneVerified,
             gender = signUpData.gender,
@@ -327,7 +324,6 @@ class SignUpViewModel @Inject constructor(
 
         viewModelScope.launch {
             _signUpUiState.value = _signUpUiState.value.copy(isLoading = true)
-
 
             val signUpResponse =
                 IUserRepository.signUp(signUpDataRequest)
@@ -393,7 +389,7 @@ class SignUpViewModel @Inject constructor(
             lastName = updateUserRequestData.lastName,
 //            email = updateUserRequestData.email,
             profileImage = updateUserRequestData.profileImage,
-            phone = "+" + updateUserRequestData.phone,
+            phone = signUpUiState.value.phoneCode  + updateUserRequestData.phone,
             address = updateUserRequestData.address,
             phoneVerified = updateUserRequestData.phoneVerified,
             gender = updateUserRequestData.gender,
@@ -450,7 +446,6 @@ class SignUpViewModel @Inject constructor(
                 }
             }
         }
-
     }
 
     private fun verifyPhone() {
@@ -458,7 +453,7 @@ class SignUpViewModel @Inject constructor(
             _signUpUiState.value = _signUpUiState.value.copy(isLoading = true)
 
             val verifyResponseResponse =
-                IUserRepository.verifyPhone(phone = "+" + _signUpUiState.value.signUpData.phone)
+                IUserRepository.verifyPhone(phone = signUpUiState.value.phoneCode + _signUpUiState.value.signUpData.phone)
 
             when (verifyResponseResponse) {
 
@@ -518,9 +513,11 @@ class SignUpViewModel @Inject constructor(
         viewModelScope.launch {
             _signUpUiState.value = _signUpUiState.value.copy(isLoading = true)
 
-
             val verifyResponseResponse =
-                IUserRepository.confirmPhone(phone = phone, otp = otp)
+                IUserRepository.confirmPhone(
+                    phone = signUpUiState.value.phoneCode + phone,
+                    otp = otp
+                )
 
             when (verifyResponseResponse) {
 

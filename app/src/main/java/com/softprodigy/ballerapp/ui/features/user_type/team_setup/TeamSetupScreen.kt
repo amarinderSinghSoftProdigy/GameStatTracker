@@ -298,7 +298,7 @@ fun TeamSetupScreen(
                     onNextClick = {
                         onNextClick.invoke()
                     },
-                    enableState = validTeamName(state.teamName) && state.teamImageUri != null && state.teamColor.isNotEmpty(),
+                    enableState = validTeamName(state.teamName) && state.teamImageUri != null && state.teamColor.isNotEmpty() && state.teamName.isNotEmpty(),
                     showOnlyNext = false,
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
