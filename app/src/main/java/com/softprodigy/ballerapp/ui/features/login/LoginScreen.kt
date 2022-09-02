@@ -77,7 +77,8 @@ fun LoginScreen(
     onLoginSuccess: (UserInfo?) -> Unit,
     onForgetPasswordClick: () -> Unit,
     onTwitterClick: () -> Unit,
-    twitterUser: SocialUserModel
+    twitterUser: SocialUserModel?,
+    onLoginFail:()->Unit
 ) {
 
     val context = LocalContext.current
@@ -117,8 +118,8 @@ fun LoginScreen(
             LoginManager.getInstance().unregisterCallback(callbackManager)
         }
     }
-    LaunchedEffect(key1 = twitterUser) {
-        twitterUser.id?.let {
+    LaunchedEffect(twitterUser) {
+        twitterUser?.id?.let {
             if (it.isNotEmpty())
                 vm.onEvent(LoginUIEvent.OnTwitterClick(twitterUser))
         }
@@ -153,8 +154,9 @@ fun LoginScreen(
     LaunchedEffect(key1 = Unit) {
         vm.loginChannel.collect { uiEvent ->
             when (uiEvent) {
-                is LoginChannel.ShowToast -> {
-                    Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
+                is LoginChannel.OnLoginFailed -> {
+                    onLoginFail.invoke()
+                    Toast.makeText(context, uiEvent.errorMessage.asString(context), Toast.LENGTH_LONG)
                         .show()
                 }
                 is LoginChannel.OnLoginSuccess -> {

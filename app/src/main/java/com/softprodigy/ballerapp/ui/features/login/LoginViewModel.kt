@@ -104,14 +104,14 @@ class LoginViewModel @Inject constructor(
                         errorMessage = "${loginResponse.message}",
                         isDataLoading = false
                     )
-                    _loginChannel.send(LoginChannel.ShowToast(UiText.DynamicString("${loginResponse.message}")))
+                    _loginChannel.send(LoginChannel.OnLoginFailed(UiText.DynamicString("${loginResponse.message}")))
                 }
                 is ResultWrapper.NetworkError -> {
                     _loginUiState.value = _loginUiState.value.copy(
                         errorMessage = loginResponse.message,
                         isDataLoading = false
                     )
-                    _loginChannel.send(LoginChannel.ShowToast(UiText.DynamicString(loginResponse.message)))
+                    _loginChannel.send(LoginChannel.OnLoginFailed(UiText.DynamicString(loginResponse.message)))
                 }
 
             }
@@ -126,6 +126,6 @@ class LoginViewModel @Inject constructor(
 }
 
 sealed class LoginChannel {
-    data class ShowToast(val message: UiText) : LoginChannel()
+    data class OnLoginFailed(val errorMessage: UiText) : LoginChannel()
     data class OnLoginSuccess(val loginResponse: UserInfo) : LoginChannel()
 }
