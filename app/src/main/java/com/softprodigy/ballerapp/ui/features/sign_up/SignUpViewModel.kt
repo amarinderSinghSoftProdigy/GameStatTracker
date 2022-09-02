@@ -126,7 +126,7 @@ class SignUpViewModel @Inject constructor(
 
             is SignUpUIEvent.OnSignUpDataSelected -> {
                 _signUpUiState.value =
-                    _signUpUiState.value.copy(signUpData = event.signUpData)
+                    _signUpUiState.value.copy(signUpData = event.signUpData, registered = false)
 
                 viewModelScope.launch {
                     _signUpChannel.send(SignUpChannel.OnSignUpSelected)
@@ -335,6 +335,7 @@ class SignUpViewModel @Inject constructor(
 
                         if (response.status) {
                             _signUpUiState.value = _signUpUiState.value.copy(
+                                registered = true,
                                 isLoading = false,
                                 errorMessage = null,
                                 successMessage = response.statusMessage

@@ -1,9 +1,20 @@
 package com.softprodigy.ballerapp.ui.features.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.LocalContentColor
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -13,9 +24,9 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.ui.theme.ButtonColor
 import com.softprodigy.ballerapp.ui.theme.appColors
 
@@ -36,6 +47,7 @@ fun AppButton(
     icon: Painter? = null,
     singleButton: Boolean = false,
     isForceEnableNeeded: Boolean = false,
+    themed: Boolean = false,
 ) {
     val contentColor = if (enabled) colors.textEnabled else colors.textDisabled
 
@@ -46,9 +58,13 @@ fun AppButton(
         shape = shape,
         color = if (icon == null && !isForceEnableNeeded)
             Color.Transparent
-        else if (enabled)
-            colors.bckgroundEnabled
-        else
+        else if (enabled) {
+            if (themed) {
+                AppConstants.SELECTED_COLOR
+            } else {
+                colors.bckgroundEnabled
+            }
+        } else
             colors.bckgroundDisabled,
         contentColor = contentColor.copy(alpha = 1f),
         border = border,

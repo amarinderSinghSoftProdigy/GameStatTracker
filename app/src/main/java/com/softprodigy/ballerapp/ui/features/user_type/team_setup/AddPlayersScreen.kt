@@ -98,7 +98,7 @@ fun AddPlayersScreen(
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_64dp)))
             AppText(
                 modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp)),
-                text = stringResource(id = R.string.add_players),
+                text = stringResource(id = R.string.invite_players),
                 style = MaterialTheme.typography.h3,
                 color = ColorBWBlack
             )
@@ -247,7 +247,8 @@ fun AddPlayersScreen(
                         //TODO Add uupdate team api and add the newly selected player in the api.
                     }
                 },
-                enableState = state.selectedPlayers.isNotEmpty()
+                enableState = state.selectedPlayers.isNotEmpty(),
+                themed = true,
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
         }

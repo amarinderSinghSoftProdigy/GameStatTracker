@@ -13,7 +13,12 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
@@ -39,12 +44,10 @@ import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.twitter_login.TwitterConstants
 import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordScreen
 import com.softprodigy.ballerapp.ui.features.home.HomeActivity
-import com.softprodigy.ballerapp.ui.features.home.roaster.RoasterScreen
 import com.softprodigy.ballerapp.ui.features.login.LoginScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.ProfileSetUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpViewModel
-import com.softprodigy.ballerapp.ui.features.splash.SplashScreen
 import com.softprodigy.ballerapp.ui.features.user_type.TeamSetupScreen
 import com.softprodigy.ballerapp.ui.features.user_type.UserTypeScreen
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.AddPlayersScreen
@@ -231,7 +234,7 @@ fun NavControllerComposable(activity: MainActivity) {
     val dataStoreManager = DataStoreManager(activity)
     val userToken = dataStoreManager.userToken.collectAsState(initial = "")
     val scope = rememberCoroutineScope()
-    NavHost(navController, startDestination = TEAM_SETUP_SCREEN) {
+    NavHost(navController, startDestination = SPLASH_SCREEN) {
 
         composable(route = SPLASH_SCREEN) {
 
