@@ -128,6 +128,7 @@
     <string name="no_team_selected">Please select a team first.</string>
     <string name="did_not_recieve_sms">"Didn't receive SMS? "</string>
     <string name="code">Resend Code</string>
+    <string name="select_image">Select Image</string>
 
 
 </resources>
