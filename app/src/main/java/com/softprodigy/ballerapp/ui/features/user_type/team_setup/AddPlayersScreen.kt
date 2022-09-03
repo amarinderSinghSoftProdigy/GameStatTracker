@@ -28,13 +28,19 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -55,6 +61,7 @@ import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
 import com.softprodigy.ballerapp.ui.theme.appColors
 
+@OptIn(ExperimentalComposeUiApi::class)
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun AddPlayersScreen(
@@ -65,6 +72,9 @@ fun AddPlayersScreen(
 ) {
     val context = LocalContext.current
     val state = vm.teamSetupUiState.value
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
 
     LaunchedEffect(key1 = Unit) {
         vm.teamSetupChannel.collect { uiEvent ->
@@ -112,7 +122,9 @@ fun AddPlayersScreen(
 
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                         AppSearchOutlinedTextField(
-                            modifier = Modifier.weight(1.0f),
+                            modifier = Modifier
+                                .weight(1.0f)
+                                .focusRequester(focusRequester),
                             value = state.search,
                             onValueChange = {
                                 vm.onEvent(TeamSetupUIEvent.OnSearchPlayer(it))
@@ -166,6 +178,8 @@ fun AddPlayersScreen(
                             searchedText = state.search,
                             teamColor = state.teamColor,
                             onPlayerClick = {
+                                focusManager.clearFocus()
+                                keyboardController?.hide()
                                 vm.onEvent(TeamSetupUIEvent.OnAddPlayerClick(it))
                             })
                         Divider(
@@ -198,7 +212,7 @@ fun AddPlayersScreen(
                                     color = ColorBWBlack
                                 )
 
-                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_4dp)))
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
 
                                 AppText(
                                     text = state.selectedPlayers.size.toString(),
@@ -228,6 +242,8 @@ fun AddPlayersScreen(
                                 player = filteredCountry,
                                 teamColor = state.teamColor,
                                 onItemClick = { player ->
+                                    focusManager.clearFocus()
+                                    keyboardController?.hide()
                                     vm.onEvent(TeamSetupUIEvent.OnRemovePlayerClick(player))
                                 },
                                 showBackground = true
@@ -351,7 +367,7 @@ fun PlayerListItem(
                 modifier = Modifier.weight(1f)
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
-            AddRemoveButton(icon, teamColor = teamColor) { onItemClick(player) }
+            AddRemoveButton(icon, teamColor = "0177C1") { onItemClick(player) }
         }
     }
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
@@ -361,7 +377,7 @@ fun PlayerListItem(
 fun AddRemoveButton(icon: Painter, teamColor: String, onItemClick: () -> Unit) {
     Box(
         modifier = Modifier
-            .size(dimensionResource(id = R.dimen.size_16dp))
+            .size(dimensionResource(id = R.dimen.size_20dp))
             .background(
                 shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)),
                 color = Color(android.graphics.Color.parseColor("#$teamColor"))

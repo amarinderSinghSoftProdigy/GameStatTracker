@@ -1,6 +1,7 @@
 package com.softprodigy.ballerapp.ui.features.user_type
 
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
@@ -100,7 +101,6 @@ fun TeamSetupScreen(
     if (selectionUpdated.value.isNotEmpty()) {
         UpdateColor()
     }
-
     ModalBottomSheetLayout(
         sheetContent = {
             ColorPickerBottomSheet(controller, colorEnvelope = { colorEnvelope ->
@@ -323,6 +323,8 @@ fun TeamSetupScreen(
                     }
                 }
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                val enable =
+                    validTeamName(state.teamName) && state.teamImageUri != null && state.teamColor.isNotEmpty() && state.teamName.isNotEmpty()
                 BottomButtons(
                     firstText = stringResource(id = R.string.back),
                     secondText = stringResource(id = R.string.next),
@@ -330,11 +332,15 @@ fun TeamSetupScreen(
                     onNextClick = {
                         onNextClick.invoke()
                     },
-                    enableState = validTeamName(state.teamName) && state.teamImageUri != null && state.teamColor.isNotEmpty() && state.teamName.isNotEmpty(),
-                    showOnlyNext = false,
-                    themed = true,
+                    enableState = enable,
+                    showOnlyNext = enable,
+                    themed = false,//Just set to true to show selected color as background
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+
+                if (enable) {
+                    BackHandler {}
+                }
             }
         }
     }

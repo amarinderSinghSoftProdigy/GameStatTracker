@@ -206,7 +206,6 @@ class SignUpViewModel @Inject constructor(
                 is ResultWrapper.Success -> {
                     loginResponse.value.let { response ->
                         if (response.status) {
-//                            setToken(response.data.token)
                             setLoginDataToState(response.data)
                             _signUpChannel.send(SignUpChannel.OnLoginSuccess(response.data))
                         } else {
@@ -244,7 +243,8 @@ class SignUpViewModel @Inject constructor(
                 signUpData = _signUpUiState.value.signUpData.copy(
                     token = userInfo.token,
                     id = userInfo.user.id,
-                    email = userInfo.user.email
+                    email = userInfo.user.email,
+                    role = userInfo.user.role
                 )
             )
     }
@@ -390,7 +390,7 @@ class SignUpViewModel @Inject constructor(
             lastName = updateUserRequestData.lastName,
 //            email = updateUserRequestData.email,
             profileImage = updateUserRequestData.profileImage,
-            phone = signUpUiState.value.phoneCode  + updateUserRequestData.phone,
+            phone = signUpUiState.value.phoneCode + updateUserRequestData.phone,
             address = updateUserRequestData.address,
             phoneVerified = updateUserRequestData.phoneVerified,
             gender = updateUserRequestData.gender,

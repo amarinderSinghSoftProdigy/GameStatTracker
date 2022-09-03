@@ -114,7 +114,6 @@ fun BallerAppTheme(
     content: @Composable () -> Unit
 ) {
     val colors = if (darkTheme) {
-
         DarkColorPalette
     } else {
         LightColorPalette
@@ -122,7 +121,7 @@ fun BallerAppTheme(
     val sysUiController = rememberSystemUiController()
     SideEffect {
         sysUiController.setStatusBarColor(
-            color = md_theme_light_primary,
+            color = if (!darkTheme) md_theme_light_primary else ColorBWGrayStatus,
             darkIcons = !darkTheme
         )
     }
