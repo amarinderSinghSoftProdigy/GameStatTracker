@@ -247,7 +247,7 @@ fun NavControllerComposable(activity: MainActivity) {
     val dataStoreManager = DataStoreManager(activity)
     val userToken = dataStoreManager.userToken.collectAsState(initial = "")
     val scope = rememberCoroutineScope()
-    NavHost(navController, startDestination = TEAM_SETUP_SCREEN) {
+    NavHost(navController, startDestination = SPLASH_SCREEN) {
 
         composable(route = SPLASH_SCREEN) {
 
