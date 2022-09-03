@@ -93,9 +93,8 @@ class MainActivity : ComponentActivity() {
     private var email = ""
     private var profilePicURL = ""
     private var accessToken = ""
-    val twitterUser = mutableStateOf(SocialUserModel())
-    val twitterUserRegister = mutableStateOf(SocialUserModel())
-
+    val twitterUser = mutableStateOf<SocialUserModel?>(SocialUserModel())
+    val twitterUserRegister = mutableStateOf<SocialUserModel?>(SocialUserModel())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -288,7 +287,9 @@ fun NavControllerComposable(activity: MainActivity) {
                     }
                 }, onPreviousClick = {
                     navController.popBackStack()
-                })
+                },
+                onSocialLoginFailed = {activity.twitterUserRegister.value = null}
+            )
         }
 
         composable(route = WELCOME_SCREEN) {
@@ -314,10 +315,13 @@ fun NavControllerComposable(activity: MainActivity) {
                 },
                 onTwitterClick = {
                     scope.launch {
-                        (context as MainActivity).getRequestToken("login")
+                        activity.getRequestToken("login")
                     }
                 },
-                twitterUser = activity.twitterUser.value
+                twitterUser = activity.twitterUser.value,
+                onLoginFail = {
+                    activity.twitterUser.value = null
+                }
             )
         }
 
