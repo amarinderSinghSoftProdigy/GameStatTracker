@@ -13,7 +13,6 @@
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_teams_large.xml" value="0.226" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/layout/twitter_login.xml" value="0.1838768115942029" />
         <entry key="..\:/Users/user/baller-app/app/src/main/res/drawable/ic_baseline_calendar_month_24.xml" value="0.1" />
-        <entry key="..\:/Users/user/baller-app/app/src/main/res/drawable/ic_google.xml" value="0.1" />
         <entry key="..\:/Users/user/baller-app/app/src/main/res/drawable/splash_background.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_add_player.xml" value="0.131" />
         <entry key="app/src/main/res/drawable/ic_ball.xml" value="0.1" />
@@ -29,8 +28,10 @@
         <entry key="app/src/main/res/drawable/ic_scanner.xml" value="0.131" />
         <entry key="app/src/main/res/drawable/ic_settings.xml" value="0.139" />
         <entry key="app/src/main/res/drawable/ic_upload.xml" value="0.131" />
+        <entry key="app/src/main/res/drawable/splash_background.xml" value="0.1435" />
         <entry key="app/src/main/res/layout/activity_details.xml" value="0.25" />
         <entry key="app/src/main/res/layout/twitter_login.xml" value="0.25" />
+        <entry key="app/src/main/res/xml/filepaths.xml" value="0.2140625" />
       </map>
     </option>
   </component>

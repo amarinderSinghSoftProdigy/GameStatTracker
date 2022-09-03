@@ -104,7 +104,8 @@ fun SignUpScreen(
     onSignUpSuccess: () -> Unit,
     onSocialLoginSuccess: (UserInfo) -> Unit,
     onTwitterClick: () -> Unit,
-    twitterUser: SocialUserModel
+    twitterUser: SocialUserModel?,
+    onSocialLoginFailed:()->Unit
 ) {
 
     val context = LocalContext.current
@@ -204,7 +205,7 @@ fun SignUpScreen(
         }
     }
     LaunchedEffect(key1 = twitterUser) {
-        twitterUser.id?.let {
+        twitterUser?.id?.let {
             if (it.isNotEmpty())
                 vm.onEvent(SignUpUIEvent.OnTwitterClick(twitterUser))
         }
@@ -239,6 +240,7 @@ fun SignUpScreen(
         vm.signUpChannel.collect { uiEvent ->
             when (uiEvent) {
                 is SignUpChannel.ShowToast -> {
+                    onSocialLoginFailed.invoke()
                     Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
                         .show()
                 }
