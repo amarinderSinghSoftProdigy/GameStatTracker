@@ -6,12 +6,14 @@ import android.widget.DatePicker
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResultRegistryOwner
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,17 +21,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
@@ -37,8 +36,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -48,23 +45,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
-
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -97,6 +95,7 @@ import com.softprodigy.ballerapp.ui.theme.spacing
 import timber.log.Timber
 import java.util.*
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SignUpScreen(
     onPreviousClick: () -> Unit,
@@ -126,8 +125,9 @@ fun SignUpScreen(
     }
 
     var password by rememberSaveable { mutableStateOf("") }
-    var passwordVisibility by rememberSaveable { mutableStateOf(false) }
-    var confirmPasswordVisibility by rememberSaveable { mutableStateOf(false) }
+    val passwordVisibility by rememberSaveable { mutableStateOf(false) }
+    val confirmPasswordVisibility by rememberSaveable { mutableStateOf(false) }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     // Declaring integer values
     // for year, month and day
@@ -265,8 +265,8 @@ fun SignUpScreen(
             contentDescription = "",
             modifier = Modifier
                 .padding(
-                    start = dimensionResource(id = R.dimen.size_5dp), top = dimensionResource(
-                        id = R.dimen.size_5dp
+                    start = dimensionResource(id = R.dimen.size_16dp), top = dimensionResource(
+                        id = R.dimen.size_16dp
                     )
                 )
                 .clickable {
@@ -322,6 +322,7 @@ fun SignUpScreen(
                     )
                 },
                 keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next,
                     keyboardType = KeyboardType.Email,
                     capitalization = KeyboardCapitalization.Sentences
                 ),
@@ -365,6 +366,7 @@ fun SignUpScreen(
                     )
                 },
                 keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next,
                     keyboardType = KeyboardType.Text,
                     capitalization = KeyboardCapitalization.Sentences
                 ),
@@ -399,7 +401,7 @@ fun SignUpScreen(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(52.dp)
+                        .height(dimensionResource(id = R.dimen.size_50dp))
                         .clickable {
                             expanded = !expanded
                         }
@@ -417,7 +419,10 @@ fun SignUpScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(start = 13.dp, end = 13.dp),
+                            .padding(
+                                start = dimensionResource(id = R.dimen.size_12dp),
+                                end = dimensionResource(id = R.dimen.size_12dp)
+                            ),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
@@ -503,6 +508,7 @@ fun SignUpScreen(
                     )
                 },
                 keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next,
                     keyboardType = KeyboardType.Password,
                     capitalization = KeyboardCapitalization.Words
                 ),
@@ -560,9 +566,13 @@ fun SignUpScreen(
                     )
                 },
                 keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Done,
                     capitalization = KeyboardCapitalization.Sentences,
                     keyboardType = KeyboardType.Password,
                 ),
+                keyboardActions = KeyboardActions(onDone = {
+                    keyboardController?.hide()
+                }),
                 isError = !password.passwordMatches(confirmPassword.value) && confirmPassword.value.isNotEmpty(),
                 errorMessage = stringResource(id = R.string.confirm_password_error),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
