@@ -241,9 +241,9 @@ fun AddPlayersScreen(
             BottomButtons(
                 onBackClick = { onBackClick.invoke() },
                 onNextClick = {
-                    if(teamId.isNullOrEmpty()) {
+                    if (teamId.isNullOrEmpty()) {
                         vm.onEvent(TeamSetupUIEvent.OnAddPlayerScreenNext)
-                    }else{
+                    } else {
                         //TODO Add uupdate team api and add the newly selected player in the api.
                     }
                 },
@@ -371,7 +371,7 @@ fun AddRemoveButton(icon: Painter, teamColor: String, onItemClick: () -> Unit) {
             painter = icon, contentDescription = "",
             modifier = Modifier
                 .align(Alignment.Center)
-                .size(dimensionResource(id = R.dimen.size_12dp))
+                .size(dimensionResource(id = R.dimen.size_20dp))
                 .clickable(onClick = { onItemClick() }),
             tint = Color.White
         )

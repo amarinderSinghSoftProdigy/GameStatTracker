@@ -271,21 +271,21 @@ fun LoginScreen(
 
                 ),
                 visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
-                trailingIcon = {
-
-                    IconButton(onClick = {
-                        passwordVisibility = !passwordVisibility
-
-                    }) {
-                        Icon(
-                            imageVector = if (passwordVisibility)
-                                Icons.Filled.Visibility
-                            else
-                                Icons.Filled.VisibilityOff, ""
-                        )
-
-                    }
-                },
+//                trailingIcon = {
+//
+//                    IconButton(onClick = {
+//                        passwordVisibility = !passwordVisibility
+//
+//                    }) {
+//                        Icon(
+//                            imageVector = if (passwordVisibility)
+//                                Icons.Filled.Visibility
+//                            else
+//                                Icons.Filled.VisibilityOff, ""
+//                        )
+//
+//                    }
+//                },
             )
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
@@ -323,10 +323,9 @@ fun LoginScreen(
                 withStyle(
                     style = SpanStyle(
                         color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                        textDecoration = TextDecoration.Underline
                     )
                 ) {
-                    append(stringResource(id = R.string.sign_up))
+                    append(stringResource(id = R.string.create_account))
                 }
 
                 pop()
@@ -345,7 +344,7 @@ fun LoginScreen(
                         onRegister()
                     }
                 },
-                style = MaterialTheme.typography.h5
+                style = MaterialTheme.typography.h4
             )
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_32dp)))
