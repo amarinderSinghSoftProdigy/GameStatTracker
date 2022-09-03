@@ -74,27 +74,24 @@ fun ProfileSetUpScreen(
         mutableStateOf(null)
     }
 
-    var hasImage by remember {
-        mutableStateOf(false)
-    }
     var imageUri by remember {
         mutableStateOf<Uri?>(null)
     }
     val imagePicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri ->
-            hasImage = uri != null
             imageUri = uri
-            signUpViewModel.onEvent(SignUpUIEvent.OnImageSelected(imageUri.toString()))
+            uri?.let {
+                signUpViewModel.onEvent(SignUpUIEvent.OnImageSelected(imageUri.toString()))
+            }
         }
     )
 
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture(),
         onResult = { success ->
-            hasImage = success
-            signUpViewModel.onEvent(SignUpUIEvent.OnImageSelected(imageUri.toString()))
-
+            if (success)
+                signUpViewModel.onEvent(SignUpUIEvent.OnImageSelected(imageUri.toString()))
         }
     )
     val scope = rememberCoroutineScope()

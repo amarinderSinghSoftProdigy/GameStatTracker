@@ -422,3 +422,12 @@ private fun moveToHome(activity: MainActivity) {
     activity.startActivity(intent)
     activity.finish()
 }
+private fun checkRole(check: Boolean, navController: NavController, activity: MainActivity) {
+    if (check) {
+        navController.navigate(SELECT_USER_TYPE) {
+            navController.popBackStack()
+        }
+    } else {
+        moveToHome(activity)
+    }
+}
