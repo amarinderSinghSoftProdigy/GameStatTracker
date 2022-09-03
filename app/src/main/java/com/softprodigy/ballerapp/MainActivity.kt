@@ -9,23 +9,49 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material.Button
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Camera
+import androidx.compose.material.icons.filled.Photo
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -34,6 +60,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -111,7 +138,6 @@ class MainActivity : ComponentActivity() {
                         LocalFacebookCallbackManager provides callbackManager
                     ) {
                         NavControllerComposable(this)
-//                        ImagePicker()
                     }
                 }
             }
@@ -247,23 +273,27 @@ fun NavControllerComposable(activity: MainActivity) {
     val dataStoreManager = DataStoreManager(activity)
     val userToken = dataStoreManager.userToken.collectAsState(initial = "")
     val scope = rememberCoroutineScope()
+    val color = dataStoreManager.getWalkThrough.collectAsState(initial = "")
+    Timber.e("Get value " + color.value)
     NavHost(navController, startDestination = SPLASH_SCREEN) {
-
         composable(route = SPLASH_SCREEN) {
-
-            if (userToken.value.isNotEmpty()) {
-                moveToHome(activity)
-            } else {
-                navController.popBackStack()
-                navController.navigate(WELCOME_SCREEN)
+            LaunchedEffect(key1 = true) {
+                scope.launch {
+                    if (userToken.value.isNotEmpty()) {
+                        moveToHome(activity)
+                    } else if (color.value.isNotEmpty()) {
+                        navController.popBackStack()
+                        navController.navigate(LOGIN_SCREEN)
+                    } else {
+                        navController.popBackStack()
+                        navController.navigate(WELCOME_SCREEN)
+                    }
+                }
             }
-
-            //  RoasterScreen()
         }
 
         composable(route = SIGN_UP_SCREEN) {
             SignUpScreen(vm = signUpViewModel, onLoginScreen = {
-//                navController.navigate(LOGIN_SCREEN)
                 navController.popBackStack()
             }, onSignUpSuccess = {
                 navController.navigate(SELECT_USER_TYPE)
@@ -275,26 +305,24 @@ fun NavControllerComposable(activity: MainActivity) {
                 },
                 twitterUser = activity.twitterUserRegister.value,
                 onSocialLoginSuccess = { userInfo ->
-                    if (!userInfo.user.role.equals(
+                    checkRole(
+                        userInfo.user.role.equals(
                             AppConstants.USER_TYPE_USER,
                             ignoreCase = true
-                        )
-                    ) {
-                        moveToHome(activity)
-                    } else {
-                        navController.navigate(SELECT_USER_TYPE) {
-                            navController.popBackStack()
-                        }
-                    }
+                        ), navController, activity
+                    )
                 }, onPreviousClick = {
                     navController.popBackStack()
                 },
-                onSocialLoginFailed = {activity.twitterUserRegister.value = null}
+                onSocialLoginFailed = { activity.twitterUserRegister.value = null }
             )
         }
 
         composable(route = WELCOME_SCREEN) {
             WelcomeScreen {
+                scope.launch {
+                    dataStoreManager.skipWalkthrough(AppConstants.SKIP)
+                }
                 navController.popBackStack()
                 navController.navigate(LOGIN_SCREEN)
             }
@@ -303,10 +331,11 @@ fun NavControllerComposable(activity: MainActivity) {
             LoginScreen(
                 onLoginSuccess = {
                     UserStorage.token = it?.token.toString()
-                    /*navController.navigate(SELECT_USER_TYPE){
-                        navController.popBackStack()
-                    }*/
-                    moveToHome(activity)
+                    checkRole(
+                        it?.user?.role.equals(AppConstants.USER_TYPE_USER, ignoreCase = true),
+                        navController,
+                        activity
+                    )
                 },
                 onRegister = {
                     navController.navigate(SIGN_UP_SCREEN)
@@ -357,6 +386,8 @@ fun NavControllerComposable(activity: MainActivity) {
         composable(
             route = SELECT_USER_TYPE
         ) {
+            BackHandler {}
+
             UserTypeScreen(
                 signUpvm = signUpViewModel,
                 onNextClick = {
@@ -386,7 +417,7 @@ fun NavControllerComposable(activity: MainActivity) {
 }
 
 
-fun moveToHome(activity: MainActivity) {
+private fun moveToHome(activity: MainActivity) {
     val intent = Intent(activity, HomeActivity::class.java)
     activity.startActivity(intent)
     activity.finish()

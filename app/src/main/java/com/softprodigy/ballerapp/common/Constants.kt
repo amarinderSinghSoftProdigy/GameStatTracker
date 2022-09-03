@@ -3,6 +3,7 @@ package com.softprodigy.ballerapp.common
 import androidx.compose.ui.graphics.Color
 
 object AppConstants {
+    const val ROLE = "role"
     const val TEAM_LOGO: String = "teamLogo"
     const val PROFILE_IMAGE: String = "profileImage"
     const val PICKER_DEFAULT_COLOR = "FFFFFFFF"
@@ -21,6 +22,7 @@ object AppConstants {
     const val USER_TYPE_FAN = "Fan"
     const val PUBLIC_PROFILE = "public_profile"
     const val EMAIL = "email"
+    const val SKIP = "skip"
     var SELECTED_COLOR: Color = Color(0xFF0177C1)
 }
 
@@ -64,7 +66,7 @@ object ApiConstants {
     const val EMAIL = "email"
     const val FACEBOOK = "facebook"
     const val GOOGLE = "google"
-    const val TWITTER="twitter"
+    const val TWITTER = "twitter"
     const val email = "email"
     const val token = "token"
 }
