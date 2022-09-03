@@ -84,7 +84,6 @@ import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorPrimaryTransparent
 import com.softprodigy.ballerapp.ui.theme.appColors
 import com.togitech.ccp.component.TogiCountryCodePicker
-import com.togitech.ccp.component.TogiRoundedPicker
 import com.togitech.ccp.data.utils.getDefaultLangCode
 import com.togitech.ccp.data.utils.getDefaultPhoneCode
 import com.togitech.ccp.data.utils.getLibCountries
@@ -346,19 +345,14 @@ fun ProfileSetUpScreen(
 
                         Column(
                         ) {
-                            Row(
+                            Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .height(dimensionResource(id = R.dimen.size_56dp)),
-                                verticalAlignment = Alignment.CenterVertically,
+                                /* verticalAlignment = Alignment.CenterVertically,
+                                 horizontalArrangement = Arrangement.SpaceBetween*/
                             ) {
 
-                                AppText(
-                                    text = stringResource(id = R.string.phone_num),
-                                    style = MaterialTheme.typography.h6,
-                                    color = ColorBWBlack,
-                                    modifier = Modifier.padding(start = 16.dp)
-                                )
                                 val customTextSelectionColors = TextSelectionColors(
                                     handleColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                                     backgroundColor = Color.Transparent
@@ -375,7 +369,7 @@ fun ProfileSetUpScreen(
                                         unfocusedBorderColor = Color.Transparent,
                                         dialogAppBarTextColor = Color.Black,
                                         dialogAppBarColor = Color.White,
-                                        error = true,
+                                        error = state.signUpData.phone.length > 10,
                                         text = state.signUpData.phone,
                                         onValueChange = {
                                             signUpViewModel.onEvent(
@@ -384,14 +378,23 @@ fun ProfileSetUpScreen(
                                                 )
                                             )
                                         },
-                                        rowPadding = Modifier.fillMaxWidth(),
-                                        cursorColor = Color.Black
+                                        cursorColor = Color.Black,
+                                        content = {
+                                            AppText(
+                                                text = stringResource(id = R.string.phone_num),
+                                                style = MaterialTheme.typography.h6,
+                                                color = ColorBWBlack,
+                                                modifier = Modifier
+                                                    .align(Alignment.CenterStart)
+                                                    .padding(start = dimensionResource(id = R.dimen.size_16dp))
+                                            )
+                                        }
                                     )
                                 }
                             }
 
                             if ((!validPhoneNumber(state.signUpData.phone) && state.signUpData.phone.isNotEmpty())) {
-                                androidx.compose.material.Text(
+                                Text(
                                     text = stringResource(id = R.string.valid_phone_number),
                                     color = MaterialTheme.colors.error,
                                     style = MaterialTheme.typography.caption,
@@ -520,7 +523,11 @@ fun ProfileSetUpScreen(
                 BottomButtons(
                     onBackClick = { onBack() },
                     onNextClick = {
-                        signUpViewModel.onEvent(SignUpUIEvent.OnScreenNext)
+                        if (state.registered) {
+                            onNext()
+                        } else {
+                            signUpViewModel.onEvent(SignUpUIEvent.OnScreenNext)
+                        }
                     },
 
                     enableState = validName(state.signUpData.firstName)

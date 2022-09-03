@@ -5,7 +5,7 @@ import com.softprodigy.ballerapp.data.response.Player
 data class TeamSetupUIState(
     val teamColor: String = "",
     val teamName: String = "",
-    val teamImageUri: String= "",
+    val teamImageUri: String?= null,
     val teamImageServerUrl: String= "",
 
     val isLoading: Boolean = false,

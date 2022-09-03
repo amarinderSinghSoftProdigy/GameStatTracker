@@ -43,9 +43,11 @@ fun CoachFlowBackground(
 ) {
     val ballColor = colorResource(id = R.color.ball_color)
     Surface(color = Color.Transparent) {
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color.Transparent)) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = Color.Transparent)
+        ) {
             Surface(
                 shape = CircleShape,
                 color = (if (colorCode.isNullOrEmpty()) ballColor else Color(
@@ -134,6 +136,7 @@ fun BottomButtons(
     onNextClick: () -> Unit,
     enableState: Boolean,
     showOnlyNext: Boolean = false,
+    themed: Boolean = false,
 ) {
     Row(
         Modifier
@@ -151,7 +154,8 @@ fun BottomButtons(
                 icon = null,
                 onClick = onBackClick,
                 border = ButtonDefaults.outlinedBorder,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                themed = themed,
             )
         } else {
             AppSpacer(
@@ -169,6 +173,7 @@ fun BottomButtons(
             icon = painterResource(id = R.drawable.ic_circle_next),
             enabled = enableState,
             modifier = Modifier.weight(1f),
+            themed = themed,
         )
     }
 }

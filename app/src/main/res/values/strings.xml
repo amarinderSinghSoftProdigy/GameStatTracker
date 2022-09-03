@@ -32,7 +32,7 @@
     <string name="forgot_password_subtitle">Enter registered e-mail to receive password reset instruction.</string>
     <string name="send">Send</string>
     <string name="back_to_login">Back To Login</string>
-    <string name="otp_verifcation">OTP Verification</string>
+    <string name="otp_verifcation" translatable="false">OTP Verification</string>
     <string name="please_enter_4_digit_code">Please enter the 6 digit code sent to %1$s </string>
     <string name="verify">Verify</string>
     <string name="resend_code">Resend Code</string>
@@ -58,6 +58,7 @@
     <string name="back">Back</string>
     <string name="colors">Colors</string>
     <string name="add_players">Add players</string>
+    <string name="invite_players">Invite Players</string>
     <string name="search">Search</string>
     <string name="added_players">Added Players</string>
     <string name="search_by_name_or_email">Search by name or email</string>

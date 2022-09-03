@@ -42,7 +42,6 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.appColors
 import com.softprodigy.ballerapp.ui.theme.spacing
-import com.togitech.ccp.component.TogiRoundedPicker
 
 @Composable
 fun AppOutlineTextField(

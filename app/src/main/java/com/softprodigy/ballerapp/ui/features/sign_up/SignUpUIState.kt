@@ -8,5 +8,6 @@ data class SignUpUIState(
     var successMessage: String? = null,
     var signUpData: SignUpData = SignUpData(),
     val token: String? = null,
-    var phoneCode: String ?= null
+    var phoneCode: String ?= null,
+    var registered: Boolean = false
 )
