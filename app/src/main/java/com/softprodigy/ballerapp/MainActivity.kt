@@ -12,22 +12,17 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Camera
-import androidx.compose.material.icons.filled.Photo
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -51,15 +46,13 @@ import com.softprodigy.ballerapp.data.SocialUserModel
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.twitter_login.TwitterConstants
-import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.ImagePickerBottomSheet
 import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordScreen
 import com.softprodigy.ballerapp.ui.features.home.HomeActivity
-import com.softprodigy.ballerapp.ui.features.home.roaster.RoasterScreen
 import com.softprodigy.ballerapp.ui.features.login.LoginScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.ProfileSetUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpViewModel
-import com.softprodigy.ballerapp.ui.features.splash.SplashScreen
 import com.softprodigy.ballerapp.ui.features.user_type.TeamSetupScreen
 import com.softprodigy.ballerapp.ui.features.user_type.UserTypeScreen
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.AddPlayersScreen
@@ -109,8 +102,8 @@ class MainActivity : ComponentActivity() {
                     CompositionLocalProvider(
                         LocalFacebookCallbackManager provides callbackManager
                     ) {
-                        NavControllerComposable(this)
-//                        ImagePicker()
+//                        NavControllerComposable(this)
+                        ImagePicker()
                     }
                 }
             }
@@ -431,11 +424,13 @@ fun ImagePicker(
         sheetContent = {
 
             ImagePickerBottomSheet(
-                onCameraClick = { imagePicker.launch("image/*") },
-                onGalleryClick = {
+                onCameraClick = {
                     val uri = ComposeFileProvider.getImageUri(context)
                     imageUri = uri
                     cameraLauncher.launch(uri)
+                },
+                onGalleryClick = {
+                    imagePicker.launch("image/*")
                 },
                 onDismiss = {
                     scope.launch {
@@ -468,55 +463,6 @@ fun ImagePicker(
             }) {
                 Text(text = "Open Sheet")
             }
-        }
-    }
-}
-
-@Composable
-fun ImagePickerBottomSheet(
-    title: String,
-    onCameraClick: () -> Unit,
-    onGalleryClick: () -> Unit,
-    onDismiss: () -> Unit
-) {
-    Column {
-        Box(
-            Modifier
-                .fillMaxWidth()
-                .padding(dimensionResource(id = R.dimen.size_25dp))
-        ) {
-            AppText(
-                text = title,
-                style = MaterialTheme.typography.h3,
-                modifier = Modifier.align(Alignment.Center)
-            )
-            Icon(
-                painter = painterResource(id = R.drawable.ic_close_color_picker),
-                contentDescription = null,
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .size(dimensionResource(id = R.dimen.size_16dp))
-                    .clickable {
-                        onDismiss.invoke()
-                    }
-            )
-        }
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .padding(20.dp), horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Camera,
-                contentDescription = "camera",
-                modifier = Modifier
-                    .size(50.dp)
-                    .clickable { onCameraClick.invoke() }
-            )
-            Icon(imageVector = Icons.Filled.Photo, contentDescription = "Caller",
-                modifier = Modifier
-                    .size(50.dp)
-                    .clickable { onGalleryClick.invoke() })
         }
     }
 }
