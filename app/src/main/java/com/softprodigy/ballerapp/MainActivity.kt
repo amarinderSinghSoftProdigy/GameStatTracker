@@ -9,21 +9,35 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Camera
+import androidx.compose.material.icons.filled.Photo
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.facebook.CallbackManager
 import com.softprodigy.ballerapp.common.AppConstants
+import com.softprodigy.ballerapp.common.ComposeFileProvider
 import com.softprodigy.ballerapp.common.Route.ADD_PLAYER_SCREEN
 import com.softprodigy.ballerapp.common.Route.FORGOT_PASSWORD_SCREEN
 import com.softprodigy.ballerapp.common.Route.LOGIN_SCREEN
@@ -37,6 +51,7 @@ import com.softprodigy.ballerapp.data.SocialUserModel
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.twitter_login.TwitterConstants
+import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordScreen
 import com.softprodigy.ballerapp.ui.features.home.HomeActivity
 import com.softprodigy.ballerapp.ui.features.login.LoginScreen
@@ -95,6 +110,7 @@ class MainActivity : ComponentActivity() {
                         LocalFacebookCallbackManager provides callbackManager
                     ) {
                         NavControllerComposable(this)
+//                        ImagePicker()
                     }
                 }
             }
@@ -369,4 +385,134 @@ fun moveToHome(activity: MainActivity) {
     val intent = Intent(activity, HomeActivity::class.java)
     activity.startActivity(intent)
     activity.finish()
+}
+
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun ImagePicker(
+    modifier: Modifier = Modifier,
+) {
+    val modalBottomSheetState =
+        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+
+    val context = LocalContext.current
+
+
+    var hasImage by remember {
+        mutableStateOf(false)
+    }
+    var imageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+    val imagePicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri ->
+            hasImage = uri != null
+            imageUri = uri
+        }
+    )
+
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture(),
+        onResult = { success ->
+            hasImage = success
+        }
+    )
+
+    val scope = rememberCoroutineScope()
+
+
+    ModalBottomSheetLayout(
+        sheetContent = {
+
+            ImagePickerBottomSheet(
+                onCameraClick = { imagePicker.launch("image/*") },
+                onGalleryClick = {
+                    val uri = ComposeFileProvider.getImageUri(context)
+                    imageUri = uri
+                    cameraLauncher.launch(uri)
+                },
+                onDismiss = {
+                    scope.launch {
+                        modalBottomSheetState.hide()
+                    }
+                }, title = stringResource(id = R.string.select_image)
+            )
+        },
+        sheetState = modalBottomSheetState,
+        sheetShape = RoundedCornerShape(
+            topStart = dimensionResource(id = R.dimen.size_16dp),
+            topEnd = dimensionResource(id = R.dimen.size_16dp)
+        ),
+        sheetBackgroundColor = colorResource(id = R.color.white)
+    ) {
+        Box(
+            modifier = modifier,
+        ) {
+            if (hasImage && imageUri != null) {
+                AsyncImage(
+                    model = imageUri,
+                    modifier = Modifier.fillMaxWidth(),
+                    contentDescription = "Selected image",
+                )
+            }
+            Button(onClick = {
+                scope.launch {
+                    modalBottomSheetState.show()
+                }
+            }) {
+                Text(text = "Open Sheet")
+            }
+        }
+    }
+}
+
+@Composable
+fun ImagePickerBottomSheet(
+    title: String,
+    onCameraClick: () -> Unit,
+    onGalleryClick: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    Column {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .padding(dimensionResource(id = R.dimen.size_25dp))
+        ) {
+            AppText(
+                text = title,
+                style = MaterialTheme.typography.h3,
+                modifier = Modifier.align(Alignment.Center)
+            )
+            Icon(
+                painter = painterResource(id = R.drawable.ic_close_color_picker),
+                contentDescription = null,
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .size(dimensionResource(id = R.dimen.size_16dp))
+                    .clickable {
+                        onDismiss.invoke()
+                    }
+            )
+        }
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(20.dp), horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Camera,
+                contentDescription = "camera",
+                modifier = Modifier
+                    .size(50.dp)
+                    .clickable { onCameraClick.invoke() }
+            )
+            Icon(imageVector = Icons.Filled.Photo, contentDescription = "Caller",
+                modifier = Modifier
+                    .size(50.dp)
+                    .clickable { onGalleryClick.invoke() })
+        }
+    }
 }
