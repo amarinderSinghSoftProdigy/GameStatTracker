@@ -18,8 +18,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
@@ -392,87 +390,4 @@ fun moveToHome(activity: MainActivity) {
     val intent = Intent(activity, HomeActivity::class.java)
     activity.startActivity(intent)
     activity.finish()
-}
-
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun ImagePicker(
-    modifier: Modifier = Modifier,
-) {
-    val modalBottomSheetState =
-        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
-
-    val context = LocalContext.current
-
-
-    var hasImage by remember {
-        mutableStateOf(false)
-    }
-    var imageUri by remember {
-        mutableStateOf<Uri?>(null)
-    }
-    val imagePicker = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent(),
-        onResult = { uri ->
-            hasImage = uri != null
-            imageUri = uri
-        }
-    )
-
-    val cameraLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.TakePicture(),
-        onResult = { success ->
-            hasImage = success
-        }
-    )
-
-    val scope = rememberCoroutineScope()
-
-
-    ModalBottomSheetLayout(
-        sheetContent = {
-
-            ImagePickerBottomSheet(
-                onCameraClick = {
-                    val uri = ComposeFileProvider.getImageUri(context)
-                    imageUri = uri
-                    cameraLauncher.launch(uri)
-                },
-                onGalleryClick = {
-                    imagePicker.launch("image/*")
-                },
-                onDismiss = {
-                    scope.launch {
-                        modalBottomSheetState.hide()
-                    }
-                }, title = stringResource(id = R.string.select_image)
-            )
-        },
-        sheetState = modalBottomSheetState,
-        sheetShape = RoundedCornerShape(
-            topStart = dimensionResource(id = R.dimen.size_16dp),
-            topEnd = dimensionResource(id = R.dimen.size_16dp)
-        ),
-        sheetBackgroundColor = colorResource(id = R.color.white)
-    ) {
-        Box(
-            modifier = modifier,
-        ) {
-            if (hasImage && imageUri != null) {
-                AsyncImage(
-                    model = imageUri,
-                    modifier = Modifier.fillMaxWidth(),
-                    contentDescription = "Selected image",
-                )
-            }
-            Button(onClick = {
-                scope.launch {
-                    modalBottomSheetState.show()
-                }
-            }) {
-                Text(text = "Open Sheet")
-            }
-        }
-    }
 }
