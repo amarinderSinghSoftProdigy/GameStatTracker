@@ -54,6 +54,7 @@ import com.softprodigy.ballerapp.twitter_login.TwitterConstants
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordScreen
 import com.softprodigy.ballerapp.ui.features.home.HomeActivity
+import com.softprodigy.ballerapp.ui.features.home.roaster.RoasterScreen
 import com.softprodigy.ballerapp.ui.features.login.LoginScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.ProfileSetUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
@@ -164,7 +165,7 @@ class MainActivity : ComponentActivity() {
             if (request?.url.toString()
                     .startsWith(TwitterConstants.CALLBACK_URL, ignoreCase = true)
             ) {
-                Timber.e("Authorization URL: ", ""+request?.url.toString())
+                Timber.e("Authorization URL: ", "" + request?.url.toString())
                 handleUrl(request?.url.toString())
                 // Close the dialog after getting the oauth_verifier
                 if (request?.url.toString()
@@ -246,17 +247,18 @@ fun NavControllerComposable(activity: MainActivity) {
     val dataStoreManager = DataStoreManager(activity)
     val userToken = dataStoreManager.userToken.collectAsState(initial = "")
     val scope = rememberCoroutineScope()
-    NavHost(navController, startDestination = SPLASH_SCREEN) {
+    NavHost(navController, startDestination = TEAM_SETUP_SCREEN) {
 
         composable(route = SPLASH_SCREEN) {
-            SplashScreen {
-                if (userToken.value.isNotEmpty()) {
-                    moveToHome(activity)
-                } else {
-                    navController.popBackStack()
-                    navController.navigate(WELCOME_SCREEN)
-                }
+
+            if (userToken.value.isNotEmpty()) {
+                moveToHome(activity)
+            } else {
+                navController.popBackStack()
+                navController.navigate(WELCOME_SCREEN)
             }
+
+            //  RoasterScreen()
         }
 
         composable(route = SIGN_UP_SCREEN) {
@@ -270,7 +272,6 @@ fun NavControllerComposable(activity: MainActivity) {
                     scope.launch {
                         (context as MainActivity).getRequestToken("signup")
                     }
-
                 },
                 twitterUser = activity.twitterUserRegister.value,
                 onSocialLoginSuccess = { userInfo ->
@@ -315,7 +316,6 @@ fun NavControllerComposable(activity: MainActivity) {
                     scope.launch {
                         (context as MainActivity).getRequestToken("login")
                     }
-
                 },
                 twitterUser = activity.twitterUser.value
             )
