@@ -77,7 +77,7 @@ import kotlin.time.ExperimentalTime
 fun ConfirmPhoneScreen(
     viewModel: SignUpViewModel,
     phoneNumber: String,
-    modalBottomSheetState: ModalBottomSheetState
+    onDismiss:()->Unit
 ) {
 
     val (editValue, setEditValue) = remember { mutableStateOf("") }
@@ -121,9 +121,7 @@ fun ConfirmPhoneScreen(
                     modifier = Modifier
                         .size(dimensionResource(id = com.softprodigy.ballerapp.R.dimen.size_16dp))
                         .clickable {
-                            scope.launch {
-                                modalBottomSheetState.animateTo(ModalBottomSheetValue.Hidden)
-                            }
+                            onDismiss.invoke()
                         }
                 )
             }

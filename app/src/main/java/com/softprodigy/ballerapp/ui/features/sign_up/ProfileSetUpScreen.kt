@@ -7,49 +7,19 @@ import android.widget.DatePicker
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Divider
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -71,14 +41,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import coil.compose.rememberImagePainter
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.ComposeFileProvider
 import com.softprodigy.ballerapp.common.isValidEmail
 import com.softprodigy.ballerapp.common.validName
 import com.softprodigy.ballerapp.common.validPhoneNumber
-import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.BottomButtons
-import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
-import com.softprodigy.ballerapp.ui.features.components.EditFields
-import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.confirm_phone.ConfirmPhoneScreen
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorPrimaryTransparent
@@ -101,6 +68,32 @@ fun ProfileSetUpScreen(
 ) {
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
+
+
+    var currentBottomSheet: BottomSheetType? by remember {
+        mutableStateOf(null)
+    }
+
+    var imageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+    val imagePicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri ->
+            imageUri = uri
+            uri?.let {
+                signUpViewModel.onEvent(SignUpUIEvent.OnImageSelected(imageUri.toString()))
+            }
+        }
+    )
+
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture(),
+        onResult = { success ->
+            if (success)
+                signUpViewModel.onEvent(SignUpUIEvent.OnImageSelected(imageUri.toString()))
+        }
+    )
     val scope = rememberCoroutineScope()
     val state = signUpViewModel.signUpUiState.value
     var expanded by remember { mutableStateOf(false) }
@@ -172,7 +165,12 @@ fun ProfileSetUpScreen(
                 }
 
                 is SignUpChannel.OnOTPScreen -> {
-                    scope.launch { modalBottomSheetState.animateTo(ModalBottomSheetValue.Expanded) }
+                    currentBottomSheet = BottomSheetType.OTP
+                    scope.launch {
+                        modalBottomSheetState.animateTo(
+                            ModalBottomSheetValue.Expanded
+                        )
+                    }
                 }
 
                 is SignUpChannel.OnSuccess -> {
@@ -187,11 +185,28 @@ fun ProfileSetUpScreen(
 
     ModalBottomSheetLayout(
         sheetContent = {
-            ConfirmPhoneScreen(
-                phoneNumber = state.signUpData.phone,
-                viewModel = signUpViewModel,
-                modalBottomSheetState = modalBottomSheetState
-            )
+
+            Spacer(modifier = Modifier.height(1.dp))
+
+            currentBottomSheet?.let { bottomSheetType ->
+                /* sheet content */
+                SheetLayout(
+                    bottomSheetType = bottomSheetType,
+                    onDismiss = {
+                        scope.launch { modalBottomSheetState.animateTo(ModalBottomSheetValue.Hidden) }
+                    },
+                    imagePickerTitle = stringResource(id = R.string.select_image_from),
+                    onCameraClick = {
+                        val uri = ComposeFileProvider.getImageUri(context)
+                        imageUri = uri
+                        cameraLauncher.launch(uri)
+                    }, onGalleryCLick = {
+                        imagePicker.launch("image/*")
+                    },
+                    phone = state.signUpData.phone,
+                    signUpViewModel = signUpViewModel
+                )
+            }
         },
         sheetState = modalBottomSheetState,
         sheetShape = RoundedCornerShape(
@@ -208,11 +223,6 @@ fun ProfileSetUpScreen(
         ) {
             CoachFlowBackground()
 
-
-            val launcher =
-                rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
-                    signUpViewModel.onEvent(SignUpUIEvent.OnImageSelected(uri.toString()))
-                }
 
             Column(
                 Modifier
@@ -245,7 +255,13 @@ fun ProfileSetUpScreen(
                                 .clip(shape = CircleShape)
                                 .background(color = ColorPrimaryTransparent)
                                 .clickable {
-                                    launcher.launch("image/*")
+                                    currentBottomSheet = BottomSheetType.IMAGE_PICKER
+                                    scope.launch {
+                                        modalBottomSheetState.animateTo(
+                                            ModalBottomSheetValue.Expanded
+                                        )
+                                    }
+
                                 }
                                 .align(Alignment.CenterHorizontally),
 
@@ -552,4 +568,40 @@ fun ProfileSetUpScreen(
             }
         }
     }
+}
+
+enum class BottomSheetType() {
+    OTP, IMAGE_PICKER
+}
+
+@Composable
+fun SheetLayout(
+    bottomSheetType: BottomSheetType,
+    onDismiss: () -> Unit,
+    phone: String,
+    signUpViewModel: SignUpViewModel,
+    imagePickerTitle: String,
+    onCameraClick: () -> Unit,
+    onGalleryCLick: () -> Unit,
+) {
+
+    when (bottomSheetType) {
+        BottomSheetType.IMAGE_PICKER ->
+            ImagePickerBottomSheet(
+                title = imagePickerTitle,
+                onCameraClick = onCameraClick,
+                onGalleryClick = onGalleryCLick,
+                onDismiss = onDismiss,
+
+                )
+
+        BottomSheetType.OTP ->
+            ConfirmPhoneScreen(
+                phoneNumber = phone,
+                viewModel = signUpViewModel,
+                onDismiss = onDismiss,
+            )
+
+    }
+
 }

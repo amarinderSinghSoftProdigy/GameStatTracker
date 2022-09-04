@@ -130,6 +130,9 @@
     <string name="did_not_recieve_sms">"Didn't receive SMS? "</string>
     <string name="code">Resend Code</string>
     <string name="select_image">Select Image</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="select_image_from">Select imgae from</string>
 
 
 </resources>
