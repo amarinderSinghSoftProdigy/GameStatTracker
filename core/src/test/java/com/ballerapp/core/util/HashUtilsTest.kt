@@ -1,7 +1,7 @@
-package com.baller_app.core.util
+package com.ballerapp.core.util
 
-import org.junit.Assert.*
-
+import com.softprodigy.ballerapp.core.util.HashUtils
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class HashUtilsTest {

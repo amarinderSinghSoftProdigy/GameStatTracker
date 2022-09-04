@@ -1,4 +1,4 @@
-package com.baller_app.core.util
+package  com.softprodigy.ballerapp.core.util
 
 sealed class UiEvent {
     object Success : UiEvent()

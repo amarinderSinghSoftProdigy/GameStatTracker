@@ -13,16 +13,17 @@ class ComposeFileProvider : FileProvider(
     companion object {
         fun getImageUri(context: Context): Uri {
             val directory = File(context.cacheDir, "images")
-            directory.mkdirs()
+            if (!directory.exists())
+                directory.mkdirs()
             val file = File.createTempFile(
                 "selected_image_",
                 ".jpg",
                 directory,
             )
             if (!file.exists()) {
-                file.mkdir()
+                file.mkdirs()
             }
-            val authority = context.packageName + ".fileprovider"
+            val authority = context.packageName + ".provider"
             return getUriForFile(
                 context,
                 authority,

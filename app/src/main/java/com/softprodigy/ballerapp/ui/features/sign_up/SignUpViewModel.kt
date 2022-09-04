@@ -3,19 +3,16 @@ package com.softprodigy.ballerapp.ui.features.sign_up
 import android.app.Application
 import android.net.Uri
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.baller_app.core.util.UiText
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.common.ApiConstants
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.getFileFromUri
+import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.data.request.GlobalRequest
 import com.softprodigy.ballerapp.data.request.LoginRequest
 import com.softprodigy.ballerapp.data.request.SignUpData
 import com.softprodigy.ballerapp.data.response.UserInfo
@@ -41,24 +38,6 @@ class SignUpViewModel @Inject constructor(
 
     private val _signUpUiState = mutableStateOf(SignUpUIState())
     val signUpUiState: State<SignUpUIState> = _signUpUiState
-
-    val verified = mutableStateOf(false)
-
-    var userRole by mutableStateOf("")
-        private set
-
-
-    var teamData by mutableStateOf(GlobalRequest.SetUpTeam())
-        private set
-
-    fun saveData(request: GlobalRequest.Users) {
-        userRole = request.role
-    }
-
-    fun saveTeamData(request: GlobalRequest.SetUpTeam) {
-        teamData = request
-
-    }
 
     fun onEvent(event: SignUpUIEvent) {
         when (event) {
@@ -359,7 +338,7 @@ class SignUpViewModel @Inject constructor(
 
                         } else {
                             _signUpUiState.value = _signUpUiState.value.copy(
-                                errorMessage = response.statusMessage ?: "Something went wrong",
+                                errorMessage = response.statusMessage,
                                 isLoading = false
                             )
                         }
@@ -377,7 +356,7 @@ class SignUpViewModel @Inject constructor(
                 is ResultWrapper.NetworkError -> {
                     _signUpUiState.value =
                         _signUpUiState.value.copy(
-                            errorMessage = "${signUpResponse.message}",
+                            errorMessage = signUpResponse.message,
                             isLoading = false
                         )
                     _signUpChannel.send(
@@ -449,7 +428,7 @@ class SignUpViewModel @Inject constructor(
 
                     } else {
                         _signUpUiState.value = _signUpUiState.value.copy(
-                            errorMessage = response.statusMessage ?: "Something went wrong",
+                            errorMessage = response.statusMessage,
                             isLoading = false
                         )
                     }
@@ -487,7 +466,7 @@ class SignUpViewModel @Inject constructor(
 
                         } else {
                             _signUpUiState.value = _signUpUiState.value.copy(
-                                errorMessage = response.statusMessage ?: "Something went wrong",
+                                errorMessage = response.statusMessage,
                                 isLoading = false
                             )
                         }
@@ -504,7 +483,7 @@ class SignUpViewModel @Inject constructor(
                 is ResultWrapper.NetworkError -> {
                     _signUpUiState.value =
                         _signUpUiState.value.copy(
-                            errorMessage = "${verifyResponseResponse.message}",
+                            errorMessage = verifyResponseResponse.message,
                             isLoading = false
                         )
                     _signUpChannel.send(
@@ -544,9 +523,6 @@ class SignUpViewModel @Inject constructor(
                                         phoneVerified = response.status
                                     )
                                 )
-
-                            verified.value = response.status
-
                             _signUpChannel.send(
                                 SignUpChannel.OnSuccess(
                                     UiText.DynamicString(
@@ -557,7 +533,7 @@ class SignUpViewModel @Inject constructor(
 
                         } else {
                             _signUpUiState.value = _signUpUiState.value.copy(
-                                errorMessage = response.statusMessage ?: "Something went wrong",
+                                errorMessage = response.statusMessage,
                                 isLoading = false
                             )
                         }

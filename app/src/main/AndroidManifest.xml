@@ -9,7 +9,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 
     <application
@@ -25,19 +24,20 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <provider
-            android:name="androidx.core.content.FileProvider"
+            android:name=".common.ComposeFileProvider"
             android:authorities="${applicationId}.provider"
             android:exported="false"
-            android:grantUriPermissions="true">
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/filepaths" tools:replace="android:resource"/>
+                android:resource="@xml/filepaths"
+                tools:replace="android:resource" />
         </provider>
 
         <activity
             android:name="com.softprodigy.ballerapp.MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.BallerApp"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
@@ -56,32 +56,13 @@
 
         <activity
             android:name="com.facebook.FacebookActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:label="@string/app_name" />
-        <!--        <activity
-                    android:name=".ui.features.home.HomeActivity"
-                    android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-                    android:exported="true"
-                    android:label="@string/app_name">
-                    <intent-filter>
-                        <action android:name="android.intent.action.MAIN" />
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" />
 
-                        <category android:name="android.intent.category.DEFAULT" />
-                    </intent-filter>
-                </activity>  -->
         <activity
             android:name=".ui.features.home.HomeActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.BallerApp"
             android:windowSoftInputMode="adjustPan">
-            <!-- <intent-filter>
-                android:windowSoftInputMode="adjustPan">
-                <intent-filter>
-                    <action android:name="android.intent.action.MAIN" />
-
-                    <category android:name="android.intent.category.LAUNCHER" />
-                </intent-filter>-->
         </activity>
         <activity
             android:name="com.facebook.CustomTabActivity"

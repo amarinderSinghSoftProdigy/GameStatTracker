@@ -1,4 +1,4 @@
-package com.baller_app.core
+package  com.softprodigy.ballerapp.core
 
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.unit.Dp

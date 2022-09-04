@@ -5,10 +5,10 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.baller_app.core.util.UiText
 import com.softprodigy.ballerapp.common.ApiConstants
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.ResultWrapper.GenericError
+import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.LoginRequest
 import com.softprodigy.ballerapp.data.response.UserInfo
