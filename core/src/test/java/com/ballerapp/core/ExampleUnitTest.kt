@@ -1,4 +1,4 @@
-package com.baller_app.core
+package com.ballerapp.core
 
 import org.junit.Test
 

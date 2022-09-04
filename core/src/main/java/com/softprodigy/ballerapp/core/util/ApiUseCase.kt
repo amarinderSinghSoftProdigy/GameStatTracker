@@ -1,8 +1,9 @@
-package com.baller_app.core.util
-import com.baller_app.core.BuildConfig
-import com.baller_app.core.model.NetworkError
-import com.baller_app.core.model.RepositoryResult
+package  com.softprodigy.ballerapp.core.util
+
+import com.ballerapp.core.BuildConfig
 import com.slack.eithernet.ApiResult
+import com.softprodigy.ballerapp.core.model.NetworkError
+import com.softprodigy.ballerapp.core.model.RepositoryResult
 import timber.log.Timber
 
 fun <T : Any> getAnswerSuccess(response: ApiResult<T, NetworkError>): RepositoryResult<T> {

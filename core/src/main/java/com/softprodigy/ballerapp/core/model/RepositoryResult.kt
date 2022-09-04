@@ -1,4 +1,4 @@
-package com.baller_app.core.model
+package  com.softprodigy.ballerapp.core.model
 
 sealed class RepositoryResult<out T : Any> {
 
