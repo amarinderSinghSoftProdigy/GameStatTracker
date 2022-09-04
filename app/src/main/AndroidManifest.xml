@@ -7,6 +7,9 @@
         android:name="com.google.android.gms.permission.AD_ID"
         tools:node="remove" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 
     <application
@@ -21,6 +24,16 @@
         android:theme="@style/Theme.BallerApp"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" tools:replace="android:resource"/>
+        </provider>
+
         <activity
             android:name="com.softprodigy.ballerapp.MainActivity"
             android:exported="true"
@@ -62,13 +75,13 @@
             android:label="@string/app_name"
             android:theme="@style/Theme.BallerApp"
             android:windowSoftInputMode="adjustPan">
-        <!-- <intent-filter>
-            android:windowSoftInputMode="adjustPan">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <!-- <intent-filter>
+                android:windowSoftInputMode="adjustPan">
+                <intent-filter>
+                    <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+                    <category android:name="android.intent.category.LAUNCHER" />
+                </intent-filter>-->
         </activity>
         <activity
             android:name="com.facebook.CustomTabActivity"
@@ -78,18 +91,12 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <provider
-            android:name=".common.ComposeFileProvider"
-            android:authorities="com.softprodigy.ballerapp.demo.fileprovider"
-            android:grantUriPermissions="true"
-            android:exported="false">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/filepaths" />
-        </provider>
+
+
     </application>
 
 </manifest>

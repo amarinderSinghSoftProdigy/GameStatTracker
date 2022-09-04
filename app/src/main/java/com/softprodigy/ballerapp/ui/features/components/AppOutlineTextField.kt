@@ -124,7 +124,7 @@ fun AppOutlineDateField(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(52.dp)
+            .height(dimensionResource(id = R.dimen.size_50dp))
             .clickable {
                 onClick()
             },
@@ -139,7 +139,10 @@ fun AppOutlineDateField(
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(start = 13.dp, end = 13.dp),
+                .padding(
+                    start = dimensionResource(id = R.dimen.size_12dp),
+                    end = dimensionResource(id = R.dimen.size_12dp)
+                ),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -202,7 +205,7 @@ fun EditFields(
                 text = head,
                 style = MaterialTheme.typography.h6,
                 color = ColorBWBlack,
-                modifier = Modifier.padding(start = 16.dp)
+                modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
             )
             CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
                 TextField(

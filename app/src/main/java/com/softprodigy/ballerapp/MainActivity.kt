@@ -10,53 +10,19 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
-import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.runtime.*
-import androidx.compose.material.Surface
-import androidx.compose.material.Button
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Camera
-import androidx.compose.material.icons.filled.Photo
-import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -64,10 +30,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import coil.compose.AsyncImage
 import com.facebook.CallbackManager
 import com.softprodigy.ballerapp.common.AppConstants
-import com.softprodigy.ballerapp.common.ComposeFileProvider
 import com.softprodigy.ballerapp.common.Route.ADD_PLAYER_SCREEN
 import com.softprodigy.ballerapp.common.Route.FORGOT_PASSWORD_SCREEN
 import com.softprodigy.ballerapp.common.Route.LOGIN_SCREEN
@@ -80,8 +44,8 @@ import com.softprodigy.ballerapp.common.Route.WELCOME_SCREEN
 import com.softprodigy.ballerapp.data.SocialUserModel
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
+import com.softprodigy.ballerapp.data.request.SignUpData
 import com.softprodigy.ballerapp.twitter_login.TwitterConstants
-import com.softprodigy.ballerapp.ui.features.components.ImagePickerBottomSheet
 import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordScreen
 import com.softprodigy.ballerapp.ui.features.home.HomeActivity
 import com.softprodigy.ballerapp.ui.features.login.LoginScreen
@@ -97,6 +61,7 @@ import com.softprodigy.ballerapp.ui.theme.BallerAppTheme
 import com.softprodigy.ballerapp.ui.theme.appColors
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -272,15 +237,24 @@ fun NavControllerComposable(activity: MainActivity) {
     val context = LocalContext.current
     val dataStoreManager = DataStoreManager(activity)
     val userToken = dataStoreManager.userToken.collectAsState(initial = "")
+    val getRole = dataStoreManager.getRole.collectAsState(initial = "")
     val scope = rememberCoroutineScope()
     val color = dataStoreManager.getWalkThrough.collectAsState(initial = "")
-    Timber.e("Get value " + color.value)
     NavHost(navController, startDestination = SPLASH_SCREEN) {
         composable(route = SPLASH_SCREEN) {
             LaunchedEffect(key1 = true) {
+                delay(1000L)
                 scope.launch {
                     if (userToken.value.isNotEmpty()) {
-                        moveToHome(activity)
+                        if (getRole.value.equals(AppConstants.USER_TYPE_USER, ignoreCase = true)) {
+                            signUpViewModel.signUpUiState.value.signUpData =
+                                SignUpData(token = UserStorage.token)
+                        }
+                        checkRole(
+                            getRole.value.equals(AppConstants.USER_TYPE_USER, ignoreCase = true),
+                            navController,
+                            activity
+                        )
                     } else if (color.value.isNotEmpty()) {
                         navController.popBackStack()
                         navController.navigate(LOGIN_SCREEN)
@@ -331,6 +305,15 @@ fun NavControllerComposable(activity: MainActivity) {
             LoginScreen(
                 onLoginSuccess = {
                     UserStorage.token = it?.token.toString()
+                    if (it?.user?.role.equals(AppConstants.USER_TYPE_USER, ignoreCase = true)) {
+                        signUpViewModel.signUpUiState.value.signUpData =
+                            SignUpData(
+                                token = UserStorage.token,
+                                email = it?.user?.email ?: "",
+                                firstName = it?.user?.firstName ?: "",
+                                lastName = it?.user?.lastName ?: "",
+                            )
+                    }
                     checkRole(
                         it?.user?.role.equals(AppConstants.USER_TYPE_USER, ignoreCase = true),
                         navController,
@@ -375,7 +358,6 @@ fun NavControllerComposable(activity: MainActivity) {
                 onNext = {
                     navController.navigate(TEAM_SETUP_SCREEN) {
                         navController.popBackStack()
-
                     }
                 },
                 onBack = {
@@ -422,6 +404,7 @@ private fun moveToHome(activity: MainActivity) {
     activity.startActivity(intent)
     activity.finish()
 }
+
 private fun checkRole(check: Boolean, navController: NavController, activity: MainActivity) {
     if (check) {
         navController.navigate(SELECT_USER_TYPE) {

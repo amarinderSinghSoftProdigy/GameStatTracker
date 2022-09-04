@@ -192,6 +192,15 @@ class SignUpViewModel @Inject constructor(
                         )
                     )
             }
+
+            is SignUpUIEvent.OnRoleChanged -> {
+                _signUpUiState.value =
+                    _signUpUiState.value.copy(
+                        signUpData = _signUpUiState.value.signUpData.copy(
+                            role = event.role
+                        )
+                    )
+            }
         }
     }
 
@@ -319,7 +328,7 @@ class SignUpViewModel @Inject constructor(
             birthdate = signUpData.birthdate,
             role = signUpData.role?.lowercase(),
             password = signUpData.password,
-            repeatPassword = signUpData.repeatPassword
+            repeatPassword = signUpData.repeatPassword,
         )
 
         viewModelScope.launch {
@@ -332,8 +341,8 @@ class SignUpViewModel @Inject constructor(
 
                 is ResultWrapper.Success -> {
                     signUpResponse.value.let { response ->
-
                         if (response.status) {
+                            setToken(response.data.token, response.data.user.role)
                             _signUpUiState.value = _signUpUiState.value.copy(
                                 registered = true,
                                 isLoading = false,
@@ -579,9 +588,10 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    private fun setToken(string: String) {
+    private fun setToken(string: String, role: String) {
         viewModelScope.launch {
             dataStore.saveToken(string)
+            dataStore.setRole(role)
         }
     }
 }

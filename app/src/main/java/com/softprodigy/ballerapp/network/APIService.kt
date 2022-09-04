@@ -1,18 +1,28 @@
 package com.softprodigy.ballerapp.network
 
 import com.softprodigy.ballerapp.common.ApiConstants
-import com.softprodigy.ballerapp.data.request.CreateTeamRequest
 import com.softprodigy.ballerapp.data.request.ConfirmPhoneRequest
+import com.softprodigy.ballerapp.data.request.CreateTeamRequest
 import com.softprodigy.ballerapp.data.request.ForgotPasswordRequest
 import com.softprodigy.ballerapp.data.request.LoginRequest
-import com.softprodigy.ballerapp.data.response.*
 import com.softprodigy.ballerapp.data.request.SignUpData
-import com.softprodigy.ballerapp.data.response.UserInfo
 import com.softprodigy.ballerapp.data.request.VerifyPhoneRequest
+import com.softprodigy.ballerapp.data.response.CreateTeamResponse
+import com.softprodigy.ballerapp.data.response.ImageUpload
+import com.softprodigy.ballerapp.data.response.Player
+import com.softprodigy.ballerapp.data.response.Team
+import com.softprodigy.ballerapp.data.response.UserInfo
 import com.softprodigy.ballerapp.domain.BaseResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.Multipart
+import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Part
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface APIService {
 
@@ -53,7 +63,7 @@ interface APIService {
     suspend fun confirmPhone(@Body confirmPhoneRequest: ConfirmPhoneRequest): BaseResponse<Any>
 
     @POST(ApiConstants.SIGNUP)
-    suspend fun signUp(@Body signUpData: SignUpData): BaseResponse<Any>
+    suspend fun signUp(@Body signUpData: SignUpData): BaseResponse<UserInfo>
 
     @POST(ApiConstants.FORGOT_PASSWORD)
     suspend fun forgotPassword(@Body forgotPasswordRequest: ForgotPasswordRequest): BaseResponse<Any>
