@@ -38,7 +38,6 @@ fun TogiCountryCodePicker(
     text: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colors.background,
     showCountryCode: Boolean = true,
     defaultCountry: CountryData,
     pickedCountry: (CountryData) -> Unit,
@@ -48,6 +47,7 @@ fun TogiCountryCodePicker(
     dialogAppBarColor: Color = MaterialTheme.colors.primary,
     dialogAppBarTextColor: Color = Color.White,
     error: Boolean,
+    readOnly: Boolean = true,
     rowPadding: Modifier = modifier.padding(vertical = 0.dp, horizontal = 0.dp),
     content: @Composable () -> Unit,
 ) {
@@ -111,6 +111,7 @@ fun TogiCountryCodePicker(
                     ),
                     textStyle = TextStyle(textAlign = TextAlign.End),
                     keyboardActions = KeyboardActions(onDone = { keyboardController?.hideSoftwareKeyboard() }),
+                    readOnly = readOnly
                     /* leadingIcon = {
 
                 },*/

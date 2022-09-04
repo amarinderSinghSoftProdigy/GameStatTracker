@@ -7,9 +7,6 @@
         android:name="com.google.android.gms.permission.AD_ID"
         tools:node="remove" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
 
     <application
         android:name="com.softprodigy.ballerapp.BallerApp"

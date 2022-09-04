@@ -159,25 +159,22 @@ fun ProfileSetUpScreen(
     mYear = mCalendar.get(Calendar.YEAR)
     mMonth = mCalendar.get(Calendar.MONTH)
     mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
-
     mCalendar.time = Date()
-
-    val mDate = remember { mutableStateOf("") }
 
     val focus = LocalFocusManager.current
 
 
     val mDatePickerDialog = DatePickerDialog(
         context,
-        { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
-            signUpViewModel.onEvent(SignUpUIEvent.OnBirthdayChanged("$mYear-${mMonth + 1}-$mDayOfMonth"))
+        { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+            signUpViewModel.onEvent(SignUpUIEvent.OnBirthdayChanged("$year-${month + 1}-$dayOfMonth"))
         }, mYear, mMonth, mDay
     )
 
     var defaultLang by rememberSaveable { mutableStateOf(getDefaultLangCode(context)) }
-    val phoneNumber = rememberSaveable { mutableStateOf("") }
+    //val phoneNumber = rememberSaveable { mutableStateOf("") }
     val getDefaultPhoneCode = getDefaultPhoneCode(context)
-    var phoneCode by rememberSaveable { mutableStateOf(getDefaultPhoneCode) }
+    //var phoneCode by rememberSaveable { mutableStateOf(getDefaultPhoneCode) }
 
     val genderList =
         listOf(stringResource(id = R.string.male), stringResource(id = R.string.female))
@@ -389,24 +386,7 @@ fun ProfileSetUpScreen(
 
 
                         Divider(thickness = dimensionResource(id = R.dimen.divider))
-
-//                        EditFields(
-//                            state.signUpData.phone,
-//                            onValueChange = {
-//                                signUpViewModel.onEvent(SignUpUIEvent.OnPhoneNumberChanged(it))
-//                            },
-//                            stringResource(id = R.string.phone_num),
-//                            isError = (!validPhoneNumber(state.signUpData.phone) && state.signUpData.phone.isNotEmpty()),
-//                            keyboardOptions = KeyboardOptions(
-//                                keyboardType = KeyboardType.Number,
-//                                capitalization = KeyboardCapitalization.Sentences
-//                            ),
-//                            errorMessage = stringResource(id = R.string.valid_phone_number),
-//                            enabled = state.signUpData.phoneVerified
-//                        )
-
-                        Column(
-                        ) {
+                        Column{
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -440,6 +420,7 @@ fun ProfileSetUpScreen(
                                                 )
                                             )
                                         },
+                                        readOnly = state.signUpData.phoneVerified,
                                         cursorColor = Color.Black,
                                         content = {
                                             AppText(
@@ -569,18 +550,6 @@ fun ProfileSetUpScreen(
                                 }
                             }
                             Divider(thickness = dimensionResource(id = R.dimen.divider))
-
-                            /*EditFields(
-                                state.signUpData.birthdate,
-                                onValueChange = {
-                                    signUpViewModel.onEvent(SignUpUIEvent.OnBirthdayChanged(it))
-                                },
-                                stringResource(id = R.string.birthdate),
-                                modifier = Modifier.clickable {
-                                    mDatePickerDialog.show()
-                                }
-                            )*/
-
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -622,6 +591,11 @@ fun ProfileSetUpScreen(
 
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_44dp)))
 
+                val check = state.signUpData.token?.let {
+                    state.signUpData.birthdate.isNotEmpty()
+                            && state.signUpData.address.isNotEmpty()
+                            && state.signUpData.gender.isNotEmpty()
+                } ?: true
                 BottomButtons(
                     onBackClick = { onBack() },
                     onNextClick = {
@@ -631,13 +605,12 @@ fun ProfileSetUpScreen(
                             signUpViewModel.onEvent(SignUpUIEvent.OnScreenNext)
                         }
                     },
-
                     enableState = validName(state.signUpData.firstName)
                             && validName(state.signUpData.lastName)
                             && validPhoneNumber(state.signUpData.phone)
                             && state.signUpData.email.isValidEmail()
                             && state.signUpData.profileImageUri != null
-                            && state.signUpData.phoneVerified,
+                            && state.signUpData.phoneVerified && check,
                     firstText = stringResource(id = R.string.back),
                     secondText = stringResource(id = R.string.next)
                 )
