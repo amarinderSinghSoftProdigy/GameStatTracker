@@ -18,7 +18,7 @@ interface IUserRepository {
 
     suspend fun confirmPhone(phone: String, otp: String): ResultWrapper<BaseResponse<Any>>
 
-    suspend fun signUp(signUpData: SignUpData): ResultWrapper<BaseResponse<Any>>
+    suspend fun signUp(signUpData: SignUpData): ResultWrapper<BaseResponse<UserInfo>>
 
     suspend fun forgotPassword(email: String): ResultWrapper<BaseResponse<Any>>
 

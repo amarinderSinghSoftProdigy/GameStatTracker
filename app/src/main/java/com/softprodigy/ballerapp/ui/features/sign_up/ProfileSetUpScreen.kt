@@ -7,20 +7,51 @@ import android.widget.DatePicker
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
-import androidx.compose.material.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Divider
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.runtime.*
+import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
@@ -30,10 +61,12 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -45,7 +78,12 @@ import com.softprodigy.ballerapp.common.ComposeFileProvider
 import com.softprodigy.ballerapp.common.isValidEmail
 import com.softprodigy.ballerapp.common.validName
 import com.softprodigy.ballerapp.common.validPhoneNumber
-import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.BottomButtons
+import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
+import com.softprodigy.ballerapp.ui.features.components.EditFields
+import com.softprodigy.ballerapp.ui.features.components.ImagePickerBottomSheet
+import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
 import com.softprodigy.ballerapp.ui.features.confirm_phone.ConfirmPhoneScreen
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorPrimaryTransparent
@@ -59,13 +97,14 @@ import java.util.*
 
 
 @SuppressLint("RememberReturnType")
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun ProfileSetUpScreen(
     onNext: () -> Unit,
     onBack: () -> Unit,
     signUpViewModel: SignUpViewModel
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
@@ -255,6 +294,7 @@ fun ProfileSetUpScreen(
                                 .clip(shape = CircleShape)
                                 .background(color = ColorPrimaryTransparent)
                                 .clickable {
+                                    keyboardController?.hide()
                                     currentBottomSheet = BottomSheetType.IMAGE_PICKER
                                     scope.launch {
                                         modalBottomSheetState.animateTo(
@@ -307,7 +347,10 @@ fun ProfileSetUpScreen(
                             stringResource(id = R.string.first_name),
                             isError = !validName(state.signUpData.firstName) && state.signUpData.firstName.isNotEmpty() || state.signUpData.firstName.length > 30,
                             errorMessage = stringResource(id = R.string.valid_first_name),
-                            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
+                            keyboardOptions = KeyboardOptions(
+                                imeAction = ImeAction.Next,
+                                capitalization = KeyboardCapitalization.Sentences
+                            )
                         )
 
                         Divider(thickness = dimensionResource(id = R.dimen.divider))
@@ -320,7 +363,10 @@ fun ProfileSetUpScreen(
                             stringResource(id = R.string.last_name),
                             isError = !validName(state.signUpData.lastName) && state.signUpData.lastName.isNotEmpty() || state.signUpData.lastName.length > 30,
                             errorMessage = stringResource(id = R.string.valid_last_name),
-                            keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences)
+                            keyboardOptions = KeyboardOptions(
+                                imeAction = ImeAction.Next,
+                                capitalization = KeyboardCapitalization.Sentences
+                            )
 
                         )
                         Divider(thickness = dimensionResource(id = R.dimen.divider))
@@ -470,6 +516,7 @@ fun ProfileSetUpScreen(
                                 },
                                 stringResource(id = R.string.address),
                                 KeyboardOptions(
+                                    imeAction = ImeAction.Next,
                                     keyboardType = KeyboardType.Text,
                                     capitalization = KeyboardCapitalization.Sentences
                                 ),
@@ -485,7 +532,10 @@ fun ProfileSetUpScreen(
                                         signUpViewModel.onEvent(SignUpUIEvent.OnGenderChange(it))
                                     },
                                     stringResource(id = R.string.gender),
-                                    KeyboardOptions(keyboardType = KeyboardType.Text),
+                                    KeyboardOptions(
+                                        imeAction = ImeAction.Next,
+                                        keyboardType = KeyboardType.Text
+                                    ),
                                     modifier = Modifier.onGloballyPositioned {
                                         textFieldSize = it.size.toSize()
                                     },
@@ -520,7 +570,7 @@ fun ProfileSetUpScreen(
                             }
                             Divider(thickness = dimensionResource(id = R.dimen.divider))
 
-                            EditFields(
+                            /*EditFields(
                                 state.signUpData.birthdate,
                                 onValueChange = {
                                     signUpViewModel.onEvent(SignUpUIEvent.OnBirthdayChanged(it))
@@ -529,7 +579,43 @@ fun ProfileSetUpScreen(
                                 modifier = Modifier.clickable {
                                     mDatePickerDialog.show()
                                 }
-                            )
+                            )*/
+
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(
+                                        start = dimensionResource(id = R.dimen.size_16dp),
+                                        end = dimensionResource(id = R.dimen.size_16dp)
+                                    )
+                                    .height(dimensionResource(id = R.dimen.size_56dp))
+                            ) {
+                                AppText(
+                                    text = stringResource(id = R.string.birthdate),
+                                    style = MaterialTheme.typography.h6,
+                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                    modifier = Modifier
+                                        .align(Alignment.CenterStart)
+                                        .padding(start = dimensionResource(id = R.dimen.size_3dp)),
+                                    textAlign = TextAlign.Start
+                                )
+                                Row(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterEnd)
+                                        .clickable { mDatePickerDialog.show() },
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Text(
+                                        text = state.signUpData.birthdate,
+                                    )
+                                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_5dp)))
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_baseline_calendar_month_24),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(dimensionResource(id = R.dimen.size_24dp))
+                                    )
+                                }
+                            }
                         }
                     }
                 }

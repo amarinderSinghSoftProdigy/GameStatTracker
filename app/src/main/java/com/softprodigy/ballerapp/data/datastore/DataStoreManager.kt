@@ -27,14 +27,14 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
         preferences[USER_TOKEN] ?: ""
     }
 
-    suspend fun setOtp(otp: String) {
+    suspend fun setRole(role: String) {
         settingsDataStore.edit { settings ->
-            settings[OTP] = otp
+            settings[ROLE] = role
         }
     }
 
-    val getOtp: Flow<String> = settingsDataStore.data.map { preferences ->
-        preferences[OTP] ?: ""
+    val getRole: Flow<String> = settingsDataStore.data.map { preferences ->
+        preferences[ROLE] ?: ""
     }
 
     suspend fun setTap(tap: String) {
@@ -77,7 +77,7 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
 
     companion object {
         val USER_TOKEN = stringPreferencesKey("USER_TOKEN")
-        val OTP = stringPreferencesKey("OTP")
+        val ROLE = stringPreferencesKey("ROLE")
         val LOGOUT = stringPreferencesKey("LOGOUT")
         val USER_TAP = stringPreferencesKey("USER_TAP")
         val USER_DATA = stringPreferencesKey("USER_DATA")

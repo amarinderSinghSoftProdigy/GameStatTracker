@@ -22,7 +22,7 @@ import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
 fun UserSelectionSurface(
-    onClick: (String) -> Unit,
+    onClick: () -> Unit,
     modifier: Modifier,
     text: String,
     isSelected: Boolean,
@@ -31,7 +31,7 @@ fun UserSelectionSurface(
     )
 ) {
     Box(modifier = modifier
-        .clickable { onClick.invoke(text) }
+        .clickable { onClick() }
         .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
         .border(
             width = 1.dp,
