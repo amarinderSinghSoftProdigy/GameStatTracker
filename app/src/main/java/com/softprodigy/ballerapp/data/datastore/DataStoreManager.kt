@@ -47,6 +47,16 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
         preferences[USER_TAP] ?: ""
     }
 
+    suspend fun setEmail(email: String) {
+        settingsDataStore.edit { settings ->
+            settings[EMAIL] = email
+        }
+    }
+
+    val getEmail: Flow<String> = settingsDataStore.data.map { preferences ->
+        preferences[EMAIL] ?: ""
+    }
+
     suspend fun setUserData(userData: String) {
         settingsDataStore.edit { settings ->
             settings[USER_DATA] = userData
@@ -83,5 +93,6 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
         val USER_DATA = stringPreferencesKey("USER_DATA")
         val COLOR = stringPreferencesKey("COLOR")
         val SKIP_WALKTHROUGH = stringPreferencesKey("SKIP_WALKTHROUGH")
+        val EMAIL = stringPreferencesKey("EMAIL")
     }
 }

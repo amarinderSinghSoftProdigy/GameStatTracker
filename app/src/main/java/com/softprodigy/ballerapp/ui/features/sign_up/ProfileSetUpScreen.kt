@@ -369,7 +369,7 @@ fun ProfileSetUpScreen(
                         Divider(thickness = dimensionResource(id = R.dimen.divider))
 
                         EditFields(
-                            data = state.signUpData.email,
+                            data = state.signUpData.email?:"",
                             onValueChange = {
                                 signUpViewModel.onEvent(SignUpUIEvent.OnEmailChanged(it))
 
@@ -379,7 +379,8 @@ fun ProfileSetUpScreen(
                                 keyboardType = KeyboardType.Email,
                                 capitalization = KeyboardCapitalization.Sentences
                             ),
-                            isError = (!state.signUpData.email.isValidEmail() && state.signUpData.email.isNotEmpty() || state.signUpData.email.length > 45),
+                            isError = ((state.signUpData.email?.isValidEmail() != true
+                                    || ((state.signUpData.email?.length) ?: 0) > 45)),
                             errorMessage = stringResource(id = R.string.email_error),
                             enabled = true
                         )
@@ -608,7 +609,7 @@ fun ProfileSetUpScreen(
                     enableState = validName(state.signUpData.firstName)
                             && validName(state.signUpData.lastName)
                             && validPhoneNumber(state.signUpData.phone)
-                            && state.signUpData.email.isValidEmail()
+                            && (state.signUpData.email ?: "".isValidEmail()) != true
                             && state.signUpData.profileImageUri != null
                             && state.signUpData.phoneVerified && check,
                     firstText = stringResource(id = R.string.back),

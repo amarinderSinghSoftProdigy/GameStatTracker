@@ -321,7 +321,7 @@ class SignUpViewModel @Inject constructor(
                 is ResultWrapper.Success -> {
                     signUpResponse.value.let { response ->
                         if (response.status) {
-                            setToken(response.data.token, response.data.user.role)
+                            setToken(response.data.token, response.data.user.role,response.data.user.email)
                             _signUpUiState.value = _signUpUiState.value.copy(
                                 registered = true,
                                 isLoading = false,
@@ -376,7 +376,7 @@ class SignUpViewModel @Inject constructor(
         val signUpDataRequest = SignUpData(
             firstName = updateUserRequestData.firstName,
             lastName = updateUserRequestData.lastName,
-//            email = updateUserRequestData.email,
+            email = null, /*null data does not considered in request by rettrofit*/
             profileImage = updateUserRequestData.profileImage,
             phone = signUpUiState.value.phoneCode + updateUserRequestData.phone,
             address = updateUserRequestData.address,
@@ -564,10 +564,11 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    private fun setToken(string: String, role: String) {
+    private fun setToken(string: String, role: String,email:String) {
         viewModelScope.launch {
             dataStore.saveToken(string)
             dataStore.setRole(role)
+            dataStore.setEmail(email)
         }
     }
 }
