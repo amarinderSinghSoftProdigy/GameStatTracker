@@ -440,6 +440,7 @@ fun ProfileSetUpScreen(
                                                 )
                                             )
                                         },
+                                        readOnly = state.signUpData.phoneVerified,
                                         cursorColor = Color.Black,
                                         content = {
                                             AppText(
@@ -569,18 +570,6 @@ fun ProfileSetUpScreen(
                                 }
                             }
                             Divider(thickness = dimensionResource(id = R.dimen.divider))
-
-                            /*EditFields(
-                                state.signUpData.birthdate,
-                                onValueChange = {
-                                    signUpViewModel.onEvent(SignUpUIEvent.OnBirthdayChanged(it))
-                                },
-                                stringResource(id = R.string.birthdate),
-                                modifier = Modifier.clickable {
-                                    mDatePickerDialog.show()
-                                }
-                            )*/
-
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -622,6 +611,11 @@ fun ProfileSetUpScreen(
 
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_44dp)))
 
+                val check = state.signUpData.token?.let {
+                    state.signUpData.birthdate.isNotEmpty()
+                            && state.signUpData.address.isNotEmpty()
+                            && state.signUpData.gender.isNotEmpty()
+                } ?: true
                 BottomButtons(
                     onBackClick = { onBack() },
                     onNextClick = {
@@ -631,13 +625,12 @@ fun ProfileSetUpScreen(
                             signUpViewModel.onEvent(SignUpUIEvent.OnScreenNext)
                         }
                     },
-
                     enableState = validName(state.signUpData.firstName)
                             && validName(state.signUpData.lastName)
                             && validPhoneNumber(state.signUpData.phone)
                             && state.signUpData.email.isValidEmail()
                             && state.signUpData.profileImageUri != null
-                            && state.signUpData.phoneVerified,
+                            && state.signUpData.phoneVerified && check,
                     firstText = stringResource(id = R.string.back),
                     secondText = stringResource(id = R.string.next)
                 )
