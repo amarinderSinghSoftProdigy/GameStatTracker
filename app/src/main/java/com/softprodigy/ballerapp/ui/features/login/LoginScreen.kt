@@ -65,6 +65,7 @@ import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.SocialLoginSection
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayDark
 import com.softprodigy.ballerapp.ui.theme.appColors
 import timber.log.Timber
 
@@ -364,7 +365,7 @@ fun LoginScreen(
 
             AppText(
                 text = stringResource(id = R.string.forgot_password),
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = ColorBWGrayDark,
                 style = MaterialTheme.typography.h6,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)

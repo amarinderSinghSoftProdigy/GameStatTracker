@@ -90,7 +90,9 @@ fun CoachFlowBackground(
                         )
                         teamLogo?.let {
                             Image(
-                                painter = rememberImagePainter(data = teamLogo),
+                                painter = if(teamLogo.isNotEmpty()) rememberImagePainter(data = teamLogo) else painterResource(
+                                    id = R.mipmap.ic_app_logo
+                                ),
                                 contentDescription = null,
                                 contentScale = ContentScale.Crop,            // crop the image if it's not a square
                                 modifier = Modifier
@@ -110,7 +112,6 @@ fun CoachFlowBackground(
         }
     }
 }
-
 
 @Composable
 fun UserFlowBackground(
