@@ -105,7 +105,7 @@ fun SignUpScreen(
     onSocialLoginSuccess: (UserInfo) -> Unit,
     onTwitterClick: () -> Unit,
     twitterUser: SocialUserModel?,
-    onSocialLoginFailed:()->Unit
+    onSocialLoginFailed: () -> Unit
 ) {
 
     val context = LocalContext.current
@@ -620,7 +620,7 @@ fun SignUpScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(dimensionResource(id = R.dimen.size_56dp)),
-                text = stringResource(id = R.string.sign_up),
+                text = stringResource(id = R.string.create),
                 icon = painterResource(id = R.drawable.ic_circle_next),
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
@@ -657,7 +657,7 @@ fun SignUpScreen(
                     .align(Alignment.CenterHorizontally),
                 onClick = {
                     annotatedText.getStringAnnotations(
-                        tag = "SignIn",
+                        tag = "Sign-in",
                         start = it,
                         end = it
                     ).forEach { _ ->

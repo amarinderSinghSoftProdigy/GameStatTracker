@@ -133,7 +133,7 @@ fun UserTypeSelector(
                 secondText = stringResource(id = R.string.next),
                 onBackClick = { },
                 onNextClick = {
-                    onNextClick.invoke(selectedUserType.value?:"")
+                    onNextClick.invoke(selectedUserType.value ?: "")
                 },
                 enableState = (selectedUserType.value ?: "").isNotEmpty(),
                 showOnlyNext = true,

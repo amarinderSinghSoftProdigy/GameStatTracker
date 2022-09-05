@@ -369,7 +369,7 @@ fun ProfileSetUpScreen(
                         Divider(thickness = dimensionResource(id = R.dimen.divider))
 
                         EditFields(
-                            data = state.signUpData.email?:"",
+                            data = state.signUpData.email ?: "",
                             onValueChange = {
                                 signUpViewModel.onEvent(SignUpUIEvent.OnEmailChanged(it))
 
@@ -384,110 +384,6 @@ fun ProfileSetUpScreen(
                             errorMessage = stringResource(id = R.string.email_error),
                             enabled = true
                         )
-
-
-                        Divider(thickness = dimensionResource(id = R.dimen.divider))
-                        Column{
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(dimensionResource(id = R.dimen.size_56dp)),
-                                /* verticalAlignment = Alignment.CenterVertically,
-                                 horizontalArrangement = Arrangement.SpaceBetween*/
-                            ) {
-
-                                val customTextSelectionColors = TextSelectionColors(
-                                    handleColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                                    backgroundColor = Color.Transparent
-                                )
-                                CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
-                                    state.phoneCode = getDefaultPhoneCode
-                                    TogiCountryCodePicker(
-                                        pickedCountry = {
-                                            state.phoneCode = it.countryPhoneCode
-                                            defaultLang = it.countryCode
-                                        },
-                                        defaultCountry = getLibCountries().single { it.countryCode == defaultLang },
-                                        focusedBorderColor = Color.Transparent,
-                                        unfocusedBorderColor = Color.Transparent,
-                                        dialogAppBarTextColor = Color.Black,
-                                        dialogAppBarColor = Color.White,
-                                        error = state.signUpData.phone.length > 10,
-                                        text = state.signUpData.phone,
-                                        onValueChange = {
-                                            signUpViewModel.onEvent(
-                                                SignUpUIEvent.OnPhoneNumberChanged(
-                                                    it
-                                                )
-                                            )
-                                        },
-                                        readOnly = state.signUpData.phoneVerified,
-                                        cursorColor = Color.Black,
-                                        content = {
-                                            AppText(
-                                                text = stringResource(id = R.string.phone_num),
-                                                style = MaterialTheme.typography.h6,
-                                                color = ColorBWBlack,
-                                                modifier = Modifier
-                                                    .align(Alignment.CenterStart)
-                                                    .padding(start = dimensionResource(id = R.dimen.size_16dp))
-                                            )
-                                        }
-                                    )
-                                }
-                            }
-
-                            if ((!validPhoneNumber(state.signUpData.phone) && state.signUpData.phone.isNotEmpty())) {
-                                Text(
-                                    text = stringResource(id = R.string.valid_phone_number),
-                                    color = MaterialTheme.colors.error,
-                                    style = MaterialTheme.typography.caption,
-                                    modifier = Modifier
-                                        .padding(4.dp)
-                                        .fillMaxWidth(),
-                                    textAlign = TextAlign.End
-                                )
-                            }
-                        }
-
-
-                        if (validPhoneNumber(state.signUpData.phone) && !state.signUpData.phoneVerified) {
-
-                            Column(
-                                modifier = Modifier
-                                    .align(Alignment.End)
-                                    .clickable {
-                                        scope.launch {
-                                            signUpViewModel.onEvent(
-                                                SignUpUIEvent.OnVerifyNumber
-                                            )
-                                            focus.clearFocus()
-                                        }
-                                    },
-                                horizontalAlignment = Alignment.End
-                            ) {
-                                AppText(
-                                    text = stringResource(id = R.string.verify),
-                                    style = MaterialTheme.typography.h6,
-                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                                    modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_20dp)),
-                                    textAlign = TextAlign.End
-                                )
-                            }
-                        }
-
-                        if (state.signUpData.phoneVerified) {
-                            AppText(
-                                text = stringResource(id = R.string.verified),
-                                style = MaterialTheme.typography.h6,
-                                color = Color.Green,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(all = dimensionResource(id = R.dimen.size_20dp)),
-                                textAlign = TextAlign.End
-                            )
-                        }
-
                         state.signUpData.token?.let { _ ->
                             Divider(thickness = dimensionResource(id = R.dimen.divider))
 
@@ -587,6 +483,106 @@ fun ProfileSetUpScreen(
                                 }
                             }
                         }
+
+                        Divider(thickness = dimensionResource(id = R.dimen.divider))
+                        Column {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(dimensionResource(id = R.dimen.size_56dp)),
+                                /* verticalAlignment = Alignment.CenterVertically,
+                                 horizontalArrangement = Arrangement.SpaceBetween*/
+                            ) {
+
+                                val customTextSelectionColors = TextSelectionColors(
+                                    handleColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                    backgroundColor = Color.Transparent
+                                )
+                                CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
+                                    state.phoneCode = getDefaultPhoneCode
+                                    TogiCountryCodePicker(
+                                        pickedCountry = {
+                                            state.phoneCode = it.countryPhoneCode
+                                            defaultLang = it.countryCode
+                                        },
+                                        defaultCountry = getLibCountries().single { it.countryCode == defaultLang },
+                                        focusedBorderColor = Color.Transparent,
+                                        unfocusedBorderColor = Color.Transparent,
+                                        dialogAppBarTextColor = Color.Black,
+                                        dialogAppBarColor = Color.White,
+                                        error = state.signUpData.phone.length > 10,
+                                        text = state.signUpData.phone,
+                                        onValueChange = {
+                                            signUpViewModel.onEvent(
+                                                SignUpUIEvent.OnPhoneNumberChanged(
+                                                    it
+                                                )
+                                            )
+                                        },
+                                        readOnly = state.signUpData.phoneVerified,
+                                        cursorColor = Color.Black,
+                                        content = {
+                                            AppText(
+                                                text = stringResource(id = R.string.phone_num),
+                                                style = MaterialTheme.typography.h6,
+                                                color = ColorBWBlack,
+                                                modifier = Modifier
+                                                    .align(Alignment.CenterStart)
+                                                    .padding(start = dimensionResource(id = R.dimen.size_16dp))
+                                            )
+                                        }
+                                    )
+                                }
+                            }
+
+                            if ((!validPhoneNumber(state.signUpData.phone) && state.signUpData.phone.isNotEmpty())) {
+                                Text(
+                                    text = stringResource(id = R.string.valid_phone_number),
+                                    color = MaterialTheme.colors.error,
+                                    style = MaterialTheme.typography.caption,
+                                    modifier = Modifier
+                                        .padding(4.dp)
+                                        .fillMaxWidth(),
+                                    textAlign = TextAlign.End
+                                )
+                            }
+                        }
+                        if (validPhoneNumber(state.signUpData.phone) && !state.signUpData.phoneVerified) {
+
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.End)
+                                    .clickable {
+                                        scope.launch {
+                                            signUpViewModel.onEvent(
+                                                SignUpUIEvent.OnVerifyNumber
+                                            )
+                                            focus.clearFocus()
+                                        }
+                                    },
+                                horizontalAlignment = Alignment.End
+                            ) {
+                                AppText(
+                                    text = stringResource(id = R.string.verify),
+                                    style = MaterialTheme.typography.h6,
+                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                    modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_20dp)),
+                                    textAlign = TextAlign.End
+                                )
+                            }
+                        }
+                        if (state.signUpData.phoneVerified) {
+                            AppText(
+                                text = stringResource(id = R.string.verified),
+                                style = MaterialTheme.typography.h6,
+                                color = Color.Green,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(all = dimensionResource(id = R.dimen.size_20dp)),
+                                textAlign = TextAlign.End
+                            )
+                        }
+
                     }
                 }
 

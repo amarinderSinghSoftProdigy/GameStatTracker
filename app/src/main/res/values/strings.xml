@@ -47,8 +47,8 @@
     <string name="setup_your_team">Set up your team</string>
     <string name="team_logo">Team Logo</string>
     <string name="team_name">Team Name</string>
-    <string name="or_sign_in_with">or sign in with</string>
-    <string name="or_sign_up_with">or sign up with</string>
+    <string name="or_sign_in_with">or sign-in with</string>
+    <string name="or_sign_up_with">or sign-up with</string>
     <string name="baller">Baller</string>
     <string name="what_type_of_user_are_you">What type of user are you?</string>
     <string name="your_team_name">Your team name</string>
@@ -62,6 +62,7 @@
     <string name="search">Search</string>
     <string name="added_players">Added Players</string>
     <string name="search_by_name_or_email">Search by name or email</string>
+    <string name="invited_player">Invited Players</string>
 
     <string name="get_started"> Get Started</string>
     <string name="name">Name</string>
@@ -106,8 +107,9 @@
     <string name="pick_team">Pick Team</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
-    <string name="sign_up">Signup</string>
+    <string name="sign_up">Sign-up</string>
     <string name="new_user">New User?</string>
+    <string name="create">Create</string>
 
     <string name="already_registered">Already Registered?</string>
     <string name="enter_otp">Enter OTP</string>
@@ -117,7 +119,7 @@
     <string name="opportunities_label">Opportunities to play</string>
     <string name="player_already_added">Player already added</string>
     <string name="something_went_wrong">Something went wrong</string>
-    <string name="signin">SignIn</string>
+    <string name="signin">Sign-in</string>
     <string name="no_players_in_team">No players in your team</string>
     <string name="add_players_to_use_app">Add new players to create teams and events.</string>
     <string name="no_upcoming_events">No Upcoming Events</string>
@@ -134,6 +136,7 @@
     <string name="gallery">Gallery</string>
     <string name="select_image_from">Select image from</string>
     <string name="logout_message">Are you sure you want to logout?</string>
+    <string name="submit">Submit</string>
 
 
 </resources>

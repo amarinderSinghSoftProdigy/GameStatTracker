@@ -43,6 +43,7 @@ fun AppSearchOutlinedTextField(
     colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors()
 ) {
 
+
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
