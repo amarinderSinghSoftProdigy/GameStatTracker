@@ -194,7 +194,10 @@ class MainActivity : ComponentActivity() {
                 try {
                     withContext(Dispatchers.IO) {
                         accToken = twitter.getOAuthAccessToken(oauthVerifier)
+                        getUserProfile()
                     }
+//                    getUserProfile()
+
                 } catch (e: TwitterException) {
                     e.printStackTrace()
                 }
@@ -243,7 +246,7 @@ fun NavControllerComposable(activity: MainActivity) {
     val email = dataStoreManager.getEmail.collectAsState(initial = "")
     val scope = rememberCoroutineScope()
     val color = dataStoreManager.getWalkThrough.collectAsState(initial = "")
-    NavHost(navController, startDestination = TEAM_SETUP_SCREEN) {
+    NavHost(navController, startDestination = SPLASH_SCREEN) {
         composable(route = SPLASH_SCREEN) {
             LaunchedEffect(key1 = true) {
                 delay(1000L)
@@ -421,7 +424,7 @@ private fun moveToHome(activity: MainActivity) {
 
 private fun checkRole(check: Boolean, navController: NavController, activity: MainActivity) {
     if (check) {
-        navController.navigate(LOGIN_SCREEN) {
+        navController.navigate(SELECT_USER_TYPE) {
             navController.popBackStack()
         }
     } else {

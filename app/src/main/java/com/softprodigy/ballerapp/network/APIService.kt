@@ -69,6 +69,6 @@ interface APIService {
     suspend fun forgotPassword(@Body forgotPasswordRequest: ForgotPasswordRequest): BaseResponse<Any>
 
     @PUT(ApiConstants.UPDATE_PROFILE)
-    suspend fun updateUserProfile(@Body userProfile: SignUpData): BaseResponse<Any>
+    suspend fun updateUserProfile(@Body userProfile: SignUpData): BaseResponse<UserInfo>
 
 }

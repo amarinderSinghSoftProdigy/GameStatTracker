@@ -12,6 +12,7 @@ import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.getFileFromUri
 import com.softprodigy.ballerapp.core.util.UiText
+import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.LoginRequest
 import com.softprodigy.ballerapp.data.request.SignUpData
@@ -19,6 +20,7 @@ import com.softprodigy.ballerapp.data.response.UserInfo
 import com.softprodigy.ballerapp.domain.repository.IImageUploadRepo
 import com.softprodigy.ballerapp.domain.repository.IUserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import id.zelory.compressor.Compressor
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -244,14 +246,22 @@ class SignUpViewModel @Inject constructor(
 
         val file = getFileFromUri(getApplication<Application>().applicationContext, uri)
 
-/*        if (file != null) {
+        if (file != null) {
           val size = Integer.parseInt((file.length()/1024).toString())
-            Timber.i("Filesize--> $size")
-        };*/
+            Timber.i("Filesize without compress--> $size")
+        };
+        val compressedImageFile =
+            file?.let { Compressor.compress(getApplication<Application>().applicationContext, it) }
+
+        if (compressedImageFile != null) {
+            val size = Integer.parseInt((compressedImageFile.length()/1024).toString())
+            Timber.i("Filesize compressedImageFile--> $size")
+        };
+
 
         when (val uploadLogoResponse = imageUploadRepo.uploadSingleImage(
             type = AppConstants.PROFILE_IMAGE,
-            file
+            compressedImageFile
         )) {
             is ResultWrapper.GenericError -> {
                 _signUpChannel.send(
@@ -420,7 +430,8 @@ class SignUpViewModel @Inject constructor(
                 updateProfileResp.value.let { response ->
                     if (response.status) {
                         setToken(
-                            token = signUpUiState.value.signUpData.token ?: "",
+//                            token = signUpUiState.value.signUpData.token ?: "",
+                            token = response.data.token,
                             role = signUpUiState.value.signUpData.role ?: "",
                             email = signUpUiState.value.signUpData.email ?: "",
                         )
@@ -577,8 +588,10 @@ class SignUpViewModel @Inject constructor(
 
     private fun setToken(token: String, role: String, email: String) {
         viewModelScope.launch {
-            if (token.isNotEmpty())
+            if (token.isNotEmpty()){
                 dataStore.saveToken(token)
+                UserStorage.token=token
+            }
             if (role.isNotEmpty())
                 dataStore.setRole(role)
             if (email.isNotEmpty())
