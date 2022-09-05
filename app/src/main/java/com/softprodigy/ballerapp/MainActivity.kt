@@ -362,13 +362,11 @@ fun NavControllerComposable(activity: MainActivity) {
             ProfileSetUpScreen(
                 signUpViewModel = signUpViewModel,
                 onNext = {
-                    if (getRole.value.equals(UserType.COACH.key, ignoreCase = true)) {
-                        navController.navigate(TEAM_SETUP_SCREEN) {
-                            navController.popBackStack()
-                        }
-                    } else {
-                        moveToHome(activity)
+
+                    navController.navigate(TEAM_SETUP_SCREEN) {
+                        navController.popBackStack()
                     }
+
                 },
                 onBack = {
                     navController.popBackStack()
