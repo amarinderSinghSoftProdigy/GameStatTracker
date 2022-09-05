@@ -188,19 +188,21 @@ fun TeamSetupScreen(
                             text = stringResource(id = R.string.team_logo),
                             style = MaterialTheme.typography.h6
                         )
-                        Text(
-                            text = stringResource(id = R.string.change),
-                            color = ColorBWGrayLight,
-                            modifier = Modifier.clickable {
-                                if (state.teamImageUri != null) {
-                                    scope.launch {
-                                        modalBottomSheetState.hide()
+                        if (state.teamImageUri != null) {
+                            Text(
+                                text = stringResource(id = R.string.change),
+                                color = ColorBWGrayLight,
+                                modifier = Modifier.clickable {
+                                    if (state.teamImageUri != null) {
+                                        scope.launch {
+                                            modalBottomSheetState.hide()
+                                        }
+                                        launcher.launch("image/*")
                                     }
-                                    launcher.launch("image/*")
-                                }
-                            },
-                            fontSize = dimensionResource(id = R.dimen.txt_size_13).value.sp
-                        )
+                                },
+                                fontSize = dimensionResource(id = R.dimen.txt_size_13).value.sp
+                            )
+                        }
                     }
                     Box(
                         Modifier

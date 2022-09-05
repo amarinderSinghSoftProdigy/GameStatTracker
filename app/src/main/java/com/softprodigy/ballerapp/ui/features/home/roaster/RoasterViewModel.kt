@@ -30,7 +30,7 @@ class RoasterViewModel @Inject constructor(application: Application) :
 
     private fun addTeamItems() {
         val teamPlayerList = ArrayList<Roaster>()
-        teamPlayerList.add(Roaster(name = "Sam Willow", role = "Coach", tag = "SF"))
+        teamPlayerList.add(Roaster(name = "Sam Willow", role = "77", tag = "SF"))
         teamPlayerList.add(Roaster(name = "Jain", role = "77", tag = "SG"))
         teamPlayerList.add(Roaster(name = "Jain", role = "77", tag = "SG"))
         teamPlayerList.add(Roaster(name = "Jain", role = "77", tag = "SG"))
