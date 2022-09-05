@@ -188,17 +188,17 @@ fun DialogButton(
     colors: ButtonColor = MaterialTheme.appColors.buttonColor,// = ButtonDefaults.buttonColors(ColorBWBlack),
     contentPadding: PaddingValues = PaddingValues(
         vertical = dimensionResource(id = R.dimen.size_16dp),
-        horizontal = dimensionResource(id = R.dimen.size_24dp),
+        horizontal = dimensionResource(id = R.dimen.size_16dp),
     ),
     text: String? = null,
     onlyBorder: Boolean = true,
 ) {
-    val contentColor = if (enabled) colors.textEnabled else colors.textDisabled
+    val contentColor =
+        if (onlyBorder) colors.textDisabled else if (enabled) colors.textEnabled else colors.textDisabled
 
     Surface(
         onClick = onClick,
         modifier = modifier,
-        enabled = enabled,
         shape = shape,
         color = if (onlyBorder)
             Color.Transparent

@@ -190,6 +190,63 @@ fun SelectTeamDialog(
     }
 }
 
+
+@Composable
+fun LogoutDialog(
+    onDismiss: () -> Unit,
+    onConfirmClick: () -> Unit,
+) {
+    BallerAppMainTheme {
+        AlertDialog(
+            modifier = Modifier.clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+            onDismissRequest = onDismiss,
+            buttons = {
+                Column(
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(all = dimensionResource(id = R.dimen.size_16dp))
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.logout_message),
+                        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                        fontWeight = FontWeight.W600,
+                    )
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(color = Color.White)
+                    ) {
+                        DialogButton(
+                            text = stringResource(R.string.dialog_button_cancel),
+                            onClick = onDismiss,
+                            modifier = Modifier
+                                .weight(1f),
+                            border = ButtonDefaults.outlinedBorder,
+                            onlyBorder = true,
+                            enabled = true
+                        )
+                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+                        DialogButton(
+                            text = stringResource(R.string.dialog_button_confirm),
+                            onClick = {
+                                onConfirmClick()
+                                onDismiss()
+                            },
+                            modifier = Modifier
+                                .weight(1f),
+                            border = ButtonDefaults.outlinedBorder,
+                            enabled = true,
+                            onlyBorder = false,
+                        )
+                    }
+                }
+            },
+        )
+    }
+}
+
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TeamListItem(team: Team, selected: Boolean, onClick: (Team) -> Unit) {

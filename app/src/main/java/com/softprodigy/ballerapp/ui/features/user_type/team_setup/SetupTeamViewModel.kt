@@ -269,6 +269,13 @@ class SetupTeamViewModel @Inject constructor(
         }
     }
 
+    private fun clearToken() {
+        viewModelScope.launch {
+            dataStoreManager.saveToken("")
+            dataStoreManager.setRole("")
+            dataStoreManager.setEmail("")
+        }
+    }
 }
 
 sealed class TeamSetupChannel {
