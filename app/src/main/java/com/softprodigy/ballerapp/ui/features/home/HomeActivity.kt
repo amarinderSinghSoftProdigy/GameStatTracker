@@ -1,6 +1,7 @@
 package com.softprodigy.ballerapp.ui.features.home
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -24,6 +25,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.softprodigy.ballerapp.MainActivity
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.Route
@@ -31,6 +33,7 @@ import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
 import com.softprodigy.ballerapp.ui.features.components.BottomNavigationBar
 import com.softprodigy.ballerapp.ui.features.components.CommonTabView
+import com.softprodigy.ballerapp.ui.features.components.LogoutDialog
 import com.softprodigy.ballerapp.ui.features.components.TabBar
 import com.softprodigy.ballerapp.ui.features.components.fromHex
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
@@ -57,6 +60,7 @@ class HomeActivity : ComponentActivity() {
             BallerAppMainTheme(customColor = state.color ?: Color.White) {
                 val navController = rememberNavController()
                 val showDialog = remember { mutableStateOf(false) }
+                val logoutDialog = remember { mutableStateOf(false) }
                 val userType = remember { mutableStateOf(BottomNavKey.HOME) }
 
                 if (state.screen) {
@@ -93,6 +97,7 @@ class HomeActivity : ComponentActivity() {
                                         onLabelClick = {
                                             showDialog.value = true
                                         }, iconClick = {
+                                            logoutDialog.value = true
                                         })
                                 }
                             }
@@ -115,6 +120,12 @@ class HomeActivity : ComponentActivity() {
                             }
                         },
                     )
+                }
+                if (logoutDialog.value) {
+                    LogoutDialog(onDismiss = { logoutDialog.value = false }, onConfirmClick = {
+                        homeViewModel.clearToken()
+                        moveToLogin(this)
+                    })
                 }
             }
         }
@@ -170,4 +181,10 @@ fun NavControllerComposable(
                 })
         }
     }
+}
+
+private fun moveToLogin(activity: HomeActivity) {
+    val intent = Intent(activity, MainActivity::class.java)
+    activity.startActivity(intent)
+    activity.finish()
 }
