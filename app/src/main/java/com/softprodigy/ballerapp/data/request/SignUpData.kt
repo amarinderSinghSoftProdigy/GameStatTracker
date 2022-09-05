@@ -13,7 +13,7 @@ data class SignUpData(
     @SerializedName("lastName") val lastName: String = "",
     @SerializedName("profileImage") val profileImage: String? = null,//serverImage
     @SerializedName("profileImageUri") val profileImageUri: String? = null,//localUriImage
-    @SerializedName("email") var email: String = "",
+    @SerializedName("email") var email: String? = null,
     @SerializedName("phone") val phone: String = "",
     @SerializedName("address") val address: String = "",
     @SerializedName("phoneVerified") val phoneVerified: Boolean = false,

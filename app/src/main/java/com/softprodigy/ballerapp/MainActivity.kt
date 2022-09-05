@@ -238,6 +238,7 @@ fun NavControllerComposable(activity: MainActivity) {
     val dataStoreManager = DataStoreManager(activity)
     val userToken = dataStoreManager.userToken.collectAsState(initial = "")
     val getRole = dataStoreManager.getRole.collectAsState(initial = "")
+    val email = dataStoreManager.getEmail.collectAsState(initial = "")
     val scope = rememberCoroutineScope()
     val color = dataStoreManager.getWalkThrough.collectAsState(initial = "")
     NavHost(navController, startDestination = SPLASH_SCREEN) {
@@ -248,7 +249,8 @@ fun NavControllerComposable(activity: MainActivity) {
                     if (userToken.value.isNotEmpty()) {
                         if (getRole.value.equals(AppConstants.USER_TYPE_USER, ignoreCase = true)) {
                             signUpViewModel.signUpUiState.value.signUpData =
-                                SignUpData(token = UserStorage.token)
+//                                SignUpData(token = userToken.value)
+                                SignUpData(token = userToken.value, email = email.value)
                         }
                         checkRole(
                             getRole.value.equals(AppConstants.USER_TYPE_USER, ignoreCase = true),
