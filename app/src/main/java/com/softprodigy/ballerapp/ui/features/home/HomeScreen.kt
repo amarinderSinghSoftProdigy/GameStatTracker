@@ -48,7 +48,7 @@ fun HomeScreen(name: String?) {
     val dataStoreManager = DataStoreManager(LocalContext.current)
     val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
     Box {
-        CoachFlowBackground(colorCode = color.value.ifEmpty { "0177C1" })
+        CoachFlowBackground(colorCode = color.value.ifEmpty { "0177C1" }, teamLogo = "")
         Column(
             Modifier
                 .fillMaxWidth()

@@ -34,8 +34,8 @@ fun UserSelectionSurface(
         .clickable { onClick() }
         .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
         .border(
-            width = 1.dp,
-            MaterialTheme.appColors.buttonColor.bckgroundDisabled,
+            width = if (!isSelected) 1.dp else 0.dp,
+            if (!isSelected) MaterialTheme.appColors.buttonColor.bckgroundDisabled else MaterialTheme.appColors.buttonColor.bckgroundEnabled,
             shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
         )
         .background(

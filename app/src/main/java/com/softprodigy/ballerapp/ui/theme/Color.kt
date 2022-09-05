@@ -98,5 +98,5 @@ val ColorBWGrayStatus = Color(0x80808080)
 val ColorPrimaryTransparent = Color(0x1A0177C1)
 val ColorMainPrimary = Color(0xFF0177C1)
 val ColorPrimaryOrange = Color(0xFFFF923D)
-
+val ColorBWGrayDark = Color(0xFF3C4348)
 
