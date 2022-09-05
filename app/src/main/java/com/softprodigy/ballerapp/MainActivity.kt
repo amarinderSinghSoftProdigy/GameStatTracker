@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -242,7 +243,7 @@ fun NavControllerComposable(activity: MainActivity) {
     val email = dataStoreManager.getEmail.collectAsState(initial = "")
     val scope = rememberCoroutineScope()
     val color = dataStoreManager.getWalkThrough.collectAsState(initial = "")
-    NavHost(navController, startDestination = SPLASH_SCREEN) {
+    NavHost(navController, startDestination = TEAM_SETUP_SCREEN) {
         composable(route = SPLASH_SCREEN) {
             LaunchedEffect(key1 = true) {
                 delay(1000L)
@@ -356,11 +357,17 @@ fun NavControllerComposable(activity: MainActivity) {
         composable(
             route = PROFILE_SETUP_SCREEN,
         ) {
+            Log.d("ah", "NavControllerComposable: " + getRole.value)
+
             ProfileSetUpScreen(
                 signUpViewModel = signUpViewModel,
                 onNext = {
-                    navController.navigate(TEAM_SETUP_SCREEN) {
-                        navController.popBackStack()
+                    if (getRole.value.equals(UserType.COACH.key, ignoreCase = true)) {
+                        navController.navigate(TEAM_SETUP_SCREEN) {
+                            navController.popBackStack()
+                        }
+                    } else {
+                        moveToHome(activity)
                     }
                 },
                 onBack = {
@@ -380,9 +387,8 @@ fun NavControllerComposable(activity: MainActivity) {
                         || userType.equals(UserType.PLAYER.key, ignoreCase = true)
                     ) {
                         navController.navigate(PROFILE_SETUP_SCREEN)
-                    }
-                    else{
-                        Toast.makeText(context,"Coming soon", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(context, "Coming soon", Toast.LENGTH_SHORT).show()
                     }
                 }
             )
