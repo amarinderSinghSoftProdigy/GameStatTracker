@@ -22,6 +22,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -242,6 +243,11 @@ class SignUpViewModel @Inject constructor(
         val uri = Uri.parse(signUpUiState.value.signUpData.profileImageUri)
 
         val file = getFileFromUri(getApplication<Application>().applicationContext, uri)
+
+/*        if (file != null) {
+          val size = Integer.parseInt((file.length()/1024).toString())
+            Timber.i("Filesize--> $size")
+        };*/
 
         when (val uploadLogoResponse = imageUploadRepo.uploadSingleImage(
             type = AppConstants.PROFILE_IMAGE,

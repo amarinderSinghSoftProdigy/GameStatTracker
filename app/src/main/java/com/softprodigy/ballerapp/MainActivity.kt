@@ -417,7 +417,7 @@ private fun moveToHome(activity: MainActivity) {
 
 private fun checkRole(check: Boolean, navController: NavController, activity: MainActivity) {
     if (check) {
-        navController.navigate(SELECT_USER_TYPE) {
+        navController.navigate(LOGIN_SCREEN) {
             navController.popBackStack()
         }
     } else {
