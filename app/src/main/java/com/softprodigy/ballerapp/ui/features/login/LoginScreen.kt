@@ -77,7 +77,7 @@ fun LoginScreen(
     onForgetPasswordClick: () -> Unit,
     onTwitterClick: () -> Unit,
     twitterUser: SocialUserModel?,
-    onLoginFail:()->Unit
+    onLoginFail: () -> Unit
 ) {
 
     val context = LocalContext.current
@@ -156,7 +156,11 @@ fun LoginScreen(
             when (uiEvent) {
                 is LoginChannel.OnLoginFailed -> {
                     onLoginFail.invoke()
-                    Toast.makeText(context, uiEvent.errorMessage.asString(context), Toast.LENGTH_LONG)
+                    Toast.makeText(
+                        context,
+                        uiEvent.errorMessage.asString(context),
+                        Toast.LENGTH_LONG
+                    )
                         .show()
                 }
                 is LoginChannel.OnLoginSuccess -> {
@@ -346,7 +350,7 @@ fun LoginScreen(
                     .align(Alignment.CenterHorizontally),
                 onClick = {
                     annotatedText.getStringAnnotations(
-                        tag = "Signup",
+                        tag = "Sign-up",
                         start = it,
                         end = it
                     ).forEach { _ ->

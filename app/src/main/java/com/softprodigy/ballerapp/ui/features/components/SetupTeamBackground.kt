@@ -70,7 +70,12 @@ fun CoachFlowBackground(
                         )
                     ),
                     modifier = Modifier
-                        .padding(all = dimensionResource(id = R.dimen.size_20dp))
+                        .padding(
+                            bottom = dimensionResource(id = R.dimen.size_30dp),
+                            end = dimensionResource(id = R.dimen.size_20dp),
+                            start = dimensionResource(id = R.dimen.size_20dp),
+                            top = dimensionResource(id = R.dimen.size_20dp)
+                        )
                         .size(dimensionResource(id = R.dimen.size_200dp))
                 ) {
                     Box(
@@ -89,7 +94,7 @@ fun CoachFlowBackground(
                                 contentDescription = null,
                                 contentScale = ContentScale.Crop,            // crop the image if it's not a square
                                 modifier = Modifier
-                                    .size(dimensionResource(id = R.dimen.size_44dp))
+                                    .size(dimensionResource(id = R.dimen.size_65dp))
                                     .clip(CircleShape)
                                     .border(
                                         dimensionResource(id = R.dimen.size_3dp),
@@ -99,7 +104,6 @@ fun CoachFlowBackground(
                                     .align(Alignment.Center)
                             )
                         }
-
                     }
                 }
             }
