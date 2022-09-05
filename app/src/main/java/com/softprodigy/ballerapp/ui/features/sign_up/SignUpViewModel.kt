@@ -413,6 +413,11 @@ class SignUpViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 updateProfileResp.value.let { response ->
                     if (response.status) {
+                        setToken(
+                            token = signUpUiState.value.signUpData.token ?: "",
+                            role = signUpUiState.value.signUpData.role ?: "",
+                            email = signUpUiState.value.signUpData.email ?: "",
+                        )
                         _signUpUiState.value = _signUpUiState.value.copy(
                             isLoading = false,
                             errorMessage = null,
@@ -564,11 +569,14 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    private fun setToken(string: String, role: String,email:String) {
+    private fun setToken(token: String, role: String, email: String) {
         viewModelScope.launch {
-            dataStore.saveToken(string)
-            dataStore.setRole(role)
-            dataStore.setEmail(email)
+            if (token.isNotEmpty())
+                dataStore.saveToken(token)
+            if (role.isNotEmpty())
+                dataStore.setRole(role)
+            if (email.isNotEmpty())
+                dataStore.setEmail(email)
         }
     }
 }

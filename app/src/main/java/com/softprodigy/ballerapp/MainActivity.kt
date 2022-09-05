@@ -8,21 +8,17 @@ import android.os.Bundle
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -46,6 +42,7 @@ import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.SignUpData
 import com.softprodigy.ballerapp.twitter_login.TwitterConstants
+import com.softprodigy.ballerapp.ui.features.components.UserType
 import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordScreen
 import com.softprodigy.ballerapp.ui.features.home.HomeActivity
 import com.softprodigy.ballerapp.ui.features.login.LoginScreen
@@ -66,6 +63,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import twitter4j.Twitter
+import twitter4j.TwitterException
 import twitter4j.TwitterFactory
 import twitter4j.auth.AccessToken
 import twitter4j.conf.ConfigurationBuilder
@@ -192,10 +190,13 @@ class MainActivity : ComponentActivity() {
             val uri = Uri.parse(url)
             val oauthVerifier = uri.getQueryParameter("oauth_verifier") ?: ""
             lifecycleScope.launch(Dispatchers.Main) {
-                accToken =
-                    withContext(Dispatchers.IO) { twitter.getOAuthAccessToken(oauthVerifier) }
-                getUserProfile()
-//            }
+                try {
+                    withContext(Dispatchers.IO) {
+                        accToken = twitter.getOAuthAccessToken(oauthVerifier)
+                    }
+                } catch (e: TwitterException) {
+                    e.printStackTrace()
+                }
             }
         }
 
@@ -374,8 +375,15 @@ fun NavControllerComposable(activity: MainActivity) {
 
             UserTypeScreen(
                 signUpvm = signUpViewModel,
-                onNextClick = {
-                    navController.navigate(PROFILE_SETUP_SCREEN)
+                onNextClick = { userType ->
+                    if (userType.equals(UserType.COACH.key, ignoreCase = true)
+                        || userType.equals(UserType.PLAYER.key, ignoreCase = true)
+                    ) {
+                        navController.navigate(PROFILE_SETUP_SCREEN)
+                    }
+                    else{
+                        Toast.makeText(context,"Coming soon", Toast.LENGTH_SHORT).show()
+                    }
                 }
             )
         }

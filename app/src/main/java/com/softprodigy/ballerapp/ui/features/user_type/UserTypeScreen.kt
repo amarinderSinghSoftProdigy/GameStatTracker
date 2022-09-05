@@ -33,7 +33,7 @@ import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 
 @Composable
 fun UserTypeScreen(
-    onNextClick: () -> Unit,
+    onNextClick: (String) -> Unit,
     signUpvm: SignUpViewModel
 ) {
     Box(
@@ -47,7 +47,7 @@ fun UserTypeScreen(
 @SuppressLint("RememberReturnType")
 @Composable
 fun UserTypeSelector(
-    onNextClick: () -> Unit,
+    onNextClick: (String) -> Unit,
     signUpvm: SignUpViewModel,
 ) {
 
@@ -133,7 +133,7 @@ fun UserTypeSelector(
                 secondText = stringResource(id = R.string.next),
                 onBackClick = { },
                 onNextClick = {
-                    onNextClick.invoke()
+                    onNextClick.invoke(selectedUserType.value?:"")
                 },
                 enableState = (selectedUserType.value ?: "").isNotEmpty(),
                 showOnlyNext = true,
