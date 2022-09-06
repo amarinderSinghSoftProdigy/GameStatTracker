@@ -120,7 +120,7 @@ fun StandingListItem(
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
                 AsyncImage(
-                    model = BuildConfig.IMAGE_SERVER + standing.logo,
+                    model = /*BuildConfig.IMAGE_SERVER + */standing.logo,
                     contentDescription = "",
                     modifier = Modifier
                         .size(dimensionResource(id = R.dimen.size_32dp))
