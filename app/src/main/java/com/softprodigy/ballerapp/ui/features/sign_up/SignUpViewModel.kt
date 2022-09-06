@@ -20,7 +20,6 @@ import com.softprodigy.ballerapp.data.response.UserInfo
 import com.softprodigy.ballerapp.domain.repository.IImageUploadRepo
 import com.softprodigy.ballerapp.domain.repository.IUserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import id.zelory.compressor.Compressor
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -241,29 +240,28 @@ class SignUpViewModel @Inject constructor(
     }
 
     private suspend fun uploadProfilePic() {
+        _signUpUiState.value =
+            _signUpUiState.value.copy(isLoading = true)
 
         val uri = Uri.parse(signUpUiState.value.signUpData.profileImageUri)
 
         val file = getFileFromUri(getApplication<Application>().applicationContext, uri)
 
-        if (file != null) {
-          val size = Integer.parseInt((file.length()/1024).toString())
-            Timber.i("Filesize without compress--> $size")
-        };
-        val compressedImageFile =
-            file?.let { Compressor.compress(getApplication<Application>().applicationContext, it) }
-
-        if (compressedImageFile != null) {
-            val size = Integer.parseInt((compressedImageFile.length()/1024).toString())
-            Timber.i("Filesize compressedImageFile--> $size")
-        };
-
-
-        when (val uploadLogoResponse = imageUploadRepo.uploadSingleImage(
+        file?.let {
+            val size = Integer.parseInt((it.length() / 1024).toString())
+            Timber.i("Filesize after compressiod--> $size")
+        }
+        val uploadLogoResponse = imageUploadRepo.uploadSingleImage(
             type = AppConstants.PROFILE_IMAGE,
-            compressedImageFile
-        )) {
+            file
+        )
+        _signUpUiState.value =
+            _signUpUiState.value.copy(isLoading = false)
+
+        when (uploadLogoResponse) {
             is ResultWrapper.GenericError -> {
+                _signUpUiState.value =
+                    _signUpUiState.value.copy(isLoading = false)
                 _signUpChannel.send(
                     SignUpChannel.ShowToast(
                         UiText.DynamicString(
@@ -273,6 +271,8 @@ class SignUpViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
+                _signUpUiState.value =
+                    _signUpUiState.value.copy(isLoading = false)
                 _signUpChannel.send(
                     SignUpChannel.ShowToast(
                         UiText.DynamicString(
@@ -286,6 +286,7 @@ class SignUpViewModel @Inject constructor(
                     if (response.status) {
                         _signUpUiState.value =
                             _signUpUiState.value.copy(
+                                isLoading = false,
                                 signUpData = _signUpUiState.value.signUpData.copy(
                                     profileImage = "${BuildConfig.IMAGE_SERVER}${uploadLogoResponse.value.data.data}"
                                 )
@@ -310,6 +311,8 @@ class SignUpViewModel @Inject constructor(
     }
 
     private suspend fun signUp() {
+        _signUpUiState.value =
+            _signUpUiState.value.copy(isLoading = true)
         val signUpData = signUpUiState.value.signUpData
         val signUpDataRequest = SignUpData(
             firstName = signUpData.firstName,
@@ -331,13 +334,19 @@ class SignUpViewModel @Inject constructor(
 
             val signUpResponse =
                 IUserRepository.signUp(signUpDataRequest)
-
+            _signUpUiState.value =
+                _signUpUiState.value.copy(isLoading = false)
             when (signUpResponse) {
 
                 is ResultWrapper.Success -> {
+
                     signUpResponse.value.let { response ->
                         if (response.status) {
-                            setToken(response.data.token, response.data.user.role,response.data.user.email)
+                            setToken(
+                                response.data.token,
+                                response.data.user.role,
+                                response.data.user.email
+                            )
                             _signUpUiState.value = _signUpUiState.value.copy(
                                 registered = true,
                                 isLoading = false,

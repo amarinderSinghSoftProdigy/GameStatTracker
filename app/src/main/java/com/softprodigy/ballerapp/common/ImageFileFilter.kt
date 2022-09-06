@@ -23,25 +23,6 @@ fun getRealPathFromURI(context: Context, uri: Uri): String? {
 }
 
 @Throws(IOException::class)
-fun getFileFromUri(context: Context, uri: Uri): File? {
-    val destinationFilename =
-        File(context.filesDir.path + File.separatorChar.toString() + queryName(context, uri))
-    try {
-        context.contentResolver.openInputStream(uri).use { ins ->
-            if (ins != null) {
-                createFileFromStream(
-                    ins,
-                    destinationFilename
-                )
-            }
-        }
-    } catch (ex: Exception) {
-        Timber.e("Save File", ex.message.toString())
-        ex.printStackTrace()
-    }
-    return destinationFilename
-}
-/*@Throws(IOException::class)
 suspend fun getFileFromUri(context: Context, uri: Uri): File? {
     val destinationFilename =
         File(context.filesDir.path + File.separatorChar.toString() + queryName(context, uri))
@@ -58,15 +39,15 @@ suspend fun getFileFromUri(context: Context, uri: Uri): File? {
         Timber.e("Save File", ex.message.toString())
         ex.printStackTrace()
     }
-    if (destinationFilename != null) {
-        val size = Integer.parseInt((destinationFilename.length()/1024).toString())
-        Timber.i("Filesize not compressed--> $size")
-    }
+
+    val size = Integer.parseInt((destinationFilename.length()/1024).toString())
+    Timber.i("Filesize not compressed--> $size")
+
     return Compressor.compress(context, destinationFilename) {
         quality(80)
         size(2_097_152) // 2 MB
     }
-}*/
+}
 
 fun createFileFromStream(ins: InputStream, destination: File?) {
     try {
