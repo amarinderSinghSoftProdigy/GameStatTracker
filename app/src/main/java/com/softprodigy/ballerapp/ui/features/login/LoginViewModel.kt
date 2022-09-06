@@ -9,6 +9,7 @@ import com.softprodigy.ballerapp.common.ApiConstants
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.ResultWrapper.GenericError
 import com.softprodigy.ballerapp.core.util.UiText
+import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.LoginRequest
 import com.softprodigy.ballerapp.data.response.UserInfo
@@ -118,9 +119,10 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private fun setToken(string: String, role: String,email:String) {
+    private fun setToken(token: String, role: String, email:String) {
         viewModelScope.launch {
-            dataStore.saveToken(string)
+            UserStorage.token=token
+            dataStore.saveToken(token)
             dataStore.setRole(role)
             dataStore.setEmail(email)
         }

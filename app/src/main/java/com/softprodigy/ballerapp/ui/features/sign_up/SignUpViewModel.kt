@@ -196,6 +196,7 @@ class SignUpViewModel @Inject constructor(
                 is ResultWrapper.Success -> {
                     loginResponse.value.let { response ->
                         if (response.status) {
+                            setToken(response.data.token, response.data.user.role,response.data.user.email)
                             setLoginDataToState(response.data)
                             _signUpChannel.send(SignUpChannel.OnLoginSuccess(response.data))
                         } else {

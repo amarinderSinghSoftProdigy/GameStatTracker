@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.softprodigy.ballerapp.data.UserStorage
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -18,6 +19,7 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
     private val settingsDataStore = appContext.dataStore
 
     suspend fun saveToken(token: String) {
+        UserStorage.token=token
         settingsDataStore.edit { settings ->
             settings[USER_TOKEN] = token
         }
@@ -28,6 +30,7 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
     }
 
     suspend fun setRole(role: String) {
+        UserStorage.role=role
         settingsDataStore.edit { settings ->
             settings[ROLE] = role
         }
