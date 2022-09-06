@@ -12,6 +12,7 @@ import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.getFileFromUri
 import com.softprodigy.ballerapp.core.util.UiText
+import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.LoginRequest
 import com.softprodigy.ballerapp.data.request.SignUpData
@@ -22,6 +23,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -238,16 +240,28 @@ class SignUpViewModel @Inject constructor(
     }
 
     private suspend fun uploadProfilePic() {
+        _signUpUiState.value =
+            _signUpUiState.value.copy(isLoading = true)
 
         val uri = Uri.parse(signUpUiState.value.signUpData.profileImageUri)
 
         val file = getFileFromUri(getApplication<Application>().applicationContext, uri)
 
-        when (val uploadLogoResponse = imageUploadRepo.uploadSingleImage(
+        file?.let {
+            val size = Integer.parseInt((it.length() / 1024).toString())
+            Timber.i("Filesize after compressiod--> $size")
+        }
+        val uploadLogoResponse = imageUploadRepo.uploadSingleImage(
             type = AppConstants.PROFILE_IMAGE,
             file
-        )) {
+        )
+        _signUpUiState.value =
+            _signUpUiState.value.copy(isLoading = false)
+
+        when (uploadLogoResponse) {
             is ResultWrapper.GenericError -> {
+                _signUpUiState.value =
+                    _signUpUiState.value.copy(isLoading = false)
                 _signUpChannel.send(
                     SignUpChannel.ShowToast(
                         UiText.DynamicString(
@@ -257,6 +271,8 @@ class SignUpViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
+                _signUpUiState.value =
+                    _signUpUiState.value.copy(isLoading = false)
                 _signUpChannel.send(
                     SignUpChannel.ShowToast(
                         UiText.DynamicString(
@@ -270,6 +286,7 @@ class SignUpViewModel @Inject constructor(
                     if (response.status) {
                         _signUpUiState.value =
                             _signUpUiState.value.copy(
+                                isLoading = false,
                                 signUpData = _signUpUiState.value.signUpData.copy(
                                     profileImage = "${BuildConfig.IMAGE_SERVER}${uploadLogoResponse.value.data.data}"
                                 )
@@ -294,6 +311,8 @@ class SignUpViewModel @Inject constructor(
     }
 
     private suspend fun signUp() {
+        _signUpUiState.value =
+            _signUpUiState.value.copy(isLoading = true)
         val signUpData = signUpUiState.value.signUpData
         val signUpDataRequest = SignUpData(
             firstName = signUpData.firstName,
@@ -315,13 +334,19 @@ class SignUpViewModel @Inject constructor(
 
             val signUpResponse =
                 IUserRepository.signUp(signUpDataRequest)
-
+            _signUpUiState.value =
+                _signUpUiState.value.copy(isLoading = false)
             when (signUpResponse) {
 
                 is ResultWrapper.Success -> {
+
                     signUpResponse.value.let { response ->
                         if (response.status) {
-                            setToken(response.data.token, response.data.user.role,response.data.user.email)
+                            setToken(
+                                response.data.token,
+                                response.data.user.role,
+                                response.data.user.email
+                            )
                             _signUpUiState.value = _signUpUiState.value.copy(
                                 registered = true,
                                 isLoading = false,
@@ -414,7 +439,8 @@ class SignUpViewModel @Inject constructor(
                 updateProfileResp.value.let { response ->
                     if (response.status) {
                         setToken(
-                            token = signUpUiState.value.signUpData.token ?: "",
+//                            token = signUpUiState.value.signUpData.token ?: "",
+                            token = response.data.token,
                             role = signUpUiState.value.signUpData.role ?: "",
                             email = signUpUiState.value.signUpData.email ?: "",
                         )
@@ -571,8 +597,10 @@ class SignUpViewModel @Inject constructor(
 
     private fun setToken(token: String, role: String, email: String) {
         viewModelScope.launch {
-            if (token.isNotEmpty())
+            if (token.isNotEmpty()){
                 dataStore.saveToken(token)
+                UserStorage.token=token
+            }
             if (role.isNotEmpty())
                 dataStore.setRole(role)
             if (email.isNotEmpty())
