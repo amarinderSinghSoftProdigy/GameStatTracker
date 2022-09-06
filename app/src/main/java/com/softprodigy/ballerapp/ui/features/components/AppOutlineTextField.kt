@@ -1,48 +1,43 @@
 package com.softprodigy.ballerapp.ui.features.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.foundation.text.selection.LocalTextSelectionColors
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldColors
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.toSize
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -71,36 +66,42 @@ fun AppOutlineTextField(
     shape: Shape = RoundedCornerShape(MaterialTheme.spacing.small),
     colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(),
 ) {
+    val customTextSelectionColors = TextSelectionColors(
+        handleColor = if (!isError) MaterialTheme.appColors.buttonColor.bckgroundEnabled else MaterialTheme.colors.error,
+        backgroundColor = Color.Transparent
+    )
 
     Column(
         modifier = Modifier
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
-        OutlinedTextField(
-            value = value,
-            onValueChange = onValueChange,
-            modifier = modifier,
-            enabled = enabled,
-            readOnly = readOnly,
-            textStyle = textStyle,
-            label = label,
-            placeholder = placeholder,
-            leadingIcon = leadingIcon,
-            trailingIcon = if (value.isNotEmpty()) {
-                trailingIcon
-            } else null,
-            isError = isError,
-            visualTransformation = visualTransformation,
-            keyboardOptions = keyboardOptions,
-            keyboardActions = keyboardActions,
-            singleLine = singleLine,
-            maxLines = maxLines,
-            interactionSource = interactionSource,
-            shape = shape,
-            colors = colors,
-        )
+        CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
+            OutlinedTextField(
+                value = value,
+                onValueChange = onValueChange,
+                modifier = modifier,
+                enabled = enabled,
+                readOnly = readOnly,
+                textStyle = textStyle,
+                label = label,
+                placeholder = placeholder,
+                leadingIcon = leadingIcon,
+                trailingIcon = if (value.isNotEmpty()) {
+                    trailingIcon
+                } else null,
+                isError = isError,
+                visualTransformation = visualTransformation,
+                keyboardOptions = keyboardOptions,
+                keyboardActions = keyboardActions,
+                singleLine = singleLine,
+                maxLines = maxLines,
+                interactionSource = interactionSource,
+                shape = shape,
+                colors = colors,
+            )
+        }
         if (isError) {
             androidx.compose.material.Text(
                 text = errorMessage,
@@ -123,7 +124,7 @@ fun AppOutlineDateField(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(52.dp)
+            .height(dimensionResource(id = R.dimen.size_50dp))
             .clickable {
                 onClick()
             },
@@ -138,7 +139,10 @@ fun AppOutlineDateField(
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(start = 13.dp, end = 13.dp),
+                .padding(
+                    start = dimensionResource(id = R.dimen.size_12dp),
+                    end = dimensionResource(id = R.dimen.size_12dp)
+                ),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -157,18 +161,15 @@ fun AppOutlineDateField(
                     style = androidx.compose.material.LocalTextStyle.current
                 )
             }
+
+            Icon(
+                painter = painterResource(id = R.drawable.ic_baseline_calendar_month_24),
+                contentDescription = null,
+                modifier = Modifier.size(dimensionResource(id = R.dimen.size_24dp))
+            )
+
         }
     }
-}
-
-@Composable
-fun AppOutlineGenderSelection(
-    value: String,
-    data: String = "",
-    onClick: () -> Unit = {},
-) {
-
-
 }
 
 @Composable
@@ -184,6 +185,10 @@ fun EditFields(
     modifier: Modifier = Modifier,
     trailingIcon: @Composable (() -> Unit)? = null,
 ) {
+    val customTextSelectionColors = TextSelectionColors(
+        handleColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+        backgroundColor = Color.Transparent
+    )
 
     Column(
         modifier = modifier
@@ -200,23 +205,25 @@ fun EditFields(
                 text = head,
                 style = MaterialTheme.typography.h6,
                 color = ColorBWBlack,
-                modifier = Modifier.padding(start = 16.dp)
+                modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
             )
-            TextField(
-                value = data, onValueChange = onValueChange,
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    backgroundColor = Color.Transparent,
-                    focusedBorderColor = Color.Transparent,
-                    unfocusedBorderColor = Color.Transparent,
-                    cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                ),
-                textStyle = TextStyle(textAlign = TextAlign.End),
-                singleLine = true,
-                keyboardActions = keyboardActions,
-                keyboardOptions = keyboardOptions,
-                readOnly = enabled,
-                trailingIcon = trailingIcon
-            )
+            CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
+                TextField(
+                    value = data, onValueChange = onValueChange,
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        backgroundColor = Color.Transparent,
+                        focusedBorderColor = Color.Transparent,
+                        unfocusedBorderColor = Color.Transparent,
+                        cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    ),
+                    textStyle = TextStyle(textAlign = TextAlign.End),
+                    singleLine = true,
+                    keyboardActions = keyboardActions,
+                    keyboardOptions = keyboardOptions,
+                    readOnly = enabled,
+                    trailingIcon = trailingIcon
+                )
+            }
         }
 
         if (isError) {
@@ -232,3 +239,5 @@ fun EditFields(
         }
     }
 }
+
+

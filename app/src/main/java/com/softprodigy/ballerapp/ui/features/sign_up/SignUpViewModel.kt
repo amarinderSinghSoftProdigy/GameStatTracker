@@ -3,19 +3,16 @@ package com.softprodigy.ballerapp.ui.features.sign_up
 import android.app.Application
 import android.net.Uri
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.baller_app.core.util.UiText
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.common.ApiConstants
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.getFileFromUri
+import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.data.request.GlobalRequest
 import com.softprodigy.ballerapp.data.request.LoginRequest
 import com.softprodigy.ballerapp.data.request.SignUpData
 import com.softprodigy.ballerapp.data.response.UserInfo
@@ -41,25 +38,6 @@ class SignUpViewModel @Inject constructor(
 
     private val _signUpUiState = mutableStateOf(SignUpUIState())
     val signUpUiState: State<SignUpUIState> = _signUpUiState
-
-    val verified = mutableStateOf(false)
-
-    var userRole by mutableStateOf("")
-        private set
-
-
-    var teamData by mutableStateOf(GlobalRequest.SetUpTeam())
-        private set
-
-    fun saveData(request: GlobalRequest.Users) {
-        userRole = request.role
-    }
-
-
-    fun saveTeamData(request: GlobalRequest.SetUpTeam) {
-        teamData = request
-
-    }
 
     fun onEvent(event: SignUpUIEvent) {
         when (event) {
@@ -127,7 +105,7 @@ class SignUpViewModel @Inject constructor(
 
             is SignUpUIEvent.OnSignUpDataSelected -> {
                 _signUpUiState.value =
-                    _signUpUiState.value.copy(signUpData = event.signUpData)
+                    _signUpUiState.value.copy(signUpData = event.signUpData, registered = false)
 
                 viewModelScope.launch {
                     _signUpChannel.send(SignUpChannel.OnSignUpSelected)
@@ -193,9 +171,16 @@ class SignUpViewModel @Inject constructor(
                         )
                     )
             }
+
+            is SignUpUIEvent.OnRoleChanged -> {
+                _signUpUiState.value =
+                    _signUpUiState.value.copy(
+                        signUpData = _signUpUiState.value.signUpData.copy(
+                            role = event.role
+                        )
+                    )
+            }
         }
-
-
     }
 
     private fun login(loginRequest: LoginRequest) {
@@ -209,7 +194,6 @@ class SignUpViewModel @Inject constructor(
                 is ResultWrapper.Success -> {
                     loginResponse.value.let { response ->
                         if (response.status) {
-//                            setToken(response.data.token)
                             setLoginDataToState(response.data)
                             _signUpChannel.send(SignUpChannel.OnLoginSuccess(response.data))
                         } else {
@@ -247,7 +231,8 @@ class SignUpViewModel @Inject constructor(
                 signUpData = _signUpUiState.value.signUpData.copy(
                     token = userInfo.token,
                     id = userInfo.user.id,
-                    email = userInfo.user.email
+                    email = userInfo.user.email,
+                    role = userInfo.user.role
                 )
             )
     }
@@ -315,19 +300,18 @@ class SignUpViewModel @Inject constructor(
             lastName = signUpData.lastName,
             email = signUpData.email,
             profileImage = signUpData.profileImage,
-            phone = "+" + signUpData.phone,
+            phone = signUpUiState.value.phoneCode + signUpData.phone,
             address = signUpData.address,
             phoneVerified = signUpData.phoneVerified,
             gender = signUpData.gender,
             birthdate = signUpData.birthdate,
             role = signUpData.role?.lowercase(),
             password = signUpData.password,
-            repeatPassword = signUpData.repeatPassword
+            repeatPassword = signUpData.repeatPassword,
         )
 
         viewModelScope.launch {
             _signUpUiState.value = _signUpUiState.value.copy(isLoading = true)
-
 
             val signUpResponse =
                 IUserRepository.signUp(signUpDataRequest)
@@ -336,9 +320,10 @@ class SignUpViewModel @Inject constructor(
 
                 is ResultWrapper.Success -> {
                     signUpResponse.value.let { response ->
-
                         if (response.status) {
+                            setToken(response.data.token, response.data.user.role,response.data.user.email)
                             _signUpUiState.value = _signUpUiState.value.copy(
+                                registered = true,
                                 isLoading = false,
                                 errorMessage = null,
                                 successMessage = response.statusMessage
@@ -353,7 +338,7 @@ class SignUpViewModel @Inject constructor(
 
                         } else {
                             _signUpUiState.value = _signUpUiState.value.copy(
-                                errorMessage = response.statusMessage ?: "Something went wrong",
+                                errorMessage = response.statusMessage,
                                 isLoading = false
                             )
                         }
@@ -371,7 +356,7 @@ class SignUpViewModel @Inject constructor(
                 is ResultWrapper.NetworkError -> {
                     _signUpUiState.value =
                         _signUpUiState.value.copy(
-                            errorMessage = "${signUpResponse.message}",
+                            errorMessage = signUpResponse.message,
                             isLoading = false
                         )
                     _signUpChannel.send(
@@ -391,9 +376,9 @@ class SignUpViewModel @Inject constructor(
         val signUpDataRequest = SignUpData(
             firstName = updateUserRequestData.firstName,
             lastName = updateUserRequestData.lastName,
-//            email = updateUserRequestData.email,
+            email = null, /*null data does not considered in request by rettrofit*/
             profileImage = updateUserRequestData.profileImage,
-            phone = "+" + updateUserRequestData.phone,
+            phone = signUpUiState.value.phoneCode + updateUserRequestData.phone,
             address = updateUserRequestData.address,
             phoneVerified = updateUserRequestData.phoneVerified,
             gender = updateUserRequestData.gender,
@@ -428,6 +413,11 @@ class SignUpViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 updateProfileResp.value.let { response ->
                     if (response.status) {
+                        setToken(
+                            token = signUpUiState.value.signUpData.token ?: "",
+                            role = signUpUiState.value.signUpData.role ?: "",
+                            email = signUpUiState.value.signUpData.email ?: "",
+                        )
                         _signUpUiState.value = _signUpUiState.value.copy(
                             isLoading = false,
                             errorMessage = null,
@@ -443,14 +433,13 @@ class SignUpViewModel @Inject constructor(
 
                     } else {
                         _signUpUiState.value = _signUpUiState.value.copy(
-                            errorMessage = response.statusMessage ?: "Something went wrong",
+                            errorMessage = response.statusMessage,
                             isLoading = false
                         )
                     }
                 }
             }
         }
-
     }
 
     private fun verifyPhone() {
@@ -458,7 +447,7 @@ class SignUpViewModel @Inject constructor(
             _signUpUiState.value = _signUpUiState.value.copy(isLoading = true)
 
             val verifyResponseResponse =
-                IUserRepository.verifyPhone(phone = "+" + _signUpUiState.value.signUpData.phone)
+                IUserRepository.verifyPhone(phone = signUpUiState.value.phoneCode + _signUpUiState.value.signUpData.phone)
 
             when (verifyResponseResponse) {
 
@@ -482,7 +471,7 @@ class SignUpViewModel @Inject constructor(
 
                         } else {
                             _signUpUiState.value = _signUpUiState.value.copy(
-                                errorMessage = response.statusMessage ?: "Something went wrong",
+                                errorMessage = response.statusMessage,
                                 isLoading = false
                             )
                         }
@@ -499,7 +488,7 @@ class SignUpViewModel @Inject constructor(
                 is ResultWrapper.NetworkError -> {
                     _signUpUiState.value =
                         _signUpUiState.value.copy(
-                            errorMessage = "${verifyResponseResponse.message}",
+                            errorMessage = verifyResponseResponse.message,
                             isLoading = false
                         )
                     _signUpChannel.send(
@@ -518,9 +507,11 @@ class SignUpViewModel @Inject constructor(
         viewModelScope.launch {
             _signUpUiState.value = _signUpUiState.value.copy(isLoading = true)
 
-
             val verifyResponseResponse =
-                IUserRepository.confirmPhone(phone = phone, otp = otp)
+                IUserRepository.confirmPhone(
+                    phone = signUpUiState.value.phoneCode + phone,
+                    otp = otp
+                )
 
             when (verifyResponseResponse) {
 
@@ -537,9 +528,6 @@ class SignUpViewModel @Inject constructor(
                                         phoneVerified = response.status
                                     )
                                 )
-
-                            verified.value = response.status
-
                             _signUpChannel.send(
                                 SignUpChannel.OnSuccess(
                                     UiText.DynamicString(
@@ -550,7 +538,7 @@ class SignUpViewModel @Inject constructor(
 
                         } else {
                             _signUpUiState.value = _signUpUiState.value.copy(
-                                errorMessage = response.statusMessage ?: "Something went wrong",
+                                errorMessage = response.statusMessage,
                                 isLoading = false
                             )
                         }
@@ -581,9 +569,14 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    private fun setToken(string: String) {
+    private fun setToken(token: String, role: String, email: String) {
         viewModelScope.launch {
-            dataStore.saveToken(string)
+            if (token.isNotEmpty())
+                dataStore.saveToken(token)
+            if (role.isNotEmpty())
+                dataStore.setRole(role)
+            if (email.isNotEmpty())
+                dataStore.setEmail(email)
         }
     }
 }

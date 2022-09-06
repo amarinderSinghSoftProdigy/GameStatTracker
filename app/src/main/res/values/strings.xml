@@ -27,12 +27,12 @@
     <string name="confirm_your_password">Enter Confirm password</string>
     <string name="generic_error">Generic Error</string>
     <string name="email_error">Enter a valid Email</string>
-    <string name="password_error">Password must follow the standard format</string>
+    <string name="password_error">Password must contain at least one lower, one upper , one Special character, numeric character,minimum 6 characters and maximum 16 characters</string>
     <string name="confirm_password_error">Confirm Password must be same as password </string>
     <string name="forgot_password_subtitle">Enter registered e-mail to receive password reset instruction.</string>
     <string name="send">Send</string>
     <string name="back_to_login">Back To Login</string>
-    <string name="otp_verifcation">OTP Verification</string>
+    <string name="otp_verifcation" translatable="false">OTP Verification</string>
     <string name="please_enter_4_digit_code">Please enter the 6 digit code sent to %1$s </string>
     <string name="verify">Verify</string>
     <string name="resend_code">Resend Code</string>
@@ -47,25 +47,27 @@
     <string name="setup_your_team">Set up your team</string>
     <string name="team_logo">Team Logo</string>
     <string name="team_name">Team Name</string>
-    <string name="or_sign_in_with">or sign in with</string>
-    <string name="or_sign_up_with">or sign up with</string>
+    <string name="or_sign_in_with">or sign-in with</string>
+    <string name="or_sign_up_with">or sign-up with</string>
     <string name="baller">Baller</string>
     <string name="what_type_of_user_are_you">What type of user are you?</string>
     <string name="your_team_name">Your team name</string>
     <string name="change">Change</string>
     <string name="upload_files">Upload Files</string>
-    <string name="team_color">Team color</string>
+    <string name="team_color">Team Color</string>
     <string name="back">Back</string>
     <string name="colors">Colors</string>
     <string name="add_players">Add players</string>
+    <string name="invite_players">Invite Players</string>
     <string name="search">Search</string>
     <string name="added_players">Added Players</string>
     <string name="search_by_name_or_email">Search by name or email</string>
+    <string name="invited_player">Invited Players</string>
 
     <string name="get_started"> Get Started</string>
     <string name="name">Name</string>
-    <string name="birthdate">Birthdate</string>
-    <string name="select_birthdate">Select birthdate</string>
+    <string name="birthdate">Date of birth</string>
+    <string name="select_birthdate">Select date of birth</string>
     <string name="address">Address</string>
     <string name="gender">Gender</string>
     <string name="select_gender">Select gender</string>
@@ -81,7 +83,7 @@
     <string name="valid_last_name">Please enter the valid last-name</string>
     <string name="valid_phone_number">Please enter a valid phone number</string>
     <string name="valid_image">Please select an image</string>
-    <string name="valid_team_name">Team name must contain alphanumeric character and special character like @ and $</string>
+    <string name="valid_team_name">Team name must contain alphanumeric character and use only these special character @ and $</string>
     <string name="valid_search">Invalid Keyword</string>
     <string name="alert_remove_player">Are you sure you want to remove the player?</string>
     <string name="enter_valid_full_name">Please enter a valid name</string>
@@ -105,8 +107,9 @@
     <string name="pick_team">Pick Team</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
-    <string name="sign_up">Signup</string>
+    <string name="sign_up">Sign-up</string>
     <string name="new_user">New User?</string>
+    <string name="create">Create</string>
 
     <string name="already_registered">Already Registered?</string>
     <string name="enter_otp">Enter OTP</string>
@@ -116,7 +119,7 @@
     <string name="opportunities_label">Opportunities to play</string>
     <string name="player_already_added">Player already added</string>
     <string name="something_went_wrong">Something went wrong</string>
-    <string name="signin">SignIn</string>
+    <string name="signin">Sign-in</string>
     <string name="no_players_in_team">No players in your team</string>
     <string name="add_players_to_use_app">Add new players to create teams and events.</string>
     <string name="no_upcoming_events">No Upcoming Events</string>
@@ -128,6 +131,12 @@
     <string name="no_team_selected">Please select a team first.</string>
     <string name="did_not_recieve_sms">"Didn't receive SMS? "</string>
     <string name="code">Resend Code</string>
+    <string name="select_image">Select Image</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="select_image_from">Select image from</string>
+    <string name="logout_message">Are you sure you want to logout?</string>
+    <string name="submit">Submit</string>
 
 
 </resources>

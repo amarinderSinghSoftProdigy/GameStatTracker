@@ -6,12 +6,12 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.baller_app.core.util.UiText
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.getFileFromUri
+import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.CreateTeamRequest
 import com.softprodigy.ballerapp.data.response.Player
@@ -269,6 +269,13 @@ class SetupTeamViewModel @Inject constructor(
         }
     }
 
+    private fun clearToken() {
+        viewModelScope.launch {
+            dataStoreManager.saveToken("")
+            dataStoreManager.setRole("")
+            dataStoreManager.setEmail("")
+        }
+    }
 }
 
 sealed class TeamSetupChannel {

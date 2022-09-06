@@ -5,10 +5,13 @@ import android.app.Dialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
@@ -16,9 +19,11 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -36,14 +41,16 @@ import com.softprodigy.ballerapp.common.Route.WELCOME_SCREEN
 import com.softprodigy.ballerapp.data.SocialUserModel
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
+import com.softprodigy.ballerapp.data.request.SignUpData
 import com.softprodigy.ballerapp.twitter_login.TwitterConstants
+import com.softprodigy.ballerapp.ui.features.components.UserType
 import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordScreen
 import com.softprodigy.ballerapp.ui.features.home.HomeActivity
+import com.softprodigy.ballerapp.ui.features.home.roaster.RoasterScreen
 import com.softprodigy.ballerapp.ui.features.login.LoginScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.ProfileSetUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpViewModel
-import com.softprodigy.ballerapp.ui.features.splash.SplashScreen
 import com.softprodigy.ballerapp.ui.features.user_type.TeamSetupScreen
 import com.softprodigy.ballerapp.ui.features.user_type.UserTypeScreen
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.AddPlayersScreen
@@ -53,10 +60,12 @@ import com.softprodigy.ballerapp.ui.theme.BallerAppTheme
 import com.softprodigy.ballerapp.ui.theme.appColors
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import twitter4j.Twitter
+import twitter4j.TwitterException
 import twitter4j.TwitterFactory
 import twitter4j.auth.AccessToken
 import twitter4j.conf.ConfigurationBuilder
@@ -77,9 +86,8 @@ class MainActivity : ComponentActivity() {
     private var email = ""
     private var profilePicURL = ""
     private var accessToken = ""
-    val twitterUser = mutableStateOf(SocialUserModel())
-    val twitterUserRegister = mutableStateOf(SocialUserModel())
-
+    val twitterUser = mutableStateOf<SocialUserModel?>(SocialUserModel())
+    val twitterUserRegister = mutableStateOf<SocialUserModel?>(SocialUserModel())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -148,7 +156,7 @@ class MainActivity : ComponentActivity() {
             if (request?.url.toString()
                     .startsWith(TwitterConstants.CALLBACK_URL, ignoreCase = true)
             ) {
-                Timber.e("Authorization URL: ", ""+request?.url.toString())
+                Timber.e("Authorization URL: ", "" + request?.url.toString())
                 handleUrl(request?.url.toString())
                 // Close the dialog after getting the oauth_verifier
                 if (request?.url.toString()
@@ -184,10 +192,13 @@ class MainActivity : ComponentActivity() {
             val uri = Uri.parse(url)
             val oauthVerifier = uri.getQueryParameter("oauth_verifier") ?: ""
             lifecycleScope.launch(Dispatchers.Main) {
-                accToken =
-                    withContext(Dispatchers.IO) { twitter.getOAuthAccessToken(oauthVerifier) }
-                getUserProfile()
-//            }
+                try {
+                    withContext(Dispatchers.IO) {
+                        accToken = twitter.getOAuthAccessToken(oauthVerifier)
+                    }
+                } catch (e: TwitterException) {
+                    e.printStackTrace()
+                }
             }
         }
 
@@ -229,23 +240,39 @@ fun NavControllerComposable(activity: MainActivity) {
     val context = LocalContext.current
     val dataStoreManager = DataStoreManager(activity)
     val userToken = dataStoreManager.userToken.collectAsState(initial = "")
+    val getRole = dataStoreManager.getRole.collectAsState(initial = "")
+    val email = dataStoreManager.getEmail.collectAsState(initial = "")
     val scope = rememberCoroutineScope()
+    val color = dataStoreManager.getWalkThrough.collectAsState(initial = "")
     NavHost(navController, startDestination = SPLASH_SCREEN) {
-
         composable(route = SPLASH_SCREEN) {
-            SplashScreen {
-                if (userToken.value.isNotEmpty()) {
-                    moveToHome(activity)
-                } else {
-                    navController.popBackStack()
-                    navController.navigate(WELCOME_SCREEN)
+            LaunchedEffect(key1 = true) {
+                delay(1000L)
+                scope.launch {
+                    if (userToken.value.isNotEmpty()) {
+                        if (getRole.value.equals(AppConstants.USER_TYPE_USER, ignoreCase = true)) {
+                            signUpViewModel.signUpUiState.value.signUpData =
+//                                SignUpData(token = userToken.value)
+                                SignUpData(token = userToken.value, email = email.value)
+                        }
+                        checkRole(
+                            getRole.value.equals(AppConstants.USER_TYPE_USER, ignoreCase = true),
+                            navController,
+                            activity
+                        )
+                    } else if (color.value.isNotEmpty()) {
+                        navController.popBackStack()
+                        navController.navigate(LOGIN_SCREEN)
+                    } else {
+                        navController.popBackStack()
+                        navController.navigate(WELCOME_SCREEN)
+                    }
                 }
             }
         }
 
         composable(route = SIGN_UP_SCREEN) {
             SignUpScreen(vm = signUpViewModel, onLoginScreen = {
-//                navController.navigate(LOGIN_SCREEN)
                 navController.popBackStack()
             }, onSignUpSuccess = {
                 navController.navigate(SELECT_USER_TYPE)
@@ -254,28 +281,27 @@ fun NavControllerComposable(activity: MainActivity) {
                     scope.launch {
                         (context as MainActivity).getRequestToken("signup")
                     }
-
                 },
                 twitterUser = activity.twitterUserRegister.value,
                 onSocialLoginSuccess = { userInfo ->
-                    if (!userInfo.user.role.equals(
+                    checkRole(
+                        userInfo.user.role.equals(
                             AppConstants.USER_TYPE_USER,
                             ignoreCase = true
-                        )
-                    ) {
-                        moveToHome(activity)
-                    } else {
-                        navController.navigate(SELECT_USER_TYPE) {
-                            navController.popBackStack()
-                        }
-                    }
+                        ), navController, activity
+                    )
                 }, onPreviousClick = {
                     navController.popBackStack()
-                })
+                },
+                onSocialLoginFailed = { activity.twitterUserRegister.value = null }
+            )
         }
 
         composable(route = WELCOME_SCREEN) {
             WelcomeScreen {
+                scope.launch {
+                    dataStoreManager.skipWalkthrough(AppConstants.SKIP)
+                }
                 navController.popBackStack()
                 navController.navigate(LOGIN_SCREEN)
             }
@@ -284,10 +310,20 @@ fun NavControllerComposable(activity: MainActivity) {
             LoginScreen(
                 onLoginSuccess = {
                     UserStorage.token = it?.token.toString()
-                    /*navController.navigate(SELECT_USER_TYPE){
-                        navController.popBackStack()
-                    }*/
-                    moveToHome(activity)
+                    if (it?.user?.role.equals(AppConstants.USER_TYPE_USER, ignoreCase = true)) {
+                        signUpViewModel.signUpUiState.value.signUpData =
+                            SignUpData(
+                                token = UserStorage.token,
+                                email = it?.user?.email ?: "",
+                                firstName = it?.user?.firstName ?: "",
+                                lastName = it?.user?.lastName ?: "",
+                            )
+                    }
+                    checkRole(
+                        it?.user?.role.equals(AppConstants.USER_TYPE_USER, ignoreCase = true),
+                        navController,
+                        activity
+                    )
                 },
                 onRegister = {
                     navController.navigate(SIGN_UP_SCREEN)
@@ -297,11 +333,13 @@ fun NavControllerComposable(activity: MainActivity) {
                 },
                 onTwitterClick = {
                     scope.launch {
-                        (context as MainActivity).getRequestToken("login")
+                        activity.getRequestToken("login")
                     }
-
                 },
-                twitterUser = activity.twitterUser.value
+                twitterUser = activity.twitterUser.value,
+                onLoginFail = {
+                    activity.twitterUser.value = null
+                }
             )
         }
 
@@ -315,18 +353,21 @@ fun NavControllerComposable(activity: MainActivity) {
                 navController.popBackStack()
             })
 
+
         }
 
         composable(
             route = PROFILE_SETUP_SCREEN,
         ) {
+
             ProfileSetUpScreen(
                 signUpViewModel = signUpViewModel,
                 onNext = {
+
                     navController.navigate(TEAM_SETUP_SCREEN) {
                         navController.popBackStack()
-
                     }
+
                 },
                 onBack = {
                     navController.popBackStack()
@@ -336,10 +377,18 @@ fun NavControllerComposable(activity: MainActivity) {
         composable(
             route = SELECT_USER_TYPE
         ) {
+            BackHandler {}
+
             UserTypeScreen(
                 signUpvm = signUpViewModel,
-                onNextClick = {
-                    navController.navigate(PROFILE_SETUP_SCREEN)
+                onNextClick = { userType ->
+                    if (userType.equals(UserType.COACH.key, ignoreCase = true)
+                        || userType.equals(UserType.PLAYER.key, ignoreCase = true)
+                    ) {
+                        navController.navigate(PROFILE_SETUP_SCREEN)
+                    } else {
+                        Toast.makeText(context, "Coming soon", Toast.LENGTH_SHORT).show()
+                    }
                 }
             )
         }
@@ -365,8 +414,18 @@ fun NavControllerComposable(activity: MainActivity) {
 }
 
 
-fun moveToHome(activity: MainActivity) {
+private fun moveToHome(activity: MainActivity) {
     val intent = Intent(activity, HomeActivity::class.java)
     activity.startActivity(intent)
     activity.finish()
+}
+
+private fun checkRole(check: Boolean, navController: NavController, activity: MainActivity) {
+    if (check) {
+        navController.navigate(SELECT_USER_TYPE) {
+            navController.popBackStack()
+        }
+    } else {
+        moveToHome(activity)
+    }
 }

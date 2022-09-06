@@ -13,23 +13,34 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_app_logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_app_logo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BallerApp"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <provider
+            android:name=".common.ComposeFileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths"
+                tools:replace="android:resource" />
+        </provider>
+
         <activity
             android:name="com.softprodigy.ballerapp.MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.BallerApp"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
@@ -42,31 +53,13 @@
 
         <activity
             android:name="com.facebook.FacebookActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:label="@string/app_name" />
-        <!--        <activity
-                    android:name=".ui.features.home.HomeActivity"
-                    android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-                    android:exported="true"
-                    android:label="@string/app_name">
-                    <intent-filter>
-                        <action android:name="android.intent.action.MAIN" />
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" />
 
-                        <category android:name="android.intent.category.DEFAULT" />
-                    </intent-filter>
-                </activity>  -->
         <activity
             android:name=".ui.features.home.HomeActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.BallerApp"
-            android:windowSoftInputMode="adjustPan">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:windowSoftInputMode="adjustPan"></activity>
         <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true">
@@ -75,9 +68,12 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
+
+
     </application>
 
 </manifest>

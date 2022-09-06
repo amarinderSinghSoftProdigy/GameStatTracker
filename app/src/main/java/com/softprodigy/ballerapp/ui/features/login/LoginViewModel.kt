@@ -5,10 +5,10 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.baller_app.core.util.UiText
 import com.softprodigy.ballerapp.common.ApiConstants
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.ResultWrapper.GenericError
+import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.LoginRequest
 import com.softprodigy.ballerapp.data.response.UserInfo
@@ -84,7 +84,7 @@ class LoginViewModel @Inject constructor(
                 is ResultWrapper.Success -> {
                     loginResponse.value.let { response ->
                         if (response.status) {
-                            setToken(response.data.token)
+                            setToken(response.data.token, response.data.user.role,response.data.user.email)
                             _loginUiState.value = _loginUiState.value.copy(
                                 user = response.data,
                                 isDataLoading = false
@@ -104,28 +104,30 @@ class LoginViewModel @Inject constructor(
                         errorMessage = "${loginResponse.message}",
                         isDataLoading = false
                     )
-                    _loginChannel.send(LoginChannel.ShowToast(UiText.DynamicString("${loginResponse.message}")))
+                    _loginChannel.send(LoginChannel.OnLoginFailed(UiText.DynamicString("${loginResponse.message}")))
                 }
                 is ResultWrapper.NetworkError -> {
                     _loginUiState.value = _loginUiState.value.copy(
                         errorMessage = loginResponse.message,
                         isDataLoading = false
                     )
-                    _loginChannel.send(LoginChannel.ShowToast(UiText.DynamicString(loginResponse.message)))
+                    _loginChannel.send(LoginChannel.OnLoginFailed(UiText.DynamicString(loginResponse.message)))
                 }
 
             }
         }
     }
 
-    private fun setToken(string: String) {
+    private fun setToken(string: String, role: String,email:String) {
         viewModelScope.launch {
             dataStore.saveToken(string)
+            dataStore.setRole(role)
+            dataStore.setEmail(email)
         }
     }
 }
 
 sealed class LoginChannel {
-    data class ShowToast(val message: UiText) : LoginChannel()
+    data class OnLoginFailed(val errorMessage: UiText) : LoginChannel()
     data class OnLoginSuccess(val loginResponse: UserInfo) : LoginChannel()
 }

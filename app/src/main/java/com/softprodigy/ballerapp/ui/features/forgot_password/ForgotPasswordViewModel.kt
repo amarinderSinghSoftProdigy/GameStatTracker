@@ -5,13 +5,9 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.baller_app.core.util.UiText
 import com.softprodigy.ballerapp.common.ResultWrapper
-import com.softprodigy.ballerapp.domain.repository.IImageUploadRepo
+import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.domain.repository.IUserRepository
-import com.softprodigy.ballerapp.ui.features.sign_up.SignUpChannel
-import com.softprodigy.ballerapp.ui.features.sign_up.SignUpUIEvent
-import com.softprodigy.ballerapp.ui.features.sign_up.SignUpUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -69,7 +65,7 @@ class ForgotPasswordViewModel @Inject constructor(
 
                         } else {
                             _forgotPasswordUiState.value = ForgotPasswordUIState(
-                                errorMessage = response.statusMessage ?: "Something went wrong",
+                                errorMessage = response.statusMessage,
                                 isLoading = false
                             )
                         }
@@ -94,7 +90,7 @@ class ForgotPasswordViewModel @Inject constructor(
                 is ResultWrapper.NetworkError -> {
                     _forgotPasswordUiState.value =
                         ForgotPasswordUIState(
-                            errorMessage = "${forgotResponse.message}",
+                            errorMessage = forgotResponse.message,
                             isLoading = false
                         )
                     _forgotPasswordChannel.send(

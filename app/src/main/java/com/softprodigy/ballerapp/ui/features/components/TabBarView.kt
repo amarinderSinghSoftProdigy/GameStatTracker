@@ -121,7 +121,7 @@ sealed class BottomNavigationItem(
 ) {
     object Home :
         BottomNavigationItem(
-            R.drawable.ic_events,
+            R.drawable.ic_home,
             key = BottomNavKey.HOME,
         )
 

@@ -27,14 +27,14 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
         preferences[USER_TOKEN] ?: ""
     }
 
-    suspend fun setOtp(otp: String) {
+    suspend fun setRole(role: String) {
         settingsDataStore.edit { settings ->
-            settings[OTP] = otp
+            settings[ROLE] = role
         }
     }
 
-    val getOtp: Flow<String> = settingsDataStore.data.map { preferences ->
-        preferences[OTP] ?: ""
+    val getRole: Flow<String> = settingsDataStore.data.map { preferences ->
+        preferences[ROLE] ?: ""
     }
 
     suspend fun setTap(tap: String) {
@@ -47,19 +47,37 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
         preferences[USER_TAP] ?: ""
     }
 
-    suspend fun setUserData(username: String) {
+    suspend fun setEmail(email: String) {
         settingsDataStore.edit { settings ->
-            settings[USER_NAME] = username
-            //settings[PASSWORD] = password
+            settings[EMAIL] = email
+        }
+    }
+
+    val getEmail: Flow<String> = settingsDataStore.data.map { preferences ->
+        preferences[EMAIL] ?: ""
+    }
+
+    suspend fun setUserData(userData: String) {
+        settingsDataStore.edit { settings ->
+            settings[USER_DATA] = userData
         }
     }
 
     val getUserName: Flow<String> = settingsDataStore.data.map { preferences ->
-        preferences[USER_NAME] ?: ""
+        preferences[USER_DATA] ?: ""
     }
 
     val getColor: Flow<String> = settingsDataStore.data.map { preferences ->
         preferences[COLOR] ?: ""
+    }
+
+    val getWalkThrough: Flow<String> = settingsDataStore.data.map { preferences ->
+        preferences[SKIP_WALKTHROUGH] ?: ""
+    }
+    suspend fun skipWalkthrough(color: String) {
+        settingsDataStore.edit { settings ->
+            settings[SKIP_WALKTHROUGH] = color
+        }
     }
     suspend fun setColor(color: String) {
         settingsDataStore.edit { settings ->
@@ -69,10 +87,12 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
 
     companion object {
         val USER_TOKEN = stringPreferencesKey("USER_TOKEN")
-        val OTP = stringPreferencesKey("OTP")
+        val ROLE = stringPreferencesKey("ROLE")
         val LOGOUT = stringPreferencesKey("LOGOUT")
         val USER_TAP = stringPreferencesKey("USER_TAP")
-        val USER_NAME = stringPreferencesKey("USER_NAME")
+        val USER_DATA = stringPreferencesKey("USER_DATA")
         val COLOR = stringPreferencesKey("COLOR")
+        val SKIP_WALKTHROUGH = stringPreferencesKey("SKIP_WALKTHROUGH")
+        val EMAIL = stringPreferencesKey("EMAIL")
     }
 }

@@ -35,11 +35,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.Team
-import com.softprodigy.ballerapp.ui.theme.BallerAppTheme
+import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
@@ -50,7 +51,7 @@ fun <T> DeleteDialog(
     onDismiss: () -> Unit,
     onDelete: (T) -> Unit,
 ) {
-    BallerAppTheme {
+    BallerAppMainTheme {
         AlertDialog(
             onDismissRequest = onDismiss,
             backgroundColor = Color.White,
@@ -86,10 +87,13 @@ fun <T> DeleteDialog(
                             .weight(1f),
                         border = ButtonDefaults.outlinedBorder,
                         enabled = true,
-                        singleButton = true
+                        singleButton = true,
+                        themed = true,
+                        isForceEnableNeeded = true
                     )
                 }
             },
+            properties = DialogProperties(dismissOnClickOutside = false)
         )
     }
 }
@@ -102,7 +106,7 @@ fun SelectTeamDialog(
     selected: Team?,
     teams: ArrayList<Team>
 ) {
-    BallerAppTheme {
+    BallerAppMainTheme {
         AlertDialog(
             modifier = Modifier.clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
             onDismissRequest = onDismiss,
@@ -186,6 +190,63 @@ fun SelectTeamDialog(
     }
 }
 
+
+@Composable
+fun LogoutDialog(
+    onDismiss: () -> Unit,
+    onConfirmClick: () -> Unit,
+) {
+    BallerAppMainTheme {
+        AlertDialog(
+            modifier = Modifier.clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+            onDismissRequest = onDismiss,
+            buttons = {
+                Column(
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(all = dimensionResource(id = R.dimen.size_16dp))
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.logout_message),
+                        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                        fontWeight = FontWeight.W600,
+                    )
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(color = Color.White)
+                    ) {
+                        DialogButton(
+                            text = stringResource(R.string.dialog_button_cancel),
+                            onClick = onDismiss,
+                            modifier = Modifier
+                                .weight(1f),
+                            border = ButtonDefaults.outlinedBorder,
+                            onlyBorder = true,
+                            enabled = true
+                        )
+                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+                        DialogButton(
+                            text = stringResource(R.string.dialog_button_confirm),
+                            onClick = {
+                                onConfirmClick()
+                                onDismiss()
+                            },
+                            modifier = Modifier
+                                .weight(1f),
+                            border = ButtonDefaults.outlinedBorder,
+                            enabled = true,
+                            onlyBorder = false,
+                        )
+                    }
+                }
+            },
+        )
+    }
+}
+
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TeamListItem(team: Team, selected: Boolean, onClick: (Team) -> Unit) {
@@ -207,7 +268,7 @@ fun TeamListItem(team: Team, selected: Boolean, onClick: (Team) -> Unit) {
                 ), verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = BuildConfig.IMAGE_SERVER  + team.logo,
+                model = BuildConfig.IMAGE_SERVER + team.logo,
                 contentDescription = "",
                 modifier = Modifier
                     .size(dimensionResource(id = R.dimen.size_32dp))

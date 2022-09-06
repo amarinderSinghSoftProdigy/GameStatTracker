@@ -1,7 +1,5 @@
 package com.softprodigy.ballerapp.ui.features.confirm_phone
 
-import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,10 +21,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -54,25 +51,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.R
-
 import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.login.LoginChannel
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpUIEvent
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpViewModel
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class, ExperimentalTime::class)
 @Composable
 fun ConfirmPhoneScreen(
-    onDismiss: () -> Unit,
     viewModel: SignUpViewModel,
-    phoneNumber: String
+    phoneNumber: String,
+    onDismiss:()->Unit
 ) {
 
     val (editValue, setEditValue) = remember { mutableStateOf("") }
@@ -81,6 +77,16 @@ fun ConfirmPhoneScreen(
     val keyboard = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
     var otp by rememberSaveable { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    var ticks by remember { mutableStateOf(0) }
+    LaunchedEffect(Unit) {
+        while(true) {
+            delay(1.seconds)
+            ticks++
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -91,16 +97,6 @@ fun ConfirmPhoneScreen(
             )
     ) {
 
-        Icon(
-            painter = painterResource(id = com.softprodigy.ballerapp.R.drawable.ic_close_color_picker),
-            contentDescription = null,
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .size(dimensionResource(id = com.softprodigy.ballerapp.R.dimen.size_16dp))
-                .clickable {
-                    onDismiss.invoke()
-                }
-        )
 
         Column(
             modifier = Modifier
@@ -109,6 +105,19 @@ fun ConfirmPhoneScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             //   verticalArrangement = Arrangement.Center
         ) {
+
+            Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.End) {
+                Icon(
+                    painter = painterResource(id = com.softprodigy.ballerapp.R.drawable.ic_close_color_picker),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(dimensionResource(id = com.softprodigy.ballerapp.R.dimen.size_16dp))
+                        .clickable {
+                            onDismiss.invoke()
+                        }
+                )
+            }
+
             Spacer(modifier = Modifier.height(dimensionResource(id = com.softprodigy.ballerapp.R.dimen.size_100dp)))
 
             Image(
@@ -185,9 +194,10 @@ fun ConfirmPhoneScreen(
                 singleButton = true,
                 enabled = otp.isNotEmpty() && otp.length >= 6,
                 onClick = {
+                    keyboardController?.hide()
                     viewModel.onEvent(
                         SignUpUIEvent.OnConfirmNumber(
-                            phoneNumber = "+$phoneNumber",
+                            phoneNumber = phoneNumber,
                             otp = otp
                         )
                     )

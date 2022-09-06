@@ -2,7 +2,6 @@ package com.softprodigy.ballerapp.ui.features.sign_up
 
 import com.softprodigy.ballerapp.data.SocialUserModel
 import com.softprodigy.ballerapp.data.request.SignUpData
-import com.softprodigy.ballerapp.ui.features.login.LoginUIEvent
 
 sealed class SignUpUIEvent {
 
@@ -11,6 +10,7 @@ sealed class SignUpUIEvent {
     object OnScreenNext : SignUpUIEvent()
     data class OnSignUpDataSelected(val signUpData: SignUpData) : SignUpUIEvent()
     object OnVerifyNumber : SignUpUIEvent()
+    data class OnRoleChanged(val role: String) : SignUpUIEvent()
     data class OnConfirmNumber(val phoneNumber: String, val otp: String) : SignUpUIEvent()
     data class OnFirstNameChanged(val firstName: String) : SignUpUIEvent()
     data class OnLastNameChanged(val lastName: String) : SignUpUIEvent()

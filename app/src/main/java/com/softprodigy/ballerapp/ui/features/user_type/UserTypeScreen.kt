@@ -1,7 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.user_type
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,32 +12,28 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.data.request.GlobalRequest
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.BottomButtons
 import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
 import com.softprodigy.ballerapp.ui.features.components.UserSelectionSurface
 import com.softprodigy.ballerapp.ui.features.components.UserType
 import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
-import com.softprodigy.ballerapp.data.request.SignUpData
+import com.softprodigy.ballerapp.ui.features.sign_up.SignUpUIEvent
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 
 
 @Composable
 fun UserTypeScreen(
-    onNextClick: () -> Unit,
+    onNextClick: (String) -> Unit,
     signUpvm: SignUpViewModel
 ) {
     Box(
@@ -52,7 +47,7 @@ fun UserTypeScreen(
 @SuppressLint("RememberReturnType")
 @Composable
 fun UserTypeSelector(
-    onNextClick: () -> Unit,
+    onNextClick: (String) -> Unit,
     signUpvm: SignUpViewModel,
 ) {
 
@@ -64,13 +59,14 @@ fun UserTypeSelector(
         UserType.PROGRAM_STAFF,
         UserType.FAN,
     )
+    val state = signUpvm.signUpUiState.value
 
-    var selectedUserType by remember {
-        mutableStateOf(signUpvm.userRole)
+    val selectedUserType = remember {
+        mutableStateOf(state.signUpData.role)
     }
 
     val onSelectionChange = { text: String ->
-        selectedUserType = text
+        selectedUserType.value = text
     }
 
 
@@ -98,7 +94,7 @@ fun UserTypeSelector(
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_30dp)))
 
-            options.forEach { it ->
+            options.forEach { user ->
                 Row(
                     modifier = Modifier
                         .padding(
@@ -106,12 +102,19 @@ fun UserTypeSelector(
                             vertical = dimensionResource(id = R.dimen.size_4dp)
                         ),
                 ) {
-                    val name = stringResourceByName(name = it.stringId)
+                    val name = stringResourceByName(name = user.stringId)
                     UserSelectionSurface(
                         modifier = Modifier.fillMaxWidth(0.9f),
                         text = name,
-                        isSelected = name == selectedUserType,
-                        onClick = { onSelectionChange(name) }
+                        isSelected = user.key == selectedUserType.value,
+                        onClick = {
+                            onSelectionChange(user.key)
+                            signUpvm.onEvent(
+                                SignUpUIEvent.OnRoleChanged(
+                                    user.key
+                                )
+                            )
+                        }
                     )
                 }
             }
@@ -130,11 +133,9 @@ fun UserTypeSelector(
                 secondText = stringResource(id = R.string.next),
                 onBackClick = { },
                 onNextClick = {
-                    onNextClick.invoke()
-                    val userRole = GlobalRequest.Users(selectedUserType)
-                    signUpvm.saveData(userRole)
+                    onNextClick.invoke(selectedUserType.value ?: "")
                 },
-                enableState = selectedUserType.isNotEmpty(),
+                enableState = (selectedUserType.value ?: "").isNotEmpty(),
                 showOnlyNext = true,
             )
         }
