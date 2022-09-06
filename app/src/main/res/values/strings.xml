@@ -137,6 +137,10 @@
     <string name="select_image_from">Select image from</string>
     <string name="logout_message">Are you sure you want to logout?</string>
     <string name="submit">Submit</string>
+    <string name="standings">Standings</string>
+    <string name="chat">Chat</string>
+    <string name="roaster">Roaster</string>
+    <string name="leaderboard">Leaderboard</string>
 
 
 </resources>

@@ -48,7 +48,7 @@ import com.softprodigy.ballerapp.ui.features.login.LoginScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.ProfileSetUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpViewModel
-import com.softprodigy.ballerapp.ui.features.user_type.TeamSetupScreen
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.TeamSetupScreen
 import com.softprodigy.ballerapp.ui.features.user_type.UserTypeScreen
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.AddPlayersScreen
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.SetupTeamViewModel

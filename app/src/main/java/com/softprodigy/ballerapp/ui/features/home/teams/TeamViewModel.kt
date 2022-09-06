@@ -4,8 +4,8 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.baller_app.core.util.UiText
 import com.softprodigy.ballerapp.common.ResultWrapper
+import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.response.Standing
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
