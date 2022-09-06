@@ -51,7 +51,7 @@ class UserRepository @Inject constructor(
         return safeApiCall(dispatcher = dispatcher) { service.forgotPassword(requestBody) }
     }
 
-    override suspend fun updateUserProfile(userProfile: SignUpData): ResultWrapper<BaseResponse<Any>> {
+    override suspend fun updateUserProfile(userProfile: SignUpData): ResultWrapper<BaseResponse<UserInfo>> {
         return safeApiCall(dispatcher = dispatcher) {
             service.updateUserProfile(userProfile = userProfile)
         }

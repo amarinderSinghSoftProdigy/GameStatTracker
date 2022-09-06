@@ -5,7 +5,6 @@ import android.app.Dialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -19,7 +18,6 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -46,7 +44,6 @@ import com.softprodigy.ballerapp.twitter_login.TwitterConstants
 import com.softprodigy.ballerapp.ui.features.components.UserType
 import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordScreen
 import com.softprodigy.ballerapp.ui.features.home.HomeActivity
-import com.softprodigy.ballerapp.ui.features.home.roaster.RoasterScreen
 import com.softprodigy.ballerapp.ui.features.login.LoginScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.ProfileSetUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
@@ -195,7 +192,10 @@ class MainActivity : ComponentActivity() {
                 try {
                     withContext(Dispatchers.IO) {
                         accToken = twitter.getOAuthAccessToken(oauthVerifier)
+                        getUserProfile()
                     }
+//                    getUserProfile()
+
                 } catch (e: TwitterException) {
                     e.printStackTrace()
                 }
@@ -363,11 +363,13 @@ fun NavControllerComposable(activity: MainActivity) {
             ProfileSetUpScreen(
                 signUpViewModel = signUpViewModel,
                 onNext = {
-
-                    navController.navigate(TEAM_SETUP_SCREEN) {
-                        navController.popBackStack()
+                    if (UserStorage.role.equals(UserType.COACH.key, ignoreCase = true)) {
+                        navController.navigate(TEAM_SETUP_SCREEN) {
+                            navController.popBackStack()
+                        }
+                    } else {
+                        moveToHome(activity)
                     }
-
                 },
                 onBack = {
                     navController.popBackStack()
@@ -382,6 +384,8 @@ fun NavControllerComposable(activity: MainActivity) {
             UserTypeScreen(
                 signUpvm = signUpViewModel,
                 onNextClick = { userType ->
+                    UserStorage.role = userType
+
                     if (userType.equals(UserType.COACH.key, ignoreCase = true)
                         || userType.equals(UserType.PLAYER.key, ignoreCase = true)
                     ) {
