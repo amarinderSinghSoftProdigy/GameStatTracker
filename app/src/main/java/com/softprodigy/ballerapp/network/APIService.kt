@@ -12,6 +12,7 @@ import com.softprodigy.ballerapp.data.response.ImageUpload
 import com.softprodigy.ballerapp.data.response.Player
 import com.softprodigy.ballerapp.data.response.Team
 import com.softprodigy.ballerapp.data.response.UserInfo
+import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.domain.BaseResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -47,9 +48,11 @@ interface APIService {
     suspend fun createTeam(@Body request: CreateTeamRequest): BaseResponse<CreateTeamResponse>
 
     @GET(ApiConstants.GET_TEAMS)
-    suspend fun getTeams(   @Query("page") page: Int,
-                            @Query("limit") limit: Int,
-                            @Query("sort") sort: String):BaseResponse<ArrayList<Team>>
+    suspend fun getTeams(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int,
+        @Query("sort") sort: String
+    ): BaseResponse<ArrayList<Team>>
 
     @GET("${ApiConstants.GET_TEAMS}/{id}")
     suspend fun getTeamsByTeamId(
@@ -70,5 +73,8 @@ interface APIService {
 
     @PUT(ApiConstants.UPDATE_PROFILE)
     suspend fun updateUserProfile(@Body userProfile: SignUpData): BaseResponse<UserInfo>
+
+    @GET("${ApiConstants.COACH_PLAYER}/{id}")
+    suspend fun getCoachPlayersByID(@Path("id") id: String): BaseResponse<RoasterResponse>
 
 }

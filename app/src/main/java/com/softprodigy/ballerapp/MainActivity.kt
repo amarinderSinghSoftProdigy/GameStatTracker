@@ -31,6 +31,7 @@ import com.softprodigy.ballerapp.common.Route.ADD_PLAYER_SCREEN
 import com.softprodigy.ballerapp.common.Route.FORGOT_PASSWORD_SCREEN
 import com.softprodigy.ballerapp.common.Route.LOGIN_SCREEN
 import com.softprodigy.ballerapp.common.Route.PROFILE_SETUP_SCREEN
+import com.softprodigy.ballerapp.common.Route.ROASTER_SCREEN
 import com.softprodigy.ballerapp.common.Route.SELECT_USER_TYPE
 import com.softprodigy.ballerapp.common.Route.SIGN_UP_SCREEN
 import com.softprodigy.ballerapp.common.Route.SPLASH_SCREEN
@@ -44,6 +45,7 @@ import com.softprodigy.ballerapp.twitter_login.TwitterConstants
 import com.softprodigy.ballerapp.ui.features.components.UserType
 import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordScreen
 import com.softprodigy.ballerapp.ui.features.home.HomeActivity
+import com.softprodigy.ballerapp.ui.features.home.roaster.RoasterScreen
 import com.softprodigy.ballerapp.ui.features.login.LoginScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.ProfileSetUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
@@ -413,6 +415,8 @@ fun NavControllerComposable(activity: MainActivity) {
                     moveToHome(activity)
                 })
         }
+
+
     }
 
 }
