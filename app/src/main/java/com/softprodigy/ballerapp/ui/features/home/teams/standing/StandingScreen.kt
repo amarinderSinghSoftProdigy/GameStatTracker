@@ -1,15 +1,19 @@
 package com.softprodigy.ballerapp.ui.features.home.teams.standing
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -17,41 +21,51 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.softprodigy.ballerapp.BuildConfig
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.PagerState
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.Standing
+import com.softprodigy.ballerapp.ui.features.components.AppTab
 import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.SetupTeamViewModel
+import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
+import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
 import com.softprodigy.ballerapp.ui.theme.appColors
+import kotlinx.coroutines.launch
 
-
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun StandingScreen(
-    setupTeamViewModel: SetupTeamViewModel,
+    vm: StandingViewModel = hiltViewModel()
 ) {
-    val vm: StandingViewModel = hiltViewModel()
     val context = LocalContext.current
     val state = vm.standingUiState.value
 
+    val standingTabData = listOf(
+        StandingTabItems.RECORD,
+        StandingTabItems.WIN,
+        StandingTabItems.GB,
+        StandingTabItems.HOME,
+        StandingTabItems.AWAY,
+        StandingTabItems.PF
+    )
+    val pagerState = rememberPagerState(
+        pageCount = standingTabData.size,
+        initialOffScreenLimit = 1,
+        infiniteLoop = true,
+        initialPage = 0,
+    )
+
     val onStandingSelectionChange = { standing: Standing ->
         vm.onEvent(StandingUIEvent.OnStandingSelected(standing))
-
-        /*   setupTeamViewModel.onEvent(
-               TeamSetupUIEvent.OnColorSelected(
-                   "0177C1"
-                   *//* standing.colorCode.replace(
-                     "#",
-                     ""
-                 )*//*
-            )
-        )*/
     }
 
     Column(Modifier.fillMaxSize()) {
+        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
+        StandingTopTabs(pagerState, standingTabData)
+        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
@@ -88,11 +102,13 @@ fun StandingListItem(
             )
     ) {
 
-        Surface(
-            onClick = { onClick(standing) },
-            shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
-            elevation = if (selected) dimensionResource(id = R.dimen.size_10dp) else 0.dp,
-            color = if (selected) MaterialTheme.appColors.material.primaryVariant else Color.White,
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+
+                .background(color = if (selected) MaterialTheme.appColors.material.primaryVariant else Color.White)
+                .clickable { onClick(standing) }
         ) {
             Row(
                 modifier = Modifier
@@ -118,7 +134,7 @@ fun StandingListItem(
                     ).value.sp,
                     fontWeight = FontWeight.W400
                 )
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
                 AsyncImage(
                     model = /*BuildConfig.IMAGE_SERVER + */standing.logo,
                     contentDescription = "",
@@ -129,18 +145,62 @@ fun StandingListItem(
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
                 Text(
                     text = standing.name,
-                    fontWeight = FontWeight.W500,
+                    fontWeight = FontWeight.Bold,
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                    modifier = Modifier.weight(1f),
                     color = if (selected) {
                         MaterialTheme.appColors.buttonColor.textEnabled
                     } else {
-                        MaterialTheme.appColors.buttonColor.textDisabled
+                        MaterialTheme.appColors.buttonColor.bckgroundEnabled
                     }
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_4dp)))
             }
+
+            Row(
+                modifier = Modifier.align(Alignment.CenterEnd),
+            ) {
+                Text(
+                    text = standing.standings,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                    color = if (selected) {
+                        MaterialTheme.appColors.buttonColor.textEnabled
+                    } else {
+                        MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                    }
+                )
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+
+            }
+
         }
     }
 }
 
+enum class StandingTabItems(val stringId: String, val key: String) {
+    RECORD("record_label", "record"),
+    WIN("win_percent_label", "win"),
+    GB("gb_label", "gb"),
+    HOME("home_label", "home"),
+    AWAY("away_label", "away"),
+    PF("pf_label", "pf"),
+}
+
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+fun StandingTopTabs(pagerState: PagerState, tabData: List<StandingTabItems>) {
+    val coroutineScope = rememberCoroutineScope()
+    Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
+        tabData.forEachIndexed { index, item ->
+            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+            AppTab(
+                title = stringResourceByName(item.stringId),
+                selected = pagerState.currentPage == index,
+                onClick = {
+                    coroutineScope.launch {
+                        pagerState.animateScrollToPage(index)
+                    }
+                })
+        }
+    }
+}

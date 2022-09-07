@@ -10,7 +10,4 @@ sealed class TeamUIEvent {
     object OnDismissClick : TeamUIEvent()
     data class ShowToast(val message:String) : TeamUIEvent()
 
-    // TODO: temp
-    data class OnStandingSelected(val standing: Standing) : TeamUIEvent()
-
 }

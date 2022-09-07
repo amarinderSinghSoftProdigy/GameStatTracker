@@ -47,9 +47,6 @@ class TeamViewModel @Inject constructor(
             is TeamUIEvent.OnTeamSelected -> {
                 _teamUiState.value = _teamUiState.value.copy(selectedTeam = event.team)
             }
-            is TeamUIEvent.OnStandingSelected -> {
-                _teamUiState.value = _teamUiState.value.copy(selectedStanding = event.standing)
-            }
         }
     }
 
@@ -86,20 +83,10 @@ class TeamViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 teamResponse.value.let { response ->
                     if (response.status) {
-/*                        _teamUiState.value =
-                            _teamUiState.value.copy(teams = response.data, isLoading = false)*/
-
                         _teamUiState.value =
                             _teamUiState.value.copy(
                                 teams = response.data,
-                                isLoading = false,
-                                standing = response.data.map {
-                                    Standing(
-                                        name = it.name,
-                                        logo = it.logo,
-                                        points = Random.nextInt(10, 100).toString()
-                                    )
-                                } as ArrayList<Standing>)
+                                isLoading = false)
                     } else {
                         _teamUiState.value =
                             _teamUiState.value.copy(isLoading = false)

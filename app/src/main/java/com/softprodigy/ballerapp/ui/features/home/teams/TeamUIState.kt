@@ -8,9 +8,5 @@ data class TeamUIState(
     val isLoading: Boolean = false,
     val teams: ArrayList<Team> = ArrayList(),
     val selectedTeam: Team? = null,
-    val showDialog: Boolean = false,
-
-    val standing: ArrayList<Standing> = ArrayList(),
-    val selectedStanding: Standing? = null,
-
+    val showDialog: Boolean = false
     )
