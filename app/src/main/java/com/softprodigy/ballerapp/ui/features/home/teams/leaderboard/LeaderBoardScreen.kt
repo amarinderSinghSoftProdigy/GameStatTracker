@@ -25,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
+import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.LeaderBoard
 import com.softprodigy.ballerapp.ui.features.components.AppTab
@@ -151,7 +152,7 @@ fun LeaderListItem(
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
                 AsyncImage(
-                    model = /*BuildConfig.IMAGE_SERVER + */leader.logo,
+                    model = BuildConfig.IMAGE_SERVER + leader.logo,
                     contentDescription = "",
                     modifier =
                     Modifier
