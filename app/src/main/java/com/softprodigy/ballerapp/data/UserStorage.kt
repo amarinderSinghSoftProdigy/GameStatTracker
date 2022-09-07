@@ -3,7 +3,7 @@ package com.softprodigy.ballerapp.data
 import android.net.Uri
 
 object UserStorage {
-    var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzMTVlNGJjYzczMGJmMmQyNWIxZTQxYyIsIm5hbWUiOiIiLCJlbWFpbCI6ImthdXNoYWxkZXZhbmdhbkBnbWFpbC5jb20iLCJyb2xlIjoidXNlciIsImlhdCI6MTY2MjM4NDEyNCwiZXhwIjoxNjY0OTc2MTI0fQ.HMlgJBPjz21OevkcJLPIaD3DgvW3tSaSFup7jQwafiw"
+    var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzMTVhNTM4ODFhYTNjNmEyNmQ1MTEyMSIsIm5hbWUiOiIiLCJlbWFpbCI6ImthdXNoYWxkZXZhbmdhbkBnbWFpbC5jb20iLCJyb2xlIjoiY29hY2giLCJpYXQiOjE2NjI0NzI5NzIsImV4cCI6MTY2NTA2NDk3Mn0.eovX4UFhFwPsFYVOJSZQUPhehilNyXBTQz2buaIzCyA"
     var verifyToken = ""
     var deviceHesh = ""
     var deviceDescription = ""

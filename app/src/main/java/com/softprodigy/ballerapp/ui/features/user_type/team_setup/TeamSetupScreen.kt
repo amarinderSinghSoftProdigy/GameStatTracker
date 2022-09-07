@@ -1,4 +1,4 @@
-package com.softprodigy.ballerapp.ui.features.user_type
+package com.softprodigy.ballerapp.ui.features.user_type.team_setup
 
 import android.net.Uri
 import androidx.activity.compose.BackHandler
