@@ -7,7 +7,8 @@ data class RoasterResponse(
     @SerializedName("colorCode") val colorCode: String = "",
     @SerializedName("logo") val logo: String = "",
     @SerializedName("name") val name: String = "",
-    @SerializedName("playerDetails") val playerDetails: List<PlayerDetail> = emptyList()
+    @SerializedName("playerDetails") val playerDetails: List<PlayerDetail> = emptyList(),
+    @SerializedName("coachDetails") val coachDetails: List<PlayerDetail> = emptyList()
 )
 
 data class PlayerDetail(

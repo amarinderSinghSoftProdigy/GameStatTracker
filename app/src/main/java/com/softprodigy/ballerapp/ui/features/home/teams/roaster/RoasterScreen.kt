@@ -1,9 +1,8 @@
-package com.softprodigy.ballerapp.ui.features.home.roaster
+package com.softprodigy.ballerapp.ui.features.home.teams.roaster
 
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +19,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -31,10 +31,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.roaster.PlayerDetail
@@ -79,7 +79,7 @@ fun RoasterScreen(roasterViewModel: RoasterViewModel = hiltViewModel()) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
 
                 state.coachList.forEach {
@@ -91,12 +91,12 @@ fun RoasterScreen(roasterViewModel: RoasterViewModel = hiltViewModel()) {
                                     id = R.dimen.size_16dp
                                 )
                             )
-                            .weight(1f)
                     )
                 }
             }
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_30dp)))
+
             CompositionLocalProvider(
                 LocalOverScrollConfiguration provides null
             ) {
@@ -117,6 +117,12 @@ fun RoasterScreen(roasterViewModel: RoasterViewModel = hiltViewModel()) {
                     })
             }
         }
+        if (state.isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center),
+                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+            )
+        }
     }
 }
 
@@ -130,9 +136,11 @@ fun CoachListItem(roaster: PlayerDetail, modifier: Modifier = Modifier) {
     ) {
 
         Image(
-            painter = if (roaster.profileImage == "") painterResource(id = R.drawable.ball) else rememberAsyncImagePainter(
-                model = roaster.profileImage
-            ),
+            painter =
+//            if (roaster.profileImage == "")
+            painterResource(id = R.drawable.ball),
+//            else rememberAsyncImagePainter(
+//                model = roaster.profileImage),
             contentDescription = "",
             modifier = Modifier
                 .size(dimensionResource(id = R.dimen.size_80dp))
@@ -143,19 +151,21 @@ fun CoachListItem(roaster: PlayerDetail, modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
         AppText(
-            text = roaster.firstName,
+            text = roaster.name.capitalize(),
             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-            style = MaterialTheme.typography.h6
+            style = MaterialTheme.typography.h6,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1
         )
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            if (roaster.role != "player") {
+            if (roaster.role != stringResource(id = R.string.player)) {
                 AppText(
-                    text = roaster.role,
+                    text = roaster.role.capitalize(),
                     color = ColorMainPrimary,
                     style = MaterialTheme.typography.h6
                 )

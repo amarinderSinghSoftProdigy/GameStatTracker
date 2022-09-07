@@ -33,7 +33,7 @@ fun String.isValidFullName(): Boolean {
     if (this.isEmpty()) {
         return false
     }
-    return (this.trim().contains(" ") && this.length >= 5 && this.matches(regex.toRegex()) )
+    return (this.trim().contains(" ") && this.length >= 5 && this.matches(regex.toRegex()))
 }
 
 fun validName(name: String): Boolean {

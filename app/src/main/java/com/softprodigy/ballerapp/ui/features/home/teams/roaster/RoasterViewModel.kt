@@ -1,22 +1,19 @@
-package com.softprodigy.ballerapp.ui.features.home.roaster
+package com.softprodigy.ballerapp.ui.features.home.teams.roaster
 
 import android.app.Application
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
-import com.softprodigy.ballerapp.data.response.Roaster
 import com.softprodigy.ballerapp.data.response.roaster.PlayerDetail
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
-import com.softprodigy.ballerapp.ui.features.home.teams.TeamChannel
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.TeamSetupUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,19 +32,7 @@ class RoasterViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             getCoachPlayerByID()
-            getCoach()
         }
-    }
-
-    private fun getCoach() {
-        val coach = ArrayList<PlayerDetail>()
-        coach.add(
-            PlayerDetail(firstName = "Harsh", role = "Coach")
-        )
-        coach.add(
-            PlayerDetail(firstName = "Kaushal", role = "Coach")
-        )
-        _roasterUIState.value = _roasterUIState.value.copy(isLoading = false, coachList = coach)
     }
 
     private suspend fun getCoachPlayerByID() {
@@ -89,8 +74,10 @@ class RoasterViewModel @Inject constructor(
                     if (response.status) {
                         _roasterUIState.value = _roasterUIState.value.copy(
                             isLoading = false,
-                            playerList = response.data.playerDetails as ArrayList<PlayerDetail>
+                            playerList = response.data.playerDetails as ArrayList<PlayerDetail>,
+                            coachList = response.data.coachDetails as ArrayList<PlayerDetail>
                         )
+
                     } else {
                         _roasterUIState.value =
                             _roasterUIState.value.copy(isLoading = false)

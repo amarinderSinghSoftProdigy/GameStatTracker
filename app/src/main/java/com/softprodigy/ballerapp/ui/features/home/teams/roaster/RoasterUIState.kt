@@ -1,8 +1,6 @@
-package com.softprodigy.ballerapp.ui.features.home.roaster
+package com.softprodigy.ballerapp.ui.features.home.teams.roaster
 
-import com.softprodigy.ballerapp.data.response.Roaster
 import com.softprodigy.ballerapp.data.response.roaster.PlayerDetail
-import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 
 data class RoasterUIState(
     //val roasterCoachesList: ArrayList<Roaster> = ArrayList(),
