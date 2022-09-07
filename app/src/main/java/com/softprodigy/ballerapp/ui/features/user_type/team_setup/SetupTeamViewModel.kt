@@ -226,7 +226,7 @@ class SetupTeamViewModel @Inject constructor(
             name = _teamSetupUiState.value.teamName,
             colorCode = _teamSetupUiState.value.teamColor,
             players = playersId as ArrayList<String>,
-            coaches = arrayListOf("6304540bb9165453b9859fa1"),
+            coaches = arrayListOf("6315a53881aa3c6a26d51121"),
             logo = _teamSetupUiState.value.teamImageServerUrl
         )
 

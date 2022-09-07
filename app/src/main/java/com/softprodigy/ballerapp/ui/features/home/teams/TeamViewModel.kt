@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
+import com.softprodigy.ballerapp.data.response.Standing
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -13,6 +14,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class TeamViewModel @Inject constructor(
@@ -82,7 +84,9 @@ class TeamViewModel @Inject constructor(
                 teamResponse.value.let { response ->
                     if (response.status) {
                         _teamUiState.value =
-                            _teamUiState.value.copy(teams = response.data, isLoading = false)
+                            _teamUiState.value.copy(
+                                teams = response.data,
+                                isLoading = false)
                     } else {
                         _teamUiState.value =
                             _teamUiState.value.copy(isLoading = false)

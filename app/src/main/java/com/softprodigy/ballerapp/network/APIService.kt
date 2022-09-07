@@ -13,17 +13,12 @@ import com.softprodigy.ballerapp.data.response.Player
 import com.softprodigy.ballerapp.data.response.Team
 import com.softprodigy.ballerapp.data.response.UserInfo
 import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
+import com.softprodigy.ballerapp.data.request.*
+import com.softprodigy.ballerapp.data.response.*
 import com.softprodigy.ballerapp.domain.BaseResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Multipart
-import retrofit2.http.POST
-import retrofit2.http.PUT
-import retrofit2.http.Part
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface APIService {
 
@@ -73,6 +68,13 @@ interface APIService {
 
     @PUT(ApiConstants.UPDATE_PROFILE)
     suspend fun updateUserProfile(@Body userProfile: SignUpData): BaseResponse<UserInfo>
+
+    @GET(ApiConstants.GET_TEAM_STANDING)
+    suspend fun getTeamStandings(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int
+    ): BaseResponse<ArrayList<Standing>>
+
 
     @GET("${ApiConstants.COACH_PLAYER}/{id}")
     suspend fun getCoachPlayersByID(@Path("id") id: String): BaseResponse<RoasterResponse>

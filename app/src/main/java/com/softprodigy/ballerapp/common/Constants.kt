@@ -52,6 +52,8 @@ object ApiConstants {
     const val CREATE_TEAM = "v1/team"
     const val GET_TEAMS = "v1/team"
     const val COACH_PLAYER = "v1/team/coachPlayers"
+    const val GET_TEAM_STANDING = "v1/team/standings"
+
 
     const val SOCIAL_LOGIN = "/social_login"
     const val SIGNUP = "v1/auth/register"
