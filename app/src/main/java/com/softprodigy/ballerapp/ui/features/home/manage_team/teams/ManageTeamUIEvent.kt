@@ -1,6 +1,4 @@
-package com.softprodigy.ballerapp.ui.features.home.manage_team
-
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.TeamSetupUIEvent
+package com.softprodigy.ballerapp.ui.features.home.manage_team.teams
 
 sealed class ManageTeamUIEvent {
 

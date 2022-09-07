@@ -21,7 +21,6 @@ import com.softprodigy.ballerapp.ui.features.components.AppScrollableTabRow
 import com.softprodigy.ballerapp.ui.features.components.AppTabLikeViewPager
 import com.softprodigy.ballerapp.ui.features.components.SelectTeamDialog
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
-import com.softprodigy.ballerapp.ui.features.home.manage_team.ManageTeamScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.roaster.RoasterScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.standing.StandingScreen
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.SetupTeamViewModel
@@ -71,7 +70,7 @@ fun TeamsScreen(
         TeamsTabItems.Chat,
         TeamsTabItems.Roaster,
         TeamsTabItems.Leaderboard,
-        )
+    )
 
     val pagerState = rememberPagerState(
         pageCount = tabData.size,

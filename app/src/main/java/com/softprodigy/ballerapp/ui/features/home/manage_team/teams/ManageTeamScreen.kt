@@ -1,4 +1,4 @@
-package com.softprodigy.ballerapp.ui.features.home.manage_team
+package com.softprodigy.ballerapp.ui.features.home.manage_team.teams
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
