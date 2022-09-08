@@ -287,7 +287,8 @@ fun ManageTeamScreen(vm: ManageTeamViewModel = hiltViewModel()) {
                                     text = if (state.teamColor.isNotEmpty()) {
                                         "#" + state.teamColor
                                     } else {
-                                        ColorMainPrimary.toArgb().argbToHexString()
+                                        MaterialTheme.appColors.material.primaryVariant.toArgb()
+                                            .argbToHexString()
                                     }
                                 )
                             }
@@ -297,7 +298,7 @@ fun ManageTeamScreen(vm: ManageTeamViewModel = hiltViewModel()) {
                             Card(
                                 modifier = Modifier.size(dimensionResource(id = R.dimen.size_32dp)),
                                 backgroundColor = if (state.teamColor.isEmpty()) {
-                                    ColorMainPrimary
+                                    MaterialTheme.appColors.material.primaryVariant
                                 } else {
                                     Color(android.graphics.Color.parseColor("#" + state.teamColor))
                                 },
@@ -306,7 +307,6 @@ fun ManageTeamScreen(vm: ManageTeamViewModel = hiltViewModel()) {
                                 )
                             ) {}
                         }
-
                     }
                 }
             }

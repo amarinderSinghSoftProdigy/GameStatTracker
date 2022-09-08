@@ -47,7 +47,7 @@ fun validPhoneNumber(number: String): Boolean {
 }
 
 fun validTeamName(name: String): Boolean {
-    val regex = "^[A-Za-z0-9@$]*$"
+    val regex = "^[A-Za-z0-9@$ ]*$"
     return name.matches(regex = regex.toRegex())
 }
 

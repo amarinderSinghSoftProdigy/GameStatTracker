@@ -98,7 +98,9 @@ fun SelectTeamDialog(
 ) {
     BallerAppMainTheme {
         AlertDialog(
-            modifier = Modifier.clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))).fillMaxHeight(0.8f),
+            modifier = Modifier
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                .fillMaxHeight(0.8f),
             onDismissRequest = onDismiss,
             buttons = {
                 Column(
