@@ -1,6 +1,18 @@
 package com.softprodigy.ballerapp.network
 
 import com.softprodigy.ballerapp.common.ApiConstants
+import com.softprodigy.ballerapp.data.request.ConfirmPhoneRequest
+import com.softprodigy.ballerapp.data.request.CreateTeamRequest
+import com.softprodigy.ballerapp.data.request.ForgotPasswordRequest
+import com.softprodigy.ballerapp.data.request.LoginRequest
+import com.softprodigy.ballerapp.data.request.SignUpData
+import com.softprodigy.ballerapp.data.request.VerifyPhoneRequest
+import com.softprodigy.ballerapp.data.response.CreateTeamResponse
+import com.softprodigy.ballerapp.data.response.ImageUpload
+import com.softprodigy.ballerapp.data.response.Player
+import com.softprodigy.ballerapp.data.response.Team
+import com.softprodigy.ballerapp.data.response.UserInfo
+import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.data.request.*
 import com.softprodigy.ballerapp.data.response.*
 import com.softprodigy.ballerapp.domain.BaseResponse
@@ -31,9 +43,11 @@ interface APIService {
     suspend fun createTeam(@Body request: CreateTeamRequest): BaseResponse<CreateTeamResponse>
 
     @GET(ApiConstants.GET_TEAMS)
-    suspend fun getTeams(   @Query("page") page: Int,
-                            @Query("limit") limit: Int,
-                            @Query("sort") sort: String):BaseResponse<ArrayList<Team>>
+    suspend fun getTeams(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int,
+        @Query("sort") sort: String
+    ): BaseResponse<ArrayList<Team>>
 
     @GET("${ApiConstants.GET_TEAMS}/{id}")
     suspend fun getTeamsByTeamId(
@@ -61,5 +75,8 @@ interface APIService {
         @Query("limit") limit: Int
     ): BaseResponse<ArrayList<Standing>>
 
+
+    @GET("${ApiConstants.COACH_PLAYER}/{id}")
+    suspend fun getCoachPlayersByID(@Path("id") id: String): BaseResponse<RoasterResponse>
 
 }

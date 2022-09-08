@@ -41,6 +41,7 @@ object Route {
     const val TEAM_SETUP_SCREEN = "teamSetupScreen"
     const val ADD_PLAYER_SCREEN = "addPlayerScreen"
     const val PROFILE_SETUP_SCREEN = "profileSetupScreen"
+    const val ROASTER_SCREEN = "roasterScreen"
 }
 
 object ApiConstants {
@@ -50,6 +51,7 @@ object ApiConstants {
     const val UPLOAD_SINGLE_IMAGE = "v1/upload/single"
     const val CREATE_TEAM = "v1/team"
     const val GET_TEAMS = "v1/team"
+    const val COACH_PLAYER = "v1/team/coachPlayers"
     const val GET_TEAM_STANDING = "v1/team/standings"
 
 
