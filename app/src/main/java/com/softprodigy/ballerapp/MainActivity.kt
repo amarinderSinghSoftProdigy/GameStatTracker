@@ -352,8 +352,6 @@ fun NavControllerComposable(activity: MainActivity) {
             }, onPreviousClick = {
                 navController.popBackStack()
             })
-
-
         }
 
         composable(
@@ -413,8 +411,8 @@ fun NavControllerComposable(activity: MainActivity) {
                     moveToHome(activity)
                 })
         }
-    }
 
+    }
 }
 
 

@@ -146,6 +146,7 @@
     <string name="gb_label">GB</string>
     <string name="away_label">Away</string>
     <string name="pf_label">PF</string>
+    <string name="player">player</string>
 
     <string name="points_label">Points</string>
     <string name="rebounds_label">Rebounds</string>

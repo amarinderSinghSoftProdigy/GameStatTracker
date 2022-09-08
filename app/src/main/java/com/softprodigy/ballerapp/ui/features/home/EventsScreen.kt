@@ -163,7 +163,6 @@ fun BoxScope.TabContentScreen(data: String) {
     }
 }
 
-
 enum class TabItems(val icon: Int, val stringId: String) {
     Events(R.drawable.ic_events, stringId = "my_events"),
     Leagues(R.drawable.ic_leagues, stringId = "my_leagues"),

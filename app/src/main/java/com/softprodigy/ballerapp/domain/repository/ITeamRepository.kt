@@ -6,6 +6,7 @@ import com.softprodigy.ballerapp.data.response.CreateTeamResponse
 import com.softprodigy.ballerapp.data.response.Player
 import com.softprodigy.ballerapp.data.response.Standing
 import com.softprodigy.ballerapp.data.response.Team
+import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.domain.BaseResponse
 import javax.inject.Singleton
 
@@ -28,4 +29,6 @@ interface ITeamRepository {
     suspend fun getTeamsByTeamID(teamId: String): ResultWrapper<BaseResponse<Team>>
 
     suspend fun getTeamsStanding(page: Int = 1, limit: Int = 10): ResultWrapper<BaseResponse<ArrayList<Standing>>>
+
+    suspend fun getTeamCoachPlayerByID(id: String): ResultWrapper<BaseResponse<RoasterResponse>>
 }

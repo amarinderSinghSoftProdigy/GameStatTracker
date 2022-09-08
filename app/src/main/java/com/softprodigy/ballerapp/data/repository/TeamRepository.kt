@@ -6,6 +6,7 @@ import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.CreateTeamRequest
 import com.softprodigy.ballerapp.data.response.CreateTeamResponse
 import com.softprodigy.ballerapp.data.response.Player
+import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.data.response.Standing
 import com.softprodigy.ballerapp.data.response.Team
 import com.softprodigy.ballerapp.domain.BaseResponse
@@ -22,6 +23,7 @@ class TeamRepository @Inject constructor(
     private val service: APIService,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ITeamRepository {
+
     override suspend fun getAllPlayers(
         page: Int,
         limit: Int,
@@ -31,7 +33,7 @@ class TeamRepository @Inject constructor(
     }
 
     override suspend fun createTeamAPI(request: CreateTeamRequest): ResultWrapper<BaseResponse<CreateTeamResponse>> {
-        return safeApiCall(dispatcher){service.createTeam(request)}
+        return safeApiCall(dispatcher) { service.createTeam(request) }
     }
 
     override suspend fun getTeams(
@@ -45,6 +47,10 @@ class TeamRepository @Inject constructor(
     override suspend fun getTeamsByTeamID(teamId: String): ResultWrapper<BaseResponse<Team>> {
         return safeApiCall(dispatcher) { service.getTeamsByTeamId(teamId) }
 
+    }
+
+    override suspend fun getTeamCoachPlayerByID(id: String): ResultWrapper<BaseResponse<RoasterResponse>> {
+        return safeApiCall(dispatcher) { service.getCoachPlayersByID(id = id) }
     }
     override suspend fun getTeamsStanding(
         page: Int,

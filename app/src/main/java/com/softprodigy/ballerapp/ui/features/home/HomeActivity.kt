@@ -6,6 +6,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
@@ -13,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -103,13 +106,15 @@ class HomeActivity : ComponentActivity() {
                             }
                         },
                         content = {
-                            NavControllerComposable(
-                                homeViewModel,
-                                navController = navController,
-                                showDialog = showDialog.value,
-                                dismissDialog = {
-                                    showDialog.value = it
-                                })
+                            Box(modifier = Modifier.padding(it)) {
+                                NavControllerComposable(
+                                    homeViewModel,
+                                    navController = navController,
+                                    showDialog = showDialog.value,
+                                    dismissDialog = {
+                                        showDialog.value = it
+                                    })
+                            }
                         },
                         bottomBar = {
                             BottomNavigationBar(
@@ -160,6 +165,8 @@ fun NavControllerComposable(
         composable(route = Route.EVENTS_SCREEN) {
             EventsScreen(name = "")
         }
+
+
 
         composable(
             route = Route.ADD_PLAYER_SCREEN + "/{teamId}",

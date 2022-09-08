@@ -62,4 +62,6 @@
     <dimen name="size_60dp">30dp</dimen>
     <dimen name="size_48dp">24dp</dimen>
 
+    <dimen name="size_180dp">90dp</dimen>
+    
 </resources>
