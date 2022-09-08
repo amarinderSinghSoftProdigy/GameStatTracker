@@ -197,7 +197,7 @@ class SetupTeamViewModel @Inject constructor(
                 uploadLogoResponse.value.let { response ->
                     if (response.status) {
                         _teamSetupUiState.value =
-                            _teamSetupUiState.value.copy(teamImageServerUrl = "${BuildConfig.IMAGE_SERVER}${uploadLogoResponse.value.data.data}")
+                            _teamSetupUiState.value.copy(teamImageServerUrl =uploadLogoResponse.value.data.data)
                         _teamSetupChannel.send(
                             TeamSetupChannel.OnLogoUpload
                         )
