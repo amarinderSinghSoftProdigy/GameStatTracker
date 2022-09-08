@@ -141,12 +141,16 @@
     <string name="chat">Chat</string>
     <string name="roaster">Roaster</string>
     <string name="leaderboard">Leaderboard</string>
+    <string name="leaderboards">Leaderboards</string>
     <string name="record_label">Record</string>
     <string name="win_percent_label">Win %</string>
     <string name="gb_label">GB</string>
     <string name="away_label">Away</string>
     <string name="pf_label">PF</string>
     <string name="player">player</string>
+    <string name="coaches">Coaches</string>
+    <string name="add_uers">Add User</string>
+    <string name="select_all">Select All</string>
 
     <string name="points_label">Points</string>
     <string name="rebounds_label">Rebounds</string>

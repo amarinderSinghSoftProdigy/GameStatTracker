@@ -95,8 +95,6 @@ fun RoasterScreen(roasterViewModel: RoasterViewModel = hiltViewModel()) {
                 }
             }
 
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_30dp)))
-
             CompositionLocalProvider(
                 LocalOverScrollConfiguration provides null
             ) {
@@ -166,20 +164,20 @@ fun CoachListItem(roaster: PlayerDetail, modifier: Modifier = Modifier) {
             if (roaster.role != stringResource(id = R.string.player)) {
                 AppText(
                     text = roaster.role.capitalize(),
-                    color = ColorMainPrimary,
+                    color = MaterialTheme.appColors.material.primaryVariant,
                     style = MaterialTheme.typography.h6
                 )
             } else {
                 AppText(
-                    text = roaster.position,
-                    color = ColorMainPrimary,
+                    text = roaster.jerseyNumber,
+                    color = MaterialTheme.appColors.material.primaryVariant,
                     style = MaterialTheme.typography.h6
                 )
 
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
 
                 AppText(
-                    text = roaster.jerseyNumber,
+                    text = roaster.position,
                     color = MaterialTheme.appColors.textField.label,
                     style = MaterialTheme.typography.h6
                 )
