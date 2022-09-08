@@ -1,20 +1,11 @@
 package com.softprodigy.ballerapp.ui.features.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -23,8 +14,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.ui.theme.ButtonColor
@@ -160,5 +154,51 @@ fun RowScope.SingleButtonView(text: String, color: Color, painter: Painter, icon
         )
     }
 
+}
+
+@Composable
+fun ButtonWithLeadingIcon(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    painter: Painter,
+    colors: ButtonColor = MaterialTheme.appColors.buttonColor,
+    contentPadding: PaddingValues = PaddingValues(
+        vertical = dimensionResource(id = R.dimen.size_16dp),
+        horizontal = dimensionResource(id = R.dimen.size_24dp),
+    ),
+) {
+    Row(
+        modifier = modifier
+            .clickable { onClick.invoke() }
+            .background(
+                color = AppConstants.SELECTED_COLOR, shape = RoundedCornerShape(
+                    dimensionResource(id = R.dimen.size_8dp)
+                )
+
+            )
+            .padding(contentPadding),
+
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            painter = painter,
+            contentDescription = "",
+            tint = colors.textEnabled,
+            modifier = Modifier.size(
+                dimensionResource(id = R.dimen.size_10dp)
+            )
+
+        )
+        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_12dp)))
+
+        AppText(
+            text = text,
+            fontWeight = FontWeight.W500,
+            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+            color = colors.textEnabled
+        )
+    }
 }
 

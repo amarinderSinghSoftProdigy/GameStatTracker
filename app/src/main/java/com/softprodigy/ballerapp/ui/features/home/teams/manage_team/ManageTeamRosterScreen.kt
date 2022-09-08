@@ -17,28 +17,72 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.ui.features.components.AddPlayerDialog
+import com.softprodigy.ballerapp.ui.features.components.ButtonWithLeadingIcon
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
 fun ManageTeamRoster(vm: ManageTeamRstrViewModel = hiltViewModel()) {
     val state = vm.manageTeamRstrState.value
 
-    Column(
-        modifier = Modifier
+    Box(
+        Modifier
             .fillMaxSize()
-            .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
+            .padding(
+                bottom = dimensionResource(id = R.dimen.size_70dp)
+            ),
     ) {
-        for (i in 0 until state.teamData.size) {
-            MangeTeamDataHeaderItem(state.teamData[i].position, state.teamData[i].players)
-        }
-    }
+        LazyColumn(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(
+                    start = dimensionResource(id = R.dimen.size_16dp),
+                    end = dimensionResource(id = R.dimen.size_16dp),
+                )
 
+        ) {
+            item {
+                state.teamData.forEach {
+                    MangeTeamDataHeaderItem(title = it.position, players = it.players)
+                }
+            }
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .background(MaterialTheme.appColors.material.surface.copy(alpha = .97f))
+                .height(dimensionResource(id = R.dimen.size_72dp))
+        ) {
+            ButtonWithLeadingIcon(
+                modifier = Modifier.align(Alignment.Center),
+                text = stringResource(id = R.string.add_player),
+                onClick = { vm.onEvent(ManageTeamRstrUIEvent.OnDialogClick(true)) },
+                painter = painterResource(id = R.drawable.ic_add_button)
+            )
+        }
+
+    }
+    if (state.showDialog) {
+        AddPlayerDialog(
+            searchKey = state.search,
+            onSelectionChange = {vm.onEvent(ManageTeamRstrUIEvent.OnPlayerClick(player = it))},
+            matchedPlayers = state.matchedPlayers,
+            selectedPlayers = state.selectedPlayers,
+            onSearchKeyChange = {
+                vm.onEvent(ManageTeamRstrUIEvent.OnSearch(it))
+            },
+            onDismiss = { vm.onEvent(ManageTeamRstrUIEvent.OnDialogClick(false)) },
+            onConfirmClick = {})
+    }
 
 }
 
@@ -55,6 +99,7 @@ fun MangeTeamDataHeaderItem(title: String, players: MutableList<TeamUser>) {
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_14dp)))
         LazyColumn(
+            modifier = Modifier.height(((players.size) * 60).dp)
         ) {
             item {
                 players.forEach {
@@ -62,6 +107,7 @@ fun MangeTeamDataHeaderItem(title: String, players: MutableList<TeamUser>) {
                 }
             }
         }
+
     }
 
 }
@@ -119,7 +165,6 @@ fun TeamUserListItem(
             }
 
             Row(
-                modifier = Modifier.fillMaxHeight(),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(

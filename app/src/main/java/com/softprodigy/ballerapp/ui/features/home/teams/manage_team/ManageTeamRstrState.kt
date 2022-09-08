@@ -1,11 +1,19 @@
 package com.softprodigy.ballerapp.ui.features.home.teams.manage_team
 
 import com.google.gson.annotations.SerializedName
+import com.softprodigy.ballerapp.data.response.Player
 import com.softprodigy.ballerapp.data.response.User
 
 data class ManageTeamRstrState(
     val isLoading: Boolean = false,
-    val teamData: MutableList<ManageTeamData> = mutableListOf()
+    val teamData: MutableList<ManageTeamData> = mutableListOf(),
+
+    val showDialog:Boolean=false,
+    val search:String="",
+    val selectedPlayers:MutableList<Player> = mutableListOf(),
+    val matchedPlayers:MutableList<Player> = mutableListOf(),
+    val allPlayer: MutableList<Player> = mutableListOf()
+
 )
 
 data class ManageTeamData(
