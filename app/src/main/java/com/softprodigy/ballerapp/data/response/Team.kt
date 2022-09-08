@@ -17,8 +17,4 @@ data class Team(
     @SerializedName("createdAt") val createdAt: String = "",
     @SerializedName("updatedAt") val updatedAt: String? = "",
     @SerializedName("__v") val _v: Int? = null,
-
-    // TODO: added temp
-    @SerializedName("standings") val standings: ArrayList<Team> = arrayListOf(),
-
 )

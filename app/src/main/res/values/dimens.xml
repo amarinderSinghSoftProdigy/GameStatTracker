@@ -23,7 +23,9 @@
     <dimen name="size_8dp">4dp</dimen>
     <dimen name="size_10dp">5dp</dimen>
     <dimen name="size_12dp">6dp</dimen>
+    <dimen name="size_14dp">7dp</dimen>
     <dimen name="size_16dp">8dp</dimen>
+    <dimen name="size_18dp">9dp</dimen>
     <dimen name="size_20dp">10dp</dimen>
     <dimen name="size_22dp">11dp</dimen>
     <dimen name="size_21dp">10.5dp</dimen>
