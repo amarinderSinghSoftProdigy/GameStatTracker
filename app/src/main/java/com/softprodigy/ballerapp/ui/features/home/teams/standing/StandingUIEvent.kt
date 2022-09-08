@@ -6,5 +6,4 @@ import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
 
 sealed class StandingUIEvent {
     data class OnStandingSelected(val standing: Standing) : StandingUIEvent()
-
 }
