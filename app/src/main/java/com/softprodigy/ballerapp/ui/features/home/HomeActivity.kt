@@ -146,10 +146,8 @@ fun NavControllerComposable(
             TeamsScreen(
                 name = "",
                 showDialog = showDialog,
-                dismissDialog = dismissDialog,
-                setupTeamViewModelUpdated = setupTeamViewModelUpdated
+                setupTeamViewModelUpdated = setupTeamViewModelUpdated,
                 dismissDialog = { homeViewModel.setDialog(it) },
-                setupTeamViewModel = setupTeamViewModel
             ) {
                 navController.navigate(Route.ADD_PLAYER_SCREEN + "/${it.Id}")
             }
