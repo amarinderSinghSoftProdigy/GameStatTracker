@@ -37,7 +37,7 @@ fun ManageTeamRoster(vm: ManageTeamRstrViewModel = hiltViewModel()) {
         Modifier
             .fillMaxSize()
             .padding(
-                bottom = dimensionResource(id = R.dimen.size_70dp)
+                bottom = dimensionResource(id = R.dimen.size_65dp)
             ),
     ) {
         LazyColumn(
@@ -53,6 +53,14 @@ fun ManageTeamRoster(vm: ManageTeamRstrViewModel = hiltViewModel()) {
                 state.teamData.forEach {
                     MangeTeamDataHeaderItem(title = it.position, players = it.players)
                 }
+            }
+            item {
+                Spacer(
+                    modifier = Modifier.height(
+                        dimensionResource(id = R.dimen.size_72dp)
+
+                    )
+                )
             }
         }
         Box(
@@ -81,7 +89,8 @@ fun ManageTeamRoster(vm: ManageTeamRstrViewModel = hiltViewModel()) {
                 vm.onEvent(ManageTeamRstrUIEvent.OnSearch(it))
             },
             onDismiss = { vm.onEvent(ManageTeamRstrUIEvent.OnDialogClick(false)) },
-            onConfirmClick = {})
+            onConfirmClick = {}
+            )
     }
 
 }
@@ -99,7 +108,7 @@ fun MangeTeamDataHeaderItem(title: String, players: MutableList<TeamUser>) {
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_14dp)))
         LazyColumn(
-            modifier = Modifier.height(((players.size) * 60).dp)
+            modifier = Modifier.height(((players.size) * dimensionResource(id = R.dimen.size_60dp).value).dp)
         ) {
             item {
                 players.forEach {

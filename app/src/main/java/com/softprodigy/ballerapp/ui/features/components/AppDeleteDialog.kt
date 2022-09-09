@@ -1,6 +1,5 @@
 package com.softprodigy.ballerapp.ui.features.components
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,6 +20,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
@@ -102,6 +102,7 @@ fun SelectTeamDialog(
     onConfirmClick: () -> Unit,
     onSelectionChange: (Team) -> Unit,
     selected: Team?,
+    showLoading:Boolean,
     teams: ArrayList<Team>
 ) {
     BallerAppMainTheme {
@@ -117,7 +118,9 @@ fun SelectTeamDialog(
                             all = dimensionResource(
                                 id = R.dimen.size_16dp
                             )
-                        )
+                        ),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Box(modifier = Modifier.fillMaxWidth()) {
                         Text(
@@ -141,8 +144,17 @@ fun SelectTeamDialog(
 
                     LazyColumn(
                         modifier = Modifier
-                            .height(dimensionResource(id = R.dimen.size_150dp))
+                            .height(dimensionResource(id = R.dimen.size_150dp)),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        item {
+                            if (showLoading) {
+                                CircularProgressIndicator(
+                                    color = AppConstants.SELECTED_COLOR
+                                )
+                            }
+                        }
                         item {
                             teams.forEach {
                                 TeamListItem(team = it, selected = selected == it) { team ->
@@ -398,7 +410,7 @@ fun AddPlayerDialog(
                     ) {
                         item {
                             matchedPlayers.forEach {
-                                PlayerListItem(
+                                PlayerListDialogItem(
                                     painterResource(id = R.drawable.ic_check),
                                     player = it,
                                     teamColor = AppConstants.SELECTED_COLOR.toArgb()
@@ -443,7 +455,9 @@ fun AddPlayerDialog(
                             .weight(1f),
                         border = ButtonDefaults.outlinedBorder,
                         onlyBorder = false,
+                        enabled = selectedPlayers.isNotEmpty()
                     )
+
                 }
             },
         )
@@ -452,7 +466,7 @@ fun AddPlayerDialog(
 
 
 @Composable
-fun PlayerListItem(
+fun PlayerListDialogItem(
     icon: Painter,
     player: Player,
     teamColor: String,
@@ -476,15 +490,16 @@ fun PlayerListItem(
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(dimensionResource(id = R.dimen.size_10dp)),
+                .padding(horizontal =dimensionResource(id = R.dimen.size_10dp)),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.user_demo),
+            AsyncImage(
+                model = BuildConfig.IMAGE_SERVER + player.profileImage,
                 contentDescription = "",
                 modifier = Modifier
                     .size(dimensionResource(id = R.dimen.size_32dp))
                     .clip(CircleShape),
+                contentScale = ContentScale.FillBounds
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
             Text(
@@ -493,7 +508,7 @@ fun PlayerListItem(
                 modifier = Modifier.weight(1f)
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
-            AddRemoveButton(
+            CheckBoxButton(
                 icon,
                 teamColor = teamColor,
                 selected = selected
@@ -504,7 +519,7 @@ fun PlayerListItem(
 }
 
 @Composable
-fun AddRemoveButton(icon: Painter, teamColor: String, selected: Boolean, onItemClick: () -> Unit) {
+fun CheckBoxButton(icon: Painter, teamColor: String, selected: Boolean, onItemClick: () -> Unit) {
     Box(
         modifier = Modifier
             .clickable(onClick = { onItemClick() })

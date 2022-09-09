@@ -205,7 +205,7 @@ fun DialogButton(
         else if (enabled)
             MaterialTheme.appColors.material.primaryVariant
         else
-            Color.Transparent,
+            colors.bckgroundDisabled,
         contentColor = contentColor.copy(alpha = 1f),
         border = border,
     ) {

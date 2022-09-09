@@ -98,7 +98,8 @@ fun TeamsScreen(
                 onDismiss = { dismissDialog.invoke(false) },
                 onConfirmClick = { vm.onEvent(TeamUIEvent.OnConfirmTeamClick) },
                 onSelectionChange = onTeamSelectionChange,
-                selected = state.selectedTeam
+                selected = state.selectedTeam,
+                showLoading = state.isLoading
             )
         }
 
