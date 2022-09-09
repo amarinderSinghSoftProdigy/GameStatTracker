@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
-import com.softprodigy.ballerapp.data.response.Standing
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -14,7 +13,6 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.random.Random
 
 @HiltViewModel
 class TeamViewModel @Inject constructor(
@@ -61,7 +59,12 @@ class TeamViewModel @Inject constructor(
     }
 
     private suspend fun getTeams() {
-        when (val teamResponse = teamRepo.getTeams()) {
+        _teamUiState.value =
+            _teamUiState.value.copy(
+                isLoading = true)
+        val teamResponse = teamRepo.getTeams()
+
+        when (teamResponse) {
             is ResultWrapper.GenericError -> {
                 _teamChannel.send(
                     TeamChannel.ShowToast(
@@ -70,6 +73,10 @@ class TeamViewModel @Inject constructor(
                         )
                     )
                 )
+                _teamUiState.value =
+                    _teamUiState.value.copy(
+                        isLoading = false
+                    )
             }
             is ResultWrapper.NetworkError -> {
                 _teamChannel.send(
@@ -79,6 +86,10 @@ class TeamViewModel @Inject constructor(
                         )
                     )
                 )
+                _teamUiState.value =
+                    _teamUiState.value.copy(
+                        isLoading = false
+                    )
             }
             is ResultWrapper.Success -> {
                 teamResponse.value.let { response ->
@@ -104,8 +115,18 @@ class TeamViewModel @Inject constructor(
     }
 
     private suspend fun getTeamByTeamId() {
-        when (val teamResponse =
-            teamRepo.getTeamsByTeamID(_teamUiState.value.selectedTeam?.Id ?: "")) {
+        _teamUiState.value =
+            _teamUiState.value.copy(
+                isLoading = true
+            )
+        val teamResponse =
+            teamRepo.getTeamsByTeamID(_teamUiState.value.selectedTeam?.Id ?: "")
+        _teamUiState.value =
+            _teamUiState.value.copy(
+                isLoading = false
+            )
+
+        when (teamResponse) {
             is ResultWrapper.GenericError -> {
                 _teamChannel.send(
                     TeamChannel.ShowToast(

@@ -58,6 +58,7 @@
     <string name="back">Back</string>
     <string name="colors">Colors</string>
     <string name="add_players">Add players</string>
+    <string name="add_player">Add Player</string>
     <string name="invite_players">Invite Players</string>
     <string name="search">Search</string>
     <string name="added_players">Added Players</string>
@@ -158,6 +159,8 @@
     <string name="fts_label">FT\'s</string>
     <string name="fg_percent_label">FG%</string>
     <string name="assistance_label">Assistance</string>
+    <string name="add_new_team_member">Add New Team Member</string>
+    <string name="create_new_team">Create New Team</string>
 
 
 </resources>
