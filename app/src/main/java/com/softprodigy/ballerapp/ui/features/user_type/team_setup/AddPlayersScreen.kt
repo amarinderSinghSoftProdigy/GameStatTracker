@@ -382,7 +382,7 @@ fun AddRemoveButton(icon: Painter, teamColor: String, onItemClick: () -> Unit) {
             .size(dimensionResource(id = R.dimen.size_20dp))
             .background(
                 shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)),
-                color = Color(android.graphics.Color.parseColor("#$teamColor"))
+                            color = Color(android.graphics.Color.parseColor("#$teamColor"))
             )
     ) {
 
