@@ -1,9 +1,25 @@
 package com.softprodigy.ballerapp.ui.features.home.teams.leaderboard
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
@@ -15,11 +31,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
@@ -34,6 +52,10 @@ import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
 import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
 import com.softprodigy.ballerapp.ui.theme.ColorPrimaryOrange
 import com.softprodigy.ballerapp.ui.theme.appColors
+import com.softprodigy.ballerapp.ui.utils.dragDrop.ReorderableItem
+import com.softprodigy.ballerapp.ui.utils.dragDrop.detectReorderAfterLongPress
+import com.softprodigy.ballerapp.ui.utils.dragDrop.rememberReorderableLazyListState
+import com.softprodigy.ballerapp.ui.utils.dragDrop.reorderable
 import kotlinx.coroutines.launch
 
 @Composable
@@ -59,24 +81,39 @@ fun LeaderBoardScreen(vm: LeaderBoardViewModel = hiltViewModel()) {
     val onLeaderSelectionChange = { leader: LeaderBoard ->
         vm.onEvent(LeaderBoardUIEvent.OnLeaderSelected(leader))
     }
+
     Column(Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
         LeaderTopTabs(pagerState, leaderTabData)
         Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
+        val recordState =
+            rememberReorderableLazyListState(onMove = vm::moveItem, canDragOver = vm::isDragEnabled)
         LazyColumn(
+            state = recordState.listState,
             modifier = Modifier
                 .fillMaxWidth()
+                .then(
+                    Modifier
+                        .reorderable(recordState)
+                        .detectReorderAfterLongPress(recordState)
+                )
         ) {
-
-            itemsIndexed(state.leaders) { index, leader ->
-                LeaderListItem(
-                    index + 1,
-                    leader = leader,
-                    selected = state.selectedLeader == leader
-                ) {
-                    onLeaderSelectionChange.invoke(leader)
+            var count = 1
+            items(state.leaders, { item -> item._id }) { item ->
+                ReorderableItem(reorderableState = recordState, key = item._id) { dragging ->
+                    val elevation =
+                        animateDpAsState(if (dragging) dimensionResource(id = R.dimen.size_10dp) else 0.dp)
+                    LeaderListItem(
+                        modifier = Modifier
+                            .shadow(elevation.value),
+                        count,
+                        leader = item,
+                        selected = state.selectedLeader == item
+                    ) {
+                        onLeaderSelectionChange.invoke(item)
+                    }
                 }
-
+                count += 1
             }
         }
     }
@@ -105,13 +142,14 @@ fun LeaderTopTabs(pagerState: PagerState, tabData: List<LeaderBoardTabItems>) {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun LeaderListItem(
+    modifier: Modifier = Modifier,
     srNo: Int,
     leader: LeaderBoard,
     selected: Boolean,
     onClick: (LeaderBoard) -> Unit
 ) {
     Row(
-        Modifier
+        modifier
             .fillMaxWidth()
             .padding(
                 horizontal = dimensionResource(id = R.dimen.size_12dp),
@@ -159,9 +197,9 @@ fun LeaderListItem(
                         .size(dimensionResource(id = R.dimen.size_32dp))
                         .clip(CircleShape)
                         .border(
-                            width =dimensionResource(id = R.dimen.size_2dp),
-                            color = if(srNo<=3) ColorPrimaryOrange  else Color.Transparent,
-                            shape=CircleShape
+                            width = dimensionResource(id = R.dimen.size_2dp),
+                            color = if (srNo <= 3) ColorPrimaryOrange else Color.Transparent,
+                            shape = CircleShape
                         )
 
                 )
@@ -182,13 +220,14 @@ fun LeaderListItem(
             Row(
                 modifier = Modifier.align(Alignment.CenterVertically),
             ) {
-                if (srNo == 1){
+                if (srNo == 1) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_hike_green),
                         contentDescription = "",
                         modifier = Modifier.size(dimensionResource(id = R.dimen.size_12dp)),
                         tint = Color.Unspecified
-                    )}
+                    )
+                }
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
                 Text(
                     text = leader.points,

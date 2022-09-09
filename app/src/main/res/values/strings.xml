@@ -158,6 +158,7 @@
     <string name="fts_label">FT\'s</string>
     <string name="fg_percent_label">FG%</string>
     <string name="assistance_label">Assistance</string>
+    <string name="profile_label">Profile</string>
 
 
 </resources>

@@ -1,5 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.components
 
+import android.util.Log
 import androidx.annotation.FloatRange
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.BorderStroke
@@ -31,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -73,23 +73,24 @@ fun TabBar(
 
 @Composable
 fun BoxScope.CommonTabView(
-    canMoveBack: Boolean = true,
-    user: BottomNavKey,
-    label: String = "",
-    icon: Painter,
-    onLabelClick: () -> Unit,
-    iconClick: () -> Unit
+    topBarData: TopBarData,
+    backClick: () -> Unit = {},
+    iconClick: (() -> Unit)? = null,
+    labelClick: (() -> Unit)? = null,
 ) {
 
-    if (canMoveBack) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_back),
-            contentDescription = "",
-            modifier = Modifier
-                .clickable { }
-                .align(Alignment.CenterStart),
-            tint = Color.White
-        )
+    if (topBarData.topBar.back) {
+        Box(modifier = Modifier
+            .align(Alignment.CenterStart)
+            .clickable {
+                backClick()
+            }) {
+            Icon(
+                modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                painter = painterResource(id = R.drawable.ic_back),
+                contentDescription = "", tint = Color.White
+            )
+        }
     }
 
     Row(
@@ -97,19 +98,32 @@ fun BoxScope.CommonTabView(
             .align(Alignment.Center)
             .background(Color.Transparent)
             .clickable {
-                if (user == BottomNavKey.TEAMS)
-                    onLabelClick()
+                if (topBarData.topBar == TopBar.TEAMS) {
+                    if (labelClick != null) {
+                        labelClick()
+                    }
+                } else {
+                    Log.e("error ", " click null ")
+                }
             }
             .padding(all = dimensionResource(id = R.dimen.size_16dp)),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        val label = if (topBarData.topBar.stringId.isEmpty()) {
+            if (!topBarData.label.isNullOrEmpty())
+                topBarData.label
+            else
+                stringResource(id = R.string.app_name)
+        } else {
+            stringResourceByName(name = topBarData.topBar.stringId)
+        }
         Text(
             textAlign = TextAlign.Center,
             text = label,
             style = MaterialTheme.typography.h3,
             color = Color.White
         )
-        if (user == BottomNavKey.TEAMS) {
+        if (topBarData.topBar == TopBar.TEAMS) {
             AppSpacer(Modifier.size(dimensionResource(id = R.dimen.size_5dp)))
             Icon(
                 painter = painterResource(id = R.drawable.ic_arrow_down),
@@ -118,15 +132,26 @@ fun BoxScope.CommonTabView(
             )
         }
     }
-    Icon(
-        painter = icon,
-        contentDescription = "",
-        modifier = Modifier
-            .align(Alignment.CenterEnd)
-            .clickable { iconClick() }
-            .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-        tint = Color.White
-    )
+
+    //Add the checks where we want to display the icon on the right corner
+    if (topBarData.topBar == TopBar.TEAMS || topBarData.topBar == TopBar.EVENT_OPPORTUNITIES ||
+        topBarData.topBar == TopBar.EVENT
+    ) {
+        val icon = painterResource(id = R.drawable.ic_settings)
+        Icon(
+            painter = icon,
+            contentDescription = "",
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .clickable {
+                    if (iconClick != null) {
+                        iconClick()
+                    }
+                }
+                .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+            tint = Color.White
+        )
+    }
 
 }
 
@@ -223,4 +248,18 @@ fun DialogButton(
             }
         }
     }
+}
+
+data class TopBarData(
+    val label: String? = "",
+    val topBar: TopBar,
+)
+
+enum class TopBar(val stringId: String, val back: Boolean) {
+    PROFILE(stringId = "profile_label", back = false),
+    EVENT(stringId = "events_label", back = false),
+    TEAMS(stringId = "teams_label", back = false),
+    EVENT_OPPORTUNITIES(stringId = "events_label", back = true),
+    SINGLE_LABEL_BACK(stringId = "", back = true),
+    SINGLE_LABEL(stringId = "", back = false),
 }

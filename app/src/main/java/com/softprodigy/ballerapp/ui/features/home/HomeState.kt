@@ -1,6 +1,8 @@
 package com.softprodigy.ballerapp.ui.features.home
 
 import androidx.compose.ui.graphics.Color
+import com.softprodigy.ballerapp.ui.features.components.TopBar
+import com.softprodigy.ballerapp.ui.features.components.TopBarData
 
 
 data class HomeState(
@@ -9,5 +11,8 @@ data class HomeState(
     val isDataLoading: Boolean = false,
     val errorMessage: String? = null,
     val userNameValid: Boolean = true,
-    val userNameValidError: String? = null
+    val userNameValidError: String? = null,
+    val topBar: TopBarData = TopBarData("", TopBar.SINGLE_LABEL),
+    val showDialog: Boolean = false,
+    val showLogout: Boolean = false,
 )

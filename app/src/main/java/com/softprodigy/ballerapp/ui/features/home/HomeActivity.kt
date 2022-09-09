@@ -18,7 +18,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -32,13 +31,14 @@ import com.softprodigy.ballerapp.MainActivity
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.Route
-import com.softprodigy.ballerapp.common.Route.MANAGED_TEAM_SCREEN
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
 import com.softprodigy.ballerapp.ui.features.components.BottomNavigationBar
 import com.softprodigy.ballerapp.ui.features.components.CommonTabView
 import com.softprodigy.ballerapp.ui.features.components.LogoutDialog
 import com.softprodigy.ballerapp.ui.features.components.TabBar
+import com.softprodigy.ballerapp.ui.features.components.TopBar
+import com.softprodigy.ballerapp.ui.features.components.TopBarData
 import com.softprodigy.ballerapp.ui.features.components.fromHex
 import com.softprodigy.ballerapp.ui.features.home.manage_team.MainManageTeamScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
@@ -64,19 +64,10 @@ class HomeActivity : ComponentActivity() {
             homeViewModel.setColor(AppConstants.SELECTED_COLOR)
             BallerAppMainTheme(customColor = state.color ?: Color.White) {
                 val navController = rememberNavController()
-                val showDialog = remember { mutableStateOf(false) }
-                val logoutDialog = remember { mutableStateOf(false) }
                 val userType = remember { mutableStateOf(BottomNavKey.HOME) }
-
                 if (state.screen) {
                     Surface {
-                        NavControllerComposable(
-                            homeViewModel,
-                            navController = navController,
-                            showDialog = showDialog.value,
-                            dismissDialog = {
-                                showDialog.value = it
-                            })
+                        NavControllerComposable(homeViewModel, navController = navController)
                     }
                 } else {
                     Scaffold(
@@ -85,25 +76,17 @@ class HomeActivity : ComponentActivity() {
                             if (userType.value != BottomNavKey.HOME) {
                                 TabBar(color = MaterialTheme.appColors.material.primaryVariant) {
                                     CommonTabView(
-                                        canMoveBack = false,
-                                        user = userType.value,
-                                        label = when (userType.value) {
-                                            BottomNavKey.TEAMS -> {
-                                                stringResource(id = R.string.teams_label)
-                                            }
-                                            BottomNavKey.EVENTS -> {
-                                                stringResource(id = R.string.events_label)
-                                            }
-                                            else -> {
-                                                ""
-                                            }
+                                        state.topBar,
+                                        backClick = {
+                                            navController.popBackStack()
                                         },
-                                        icon = painterResource(id = R.drawable.ic_settings),
-                                        onLabelClick = {
-                                            showDialog.value = true
-                                        }, iconClick = {
-                                            logoutDialog.value = true
-                                        })
+                                        labelClick = {
+                                            homeViewModel.setDialog(true)
+                                        },
+                                        iconClick = {
+                                            homeViewModel.setLogoutDialog(true)
+                                        }
+                                    )
                                 }
                             }
                         },
@@ -112,10 +95,8 @@ class HomeActivity : ComponentActivity() {
                                 NavControllerComposable(
                                     homeViewModel,
                                     navController = navController,
-                                    showDialog = showDialog.value,
-                                    dismissDialog = {
-                                        showDialog.value = it
-                                    })
+                                    showDialog = state.showDialog,
+                                )
                             }
                         },
                         bottomBar = {
@@ -128,11 +109,13 @@ class HomeActivity : ComponentActivity() {
                         },
                     )
                 }
-                if (logoutDialog.value) {
-                    LogoutDialog(onDismiss = { logoutDialog.value = false }, onConfirmClick = {
-                        homeViewModel.clearToken()
-                        moveToLogin(this)
-                    })
+                if (state.showLogout) {
+                    LogoutDialog(
+                        onDismiss = { homeViewModel.setLogoutDialog(false) },
+                        onConfirmClick = {
+                            homeViewModel.clearToken()
+                            moveToLogin(this)
+                        })
                 }
             }
         }
@@ -143,7 +126,6 @@ class HomeActivity : ComponentActivity() {
 fun NavControllerComposable(
     homeViewModel: HomeViewModel,
     showDialog: Boolean = false,
-    dismissDialog: (Boolean) -> Unit,
     navController: NavHostController = rememberNavController()
 ) {
     val setupTeamViewModel: SetupTeamViewModel = hiltViewModel()
@@ -152,13 +134,19 @@ fun NavControllerComposable(
             HomeScreen(name = "")
         }
         composable(route = Route.TEAMS_SCREEN) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = stringResource(id = R.string.teams_label),
+                    topBar = TopBar.TEAMS,
+                )
+            )
             BackHandler {
                 homeViewModel.setScreen(false)
             }
             TeamsScreen(
                 name = "",
                 showDialog = showDialog,
-                dismissDialog = dismissDialog,
+                dismissDialog = { homeViewModel.setDialog(it) },
                 setupTeamViewModel = setupTeamViewModel
             ) {
                 navController.navigate(Route.ADD_PLAYER_SCREEN + "/${it.Id}")
@@ -168,7 +156,7 @@ fun NavControllerComposable(
             EventsScreen(name = "")
         }
 
-        composable(route = MANAGED_TEAM_SCREEN) {
+        composable(route = Route.MANAGED_TEAM_SCREEN) {
             MainManageTeamScreen()
         }
 
