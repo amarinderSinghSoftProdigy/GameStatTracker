@@ -41,6 +41,7 @@ object Route {
     const val TEAM_SETUP_SCREEN = "teamSetupScreen"
     const val ADD_PLAYER_SCREEN = "addPlayerScreen"
     const val PROFILE_SETUP_SCREEN = "profileSetupScreen"
+    const val PROFILE_SCREEN = "profileScreen"
 }
 
 object ApiConstants {

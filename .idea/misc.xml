@@ -3,6 +3,26 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../../layout/compose-model-1662629629530.xml" value="0.25" />
+        <entry key="../../../../../layout/compose-model-1662629652821.xml" value="0.25" />
+        <entry key="../../../../../layout/compose-model-1662630096557.xml" value="0.2" />
+        <entry key="../../../../../layout/compose-model-1662631884518.xml" value="1.0" />
+        <entry key="../../../../../layout/compose-model-1662701235856.xml" value="0.12288851351351351" />
+        <entry key="../../../../../layout/compose-model-1662701448950.xml" value="1.0" />
+        <entry key="../../../../../layout/compose-model-1662701682563.xml" value="0.21452702702702703" />
+        <entry key="../../../../../layout/compose-model-1662702297026.xml" value="0.9" />
+        <entry key="../../../../../layout/compose-model-1662703554917.xml" value="1.0" />
+        <entry key="../../../../../layout/compose-model-1662703800351.xml" value="0.21" />
+        <entry key="../../../../../layout/compose-model-1662706131639.xml" value="0.19" />
+        <entry key="../../../../../layout/compose-model-1662706335734.xml" value="0.17" />
+        <entry key="../../../../../layout/compose-model-1662707565801.xml" value="0.21452702702702703" />
+        <entry key="../../../../../layout/compose-model-1662712119416.xml" value="0.25" />
+        <entry key="../../../../../layout/compose-model-1662712363373.xml" value="0.21452702702702703" />
+        <entry key="../../../../../layout/compose-model-1662714909804.xml" value="0.21452702702702703" />
+        <entry key="../../../../../layout/compose-model-1662721074494.xml" value="0.22" />
+        <entry key="../../../../../layout/compose-model-1662721743614.xml" value="0.21452702702702703" />
+        <entry key="../../../../../layout/compose-model-1662724391628.xml" value="0.21452702702702703" />
+        <entry key="../../../../../layout/compose-model-1662724484883.xml" value="0.21452702702702703" />
         <entry key="../../../../layout/compose-model-1660742464153.xml" value="0.6637931034482759" />
         <entry key="../../../../layout/compose-model-1660911269847.xml" value="0.6450617283950617" />
         <entry key="../../../../layout/compose-model-1661253814152.xml" value="0.5" />
@@ -19,18 +39,24 @@
         <entry key="..\:/Users/user/baller-app/app/src/main/res/drawable/splash_background.xml" value="0.1" />
         <entry key="..\:/Users/user/baller-app/app/src/main/res/mipmap-anydpi-v26/ic_app_logo.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_add_player.xml" value="0.131" />
+        <entry key="app/src/main/res/drawable/ic_apple.xml" value="0.114" />
+        <entry key="app/src/main/res/drawable/ic_back.xml" value="0.114" />
         <entry key="app/src/main/res/drawable/ic_ball.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_ball_center.xml" value="0.144" />
         <entry key="app/src/main/res/drawable/ic_ball_green.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_ball_lines.xml" value="0.135" />
+        <entry key="app/src/main/res/drawable/ic_baller.xml" value="0.114" />
         <entry key="app/src/main/res/drawable/ic_circle_next.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_circle_shadow.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_default_ball_without_lines.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_events.xml" value="0.114" />
+        <entry key="app/src/main/res/drawable/ic_events_large.xml" value="0.114" />
         <entry key="app/src/main/res/drawable/ic_facebook.xml" value="0.136" />
         <entry key="app/src/main/res/drawable/ic_logo.xml" value="0.136" />
         <entry key="app/src/main/res/drawable/ic_remove.xml" value="0.104" />
         <entry key="app/src/main/res/drawable/ic_scanner.xml" value="0.131" />
         <entry key="app/src/main/res/drawable/ic_settings.xml" value="0.139" />
+        <entry key="app/src/main/res/drawable/ic_twitter.xml" value="0.114" />
         <entry key="app/src/main/res/drawable/ic_upload.xml" value="0.131" />
         <entry key="app/src/main/res/layout/activity_details.xml" value="0.25" />
         <entry key="app/src/main/res/layout/twitter_login.xml" value="0.25" />

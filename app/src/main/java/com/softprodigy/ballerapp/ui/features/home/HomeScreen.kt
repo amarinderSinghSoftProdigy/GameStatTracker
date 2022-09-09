@@ -1,22 +1,12 @@
 package com.softprodigy.ballerapp.ui.features.home
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import android.widget.Toast
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -25,14 +15,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.Route
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
@@ -44,19 +37,89 @@ import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun HomeScreen(name: String?) {
+fun HomeScreen(
+    name: String?,
+    gotToProfile: () -> Unit
+) {
     val dataStoreManager = DataStoreManager(LocalContext.current)
     val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
+    val context = LocalContext.current
+
     Box {
-        CoachFlowBackground(colorCode = color.value.ifEmpty { "0177C1" }, teamLogo = "")
+        Box(
+            Modifier.fillMaxWidth()
+        ) {
+            Surface(
+                shape = CircleShape,
+                color = Color(
+                    android.graphics.Color.parseColor(
+                        "#0177C1"
+
+                    )
+                ).copy(alpha = 0.05F),
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .absoluteOffset(
+                        x = dimensionResource(id = R.dimen.size_64dp),
+                        y = -dimensionResource(id = R.dimen.size_45dp)
+                    )
+            ) {
+                Surface(
+                    shape = CircleShape,
+                    color = Color(
+                        android.graphics.Color.parseColor(
+                            "#0177C1"
+                        )
+                    ),
+                    modifier = Modifier
+                        .padding(
+                            bottom = dimensionResource(id = R.dimen.size_30dp),
+                            end = dimensionResource(id = R.dimen.size_20dp),
+                            start = dimensionResource(id = R.dimen.size_20dp),
+                            top = dimensionResource(id = R.dimen.size_20dp)
+                        )
+                        .size(dimensionResource(id = R.dimen.size_200dp))
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(dimensionResource(id = R.dimen.size_200dp))
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_ball_green),
+                            contentDescription = "center ball Icon",
+                            tint = colorResource(id = R.color.black),
+                            modifier = Modifier.fillMaxSize()
+                        )
+                        Image(
+                            painter = painterResource(id = R.drawable.user_demo),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(dimensionResource(id = R.dimen.size_48dp))
+                                .align(Alignment.Center)
+                                .clip(CircleShape)
+                                .clickable {
+                                    Toast
+                                        .makeText(context, "You", Toast.LENGTH_SHORT)
+                                        .show()
+                                    gotToProfile()
+                                },
+                        )
+                    }
+                }
+            }
+        }
         Column(
             Modifier
+                .padding(top = dimensionResource(id = R.dimen.size_100dp))
                 .fillMaxWidth()
-                .padding(all = dimensionResource(id = R.dimen.size_16dp))
+                .padding(
+                    start = dimensionResource(id = R.dimen.size_16dp),
+                    end = dimensionResource(id = R.dimen.size_16dp)
+                )
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Center
         ) {
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))
+//            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_25dp)))
             AppText(
                 text = stringResource(id = R.string.hey_label).replace("name", "George"),
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
@@ -83,7 +146,7 @@ fun HomeScreen(name: String?) {
                         contentDescription = "",
                         modifier = Modifier
                             .size(dimensionResource(id = R.dimen.size_48dp))
-                            .clip(CircleShape),
+                            .clip(CircleShape)
                     )
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
                     Text(

@@ -98,6 +98,7 @@
     <string name="teams_label">Teams</string>
     <string name="player_label">Player</string>
     <string name="parent_label">Parent</string>
+    <string name="parents_label">Parents</string>
     <string name="game_staff_label">Game Staff</string>
     <string name="program_label">Program Staff</string>
     <string name="fan_label">Fan</string>
@@ -146,6 +147,24 @@
     <string name="gb_label">GB</string>
     <string name="away_label">Away</string>
     <string name="pf_label">PF</string>
+    <string name="profile">Profile</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="documents">Documents</string>
+    <string name="mother">Mother</string>
+    <string name="father">Father</string>
+    <string name="birthday">Birthday</string>
+    <string name="classof">Class of</string>
+    <string name="positons">Positions Played</string>
+    <string name="parents">Parents</string>
+    <string name="jersey_pref">Jersey Preferences</string>
+    <string name="jersey_number">Jersey Number</string>
+    <string name="shirt_size">Shirt Size</string>
+    <string name="waist_size">Waist Size</string>
+    <string name="fun_facts">Fun Facts</string>
+    <string name="favorite_college_team">Favorite College Team</string>
+    <string name="favorite_nba_team">Favorite NBA Team</string>
+    <string name="favorite_active_player">Favorite Active Player</string>
+    <string name="favoritea_all_time_tlayer">Favorite All-Time Player</string>
 
 
 </resources>
