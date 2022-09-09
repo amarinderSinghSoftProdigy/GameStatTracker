@@ -60,6 +60,7 @@
     <string name="add_players">Add players</string>
     <string name="add_player">Add Player</string>
     <string name="invite_players">Invite Players</string>
+    <string name="invite_team_member">Invite \nTeam Members</string>
     <string name="search">Search</string>
     <string name="added_players">Added Players</string>
     <string name="search_by_name_or_email">Search by name or email</string>
@@ -161,6 +162,11 @@
     <string name="assistance_label">Assistance</string>
     <string name="add_new_team_member">Add New Team Member</string>
     <string name="create_new_team">Create New Team</string>
+    <string name="primary_team_color">Primary Team Color</string>
+    <string name="secondary_team_color">Secondary Team Color</string>
+    <string name="tertiary_team_color">Tertiary Team Color</string>
+    <string name="create_a_team">Create a Team</string>
+    <string name="add">Add</string>
 
 
 </resources>

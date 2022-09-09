@@ -42,8 +42,8 @@ import com.softprodigy.ballerapp.ui.features.components.TabBar
 import com.softprodigy.ballerapp.ui.features.components.fromHex
 import com.softprodigy.ballerapp.ui.features.home.manage_team.MainManageTeamScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.AddPlayersScreen
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.SetupTeamViewModel
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.AddPlayersScreenUpdated
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
 import com.softprodigy.ballerapp.ui.theme.appColors
 import dagger.hilt.android.AndroidEntryPoint
@@ -146,7 +146,7 @@ fun NavControllerComposable(
     dismissDialog: (Boolean) -> Unit,
     navController: NavHostController = rememberNavController()
 ) {
-    val setupTeamViewModel: SetupTeamViewModel = hiltViewModel()
+    val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = hiltViewModel()
     NavHost(navController, startDestination = Route.HOME_SCREEN) {
         composable(route = Route.HOME_SCREEN) {
             HomeScreen(name = "")
@@ -159,7 +159,7 @@ fun NavControllerComposable(
                 name = "",
                 showDialog = showDialog,
                 dismissDialog = dismissDialog,
-                setupTeamViewModel = setupTeamViewModel
+                setupTeamViewModelUpdated = setupTeamViewModelUpdated
             ) {
                 navController.navigate(Route.ADD_PLAYER_SCREEN + "/${it.Id}")
             }
@@ -181,9 +181,9 @@ fun NavControllerComposable(
         ) {
             homeViewModel.setScreen(true)
             val teamId = it.arguments?.getString("teamId")
-            AddPlayersScreen(
+            AddPlayersScreenUpdated(
                 teamId,
-                vm = setupTeamViewModel,
+                vm = setupTeamViewModelUpdated,
                 onBackClick = { navController.popBackStack() },
                 onNextClick = {
                     homeViewModel.setScreen(false)
