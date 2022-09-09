@@ -16,6 +16,6 @@ data class HomeState(
     val topBar: TopBarData = TopBarData("", TopBar.SINGLE_LABEL),
     val showDialog: Boolean = false,
     val showLogout: Boolean = false,
-    val userNameValidError: String? = null,
+
     val homeItemList: List<HomeItemResponse> = emptyList()
 )
