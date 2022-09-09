@@ -99,4 +99,5 @@ val ColorPrimaryTransparent = Color(0x1A0177C1)
 val ColorMainPrimary = Color(0xFF0177C1)
 val ColorPrimaryOrange = Color(0xFFFF923D)
 val ColorBWGrayDark = Color(0xFF3C4348)
+val ColorGreyLighter = Color(0xFFA7B9C7)
 

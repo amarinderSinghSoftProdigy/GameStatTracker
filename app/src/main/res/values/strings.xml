@@ -161,6 +161,10 @@
     <string name="assistance_label">Assistance</string>
     <string name="add_new_team_member">Add New Team Member</string>
     <string name="create_new_team">Create New Team</string>
+    <string name="select_profile">Select Profile</string>
 
-
+    <string name="welcome_to_total_hoop">Welcome to Total Hoop</string>
+    <string name="team_total_hoop">Team Total Hoop</string>
+    <string name="opportunities_to_play">Opportunities To Play</string>
+    <string name="four">4</string>
 </resources>

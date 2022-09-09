@@ -1,6 +1,7 @@
 package com.softprodigy.ballerapp.ui.features.home
 
 import androidx.compose.ui.graphics.Color
+import com.softprodigy.ballerapp.data.response.HomeItemResponse
 
 
 data class HomeState(
@@ -9,5 +10,6 @@ data class HomeState(
     val isDataLoading: Boolean = false,
     val errorMessage: String? = null,
     val userNameValid: Boolean = true,
-    val userNameValidError: String? = null
+    val userNameValidError: String? = null,
+    val homeItemList: List<HomeItemResponse> = emptyList()
 )
