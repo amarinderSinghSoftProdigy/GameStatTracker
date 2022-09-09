@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.ui.theme.ButtonColor
 import com.softprodigy.ballerapp.ui.theme.appColors
 
@@ -228,9 +229,9 @@ fun DialogButton(
         color = if (onlyBorder)
             Color.Transparent
         else if (enabled)
-            MaterialTheme.appColors.material.primaryVariant
+            AppConstants.SELECTED_COLOR
         else
-            Color.Transparent,
+            colors.bckgroundDisabled,
         contentColor = contentColor.copy(alpha = 1f),
         border = border,
     ) {

@@ -23,6 +23,7 @@ import com.softprodigy.ballerapp.ui.features.components.SelectTeamDialog
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
 import com.softprodigy.ballerapp.ui.features.home.teams.leaderboard.LeaderBoardScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.roaster.RoasterScreen
+import com.softprodigy.ballerapp.ui.features.home.teams.manage_team.ManageTeamRoster
 import com.softprodigy.ballerapp.ui.features.home.teams.standing.StandingScreen
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.SetupTeamViewModel
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.TeamSetupUIEvent
@@ -82,10 +83,12 @@ fun TeamsScreen(
     val tabIndex = pagerState.currentPage
     val coroutineScope = rememberCoroutineScope()
 
+
     Column {
         TeamsTopTabs(pagerState = pagerState, tabData = tabData)
         TeamsContent(pagerState = pagerState)
     }
+
 
     Box(Modifier.fillMaxSize()) {
 
@@ -95,7 +98,8 @@ fun TeamsScreen(
                 onDismiss = { dismissDialog.invoke(false) },
                 onConfirmClick = { vm.onEvent(TeamUIEvent.OnConfirmTeamClick) },
                 onSelectionChange = onTeamSelectionChange,
-                selected = state.selectedTeam
+                selected = state.selectedTeam,
+                showLoading = state.isLoading
             )
         }
 
@@ -149,7 +153,7 @@ fun TeamsContent(pagerState: PagerState) {
     ) { index ->
         when (index) {
             0 -> StandingScreen()
-            1 -> StandingScreen()
+            1 -> ManageTeamRoster()
             2 -> RoasterScreen()
             3 -> LeaderBoardScreen()
         }
@@ -176,7 +180,6 @@ fun TeamsTopTabs(pagerState: PagerState, tabData: List<TeamsTabItems>) {
             }
         })
 }
-
 enum class TeamsTabItems(val icon: Int, val stringId: String) {
     Standings(R.drawable.ic_standing, stringId = "standings"),
     Chat(R.drawable.ic_chat, stringId = "chat"),

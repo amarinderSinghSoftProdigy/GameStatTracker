@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -197,10 +198,12 @@ fun LeaderListItem(
                         .size(dimensionResource(id = R.dimen.size_32dp))
                         .clip(CircleShape)
                         .border(
-                            width = dimensionResource(id = R.dimen.size_2dp),
-                            color = if (srNo <= 3) ColorPrimaryOrange else Color.Transparent,
-                            shape = CircleShape
-                        )
+                            width =dimensionResource(id = R.dimen.size_2dp),
+                            color = if(srNo<=3) ColorPrimaryOrange  else Color.Transparent,
+                            shape=CircleShape
+                        ),
+                    contentScale = ContentScale.FillBounds
+
 
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
