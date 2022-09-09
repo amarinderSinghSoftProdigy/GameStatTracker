@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
+import com.softprodigy.ballerapp.ui.features.components.TopBarData
 import com.softprodigy.ballerapp.data.response.HomeItemResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -58,6 +59,18 @@ class HomeViewModel @Inject constructor(
 
     fun setColor(color: Color) {
         _state.value = _state.value.copy(color = color)
+    }
+
+    fun setTopBar(topBar: TopBarData) {
+        _state.value = _state.value.copy(topBar = topBar)
+    }
+
+    fun setDialog(show: Boolean) {
+        _state.value = _state.value.copy(showDialog = show)
+    }
+
+    fun setLogoutDialog(show: Boolean) {
+        _state.value = _state.value.copy(showLogout = show)
     }
 
     fun setScreen(screen: Boolean) {
