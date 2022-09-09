@@ -2,6 +2,7 @@ package com.softprodigy.ballerapp.ui.features.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,11 +15,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.ui.theme.ButtonColor
@@ -167,15 +165,30 @@ fun ButtonWithLeadingIcon(
         vertical = dimensionResource(id = R.dimen.size_16dp),
         horizontal = dimensionResource(id = R.dimen.size_24dp),
     ),
+    isTransParent: Boolean = false,
 ) {
     Row(
         modifier = modifier
             .clickable { onClick.invoke() }
+            .border(
+                width = 1.dp,
+                color =
+                if (isTransParent)
+                    MaterialTheme.appColors.editField.borderFocused else {
+                    AppConstants.SELECTED_COLOR
+                },
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_6dp))
+            )
             .background(
-                color = AppConstants.SELECTED_COLOR, shape = RoundedCornerShape(
+                color =
+                if (isTransParent) {
+                    MaterialTheme.appColors.material.surface
+                } else {
+                    AppConstants.SELECTED_COLOR
+                },
+                shape = RoundedCornerShape(
                     dimensionResource(id = R.dimen.size_8dp)
                 )
-
             )
             .padding(contentPadding),
 
@@ -185,7 +198,11 @@ fun ButtonWithLeadingIcon(
         Icon(
             painter = painter,
             contentDescription = "",
-            tint = colors.textEnabled,
+            tint= if (isTransParent) {
+                AppConstants.SELECTED_COLOR
+            } else {
+                colors.textEnabled
+            },
             modifier = Modifier.size(
                 dimensionResource(id = R.dimen.size_10dp)
             )
@@ -195,10 +212,17 @@ fun ButtonWithLeadingIcon(
 
         AppText(
             text = text,
-            fontWeight = FontWeight.W500,
-            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-            color = colors.textEnabled
+            color = if (isTransParent) {
+                colors.textDisabled
+            } else {
+                colors.textEnabled
+            },
+            style = MaterialTheme.typography.button
         )
     }
 }
+
+
+
+
 

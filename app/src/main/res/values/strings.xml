@@ -160,6 +160,7 @@
     <string name="fg_percent_label">FG%</string>
     <string name="assistance_label">Assistance</string>
     <string name="add_new_team_member">Add New Team Member</string>
+    <string name="create_new_team">Create New Team</string>
 
 
 </resources>

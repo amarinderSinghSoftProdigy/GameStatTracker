@@ -74,7 +74,8 @@ fun ManageTeamRoster(vm: ManageTeamRstrViewModel = hiltViewModel()) {
                 modifier = Modifier.align(Alignment.Center),
                 text = stringResource(id = R.string.add_player),
                 onClick = { vm.onEvent(ManageTeamRstrUIEvent.OnDialogClick(true)) },
-                painter = painterResource(id = R.drawable.ic_add_button)
+                painter = painterResource(id = R.drawable.ic_add_button),
+
             )
         }
 

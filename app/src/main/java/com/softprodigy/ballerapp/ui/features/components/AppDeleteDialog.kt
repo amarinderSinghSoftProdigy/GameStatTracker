@@ -1,6 +1,5 @@
 package com.softprodigy.ballerapp.ui.features.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -163,39 +162,50 @@ fun SelectTeamDialog(
                             }
                         }
                     }
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(color = Color.White)
-                        .padding(
-                            horizontal = dimensionResource(id = R.dimen.size_12dp),
-                            vertical = dimensionResource(id = R.dimen.size_16dp)
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                    ButtonWithLeadingIcon(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(id = R.string.create_new_team),
+                        onClick = { },
+                        painter = painterResource(id = R.drawable.ic_add_button),
+                        isTransParent = true
+
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(color = Color.White)
+                            .padding(
+                                vertical = dimensionResource(id = R.dimen.size_16dp)
+                            ),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        DialogButton(
+                            text = stringResource(R.string.dialog_button_cancel),
+                            onClick = onDismiss,
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = dimensionResource(id = R.dimen.size_10dp)),
+                            border = ButtonDefaults.outlinedBorder,
+                            onlyBorder = true,
+                            enabled = false
                         )
-                ) {
-                    DialogButton(
-                        text = stringResource(R.string.dialog_button_cancel),
-                        onClick = onDismiss,
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(end = dimensionResource(id = R.dimen.size_10dp)),
-                        border = ButtonDefaults.outlinedBorder,
-                        onlyBorder = true,
-                        enabled = false
-                    )
-                    DialogButton(
-                        text = stringResource(R.string.dialog_button_confirm),
-                        onClick = {
-                            onConfirmClick.invoke()
-                            onDismiss.invoke()
-                        },
-                        modifier = Modifier
-                            .weight(1f),
-                        border = ButtonDefaults.outlinedBorder,
-                        enabled = (selected?.name ?: "").isNotEmpty(),
-                        onlyBorder = false,
-                    )
+                        DialogButton(
+                            text = stringResource(R.string.dialog_button_confirm),
+                            onClick = {
+                                onConfirmClick.invoke()
+                                onDismiss.invoke()
+                            },
+                            modifier = Modifier
+                                .weight(1f),
+                            border = ButtonDefaults.outlinedBorder,
+                            enabled = (selected?.name ?: "").isNotEmpty(),
+                            onlyBorder = false,
+                        )
+                    }
                 }
+
+
             },
         )
     }
@@ -265,7 +275,7 @@ fun TeamListItem(team: Team, selected: Boolean, onClick: (Team) -> Unit) {
         onClick = { onClick(team) },
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_10dp)),
         elevation = if (selected) dimensionResource(id = R.dimen.size_10dp) else 0.dp,
-        color = if (selected) MaterialTheme.appColors.material.primaryVariant else Color.Transparent,
+        color = if (selected) AppConstants.SELECTED_COLOR else Color.Transparent,
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(
@@ -327,7 +337,6 @@ fun AddPlayerDialog(
         AlertDialog(
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
-            /*.height(300.dp)*/
             onDismissRequest = onDismiss,
             buttons = {
                 Column(
@@ -490,7 +499,7 @@ fun PlayerListDialogItem(
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal =dimensionResource(id = R.dimen.size_10dp)),
+                .padding(horizontal = dimensionResource(id = R.dimen.size_10dp)),
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
@@ -510,7 +519,7 @@ fun PlayerListDialogItem(
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
             CheckBoxButton(
                 icon,
-                teamColor = teamColor,
+                tintColor = teamColor,
                 selected = selected
             ) { onItemClick(player) }
         }
@@ -519,7 +528,7 @@ fun PlayerListDialogItem(
 }
 
 @Composable
-fun CheckBoxButton(icon: Painter, teamColor: String, selected: Boolean, onItemClick: () -> Unit) {
+fun CheckBoxButton(icon: Painter, tintColor: String, selected: Boolean, onItemClick: () -> Unit) {
     Box(
         modifier = Modifier
             .clickable(onClick = { onItemClick() })
@@ -531,7 +540,7 @@ fun CheckBoxButton(icon: Painter, teamColor: String, selected: Boolean, onItemCl
             .background(
                 shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)),
                 color = if (selected)
-                    Color(android.graphics.Color.parseColor("#$teamColor"))
+                    Color(android.graphics.Color.parseColor("#$tintColor"))
                 else {
                     Color.Transparent
                 }
@@ -548,5 +557,3 @@ fun CheckBoxButton(icon: Painter, teamColor: String, selected: Boolean, onItemCl
         )
     }
 }
-
-
