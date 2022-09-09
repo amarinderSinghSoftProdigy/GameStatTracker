@@ -85,7 +85,11 @@ class LoginViewModel @Inject constructor(
                 is ResultWrapper.Success -> {
                     loginResponse.value.let { response ->
                         if (response.status) {
-                            setToken(response.data.token, response.data.user.role,response.data.user.email)
+                            setToken(
+                                response.data.token,
+                                response.data.user.role,
+                                response.data.user.email
+                            )
                             _loginUiState.value = _loginUiState.value.copy(
                                 user = response.data,
                                 isDataLoading = false
@@ -119,9 +123,9 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private fun setToken(token: String, role: String, email:String) {
+    private fun setToken(token: String, role: String, email: String) {
         viewModelScope.launch {
-            UserStorage.token=token
+            UserStorage.token = token
             dataStore.saveToken(token)
             dataStore.setRole(role)
             dataStore.setEmail(email)

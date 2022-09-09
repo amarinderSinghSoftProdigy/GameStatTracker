@@ -6,6 +6,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
@@ -13,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -29,6 +32,7 @@ import com.softprodigy.ballerapp.MainActivity
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.Route
+import com.softprodigy.ballerapp.common.Route.MANAGED_TEAM_SCREEN
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
 import com.softprodigy.ballerapp.ui.features.components.BottomNavigationBar
@@ -36,6 +40,7 @@ import com.softprodigy.ballerapp.ui.features.components.CommonTabView
 import com.softprodigy.ballerapp.ui.features.components.LogoutDialog
 import com.softprodigy.ballerapp.ui.features.components.TabBar
 import com.softprodigy.ballerapp.ui.features.components.fromHex
+import com.softprodigy.ballerapp.ui.features.home.manage_team.MainManageTeamScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.AddPlayersScreen
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.SetupTeamViewModel
@@ -103,13 +108,15 @@ class HomeActivity : ComponentActivity() {
                             }
                         },
                         content = {
-                            NavControllerComposable(
-                                homeViewModel,
-                                navController = navController,
-                                showDialog = showDialog.value,
-                                dismissDialog = {
-                                    showDialog.value = it
-                                })
+                            Box(modifier = Modifier.padding(it)) {
+                                NavControllerComposable(
+                                    homeViewModel,
+                                    navController = navController,
+                                    showDialog = showDialog.value,
+                                    dismissDialog = {
+                                        showDialog.value = it
+                                    })
+                            }
                         },
                         bottomBar = {
                             BottomNavigationBar(
@@ -159,6 +166,10 @@ fun NavControllerComposable(
         }
         composable(route = Route.EVENTS_SCREEN) {
             EventsScreen(name = "")
+        }
+
+        composable(route = MANAGED_TEAM_SCREEN) {
+            MainManageTeamScreen()
         }
 
         composable(

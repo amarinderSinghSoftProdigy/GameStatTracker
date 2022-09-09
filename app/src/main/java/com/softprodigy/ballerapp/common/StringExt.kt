@@ -33,7 +33,7 @@ fun String.isValidFullName(): Boolean {
     if (this.isEmpty()) {
         return false
     }
-    return (this.trim().contains(" ") && this.length >= 5 && this.matches(regex.toRegex()) )
+    return (this.trim().contains(" ") && this.length >= 5 && this.matches(regex.toRegex()))
 }
 
 fun validName(name: String): Boolean {
@@ -47,7 +47,7 @@ fun validPhoneNumber(number: String): Boolean {
 }
 
 fun validTeamName(name: String): Boolean {
-    val regex = "^[A-Za-z0-9@$]*$"
+    val regex = "^[A-Za-z0-9@$ ]*$"
     return name.matches(regex = regex.toRegex())
 }
 

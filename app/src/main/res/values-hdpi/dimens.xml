@@ -65,6 +65,6 @@
     <dimen name="size_95dp">71.5dp</dimen>
     <dimen name="size_60dp">45dp</dimen>
     <dimen name="size_48dp">36dp</dimen>
-
+    <dimen name="size_180dp">135dp</dimen>
 
 </resources>

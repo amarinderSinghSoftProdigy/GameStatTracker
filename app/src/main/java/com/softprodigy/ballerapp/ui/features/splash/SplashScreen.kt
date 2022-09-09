@@ -18,25 +18,18 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import com.softprodigy.ballerapp.R
+import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(onNextClick: () -> Unit) {
 
-    val scale = remember { Animatable(0f) }
+
     // Animation
     LaunchedEffect(key1 = true) {
-        scale.animateTo(
-            targetValue = 1f,
-            animationSpec = tween(
-                durationMillis = 1200,
-                easing = {
-                    OvershootInterpolator(3f).getInterpolation(it)
-                })
-        )
-        //delay(500L)
+
+        delay(1000L)
         onNextClick()
     }
-
 
 
     // Image
@@ -50,7 +43,6 @@ fun SplashScreen(onNextClick: () -> Unit) {
             painter = painterResource(R.drawable.ic_logo),
             contentDescription = null,
             modifier = Modifier
-                .scale(scale.value)
                 .height(dimensionResource(id = R.dimen.size_95dp))
                 .width(dimensionResource(id = R.dimen.size_160dp))
         )
