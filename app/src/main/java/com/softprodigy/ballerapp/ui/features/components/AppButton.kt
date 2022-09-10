@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
@@ -166,6 +167,7 @@ fun ButtonWithLeadingIcon(
         horizontal = dimensionResource(id = R.dimen.size_24dp),
     ),
     isTransParent: Boolean = false,
+    iconSize: Dp = dimensionResource(id = R.dimen.size_10dp)
 ) {
     Row(
         modifier = modifier
@@ -198,13 +200,13 @@ fun ButtonWithLeadingIcon(
         Icon(
             painter = painter,
             contentDescription = "",
-            tint= if (isTransParent) {
+            tint = if (isTransParent) {
                 AppConstants.SELECTED_COLOR
             } else {
                 colors.textEnabled
             },
             modifier = Modifier.size(
-                dimensionResource(id = R.dimen.size_10dp)
+                iconSize
             )
 
         )

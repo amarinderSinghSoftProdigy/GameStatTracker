@@ -1,6 +1,7 @@
 package com.softprodigy.ballerapp.ui.features.home
 
 import androidx.compose.ui.graphics.Color
+import com.softprodigy.ballerapp.data.response.HomeItemResponse
 import com.softprodigy.ballerapp.ui.features.components.TopBar
 import com.softprodigy.ballerapp.ui.features.components.TopBarData
 
@@ -15,4 +16,6 @@ data class HomeState(
     val topBar: TopBarData = TopBarData("", TopBar.SINGLE_LABEL),
     val showDialog: Boolean = false,
     val showLogout: Boolean = false,
+
+    val homeItemList: List<HomeItemResponse> = emptyList()
 )

@@ -69,7 +69,6 @@ fun UserTypeSelector(
         selectedUserType.value = text
     }
 
-
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val column = createRef()
         val button = createRef()
@@ -127,7 +126,8 @@ fun UserTypeSelector(
                     top.linkTo(column.bottom)
                     end.linkTo(parent.end)
                     bottom.linkTo(parent.bottom)
-                }) {
+                })
+        {
             BottomButtons(
                 firstText = stringResource(id = R.string.back),
                 secondText = stringResource(id = R.string.next),
