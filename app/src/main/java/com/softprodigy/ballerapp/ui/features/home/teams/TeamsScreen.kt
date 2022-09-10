@@ -21,12 +21,14 @@ import com.softprodigy.ballerapp.ui.features.components.AppScrollableTabRow
 import com.softprodigy.ballerapp.ui.features.components.AppTabLikeViewPager
 import com.softprodigy.ballerapp.ui.features.components.SelectTeamDialog
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
+import com.softprodigy.ballerapp.ui.features.home.manage_team.leaderboard.ManageTeamLeaderBoard
+import com.softprodigy.ballerapp.ui.features.home.teams.roaster.RoasterScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.leaderboard.LeaderBoardScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.roaster.RoasterScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.manage_team.ManageTeamRoster
 import com.softprodigy.ballerapp.ui.features.home.teams.standing.StandingScreen
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.SetupTeamViewModel
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.TeamSetupUIEvent
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
@@ -34,7 +36,7 @@ import kotlinx.coroutines.launch
 fun TeamsScreen(
     name: String?,
     showDialog: Boolean,
-    setupTeamViewModel: SetupTeamViewModel,
+    setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
     dismissDialog: (Boolean) -> Unit,
     addPlayerClick: (Team) -> Unit
 ) {
@@ -43,8 +45,8 @@ fun TeamsScreen(
     val state = vm.teamUiState.value
     val onTeamSelectionChange = { team: Team ->
         vm.onEvent(TeamUIEvent.OnTeamSelected(team))
-        setupTeamViewModel.onEvent(
-            TeamSetupUIEvent.OnColorSelected(
+        setupTeamViewModelUpdated.onEvent(
+            TeamSetupUIEventUpdated.OnColorSelected(
                 team.colorCode.replace(
                     "#",
                     ""

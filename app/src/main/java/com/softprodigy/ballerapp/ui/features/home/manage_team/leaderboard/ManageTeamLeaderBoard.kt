@@ -49,7 +49,7 @@ fun ManageTeamLeaderBoard(vm: ManageLeaderBoardViewModel = hiltViewModel()) {
 
     val state = vm.manageLeaderBoardUiState.value
 
-    var leaderBoardList by remember {
+    val leaderBoardList = remember {
         mutableStateOf(state.leaderBoardList)
     }
 
@@ -76,18 +76,17 @@ fun ManageTeamLeaderBoard(vm: ManageLeaderBoardViewModel = hiltViewModel()) {
                     fontSize = dimensionResource(id = R.dimen.txt_size_10).value.sp,
                     color = ColorBWGrayLight,
                     modifier = Modifier.clickable {
-                        leaderBoardList.forEach {
-                            it.isSelected = !it.isSelected
+
+                        leaderBoardList.value.forEachIndexed { index, _ ->
+                            leaderBoardList.value = leaderBoardList.value.toMutableList().also {
+                                it[index] = it[index].copy(isSelected = true)
+                            }
                         }
                     }
                 )
             }
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
-
-//            val onSelectionChange = { team: String ->
-//                vm.onEvent(ManageLeaderBoardUIEvent.OnTeamSelected(team))
-//            }
 
             LazyColumn(
                 modifier = Modifier
@@ -99,13 +98,12 @@ fun ManageTeamLeaderBoard(vm: ManageLeaderBoardViewModel = hiltViewModel()) {
 
                 ) {
 
-                items(leaderBoardList.size) { index ->
+                items(leaderBoardList.value.size) { index ->
                     LeaderBoardItem(
-                        leaderBoardList[index].name,
-                        vm = vm,
-                        selected = leaderBoardList[index].isSelected
+                        leaderBoardList.value[index].name,
+                        selected = leaderBoardList.value[index].isSelected
                     ) {
-                        leaderBoardList = leaderBoardList.toMutableList().also {
+                        leaderBoardList.value = leaderBoardList.value.toMutableList().also {
                             it[index] = it[index].copy(isSelected = !it[index].isSelected)
                         }
                     }
@@ -119,7 +117,6 @@ fun ManageTeamLeaderBoard(vm: ManageLeaderBoardViewModel = hiltViewModel()) {
 fun LeaderBoardItem(
     points: String,
     selected: Boolean,
-    vm: ManageLeaderBoardViewModel,
     onSelectionChange: () -> Unit,
 ) {
 
@@ -175,7 +172,6 @@ fun LeaderBoardItem(
             contentDescription = "",
             modifier = Modifier
                 .size(dimensionResource(id = R.dimen.size_12dp))
-
         )
     }
 

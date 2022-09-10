@@ -50,10 +50,11 @@ import com.softprodigy.ballerapp.ui.features.select_profile.SelectProfileScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.ProfileSetUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpViewModel
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.TeamSetupScreen
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.TeamSetupScreenUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.UserTypeScreen
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.AddPlayersScreen
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.SetupTeamViewModel
+
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.AddPlayersScreenUpdated
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
 import com.softprodigy.ballerapp.ui.features.welcome.WelcomeScreen
 import com.softprodigy.ballerapp.ui.theme.BallerAppTheme
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -237,7 +238,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun NavControllerComposable(activity: MainActivity) {
     val navController = rememberNavController()
-    val setupTeamViewModel: SetupTeamViewModel = viewModel()
+    val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = viewModel()
     val signUpViewModel: SignUpViewModel = viewModel()
     val context = LocalContext.current
     val dataStoreManager = DataStoreManager(activity)
@@ -398,16 +399,16 @@ fun NavControllerComposable(activity: MainActivity) {
         }
 
         composable(route = TEAM_SETUP_SCREEN) {
-            TeamSetupScreen(
-                vm = setupTeamViewModel,
+            TeamSetupScreenUpdated(
+                vm = setupTeamViewModelUpdated,
                 onBackClick = { navController.popBackStack() },
                 onNextClick = {
                     navController.navigate(ADD_PLAYER_SCREEN)
                 })
         }
         composable(route = ADD_PLAYER_SCREEN) {
-            AddPlayersScreen(
-                vm = setupTeamViewModel,
+            AddPlayersScreenUpdated(
+                vm = setupTeamViewModelUpdated,
                 onBackClick = { navController.popBackStack() },
                 onNextClick = {
                     moveToHome(activity)

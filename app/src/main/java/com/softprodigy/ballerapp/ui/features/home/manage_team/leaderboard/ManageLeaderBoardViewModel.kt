@@ -46,19 +46,6 @@ class ManageLeaderBoardViewModel @Inject constructor(application: Application) :
         leaderBoardData.add(ManageLeaderBoardResponse("Assists",))
         leaderBoardData.add(ManageLeaderBoardResponse("Practice 3s"))
 
-        /*listOf(
-        "Award points",
-        "Total game points",
-        "Total game rebounds",
-        "Total 3's",
-        "Total FT's",
-        "FS",
-        "Rebounding",
-        "Steals",
-        "Assists",
-        "Practice 3s"
-    )*/
-
         _manageLeaderBoardUiState.value =
             _manageLeaderBoardUiState.value.copy(leaderBoardList = leaderBoardData)
     }

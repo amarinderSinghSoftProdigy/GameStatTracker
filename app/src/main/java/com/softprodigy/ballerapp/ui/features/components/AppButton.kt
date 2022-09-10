@@ -224,6 +224,75 @@ fun ButtonWithLeadingIcon(
     }
 }
 
+@Composable
+fun InviteTeamMemberButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    painter: Painter,
+    colors: ButtonColor = MaterialTheme.appColors.buttonColor,
+    contentPadding: PaddingValues = PaddingValues(
+        vertical = dimensionResource(id = R.dimen.size_10dp),
+        horizontal = dimensionResource(id = R.dimen.size_24dp),
+    ),
+    isTransParent: Boolean = false,
+) {
+    Row(
+        modifier = modifier
+            .clickable { onClick.invoke() }
+            .border(
+                width = 1.dp,
+                color =
+                if (isTransParent)
+                    MaterialTheme.appColors.editField.borderFocused else {
+                    AppConstants.SELECTED_COLOR
+                },
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_6dp))
+            )
+            .background(
+                color =
+                if (isTransParent) {
+                    AppConstants.SELECTED_COLOR.copy(alpha = 0.09f)
+                } else {
+                    AppConstants.SELECTED_COLOR
+                },
+                shape = RoundedCornerShape(
+                    dimensionResource(id = R.dimen.size_8dp)
+                )
+            )
+            .padding(contentPadding),
+
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            painter = painter,
+            contentDescription = "",
+            tint= if (isTransParent) {
+                AppConstants.SELECTED_COLOR
+            } else {
+                colors.textEnabled
+            },
+            modifier = Modifier.size(
+                dimensionResource(id = R.dimen.size_10dp)
+            )
+
+        )
+        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_12dp)))
+
+        AppText(
+            text = text,
+            color = if (isTransParent) {
+                AppConstants.SELECTED_COLOR
+            } else {
+                colors.textEnabled
+            },
+            style = MaterialTheme.typography.button
+        )
+    }
+}
+
+
 
 
 

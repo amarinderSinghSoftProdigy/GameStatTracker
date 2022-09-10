@@ -62,6 +62,7 @@
     <dimen name="size_button">45dp</dimen>
 
     <dimen name="size_160dp">160dp</dimen>
+    <dimen name="size_172dp">172dp</dimen>
     <dimen name="size_95dp">95dp</dimen>
     <dimen name="size_60dp">60dp</dimen>
     <dimen name="size_48dp">48dp</dimen>
