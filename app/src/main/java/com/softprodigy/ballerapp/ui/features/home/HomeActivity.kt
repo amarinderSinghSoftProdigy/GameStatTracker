@@ -84,7 +84,8 @@ class HomeActivity : ComponentActivity() {
                                             homeViewModel.setDialog(true)
                                         },
                                         iconClick = {
-                                            homeViewModel.setLogoutDialog(true)
+                                            navController.navigate(Route.MANAGED_TEAM_SCREEN)
+                                            //homeViewModel.setLogoutDialog(true)
                                         }
                                     )
                                 }
@@ -158,6 +159,12 @@ fun NavControllerComposable(
         }
 
         composable(route = Route.MANAGED_TEAM_SCREEN) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = stringResource(id = R.string.manage_team),
+                    topBar = TopBar.SINGLE_LABEL_BACK,
+                )
+            )
             MainManageTeamScreen()
         }
 

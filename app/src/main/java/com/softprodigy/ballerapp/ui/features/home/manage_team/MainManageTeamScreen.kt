@@ -12,7 +12,9 @@ import com.google.accompanist.pager.PagerState
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppScrollableTabRow
 import com.softprodigy.ballerapp.ui.features.components.AppTabLikeViewPager
+import com.softprodigy.ballerapp.ui.features.home.manage_team.leaderboard.ManageTeamLeaderBoard
 import com.softprodigy.ballerapp.ui.features.home.manage_team.teams.ManageTeamScreen
+import com.softprodigy.ballerapp.ui.features.home.teams.manage_team.ManageTeamRoster
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
@@ -22,7 +24,7 @@ fun MainManageTeamScreen() {
         ManageTeamsTabItems.Team,
         ManageTeamsTabItems.Roaster,
         ManageTeamsTabItems.Leaderboards,
-        ManageTeamsTabItems.Users,
+        /*ManageTeamsTabItems.Users,*/
     )
 
     val pagerState = com.softprodigy.ballerapp.ui.features.components.rememberPagerState(
@@ -48,9 +50,9 @@ fun ManageTeamsContent(pagerState: PagerState) {
     ) { index ->
         when (index) {
             0 -> ManageTeamScreen()
-            1 -> ManageTeamScreen()
-            2 -> ManageTeamScreen()
-            3 -> ManageTeamScreen()
+            1 -> ManageTeamRoster()
+            2 -> ManageTeamLeaderBoard()
+            /*3 -> ManageTeamScreen()*/
         }
     }
 }
