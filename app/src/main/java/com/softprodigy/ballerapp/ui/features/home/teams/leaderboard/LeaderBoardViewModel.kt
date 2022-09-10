@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.response.LeaderBoard
+import com.softprodigy.ballerapp.ui.utils.dragDrop.ItemPosition
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -15,9 +16,19 @@ class LeaderBoardViewModel @Inject constructor() : ViewModel() {
     private val _leaderChannel = Channel<LeaderBoardChannel>()
     val leaderChannel = _leaderChannel.receiveAsFlow()
 
+
     private val _leaderUiState = mutableStateOf(LeaderBoardUiState())
     var leaderUiState: State<LeaderBoardUiState> = _leaderUiState
         private set
+    fun isDragEnabled(pos: ItemPosition) =  true
+
+    fun moveItem(from: ItemPosition, to: ItemPosition) {
+        _leaderUiState.value =
+            _leaderUiState.value.copy(leaders = _leaderUiState.value.leaders.toMutableList().apply {
+                add(to.index, removeAt(from.index))
+            }
+            )
+    }
 
     init {
         // TODO: temp data for design
