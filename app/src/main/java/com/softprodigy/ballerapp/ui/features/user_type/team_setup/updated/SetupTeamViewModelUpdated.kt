@@ -1,13 +1,11 @@
+package com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated
 
-package com.softprodigy.ballerapp.ui.features.user_type.team_setup
-/*
 import android.app.Application
 import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.ResultWrapper
@@ -26,7 +24,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class SetupTeamViewModel @Inject constructor(
+class SetupTeamViewModelUpdated @Inject constructor(
     private val teamRepo: ITeamRepository,
     private val imageUploadRepo: IImageUploadRepo,
     private val dataStoreManager: DataStoreManager,
@@ -36,40 +34,49 @@ class SetupTeamViewModel @Inject constructor(
     private val _teamSetupChannel = Channel<TeamSetupChannel>()
     val teamSetupChannel = _teamSetupChannel.receiveAsFlow()
 
-    private val _teamSetupUiState = mutableStateOf(TeamSetupUIState())
-    val teamSetupUiState: State<TeamSetupUIState> = _teamSetupUiState
+    private val _teamSetupUiState = mutableStateOf(TeamSetupUIStateUpdated())
+    val teamSetupUiState: State<TeamSetupUIStateUpdated> = _teamSetupUiState
 
-    fun onEvent(event: TeamSetupUIEvent) {
+    fun onEvent(event: TeamSetupUIEventUpdated) {
         when (event) {
-            is TeamSetupUIEvent.OnColorSelected -> {
+            is TeamSetupUIEventUpdated.OnColorSelected -> {
                 _teamSetupUiState.value =
-                    _teamSetupUiState.value.copy(teamColor = event.selectedColor)
+                    _teamSetupUiState.value.copy(teamColorPrimary = event.primaryColor)
                 viewModelScope.launch {
-                    dataStoreManager.setColor(event.selectedColor)
+                    dataStoreManager.setColor(event.primaryColor)
                 }
             }
-            is TeamSetupUIEvent.OnImageSelected -> {
+            is TeamSetupUIEventUpdated.OnSecColorSelected -> {
+                _teamSetupUiState.value =
+                    _teamSetupUiState.value.copy(teamColorSec = event.secondaryColor)
+            }
+            is TeamSetupUIEventUpdated.OnTerColorSelected -> {
+                _teamSetupUiState.value =
+                    _teamSetupUiState.value.copy(teamColorThird = event.ternaryColor)
+            }
+
+            is TeamSetupUIEventUpdated.OnImageSelected -> {
                 _teamSetupUiState.value =
                     _teamSetupUiState.value.copy(teamImageUri = event.teamImageUri)
 
             }
-            is TeamSetupUIEvent.OnTeamNameChange -> {
+            is TeamSetupUIEventUpdated.OnTeamNameChange -> {
                 _teamSetupUiState.value = _teamSetupUiState.value.copy(teamName = event.teamName)
 
             }
-            TeamSetupUIEvent.OnTeamSetupNextClick -> {
+            TeamSetupUIEventUpdated.OnTeamSetupNextClick -> {
                 viewModelScope.launch {
                     _teamSetupChannel.send(TeamSetupChannel.OnTeamSetupNextClick)
                 }
             }
-            is TeamSetupUIEvent.OnSearchPlayer -> {
+            is TeamSetupUIEventUpdated.OnSearchPlayer -> {
                 _teamSetupUiState.value =
                     _teamSetupUiState.value.copy(search = event.searchPlayerQuery)
                 viewModelScope.launch {
                     getPlayers(event.searchPlayerQuery)
                 }
             }
-            is TeamSetupUIEvent.OnAddPlayerClick -> {
+            is TeamSetupUIEventUpdated.OnAddPlayerClick -> {
                 if (!_teamSetupUiState.value.selectedPlayers.contains(event.player)) {
                     _teamSetupUiState.value =
                         _teamSetupUiState.value.copy(selectedPlayers = (((_teamSetupUiState.value.selectedPlayers) + event.player) as ArrayList<Player>))
@@ -85,32 +92,74 @@ class SetupTeamViewModel @Inject constructor(
                     }
                 }
             }
-            is TeamSetupUIEvent.OnDismissDialogCLick -> {
+            is TeamSetupUIEventUpdated.OnDismissDialogCLick -> {
                 _teamSetupUiState.value =
                     _teamSetupUiState.value.copy(showDialog = event.showDialog)
 
             }
-            is TeamSetupUIEvent.OnRemovePlayerClick -> {
+            is TeamSetupUIEventUpdated.OnRemovePlayerClick -> {
                 _teamSetupUiState.value = _teamSetupUiState.value.copy(
                     showDialog = true,
                     removePlayer = event.player,
                 )
 
             }
-            is TeamSetupUIEvent.OnRemovePlayerConfirmClick -> {
+            is TeamSetupUIEventUpdated.OnRemovePlayerConfirmClick -> {
                 _teamSetupUiState.value = _teamSetupUiState.value.copy(
                     showDialog = false,
                     selectedPlayers = (((_teamSetupUiState.value.selectedPlayers) - event.player) as ArrayList<Player>)
                 )
 
             }
-            TeamSetupUIEvent.OnAddPlayerScreenNext -> {
+            TeamSetupUIEventUpdated.OnAddPlayerScreenNext -> {
                 viewModelScope.launch {
                     uploadTeamLogo()
                 }
             }
-            TeamSetupUIEvent.OnLogoUploadSuccess -> {
+            TeamSetupUIEventUpdated.OnLogoUploadSuccess -> {
                 viewModelScope.launch { createTeam() }
+            }
+            is TeamSetupUIEventUpdated.OnNameValueChange -> {
+                /*_teamSetupUiState.value = _teamSetupUiState.value.copy(
+                    inviteMemberName = (((_teamSetupUiState.value.inviteMemberName + _teamSetupUiState.value.inviteMemberName[event.index]) as MutableList<String>))
+                )*/
+                /*  _teamSetupUiState.value = _teamSetupUiState.value.copy(
+                      inviteMemberName = (((_teamSetupUiState.value.inviteMemberName + _teamSetupUiState.value.inviteMemberName[event.index]) as MutableList<String>))
+                  )*/
+//                _teamSetupUiState.value.inviteMemberName.add(index = event.index,event.name)
+//                _teamSetupUiState.value.inviteMemberName[event.index] = event.name
+//                _teamSetupUiState.value = _teamSetupUiState.value.copy(
+//                    inviteMemberName = _teamSetupUiState.value.inviteMemberName.add(index = event.index,event.name)
+//                _teamSetupUiState.value = _teamSetupUiState.value.copy(
+//                    inviteMemberName = (teamSetupUiState.value.inviteMemberName[event.index].apply {
+//                        event.name
+//                    }))
+                _teamSetupUiState.value.inviteMemberName[event.index] = event.name
+
+//                _teamSetupUiState.value=_teamSetupUiState.value.copy()
+
+            }
+            is TeamSetupUIEventUpdated.OnEmailValueChange -> {
+                /* _teamSetupUiState.value = _teamSetupUiState.value.copy(
+                     inviteMemberName = ((_teamSetupUiState.value.inviteMemberName + event.email) as MutableList<String>)
+                 )*/
+//                _teamSetupUiState.value.inviteMemberName.add(index = event.index,event.email)
+                _teamSetupUiState.value.inviteMemberEmail[event.index] = event.email
+
+
+            }
+            is TeamSetupUIEventUpdated.OnInviteCountValueChange -> {
+
+                _teamSetupUiState.value = _teamSetupUiState.value.copy(
+                    inviteMemberName = (((_teamSetupUiState.value.inviteMemberName) + "") as ArrayList<String>),
+                    inviteMemberEmail = (((_teamSetupUiState.value.inviteMemberEmail) + "") as ArrayList<String>)
+                )
+
+                _teamSetupUiState.value =
+                    _teamSetupUiState.value.copy(inviteMemberCount = _teamSetupUiState.value.inviteMemberCount + 1)
+
+
+
             }
         }
     }
@@ -168,7 +217,7 @@ class SetupTeamViewModel @Inject constructor(
         val file = getFileFromUri(getApplication<Application>().applicationContext, uri)
 
         if (file != null) {
-            val size = Integer.parseInt((file.length()/1024).toString())
+            val size = Integer.parseInt((file.length() / 1024).toString())
             Timber.i("Filesize compressed --> $size")
         }
 
@@ -198,7 +247,7 @@ class SetupTeamViewModel @Inject constructor(
                 uploadLogoResponse.value.let { response ->
                     if (response.status) {
                         _teamSetupUiState.value =
-                            _teamSetupUiState.value.copy(teamImageServerUrl =uploadLogoResponse.value.data.data)
+                            _teamSetupUiState.value.copy(teamImageServerUrl = uploadLogoResponse.value.data.data)
                         _teamSetupChannel.send(
                             TeamSetupChannel.OnLogoUpload
                         )
@@ -225,7 +274,7 @@ class SetupTeamViewModel @Inject constructor(
         }
         val request = CreateTeamRequest(
             name = _teamSetupUiState.value.teamName,
-            colorCode = _teamSetupUiState.value.teamColor,
+            colorCode = _teamSetupUiState.value.teamColorPrimary,
             players = playersId as ArrayList<String>,
             coaches = arrayListOf("6315a53881aa3c6a26d51121"),
             logo = _teamSetupUiState.value.teamImageServerUrl
@@ -255,10 +304,8 @@ class SetupTeamViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 createTeamResponse.value.let { response ->
                     if (response.status) {
-                        */
-/*   _teamSetupUiState.value =
-                               _teamSetupUiState.value.copy(teamImageUri = createTeamResponse.value.data)*//*
-
+                        /*   _teamSetupUiState.value =
+                               _teamSetupUiState.value.copy(teamImageUri = createTeamResponse.value.data)*/
                         _teamSetupChannel.send(
                             TeamSetupChannel.OnTeamCreate(response.data.Id)
                         )
@@ -293,4 +340,8 @@ sealed class TeamSetupChannel {
     object OnLogoUpload : TeamSetupChannel()
     data class OnTeamCreate(val teamId: String) : TeamSetupChannel()
 
-}*/
+}
+
+fun <T> List<T>.updateElement(predicate: (T) -> Boolean, transform: (T) -> T): List<T> {
+    return map { if (predicate(it)) transform(it) else it }
+}
