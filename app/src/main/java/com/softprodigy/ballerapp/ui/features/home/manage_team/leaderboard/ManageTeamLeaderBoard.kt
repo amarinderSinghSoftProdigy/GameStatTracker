@@ -1,5 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.home.manage_team.leaderboard
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
@@ -28,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -40,6 +43,10 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
 import com.softprodigy.ballerapp.ui.theme.appColors
+import com.softprodigy.ballerapp.ui.utils.dragDrop.ReorderableItem
+import com.softprodigy.ballerapp.ui.utils.dragDrop.detectReorderAfterLongPress
+import com.softprodigy.ballerapp.ui.utils.dragDrop.rememberReorderableLazyListState
+import com.softprodigy.ballerapp.ui.utils.dragDrop.reorderable
 
 @Composable
 fun ManageTeamLeaderBoard(vm: ManageLeaderBoardViewModel = hiltViewModel()) {
@@ -78,35 +85,43 @@ fun ManageTeamLeaderBoard(vm: ManageLeaderBoardViewModel = hiltViewModel()) {
                     fontSize = dimensionResource(id = R.dimen.txt_size_10).value.sp,
                     color = ColorBWGrayLight,
                     modifier = Modifier.clickable {
-
-                        leaderBoardList.value.forEachIndexed { index, _ ->
-                            leaderBoardList.value = leaderBoardList.value.toMutableList().also {
-                                it[index] = it[index].copy(isSelected = true)
-                            }
-                        }
+                        vm.updateSelection("All")
                     }
                 )
             }
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
-
+            val recordState =
+                rememberReorderableLazyListState(
+                    onMove = vm::moveItem,
+                    canDragOver = vm::isDragEnabled
+                )
             LazyColumn(
+                state = recordState.listState,
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
                         color = Color.White,
                         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+                    )
+                    .then(
+                        Modifier
+                            .reorderable(recordState)
+                            .detectReorderAfterLongPress(recordState)
                     ),
 
                 ) {
-
-                items(leaderBoardList.value.size) { index ->
-                    LeaderBoardItem(
-                        leaderBoardList.value[index].name,
-                        selected = leaderBoardList.value[index].isSelected
-                    ) {
-                        leaderBoardList.value = leaderBoardList.value.toMutableList().also {
-                            it[index] = it[index].copy(isSelected = !it[index].isSelected)
+                items(state.leaderBoardList, { item -> item.name }) { item ->
+                    ReorderableItem(reorderableState = recordState, key = item.name) { dragging ->
+                        val elevation =
+                            animateDpAsState(if (dragging) dimensionResource(id = R.dimen.size_10dp) else 0.dp)
+                        LeaderBoardItem(
+                            modifier = Modifier
+                                .shadow(elevation.value),
+                            item.name,
+                            selected = state.selected.contains(item.name)
+                        ) {
+                            vm.updateSelection(item.name)
                         }
                     }
                 }
@@ -117,13 +132,15 @@ fun ManageTeamLeaderBoard(vm: ManageLeaderBoardViewModel = hiltViewModel()) {
 
 @Composable
 fun LeaderBoardItem(
+    modifier: Modifier = Modifier,
     points: String,
     selected: Boolean,
     onSelectionChange: () -> Unit,
 ) {
 
     Row(
-        modifier = Modifier
+        modifier = modifier
+            .background(color = Color.White)
             .fillMaxWidth()
             .padding(
                 start = dimensionResource(id = R.dimen.size_16dp),

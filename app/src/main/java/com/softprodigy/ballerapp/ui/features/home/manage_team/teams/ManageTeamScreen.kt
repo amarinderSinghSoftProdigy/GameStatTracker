@@ -59,8 +59,8 @@ import com.softprodigy.ballerapp.common.validTeamName
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.ColorPickerBottomSheet
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.UpdateColor
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.ColorPickerBottomSheet
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.UpdateColor
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
