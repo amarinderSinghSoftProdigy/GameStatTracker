@@ -19,8 +19,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,7 +38,7 @@ import com.softprodigy.ballerapp.ui.theme.ColorMainPrimary
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun SelectProfileScreen(vm: SelectProfileViewModel = hiltViewModel()) {
+fun SelectProfileScreen(vm: SelectProfileViewModel = hiltViewModel(), onNextClick: () -> Unit) {
 
     val state = vm.selectProfileUiState.value
 
@@ -96,7 +94,7 @@ fun SelectProfileScreen(vm: SelectProfileViewModel = hiltViewModel()) {
                 secondText = stringResource(id = R.string.next),
                 onBackClick = { },
                 onNextClick = {
-                    //    onNextClick.invoke(selectedUserType.value ?: "")
+                    onNextClick()
                 },
                 enableState = state.isSelectedRole.isNotEmpty(),
                 showOnlyNext = true,

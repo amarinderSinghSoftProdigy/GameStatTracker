@@ -1,6 +1,5 @@
 package com.softprodigy.ballerapp.ui.features.home.teams.leaderboard
 
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -18,7 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -31,14 +30,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
@@ -53,10 +50,6 @@ import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
 import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
 import com.softprodigy.ballerapp.ui.theme.ColorPrimaryOrange
 import com.softprodigy.ballerapp.ui.theme.appColors
-import com.softprodigy.ballerapp.ui.utils.dragDrop.ReorderableItem
-import com.softprodigy.ballerapp.ui.utils.dragDrop.detectReorderAfterLongPress
-import com.softprodigy.ballerapp.ui.utils.dragDrop.rememberReorderableLazyListState
-import com.softprodigy.ballerapp.ui.utils.dragDrop.reorderable
 import kotlinx.coroutines.launch
 
 @Composable
@@ -87,34 +80,20 @@ fun LeaderBoardScreen(vm: LeaderBoardViewModel = hiltViewModel()) {
         Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
         LeaderTopTabs(pagerState, leaderTabData)
         Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
-        val recordState =
-            rememberReorderableLazyListState(onMove = vm::moveItem, canDragOver = vm::isDragEnabled)
         LazyColumn(
-            state = recordState.listState,
             modifier = Modifier
                 .fillMaxWidth()
-                .then(
-                    Modifier
-                        .reorderable(recordState)
-                        .detectReorderAfterLongPress(recordState)
-                )
         ) {
-            var count = 1
-            items(state.leaders, { item -> item._id }) { item ->
-                ReorderableItem(reorderableState = recordState, key = item._id) { dragging ->
-                    val elevation =
-                        animateDpAsState(if (dragging) dimensionResource(id = R.dimen.size_10dp) else 0.dp)
-                    LeaderListItem(
-                        modifier = Modifier
-                            .shadow(elevation.value),
-                        count,
-                        leader = item,
-                        selected = state.selectedLeader == item
-                    ) {
-                        onLeaderSelectionChange.invoke(item)
-                    }
+            itemsIndexed(state.leaders) { index, item ->
+                val srNo = index + 1
+                LeaderListItem(
+                    srNo = srNo,
+                    leader = item,
+                    selected = state.selectedLeader == item
+                ) {
+                    onLeaderSelectionChange.invoke(item)
+
                 }
-                count += 1
             }
         }
     }
@@ -198,9 +177,9 @@ fun LeaderListItem(
                         .size(dimensionResource(id = R.dimen.size_32dp))
                         .clip(CircleShape)
                         .border(
-                            width =dimensionResource(id = R.dimen.size_2dp),
-                            color = if(srNo<=3) ColorPrimaryOrange  else Color.Transparent,
-                            shape=CircleShape
+                            width = dimensionResource(id = R.dimen.size_2dp),
+                            color = if (srNo <= 3) ColorPrimaryOrange else Color.Transparent,
+                            shape = CircleShape
                         ),
                     contentScale = ContentScale.FillBounds
 

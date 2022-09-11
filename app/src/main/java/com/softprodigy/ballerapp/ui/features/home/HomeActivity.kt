@@ -84,7 +84,7 @@ class HomeActivity : ComponentActivity() {
                                             homeViewModel.setDialog(true)
                                         },
                                         iconClick = {
-                                            homeViewModel.setLogoutDialog(true)
+                                            navController.navigate(Route.MANAGED_TEAM_SCREEN)
                                         }
                                     )
                                 }
@@ -131,8 +131,8 @@ fun NavControllerComposable(
     val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = hiltViewModel()
     NavHost(navController, startDestination = Route.HOME_SCREEN) {
         composable(route = Route.HOME_SCREEN) {
-            HomeScreen(name = "")
-            //   HomeFirstTimeLoginScreen()
+            HomeScreen(name = "") { homeViewModel.setLogoutDialog(true) }
+            //HomeFirstTimeLoginScreen()
         }
         composable(route = Route.TEAMS_SCREEN) {
             homeViewModel.setTopBar(
@@ -154,10 +154,21 @@ fun NavControllerComposable(
             }
         }
         composable(route = Route.EVENTS_SCREEN) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    topBar = TopBar.EVENT,
+                )
+            )
             EventsScreen(name = "")
         }
 
         composable(route = Route.MANAGED_TEAM_SCREEN) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = stringResource(id = R.string.manage_team),
+                    topBar = TopBar.SINGLE_LABEL_BACK,
+                )
+            )
             MainManageTeamScreen()
         }
 

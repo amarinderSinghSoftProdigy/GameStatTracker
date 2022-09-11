@@ -25,6 +25,10 @@ class StandingViewModel @Inject constructor(
         private set
 
     init {
+        getStandings()
+    }
+
+    private fun getStandings() {
         viewModelScope.launch { getTeamStanding() }
     }
 

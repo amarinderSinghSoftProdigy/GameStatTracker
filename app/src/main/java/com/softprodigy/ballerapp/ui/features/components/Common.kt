@@ -1,6 +1,5 @@
 package com.softprodigy.ballerapp.ui.features.components
 
-import android.util.Log
 import androidx.annotation.FloatRange
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.BorderStroke
@@ -11,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentColor
@@ -44,6 +45,7 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.ui.theme.ButtonColor
 import com.softprodigy.ballerapp.ui.theme.appColors
+import timber.log.Timber
 
 @Composable
 fun stringResourceByName(name: String): String {
@@ -104,7 +106,7 @@ fun BoxScope.CommonTabView(
                         labelClick()
                     }
                 } else {
-                    Log.e("error ", " click null ")
+                    Timber.e("error")
                 }
             }
             .padding(all = dimensionResource(id = R.dimen.size_16dp)),
@@ -135,9 +137,7 @@ fun BoxScope.CommonTabView(
     }
 
     //Add the checks where we want to display the icon on the right corner
-    if (topBarData.topBar == TopBar.TEAMS || topBarData.topBar == TopBar.EVENT_OPPORTUNITIES ||
-        topBarData.topBar == TopBar.EVENT
-    ) {
+    if (topBarData.topBar == TopBar.TEAMS || topBarData.topBar == TopBar.EVENT_OPPORTUNITIES) {
         val icon = painterResource(id = R.drawable.ic_settings)
         Icon(
             painter = icon,
@@ -248,6 +248,15 @@ fun DialogButton(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun CommonProgressBar() {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        CircularProgressIndicator(
+            color = AppConstants.SELECTED_COLOR
+        )
     }
 }
 
