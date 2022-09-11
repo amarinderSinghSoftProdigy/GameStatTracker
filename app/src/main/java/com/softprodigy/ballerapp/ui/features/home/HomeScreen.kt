@@ -77,7 +77,8 @@ fun HomeScreen(name: String?, logoClick: () -> Unit) {
             ) {
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth().clickable { logoClick() }
+                        .fillMaxWidth()
+                        .clickable { logoClick() }
                         .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                     contentAlignment = Alignment.CenterStart
                 ) {
@@ -195,9 +196,9 @@ fun HomeScreen(name: String?, logoClick: () -> Unit) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
             Row {
-                EventItem("my_leagues", "leagues", "2")
+                EventItem("my_leagues", "leagues", "2", R.drawable.ic_leagues)
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                EventItem("all_leagues", "leagues", "4")
+                EventItem("all_leagues", "leagues", "4", R.drawable.ic_leagues)
             }
 
         }
@@ -208,7 +209,12 @@ fun HomeScreen(name: String?, logoClick: () -> Unit) {
 }
 
 @Composable
-fun RowScope.EventItem(headingId: String, stringId: String, value: String) {
+fun RowScope.EventItem(
+    headingId: String,
+    stringId: String,
+    value: String,
+    painter: Int = R.drawable.ic_events
+) {
     UserFlowBackground(
         padding = 0.dp,
         modifier = Modifier
@@ -224,7 +230,7 @@ fun RowScope.EventItem(headingId: String, stringId: String, value: String) {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_events),
+                    painter = painterResource(painter),
                     contentDescription = null,
                     tint = MaterialTheme.appColors.material.primaryVariant
                 )
