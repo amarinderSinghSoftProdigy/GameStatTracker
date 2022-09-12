@@ -94,7 +94,8 @@ fun ProfileTab(
                     AppText(
                         text = stringResource(id = R.string.parents),
                         style = MaterialTheme.typography.h6,
-                        color = ColorBWBlack
+                        color = ColorBWBlack,
+                        fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
                     Row(
@@ -240,8 +241,8 @@ fun RowScope.ParentItem(relation: String, value: String, imageUrl: String) {
             )
             AppText(
                 text = value,
-                style = MaterialTheme.typography.h6,
-                color = text_field_label
+                style = MaterialTheme.typography.h5,
+                color = ColorBWGrayLight
             )
         }
 
@@ -256,13 +257,13 @@ fun RowScope.DetailItem(stringId: String, value: String) {
     ) {
         AppText(
             text = stringResourceByName(stringId),
-            style = MaterialTheme.typography.h6,
-            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+            style = MaterialTheme.typography.h5,
+            color =ColorBWGrayLight
         )
         AppText(
             text = value,
-            style = MaterialTheme.typography.h6,
-            color = text_field_label
+            style = MaterialTheme.typography.h5,
+            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
         )
     }
 }
@@ -284,7 +285,8 @@ fun TeamList() {
             AppText(
                 text = stringResource(id = R.string.teams_label),
                 style = MaterialTheme.typography.h6,
-                color = ColorBWBlack
+                color = ColorBWBlack,
+                fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
             teams.forEach { team ->
@@ -304,7 +306,7 @@ fun TeamList() {
                         ) {
                             AppText(
                                 text = team.name,
-                                style = MaterialTheme.typography.h6,
+                                style = MaterialTheme.typography.h5,
                                 color = ColorBWBlack
                             )
                             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_5dp)))
@@ -341,13 +343,13 @@ private fun PreferenceItem(
             ) {
                 AppText(
                     text = firstKey,
-                    style = MaterialTheme.typography.h6,
-                    color = text_field_label,
+                    style = MaterialTheme.typography.h5,
+                    color = ColorBWGrayLight,
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_5dp)))
                 AppText(
                     text = firstValue,
-                    style = MaterialTheme.typography.h6,
+                    style = MaterialTheme.typography.h5,
                     color = ColorBWBlack
                 )
 
@@ -358,13 +360,13 @@ private fun PreferenceItem(
             ) {
                 AppText(
                     text = secondKey,
-                    style = MaterialTheme.typography.h6,
-                    color = text_field_label
+                    style = MaterialTheme.typography.h5,
+                    color = ColorBWGrayLight
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_5dp)))
                 AppText(
                     text = secondValue,
-                    style = MaterialTheme.typography.h6,
+                    style = MaterialTheme.typography.h5,
                     color = ColorBWBlack
                 )
 
