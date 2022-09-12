@@ -112,9 +112,19 @@ class SetupTeamViewModelUpdated @Inject constructor(
 
             }
             TeamSetupUIEventUpdated.OnAddPlayerScreenNext -> {
+
+                /*for Ui QA build for manual navigation */
+
                 viewModelScope.launch {
-                    uploadTeamLogo()
+                    _teamSetupChannel.send(
+                        TeamSetupChannel.OnTeamCreate(""))
                 }
+
+                // TODO: temp disable -- remove above code and uncomment below later
+
+                /*viewModelScope.launch {
+                    uploadTeamLogo()
+                }*/
             }
             TeamSetupUIEventUpdated.OnLogoUploadSuccess -> {
                 viewModelScope.launch { createTeam() }
