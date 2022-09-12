@@ -50,7 +50,7 @@ fun ManageTeamsContent(pagerState: PagerState, onAddPlayerCLick: () -> Unit) {
     ) { index ->
         when (index) {
             0 -> ManageTeamScreen()
-            1 -> ManageTeamRoster() {
+            1 -> ManageTeamRoster {
                 onAddPlayerCLick.invoke()
             }
             2 -> ManageTeamLeaderBoard()

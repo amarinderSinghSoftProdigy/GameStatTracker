@@ -29,13 +29,15 @@ class ManageLeaderBoardViewModel @Inject constructor(application: Application) :
             )
     }
 
-    fun updateSelection(name: String) {
+    private fun updateSelection(name: String) {
         val list = _manageLeaderBoardUiState.value.selected
         if (name == "All") {
             _manageLeaderBoardUiState.value.leaderBoardList.forEach {
                 if (!list.contains(it.name))
                     list.add(it.name)
             }
+        } else if (name.isEmpty()) {
+            list.clear()
         } else {
             if (list.contains(name)) {
                 list.remove(name)
@@ -45,16 +47,16 @@ class ManageLeaderBoardViewModel @Inject constructor(application: Application) :
         }
         _manageLeaderBoardUiState.value =
             _manageLeaderBoardUiState.value.copy(
-                selected = list
+                selected = list,
+                leaderBoardList = _manageLeaderBoardUiState.value.leaderBoardList.toMutableList()
             )
     }
 
     fun onEvent(event: ManageLeaderBoardUIEvent) {
 
         when (event) {
-            is ManageLeaderBoardUIEvent.OnTeamSelected -> {
-                _manageLeaderBoardUiState.value =
-                    _manageLeaderBoardUiState.value.copy(checked = event.team)
+            is ManageLeaderBoardUIEvent.OnItemSelected -> {
+                updateSelection(event.name)
             }
         }
 
