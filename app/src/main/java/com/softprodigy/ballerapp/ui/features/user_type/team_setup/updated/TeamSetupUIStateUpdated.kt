@@ -20,8 +20,8 @@ data class TeamSetupUIStateUpdated(
     val showDialog: Boolean = false,
     val removePlayer: Player? = null,
 
-    val inviteMemberName: MutableList<String> = mutableListOf(),
-    val inviteMemberEmail: MutableList<String> = mutableListOf(),
-    var inviteMemberCount: Int = 0,
-
+    /* Initialising default value with three*/
+    val inviteMemberName: ArrayList<String> = arrayListOf("","",""),
+    val inviteMemberEmail: ArrayList<String> = arrayListOf("","",""),
+    var inviteMemberCount: Int = 3,
     )

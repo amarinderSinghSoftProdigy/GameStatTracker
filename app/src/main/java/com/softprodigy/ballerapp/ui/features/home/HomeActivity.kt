@@ -31,15 +31,9 @@ import com.softprodigy.ballerapp.MainActivity
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.Route
+import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
-import com.softprodigy.ballerapp.ui.features.components.BottomNavigationBar
-import com.softprodigy.ballerapp.ui.features.components.CommonTabView
-import com.softprodigy.ballerapp.ui.features.components.LogoutDialog
-import com.softprodigy.ballerapp.ui.features.components.TabBar
-import com.softprodigy.ballerapp.ui.features.components.TopBar
-import com.softprodigy.ballerapp.ui.features.components.TopBarData
-import com.softprodigy.ballerapp.ui.features.components.fromHex
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.manage_team.MainManageTeamScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.AddPlayersScreenUpdated
@@ -149,9 +143,11 @@ fun NavControllerComposable(
                 showDialog = showDialog,
                 setupTeamViewModelUpdated = setupTeamViewModelUpdated,
                 dismissDialog = { homeViewModel.setDialog(it) },
-            ) {
-                navController.navigate(Route.ADD_PLAYER_SCREEN + "/${it.Id}")
-            }
+                OnTeamDetailsSuccess = { teamId ->
+                    UserStorage.teamId=teamId
+//                    navController.navigate(Route.ADD_PLAYER_SCREEN + "/${teamId}")
+                },
+            )
         }
         composable(route = Route.EVENTS_SCREEN) {
             homeViewModel.setTopBar(
@@ -170,7 +166,8 @@ fun NavControllerComposable(
                 )
             )
             MainManageTeamScreen(onAddPlayerCLick = {
-                navController.navigate(Route.ADD_PLAYER_SCREEN + "/${"Id"}")
+                navController.navigate(Route.ADD_PLAYER_SCREEN + "/${UserStorage.teamId}")
+
             })
         }
 
@@ -191,6 +188,8 @@ fun NavControllerComposable(
                     homeViewModel.setScreen(false)
                     navController.popBackStack()
                     //navController.navigate(TEAMS_SCREEN)
+                }, onInvitationSuccess = {
+                    navController.popBackStack()
                 })
         }
     }

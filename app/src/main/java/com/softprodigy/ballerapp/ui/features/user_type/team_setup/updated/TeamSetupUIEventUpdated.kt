@@ -22,6 +22,9 @@ sealed class TeamSetupUIEventUpdated {
 
     data class OnNameValueChange(val index:Int,val name:String): TeamSetupUIEventUpdated()
     data class OnEmailValueChange(val index:Int,val email:String): TeamSetupUIEventUpdated()
-    data class OnInviteCountValueChange(val isAdd:Boolean): TeamSetupUIEventUpdated()
+    data class OnInviteCountValueChange(val index: Int? = null, val addIntent: Boolean): TeamSetupUIEventUpdated()
+
+    data class OnInviteTeamMembers(val teamId:String): TeamSetupUIEventUpdated()
+
 
 }

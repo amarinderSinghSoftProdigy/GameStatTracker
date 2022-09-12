@@ -2,6 +2,7 @@ package com.softprodigy.ballerapp.domain.repository
 
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.data.request.CreateTeamRequest
+import com.softprodigy.ballerapp.data.request.UpdateTeamRequest
 import com.softprodigy.ballerapp.data.response.CreateTeamResponse
 import com.softprodigy.ballerapp.data.response.Player
 import com.softprodigy.ballerapp.data.response.Standing
@@ -31,4 +32,6 @@ interface ITeamRepository {
     suspend fun getTeamsStanding(page: Int = 1, limit: Int = 10): ResultWrapper<BaseResponse<ArrayList<Standing>>>
 
     suspend fun getTeamCoachPlayerByID(id: String): ResultWrapper<BaseResponse<RoasterResponse>>
+
+    suspend fun inviteMembersByTeamId(updateTeamRequest: UpdateTeamRequest): ResultWrapper<BaseResponse<Any>>
 }

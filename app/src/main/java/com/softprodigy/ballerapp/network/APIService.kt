@@ -79,4 +79,7 @@ interface APIService {
     @GET("${ApiConstants.COACH_PLAYER}/{id}")
     suspend fun getCoachPlayersByID(@Path("id") id: String): BaseResponse<RoasterResponse>
 
+    @PUT(ApiConstants.SEND_INVITATION)
+    suspend fun sendInvitation(@Body updateTeamRequest:UpdateTeamRequest):BaseResponse<Any>
+
 }
