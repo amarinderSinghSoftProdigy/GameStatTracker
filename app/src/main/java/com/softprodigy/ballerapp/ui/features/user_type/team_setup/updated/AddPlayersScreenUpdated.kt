@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.isValidEmail
+import com.softprodigy.ballerapp.common.validName
 import com.softprodigy.ballerapp.data.response.Player
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
@@ -56,13 +57,13 @@ fun AddPlayersScreenUpdated(
     val focusManager = LocalFocusManager.current
 
     val nameTextFiled = remember {
-        mutableStateListOf<String>()
+        mutableStateListOf<String>("", "", "", "", "")
     }
     val emailTextField = remember {
-        mutableStateListOf<String>()
+        mutableStateListOf<String>("", "", "", "", "")
     }
     var rowCount by rememberSaveable {
-        mutableStateOf(0)
+        mutableStateOf(5)
     }
 
 
@@ -117,7 +118,11 @@ fun AddPlayersScreenUpdated(
                             Column(Modifier.fillMaxSize()) {
 
                                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
-                                Row(Modifier.fillMaxWidth()) {
+                                Row(
+                                    Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
                                     AppSearchOutlinedTextField(
                                         modifier = Modifier
                                             .width(dimensionResource(id = R.dimen.size_100dp))
@@ -139,8 +144,9 @@ fun AddPlayersScreenUpdated(
                                             )
                                         },
                                         singleLine = true,
-
-                                        )
+                                        isError = !validName(nameTextFiled[index]) && nameTextFiled[index].isNotEmpty() || nameTextFiled[index].length > 30,
+                                        errorMessage = stringResource(id = R.string.valid_first_name),
+                                    )
                                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
 
                                     AppSearchOutlinedTextField(
@@ -169,7 +175,8 @@ fun AddPlayersScreenUpdated(
                                             keyboardType = KeyboardType.Email
 
                                         ),
-                                    isError = (!emailTextField[index].isValidEmail() && emailTextField[index].isNotEmpty() || emailTextField[index].length > 45),
+                                        isError = (!emailTextField[index].isValidEmail() && emailTextField[index].isNotEmpty() || emailTextField[index].length > 45),
+                                        errorMessage = stringResource(id = R.string.email_error)
                                     )
                                 }
                             }
@@ -205,7 +212,10 @@ fun AddPlayersScreenUpdated(
                             //TODO Add uupdate team api and add the newly selected player in the api.
                         }
                     },
-                    enableState = state.selectedPlayers.isNotEmpty(),
+                    enableState =
+                    nameTextFiled.all() { it.isNotEmpty() } &&
+                            nameTextFiled.all() { validName(it) }
+                            && emailTextField.all() { it.isValidEmail() },
                     themed = true,
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))

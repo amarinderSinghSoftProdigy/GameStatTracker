@@ -40,7 +40,7 @@ import com.softprodigy.ballerapp.ui.features.components.ButtonWithLeadingIcon
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun ManageTeamRoster(vm: ManageTeamRstrViewModel = hiltViewModel()) {
+fun ManageTeamRoster(vm: ManageTeamRstrViewModel = hiltViewModel(),onAddPlayerCLick:(String)-> Unit) {
     val state = vm.manageTeamRstrState.value
     Box {
         Column(
@@ -68,7 +68,11 @@ fun ManageTeamRoster(vm: ManageTeamRstrViewModel = hiltViewModel()) {
             ButtonWithLeadingIcon(
                 modifier = Modifier.align(Alignment.Center),
                 text = stringResource(id = R.string.add_player),
-                onClick = { vm.onEvent(ManageTeamRstrUIEvent.OnDialogClick(true)) },
+                onClick = {
+//                    vm.onEvent(ManageTeamRstrUIEvent.OnDialogClick(true))
+
+                    onAddPlayerCLick.invoke("")
+                          },
                 painter = painterResource(id = R.drawable.ic_add_button),
             )
         }
