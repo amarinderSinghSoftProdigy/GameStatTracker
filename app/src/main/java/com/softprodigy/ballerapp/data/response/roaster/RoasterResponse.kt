@@ -7,8 +7,8 @@ data class RoasterResponse(
     @SerializedName("colorCode") val colorCode: String = "",
     @SerializedName("logo") val logo: String = "",
     @SerializedName("name") val name: String = "",
-    @SerializedName("playerDetails") val playerDetails: List<PlayerDetail> = emptyList(),
-    @SerializedName("coachDetails") val coachDetails: List<PlayerDetail> = emptyList()
+    @SerializedName("playerDetails") val playerDetails: List<PlayerDetail> = arrayListOf(),
+    @SerializedName("coachDetails") val coachDetails: List<PlayerDetail> = arrayListOf()
 )
 
 data class PlayerDetail(
@@ -17,7 +17,7 @@ data class PlayerDetail(
     @SerializedName("_id")
     val _id: String = "",
     @SerializedName("accessPermissions")
-    val accessPermissions: List<Any> = emptyList(),
+    val accessPermissions: List<Any> = arrayListOf(),
     @SerializedName("address")
     val address: String = "",
     @SerializedName("birthdate")
@@ -51,7 +51,7 @@ data class PlayerDetail(
     @SerializedName("jerseyNumber")
     val jerseyNumber: String = "",
     @SerializedName("jerseyNumberPerferences")
-    val jerseyNumberPerferences: List<String> = emptyList(),
+    val jerseyNumberPerferences: List<String> = arrayListOf(),
     @SerializedName("lastName")
     val lastName: String = "",
     @SerializedName("loginType")
@@ -69,7 +69,7 @@ data class PlayerDetail(
     @SerializedName("position")
     val position: String = "",
     @SerializedName("positionPlayed")
-    val positionPlayed: List<String> = emptyList(),
+    val positionPlayed: List<String> = arrayListOf(),
     @SerializedName("profileImage")
     val profileImage: String = "",
     @SerializedName("refreshToken")
@@ -85,7 +85,7 @@ data class PlayerDetail(
     @SerializedName("status")
     val status: String = "",
     @SerializedName("teamId")
-    val teamId: List<String> = emptyList(),
+    val teamId: List<String> = arrayListOf(),
     @SerializedName("updatedAt")
     val updatedAt: String = "",
     @SerializedName("waistSize")

@@ -17,5 +17,5 @@ data class HomeState(
     val showDialog: Boolean = false,
     val showLogout: Boolean = false,
 
-    val homeItemList: List<HomeItemResponse> = emptyList()
+    val homeItemList: List<HomeItemResponse> = arrayListOf()
 )

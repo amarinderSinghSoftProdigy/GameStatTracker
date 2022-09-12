@@ -169,7 +169,9 @@ fun NavControllerComposable(
                     topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
-            MainManageTeamScreen()
+            MainManageTeamScreen(onAddPlayerCLick = {
+                navController.navigate(Route.ADD_PLAYER_SCREEN + "/${"Id"}")
+            })
         }
 
         composable(

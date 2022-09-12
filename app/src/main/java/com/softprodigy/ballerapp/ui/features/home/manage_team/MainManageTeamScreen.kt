@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun MainManageTeamScreen() {
+fun MainManageTeamScreen(onAddPlayerCLick: (String) -> Unit) {
     val managedTabData = listOf(
         ManageTeamsTabItems.Team,
         ManageTeamsTabItems.Roaster,
@@ -36,21 +36,25 @@ fun MainManageTeamScreen() {
 
     Column {
         ManageTeamsTopTabs(pagerState = pagerState, tabData = managedTabData)
-        ManageTeamsContent(pagerState = pagerState)
+        ManageTeamsContent(pagerState = pagerState, onAddPlayerCLick)
     }
 
 }
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun ManageTeamsContent(pagerState: PagerState) {
+fun ManageTeamsContent(pagerState: PagerState, onAddPlayerCLick: (String) -> Unit) {
     HorizontalPager(
         state = pagerState,
         modifier = Modifier.fillMaxSize()
     ) { index ->
         when (index) {
             0 -> ManageTeamScreen()
-            1 -> ManageTeamRoster()
+            1 -> ManageTeamRoster() {
+                onAddPlayerCLick.invoke("")
+//                navController.navigate(Route.ADD_PLAYER_SCREEN + "/${it.Id}")
+
+            }
             2 -> ManageTeamLeaderBoard()
             /*3 -> ManageTeamScreen()*/
         }
