@@ -22,6 +22,8 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.*
 import androidx.compose.runtime.*
 import com.google.accompanist.pager.pagerTabIndicatorOffset
+import com.softprodigy.ballerapp.ui.features.profile.tabs.DocumentTab
+import com.softprodigy.ballerapp.ui.features.profile.tabs.ProfileTab
 import com.softprodigy.ballerapp.ui.theme.*
 import kotlinx.coroutines.launch
 
@@ -69,6 +71,7 @@ fun ProfileScreen(
                             textAlign = TextAlign.Center,
                         )
                     }
+                    if(selectedTabLabel==TabItems.Events.stringId)
                     Image(
                         painter = painterResource(id = R.drawable.ic_edit),
                         contentDescription = "",

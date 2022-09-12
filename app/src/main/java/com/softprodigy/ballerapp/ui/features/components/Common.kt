@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentColor
@@ -31,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -41,8 +42,10 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.ui.theme.ButtonColor
 import com.softprodigy.ballerapp.ui.theme.appColors
+import timber.log.Timber
 
 @Composable
 fun stringResourceByName(name: String): String {
@@ -73,23 +76,24 @@ fun TabBar(
 
 @Composable
 fun BoxScope.CommonTabView(
-    canMoveBack: Boolean = true,
-    user: BottomNavKey,
-    label: String = "",
-    icon: Painter,
-    onLabelClick: () -> Unit,
-    iconClick: () -> Unit
+    topBarData: TopBarData,
+    backClick: () -> Unit = {},
+    iconClick: (() -> Unit)? = null,
+    labelClick: (() -> Unit)? = null,
 ) {
 
-    if (canMoveBack) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_back),
-            contentDescription = "",
-            modifier = Modifier
-                .clickable { }
-                .align(Alignment.CenterStart),
-            tint = Color.White
-        )
+    if (topBarData.topBar.back) {
+        Box(modifier = Modifier
+            .align(Alignment.CenterStart)
+            .clickable {
+                backClick()
+            }) {
+            Icon(
+                modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                painter = painterResource(id = R.drawable.ic_back),
+                contentDescription = "", tint = Color.White
+            )
+        }
     }
 
     Row(
@@ -97,19 +101,32 @@ fun BoxScope.CommonTabView(
             .align(Alignment.Center)
             .background(Color.Transparent)
             .clickable {
-                if (user == BottomNavKey.TEAMS)
-                    onLabelClick()
+                if (topBarData.topBar == TopBar.TEAMS) {
+                    if (labelClick != null) {
+                        labelClick()
+                    }
+                } else {
+                    Timber.e("error")
+                }
             }
             .padding(all = dimensionResource(id = R.dimen.size_16dp)),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        val label = if (topBarData.topBar.stringId.isEmpty()) {
+            if (!topBarData.label.isNullOrEmpty())
+                topBarData.label
+            else
+                stringResource(id = R.string.app_name)
+        } else {
+            stringResourceByName(name = topBarData.topBar.stringId)
+        }
         Text(
             textAlign = TextAlign.Center,
             text = label,
             style = MaterialTheme.typography.h3,
             color = Color.White
         )
-        if (user == BottomNavKey.TEAMS) {
+        if (topBarData.topBar == TopBar.TEAMS) {
             AppSpacer(Modifier.size(dimensionResource(id = R.dimen.size_5dp)))
             Icon(
                 painter = painterResource(id = R.drawable.ic_arrow_down),
@@ -118,15 +135,24 @@ fun BoxScope.CommonTabView(
             )
         }
     }
-    Icon(
-        painter = icon,
-        contentDescription = "",
-        modifier = Modifier
-            .align(Alignment.CenterEnd)
-            .clickable { iconClick() }
-            .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-        tint = Color.White
-    )
+
+    //Add the checks where we want to display the icon on the right corner
+    if (topBarData.topBar == TopBar.TEAMS || topBarData.topBar == TopBar.EVENT_OPPORTUNITIES) {
+        val icon = painterResource(id = R.drawable.ic_settings)
+        Icon(
+            painter = icon,
+            contentDescription = "",
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .clickable {
+                    if (iconClick != null) {
+                        iconClick()
+                    }
+                }
+                .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+            tint = Color.White
+        )
+    }
 
 }
 
@@ -203,9 +229,9 @@ fun DialogButton(
         color = if (onlyBorder)
             Color.Transparent
         else if (enabled)
-            MaterialTheme.appColors.material.primaryVariant
+            AppConstants.SELECTED_COLOR
         else
-            Color.Transparent,
+            colors.bckgroundDisabled,
         contentColor = contentColor.copy(alpha = 1f),
         border = border,
     ) {
@@ -223,4 +249,27 @@ fun DialogButton(
             }
         }
     }
+}
+
+@Composable
+fun CommonProgressBar() {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        CircularProgressIndicator(
+            color = AppConstants.SELECTED_COLOR
+        )
+    }
+}
+
+data class TopBarData(
+    val label: String? = "",
+    val topBar: TopBar,
+)
+
+enum class TopBar(val stringId: String, val back: Boolean) {
+    PROFILE(stringId = "profile_label", back = false),
+    EVENT(stringId = "events_label", back = false),
+    TEAMS(stringId = "teams_label", back = false),
+    EVENT_OPPORTUNITIES(stringId = "events_label", back = true),
+    SINGLE_LABEL_BACK(stringId = "", back = true),
+    SINGLE_LABEL(stringId = "", back = false),
 }

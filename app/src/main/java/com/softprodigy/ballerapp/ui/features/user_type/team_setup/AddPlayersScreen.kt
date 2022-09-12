@@ -1,5 +1,5 @@
 package com.softprodigy.ballerapp.ui.features.user_type.team_setup
-
+/*
 import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -150,12 +150,12 @@ fun AddPlayersScreen(
                             },
                             singleLine = true
                         )
-                        /*Icon(
+                        *//*Icon(
                             painter = painterResource(id = R.drawable.ic_scanner),
                             contentDescription = "",
                             modifier = Modifier.padding(dimensionResource(id = R.dimen.size_16dp)),
                             tint = Color.Unspecified
-                        )*/
+                        )*//*
                     }
 
                     if (!validName(state.search) && state.search.isNotEmpty()) {
@@ -382,7 +382,7 @@ fun AddRemoveButton(icon: Painter, teamColor: String, onItemClick: () -> Unit) {
             .size(dimensionResource(id = R.dimen.size_20dp))
             .background(
                 shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)),
-                color = Color(android.graphics.Color.parseColor("#$teamColor"))
+                            color = Color(android.graphics.Color.parseColor("#$teamColor"))
             )
     ) {
 
@@ -395,4 +395,4 @@ fun AddRemoveButton(icon: Painter, teamColor: String, onItemClick: () -> Unit) {
             tint = Color.White
         )
     }
-}
+}*/

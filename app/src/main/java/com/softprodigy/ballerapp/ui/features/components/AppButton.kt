@@ -1,20 +1,12 @@
 package com.softprodigy.ballerapp.ui.features.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -24,6 +16,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
@@ -161,4 +154,146 @@ fun RowScope.SingleButtonView(text: String, color: Color, painter: Painter, icon
     }
 
 }
+
+@Composable
+fun ButtonWithLeadingIcon(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    painter: Painter,
+    colors: ButtonColor = MaterialTheme.appColors.buttonColor,
+    contentPadding: PaddingValues = PaddingValues(
+        vertical = dimensionResource(id = R.dimen.size_16dp),
+        horizontal = dimensionResource(id = R.dimen.size_24dp),
+    ),
+    isTransParent: Boolean = false,
+    iconSize: Dp = dimensionResource(id = R.dimen.size_10dp)
+) {
+    Row(
+        modifier = modifier
+            .clickable { onClick.invoke() }
+            .border(
+                width = 1.dp,
+                color =
+                if (isTransParent)
+                    MaterialTheme.appColors.editField.borderFocused else {
+                    AppConstants.SELECTED_COLOR
+                },
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_6dp))
+            )
+            .background(
+                color =
+                if (isTransParent) {
+                    MaterialTheme.appColors.material.surface
+                } else {
+                    AppConstants.SELECTED_COLOR
+                },
+                shape = RoundedCornerShape(
+                    dimensionResource(id = R.dimen.size_8dp)
+                )
+            )
+            .padding(contentPadding),
+
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            painter = painter,
+            contentDescription = "",
+            tint = if (isTransParent) {
+                AppConstants.SELECTED_COLOR
+            } else {
+                colors.textEnabled
+            },
+            modifier = Modifier.size(
+                iconSize
+            )
+
+        )
+        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_12dp)))
+
+        AppText(
+            text = text,
+            color = if (isTransParent) {
+                colors.textDisabled
+            } else {
+                colors.textEnabled
+            },
+            style = MaterialTheme.typography.button
+        )
+    }
+}
+
+@Composable
+fun InviteTeamMemberButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    painter: Painter,
+    colors: ButtonColor = MaterialTheme.appColors.buttonColor,
+    contentPadding: PaddingValues = PaddingValues(
+        vertical = dimensionResource(id = R.dimen.size_10dp),
+        horizontal = dimensionResource(id = R.dimen.size_24dp),
+    ),
+    isTransParent: Boolean = false,
+) {
+    Row(
+        modifier = modifier
+            .clickable { onClick.invoke() }
+            .border(
+                width = 1.dp,
+                color =
+                if (isTransParent)
+                    MaterialTheme.appColors.editField.borderFocused else {
+                    AppConstants.SELECTED_COLOR
+                },
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_6dp))
+            )
+            .background(
+                color =
+                if (isTransParent) {
+                    AppConstants.SELECTED_COLOR.copy(alpha = 0.09f)
+                } else {
+                    AppConstants.SELECTED_COLOR
+                },
+                shape = RoundedCornerShape(
+                    dimensionResource(id = R.dimen.size_8dp)
+                )
+            )
+            .padding(contentPadding),
+
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            painter = painter,
+            contentDescription = "",
+            tint= if (isTransParent) {
+                AppConstants.SELECTED_COLOR
+            } else {
+                colors.textEnabled
+            },
+            modifier = Modifier.size(
+                dimensionResource(id = R.dimen.size_10dp)
+            )
+
+        )
+        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_12dp)))
+
+        AppText(
+            text = text,
+            color = if (isTransParent) {
+                AppConstants.SELECTED_COLOR
+            } else {
+                colors.textEnabled
+            },
+            style = MaterialTheme.typography.button
+        )
+    }
+}
+
+
+
+
+
 

@@ -1,6 +1,7 @@
 package com.softprodigy.ballerapp.data.response
 
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
 data class Team(
     @SerializedName("_id") val Id: String = "",
@@ -17,8 +18,4 @@ data class Team(
     @SerializedName("createdAt") val createdAt: String = "",
     @SerializedName("updatedAt") val updatedAt: String? = "",
     @SerializedName("__v") val _v: Int? = null,
-
-    // TODO: added temp
-    @SerializedName("standings") val standings: ArrayList<Team> = arrayListOf(),
-
 )

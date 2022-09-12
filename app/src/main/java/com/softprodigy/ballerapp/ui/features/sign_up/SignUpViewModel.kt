@@ -289,7 +289,7 @@ class SignUpViewModel @Inject constructor(
                             _signUpUiState.value.copy(
                                 isLoading = false,
                                 signUpData = _signUpUiState.value.signUpData.copy(
-                                    profileImage = "${BuildConfig.IMAGE_SERVER}${uploadLogoResponse.value.data.data}"
+                                    profileImage = uploadLogoResponse.value.data.data
                                 )
                             )
                         _signUpChannel.send(

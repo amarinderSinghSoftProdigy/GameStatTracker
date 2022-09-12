@@ -6,6 +6,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
@@ -13,9 +15,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
@@ -36,12 +38,15 @@ import com.softprodigy.ballerapp.ui.features.components.BottomNavigationBar
 import com.softprodigy.ballerapp.ui.features.components.CommonTabView
 import com.softprodigy.ballerapp.ui.features.components.LogoutDialog
 import com.softprodigy.ballerapp.ui.features.components.TabBar
+import com.softprodigy.ballerapp.ui.features.components.TopBar
+import com.softprodigy.ballerapp.ui.features.components.TopBarData
 import com.softprodigy.ballerapp.ui.features.components.fromHex
+import com.softprodigy.ballerapp.ui.features.home.manage_team.MainManageTeamScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileEditScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileScreen
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.AddPlayersScreen
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.SetupTeamViewModel
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.AddPlayersScreenUpdated
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
 import com.softprodigy.ballerapp.ui.theme.appColors
 import dagger.hilt.android.AndroidEntryPoint
@@ -62,19 +67,10 @@ class HomeActivity : ComponentActivity() {
             homeViewModel.setColor(AppConstants.SELECTED_COLOR)
             BallerAppMainTheme(customColor = state.color ?: Color.White) {
                 val navController = rememberNavController()
-                val showDialog = remember { mutableStateOf(false) }
-                val logoutDialog = remember { mutableStateOf(false) }
                 val userType = remember { mutableStateOf(BottomNavKey.HOME) }
-
                 if (state.screen) {
                     Surface {
-                        NavControllerComposable(
-                            homeViewModel,
-                            navController = navController,
-                            showDialog = showDialog.value,
-                            dismissDialog = {
-                                showDialog.value = it
-                            })
+                        NavControllerComposable(homeViewModel, navController = navController)
                     }
                 } else {
                     Scaffold(
@@ -83,36 +79,28 @@ class HomeActivity : ComponentActivity() {
                             if (userType.value != BottomNavKey.HOME) {
                                 TabBar(color = MaterialTheme.appColors.material.primaryVariant) {
                                     CommonTabView(
-                                        canMoveBack = false,
-                                        user = userType.value,
-                                        label = when (userType.value) {
-                                            BottomNavKey.TEAMS -> {
-                                                stringResource(id = R.string.teams_label)
-                                            }
-                                            BottomNavKey.EVENTS -> {
-                                                stringResource(id = R.string.events_label)
-                                            }
-                                            else -> {
-                                                ""
-                                            }
+                                        state.topBar,
+                                        backClick = {
+                                            navController.popBackStack()
                                         },
-                                        icon = painterResource(id = R.drawable.ic_settings),
-                                        onLabelClick = {
-                                            showDialog.value = true
-                                        }, iconClick = {
-                                            logoutDialog.value = true
-                                        })
+                                        labelClick = {
+                                            homeViewModel.setDialog(true)
+                                        },
+                                        iconClick = {
+                                            navController.navigate(Route.MANAGED_TEAM_SCREEN)
+                                        }
+                                    )
                                 }
                             }
                         },
                         content = {
-                            NavControllerComposable(
-                                homeViewModel,
-                                navController = navController,
-                                showDialog = showDialog.value,
-                                dismissDialog = {
-                                    showDialog.value = it
-                                })
+                            Box(modifier = Modifier.padding(it)) {
+                                NavControllerComposable(
+                                    homeViewModel,
+                                    navController = navController,
+                                    showDialog = state.showDialog,
+                                )
+                            }
                         },
                         bottomBar = {
                             BottomNavigationBar(
@@ -124,11 +112,13 @@ class HomeActivity : ComponentActivity() {
                         },
                     )
                 }
-                if (logoutDialog.value) {
-                    LogoutDialog(onDismiss = { logoutDialog.value = false }, onConfirmClick = {
-                        homeViewModel.clearToken()
-                        moveToLogin(this)
-                    })
+                if (state.showLogout) {
+                    LogoutDialog(
+                        onDismiss = { homeViewModel.setLogoutDialog(false) },
+                        onConfirmClick = {
+                            homeViewModel.clearToken()
+                            moveToLogin(this)
+                        })
                 }
             }
         }
@@ -139,22 +129,21 @@ class HomeActivity : ComponentActivity() {
 fun NavControllerComposable(
     homeViewModel: HomeViewModel,
     showDialog: Boolean = false,
-    dismissDialog: (Boolean) -> Unit,
     navController: NavHostController = rememberNavController()
 ) {
-    val setupTeamViewModel: SetupTeamViewModel = hiltViewModel()
+    val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = hiltViewModel()
     NavHost(navController, startDestination = Route.HOME_SCREEN) {
         composable(route = Route.HOME_SCREEN) {
             HomeScreen(name = ""
                 ,gotToProfile={
                 navController.navigate(Route.PROFILE_SCREEN)
             }
-            )
+            ) { homeViewModel.setLogoutDialog(true) }
         }
         composable(route = Route.PROFILE_SCREEN) {
             ProfileScreen(
                 onBackClick = { navController.popBackStack() },
-                moveToEditProfile={   navController.navigate(Route.PROFILE_SETUP_SCREEN)}
+                moveToEditProfile={   navController.navigate(Route.PROFILE_EDIT_SCREEN)}
             )
         }
         composable(route = Route.PROFILE_EDIT_SCREEN) {
@@ -163,20 +152,41 @@ fun NavControllerComposable(
             )
         }
         composable(route = Route.TEAMS_SCREEN) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = stringResource(id = R.string.teams_label),
+                    topBar = TopBar.TEAMS,
+                )
+            )
             BackHandler {
                 homeViewModel.setScreen(false)
             }
             TeamsScreen(
                 name = "",
                 showDialog = showDialog,
-                dismissDialog = dismissDialog,
-                setupTeamViewModel = setupTeamViewModel
+                setupTeamViewModelUpdated = setupTeamViewModelUpdated,
+                dismissDialog = { homeViewModel.setDialog(it) },
             ) {
                 navController.navigate(Route.ADD_PLAYER_SCREEN + "/${it.Id}")
             }
         }
         composable(route = Route.EVENTS_SCREEN) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    topBar = TopBar.EVENT,
+                )
+            )
             EventsScreen(name = "")
+        }
+
+        composable(route = Route.MANAGED_TEAM_SCREEN) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = stringResource(id = R.string.manage_team),
+                    topBar = TopBar.SINGLE_LABEL_BACK,
+                )
+            )
+            MainManageTeamScreen()
         }
 
         composable(
@@ -188,9 +198,9 @@ fun NavControllerComposable(
         ) {
             homeViewModel.setScreen(true)
             val teamId = it.arguments?.getString("teamId")
-            AddPlayersScreen(
+            AddPlayersScreenUpdated(
                 teamId,
-                vm = setupTeamViewModel,
+                vm = setupTeamViewModelUpdated,
                 onBackClick = { navController.popBackStack() },
                 onNextClick = {
                     homeViewModel.setScreen(false)

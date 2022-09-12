@@ -184,6 +184,7 @@ fun EditFields(
     enabled: Boolean = false,
     modifier: Modifier = Modifier,
     trailingIcon: @Composable (() -> Unit)? = null,
+    placeholder: @Composable (() -> Unit)?=null
 ) {
     val customTextSelectionColors = TextSelectionColors(
         handleColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
@@ -216,12 +217,13 @@ fun EditFields(
                         unfocusedBorderColor = Color.Transparent,
                         cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                     ),
-                    textStyle = TextStyle(textAlign = TextAlign.End),
+                    textStyle = TextStyle(textAlign = TextAlign.End,color = ColorBWBlack),
                     singleLine = true,
                     keyboardActions = keyboardActions,
                     keyboardOptions = keyboardOptions,
                     readOnly = enabled,
-                    trailingIcon = trailingIcon
+                    trailingIcon = trailingIcon ,
+                    placeholder=placeholder
                 )
             }
         }
@@ -240,4 +242,74 @@ fun EditFields(
     }
 }
 
+
+@Composable
+fun EditProfileFields(
+    data: String,
+    onValueChange: (String) -> Unit,
+    head: String,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    isError: Boolean = false,
+    errorMessage: String = "",
+    enabled: Boolean = false,
+    modifier: Modifier = Modifier,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    placeholder: @Composable (() -> Unit)?=null
+) {
+    val customTextSelectionColors = TextSelectionColors(
+        handleColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+        backgroundColor = Color.Transparent
+    )
+
+    Column(
+        modifier = modifier
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(dimensionResource(id = R.dimen.size_56dp)),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+
+            AppText(
+                text = head,
+                style = MaterialTheme.typography.h6,
+                color = ColorBWBlack,
+                modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
+            )
+            CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
+                TextField(
+                    value = data, onValueChange = onValueChange,
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        backgroundColor = Color.Transparent,
+                        focusedBorderColor = Color.Transparent,
+                        unfocusedBorderColor = Color.Transparent,
+                        cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    ),
+                    textStyle = TextStyle(textAlign = TextAlign.End,color = ColorBWBlack),
+                    singleLine = true,
+                    keyboardActions = keyboardActions,
+                    keyboardOptions = keyboardOptions,
+                    readOnly = enabled,
+                    trailingIcon = trailingIcon ,
+                    placeholder=placeholder
+                )
+            }
+        }
+
+        if (isError) {
+            androidx.compose.material.Text(
+                text = errorMessage,
+                color = MaterialTheme.colors.error,
+                style = MaterialTheme.typography.caption,
+                modifier = Modifier
+                    .padding(4.dp)
+                    .fillMaxWidth(),
+                textAlign = TextAlign.End
+            )
+        }
+    }
+}
 

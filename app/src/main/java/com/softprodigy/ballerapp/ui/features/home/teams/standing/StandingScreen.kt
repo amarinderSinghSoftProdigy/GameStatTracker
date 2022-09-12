@@ -3,13 +3,25 @@ package com.softprodigy.ballerapp.ui.features.home.teams.standing
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -18,18 +30,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
+import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.Standing
 import com.softprodigy.ballerapp.ui.features.components.AppTab
 import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
 import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -62,6 +78,7 @@ fun StandingScreen(
         vm.onEvent(StandingUIEvent.OnStandingSelected(standing))
     }
 
+
     Column(Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
         StandingTopTabs(pagerState, standingTabData)
@@ -83,12 +100,16 @@ fun StandingScreen(
             }
         }
     }
+    if (state.isLoading) {
+        CommonProgressBar()
+    }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun StandingListItem(
     index: Int,
+    roundBorderImage: Boolean = false,
     standing: Standing,
     selected: Boolean,
     onClick: (Standing) -> Unit
@@ -102,18 +123,17 @@ fun StandingListItem(
             )
     ) {
 
-        Box(
+        Row(
             modifier = Modifier
                 .weight(1f)
                 .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-
                 .background(color = if (selected) MaterialTheme.appColors.material.primaryVariant else Color.White)
-                .clickable { onClick(standing) }
+                .clickable { onClick(standing) },
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(
                 modifier = Modifier
                     .height(IntrinsicSize.Min)
-                    .fillMaxWidth()
                     .padding(
                         PaddingValues(
                             dimensionResource(id = R.dimen.size_12dp),
@@ -132,15 +152,18 @@ fun StandingListItem(
                     fontSize = dimensionResource(
                         id = R.dimen.txt_size_12
                     ).value.sp,
-                    fontWeight = FontWeight.W400
+                    fontWeight = FontWeight.W600
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
                 AsyncImage(
-                    model = /*BuildConfig.IMAGE_SERVER + */standing.logo,
+                    model = BuildConfig.IMAGE_SERVER + standing.logo,
                     contentDescription = "",
-                    modifier = Modifier
+                    modifier =
+                    Modifier
                         .size(dimensionResource(id = R.dimen.size_32dp))
-                        .clip(CircleShape)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.FillBounds
+
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
                 Text(
@@ -157,8 +180,17 @@ fun StandingListItem(
             }
 
             Row(
-                modifier = Modifier.align(Alignment.CenterEnd),
+                modifier = Modifier.align(Alignment.CenterVertically),
             ) {
+                if (index == 1) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_hike_green),
+                        contentDescription = "",
+                        modifier = Modifier.size(dimensionResource(id = R.dimen.size_12dp)),
+                        tint = Color.Unspecified
+                    )
+                }
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
                 Text(
                     text = standing.standings,
                     fontWeight = FontWeight.Bold,

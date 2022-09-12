@@ -1,4 +1,4 @@
-package com.softprodigy.ballerapp.ui.features.profile
+package com.softprodigy.ballerapp.ui.features.profile.tabs
 
 
 import androidx.compose.foundation.*

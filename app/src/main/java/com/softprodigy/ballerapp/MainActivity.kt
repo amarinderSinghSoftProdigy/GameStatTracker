@@ -15,7 +15,13 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
@@ -33,6 +39,7 @@ import com.softprodigy.ballerapp.common.Route.FORGOT_PASSWORD_SCREEN
 import com.softprodigy.ballerapp.common.Route.LOGIN_SCREEN
 import com.softprodigy.ballerapp.common.Route.PROFILE_SCREEN
 import com.softprodigy.ballerapp.common.Route.PROFILE_SETUP_SCREEN
+import com.softprodigy.ballerapp.common.Route.SELECT_PROFILE
 import com.softprodigy.ballerapp.common.Route.SELECT_USER_TYPE
 import com.softprodigy.ballerapp.common.Route.SIGN_UP_SCREEN
 import com.softprodigy.ballerapp.common.Route.SPLASH_SCREEN
@@ -49,13 +56,14 @@ import com.softprodigy.ballerapp.ui.features.home.HomeActivity
 import com.softprodigy.ballerapp.ui.features.login.LoginScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileEditScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileScreen
+import com.softprodigy.ballerapp.ui.features.select_profile.SelectProfileScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.ProfileSetUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpViewModel
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.TeamSetupScreen
 import com.softprodigy.ballerapp.ui.features.user_type.UserTypeScreen
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.AddPlayersScreen
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.SetupTeamViewModel
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.AddPlayersScreenUpdated
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupScreenUpdated
 import com.softprodigy.ballerapp.ui.features.welcome.WelcomeScreen
 import com.softprodigy.ballerapp.ui.theme.BallerAppTheme
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -239,7 +247,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun NavControllerComposable(activity: MainActivity) {
     val navController = rememberNavController()
-    val setupTeamViewModel: SetupTeamViewModel = viewModel()
+    val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = viewModel()
     val signUpViewModel: SignUpViewModel = viewModel()
     val context = LocalContext.current
     val dataStoreManager = DataStoreManager(activity)
@@ -310,6 +318,7 @@ fun NavControllerComposable(activity: MainActivity) {
                 navController.navigate(LOGIN_SCREEN)
             }
         }
+
         composable(route = LOGIN_SCREEN) {
             LoginScreen(
                 onLoginSuccess = {
@@ -323,11 +332,19 @@ fun NavControllerComposable(activity: MainActivity) {
                                 lastName = it?.user?.lastName ?: "",
                             )
                     }
-                    checkRole(
-                        it?.user?.role.equals(AppConstants.USER_TYPE_USER, ignoreCase = true),
-                        navController,
-                        activity
-                    )
+                    val check =
+                        it?.user?.role.equals(AppConstants.USER_TYPE_USER, ignoreCase = true)
+                    if (check) {
+                        checkRole(
+                            check,
+                            navController,
+                            activity
+                        )
+                    } else {
+                        navController.navigate(SELECT_PROFILE) {
+                            navController.popBackStack()
+                        }
+                    }
                 },
                 onRegister = {
                     navController.navigate(SIGN_UP_SCREEN)
@@ -356,13 +373,9 @@ fun NavControllerComposable(activity: MainActivity) {
             }, onPreviousClick = {
                 navController.popBackStack()
             })
-
-
         }
 
-        composable(
-            route = PROFILE_SETUP_SCREEN,
-        ) {
+        composable(route = PROFILE_SETUP_SCREEN) {
 
             ProfileSetUpScreen(
                 signUpViewModel = signUpViewModel,
@@ -380,9 +393,7 @@ fun NavControllerComposable(activity: MainActivity) {
                 })
         }
 
-        composable(
-            route = SELECT_USER_TYPE
-        ) {
+        composable(route = SELECT_USER_TYPE) {
             BackHandler {}
 
             UserTypeScreen(
@@ -402,16 +413,17 @@ fun NavControllerComposable(activity: MainActivity) {
         }
 
         composable(route = TEAM_SETUP_SCREEN) {
-            TeamSetupScreen(
-                vm = setupTeamViewModel,
+            TeamSetupScreenUpdated(
+                vm = setupTeamViewModelUpdated,
                 onBackClick = { navController.popBackStack() },
                 onNextClick = {
                     navController.navigate(ADD_PLAYER_SCREEN)
                 })
         }
+
         composable(route = ADD_PLAYER_SCREEN) {
-            AddPlayersScreen(
-                vm = setupTeamViewModel,
+            AddPlayersScreenUpdated(
+                vm = setupTeamViewModelUpdated,
                 onBackClick = { navController.popBackStack() },
                 onNextClick = {
                     moveToHome(activity)
@@ -420,17 +432,19 @@ fun NavControllerComposable(activity: MainActivity) {
         composable(route = Route.PROFILE_SCREEN) {
             ProfileScreen(
                 onBackClick = { navController.popBackStack() },
-                moveToEditProfile={   navController.navigate(PROFILE_SETUP_SCREEN)}
-                )
+                moveToEditProfile={   navController.navigate(Route.PROFILE_EDIT_SCREEN)}
+            )
         }
         composable(route = Route.PROFILE_EDIT_SCREEN) {
             ProfileEditScreen(
                 onBackClick = { navController.popBackStack() },
-                )
+            )
+        }
+        composable(route = SELECT_PROFILE) {
+            SelectProfileScreen(onNextClick = { moveToHome(activity) })
         }
 
     }
-
 }
 
 

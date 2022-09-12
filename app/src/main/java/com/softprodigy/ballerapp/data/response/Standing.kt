@@ -7,8 +7,4 @@ data class Standing(
     @SerializedName("name") val name: String = "",
     @SerializedName("logo") val logo: String = "",
     @SerializedName("standings") val standings: String = "",
-
-
-
-    @SerializedName("points") val points: String = "",
     )

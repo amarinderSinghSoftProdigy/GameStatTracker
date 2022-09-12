@@ -31,7 +31,6 @@ import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.ui.features.components.LeadingIconAppButton
 import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
@@ -86,7 +85,7 @@ fun Tabs(pagerState: PagerState) {
         list.forEachIndexed { index, item ->
             Tab(
                 text = {
-                    Row {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                                 painter = painterResource(id = item.icon),
                             contentDescription = null,
@@ -155,14 +154,13 @@ fun BoxScope.TabContentScreen(data: String) {
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
-        LeadingIconAppButton(
+       /* LeadingIconAppButton(
             icon = painterResource(id = R.drawable.ic_add_player),
             text = stringResource(id = R.string.add_events),
             onClick = {},
-        )
+        )*/
     }
 }
-
 
 enum class TabItems(val icon: Int, val stringId: String) {
     Events(R.drawable.ic_events, stringId = "my_events"),

@@ -1,5 +1,6 @@
-package com.softprodigy.ballerapp.ui.features.user_type.team_setup
 
+package com.softprodigy.ballerapp.ui.features.user_type.team_setup
+/*
 import android.app.Application
 import android.net.Uri
 import androidx.compose.runtime.State
@@ -197,7 +198,7 @@ class SetupTeamViewModel @Inject constructor(
                 uploadLogoResponse.value.let { response ->
                     if (response.status) {
                         _teamSetupUiState.value =
-                            _teamSetupUiState.value.copy(teamImageServerUrl = "${BuildConfig.IMAGE_SERVER}${uploadLogoResponse.value.data.data}")
+                            _teamSetupUiState.value.copy(teamImageServerUrl =uploadLogoResponse.value.data.data)
                         _teamSetupChannel.send(
                             TeamSetupChannel.OnLogoUpload
                         )
@@ -254,8 +255,10 @@ class SetupTeamViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 createTeamResponse.value.let { response ->
                     if (response.status) {
-                        /*   _teamSetupUiState.value =
-                               _teamSetupUiState.value.copy(teamImageUri = createTeamResponse.value.data)*/
+                        */
+/*   _teamSetupUiState.value =
+                               _teamSetupUiState.value.copy(teamImageUri = createTeamResponse.value.data)*//*
+
                         _teamSetupChannel.send(
                             TeamSetupChannel.OnTeamCreate(response.data.Id)
                         )
@@ -290,4 +293,4 @@ sealed class TeamSetupChannel {
     object OnLogoUpload : TeamSetupChannel()
     data class OnTeamCreate(val teamId: String) : TeamSetupChannel()
 
-}
+}*/
