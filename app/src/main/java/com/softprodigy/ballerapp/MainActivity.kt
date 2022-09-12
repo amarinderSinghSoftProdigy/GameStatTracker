@@ -419,6 +419,8 @@ fun NavControllerComposable(activity: MainActivity) {
                 onBackClick = { navController.popBackStack() },
                 onNextClick = {
                     moveToHome(activity)
+                }, onInvitationSuccess = {
+
                 })
         }
 

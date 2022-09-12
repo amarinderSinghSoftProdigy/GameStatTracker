@@ -32,6 +32,7 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.IntentData
 import com.softprodigy.ballerapp.common.Route
+import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.manage_team.MainManageTeamScreen
@@ -153,9 +154,11 @@ fun NavControllerComposable(
                 showDialog = showDialog,
                 setupTeamViewModelUpdated = setupTeamViewModelUpdated,
                 dismissDialog = { homeViewModel.setDialog(it) },
-            ) {
-                navController.navigate(Route.ADD_PLAYER_SCREEN + "/${it.Id}")
-            }
+                OnTeamDetailsSuccess = { teamId ->
+                    UserStorage.teamId=teamId
+//                    navController.navigate(Route.ADD_PLAYER_SCREEN + "/${teamId}")
+                },
+            )
         }
         composable(route = Route.EVENTS_SCREEN) {
             homeViewModel.setTopBar(
@@ -174,7 +177,8 @@ fun NavControllerComposable(
                 )
             )
             MainManageTeamScreen(onAddPlayerCLick = {
-                navController.navigate(Route.ADD_PLAYER_SCREEN + "/${"Id"}")
+                navController.navigate(Route.ADD_PLAYER_SCREEN + "/${UserStorage.teamId}")
+
             })
         }
 
@@ -195,6 +199,8 @@ fun NavControllerComposable(
                     homeViewModel.setScreen(false)
                     navController.popBackStack()
                     //navController.navigate(TEAMS_SCREEN)
+                }, onInvitationSuccess = {
+                    navController.popBackStack()
                 })
         }
     }

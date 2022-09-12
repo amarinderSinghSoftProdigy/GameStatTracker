@@ -13,4 +13,6 @@ object UserStorage {
     var teamColor:String?=null
     var teamLogo:String?=null
     var role:String?=null
+    var teamId:String?=null
+
 }

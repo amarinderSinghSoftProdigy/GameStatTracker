@@ -26,7 +26,7 @@ class StandingViewModel @Inject constructor(
         private set
 
     init {
-        // TODO: temp disable 
+        // TODO: temp data for design
 //        getStandings()
 
         val standingData= arrayListOf<Standing>(

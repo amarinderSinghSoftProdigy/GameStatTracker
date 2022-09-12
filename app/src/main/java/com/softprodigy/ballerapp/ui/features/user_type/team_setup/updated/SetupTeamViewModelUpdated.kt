@@ -2,6 +2,7 @@ package com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated
 
 import android.app.Application
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
@@ -13,6 +14,8 @@ import com.softprodigy.ballerapp.common.getFileFromUri
 import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.CreateTeamRequest
+import com.softprodigy.ballerapp.data.request.Members
+import com.softprodigy.ballerapp.data.request.UpdateTeamRequest
 import com.softprodigy.ballerapp.data.response.Player
 import com.softprodigy.ballerapp.domain.repository.IImageUploadRepo
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
@@ -113,65 +116,120 @@ class SetupTeamViewModelUpdated @Inject constructor(
             }
             TeamSetupUIEventUpdated.OnAddPlayerScreenNext -> {
 
-                /*for Ui QA build for manual navigation */
-
                 viewModelScope.launch {
-                    _teamSetupChannel.send(
-                        TeamSetupChannel.OnTeamCreate(""))
-                }
-
-                // TODO: temp disable -- remove above code and uncomment below later
-
-                /*viewModelScope.launch {
                     uploadTeamLogo()
-                }*/
+                }
             }
             TeamSetupUIEventUpdated.OnLogoUploadSuccess -> {
                 viewModelScope.launch { createTeam() }
             }
             is TeamSetupUIEventUpdated.OnNameValueChange -> {
-                /*_teamSetupUiState.value = _teamSetupUiState.value.copy(
-                    inviteMemberName = (((_teamSetupUiState.value.inviteMemberName + _teamSetupUiState.value.inviteMemberName[event.index]) as MutableList<String>))
-                )*/
-                /*  _teamSetupUiState.value = _teamSetupUiState.value.copy(
-                      inviteMemberName = (((_teamSetupUiState.value.inviteMemberName + _teamSetupUiState.value.inviteMemberName[event.index]) as MutableList<String>))
-                  )*/
-//                _teamSetupUiState.value.inviteMemberName.add(index = event.index,event.name)
-//                _teamSetupUiState.value.inviteMemberName[event.index] = event.name
-//                _teamSetupUiState.value = _teamSetupUiState.value.copy(
-//                    inviteMemberName = _teamSetupUiState.value.inviteMemberName.add(index = event.index,event.name)
-//                _teamSetupUiState.value = _teamSetupUiState.value.copy(
-//                    inviteMemberName = (teamSetupUiState.value.inviteMemberName[event.index].apply {
-//                        event.name
-//                    }))
+
                 _teamSetupUiState.value.inviteMemberName[event.index] = event.name
 
-//                _teamSetupUiState.value=_teamSetupUiState.value.copy()
+                /* To achieve recomposition only*/
+                _teamSetupUiState.value =
+                    _teamSetupUiState.value.copy(inviteMemberCount = _teamSetupUiState.value.inviteMemberCount + 1)
+                _teamSetupUiState.value =
+                    _teamSetupUiState.value.copy(inviteMemberCount = _teamSetupUiState.value.inviteMemberCount - 1)
 
             }
             is TeamSetupUIEventUpdated.OnEmailValueChange -> {
-                /* _teamSetupUiState.value = _teamSetupUiState.value.copy(
-                     inviteMemberName = ((_teamSetupUiState.value.inviteMemberName + event.email) as MutableList<String>)
-                 )*/
-//                _teamSetupUiState.value.inviteMemberName.add(index = event.index,event.email)
+
                 _teamSetupUiState.value.inviteMemberEmail[event.index] = event.email
 
+                /* To achieve recomposition only*/
+                _teamSetupUiState.value =
+                    _teamSetupUiState.value.copy(inviteMemberCount = _teamSetupUiState.value.inviteMemberCount + 1)
+                _teamSetupUiState.value =
+                    _teamSetupUiState.value.copy(inviteMemberCount = _teamSetupUiState.value.inviteMemberCount - 1)
 
             }
             is TeamSetupUIEventUpdated.OnInviteCountValueChange -> {
 
-                _teamSetupUiState.value = _teamSetupUiState.value.copy(
-                    inviteMemberName = (((_teamSetupUiState.value.inviteMemberName) + "") as ArrayList<String>),
-                    inviteMemberEmail = (((_teamSetupUiState.value.inviteMemberEmail) + "") as ArrayList<String>)
-                )
+                if (event.addIntent) {
+                    _teamSetupUiState.value =
+                        _teamSetupUiState.value.copy(inviteMemberCount = _teamSetupUiState.value.inviteMemberCount + 1)
 
-                _teamSetupUiState.value =
-                    _teamSetupUiState.value.copy(inviteMemberCount = _teamSetupUiState.value.inviteMemberCount + 1)
+                    _teamSetupUiState.value.inviteMemberName.add("")
+                    _teamSetupUiState.value.inviteMemberEmail.add("")
+                } else {
+                    event.index?.let {
+                        _teamSetupUiState.value =
+                            _teamSetupUiState.value.copy(inviteMemberCount = _teamSetupUiState.value.inviteMemberCount - 1)
 
+                        _teamSetupUiState.value.inviteMemberName.removeAt(event.index)
+                        _teamSetupUiState.value.inviteMemberEmail.removeAt(event.index)
+                    }
+                }
 
 
             }
+            is TeamSetupUIEventUpdated.OnInviteTeamMembers -> {
+                viewModelScope.launch {
+                    invitePlayers(event.teamId)
+                }
+            }
         }
+    }
+
+    private suspend fun invitePlayers(teamId: String) {
+        val members = _teamSetupUiState.value.inviteMemberName.mapIndexed { index, name ->
+            Members(name = name, email = _teamSetupUiState.value.inviteMemberEmail[index])
+        }
+        val request = UpdateTeamRequest(teamID = teamId, members = members)
+
+        _teamSetupUiState.value =
+            _teamSetupUiState.value.copy(isLoading = true)
+
+       val inviteMemberResponse= teamRepo.inviteMembersByTeamId(request)
+
+        _teamSetupUiState.value =
+            _teamSetupUiState.value.copy(isLoading = false)
+        when(inviteMemberResponse){
+            is ResultWrapper.GenericError -> {
+                _teamSetupChannel.send(
+                    TeamSetupChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${inviteMemberResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _teamSetupChannel.send(
+                    TeamSetupChannel.ShowToast(
+                        UiText.DynamicString(
+                            inviteMemberResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                inviteMemberResponse.value.let { response ->
+                    if (response.status) {
+
+                        _teamSetupChannel.send(
+                        TeamSetupChannel.OnInvitationSuccess(
+                            UiText.DynamicString(
+                                response.statusMessage
+                            )
+                        ))
+                    } else {
+                        _teamSetupUiState.value =
+                            _teamSetupUiState.value.copy(isLoading = false)
+                        _teamSetupChannel.send(
+                            TeamSetupChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+
     }
 
     private suspend fun getPlayers(searchQuery: String) {
@@ -279,16 +337,20 @@ class SetupTeamViewModelUpdated @Inject constructor(
 
     private suspend fun createTeam() {
 
-        val playersId = _teamSetupUiState.value.selectedPlayers.map {
-            it.Id
+
+        val members = _teamSetupUiState.value.inviteMemberName.mapIndexed { index, name ->
+            Members(name = name, email = _teamSetupUiState.value.inviteMemberEmail[index])
         }
         val request = CreateTeamRequest(
             name = _teamSetupUiState.value.teamName,
-            colorCode = _teamSetupUiState.value.teamColorPrimary,
-            players = playersId as ArrayList<String>,
-            coaches = arrayListOf("6315a53881aa3c6a26d51121"),
-            logo = _teamSetupUiState.value.teamImageServerUrl
+            primaryTeamColor = "#" + _teamSetupUiState.value.teamColorPrimary,
+            secondaryTeamColor = "#" + _teamSetupUiState.value.teamColorSec,
+            tertiaryTeamColor = "#" + _teamSetupUiState.value.teamColorThird,
+            logo = _teamSetupUiState.value.teamImageServerUrl,
+            members = members
         )
+
+        Log.i("createTeamRequest", "createTeamRequest:$request ")
 
         when (val createTeamResponse = teamRepo.createTeamAPI(
             request
@@ -314,9 +376,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
             is ResultWrapper.Success -> {
                 createTeamResponse.value.let { response ->
                     if (response.status) {
-                        /*   _teamSetupUiState.value =
-                               _teamSetupUiState.value.copy(teamImageUri = createTeamResponse.value.data)*/
-                        _teamSetupChannel.send(
+                     _teamSetupChannel.send(
                             TeamSetupChannel.OnTeamCreate(response.data.Id)
                         )
                     } else {
@@ -346,6 +406,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
 
 sealed class TeamSetupChannel {
     data class ShowToast(val message: UiText) : TeamSetupChannel()
+    data class OnInvitationSuccess(val message: UiText) : TeamSetupChannel()
     object OnTeamSetupNextClick : TeamSetupChannel()
     object OnLogoUpload : TeamSetupChannel()
     data class OnTeamCreate(val teamId: String) : TeamSetupChannel()
