@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.data.response.ManageLeaderBoardResponse
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -53,10 +54,18 @@ fun ManageTeamLeaderBoard(vm: ManageLeaderBoardViewModel = hiltViewModel()) {
 
     val state = vm.manageLeaderBoardUiState.value
 
-    val leaderBoardList = remember {
-        mutableStateOf(state.leaderBoardList)
+    val selected = remember {
+        mutableStateOf(false)
     }
-
+    val list = state.selected
+    val recordState =
+        rememberReorderableLazyListState(
+            onMove = vm::moveItem,
+            canDragOver = vm::isDragEnabled
+        )
+    val onLeaderSelectionChange = { leader: ManageLeaderBoardResponse ->
+        vm.onEvent(ManageLeaderBoardUIEvent.OnItemSelected(leader.name))
+    }
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier.padding(
@@ -79,23 +88,44 @@ fun ManageTeamLeaderBoard(vm: ManageLeaderBoardViewModel = hiltViewModel()) {
                     color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
                 )
 
-                AppText(
-                    text = stringResource(id = R.string.select_all),
-                    style = MaterialTheme.typography.h4,
-                    fontSize = dimensionResource(id = R.dimen.txt_size_10).value.sp,
-                    color = ColorBWGrayLight,
+                Row(
                     modifier = Modifier.clickable {
-                        vm.updateSelection("All")
+                        selected.value = !selected.value
+                        onLeaderSelectionChange.invoke(ManageLeaderBoardResponse(name = if (selected.value) "All" else ""))
+                    },
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)))
+                            .size(
+                                dimensionResource(id = R.dimen.size_16dp)
+                            )
+                            .background(color = if (selected.value) MaterialTheme.appColors.material.primaryVariant else Color.White)
+                            .border(
+                                width = if (!selected.value) dimensionResource(id = R.dimen.size_1dp) else 0.dp,
+                                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)),
+                                color = if (!selected.value) MaterialTheme.appColors.buttonColor.bckgroundDisabled else Color.Transparent
+                            )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = null,
+                        )
                     }
-                )
+                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+                    AppText(
+                        text = stringResource(id = R.string.select_all),
+                        style = MaterialTheme.typography.h4,
+                        fontSize = dimensionResource(id = R.dimen.txt_size_10).value.sp,
+                        color = ColorBWGrayLight,
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
-            val recordState =
-                rememberReorderableLazyListState(
-                    onMove = vm::moveItem,
-                    canDragOver = vm::isDragEnabled
-                )
+
             LazyColumn(
                 state = recordState.listState,
                 modifier = Modifier
@@ -112,16 +142,19 @@ fun ManageTeamLeaderBoard(vm: ManageLeaderBoardViewModel = hiltViewModel()) {
 
                 ) {
                 items(state.leaderBoardList, { item -> item.name }) { item ->
-                    ReorderableItem(reorderableState = recordState, key = item.name) { dragging ->
+                    ReorderableItem(
+                        reorderableState = recordState,
+                        key = item.name,
+                    ) { dragging ->
                         val elevation =
                             animateDpAsState(if (dragging) dimensionResource(id = R.dimen.size_10dp) else 0.dp)
                         LeaderBoardItem(
                             modifier = Modifier
                                 .shadow(elevation.value),
-                            item.name,
-                            selected = state.selected.contains(item.name)
+                            item = item,
+                            selected = list.contains(item.name),
                         ) {
-                            vm.updateSelection(item.name)
+                            onLeaderSelectionChange.invoke(it)
                         }
                     }
                 }
@@ -133,11 +166,14 @@ fun ManageTeamLeaderBoard(vm: ManageLeaderBoardViewModel = hiltViewModel()) {
 @Composable
 fun LeaderBoardItem(
     modifier: Modifier = Modifier,
-    points: String,
+    item: ManageLeaderBoardResponse,
     selected: Boolean,
-    onSelectionChange: () -> Unit,
+    onSelectionChange: (ManageLeaderBoardResponse) -> Unit,
 ) {
 
+    val selection = remember {
+        mutableStateOf(false)
+    }
     Row(
         modifier = modifier
             .background(color = Color.White)
@@ -148,7 +184,8 @@ fun LeaderBoardItem(
             )
             .height(dimensionResource(id = R.dimen.size_48dp))
             .clickable {
-
+                selection.value = !selection.value
+                onSelectionChange(item)
             },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -163,13 +200,12 @@ fun LeaderBoardItem(
                     .size(
                         dimensionResource(id = R.dimen.size_16dp)
                     )
-                    .background(color = if (selected) MaterialTheme.appColors.material.primaryVariant else Color.White)
+                    .background(color = if (selected || selection.value) MaterialTheme.appColors.material.primaryVariant else Color.White)
                     .border(
-                        width = if (!selected) dimensionResource(id = R.dimen.size_1dp) else 0.dp,
+                        width = if (!selection.value || !selected) dimensionResource(id = R.dimen.size_1dp) else 0.dp,
                         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)),
-                        color = if (!selected) MaterialTheme.appColors.buttonColor.bckgroundDisabled else Color.Transparent
+                        color = if (!selection.value || !selected) MaterialTheme.appColors.buttonColor.bckgroundDisabled else Color.Transparent
                     )
-                    .clickable { onSelectionChange() }
             ) {
                 Icon(
                     imageVector = Icons.Default.Check,
@@ -180,7 +216,7 @@ fun LeaderBoardItem(
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
 
             AppText(
-                text = points.capitalize(),
+                text = item.name.capitalize(),
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                 style = MaterialTheme.typography.h6
             )

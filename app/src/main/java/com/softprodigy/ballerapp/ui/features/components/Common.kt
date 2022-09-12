@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -94,6 +95,18 @@ fun BoxScope.CommonTabView(
                 contentDescription = "", tint = Color.White
             )
         }
+    } else if (topBarData.topBar == TopBar.MY_EVENT) {
+        Box(modifier = Modifier
+            .align(Alignment.CenterStart)
+            .clickable {
+
+            }) {
+            Icon(
+                modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                painter = painterResource(id = R.drawable.ic_dots),
+                contentDescription = "", tint = Color.White
+            )
+        }
     }
 
     Row(
@@ -136,9 +149,21 @@ fun BoxScope.CommonTabView(
         }
     }
 
+    var icon: Painter? = null
     //Add the checks where we want to display the icon on the right corner
-    if (topBarData.topBar == TopBar.TEAMS || topBarData.topBar == TopBar.EVENT_OPPORTUNITIES) {
-        val icon = painterResource(id = R.drawable.ic_settings)
+    when (topBarData.topBar) {
+        TopBar.TEAMS -> {
+            icon = painterResource(id = R.drawable.ic_settings)
+        }
+        TopBar.MY_EVENT -> {
+            icon = painterResource(id = R.drawable.ic_add_circle)
+        }
+        TopBar.EVENT_OPPORTUNITIES -> {
+            icon = painterResource(id = R.drawable.ic_filter)
+        }
+        else -> {}
+    }
+    icon?.let {
         Icon(
             painter = icon,
             contentDescription = "",
@@ -267,9 +292,10 @@ data class TopBarData(
 
 enum class TopBar(val stringId: String, val back: Boolean) {
     PROFILE(stringId = "profile_label", back = false),
-    EVENT(stringId = "events_label", back = false),
+    MY_EVENT(stringId = "events_label", back = false),
+    EVENT_LEAGUES(stringId = "events_label", back = false),
     TEAMS(stringId = "teams_label", back = false),
-    EVENT_OPPORTUNITIES(stringId = "events_label", back = true),
+    EVENT_OPPORTUNITIES(stringId = "events_label", back = false),
     SINGLE_LABEL_BACK(stringId = "", back = true),
     SINGLE_LABEL(stringId = "", back = false),
 }

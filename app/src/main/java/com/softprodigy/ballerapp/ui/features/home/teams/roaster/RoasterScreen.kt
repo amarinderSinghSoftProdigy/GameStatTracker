@@ -35,11 +35,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.roaster.PlayerDetail
 import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.theme.ColorMainPrimary
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -71,7 +69,7 @@ fun RoasterScreen(roasterViewModel: RoasterViewModel = hiltViewModel()) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = dimensionResource(id = R.dimen.size_20dp))
+                .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
         ) {
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
