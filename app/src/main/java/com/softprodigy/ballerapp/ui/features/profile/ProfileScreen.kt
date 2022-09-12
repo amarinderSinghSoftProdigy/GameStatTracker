@@ -29,6 +29,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ProfileScreen(
     onBackClick: () -> Unit,
+    moveToEditProfile:()->Unit
 ) {
     val pagerState = rememberPagerState(pageCount = 2)
     var selectedTabLabel by rememberSaveable { mutableStateOf(TabItems.Events.stringId) }
@@ -47,6 +48,7 @@ fun ProfileScreen(
                     verticalAlignment = Alignment.CenterVertically
 
                 ) {
+                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
                     Image(
                         painter = painterResource(id = R.drawable.ic_back),
                         contentDescription = "",
@@ -55,7 +57,7 @@ fun ProfileScreen(
                                 onBackClick()
                             },
                     )
-                    Box(  modifier = Modifier.fillMaxWidth(),
+                    Box(  modifier = Modifier.weight(1f),
                         )
                     {
                         AppText(
@@ -67,6 +69,15 @@ fun ProfileScreen(
                             textAlign = TextAlign.Center,
                         )
                     }
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_edit),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .clickable {
+                                moveToEditProfile()
+                            },
+                    )
+                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
 
                 }
             }

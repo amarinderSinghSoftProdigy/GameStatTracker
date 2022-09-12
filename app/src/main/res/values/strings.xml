@@ -167,4 +167,12 @@
     <string name="favoritea_all_time_tlayer">Favorite All-Time Player</string>
 
 
+    <string name="birth_certificate">Birth Certificate</string>
+    <string name="grade_verification">Grade Verification</string>
+    <string name="permission_slip">Permission Slip</string>
+    <string name="aau_card">AAU Card</string>
+    <string name="waiver">Waiver</string>
+    <string name="vaccine_card">Vaccine Card</string>
+
+
 </resources>

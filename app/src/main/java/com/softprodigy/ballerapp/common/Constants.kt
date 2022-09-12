@@ -42,6 +42,7 @@ object Route {
     const val ADD_PLAYER_SCREEN = "addPlayerScreen"
     const val PROFILE_SETUP_SCREEN = "profileSetupScreen"
     const val PROFILE_SCREEN = "profileScreen"
+    const val PROFILE_EDIT_SCREEN = "profileeditscreen"
 }
 
 object ApiConstants {

@@ -47,6 +47,7 @@ import com.softprodigy.ballerapp.ui.features.components.UserType
 import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordScreen
 import com.softprodigy.ballerapp.ui.features.home.HomeActivity
 import com.softprodigy.ballerapp.ui.features.login.LoginScreen
+import com.softprodigy.ballerapp.ui.features.profile.ProfileEditScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.ProfileSetUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
@@ -418,6 +419,12 @@ fun NavControllerComposable(activity: MainActivity) {
         }
         composable(route = Route.PROFILE_SCREEN) {
             ProfileScreen(
+                onBackClick = { navController.popBackStack() },
+                moveToEditProfile={   navController.navigate(PROFILE_SETUP_SCREEN)}
+                )
+        }
+        composable(route = Route.PROFILE_EDIT_SCREEN) {
+            ProfileEditScreen(
                 onBackClick = { navController.popBackStack() },
                 )
         }

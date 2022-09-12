@@ -38,6 +38,7 @@ import com.softprodigy.ballerapp.ui.features.components.LogoutDialog
 import com.softprodigy.ballerapp.ui.features.components.TabBar
 import com.softprodigy.ballerapp.ui.features.components.fromHex
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
+import com.softprodigy.ballerapp.ui.features.profile.ProfileEditScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileScreen
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.AddPlayersScreen
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.SetupTeamViewModel
@@ -153,7 +154,13 @@ fun NavControllerComposable(
         composable(route = Route.PROFILE_SCREEN) {
             ProfileScreen(
                 onBackClick = { navController.popBackStack() },
-                )
+                moveToEditProfile={   navController.navigate(Route.PROFILE_SETUP_SCREEN)}
+            )
+        }
+        composable(route = Route.PROFILE_EDIT_SCREEN) {
+            ProfileEditScreen(
+                onBackClick = { navController.popBackStack() },
+            )
         }
         composable(route = Route.TEAMS_SCREEN) {
             BackHandler {
