@@ -89,10 +89,10 @@ fun ProfileScreen(
 ) {
     val context = LocalContext.current
     val pagerState = rememberPagerState(pageCount = 2)
-    var selectedTabLabel by rememberSaveable { mutableStateOf("Profle") }
+    var selectedTabLabel by rememberSaveable { mutableStateOf(TabItems.Events.stringId) }
 
     Column(
-        modifier = Modifier.background(Color.White)
+        modifier = Modifier.background(MaterialTheme.appColors.material.background)
     ) {
         TopAppBar(backgroundColor = ColorMainPrimary) {
             Column(
@@ -101,28 +101,31 @@ fun ProfileScreen(
                 verticalArrangement = Arrangement.Center
             ) {
                 Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth().weight(1f),
+                    verticalAlignment = Alignment.CenterVertically
+
                 ) {
                     Image(
-                        imageVector = Icons.Default.ArrowBack,
+                        painter = painterResource(id = R.drawable.ic_back),
                         contentDescription = "",
                         modifier = Modifier
-                            .padding(
-                                start = dimensionResource(id = R.dimen.size_16dp), top = dimensionResource(
-                                    id = R.dimen.size_16dp
-                                )
-                            )
                             .clickable {
                                 onBackClick()
                             },
-                        alignment = Alignment.Center
                     )
-                    AppText(
-                        text =  stringResourceByName(selectedTabLabel),
-                        style = MaterialTheme.typography.h6,
-                        color = heading2OnDarkColor,
-                        fontSize = dimensionResource(id = R.dimen.txt_size_20).value.sp
-                    )
+                    Box(  modifier = Modifier.fillMaxWidth(),
+                        )
+                    {
+                        AppText(
+                            text =  stringResourceByName(selectedTabLabel),
+                            style = MaterialTheme.typography.h6,
+                            color = heading2OnDarkColor,
+                            fontSize = dimensionResource(id = R.dimen.txt_size_20).value.sp,
+                            modifier=Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center,
+                        )
+                    }
+
                 }
             }
         }

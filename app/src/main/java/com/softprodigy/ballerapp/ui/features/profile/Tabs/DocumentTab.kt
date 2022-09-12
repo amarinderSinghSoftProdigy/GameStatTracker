@@ -93,19 +93,7 @@ fun DocumentTab(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        Image(
-            imageVector = Icons.Default.ArrowBack,
-            contentDescription = "",
-            modifier = Modifier
-                .padding(
-                    start = dimensionResource(id = R.dimen.size_16dp), top = dimensionResource(
-                        id = R.dimen.size_16dp
-                    )
-                )
-                .clickable {
-                },
-            alignment = Alignment.TopStart
-        )
+
 
 
     }

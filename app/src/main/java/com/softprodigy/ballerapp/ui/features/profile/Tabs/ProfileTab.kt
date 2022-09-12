@@ -89,6 +89,7 @@ fun ProfileTab(
 ) {
     Box(
         modifier = Modifier
+            .background(color = MaterialTheme.appColors.material.primary,)
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
@@ -96,11 +97,12 @@ fun ProfileTab(
             modifier = Modifier
                 .clip(RoundedCornerShape(10.dp))
                 .fillMaxSize()
-                .padding(horizontal = dimensionResource(id = R.dimen.size_20dp)),
+                .padding(horizontal = dimensionResource(id = R.dimen.size_10dp)),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_40dp)))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_5dp)))
+
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(5.dp))
@@ -113,7 +115,6 @@ fun ProfileTab(
                         .fillMaxWidth()
                         .background(color = Color.White)
                 ) {
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
                     Image(
                         painter = painterResource(id = R.drawable.user_demo),
                         contentDescription = "",
