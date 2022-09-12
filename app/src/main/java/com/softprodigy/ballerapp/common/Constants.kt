@@ -80,3 +80,6 @@ object RequestCode {
     const val GOOGLE_ACCESS = 100
 
 }
+object IntentData{
+    const val FROM_SPLASH = "fromSplash"
+}

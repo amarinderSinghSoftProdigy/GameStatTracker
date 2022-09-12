@@ -30,16 +30,10 @@ import androidx.navigation.navArgument
 import com.softprodigy.ballerapp.MainActivity
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
+import com.softprodigy.ballerapp.common.IntentData
 import com.softprodigy.ballerapp.common.Route
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
-import com.softprodigy.ballerapp.ui.features.components.BottomNavigationBar
-import com.softprodigy.ballerapp.ui.features.components.CommonTabView
-import com.softprodigy.ballerapp.ui.features.components.LogoutDialog
-import com.softprodigy.ballerapp.ui.features.components.TabBar
-import com.softprodigy.ballerapp.ui.features.components.TopBar
-import com.softprodigy.ballerapp.ui.features.components.TopBarData
-import com.softprodigy.ballerapp.ui.features.components.fromHex
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.manage_team.MainManageTeamScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.AddPlayersScreenUpdated
@@ -56,6 +50,7 @@ class HomeActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, true)
         setContent {
+            val fromSplash = intent.getBooleanExtra(IntentData.FROM_SPLASH, false)
             val homeViewModel: HomeViewModel = hiltViewModel()
             val state = homeViewModel.state.value
             val dataStoreManager = DataStoreManager(LocalContext.current)
@@ -67,7 +62,11 @@ class HomeActivity : ComponentActivity() {
                 val userType = remember { mutableStateOf(BottomNavKey.HOME) }
                 if (state.screen) {
                     Surface {
-                        NavControllerComposable(homeViewModel, navController = navController)
+                        NavControllerComposable(
+                            homeViewModel,
+                            navController = navController,
+                            fromSplash = fromSplash
+                        )
                     }
                 } else {
                     Scaffold(
@@ -96,6 +95,7 @@ class HomeActivity : ComponentActivity() {
                                     homeViewModel,
                                     navController = navController,
                                     showDialog = state.showDialog,
+                                    fromSplash = fromSplash
                                 )
                             }
                         },
@@ -126,13 +126,17 @@ class HomeActivity : ComponentActivity() {
 fun NavControllerComposable(
     homeViewModel: HomeViewModel,
     showDialog: Boolean = false,
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
+    fromSplash: Boolean = false
 ) {
     val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = hiltViewModel()
     NavHost(navController, startDestination = Route.HOME_SCREEN) {
         composable(route = Route.HOME_SCREEN) {
-            HomeScreen(name = "") { homeViewModel.setLogoutDialog(true) }
-            //HomeFirstTimeLoginScreen()
+            if (fromSplash)
+                HomeScreen(name = "") { homeViewModel.setLogoutDialog(true) }
+            else {
+                HomeFirstTimeLoginScreen()
+            }
         }
         composable(route = Route.TEAMS_SCREEN) {
             homeViewModel.setTopBar(
