@@ -58,7 +58,6 @@ object ApiConstants {
     const val GET_TEAM_STANDING = "v1/team/standings"
     const val SEND_INVITATION = "v1/team/inviteTeamMembers"
 
-
     const val SOCIAL_LOGIN = "/social_login"
     const val SIGNUP = "v1/auth/register"
     const val FORGOT_PASSWORD = "v1/auth/forgotPassword"

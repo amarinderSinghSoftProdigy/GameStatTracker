@@ -1,8 +1,7 @@
 package com.softprodigy.ballerapp.ui.features.home.teams.manage_team
 
 import com.google.gson.annotations.SerializedName
-import com.softprodigy.ballerapp.data.response.Player
-import com.softprodigy.ballerapp.data.response.User
+import com.softprodigy.ballerapp.data.response.team.Player
 
 data class ManageTeamRstrState(
     val isLoading: Boolean = false,

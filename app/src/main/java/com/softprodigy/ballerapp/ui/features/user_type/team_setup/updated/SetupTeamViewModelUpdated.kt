@@ -16,7 +16,7 @@ import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.CreateTeamRequest
 import com.softprodigy.ballerapp.data.request.Members
 import com.softprodigy.ballerapp.data.request.UpdateTeamRequest
-import com.softprodigy.ballerapp.data.response.Player
+import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.domain.repository.IImageUploadRepo
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import dagger.hilt.android.lifecycle.HiltViewModel

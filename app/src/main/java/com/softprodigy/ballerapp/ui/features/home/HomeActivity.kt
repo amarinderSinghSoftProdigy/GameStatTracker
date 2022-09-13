@@ -93,6 +93,9 @@ class HomeActivity : ComponentActivity() {
                                                 TopBar.TEAMS -> {
                                                     navController.navigate(Route.MANAGED_TEAM_SCREEN)
                                                 }
+                                                TopBar.MANAGE_TEAM->{
+                                                    //TODO add the login to save the team deatils
+                                                }
                                                 else -> {}
                                                 //Add events cases for tool bar icon clicks
                                             }
@@ -181,39 +184,14 @@ fun NavControllerComposable(
                     topBar = TopBar.MY_EVENT,
                 )
             )
-            EventsScreen(name = "") {
-                /*when (it) {
-                    0 -> {
-                        homeViewModel.setTopBar(
-                            TopBarData(
-                                topBar = TopBar.MY_EVENT,
-                            )
-                        )
-                    }
-                    1 -> {
-                        homeViewModel.setTopBar(
-                            TopBarData(
-                                topBar = TopBar.EVENT_LEAGUES,
-                            )
-                        )
-
-                    }
-                    2 -> {
-                        homeViewModel.setTopBar(
-                            TopBarData(
-                                topBar = TopBar.EVENT_OPPORTUNITIES,
-                            )
-                        )
-                    }
-                }*/
-            }
+            EventsScreen(name = "") { }
         }
 
         composable(route = Route.MANAGED_TEAM_SCREEN) {
             homeViewModel.setTopBar(
                 TopBarData(
                     label = stringResource(id = R.string.manage_team),
-                    topBar = TopBar.SINGLE_LABEL_BACK,
+                    topBar = TopBar.MANAGE_TEAM,
                 )
             )
             MainManageTeamScreen(onAddPlayerCLick = {
