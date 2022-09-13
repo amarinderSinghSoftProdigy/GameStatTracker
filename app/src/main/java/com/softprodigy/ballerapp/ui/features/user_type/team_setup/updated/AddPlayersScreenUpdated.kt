@@ -87,7 +87,9 @@ fun AddPlayersScreenUpdated(
                     vm.onEvent(TeamSetupUIEventUpdated.OnLogoUploadSuccess)
                 }
                 is TeamSetupChannel.OnTeamCreate -> {
-                    onNextClick.invoke(uiEvent.teamId)
+                    Toast.makeText(context, uiEvent.message, Toast.LENGTH_LONG)
+                        .show()
+                    onNextClick.invoke(uiEvent.message)
                 }
                 is TeamSetupChannel.OnInvitationSuccess -> {
                     Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
