@@ -2,7 +2,6 @@ package com.softprodigy.ballerapp.ui.features.home.teams.standing
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -16,8 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
@@ -70,8 +69,6 @@ fun StandingScreen(
     val pagerState = rememberPagerState(
         pageCount = standingTabData.size,
         initialOffScreenLimit = 1,
-        infiniteLoop = true,
-        initialPage = 0,
     )
 
     val onStandingSelectionChange = { standing: Standing ->
@@ -222,17 +219,19 @@ enum class StandingTabItems(val stringId: String, val key: String) {
 @Composable
 fun StandingTopTabs(pagerState: PagerState, tabData: List<StandingTabItems>) {
     val coroutineScope = rememberCoroutineScope()
-    Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
-        tabData.forEachIndexed { index, item ->
-            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
-            AppTab(
-                title = stringResourceByName(item.stringId),
-                selected = pagerState.currentPage == index,
-                onClick = {
-                    coroutineScope.launch {
-                        pagerState.animateScrollToPage(index)
-                    }
-                })
+    LazyRow {
+        itemsIndexed(tabData) { index, item ->
+            Row {
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+                AppTab(
+                    title = stringResourceByName(item.stringId),
+                    selected = pagerState.currentPage == index,
+                    onClick = {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(index)
+                        }
+                    })
+            }
         }
     }
 }

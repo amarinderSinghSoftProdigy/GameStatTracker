@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
+import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 
@@ -92,7 +93,7 @@ fun BottomNavigationBar(
                                 modifier = Modifier.align(Alignment.CenterHorizontally),
                                 painter = painterResource(id = item.icon),
                                 contentDescription = null,
-                                tint = if (selected.value == item.key) selectionColor else ColorBWGrayLight
+                                tint = if (selected.value == item.key) selectionColor else ColorGreyLighter
                             )
                             Text(
                                 modifier = Modifier
@@ -101,7 +102,7 @@ fun BottomNavigationBar(
                                 textAlign = TextAlign.Center,
                                 text = stringResourceByName(item.key.resId),
                                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                                color = if (selected.value == item.key) selectionColor else ColorBWGrayLight
+                                color = if (selected.value == item.key) selectionColor else ColorGreyLighter
                             )
                         }
                     }
