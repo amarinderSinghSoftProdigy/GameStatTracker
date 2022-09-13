@@ -1,8 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated
 
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
-import com.softprodigy.ballerapp.data.response.Player
+import com.softprodigy.ballerapp.data.response.team.Player
 
 data class TeamSetupUIStateUpdated(
     val teamColorPrimary: String = "",

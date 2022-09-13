@@ -37,29 +37,19 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.roaster.PlayerDetail
+import com.softprodigy.ballerapp.data.response.team.Coach
+import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun RoasterScreen(roasterViewModel: RoasterViewModel = hiltViewModel()) {
+fun RoasterScreen(vm: TeamViewModel = hiltViewModel()) {
 
-    val state = roasterViewModel.roasterUIState.value
+    val state = vm.teamUiState.value
     val context = LocalContext.current
-
-    LaunchedEffect(key1 = Unit) {
-        roasterViewModel.roasterChannel.collect { uiEvent ->
-            when (uiEvent) {
-                is RoasterChannel.ShowToast -> {
-                    Toast.makeText(
-                        context,
-                        uiEvent.message.asString(context),
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            }
-        }
-    }
 
     Box(
         modifier = Modifier
@@ -80,9 +70,9 @@ fun RoasterScreen(roasterViewModel: RoasterViewModel = hiltViewModel()) {
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
 
-                state.coachList.forEach {
+                state.coaches.forEach {
                     CoachListItem(
-                        roaster = it,
+                        coach = it,
                         modifier = Modifier
                             .padding(
                                 bottom = dimensionResource(
@@ -101,9 +91,9 @@ fun RoasterScreen(roasterViewModel: RoasterViewModel = hiltViewModel()) {
                     modifier = Modifier.fillMaxSize(),
                     content = {
 
-                        items(state.playerList) {
-                            CoachListItem(
-                                roaster = it, modifier = Modifier.padding(
+                        items(state.players) {
+                            PlayerListItem(
+                                player = it, modifier = Modifier.padding(
                                     bottom = dimensionResource(
                                         id = R.dimen.size_16dp
                                     )
@@ -123,7 +113,7 @@ fun RoasterScreen(roasterViewModel: RoasterViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun CoachListItem(roaster: PlayerDetail, modifier: Modifier = Modifier) {
+fun CoachListItem(coach: Coach, modifier: Modifier = Modifier) {
 
     Column(
         modifier = modifier,
@@ -147,39 +137,83 @@ fun CoachListItem(roaster: PlayerDetail, modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
         AppText(
-            text = roaster.name.capitalize(),
+            text = coach.name!!.capitalize(),
             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             style = MaterialTheme.typography.h6,
             overflow = TextOverflow.Ellipsis,
             maxLines = 1
         )
+
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            if (roaster.role != stringResource(id = R.string.player)) {
-                AppText(
-                    text = roaster.role.capitalize(),
-                    color = MaterialTheme.appColors.material.primaryVariant,
-                    style = MaterialTheme.typography.h6
-                )
-            } else {
-                AppText(
-                    text = roaster.jerseyNumber,
-                    color = MaterialTheme.appColors.material.primaryVariant,
-                    style = MaterialTheme.typography.h6
-                )
+            AppText(
+                text = coach.role!!.capitalize(),
+                color = MaterialTheme.appColors.material.primaryVariant,
+                style = MaterialTheme.typography.h6
+            )
 
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
+            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
 
-                AppText(
-                    text = roaster.position,
-                    color = MaterialTheme.appColors.textField.label,
-                    style = MaterialTheme.typography.h6
-                )
-            }
+        }
+    }
+}
+
+@Composable
+fun PlayerListItem(player: Player, modifier: Modifier = Modifier) {
+
+    Column(
+        modifier = modifier,
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        Image(
+            painter =
+//            if (roaster.profileImage == "")
+            painterResource(id = R.drawable.ball),
+//            else rememberAsyncImagePainter(
+//                model = roaster.profileImage),
+            contentDescription = "",
+            modifier = Modifier
+                .size(dimensionResource(id = R.dimen.size_80dp))
+                .clip(CircleShape),
+            contentScale = ContentScale.Crop
+        )
+
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+
+        AppText(
+            text = player.name.capitalize(),
+            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+            style = MaterialTheme.typography.h6,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1
+        )
+
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            AppText(
+                text = player.jerseyNumber!!,
+                color = MaterialTheme.appColors.material.primaryVariant,
+                style = MaterialTheme.typography.h6
+            )
+
+            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
+
+            AppText(
+                text = player.position!!,
+                color = MaterialTheme.appColors.textField.label,
+                style = MaterialTheme.typography.h6
+            )
+
         }
     }
 }

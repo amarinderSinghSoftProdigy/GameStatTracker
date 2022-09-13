@@ -1,6 +1,5 @@
 package com.softprodigy.ballerapp.ui.features.user_type.team_setup
 
-import com.softprodigy.ballerapp.data.response.Player
 /*
 
 data class TeamSetupUIState(
