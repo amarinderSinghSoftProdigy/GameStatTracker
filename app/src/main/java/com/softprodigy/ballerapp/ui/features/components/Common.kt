@@ -179,6 +179,23 @@ fun BoxScope.CommonTabView(
         )
     }
 
+    if (TopBar.MANAGE_TEAM == topBarData.topBar) {
+        Text(
+            textAlign = TextAlign.Center,
+            text = stringResource(id = R.string.save),
+            style = MaterialTheme.typography.h5,
+            color = Color.White,
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .clickable {
+                    if (iconClick != null) {
+                        iconClick()
+                    }
+                }
+                .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+        )
+    }
+
 }
 
 @Composable
@@ -296,6 +313,7 @@ enum class TopBar(val stringId: String, val back: Boolean) {
     EVENT_LEAGUES(stringId = "events_label", back = false),
     TEAMS(stringId = "teams_label", back = false),
     EVENT_OPPORTUNITIES(stringId = "events_label", back = false),
+    MANAGE_TEAM(stringId = "", back = true),
     SINGLE_LABEL_BACK(stringId = "", back = true),
     SINGLE_LABEL(stringId = "", back = false),
 }
