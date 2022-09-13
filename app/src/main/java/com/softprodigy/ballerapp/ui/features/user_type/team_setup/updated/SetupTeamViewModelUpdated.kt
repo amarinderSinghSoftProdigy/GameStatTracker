@@ -173,6 +173,15 @@ class SetupTeamViewModelUpdated @Inject constructor(
         }
     }
 
+    private fun resetMemberValues() {
+        _teamSetupUiState.value =
+            _teamSetupUiState.value.copy(
+                inviteMemberCount = 3,
+                inviteMemberName = arrayListOf("", "", ""),
+                inviteMemberEmail = arrayListOf("", "", "")
+            )
+    }
+
     private suspend fun invitePlayers(teamId: String) {
         val members = _teamSetupUiState.value.inviteMemberName.mapIndexed { index, name ->
             Members(name = name, email = _teamSetupUiState.value.inviteMemberEmail[index])
@@ -208,13 +217,13 @@ class SetupTeamViewModelUpdated @Inject constructor(
             is ResultWrapper.Success -> {
                 inviteMemberResponse.value.let { response ->
                     if (response.status) {
-
                         _teamSetupChannel.send(
                         TeamSetupChannel.OnInvitationSuccess(
                             UiText.DynamicString(
                                 response.statusMessage
                             )
                         ))
+                        resetMemberValues()
                     } else {
                         _teamSetupUiState.value =
                             _teamSetupUiState.value.copy(isLoading = false)
@@ -377,7 +386,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
                 createTeamResponse.value.let { response ->
                     if (response.status) {
                      _teamSetupChannel.send(
-                            TeamSetupChannel.OnTeamCreate(response.data.Id)
+                            TeamSetupChannel.OnTeamCreate(response.statusMessage)
                         )
                     } else {
                         _teamSetupUiState.value =
@@ -409,7 +418,7 @@ sealed class TeamSetupChannel {
     data class OnInvitationSuccess(val message: UiText) : TeamSetupChannel()
     object OnTeamSetupNextClick : TeamSetupChannel()
     object OnLogoUpload : TeamSetupChannel()
-    data class OnTeamCreate(val teamId: String) : TeamSetupChannel()
+    data class OnTeamCreate(val message: String) : TeamSetupChannel()
 
 }
 

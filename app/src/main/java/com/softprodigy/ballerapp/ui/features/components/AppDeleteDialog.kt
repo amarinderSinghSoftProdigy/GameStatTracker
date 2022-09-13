@@ -3,30 +3,12 @@ package com.softprodigy.ballerapp.ui.features.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -121,7 +103,8 @@ fun SelectTeamDialog(
     onSelectionChange: (Team) -> Unit,
     selected: Team?,
     showLoading: Boolean,
-    teams: ArrayList<Team>
+    teams: ArrayList<Team>,
+    onCreateTeamClick:()->Unit
 ) {
     BallerAppMainTheme {
         AlertDialog(
@@ -185,7 +168,7 @@ fun SelectTeamDialog(
                     ButtonWithLeadingIcon(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(id = R.string.create_new_team),
-                        onClick = { },
+                        onClick = {onCreateTeamClick.invoke() },
                         painter = painterResource(id = R.drawable.ic_add_button),
                         isTransParent = true
 
@@ -577,3 +560,180 @@ fun CheckBoxButton(icon: Painter, tintColor: String, selected: Boolean, onItemCl
         )
     }
 }
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun SelectInvitationRoleDialog(
+    onDismiss: () -> Unit,
+    onConfirmClick: () -> Unit,
+    onSelectionChange: (String) -> Unit,
+    title: String,
+    selected: String?,
+    showLoading: Boolean,
+    roleList: ArrayList<String>
+) {
+
+    BallerAppMainTheme {
+        AlertDialog(
+            modifier = Modifier
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+            onDismissRequest = onDismiss,
+            buttons = {
+                Column(
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(
+                            all = dimensionResource(
+                                id = R.dimen.size_16dp
+                            )
+                        ),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = title,
+                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                            fontWeight = FontWeight.W600,
+                        )
+
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_close_color_picker),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(dimensionResource(id = R.dimen.size_12dp))
+                                .align(Alignment.TopEnd)
+                                .clickable {
+                                    onDismiss()
+                                }
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
+
+                    LazyColumn(
+                        modifier = Modifier
+                            .height(dimensionResource(id = R.dimen.size_250dp)),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        item {
+                            if (showLoading) {
+                                CircularProgressIndicator(
+                                    color = AppConstants.SELECTED_COLOR
+                                )
+                            }
+                        }
+
+                        items(roleList) { role ->
+                            SelectInvitationRoleItem(
+                                role = role,
+                                isSelected = selected == role,
+                                onItemClick = {
+                                    onSelectionChange.invoke(it)
+                                })
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                    Divider()
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(color = Color.White)
+                            .padding(
+                                vertical = dimensionResource(id = R.dimen.size_16dp)
+                            ),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        DialogButton(
+                            text = stringResource(R.string.dialog_button_cancel),
+                            onClick = onDismiss,
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = dimensionResource(id = R.dimen.size_10dp)),
+                            border = ButtonDefaults.outlinedBorder,
+                            onlyBorder = true,
+                            enabled = false
+                        )
+                        DialogButton(
+                            text = stringResource(R.string.dialog_button_confirm),
+                            onClick = {
+                                onConfirmClick.invoke()
+                                onDismiss.invoke()
+                            },
+                            modifier = Modifier
+                                .weight(1f),
+                            border = ButtonDefaults.outlinedBorder,
+                            enabled = (selected ?: "").isNotEmpty(),
+                            onlyBorder = false,
+                        )
+                    }
+                }
+
+
+            },
+        )
+    }
+
+}
+
+
+@Composable
+fun SelectInvitationRoleItem(
+    role: String,
+    onItemClick: (String) -> Unit,
+    isSelected: Boolean
+) {
+    Row(
+        modifier = Modifier
+            .height(dimensionResource(id = R.dimen.size_48dp))
+            .fillMaxWidth()
+            .background(
+                color = if (isSelected) {
+                    MaterialTheme.appColors.material.primary
+                } else {
+                    Color.White
+                },
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+            )
+            .clickable(onClick = { onItemClick(role) }),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = dimensionResource(id = R.dimen.size_10dp)),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+
+            Text(
+                text = role,
+                modifier = Modifier.weight(1f),
+                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.W400
+            )
+            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+            Box(
+                modifier = Modifier
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.appColors.textField.label,
+                        shape = RoundedCornerShape(50)
+                    )
+                    .background(
+                        shape = RoundedCornerShape(50),
+                        color = if (isSelected)
+                            MaterialTheme.appColors.material.primaryVariant
+                        else {
+                            Color.Transparent
+                        }
+                    )
+                    .padding(dimensionResource(id = R.dimen.size_8dp))
+            )
+
+
+        }
+    }
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
+}
+
