@@ -3,7 +3,7 @@ package com.softprodigy.ballerapp.ui.features.home.teams.manage_team
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.softprodigy.ballerapp.data.response.Player
+import com.softprodigy.ballerapp.data.response.team.Player
 
 //@HiltViewModel
 class ManageTeamRstrViewModel : ViewModel() {
@@ -51,8 +51,20 @@ class ManageTeamRstrViewModel : ViewModel() {
                 ),
                 ManageTeamData(
                     id = "7777", position = "Shooting Guards", players = mutableListOf(
-                        TeamUser("8888", name = "Charlie", role = "SG", points = "21", profileImage = "profileImage/1662458857474-selected_image_4465069980681186921.jpg"),
-                        TeamUser("9999", name = "Gustavo", role = "SG", points = "48", profileImage = "profileImage/1662458857474-selected_image_4465069980681186921.jpg")
+                        TeamUser(
+                            "8888",
+                            name = "Charlie",
+                            role = "SG",
+                            points = "21",
+                            profileImage = "profileImage/1662458857474-selected_image_4465069980681186921.jpg"
+                        ),
+                        TeamUser(
+                            "9999",
+                            name = "Gustavo",
+                            role = "SG",
+                            points = "48",
+                            profileImage = "profileImage/1662458857474-selected_image_4465069980681186921.jpg"
+                        )
                     )
                 ),
                 ManageTeamData(
@@ -79,52 +91,52 @@ class ManageTeamRstrViewModel : ViewModel() {
         _manageTeamRstrState.value = manageTeamRstrState.value.copy(
             allPlayer = mutableListOf(
                 Player(
-                    Id = "11111",
+                    _id = "11111",
                     name = "George Will",
                     profileImage = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",
                     email = "email@gmail.com"
                 ),
                 Player(
-                    Id = "2222",
-                    name = "George Lipshutz",
+                    _id = "11111",
+                    name = "George Will",
                     profileImage = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",
                     email = "email@gmail.com"
                 ),
                 Player(
-                    Id = "3333",
-                    name = "Same Cena",
+                    _id = "11111",
+                    name = "George Will",
                     profileImage = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",
-                    email = "email@gmai.com"
+                    email = "email@gmail.com"
                 ),
                 Player(
-                    Id = "55555",
-                    name = "Michael Bush",
+                    _id = "11111",
+                    name = "George Will",
                     profileImage = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",
-                    email = "email@gmai.com"
+                    email = "email@gmail.com"
                 ),
                 Player(
-                    Id = "6666",
-                    name = "Jacob Bush",
+                    _id = "11111",
+                    name = "George Will",
                     profileImage = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",
-                    email = "email@gmai.com"
+                    email = "email@gmail.com"
                 ),
                 Player(
-                    Id = "7777",
-                    name = "Charlie Bush",
+                    _id = "11111",
+                    name = "George Will",
                     profileImage = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",
-                    email = "email@gmai.com"
+                    email = "email@gmail.com"
                 ),
                 Player(
-                    Id = "8888",
-                    name = "Corey Bush",
+                    _id = "11111",
+                    name = "George Will",
                     profileImage = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",
-                    email = "email@gmai.com"
+                    email = "email@gmail.com"
                 ),
                 Player(
-                    Id = "9999",
-                    name = "Abram Bush",
+                    _id = "11111",
+                    name = "George Will",
                     profileImage = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",
-                    email = "email@gmai.com"
+                    email = "email@gmail.com"
                 ),
             )
         )
@@ -160,7 +172,7 @@ class ManageTeamRstrViewModel : ViewModel() {
         if (searchKey.length > 2) {
             _manageTeamRstrState.value = _manageTeamRstrState.value.copy(matchedPlayers =
             _manageTeamRstrState.value.allPlayer.filter {
-                it.name.contains(searchKey, ignoreCase = true) || it.email.contains(
+                it.name.contains(searchKey, ignoreCase = true) || it.email!!.contains(
                     searchKey,
                     ignoreCase = true
                 )

@@ -22,6 +22,8 @@
     <string name="or_login_with">Or Login With</string>
     <string name="your_name">Full Name</string>
     <string name="create_account">Create Account</string>
+    <string name="accepted">Accepted</string>
+    <string name="accept">Accept</string>
     <string name="your_password">Enter password</string>
     <string name="ur_password">Your password</string>
     <string name="confirm_your_password">Enter Confirm password</string>
@@ -208,6 +210,11 @@
     <string name="coming_soon">Coming Soon!</string>
     <string name="all_leagues">All Leagues</string>
     <string name="leagues">Leagues</string>
+    <string name="decline">Decline</string>
+    <string name="declined">Declined</string>
+    <string name="invitation">Invitation</string>
+    <string name="sent_by">Sent by</string>
+    <string name="what_is_your_role">What is your role on this team?</string>
     <string name="role">Role</string>
     <string name="leave_team">Leave Team</string>
     <string name="position">Position</string>

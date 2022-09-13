@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
+import com.softprodigy.ballerapp.data.response.team.Coach
+import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -37,6 +39,7 @@ class TeamViewModel @Inject constructor(
                 viewModelScope.launch { getTeamByTeamId() }
             }
             is TeamUIEvent.OnDismissClick -> {}
+
             is TeamUIEvent.ShowToast -> {
                 viewModelScope.launch {
                     showToast(event.message)
@@ -61,7 +64,8 @@ class TeamViewModel @Inject constructor(
     private suspend fun getTeams() {
         _teamUiState.value =
             _teamUiState.value.copy(
-                isLoading = true)
+                isLoading = true
+            )
         val teamResponse = teamRepo.getTeams()
 
         when (teamResponse) {
@@ -97,7 +101,8 @@ class TeamViewModel @Inject constructor(
                         _teamUiState.value =
                             _teamUiState.value.copy(
                                 teams = response.data,
-                                isLoading = false)
+                                isLoading = false
+                            )
                     } else {
                         _teamUiState.value =
                             _teamUiState.value.copy(isLoading = false)
@@ -120,10 +125,10 @@ class TeamViewModel @Inject constructor(
                 isLoading = true
             )
         val teamResponse =
-            teamRepo.getTeamsByTeamID(_teamUiState.value.selectedTeam?.Id ?: "")
+            teamRepo.getTeamsByTeamID(_teamUiState.value.selectedTeam?._id ?: "")
         _teamUiState.value =
             _teamUiState.value.copy(
-                isLoading = false
+                isLoading = false,
             )
 
         when (teamResponse) {
@@ -145,14 +150,19 @@ class TeamViewModel @Inject constructor(
                         )
                     )
                 )
-
             }
             is ResultWrapper.Success -> {
                 teamResponse.value.let { response ->
                     if (response.status) {
+                        _teamUiState.value = _teamUiState.value.copy(
+                            isLoading = false,
+                            players = response.data.players as ArrayList<Player>,
+                            coaches = response.data.coaches as ArrayList<Coach>,
+
+                            )
 
                         _teamChannel.send(
-                            TeamChannel.OnTeamDetailsSuccess(response.data.Id)
+                            TeamChannel.OnTeamDetailsSuccess(response.data._id)
                         )
 
                     } else {

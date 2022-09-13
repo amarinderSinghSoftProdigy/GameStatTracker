@@ -9,12 +9,12 @@ import com.softprodigy.ballerapp.data.request.SignUpData
 import com.softprodigy.ballerapp.data.request.VerifyPhoneRequest
 import com.softprodigy.ballerapp.data.response.CreateTeamResponse
 import com.softprodigy.ballerapp.data.response.ImageUpload
-import com.softprodigy.ballerapp.data.response.Player
-import com.softprodigy.ballerapp.data.response.Team
+import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.data.response.UserInfo
 import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.data.request.*
 import com.softprodigy.ballerapp.data.response.*
+import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.domain.BaseResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody

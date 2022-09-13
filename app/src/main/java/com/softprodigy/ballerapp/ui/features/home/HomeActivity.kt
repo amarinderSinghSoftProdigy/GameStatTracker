@@ -31,22 +31,20 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.IntentData
 import com.softprodigy.ballerapp.common.Route
+import com.softprodigy.ballerapp.common.Route.HOME_SCREEN
+import com.softprodigy.ballerapp.common.Route.INVITATION_SCREEN
+import com.softprodigy.ballerapp.common.Route.TEAMS_SCREEN
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
-import com.softprodigy.ballerapp.ui.features.components.BottomNavigationBar
-import com.softprodigy.ballerapp.ui.features.components.CommonTabView
-import com.softprodigy.ballerapp.ui.features.components.LogoutDialog
-import com.softprodigy.ballerapp.ui.features.components.TabBar
-import com.softprodigy.ballerapp.ui.features.components.TopBar
-import com.softprodigy.ballerapp.ui.features.components.TopBarData
-import com.softprodigy.ballerapp.ui.features.components.fromHex
+import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.home.invitation.InvitationScreen
 import com.softprodigy.ballerapp.ui.features.home.manage_team.MainManageTeamScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileEditScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileScreen
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.AddPlayersScreenUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupScreenUpdated
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
 import com.softprodigy.ballerapp.ui.theme.appColors
 import dagger.hilt.android.AndroidEntryPoint
@@ -169,6 +167,8 @@ fun NavControllerComposable(
             if (fromSplash)
                 HomeScreen(name = "", gotToProfile = {
                     navController.navigate(Route.PROFILE_SCREEN)
+                }, onInvitationCLick = {
+                    navController.navigate(INVITATION_SCREEN)
                 }) { homeViewModel.setLogoutDialog(true) }
             else {
                 HomeFirstTimeLoginScreen()
@@ -214,6 +214,11 @@ fun NavControllerComposable(
                     UserStorage.teamId = teamId
 //                    navController.navigate(Route.ADD_PLAYER_SCREEN + "/${teamId}")
                 },
+                onCreateTeamClick = {
+                    navController.navigate(Route.TEAM_SETUP_SCREEN) {
+                        navController.popBackStack()
+                    }
+                }
             )
         }
         composable(route = Route.EVENTS_SCREEN) {
@@ -237,6 +242,26 @@ fun NavControllerComposable(
             })
         }
 
+        composable(route = Route.ADD_PLAYER_SCREEN) {
+
+            homeViewModel.setScreen(true)
+            BackHandler {
+                homeViewModel.setScreen(false)
+                navController.popBackStack()
+
+            }
+            AddPlayersScreenUpdated(
+                vm = setupTeamViewModelUpdated,
+                onBackClick = { navController.popBackStack() },
+                onNextClick = {
+                    navController.navigate(TEAMS_SCREEN) {
+                        popUpTo(HOME_SCREEN)
+                    }
+                    homeViewModel.setScreen(false)
+                }, onInvitationSuccess = {
+                })
+        }
+
         composable(
             route = Route.ADD_PLAYER_SCREEN + "/{teamId}",
             arguments = listOf(
@@ -247,6 +272,7 @@ fun NavControllerComposable(
             homeViewModel.setScreen(true)
             BackHandler {
                 homeViewModel.setScreen(false)
+                navController.popBackStack()
             }
             val teamId = it.arguments?.getString("teamId")
             AddPlayersScreenUpdated(
@@ -262,7 +288,40 @@ fun NavControllerComposable(
                     moveBackFromAddPlayer(homeViewModel, navController)
                 })
         }
+
+        composable(route = INVITATION_SCREEN) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = stringResource(id = R.string.invitation),
+                    topBar = TopBar.SINGLE_LABEL_BACK,
+                )
+            )
+            homeViewModel.setScreen(true)
+            BackHandler {
+                homeViewModel.setScreen(false)
+                navController.popBackStack()
+            }
+            InvitationScreen()
+
+        }
+        composable(route = Route.TEAM_SETUP_SCREEN) {
+
+            homeViewModel.setScreen(true)
+            BackHandler {
+                homeViewModel.setScreen(false)
+                navController.popBackStack()
+            }
+            TeamSetupScreenUpdated(
+                vm = setupTeamViewModelUpdated,
+                onBackClick = { navController.popBackStack() },
+                onNextClick = {
+                    navController.navigate(Route.ADD_PLAYER_SCREEN)
+                })
+        }
+
+
     }
+
 }
 
 

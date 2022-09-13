@@ -59,6 +59,8 @@ import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
 import com.softprodigy.ballerapp.ui.features.components.DeleteDialog
 import com.softprodigy.ballerapp.ui.features.components.InviteTeamMemberButton
 import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
+import com.softprodigy.ballerapp.data.response.team.Player
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -107,7 +109,9 @@ fun AddPlayersScreenUpdated(
                     vm.onEvent(TeamSetupUIEventUpdated.OnLogoUploadSuccess)
                 }
                 is TeamSetupChannel.OnTeamCreate -> {
-                    onNextClick.invoke(uiEvent.teamId)
+                    Toast.makeText(context, uiEvent.message, Toast.LENGTH_LONG)
+                        .show()
+                    onNextClick.invoke(uiEvent.message)
                 }
                 is TeamSetupChannel.OnInvitationSuccess -> {
                     Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
@@ -322,7 +326,7 @@ fun PlayerListUI(
             for (player in players) {
                 if (player.name.lowercase()
                         .contains(searchedText.lowercase())
-                    || player.email.lowercase()
+                    || player.email!!.lowercase()
                         .contains(searchedText.lowercase())
                 ) {
                     resultList.add(player)

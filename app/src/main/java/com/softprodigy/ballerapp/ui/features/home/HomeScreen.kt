@@ -49,7 +49,12 @@ import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun HomeScreen(name: String?, gotToProfile: () -> Unit, logoClick: () -> Unit) {
+fun HomeScreen(
+    name: String?,
+    logoClick: () -> Unit,
+    onInvitationCLick: () -> Unit,
+    gotToProfile: () -> Unit
+) {
     val dataStoreManager = DataStoreManager(LocalContext.current)
     val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
     CoachFlowBackground(colorCode = color.value, teamLogo = "", click = {
@@ -133,6 +138,9 @@ fun HomeScreen(name: String?, gotToProfile: () -> Unit, logoClick: () -> Unit) {
                     Box(
                         Modifier
                             .fillMaxWidth()
+                            .clickable {
+                                onInvitationCLick.invoke()
+                            }
                             .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                     ) {
                         Row(

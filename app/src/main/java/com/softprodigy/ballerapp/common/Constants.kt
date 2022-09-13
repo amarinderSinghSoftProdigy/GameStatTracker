@@ -47,6 +47,7 @@ object Route {
     const val SELECT_PROFILE = "selectProfile"
     const val PROFILE_SCREEN = "profileScreen"
     const val PROFILE_EDIT_SCREEN = "profileeditscreen"
+    const val INVITATION_SCREEN="invitationScreen"
 }
 
 object ApiConstants {
@@ -59,7 +60,6 @@ object ApiConstants {
     const val COACH_PLAYER = "v1/team/coachPlayers"
     const val GET_TEAM_STANDING = "v1/team/standings"
     const val SEND_INVITATION = "v1/team/inviteTeamMembers"
-
 
     const val SOCIAL_LOGIN = "/social_login"
     const val SIGNUP = "v1/auth/register"

@@ -16,7 +16,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.data.response.Team
+import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.ui.features.components.AppScrollableTabRow
 import com.softprodigy.ballerapp.ui.features.components.AppTabLikeViewPager
 import com.softprodigy.ballerapp.ui.features.components.SelectTeamDialog
@@ -36,7 +36,8 @@ fun TeamsScreen(
     showDialog: Boolean,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
     dismissDialog: (Boolean) -> Unit,
-    OnTeamDetailsSuccess: (String) -> Unit
+    OnTeamDetailsSuccess: (String) -> Unit,
+    onCreateTeamClick: () -> Unit
 ) {
     val vm: TeamViewModel = hiltViewModel()
     val context = LocalContext.current
@@ -45,7 +46,7 @@ fun TeamsScreen(
         vm.onEvent(TeamUIEvent.OnTeamSelected(team))
         setupTeamViewModelUpdated.onEvent(
             TeamSetupUIEventUpdated.OnColorSelected(
-                team.primaryTeamColor.replace(
+                team.colorCode.replace(
                     "#",
                     ""
                 )
@@ -102,7 +103,8 @@ fun TeamsScreen(
                 onConfirmClick = { vm.onEvent(TeamUIEvent.OnConfirmTeamClick) },
                 onSelectionChange = onTeamSelectionChange,
                 selected = state.selectedTeam,
-                showLoading = state.isLoading
+                showLoading = state.isLoading,
+                onCreateTeamClick = onCreateTeamClick
             )
         }
 
