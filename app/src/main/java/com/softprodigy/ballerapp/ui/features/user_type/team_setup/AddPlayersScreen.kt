@@ -262,7 +262,6 @@ fun AddPlayersScreen(
                     if (teamId.isNullOrEmpty()) {
                         vm.onEvent(TeamSetupUIEvent.OnAddPlayerScreenNext)
                     } else {
-                        //TODO Add uupdate team api and add the newly selected player in the api.
                     }
                 },
                 enableState = state.selectedPlayers.isNotEmpty(),

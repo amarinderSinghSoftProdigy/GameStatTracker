@@ -12,8 +12,9 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -33,12 +34,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.isValidEmail
+import com.softprodigy.ballerapp.common.validName
 import com.softprodigy.ballerapp.data.response.Player
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
 import com.softprodigy.ballerapp.ui.theme.appColors
+import timber.log.Timber
 
 @OptIn(ExperimentalComposeUiApi::class)
 @SuppressLint("MutableCollectionMutableState")
@@ -47,7 +51,8 @@ fun AddPlayersScreenUpdated(
     teamId: String? = "",
     vm: SetupTeamViewModelUpdated,
     onBackClick: () -> Unit,
-    onNextClick: (String) -> Unit
+    onNextClick: (String) -> Unit,
+    onInvitationSuccess: () -> Unit
 ) {
     val context = LocalContext.current
     val state = vm.teamSetupUiState.value
@@ -55,17 +60,22 @@ fun AddPlayersScreenUpdated(
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
-    val nameTextFiled = remember {
-        mutableStateListOf<String>()
-    }
-    val emailTextField = remember {
-        mutableStateListOf<String>()
-    }
-    var rowCount by rememberSaveable {
-        mutableStateOf(0)
-    }
+    Timber.i("AddPlayersScreenUpdated-- teamId--$teamId")
 
-
+    fun updateItem(index: Int? = null, addIntent: Boolean) {
+        if (addIntent) {
+            vm.onEvent(TeamSetupUIEventUpdated.OnInviteCountValueChange(addIntent = true))
+        } else {
+            index?.let {
+                vm.onEvent(
+                    TeamSetupUIEventUpdated.OnInviteCountValueChange(
+                        index = index,
+                        addIntent = false
+                    )
+                )
+            }
+        }
+    }
     LaunchedEffect(key1 = Unit) {
         vm.teamSetupChannel.collect { uiEvent ->
             when (uiEvent) {
@@ -78,6 +88,11 @@ fun AddPlayersScreenUpdated(
                 }
                 is TeamSetupChannel.OnTeamCreate -> {
                     onNextClick.invoke(uiEvent.teamId)
+                }
+                is TeamSetupChannel.OnInvitationSuccess -> {
+                    Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
+                        .show()
+                    onInvitationSuccess.invoke()
                 }
                 else -> Unit
             }
@@ -113,18 +128,27 @@ fun AddPlayersScreenUpdated(
                         Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        items(rowCount) { index ->
+                        items(state.inviteMemberCount) { index ->
                             Column(Modifier.fillMaxSize()) {
 
                                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
-                                Row(Modifier.fillMaxWidth()) {
+                                Row(
+                                    Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
                                     AppSearchOutlinedTextField(
                                         modifier = Modifier
                                             .width(dimensionResource(id = R.dimen.size_100dp))
                                             .focusRequester(focusRequester),
-                                        value = nameTextFiled[index],
+                                        value = state.inviteMemberName[index],
                                         onValueChange = { name ->
-                                            nameTextFiled[index] = name
+                                            vm.onEvent(
+                                                TeamSetupUIEventUpdated.OnNameValueChange(
+                                                    index = index,
+                                                    name
+                                                )
+                                            )
                                         },
                                         colors = TextFieldDefaults.outlinedTextFieldColors(
                                             focusedBorderColor = ColorBWGrayBorder,
@@ -139,17 +163,25 @@ fun AddPlayersScreenUpdated(
                                             )
                                         },
                                         singleLine = true,
-
-                                        )
+                                        isError = !validName(state.inviteMemberName[index])
+                                                && state.inviteMemberName[index].isNotEmpty()
+                                                || state.inviteMemberName[index].length > 30,
+                                        errorMessage = stringResource(id = R.string.valid_first_name),
+                                    )
                                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
 
                                     AppSearchOutlinedTextField(
                                         modifier = Modifier
                                             .weight(1f)
                                             .focusRequester(focusRequester),
-                                        value = emailTextField[index],
+                                        value = state.inviteMemberEmail[index],
                                         onValueChange = { email ->
-                                            emailTextField[index] = email
+                                            vm.onEvent(
+                                                TeamSetupUIEventUpdated.OnEmailValueChange(
+                                                    index = index,
+                                                    email
+                                                )
+                                            )
                                         },
                                         colors = TextFieldDefaults.outlinedTextFieldColors(
                                             focusedBorderColor = ColorBWGrayBorder,
@@ -169,7 +201,27 @@ fun AddPlayersScreenUpdated(
                                             keyboardType = KeyboardType.Email
 
                                         ),
-                                    isError = (!emailTextField[index].isValidEmail() && emailTextField[index].isNotEmpty() || emailTextField[index].length > 45),
+                                        isError = (!state.inviteMemberEmail[index].isValidEmail()
+                                                && state.inviteMemberEmail[index].isNotEmpty()
+                                                || state.inviteMemberEmail[index].length > 45),
+                                        errorMessage = stringResource(id = R.string.email_error)
+                                    )
+
+                                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_remove),
+                                        contentDescription = "",
+                                        tint = Color.Unspecified,
+                                        modifier = Modifier
+                                            .background(
+                                                AppConstants.SELECTED_COLOR,
+                                                shape = RoundedCornerShape(50)
+                                            )
+                                            .padding(dimensionResource(id = R.dimen.size_2dp))
+                                            .clickable {
+                                                /*Remove a specific  item from list*/
+                                                updateItem(index, false)
+                                            }
                                     )
                                 }
                             }
@@ -181,9 +233,7 @@ fun AddPlayersScreenUpdated(
                                 modifier = Modifier.fillMaxWidth(),
                                 text = stringResource(id = R.string.add),
                                 onClick = {
-                                    ++rowCount
-                                    nameTextFiled.add("")
-                                    emailTextField.add("")
+                                    updateItem(addIntent = true)
                                 },
                                 painter = painterResource(
                                     id = R.drawable.ic_add_button
@@ -202,10 +252,15 @@ fun AddPlayersScreenUpdated(
                         if (teamId.isNullOrEmpty()) {
                             vm.onEvent(TeamSetupUIEventUpdated.OnAddPlayerScreenNext)
                         } else {
-                            //TODO Add uupdate team api and add the newly selected player in the api.
+                            vm.onEvent(TeamSetupUIEventUpdated.OnInviteTeamMembers(teamId))
+
                         }
                     },
-                    enableState = state.selectedPlayers.isNotEmpty(),
+                    enableState =
+                    state.inviteMemberName.isNotEmpty() &&
+                            state.inviteMemberName.all() { it.isNotEmpty() } &&
+                            state.inviteMemberName.all() { validName(it) }
+                            && state.inviteMemberEmail.all() { it.isValidEmail() },
                     themed = true,
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
@@ -227,6 +282,8 @@ fun AddPlayersScreenUpdated(
             )
         }
     }
+
+
 }
 
 @Composable

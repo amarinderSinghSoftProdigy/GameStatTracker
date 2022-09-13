@@ -6,5 +6,5 @@ data class ManageLeaderBoardUIState(
     val isLoading: Boolean = false,
     val selected: ArrayList<String> = ArrayList(),
     val checked: Boolean = false,
-    var leaderBoardList: List<ManageLeaderBoardResponse> = emptyList()
+    var leaderBoardList: List<ManageLeaderBoardResponse> = arrayListOf()
 )

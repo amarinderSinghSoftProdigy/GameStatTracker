@@ -150,7 +150,10 @@ class TeamViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 teamResponse.value.let { response ->
                     if (response.status) {
-                        Timber.i("TeamsGetSuccessfully ${response.data.name}")
+
+                        _teamChannel.send(
+                            TeamChannel.OnTeamDetailsSuccess(response.data.Id)
+                        )
 
                     } else {
                         _teamUiState.value =
@@ -172,4 +175,6 @@ class TeamViewModel @Inject constructor(
 
 sealed class TeamChannel {
     data class ShowToast(val message: UiText) : TeamChannel()
+    data class OnTeamDetailsSuccess(val teamId: String) : TeamChannel()
+
 }

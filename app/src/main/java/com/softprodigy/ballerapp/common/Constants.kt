@@ -57,6 +57,7 @@ object ApiConstants {
     const val GET_TEAMS = "v1/team"
     const val COACH_PLAYER = "v1/team/coachPlayers"
     const val GET_TEAM_STANDING = "v1/team/standings"
+    const val SEND_INVITATION = "v1/team/inviteTeamMembers"
 
 
     const val SOCIAL_LOGIN = "/social_login"
@@ -81,4 +82,7 @@ object ApiConstants {
 object RequestCode {
     const val GOOGLE_ACCESS = 100
 
+}
+object IntentData{
+    const val FROM_SPLASH = "fromSplash"
 }

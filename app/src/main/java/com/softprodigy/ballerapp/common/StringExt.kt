@@ -9,6 +9,8 @@ private const val PASS_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{4
 fun String.isValidEmail(): Boolean {
     if (this.isEmpty()) {
         return false
+    } else if (this.length > 45) {
+        return false
     }
     val pattern = Patterns.EMAIL_ADDRESS
     return pattern.matcher(this).matches()

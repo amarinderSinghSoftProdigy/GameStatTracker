@@ -4,5 +4,5 @@ import com.softprodigy.ballerapp.data.response.ManagedUserResponse
 
 data class ManageUserUIState(
     val isLoading: Boolean = false,
-    val coachList: List<ManagedUserResponse> = emptyList()
+    val coachList: List<ManagedUserResponse> = arrayListOf()
 )

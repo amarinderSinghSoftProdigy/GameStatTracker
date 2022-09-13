@@ -36,7 +36,7 @@ fun TeamsScreen(
     showDialog: Boolean,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
     dismissDialog: (Boolean) -> Unit,
-    addPlayerClick: (Team) -> Unit
+    OnTeamDetailsSuccess: (String) -> Unit
 ) {
     val vm: TeamViewModel = hiltViewModel()
     val context = LocalContext.current
@@ -45,7 +45,7 @@ fun TeamsScreen(
         vm.onEvent(TeamUIEvent.OnTeamSelected(team))
         setupTeamViewModelUpdated.onEvent(
             TeamSetupUIEventUpdated.OnColorSelected(
-                team.colorCode.replace(
+                team.primaryTeamColor.replace(
                     "#",
                     ""
                 )
@@ -63,6 +63,9 @@ fun TeamsScreen(
                         uiEvent.message.asString(context),
                         Toast.LENGTH_LONG
                     ).show()
+                }
+                is TeamChannel.OnTeamDetailsSuccess ->{
+                  OnTeamDetailsSuccess.invoke(uiEvent.teamId)
                 }
             }
         }

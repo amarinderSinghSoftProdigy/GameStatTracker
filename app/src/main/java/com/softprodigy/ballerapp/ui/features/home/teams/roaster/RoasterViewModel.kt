@@ -3,9 +3,7 @@ package com.softprodigy.ballerapp.ui.features.home.teams.roaster
 import android.app.Application
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.response.roaster.PlayerDetail
@@ -13,7 +11,6 @@ import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,9 +27,74 @@ class RoasterViewModel @Inject constructor(
     val roasterUIState: State<RoasterUIState> = _roasterUIState
 
     init {
-        viewModelScope.launch {
-            getCoachPlayerByID()
-        }
+        // TODO: temp remove API call
+
+
+        val coachList = arrayListOf(
+            PlayerDetail(
+                _id = "aaa",
+                name = "John Cena",
+                profileImage = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",
+                role = "Coach"
+            ),
+            PlayerDetail(
+                _id = "bbb",
+                name = "Cena Jogn",
+                profileImage = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",
+                role = "Coach"
+            )
+        )
+        val playerList = arrayListOf(
+            PlayerDetail(
+                _id = "aaa",
+                name = "John Cena",
+                profileImage = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",
+                role = "PF",
+                position = "PF",
+                jerseyNumber = "5"
+            ),
+            PlayerDetail(
+                _id = "bbb",
+                name = "Cena Jogn",
+                profileImage = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",
+                role = "SF",
+                position = "SF",
+                jerseyNumber = "8"
+            ),
+            PlayerDetail(
+                _id = "bbb",
+                name = "Cena Jogn",
+                profileImage = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",
+                role = "C",
+                position = "C",
+                jerseyNumber = "90"
+            ),
+            PlayerDetail(
+                _id = "bbb",
+                name = "Cena Jogn",
+                profileImage = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",
+                role = "CF",
+                position = "CF",
+                jerseyNumber = "50"
+            ),
+            PlayerDetail(
+                _id = "bbb",
+                name = "Cena Jogn",
+                profileImage = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",
+                role = "SF",
+                position = "SF",
+                jerseyNumber = "12"
+            ),
+        )
+        _roasterUIState.value = _roasterUIState.value.copy(
+            isLoading = false,
+            playerList = playerList,
+            coachList = coachList
+        )
+
+        /* viewModelScope.launch {
+             getCoachPlayerByID()
+         }*/
     }
 
     private suspend fun getCoachPlayerByID() {
