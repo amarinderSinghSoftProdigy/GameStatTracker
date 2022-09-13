@@ -4,9 +4,21 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.LocalContentColor
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -21,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.ui.theme.ButtonColor
+import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -167,7 +180,7 @@ fun ButtonWithLeadingIcon(
         horizontal = dimensionResource(id = R.dimen.size_24dp),
     ),
     isTransParent: Boolean = false,
-    iconSize: Dp = dimensionResource(id = R.dimen.size_10dp)
+    iconSize: Dp = dimensionResource(id = R.dimen.size_10dp),
 ) {
     Row(
         modifier = modifier
@@ -225,6 +238,55 @@ fun ButtonWithLeadingIcon(
 }
 
 @Composable
+fun ButtonWithLeadingIconGrayed(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    painter: Painter,
+    colors: ButtonColor = MaterialTheme.appColors.buttonColor,
+    contentPadding: PaddingValues = PaddingValues(
+        vertical = dimensionResource(id = R.dimen.size_16dp),
+        horizontal = dimensionResource(id = R.dimen.size_24dp),
+    ),
+    iconSize: Dp = dimensionResource(id = R.dimen.size_20dp),
+) {
+    Row(
+        modifier = modifier
+            .clickable { onClick.invoke() }
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.appColors.editField.borderFocused,
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_6dp))
+            )
+            .background(
+                color = MaterialTheme.appColors.material.surface,
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+            )
+            .padding(contentPadding),
+
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            painter = painter,
+            contentDescription = "",
+            modifier = Modifier.size(
+                iconSize
+            ),
+            tint = ColorGreyLighter
+
+        )
+        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_12dp)))
+
+        AppText(
+            text = text,
+            color = colors.textDisabled,
+            style = MaterialTheme.typography.button
+        )
+    }
+}
+
+@Composable
 fun InviteTeamMemberButton(
     text: String,
     onClick: () -> Unit,
@@ -268,7 +330,7 @@ fun InviteTeamMemberButton(
         Icon(
             painter = painter,
             contentDescription = "",
-            tint= if (isTransParent) {
+            tint = if (isTransParent) {
                 AppConstants.SELECTED_COLOR
             } else {
                 colors.textEnabled

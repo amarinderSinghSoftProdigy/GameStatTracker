@@ -1,32 +1,38 @@
 package com.softprodigy.ballerapp.ui.features.profile.tabs
 
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.data.response.Team
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
-import com.softprodigy.ballerapp.ui.theme.ColorMainPrimary
-import com.softprodigy.ballerapp.ui.theme.appColors
 import com.softprodigy.ballerapp.ui.theme.md_theme_light_primary
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -36,17 +42,17 @@ fun DocumentTab(
     val context = LocalContext.current
     Box(
         modifier = Modifier
-            .background(color = MaterialTheme.appColors.material.primary)
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        Column() {
-            DcumentItem("birth_certificate", "http://testing.url.com")
-            DcumentItem("grade_verification", "")
-            DcumentItem("permission_slip", "")
-            DcumentItem("aau_card", "")
-            DcumentItem("waiver", "")
-            DcumentItem("vaccine_card", "")
+        Column {
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+            DocumentItem("birth_certificate", "http://testing.url.com")
+            DocumentItem("grade_verification", "")
+            DocumentItem("permission_slip", "")
+            DocumentItem("aau_card", "")
+            DocumentItem("waiver", "")
+            DocumentItem("vaccine_card", "")
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_80dp)))
         }
 
@@ -55,37 +61,35 @@ fun DocumentTab(
 
 
 @Composable
-fun DcumentItem(stringId: String, imageUrl: String) {
-    Box(
+fun DocumentItem(stringId: String, imageUrl: String) {
+    Surface(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .padding(
                 start = dimensionResource(id = R.dimen.size_16dp),
                 end = dimensionResource(id = R.dimen.size_16dp),
-                top = dimensionResource(id = R.dimen.size_16dp)
-            )
-            .clip(RoundedCornerShape(5.dp))
-            .background(color = Color.White)
-            .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                top = dimensionResource(id = R.dimen.size_8dp)
+            ),
+        shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
+        color = Color.White
     ) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
         ) {
             Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp))
             ) {
                 Box(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(5.dp))
-                        .background(color = md_theme_light_primary)
-                        .padding(
-                            all = dimensionResource(
-                                id = R.dimen.size_16dp
-                            )
-                        ),
+                        .size(dimensionResource(id = R.dimen.size_64dp))
+                        .background(
+                            color = md_theme_light_primary,
+                            shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+                        )
+                        .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                 ) {
                     Image(
                         painter = if (imageUrl.isNotEmpty()) rememberAsyncImagePainter(imageUrl) else painterResource(
@@ -93,11 +97,11 @@ fun DcumentItem(stringId: String, imageUrl: String) {
                         ),
                         contentDescription = "",
                         modifier = Modifier
+                            .align(Alignment.Center)
                             .clickable {
                             },
                     )
                 }
-
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_20dp)))
                 AppText(
                     text = stringResourceByName(stringId),
@@ -106,13 +110,17 @@ fun DcumentItem(stringId: String, imageUrl: String) {
                 )
             }
             if (imageUrl.isNotEmpty()) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_delete),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .clickable {
-                        },
-                )
+                Box(modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .clickable { }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_delete),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .padding(all = dimensionResource(id = R.dimen.size_16dp))
+                            .align(Alignment.CenterEnd),
+                    )
+                }
             }
         }
     }

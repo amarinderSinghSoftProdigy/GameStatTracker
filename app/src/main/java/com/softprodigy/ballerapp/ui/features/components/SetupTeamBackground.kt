@@ -3,24 +3,30 @@ package com.softprodigy.ballerapp.ui.features.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,8 +36,10 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.rememberImagePainter
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -39,9 +47,14 @@ import com.softprodigy.ballerapp.ui.theme.appColors
 @Composable
 fun CoachFlowBackground(
     colorCode: String? = null,
-    teamLogo: String? = null
+    teamLogo: String? = "",
+    click: (Options) -> Unit = {},
+    content: @Composable () -> Unit
 ) {
     val ballColor = colorResource(id = R.color.ball_color)
+    val showOptions = remember {
+        mutableStateOf(false)
+    }
     Surface(color = Color.Transparent) {
         Box(
             modifier = Modifier
@@ -88,28 +101,106 @@ fun CoachFlowBackground(
                             tint = colorResource(id = R.color.black),
                             modifier = Modifier.fillMaxSize()
                         )
-                        teamLogo?.let {
-                            Image(
-                                painter = if(teamLogo.isNotEmpty()) rememberImagePainter(data = teamLogo) else painterResource(
-                                    id = R.drawable.app_logo
-                                ),
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop,            // crop the image if it's not a square
-                                modifier = Modifier
-                                    .size(dimensionResource(id = R.dimen.size_65dp))
-                                    .clip(CircleShape)
+                    }
+                }
+            }
+
+
+
+            Box(modifier = Modifier.fillMaxSize()) {
+                content()
+                Column(
+                    modifier = Modifier.align(Alignment.TopEnd)
+                ) {
+                    Image(
+                        painter = if ((teamLogo
+                                ?: "").isNotEmpty()
+                        ) rememberImagePainter(data = teamLogo) else painterResource(
+                            id = R.drawable.ic_ball
+                        ),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .align(Alignment.End)
+                            .padding(
+                                end = dimensionResource(id = R.dimen.size_16dp),
+                                top = dimensionResource(
+                                    id = R.dimen.size_18dp
+                                )
+                            )
+                            .size(dimensionResource(id = R.dimen.size_65dp))
+                            .clip(CircleShape)
+                            .border(
+                                dimensionResource(id = R.dimen.size_3dp),
+                                MaterialTheme.colors.surface,
+                                CircleShape
+                            )
+                            .clickable {
+                                showOptions.value = !showOptions.value
+                            }
+                    )
+                    if (showOptions.value) {
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                        Surface(
+                            elevation = dimensionResource(id = R.dimen.size_10dp),
+                            color = Color.Transparent
+                        ) {
+                            Column(
+                                Modifier
+                                    .width(dimensionResource(id = R.dimen.size_150dp))
+                                    .padding(end = dimensionResource(id = R.dimen.size_16dp))
+                                    .background(
+                                        color = Color.White,
+                                        RoundedCornerShape(dimensionResource(id = R.dimen.size_10dp))
+                                    )
                                     .border(
                                         dimensionResource(id = R.dimen.size_3dp),
                                         MaterialTheme.colors.surface,
                                         CircleShape
                                     )
-                                    .align(Alignment.Center)
-                            )
+                            ) {
+                                OptionItem(
+                                    stringResource(id = R.string.my_profile),
+                                    R.drawable.ic_profile
+                                ) {
+                                    click(Options.PROFILE)
+                                }
+                                Divider(thickness = dimensionResource(id = R.dimen.divider))
+                                OptionItem(
+                                    stringResource(id = R.string.logout),
+                                    R.drawable.ic_logout
+                                ) {
+                                    click(Options.LOGOUT)
+                                }
+                            }
                         }
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun OptionItem(label: String, resource: Int, click: () -> Unit) {
+
+    Row(
+        modifier = Modifier
+            .padding(all = dimensionResource(id = R.dimen.size_16dp))
+            .clickable { click() }) {
+        Image(
+            painter = painterResource(id = resource),
+            contentDescription = "",
+        )
+        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+        AppText(
+            text = label,
+            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+            style = MaterialTheme.typography.h5,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1
+        )
     }
 }
 
@@ -181,4 +272,10 @@ fun BottomButtons(
             themed = themed,
         )
     }
+}
+
+enum class Options {
+    PROFILE,
+    LOGOUT
+    //Add options on the Profile dropwodn.
 }

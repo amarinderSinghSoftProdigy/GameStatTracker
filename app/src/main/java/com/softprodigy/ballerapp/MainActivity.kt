@@ -15,7 +15,13 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
@@ -28,12 +34,9 @@ import androidx.navigation.compose.rememberNavController
 import com.facebook.CallbackManager
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.IntentData
-import com.softprodigy.ballerapp.common.Route
-import com.softprodigy.ballerapp.common.IntentData
 import com.softprodigy.ballerapp.common.Route.ADD_PLAYER_SCREEN
 import com.softprodigy.ballerapp.common.Route.FORGOT_PASSWORD_SCREEN
 import com.softprodigy.ballerapp.common.Route.LOGIN_SCREEN
-import com.softprodigy.ballerapp.common.Route.PROFILE_SCREEN
 import com.softprodigy.ballerapp.common.Route.PROFILE_SETUP_SCREEN
 import com.softprodigy.ballerapp.common.Route.SELECT_PROFILE
 import com.softprodigy.ballerapp.common.Route.SELECT_USER_TYPE
@@ -50,8 +53,6 @@ import com.softprodigy.ballerapp.ui.features.components.UserType
 import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordScreen
 import com.softprodigy.ballerapp.ui.features.home.HomeActivity
 import com.softprodigy.ballerapp.ui.features.login.LoginScreen
-import com.softprodigy.ballerapp.ui.features.profile.ProfileEditScreen
-import com.softprodigy.ballerapp.ui.features.profile.ProfileScreen
 import com.softprodigy.ballerapp.ui.features.select_profile.SelectProfileScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.ProfileSetUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
@@ -427,17 +428,6 @@ fun NavControllerComposable(activity: MainActivity) {
                 }, onInvitationSuccess = {
 
                 })
-        }
-        composable(route = Route.PROFILE_SCREEN) {
-            ProfileScreen(
-                onBackClick = { navController.popBackStack() },
-                moveToEditProfile={   navController.navigate(Route.PROFILE_EDIT_SCREEN)}
-            )
-        }
-        composable(route = Route.PROFILE_EDIT_SCREEN) {
-            ProfileEditScreen(
-                onBackClick = { navController.popBackStack() },
-            )
         }
         composable(route = SELECT_PROFILE) {
             SelectProfileScreen(onNextClick = { moveToHome(activity) })

@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.LocalContentColor
@@ -154,6 +155,9 @@ fun BoxScope.CommonTabView(
     when (topBarData.topBar) {
         TopBar.TEAMS -> {
             icon = painterResource(id = R.drawable.ic_settings)
+        }
+        TopBar.PROFILE -> {
+            icon = painterResource(id = R.drawable.ic_edit)
         }
         TopBar.MY_EVENT -> {
             icon = painterResource(id = R.drawable.ic_add_circle)
@@ -301,6 +305,10 @@ fun CommonProgressBar() {
         )
     }
 }
+@Composable
+fun DividerCommon() {
+    Divider(thickness=dimensionResource(id = R.dimen.divider))
+}
 
 data class TopBarData(
     val label: String? = "",
@@ -308,7 +316,8 @@ data class TopBarData(
 )
 
 enum class TopBar(val stringId: String, val back: Boolean) {
-    PROFILE(stringId = "profile_label", back = false),
+    PROFILE(stringId = "profile_label", back = true),
+    EDIT_PROFILE(stringId = "edit_profile", back = true),
     MY_EVENT(stringId = "events_label", back = false),
     EVENT_LEAGUES(stringId = "events_label", back = false),
     TEAMS(stringId = "teams_label", back = false),

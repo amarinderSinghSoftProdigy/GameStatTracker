@@ -36,11 +36,13 @@ fun UserTypeScreen(
     onNextClick: (String) -> Unit,
     signUpvm: SignUpViewModel
 ) {
-    Box(
-        Modifier.fillMaxWidth()
-    ) {
-        CoachFlowBackground()
-        UserTypeSelector(onNextClick = onNextClick, signUpvm/*, signUpData*/)
+    CoachFlowBackground()
+    {
+        Box(
+            Modifier.fillMaxWidth()
+        ) {
+            UserTypeSelector(onNextClick = onNextClick, signUpvm/*, signUpData*/)
+        }
     }
 }
 

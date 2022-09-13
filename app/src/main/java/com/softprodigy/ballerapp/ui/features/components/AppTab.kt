@@ -2,9 +2,19 @@ package com.softprodigy.ballerapp.ui.features.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ScrollableTabRow
+import androidx.compose.material.Tab
+import androidx.compose.material.TabRow
+import androidx.compose.material.TabRowDefaults
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -64,6 +74,27 @@ fun AppScrollableTabRow(
         },
         backgroundColor = MaterialTheme.appColors.material.surface,
         edgePadding = dimensionResource(id = R.dimen.size_25dp), tabs = tabs
+    )
+}
+
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+fun AppStaticTabRow(
+    pagerState: PagerState,
+    modifier: Modifier = Modifier,
+    tabs: @Composable @UiComposable () -> Unit
+) {
+    TabRow(
+        modifier = modifier,
+        selectedTabIndex = pagerState.currentPage,
+        indicator = { tabPositions ->
+            TabRowDefaults.Indicator(
+                Modifier.pagerTabIndicatorOffset(pagerState, tabPositions),
+                color = MaterialTheme.appColors.material.primaryVariant
+            )
+        },
+        backgroundColor = MaterialTheme.appColors.material.surface,
+        tabs = tabs
     )
 }
 
