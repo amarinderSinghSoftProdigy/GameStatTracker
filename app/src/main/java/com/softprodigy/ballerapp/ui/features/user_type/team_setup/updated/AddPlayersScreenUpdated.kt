@@ -37,7 +37,7 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.isValidEmail
 import com.softprodigy.ballerapp.common.validName
-import com.softprodigy.ballerapp.data.response.Player
+import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
@@ -303,7 +303,7 @@ fun PlayerListUI(
             for (player in players) {
                 if (player.name.lowercase()
                         .contains(searchedText.lowercase())
-                    || player.email.lowercase()
+                    || player.email!!.lowercase()
                         .contains(searchedText.lowercase())
                 ) {
                     resultList.add(player)

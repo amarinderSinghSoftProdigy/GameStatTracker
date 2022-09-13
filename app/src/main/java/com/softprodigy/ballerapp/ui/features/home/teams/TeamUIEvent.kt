@@ -1,7 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.home.teams
 
-import com.softprodigy.ballerapp.data.response.Standing
-import com.softprodigy.ballerapp.data.response.Team
+import com.softprodigy.ballerapp.data.response.team.Team
 
 
 sealed class TeamUIEvent {

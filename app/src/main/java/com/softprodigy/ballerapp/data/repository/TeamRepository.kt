@@ -6,10 +6,10 @@ import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.CreateTeamRequest
 import com.softprodigy.ballerapp.data.request.UpdateTeamRequest
 import com.softprodigy.ballerapp.data.response.CreateTeamResponse
-import com.softprodigy.ballerapp.data.response.Player
 import com.softprodigy.ballerapp.data.response.Standing
-import com.softprodigy.ballerapp.data.response.Team
+import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
+import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.domain.BaseResponse
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import com.softprodigy.ballerapp.network.APIService

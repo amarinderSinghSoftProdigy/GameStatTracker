@@ -1,7 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated
 
-import com.softprodigy.ballerapp.data.response.Player
-
+import com.softprodigy.ballerapp.data.response.team.Player
 
 
 sealed class TeamSetupUIEventUpdated {

@@ -53,8 +53,8 @@ import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.argbToHexString
-import com.softprodigy.ballerapp.data.response.Player
-import com.softprodigy.ballerapp.data.response.Team
+import com.softprodigy.ballerapp.data.response.team.Player
+import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
 import com.softprodigy.ballerapp.ui.theme.appColors
