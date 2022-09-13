@@ -29,6 +29,7 @@ import com.facebook.CallbackManager
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.IntentData
 import com.softprodigy.ballerapp.common.Route
+import com.softprodigy.ballerapp.common.IntentData
 import com.softprodigy.ballerapp.common.Route.ADD_PLAYER_SCREEN
 import com.softprodigy.ballerapp.common.Route.FORGOT_PASSWORD_SCREEN
 import com.softprodigy.ballerapp.common.Route.LOGIN_SCREEN

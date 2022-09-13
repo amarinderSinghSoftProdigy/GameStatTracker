@@ -101,7 +101,7 @@ class HomeActivity : ComponentActivity() {
                                                 TopBar.TEAMS -> {
                                                     navController.navigate(Route.MANAGED_TEAM_SCREEN)
                                                 }
-                                                TopBar.MANAGE_TEAM->{
+                                                TopBar.MANAGE_TEAM -> {
                                                     //TODO add the login to save the team deatils
                                                 }
                                                 else -> {}
@@ -156,7 +156,9 @@ fun NavControllerComposable(
     NavHost(navController, startDestination = Route.HOME_SCREEN) {
         composable(route = Route.HOME_SCREEN) {
             if (fromSplash)
-                HomeScreen(name = "") { homeViewModel.setLogoutDialog(true) }
+                HomeScreen(name = "", gotToProfile = {
+                    navController.navigate(Route.PROFILE_SCREEN)
+                }) { homeViewModel.setLogoutDialog(true) }
             else {
                 HomeFirstTimeLoginScreen()
             }
@@ -164,7 +166,7 @@ fun NavControllerComposable(
         composable(route = Route.PROFILE_SCREEN) {
             ProfileScreen(
                 onBackClick = { navController.popBackStack() },
-                moveToEditProfile={   navController.navigate(Route.PROFILE_EDIT_SCREEN)}
+                moveToEditProfile = { navController.navigate(Route.PROFILE_EDIT_SCREEN) }
             )
         }
         composable(route = Route.PROFILE_EDIT_SCREEN) {
