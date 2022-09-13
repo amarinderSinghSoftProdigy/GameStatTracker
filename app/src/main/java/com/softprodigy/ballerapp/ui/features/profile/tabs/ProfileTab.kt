@@ -1,13 +1,10 @@
 package com.softprodigy.ballerapp.ui.features.profile.tabs
 
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,7 +28,7 @@ fun ProfileTab(
 ) {
     Box(
         modifier = Modifier
-            .background(color = MaterialTheme.appColors.material.primary,)
+            .background(color = MaterialTheme.appColors.material.primary)
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
@@ -101,15 +98,23 @@ fun ProfileTab(
                     Row(
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        ParentItem(stringResource(id = R.string.mother), "Alena Culhane", "")
+                        ParentItem(
+                            stringResource(id = R.string.mother),
+                            "Alena Culhane",
+                            ""
+                        )
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_5dp)))
-                        ParentItem(stringResource(id = R.string.father), "Brandon Culhan", "")
+                        ParentItem(
+                            stringResource(id = R.string.father),
+                            "Brandon Culhan",
+                            ""
+                        )
                     }
                 }
             }
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
-            ProfileItem(stringResource(id = R.string.mother), "May 15, 1999")
+            ProfileItem(stringResource(id = R.string.birthday), "May 15, 1999")
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
             ProfileItem(stringResource(id = R.string.classof), "2025")
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
@@ -184,6 +189,7 @@ fun ProfileTab(
                     )
                 }
             }
+
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_80dp)))
         }
     }
@@ -220,10 +226,12 @@ fun ProfileItem(type: String, value: String) {
 }
 
 @Composable
-fun RowScope.ParentItem(relation: String, value: String, imageUrl: String) {
-
-    Row(
-    ) {
+fun RowScope.ParentItem(
+    relation: String,
+    value: String,
+    imageUrl: String
+) {
+    Row() {
         Image(
             painter = painterResource(id = R.drawable.user_demo),
             contentDescription = "",
@@ -258,7 +266,7 @@ fun RowScope.DetailItem(stringId: String, value: String) {
         AppText(
             text = stringResourceByName(stringId),
             style = MaterialTheme.typography.h5,
-            color =ColorBWGrayLight
+            color = ColorBWGrayLight
         )
         AppText(
             text = value,
@@ -271,8 +279,8 @@ fun RowScope.DetailItem(stringId: String, value: String) {
 @Composable
 fun TeamList() {
     var teams: Array<Team> = arrayOf(
-        Team(name = "Springfield Bucks", status = "Player"),
-        Team(name = "Springfield Sprouts", status = "Program Manger")
+        Team(name = "Springfield Bucks", role = "Player"),
+        Team(name = "Springfield Sprouts", role = "Program Manger")
     )
     Box(
         modifier = Modifier
@@ -311,7 +319,7 @@ fun TeamList() {
                             )
                             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_5dp)))
                             AppText(
-                                text = team.status,
+                                text = team.role,
                                 style = MaterialTheme.typography.h6,
                                 color = ColorMainPrimary
                             )

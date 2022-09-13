@@ -5,6 +5,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -20,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -27,13 +29,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.common.*
-import com.softprodigy.ballerapp.data.request.SignUpData
 import com.softprodigy.ballerapp.data.response.Team
 import com.softprodigy.ballerapp.ui.features.components.*
-import com.softprodigy.ballerapp.ui.features.login.LoginUIEvent
-import com.softprodigy.ballerapp.ui.features.sign_up.SignUpUIEvent
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
 import com.softprodigy.ballerapp.ui.theme.*
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -62,6 +59,7 @@ fun ProfileEditScreen(
     var favNbaTeam by rememberSaveable { mutableStateOf("Team Name") }
     var favActivePlayer by rememberSaveable { mutableStateOf("Team Name") }
     var favAllTIme by rememberSaveable { mutableStateOf("Team Name") }
+
     Box(
         modifier = Modifier
             .background(color = MaterialTheme.appColors.material.primary)
@@ -252,7 +250,7 @@ fun ProfileEditScreen(
                         )
                         Checkbox(
                             checked = isSgChecked,
-                            modifier = Modifier.padding(start=2.dp),
+                            modifier = Modifier.padding(start = 2.dp),
                             onCheckedChange = { isSgChecked = it },
                         )
                         AppText(
@@ -262,7 +260,7 @@ fun ProfileEditScreen(
                         )
                         Checkbox(
                             checked = isSfChecked,
-                            modifier = Modifier.padding(start=2.dp),
+                            modifier = Modifier.padding(start = 2.dp),
                             onCheckedChange = { isSfChecked = it },
                         )
                         AppText(
@@ -272,7 +270,7 @@ fun ProfileEditScreen(
                         )
                         Checkbox(
                             checked = isPfChecked,
-                            modifier = Modifier.padding(start=2.dp),
+                            modifier = Modifier.padding(start = 2.dp),
                             onCheckedChange = { isPfChecked = it },
                         )
                         AppText(
@@ -282,7 +280,7 @@ fun ProfileEditScreen(
                         )
                         Checkbox(
                             checked = isCChecked,
-                            modifier = Modifier.padding(start=2.dp),
+                            modifier = Modifier.padding(start = 2.dp),
                             onCheckedChange = { isCChecked = it },
                         )
                         AppText(
@@ -311,7 +309,7 @@ fun ProfileEditScreen(
                             .padding(top = dimensionResource(id = R.dimen.size_10dp)),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-
+                        Teams()
                     }
 
                     AppText(
@@ -458,7 +456,18 @@ fun ProfileEditScreen(
                             ),
                         )
                     }
-
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        AppButton(
+                            enabled = true,
+                            icon=null,
+                            themed=true,
+                            onClick = { },
+                            text = stringResource(id = R.string.save)
+                        )
+                    }
                 }
             }
         }
@@ -475,38 +484,97 @@ fun HorizontalLine() {
     )
 }
 
-
 @Composable
-fun ProfileItem(type: String, value: String, placeholder: String) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(5.dp))
-            .background(color = Color.White)
-            .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
+fun Teams() {
+    var role by rememberSaveable { mutableStateOf("Player") }
+    var position by rememberSaveable { mutableStateOf("PG") }
+    var jerseyNo by rememberSaveable { mutableStateOf("17") }
+
+    var teams: List<Team> = listOf<Team>(
+        Team(name = "Springfield Bucks", role = "Player"),
+    )
+    teams.forEach {
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .clip(RoundedCornerShape(10.dp))
+                .fillMaxSize()
+                .background(color = Color.White)
+                .padding(
+                    top = dimensionResource(id = R.dimen.size_10dp),
+                    bottom = dimensionResource(id = R.dimen.size_10dp)
+                )
         ) {
-            AppText(
-                text = type,
-                style = MaterialTheme.typography.h6,
-                color = ColorBWBlack
+            Row(
+                modifier = Modifier
+                    .padding(
+                        start = dimensionResource(id = R.dimen.size_10dp),
+                        end = dimensionResource(id = R.dimen.size_10dp),
+                        bottom = dimensionResource(id = R.dimen.size_10dp)
+                    )
+            ) {
+                Row(modifier = Modifier.weight(1f)) {
+                    Image(
+                        painter = painterResource(id = R.drawable.user_demo),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(dimensionResource(id = R.dimen.size_20dp))
+                            .clip(CircleShape)
+                    )
+                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
+                    AppText(
+                        text = it.name,
+                        style = MaterialTheme.typography.h5,
+                        color = ColorBWBlack
+                    )
+                }
+                ClickableText(
+                    style = TextStyle(color = error),
+                    text = AnnotatedString(stringResource(id = R.string.leave_team)),
+                    onClick = {
+
+                    })
+            }
+            HorizontalLine()
+            EditProfileFields(
+                role,
+                onValueChange = {
+                    role = it
+                },
+                stringResource(id = R.string.role),
+                errorMessage = stringResource(id = R.string.valid_first_name),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next,
+                    capitalization = KeyboardCapitalization.Sentences
+                ),
             )
-//            EditFields(
-//                value,
-//                onValueChange = {
-////                    valuee=it
-//                },
-//                stringResource(id = R.string.first_name),
-//                errorMessage = stringResource(id = R.string.valid_first_name),
-//                keyboardOptions = KeyboardOptions(
-//                    imeAction = ImeAction.Next,
-//                    capitalization = KeyboardCapitalization.Sentences
-//                )
-//            )
+            HorizontalLine()
+            EditProfileFields(
+                position,
+                onValueChange = {
+                    position = it
+                },
+                stringResource(id = R.string.position),
+                errorMessage = stringResource(id = R.string.valid_first_name),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next,
+                    capitalization = KeyboardCapitalization.Sentences
+                ),
+            )
+            HorizontalLine()
+            EditProfileFields(
+                jerseyNo,
+                onValueChange = {
+                    jerseyNo = it
+                },
+                stringResource(id = R.string.jersey_number),
+                errorMessage = stringResource(id = R.string.valid_first_name),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next,
+                    capitalization = KeyboardCapitalization.Sentences
+                ),
+            )
         }
     }
 }
+
+

@@ -1,11 +1,13 @@
 package com.softprodigy.ballerapp.data.response
 
 import com.google.gson.annotations.SerializedName
-import kotlinx.parcelize.Parcelize
 
 data class Team(
     @SerializedName("_id") val Id: String = "",
     @SerializedName("name") val name: String = "",
+    @SerializedName("position") val position: String = "",
+    @SerializedName("jerseynNo") val jerseynNo: String = "",
+    @SerializedName("role") val role: String = "",
     @SerializedName("divisions") val divisions: ArrayList<String> = arrayListOf(),
     @SerializedName("events") val events: ArrayList<String> = arrayListOf(),
     @SerializedName("logo") val logo: String = "",
