@@ -36,7 +36,8 @@ fun TeamsScreen(
     showDialog: Boolean,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
     dismissDialog: (Boolean) -> Unit,
-    OnTeamDetailsSuccess: (String) -> Unit
+    OnTeamDetailsSuccess: (String) -> Unit,
+    onCreateTeamClick: () -> Unit
 ) {
     val vm: TeamViewModel = hiltViewModel()
     val context = LocalContext.current
@@ -102,7 +103,8 @@ fun TeamsScreen(
                 onConfirmClick = { vm.onEvent(TeamUIEvent.OnConfirmTeamClick) },
                 onSelectionChange = onTeamSelectionChange,
                 selected = state.selectedTeam,
-                showLoading = state.isLoading
+                showLoading = state.isLoading,
+                onCreateTeamClick = onCreateTeamClick
             )
         }
 

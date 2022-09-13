@@ -386,7 +386,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
                 createTeamResponse.value.let { response ->
                     if (response.status) {
                      _teamSetupChannel.send(
-                            TeamSetupChannel.OnTeamCreate(response.data.Id)
+                            TeamSetupChannel.OnTeamCreate(response.statusMessage)
                         )
                     } else {
                         _teamSetupUiState.value =
@@ -418,7 +418,7 @@ sealed class TeamSetupChannel {
     data class OnInvitationSuccess(val message: UiText) : TeamSetupChannel()
     object OnTeamSetupNextClick : TeamSetupChannel()
     object OnLogoUpload : TeamSetupChannel()
-    data class OnTeamCreate(val teamId: String) : TeamSetupChannel()
+    data class OnTeamCreate(val message: String) : TeamSetupChannel()
 
 }
 

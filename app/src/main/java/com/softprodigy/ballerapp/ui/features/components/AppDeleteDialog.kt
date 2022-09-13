@@ -103,7 +103,8 @@ fun SelectTeamDialog(
     onSelectionChange: (Team) -> Unit,
     selected: Team?,
     showLoading: Boolean,
-    teams: ArrayList<Team>
+    teams: ArrayList<Team>,
+    onCreateTeamClick:()->Unit
 ) {
     BallerAppMainTheme {
         AlertDialog(
@@ -167,7 +168,7 @@ fun SelectTeamDialog(
                     ButtonWithLeadingIcon(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(id = R.string.create_new_team),
-                        onClick = { },
+                        onClick = {onCreateTeamClick.invoke() },
                         painter = painterResource(id = R.drawable.ic_add_button),
                         isTransParent = true
 
