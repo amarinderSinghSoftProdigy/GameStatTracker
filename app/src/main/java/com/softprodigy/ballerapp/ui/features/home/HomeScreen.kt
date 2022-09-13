@@ -2,17 +2,7 @@ package com.softprodigy.ballerapp.ui.features.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -37,18 +27,13 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
-import com.softprodigy.ballerapp.ui.features.components.PagerIndicator
-import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
-import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
-import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun HomeScreen(name: String?, logoClick: () -> Unit) {
+fun HomeScreen(name: String?, logoClick: () -> Unit, onInvitationCLick: () -> Unit) {
     val dataStoreManager = DataStoreManager(LocalContext.current)
     val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
     Box {
@@ -119,11 +104,15 @@ fun HomeScreen(name: String?, logoClick: () -> Unit) {
                 Box(
                     Modifier
                         .fillMaxWidth()
+                        .clickable {
+                            onInvitationCLick.invoke()
+                        }
                         .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                 ) {
                     Row(
                         Modifier
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            ,
                         verticalAlignment = Alignment.CenterVertically,
 
                         ) {

@@ -44,6 +44,7 @@ object Route {
     const val ROASTER_SCREEN = "roasterScreen"
     const val MANAGED_TEAM_SCREEN = "managedTeamScreen"
     const val SELECT_PROFILE = "selectProfile"
+    const val INVITATION_SCREEN="invitationScreen"
 }
 
 object ApiConstants {
