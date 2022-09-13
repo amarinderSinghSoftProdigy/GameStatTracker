@@ -32,16 +32,11 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.IntentData
 import com.softprodigy.ballerapp.common.Route
+import com.softprodigy.ballerapp.common.Route.INVITATION_SCREEN
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
-import com.softprodigy.ballerapp.ui.features.components.BottomNavigationBar
-import com.softprodigy.ballerapp.ui.features.components.CommonTabView
-import com.softprodigy.ballerapp.ui.features.components.LogoutDialog
-import com.softprodigy.ballerapp.ui.features.components.TabBar
-import com.softprodigy.ballerapp.ui.features.components.TopBar
-import com.softprodigy.ballerapp.ui.features.components.TopBarData
-import com.softprodigy.ballerapp.ui.features.components.fromHex
+import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.home.invitation.InvitationScreen
 import com.softprodigy.ballerapp.ui.features.home.manage_team.MainManageTeamScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.AddPlayersScreenUpdated
@@ -150,7 +145,11 @@ fun NavControllerComposable(
     NavHost(navController, startDestination = Route.HOME_SCREEN) {
         composable(route = Route.HOME_SCREEN) {
             if (fromSplash)
-                HomeScreen(name = "") { homeViewModel.setLogoutDialog(true) }
+                HomeScreen(name = "", onInvitationCLick = {
+                    navController.navigate(INVITATION_SCREEN)
+                }, logoClick = {
+                    homeViewModel.setLogoutDialog(true)
+                })
             else {
                 HomeFirstTimeLoginScreen()
             }
@@ -246,6 +245,17 @@ fun NavControllerComposable(
                 }, onInvitationSuccess = {
                     moveBackFromAddPlayer(homeViewModel, navController)
                 })
+        }
+
+        composable(route = INVITATION_SCREEN) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = stringResource(id = R.string.invitation),
+                    topBar = TopBar.SINGLE_LABEL_BACK,
+                )
+            )
+            InvitationScreen()
+
         }
     }
 }
