@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -112,36 +111,45 @@ fun CoachFlowBackground(
                 Column(
                     modifier = Modifier.align(Alignment.TopEnd)
                 ) {
-                    Image(
-                        painter = if ((teamLogo
-                                ?: "").isNotEmpty()
-                        ) rememberImagePainter(data = teamLogo) else painterResource(
-                            id = R.drawable.ic_ball
-                        ),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
+                    Box(
                         modifier = Modifier
-                            .align(Alignment.End)
-                            .padding(
-                                end = dimensionResource(id = R.dimen.size_16dp),
-                                top = dimensionResource(
-                                    id = R.dimen.size_18dp
+                            .size(dimensionResource(id = R.dimen.size_200dp))
+                    ) {
+                        Image(
+                            painter = if ((teamLogo
+                                    ?: "").isNotEmpty()
+                            ) rememberImagePainter(data = teamLogo) else painterResource(
+                                id = R.drawable.ic_ball
+                            ),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .align(Alignment.CenterEnd)
+                                .padding(
+                                    end = dimensionResource(id = R.dimen.size_16dp),
+                                    top = dimensionResource(
+                                        id = R.dimen.size_18dp
+                                    )
                                 )
-                            )
-                            .size(dimensionResource(id = R.dimen.size_65dp))
-                            .clip(CircleShape)
-                            .border(
-                                dimensionResource(id = R.dimen.size_3dp),
-                                MaterialTheme.colors.surface,
-                                CircleShape
-                            )
-                            .clickable {
-                                showOptions.value = !showOptions.value
-                            }
-                    )
+                                .size(dimensionResource(id = R.dimen.size_65dp))
+                                .clip(CircleShape)
+                                .border(
+                                    dimensionResource(id = R.dimen.size_3dp),
+                                    MaterialTheme.colors.surface,
+                                    CircleShape
+                                )
+                                .clickable {
+                                    showOptions.value = !showOptions.value
+                                }
+                        )
+                    }
                     if (showOptions.value) {
-                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
                         Surface(
+                            modifier = Modifier
+                                .align(Alignment.End)
+                                .absoluteOffset(
+                                    y = -dimensionResource(id = R.dimen.size_50dp)
+                                ),
                             elevation = dimensionResource(id = R.dimen.size_10dp),
                             color = Color.Transparent
                         ) {
@@ -152,11 +160,6 @@ fun CoachFlowBackground(
                                     .background(
                                         color = Color.White,
                                         RoundedCornerShape(dimensionResource(id = R.dimen.size_10dp))
-                                    )
-                                    .border(
-                                        dimensionResource(id = R.dimen.size_3dp),
-                                        MaterialTheme.colors.surface,
-                                        CircleShape
                                     )
                             ) {
                                 OptionItem(
