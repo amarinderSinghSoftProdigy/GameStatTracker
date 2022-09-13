@@ -1,6 +1,8 @@
 package com.softprodigy.ballerapp.data.response
 
 import com.google.gson.annotations.SerializedName
+import com.softprodigy.ballerapp.data.response.team.Coach
+import com.softprodigy.ballerapp.data.response.team.Player
 
 data class Team(
     @SerializedName("_id") val Id: String = "",
