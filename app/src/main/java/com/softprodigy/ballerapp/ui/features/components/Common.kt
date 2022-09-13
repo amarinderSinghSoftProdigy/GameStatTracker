@@ -46,7 +46,6 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.ui.theme.ButtonColor
 import com.softprodigy.ballerapp.ui.theme.appColors
-import timber.log.Timber
 
 @Composable
 fun stringResourceByName(name: String): String {
@@ -82,6 +81,9 @@ fun BoxScope.CommonTabView(
     iconClick: (() -> Unit)? = null,
     labelClick: (() -> Unit)? = null,
 ) {
+    if (topBarData.topBar == TopBar.EMPTY) {
+        return
+    }
 
     if (topBarData.topBar.back) {
         Box(modifier = Modifier
@@ -113,13 +115,11 @@ fun BoxScope.CommonTabView(
         modifier = Modifier
             .align(Alignment.Center)
             .background(Color.Transparent)
-            .clickable {
+            .clickable(enabled = topBarData.topBar == TopBar.TEAMS) {
                 if (topBarData.topBar == TopBar.TEAMS) {
                     if (labelClick != null) {
                         labelClick()
                     }
-                } else {
-                    Timber.e("error")
                 }
             }
             .padding(all = dimensionResource(id = R.dimen.size_16dp)),
@@ -316,4 +316,5 @@ enum class TopBar(val stringId: String, val back: Boolean) {
     MANAGE_TEAM(stringId = "", back = true),
     SINGLE_LABEL_BACK(stringId = "", back = true),
     SINGLE_LABEL(stringId = "", back = false),
+    EMPTY(stringId = "", back = false),
 }

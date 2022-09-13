@@ -65,8 +65,8 @@ fun TeamsScreen(
                         Toast.LENGTH_LONG
                     ).show()
                 }
-                is TeamChannel.OnTeamDetailsSuccess ->{
-                  OnTeamDetailsSuccess.invoke(uiEvent.teamId)
+                is TeamChannel.OnTeamDetailsSuccess -> {
+                    OnTeamDetailsSuccess.invoke(uiEvent.teamId)
                 }
             }
         }
@@ -81,8 +81,6 @@ fun TeamsScreen(
     val pagerState = rememberPagerState(
         pageCount = tabData.size,
         initialOffScreenLimit = 1,
-        infiniteLoop = true,
-        initialPage = 0,
     )
     val tabIndex = pagerState.currentPage
     val coroutineScope = rememberCoroutineScope()
@@ -185,6 +183,7 @@ fun TeamsTopTabs(pagerState: PagerState, tabData: List<TeamsTabItems>) {
             }
         })
 }
+
 enum class TeamsTabItems(val icon: Int, val stringId: String) {
     Standings(R.drawable.ic_standing, stringId = "standings"),
     Chat(R.drawable.ic_chat, stringId = "chat"),

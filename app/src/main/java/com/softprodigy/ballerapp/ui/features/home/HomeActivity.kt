@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
@@ -37,7 +38,14 @@ import com.softprodigy.ballerapp.common.Route.INVITATION_SCREEN
 import com.softprodigy.ballerapp.common.Route.TEAMS_SCREEN
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
+import com.softprodigy.ballerapp.ui.features.components.BottomNavigationBar
+import com.softprodigy.ballerapp.ui.features.components.CommonTabView
+import com.softprodigy.ballerapp.ui.features.components.LogoutDialog
+import com.softprodigy.ballerapp.ui.features.components.TabBar
+import com.softprodigy.ballerapp.ui.features.components.TopBar
+import com.softprodigy.ballerapp.ui.features.components.TopBarData
+import com.softprodigy.ballerapp.ui.features.components.fromHex
 import com.softprodigy.ballerapp.ui.features.home.invitation.InvitationScreen
 import com.softprodigy.ballerapp.ui.features.home.manage_team.MainManageTeamScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
@@ -67,7 +75,9 @@ class HomeActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val userType = remember { mutableStateOf(BottomNavKey.HOME) }
                 if (state.screen) {
-                    Surface {
+                    Surface(
+                        color = MaterialTheme.appColors.material.primary
+                    ) {
                         NavControllerComposable(
                             homeViewModel,
                             navController = navController,
@@ -96,7 +106,7 @@ class HomeActivity : ComponentActivity() {
                                                 TopBar.TEAMS -> {
                                                     navController.navigate(Route.MANAGED_TEAM_SCREEN)
                                                 }
-                                                TopBar.MANAGE_TEAM->{
+                                                TopBar.MANAGE_TEAM -> {
                                                     //TODO add the login to save the team deatils
                                                 }
                                                 else -> {}
@@ -108,7 +118,13 @@ class HomeActivity : ComponentActivity() {
                             }
                         },
                         content = {
-                            Box(modifier = Modifier.padding(it)) {
+                            Box(
+                                modifier = Modifier
+                                    .padding(it)
+                                    .background(
+                                        color = MaterialTheme.appColors.material.primary
+                                    )
+                            ) {
                                 NavControllerComposable(
                                     homeViewModel,
                                     navController = navController,

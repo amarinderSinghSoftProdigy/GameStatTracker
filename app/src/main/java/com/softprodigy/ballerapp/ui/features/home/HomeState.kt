@@ -13,7 +13,7 @@ data class HomeState(
     val errorMessage: String? = null,
     val userNameValid: Boolean = true,
     val userNameValidError: String? = null,
-    val topBar: TopBarData = TopBarData("", TopBar.SINGLE_LABEL),
+    val topBar: TopBarData = TopBarData("", TopBar.EMPTY),
     val showDialog: Boolean = false,
     val showLogout: Boolean = false,
 
