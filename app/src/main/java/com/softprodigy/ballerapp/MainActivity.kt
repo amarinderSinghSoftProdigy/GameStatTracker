@@ -15,13 +15,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
@@ -34,6 +28,7 @@ import androidx.navigation.compose.rememberNavController
 import com.facebook.CallbackManager
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.Route
+import com.softprodigy.ballerapp.common.IntentData
 import com.softprodigy.ballerapp.common.Route.ADD_PLAYER_SCREEN
 import com.softprodigy.ballerapp.common.Route.FORGOT_PASSWORD_SCREEN
 import com.softprodigy.ballerapp.common.Route.LOGIN_SCREEN
@@ -270,7 +265,8 @@ fun NavControllerComposable(activity: MainActivity) {
                         checkRole(
                             getRole.value.equals(AppConstants.USER_TYPE_USER, ignoreCase = true),
                             navController,
-                            activity
+                            activity,
+                            fromSplash = true
                         )
                     } else if (color.value.isNotEmpty()) {
                         navController.popBackStack()
@@ -427,6 +423,8 @@ fun NavControllerComposable(activity: MainActivity) {
                 onBackClick = { navController.popBackStack() },
                 onNextClick = {
                     moveToHome(activity)
+                }, onInvitationSuccess = {
+
                 })
         }
         composable(route = Route.PROFILE_SCREEN) {
@@ -448,18 +446,26 @@ fun NavControllerComposable(activity: MainActivity) {
 }
 
 
-private fun moveToHome(activity: MainActivity) {
+private fun moveToHome(activity: MainActivity, fromSplash: Boolean = false) {
     val intent = Intent(activity, HomeActivity::class.java)
+    if (fromSplash) {
+        intent.putExtra(IntentData.FROM_SPLASH, fromSplash)
+    }
     activity.startActivity(intent)
     activity.finish()
 }
 
-private fun checkRole(check: Boolean, navController: NavController, activity: MainActivity) {
+private fun checkRole(
+    check: Boolean,
+    navController: NavController,
+    activity: MainActivity,
+    fromSplash: Boolean = false
+) {
     if (check) {
         navController.navigate(SELECT_USER_TYPE) {
             navController.popBackStack()
         }
     } else {
-        moveToHome(activity)
+        moveToHome(activity, fromSplash)
     }
 }

@@ -31,7 +31,9 @@ import androidx.navigation.navArgument
 import com.softprodigy.ballerapp.MainActivity
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
+import com.softprodigy.ballerapp.common.IntentData
 import com.softprodigy.ballerapp.common.Route
+import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
 import com.softprodigy.ballerapp.ui.features.components.BottomNavigationBar
@@ -59,6 +61,7 @@ class HomeActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, true)
         setContent {
+            val fromSplash = intent.getBooleanExtra(IntentData.FROM_SPLASH, false)
             val homeViewModel: HomeViewModel = hiltViewModel()
             val state = homeViewModel.state.value
             val dataStoreManager = DataStoreManager(LocalContext.current)
@@ -70,7 +73,11 @@ class HomeActivity : ComponentActivity() {
                 val userType = remember { mutableStateOf(BottomNavKey.HOME) }
                 if (state.screen) {
                     Surface {
-                        NavControllerComposable(homeViewModel, navController = navController)
+                        NavControllerComposable(
+                            homeViewModel,
+                            navController = navController,
+                            fromSplash = fromSplash
+                        )
                     }
                 } else {
                     Scaffold(
@@ -87,7 +94,19 @@ class HomeActivity : ComponentActivity() {
                                             homeViewModel.setDialog(true)
                                         },
                                         iconClick = {
-                                            navController.navigate(Route.MANAGED_TEAM_SCREEN)
+                                            when (state.topBar.topBar) {
+                                                TopBar.MY_EVENT -> {
+                                                    navController.navigate(Route.MANAGED_TEAM_SCREEN)
+                                                }
+                                                TopBar.TEAMS -> {
+                                                    navController.navigate(Route.MANAGED_TEAM_SCREEN)
+                                                }
+                                                TopBar.MANAGE_TEAM -> {
+                                                    //TODO add the login to save the team deatils
+                                                }
+                                                else -> {}
+                                                //Add events cases for tool bar icon clicks
+                                            }
                                         }
                                     )
                                 }
@@ -99,6 +118,7 @@ class HomeActivity : ComponentActivity() {
                                     homeViewModel,
                                     navController = navController,
                                     showDialog = state.showDialog,
+                                    fromSplash = fromSplash
                                 )
                             }
                         },
@@ -129,21 +149,24 @@ class HomeActivity : ComponentActivity() {
 fun NavControllerComposable(
     homeViewModel: HomeViewModel,
     showDialog: Boolean = false,
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
+    fromSplash: Boolean = false
 ) {
     val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = hiltViewModel()
     NavHost(navController, startDestination = Route.HOME_SCREEN) {
         composable(route = Route.HOME_SCREEN) {
-            HomeScreen(name = ""
-                ,gotToProfile={
-                navController.navigate(Route.PROFILE_SCREEN)
+            if (fromSplash)
+                HomeScreen(name = "", gotToProfile = {
+                    navController.navigate(Route.PROFILE_SCREEN)
+                }) { homeViewModel.setLogoutDialog(true) }
+            else {
+                HomeFirstTimeLoginScreen()
             }
-            ) { homeViewModel.setLogoutDialog(true) }
         }
         composable(route = Route.PROFILE_SCREEN) {
             ProfileScreen(
                 onBackClick = { navController.popBackStack() },
-                moveToEditProfile={   navController.navigate(Route.PROFILE_EDIT_SCREEN)}
+                moveToEditProfile = { navController.navigate(Route.PROFILE_EDIT_SCREEN) }
             )
         }
         composable(route = Route.PROFILE_EDIT_SCREEN) {
@@ -166,27 +189,31 @@ fun NavControllerComposable(
                 showDialog = showDialog,
                 setupTeamViewModelUpdated = setupTeamViewModelUpdated,
                 dismissDialog = { homeViewModel.setDialog(it) },
-            ) {
-                navController.navigate(Route.ADD_PLAYER_SCREEN + "/${it.Id}")
-            }
+                OnTeamDetailsSuccess = { teamId ->
+                    UserStorage.teamId = teamId
+//                    navController.navigate(Route.ADD_PLAYER_SCREEN + "/${teamId}")
+                },
+            )
         }
         composable(route = Route.EVENTS_SCREEN) {
             homeViewModel.setTopBar(
                 TopBarData(
-                    topBar = TopBar.EVENT,
+                    topBar = TopBar.MY_EVENT,
                 )
             )
-            EventsScreen(name = "")
+            EventsScreen(name = "") { }
         }
 
         composable(route = Route.MANAGED_TEAM_SCREEN) {
             homeViewModel.setTopBar(
                 TopBarData(
                     label = stringResource(id = R.string.manage_team),
-                    topBar = TopBar.SINGLE_LABEL_BACK,
+                    topBar = TopBar.MANAGE_TEAM,
                 )
             )
-            MainManageTeamScreen()
+            MainManageTeamScreen(onAddPlayerCLick = {
+                navController.navigate(Route.ADD_PLAYER_SCREEN + "/${UserStorage.teamId}")
+            })
         }
 
         composable(
@@ -197,19 +224,31 @@ fun NavControllerComposable(
                 }),
         ) {
             homeViewModel.setScreen(true)
+            BackHandler {
+                homeViewModel.setScreen(false)
+            }
             val teamId = it.arguments?.getString("teamId")
             AddPlayersScreenUpdated(
                 teamId,
                 vm = setupTeamViewModelUpdated,
-                onBackClick = { navController.popBackStack() },
+                onBackClick = {
+                    moveBackFromAddPlayer(homeViewModel, navController)
+                },
                 onNextClick = {
-                    homeViewModel.setScreen(false)
-                    navController.popBackStack()
+                    moveBackFromAddPlayer(homeViewModel, navController)
                     //navController.navigate(TEAMS_SCREEN)
+                }, onInvitationSuccess = {
+                    moveBackFromAddPlayer(homeViewModel, navController)
                 })
         }
 
     }
+}
+
+
+fun moveBackFromAddPlayer(homeViewModel: HomeViewModel, navController: NavHostController) {
+    homeViewModel.setScreen(false)
+    navController.popBackStack()
 }
 
 private fun moveToLogin(activity: HomeActivity) {
