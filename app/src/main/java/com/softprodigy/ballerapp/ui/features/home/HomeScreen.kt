@@ -1,5 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.home
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -51,6 +52,7 @@ import com.softprodigy.ballerapp.ui.theme.appColors
 fun HomeScreen(name: String?, logoClick: () -> Unit) {
     val dataStoreManager = DataStoreManager(LocalContext.current)
     val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
+
     Box {
         CoachFlowBackground(colorCode = color.value.ifEmpty { "0177C1" }, teamLogo = "")
         Column(

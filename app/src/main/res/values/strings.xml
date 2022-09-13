@@ -155,6 +155,7 @@
     <string name="select_all">Select All</string>
 
     <string name="points_label">Points</string>
+    <string name="points_guard">Points Guards</string>
     <string name="rebounds_label">Rebounds</string>
     <string name="_3s_label">3\'s</string>
     <string name="fts_label">FT\'s</string>
