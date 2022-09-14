@@ -49,9 +49,9 @@ interface APIService {
         @Query("sort") sort: String
     ): BaseResponse<ArrayList<Team>>
 
-    @GET("${ApiConstants.GET_TEAMS}/{id}")
+    @GET(ApiConstants.GET_TEAM_BY_ID)
     suspend fun getTeamsByTeamId(
-        @Path("id") id: String
+        @Query("teamId") id: String
     ): BaseResponse<Team>
 
     @POST(ApiConstants.VERIFY_PHONE)
@@ -80,6 +80,6 @@ interface APIService {
     suspend fun getCoachPlayersByID(@Path("id") id: String): BaseResponse<RoasterResponse>
 
     @PUT(ApiConstants.SEND_INVITATION)
-    suspend fun sendInvitation(@Body updateTeamRequest:UpdateTeamRequest):BaseResponse<Any>
+    suspend fun sendInvitation(@Body updateTeamRequest: UpdateTeamRequest): BaseResponse<Any>
 
 }

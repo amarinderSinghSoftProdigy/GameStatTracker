@@ -54,6 +54,7 @@ object ApiConstants {
     const val UPLOAD_SINGLE_IMAGE = "v1/upload/single"
     const val CREATE_TEAM = "v1/team"
     const val GET_TEAMS = "v1/team"
+    const val GET_TEAM_BY_ID = "v1/team/getTeamById"
     const val COACH_PLAYER = "v1/team/coachPlayers"
     const val GET_TEAM_STANDING = "v1/team/standings"
     const val SEND_INVITATION = "v1/team/inviteTeamMembers"
