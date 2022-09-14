@@ -113,15 +113,19 @@ fun AddPlayersScreenUpdated(
             verticalArrangement = Arrangement.Center
         ) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_64dp)))
+
             AppText(
                 modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp)),
                 text = stringResource(id = R.string.invite_team_member),
                 style = MaterialTheme.typography.h3,
                 color = ColorBWBlack
             )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_30dp)))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
 
-            UserFlowBackground(modifier = Modifier.weight(1F)) {
+            UserFlowBackground(
+                modifier = Modifier.weight(1F),
+                color = MaterialTheme.appColors.buttonColor.textEnabled
+            ) {
                 Column(
                     Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp))
                 ) {

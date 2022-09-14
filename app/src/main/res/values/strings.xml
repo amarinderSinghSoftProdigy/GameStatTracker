@@ -29,7 +29,7 @@
     <string name="confirm_your_password">Enter Confirm password</string>
     <string name="generic_error">Generic Error</string>
     <string name="email_error">Enter a valid Email</string>
-    <string name="password_error">Password must contain at least one lower, one upper , one Special character, numeric character,minimum 6 characters and maximum 16 characters</string>
+    <string name="password_error">Password must contain at least\n - one lower, one upper, one Special character,\n - numeric character,\n - min 6 characters and max 16 characters</string>
     <string name="confirm_password_error">Confirm Password must be same as password </string>
     <string name="forgot_password_subtitle">Enter registered e-mail to receive password reset instruction.</string>
     <string name="send">Send</string>
@@ -188,4 +188,5 @@
     <string name="invitation">Invitation</string>
     <string name="sent_by">Sent by</string>
     <string name="what_is_your_role">What is your role on this team?</string>
+    <string name="resend_code_in">Resend code in</string>
 </resources>

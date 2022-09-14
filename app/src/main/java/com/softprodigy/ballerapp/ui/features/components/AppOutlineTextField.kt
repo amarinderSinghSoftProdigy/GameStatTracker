@@ -109,7 +109,8 @@ fun AppOutlineTextField(
                 style = MaterialTheme.typography.caption,
                 modifier = Modifier
                     .padding(4.dp)
-                    .fillMaxWidth(0.95f)
+                    .fillMaxWidth(0.95f),
+
             )
         }
     }
