@@ -140,7 +140,7 @@ fun InvitationItem(
                     text = " ${stringResource(id = R.string.sent_by)} ${invitation.name}",
                     color = MaterialTheme.appColors.textField.label,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                    fontWeight = FontWeight.W400,
+                    fontWeight = FontWeight.W500,
                 )
             }
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
@@ -152,7 +152,7 @@ fun InvitationItem(
                     text = apiToUIDateFormat(invitation.createdAt),
                     color = MaterialTheme.appColors.textField.label,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                    fontWeight = FontWeight.W400,
+                    fontWeight = FontWeight.W500,
                     modifier = Modifier.align(Alignment.BottomStart)
                 )
             }
@@ -286,7 +286,7 @@ fun InvitationItem(
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                 Text(
-                    text = stringResource(id = R.string.decline),
+                    text = stringResource(id = R.string.declined),
                     color = MaterialTheme.appColors.buttonColor.textEnabled,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                     fontWeight = FontWeight.W500,
