@@ -113,6 +113,9 @@ fun ProfileSetUpScreen(
         mutableStateOf(null)
     }
 
+    val maxChar = 30
+    val maxEmailChar = 45
+    val maxPhoneNumber = 10
     var imageUri by remember {
         mutableStateOf<Uri?>(null)
     }
@@ -170,6 +173,7 @@ fun ProfileSetUpScreen(
             signUpViewModel.onEvent(SignUpUIEvent.OnBirthdayChanged("$year-${month + 1}-$dayOfMonth"))
         }, mYear, mMonth, mDay
     )
+    mDatePickerDialog.datePicker.maxDate = System.currentTimeMillis()
 
     var defaultLang by rememberSaveable { mutableStateOf(getDefaultLangCode(context)) }
     //val phoneNumber = rememberSaveable { mutableStateOf("") }
@@ -259,7 +263,6 @@ fun ProfileSetUpScreen(
         ) {
             CoachFlowBackground()
 
-
             Column(
                 Modifier
                     .fillMaxWidth()
@@ -335,11 +338,12 @@ fun ProfileSetUpScreen(
                         EditFields(
                             state.signUpData.firstName,
                             onValueChange = {
-                                signUpViewModel.onEvent(
-                                    SignUpUIEvent.OnFirstNameChanged(
-                                        it
+                                if (it.length <= maxChar)
+                                    signUpViewModel.onEvent(
+                                        SignUpUIEvent.OnFirstNameChanged(
+                                            it
+                                        )
                                     )
-                                )
                             },
                             stringResource(id = R.string.first_name),
                             isError = !validName(state.signUpData.firstName) && state.signUpData.firstName.isNotEmpty() || state.signUpData.firstName.length > 30,
@@ -355,7 +359,8 @@ fun ProfileSetUpScreen(
                         EditFields(
                             state.signUpData.lastName,
                             onValueChange = {
-                                signUpViewModel.onEvent(SignUpUIEvent.OnLastNameChanged(it))
+                                if (it.length <= maxChar)
+                                    signUpViewModel.onEvent(SignUpUIEvent.OnLastNameChanged(it))
                             },
                             stringResource(id = R.string.last_name),
                             isError = !validName(state.signUpData.lastName) && state.signUpData.lastName.isNotEmpty() || state.signUpData.lastName.length > 30,
@@ -371,8 +376,8 @@ fun ProfileSetUpScreen(
                         EditFields(
                             data = state.signUpData.email ?: "",
                             onValueChange = {
-                                signUpViewModel.onEvent(SignUpUIEvent.OnEmailChanged(it))
-
+                                if (it.length <= maxEmailChar)
+                                    signUpViewModel.onEvent(SignUpUIEvent.OnEmailChanged(it))
                             },
                             stringResource(id = R.string.email),
                             keyboardOptions = KeyboardOptions(
@@ -485,6 +490,7 @@ fun ProfileSetUpScreen(
                         }
 
                         Divider(thickness = dimensionResource(id = R.dimen.divider))
+
                         Column {
                             Box(
                                 modifier = Modifier
@@ -513,11 +519,12 @@ fun ProfileSetUpScreen(
                                         error = state.signUpData.phone.length > 10,
                                         text = state.signUpData.phone,
                                         onValueChange = {
-                                            signUpViewModel.onEvent(
-                                                SignUpUIEvent.OnPhoneNumberChanged(
-                                                    it
+                                            if (it.length <= maxPhoneNumber)
+                                                signUpViewModel.onEvent(
+                                                    SignUpUIEvent.OnPhoneNumberChanged(
+                                                        it
+                                                    )
                                                 )
-                                            )
                                         },
                                         readOnly = state.signUpData.phoneVerified,
                                         cursorColor = Color.Black,
@@ -648,8 +655,7 @@ fun SheetLayout(
                 onCameraClick = onCameraClick,
                 onGalleryClick = onGalleryCLick,
                 onDismiss = onDismiss,
-
-                )
+            )
 
         BottomSheetType.OTP ->
             ConfirmPhoneScreen(
@@ -657,7 +663,5 @@ fun SheetLayout(
                 viewModel = signUpViewModel,
                 onDismiss = onDismiss,
             )
-
     }
-
 }

@@ -51,6 +51,7 @@ import com.softprodigy.ballerapp.ui.features.select_profile.SelectProfileScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.ProfileSetUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpViewModel
+import com.softprodigy.ballerapp.ui.features.splash.SplashScreen
 import com.softprodigy.ballerapp.ui.features.user_type.UserTypeScreen
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.AddPlayersScreenUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
@@ -249,8 +250,7 @@ fun NavControllerComposable(activity: MainActivity) {
     val color = dataStoreManager.getWalkThrough.collectAsState(initial = "")
     NavHost(navController, startDestination = SPLASH_SCREEN) {
         composable(route = SPLASH_SCREEN) {
-            LaunchedEffect(key1 = true) {
-                delay(1000L)
+            SplashScreen {
                 scope.launch {
                     if (userToken.value.isNotEmpty()) {
                         if (getRole.value.equals(AppConstants.USER_TYPE_USER, ignoreCase = true)) {
