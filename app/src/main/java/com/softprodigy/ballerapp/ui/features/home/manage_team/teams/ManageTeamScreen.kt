@@ -268,11 +268,12 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.clickable {
                                 scope.launch {
-                                    modalBottomSheetState.show()
+                                    modalBottomSheetState.animateTo(
+                                        ModalBottomSheetValue.Expanded
+                                    )
                                 }
                             },
                         ) {
-
                             Box(
                                 modifier = Modifier
                                     .height(dimensionResource(id = R.dimen.size_32dp))

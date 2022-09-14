@@ -170,7 +170,12 @@ fun SelectTeamDialog(
 
                     LazyColumn(
                         modifier = Modifier
-                            .height(dimensionResource(id = R.dimen.size_150dp)),
+                            .height(dimensionResource(id = R.dimen.size_150dp))
+                            .padding(
+                                bottom = dimensionResource(
+                                    id = R.dimen.size_10dp
+                                )
+                            ),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -190,7 +195,7 @@ fun SelectTeamDialog(
                             }
                         }
                     }
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                    //  Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
                     ButtonWithLeadingIcon(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(id = R.string.create_new_team),
