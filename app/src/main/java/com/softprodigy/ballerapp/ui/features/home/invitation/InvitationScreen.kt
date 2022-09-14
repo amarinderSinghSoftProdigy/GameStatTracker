@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -24,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.apiToUIDateFormat
 import com.softprodigy.ballerapp.ui.features.components.DeleteDialog
 import com.softprodigy.ballerapp.ui.features.components.SelectInvitationRoleDialog
 import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
@@ -33,28 +35,36 @@ import com.softprodigy.ballerapp.ui.theme.appColors
 @Composable
 fun InvitationScreen(vm: InvitationViewModel = hiltViewModel()) {
     val state = vm.invitationState.value
-    Column(
-        Modifier
-            .fillMaxSize()
-            .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
-    ) {
-        LazyColumn(Modifier.fillMaxWidth()) {
-            items(state.invitations) { invitation ->
-                InvitationItem(invitation = invitation, onAcceptCLick = {
-                    vm.onEvent(InvitationEvent.OnAcceptCLick(it))
-                }, onDeclineCLick = {
-                    vm.onEvent(InvitationEvent.OnDeclineCLick(it))
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
+        ) {
+            LazyColumn(Modifier.fillMaxWidth()) {
+                items(state.invitations) { invitation ->
+                    InvitationItem(invitation = invitation, onAcceptCLick = {
+                        vm.onEvent(InvitationEvent.OnAcceptCLick(it))
+                    }, onDeclineCLick = {
+                        vm.onEvent(InvitationEvent.OnDeclineCLick(it))
 //                    vm.onEvent(InvitationEvent.OnDeclineInvitationClick(invitation = it))
 
-                })
+                    })
+                }
             }
-        }
 
+        }
+        if (state.showLoading) {
+            CircularProgressIndicator(
+                color = MaterialTheme.appColors.material.primaryVariant,
+                modifier = Modifier.align(Alignment.Center)
+            )
+        }
     }
     if (state.showRoleDialog) {
         SelectInvitationRoleDialog(
             onDismiss = { vm.onEvent(InvitationEvent.OnRoleDialogClick(false)) },
-            onConfirmClick = { /*TODO*/ },
+            onConfirmClick = { vm.onEvent(InvitationEvent.OnRoleConfirmClick) },
             onSelectionChange = { vm.onEvent(InvitationEvent.OnRoleClick(role = it)) },
             title = stringResource(id = R.string.what_is_your_role),
             selected = state.selectedRole,
@@ -81,9 +91,9 @@ fun InvitationScreen(vm: InvitationViewModel = hiltViewModel()) {
 @Composable
 fun InvitationItem(
     modifier: Modifier = Modifier,
-    invitation: InvitationDemoModel,
-    onAcceptCLick: (InvitationDemoModel) -> Unit,
-    onDeclineCLick: (InvitationDemoModel) -> Unit
+    invitation: Invitation,
+    onAcceptCLick: (Invitation) -> Unit,
+    onDeclineCLick: (Invitation) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -108,7 +118,7 @@ fun InvitationItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = BuildConfig.IMAGE_SERVER + invitation.logo, contentDescription = "",
+                model = BuildConfig.IMAGE_SERVER + invitation.team.logo, contentDescription = "",
                 modifier =
                 Modifier
                     .size(dimensionResource(id = R.dimen.size_44dp))
@@ -119,7 +129,7 @@ fun InvitationItem(
 
             Column(Modifier.weight(1f)) {
                 Text(
-                    text = invitation.title,
+                    text = invitation.team.name,
                     color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                     fontWeight = FontWeight.Bold,
@@ -127,7 +137,7 @@ fun InvitationItem(
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
                 Text(
-                    text = " ${stringResource(id = R.string.sent_by)} ${invitation.sentBy}",
+                    text = " ${stringResource(id = R.string.sent_by)} ${invitation.name}",
                     color = MaterialTheme.appColors.textField.label,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                     fontWeight = FontWeight.W400,
@@ -139,7 +149,7 @@ fun InvitationItem(
                     .height(dimensionResource(id = R.dimen.size_44dp))
             ) {
                 Text(
-                    text = invitation.time,
+                    text = apiToUIDateFormat(invitation.createdAt),
                     color = MaterialTheme.appColors.textField.label,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                     fontWeight = FontWeight.W400,
@@ -147,7 +157,7 @@ fun InvitationItem(
                 )
             }
         }
-        if (invitation.status.equals("pending", ignoreCase = true)) {
+        if (invitation.status.equals(InvitationStatus.PENDING.status, ignoreCase = true)) {
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -214,7 +224,7 @@ fun InvitationItem(
                 }
 
             }
-        } else if (invitation.status.equals("accepted", ignoreCase = true)) {
+        } else if (invitation.status.equals(InvitationStatus.ACCEPT.status, ignoreCase = true)) {
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -248,7 +258,7 @@ fun InvitationItem(
                     fontWeight = FontWeight.W500,
                 )
             }
-        } else if (invitation.status.equals("declined", ignoreCase = true)) {
+        } else if (invitation.status.equals(InvitationStatus.REJECT.status, ignoreCase = true)) {
             Row(
                 Modifier
                     .fillMaxWidth()
