@@ -6,7 +6,7 @@ data class Player(
     @SerializedName("__v")
     val __v: Int? = null,
     @SerializedName("_id")
-    val _id: String? = "",
+    val _id: String = "",
     @SerializedName("accessPermissions")
     val accessPermissions: List<Any> = emptyList(),
     @SerializedName("address")
@@ -46,7 +46,7 @@ data class Player(
     @SerializedName("isDelete")
     val isDelete: Boolean = false,
     @SerializedName("jerseyNumber")
-    val jerseyNumber: String? = "",
+    val jerseyNumber: String = "",
     @SerializedName("jerseyNumberPerferences")
     val jerseyNumberPreferences: List<String> = emptyList(),
     @SerializedName("lastName")
@@ -64,7 +64,7 @@ data class Player(
     @SerializedName("playerId")
     val playerId: String? = "",
     @SerializedName("position")
-    val position: String? = "",
+    val position: String = "",
     @SerializedName("positionPlayed")
     val positionPlayed: List<String> = emptyList(),
     @SerializedName("practiceThereeS")

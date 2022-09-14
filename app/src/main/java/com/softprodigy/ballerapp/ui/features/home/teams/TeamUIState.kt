@@ -18,9 +18,6 @@ data class TeamUIState(
     val teamName: String = "",
     val teamImageUri: String? = null,
     val search: String = "",
-    val selectedPlayers: MutableList<Player> = mutableListOf(),
-    val matchedPlayers: MutableList<Player> = mutableListOf(),
-    val allPlayer: MutableList<Player> = mutableListOf(),
     val selected: ArrayList<String> = ArrayList(),
     val checked: Boolean = false,
-    )
+)

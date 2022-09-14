@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
+import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.data.response.team.Coach
-import com.softprodigy.ballerapp.data.response.team.Player
+import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import com.softprodigy.ballerapp.ui.utils.dragDrop.ItemPosition
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -62,26 +62,17 @@ class TeamViewModel @Inject constructor(
             )
     }
 
-    var userId = ""
-
     init {
         viewModelScope.launch {
             getTeams()
-            //getTeamById()
         }
-    }
-
-    private suspend fun getTeamById() {
-        dataStoreManager.getId.collect {
-            getTeamByTeamId(it)
-        }
-
     }
 
     fun onEvent(event: TeamUIEvent) {
         when (event) {
             is TeamUIEvent.OnConfirmTeamClick -> {
                 viewModelScope.launch {
+                    dataStoreManager.setId(event.teamId)
                     getTeamByTeamId(event.teamId)
                 }
             }
@@ -94,9 +85,6 @@ class TeamViewModel @Inject constructor(
             }
             is TeamUIEvent.OnTeamSelected -> {
                 _teamUiState.value = _teamUiState.value.copy(selectedTeam = event.team)
-                viewModelScope.launch {
-                    dataStoreManager.setId(event.team._id)
-                }
             }
             is TeamUIEvent.OnColorSelected -> {
                 _teamUiState.value =
@@ -166,14 +154,23 @@ class TeamViewModel @Inject constructor(
                 teamResponse.value.let { response ->
                     if (response.status) {
                         if (_teamUiState.value.selectedTeam == null && response.data.size > 0) {
+                            var selectionTeam: Team? = null
+                            response.data.toMutableList().forEach {
+                                if (UserStorage.teamId == it._id) {
+                                    selectionTeam = it
+                                }
+                            }
                             _teamUiState.value =
                                 _teamUiState.value.copy(
-                                    selectedTeam = response.data[0],
+                                    teams = response.data,
+                                    selectedTeam = if (selectionTeam == null) response.data[0] else selectionTeam,
                                     isLoading = true
                                 )
-                            getTeamByTeamId(response.data[0]._id)
+                            val idToSearch =
+                                if (selectionTeam == null) response.data[0]._id else selectionTeam?._id
+                            getTeamByTeamId(idToSearch ?: "")
                             viewModelScope.launch {
-                                dataStoreManager.setId(response.data[0]._id)
+                                dataStoreManager.setId(idToSearch ?: "")
                             }
                         }
                     } else {
@@ -229,14 +226,13 @@ class TeamViewModel @Inject constructor(
                     if (response.status) {
                         _teamUiState.value = _teamUiState.value.copy(
                             isLoading = false,
-                            players = response.data.players as ArrayList<Player>,
-                            coaches = response.data.coaches as ArrayList<Coach>,
+                            players = response.data.players,
+                            coaches = response.data.coaches,
                             teamName = response.data.name,
                             teamColor = response.data.colorCode,
                             teamImageUri = response.data.logo,
                             leaderBoard = response.data.teamLeaderBoard
                         )
-
                         _teamChannel.send(
                             TeamChannel.OnTeamDetailsSuccess(response.data._id)
                         )

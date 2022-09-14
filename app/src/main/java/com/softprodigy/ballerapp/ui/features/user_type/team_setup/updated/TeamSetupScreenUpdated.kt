@@ -226,7 +226,7 @@ fun TeamSetupScreenUpdated(
                             .background(
 
                                 color = if (state.teamImageUri == null) ColorPrimaryTransparent
-                                        else MaterialTheme.appColors.material.surface,
+                                else MaterialTheme.appColors.material.surface,
                                 shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                             )
                             .clickable {
@@ -518,7 +518,11 @@ fun ColorPickerBottomSheet(
     colorEnvelope: (ColorEnvelope) -> Unit,
     onDismiss: () -> Unit
 ) {
-    Column {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(bottom = dimensionResource(id = R.dimen.size_40dp))
+    ) {
         Box(
             Modifier
                 .fillMaxWidth()
