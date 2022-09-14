@@ -65,8 +65,8 @@ fun TeamsScreen(
                         Toast.LENGTH_LONG
                     ).show()
                 }
-                is TeamChannel.OnTeamDetailsSuccess ->{
-                  OnTeamDetailsSuccess.invoke(uiEvent.teamId)
+                is TeamChannel.OnTeamDetailsSuccess -> {
+                    OnTeamDetailsSuccess.invoke(uiEvent.teamId)
                 }
             }
         }
@@ -90,7 +90,7 @@ fun TeamsScreen(
 
     Column {
         TeamsTopTabs(pagerState = pagerState, tabData = tabData)
-        TeamsContent(pagerState = pagerState)
+        TeamsContent(pagerState = pagerState, vm)
     }
 
 
@@ -100,7 +100,7 @@ fun TeamsScreen(
             SelectTeamDialog(
                 teams = vm.teamUiState.value.teams,
                 onDismiss = { dismissDialog.invoke(false) },
-                onConfirmClick = { vm.onEvent(TeamUIEvent.OnConfirmTeamClick) },
+                onConfirmClick = { vm.onEvent(TeamUIEvent.OnConfirmTeamClick(it)) },
                 onSelectionChange = onTeamSelectionChange,
                 selected = state.selectedTeam,
                 showLoading = state.isLoading,
@@ -151,7 +151,7 @@ fun TeamsScreen(
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun TeamsContent(pagerState: PagerState) {
+fun TeamsContent(pagerState: PagerState, viewModel: TeamViewModel) {
     HorizontalPager(
         state = pagerState,
         modifier = Modifier.fillMaxSize()
@@ -159,7 +159,7 @@ fun TeamsContent(pagerState: PagerState) {
         when (index) {
             0 -> StandingScreen()
             1 -> EmptyScreen()
-            2 -> RoasterScreen()
+            2 -> RoasterScreen(viewModel)
             3 -> LeaderBoardScreen()
         }
     }
@@ -185,6 +185,7 @@ fun TeamsTopTabs(pagerState: PagerState, tabData: List<TeamsTabItems>) {
             }
         })
 }
+
 enum class TeamsTabItems(val icon: Int, val stringId: String) {
     Standings(R.drawable.ic_standing, stringId = "standings"),
     Chat(R.drawable.ic_chat, stringId = "chat"),
