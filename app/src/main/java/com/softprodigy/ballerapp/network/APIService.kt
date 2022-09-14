@@ -14,9 +14,6 @@ import com.softprodigy.ballerapp.data.response.ImageUpload
 import com.softprodigy.ballerapp.data.response.StandingData
 import com.softprodigy.ballerapp.data.response.UserInfo
 import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
-import com.softprodigy.ballerapp.data.request.*
-import com.softprodigy.ballerapp.data.response.*
-import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.domain.BaseResponse
@@ -32,7 +29,7 @@ import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface APIService {
+open interface APIService {
 
     @POST(ApiConstants.LOGIN)
     suspend fun userLogin(@Body loginRequest: LoginRequest): BaseResponse<UserInfo>
