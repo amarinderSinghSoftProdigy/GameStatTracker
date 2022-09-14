@@ -1,12 +1,13 @@
 package com.softprodigy.ballerapp.data.response.team
 
+import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 
 data class Player(
     @SerializedName("__v")
     val __v: Int? = null,
     @SerializedName("_id")
-    val _id: String? = "",
+    val _id: String = "",
     @SerializedName("accessPermissions")
     val accessPermissions: List<Any> = emptyList(),
     @SerializedName("address")
@@ -46,7 +47,7 @@ data class Player(
     @SerializedName("isDelete")
     val isDelete: Boolean = false,
     @SerializedName("jerseyNumber")
-    val jerseyNumber: String? = "",
+    val jerseyNumber: String = "",
     @SerializedName("jerseyNumberPerferences")
     val jerseyNumberPreferences: List<String> = emptyList(),
     @SerializedName("lastName")
@@ -64,7 +65,7 @@ data class Player(
     @SerializedName("playerId")
     val playerId: String? = "",
     @SerializedName("position")
-    val position: String? = "",
+    val position: String = "",
     @SerializedName("positionPlayed")
     val positionPlayed: List<String> = emptyList(),
     @SerializedName("practiceThereeS")
@@ -101,8 +102,8 @@ data class Player(
     val totalGamePoints: String? = "",
     @SerializedName("totalGameRebounds")
     val totalGameRebounds: String? = "",
-    @SerializedName("totalThreeS")
-    val totalThreeS: String? = "",
+    @SerializedName("total3s")
+    val total3s: String? = "",
     @SerializedName("updatedAt")
     val updatedAt: String? = "",
     @SerializedName("userId")
@@ -110,5 +111,19 @@ data class Player(
     @SerializedName("waistSize")
     val waistSize: String? = "",
     @SerializedName("zip")
-    val zip: String? = ""
-)
+    val zip: String? = "",
+    @SerializedName("fieldGoal")
+    val fieldGoal: String? = "",
+    @SerializedName("practice3s")
+    val practice3s: String? = "",
+    @SerializedName("thirdPoint")
+    val thirdPoint: String? = ""
+
+) {
+    override fun toString(): String {
+            var gson =  Gson();
+            var json = gson.toJson(this,Player::class.java);
+            return  json;
+        }
+
+}

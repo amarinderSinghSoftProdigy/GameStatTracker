@@ -50,7 +50,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.softprodigy.ballerapp.BuildConfig
@@ -75,7 +75,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ManageTeamScreen(vm: TeamViewModel = hiltViewModel()) {
+fun ManageTeamScreen(vm: TeamViewModel) {
 
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
@@ -222,22 +222,34 @@ fun ManageTeamScreen(vm: TeamViewModel = hiltViewModel()) {
                             )
                         }
 
-                        Image(
-                            painter = if (state.teamImageUri == null) painterResource(id = R.drawable.ball) else rememberImagePainter(
-                                data = Uri.parse(BuildConfig.IMAGE_SERVER + state.teamImageUri)
-                            ),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                                .size(dimensionResource(id = R.dimen.size_160dp))
-                                .clip(CircleShape)
-                                .align(Alignment.Center)
-                        )
+
+                        if (!state.teamImageUri.isNullOrEmpty() && state.teamImageUri.contains("http")) {
+                            AsyncImage(
+                                model = state.teamImageUri,
+                                contentDescription = "",
+                                modifier =
+                                Modifier
+                                    .size(dimensionResource(id = R.dimen.size_160dp))
+                                    .clip(CircleShape)
+                                    .align(Alignment.Center),
+                                contentScale = ContentScale.Crop,
+                            )
+                        } else {
+                            Image(
+                                painter = if (state.teamImageUri == null) painterResource(id = R.drawable.ball) else rememberImagePainter(
+                                    data = Uri.parse(BuildConfig.IMAGE_SERVER + state.teamImageUri)
+                                ),
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .align(Alignment.Center)
+                                    .size(dimensionResource(id = R.dimen.size_160dp))
+                                    .clip(CircleShape)
+                                    .align(Alignment.Center)
+                            )
+                        }
                     }
-
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-
                     Divider(thickness = dimensionResource(id = R.dimen.divider))
                     Row(
                         Modifier

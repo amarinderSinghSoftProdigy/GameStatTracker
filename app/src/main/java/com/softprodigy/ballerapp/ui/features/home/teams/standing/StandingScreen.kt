@@ -3,6 +3,7 @@ package com.softprodigy.ballerapp.ui.features.home.teams.standing
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
@@ -46,60 +47,54 @@ import com.softprodigy.ballerapp.ui.features.components.AppTab
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
-import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun StandingScreen(
     vm: StandingViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
     val state = vm.standingUiState.value
-
-    val standingTabData = listOf(
-        StandingTabItems.RECORD,
-        StandingTabItems.WIN,
-        StandingTabItems.GB,
-        StandingTabItems.HOME,
-        StandingTabItems.AWAY,
-        StandingTabItems.PF
-    )
-    val pagerState = rememberPagerState(
-        pageCount = standingTabData.size,
-        initialOffScreenLimit = 1,
-    )
-
     val onStandingSelectionChange = { standing: Standing ->
         vm.onEvent(StandingUIEvent.OnStandingSelected(standing))
     }
-
-
-    Column(Modifier.fillMaxSize()) {
-        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
-        StandingTopTabs(pagerState, standingTabData)
-        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-
-            itemsIndexed(state.standing) { index, standing ->
-                StandingListItem(
-                    index + 1,
-                    standing = standing,
-                    selected = state.selectedStanding == standing
+    Box {
+        if (state.isLoading) {
+            CommonProgressBar()
+        } else {
+            val pagerState = rememberPagerState(
+                pageCount = state.categories.size,
+                initialOffScreenLimit = 1,
+            )
+            Column(Modifier.fillMaxSize()) {
+                Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
+                StandingTopTabs(pagerState, state.categories)
+                Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
                 ) {
-                    onStandingSelectionChange.invoke(standing)
-                }
 
+                    itemsIndexed(state.standing) { index, standing ->
+                        StandingListItem(
+                            index + 1,
+                            standing = standing,
+                            selected = state.selectedStanding == standing,
+                            key = state.categories[pagerState.currentPage]
+                        ) {
+                            onStandingSelectionChange.invoke(standing)
+                        }
+
+                    }
+                }
+                Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_24dp)))
             }
         }
     }
-    if (state.isLoading) {
-        CommonProgressBar()
-    }
+
+
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -109,8 +104,21 @@ fun StandingListItem(
     roundBorderImage: Boolean = false,
     standing: Standing,
     selected: Boolean,
+    key: String,
     onClick: (Standing) -> Unit
 ) {
+    var points: String = ""
+    if (key == "Win %") {
+        points = standing.WinPer
+    } else {
+        val jsonPlayer = JSONObject(standing.toString())
+        try {
+            points = jsonPlayer[key].toString()
+        } catch (e: Exception) {
+            points = ""
+        }
+    }
+
     Row(
         Modifier
             .fillMaxWidth()
@@ -189,7 +197,7 @@ fun StandingListItem(
                 }
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
                 Text(
-                    text = standing.standings,
+                    text = points,
                     fontWeight = FontWeight.Bold,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                     color = if (selected) {
@@ -217,14 +225,14 @@ enum class StandingTabItems(val stringId: String, val key: String) {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun StandingTopTabs(pagerState: PagerState, tabData: List<StandingTabItems>) {
+fun StandingTopTabs(pagerState: PagerState, tabData: List<String>) {
     val coroutineScope = rememberCoroutineScope()
     LazyRow {
         itemsIndexed(tabData) { index, item ->
             Row {
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
                 AppTab(
-                    title = stringResourceByName(item.stringId),
+                    title = item,
                     selected = pagerState.currentPage == index,
                     onClick = {
                         coroutineScope.launch {

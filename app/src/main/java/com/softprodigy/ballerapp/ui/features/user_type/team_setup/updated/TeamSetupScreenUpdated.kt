@@ -520,7 +520,11 @@ fun ColorPickerBottomSheet(
     colorEnvelope: (ColorEnvelope) -> Unit,
     onDismiss: () -> Unit
 ) {
-    Column {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(bottom = dimensionResource(id = R.dimen.size_40dp))
+    ) {
         Box(
             Modifier
                 .fillMaxWidth()
