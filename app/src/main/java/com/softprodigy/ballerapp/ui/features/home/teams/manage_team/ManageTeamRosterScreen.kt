@@ -92,11 +92,22 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                         ) { dragging ->
                             val elevation =
                                 animateDpAsState(if (dragging) dimensionResource(id = R.dimen.size_10dp) else 0.dp)
-                            MangeTeamDataHeaderItem(
-                                modifier = Modifier
-                                    .shadow(elevation.value),
-                                title = item.position, players = item
-                            )
+                            if (item.position.isEmpty()) {
+                                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
+                                Text(
+                                    text = item._id,
+                                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                    fontWeight = FontWeight.W600,
+                                )
+                                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
+                            } else {
+                                MangeTeamDataHeaderItem(
+                                    modifier = Modifier
+                                        .shadow(elevation.value),
+                                    title = item.position, players = item
+                                )
+                            }
                         }
                     }
                 }
@@ -142,16 +153,7 @@ fun MangeTeamDataHeaderItem(
     coaches: ArrayList<Coach>? = null,
     players: Player? = null,
 ) {
-
     Column(modifier = modifier) {
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
-        Text(
-            text = title,
-            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-            fontWeight = FontWeight.W600,
-        )
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_6dp)))
         if (!coaches.isNullOrEmpty()) {
             FlowRow {
                 coaches.forEach {
