@@ -15,6 +15,7 @@ class CommonUtils {
             }
 
             for (item in result) {
+                relatedItems.add(Player(_id = item))
                 for (items in list) {
                     if (item == items.position && !relatedItems.contains(items)) {
                         relatedItems.add(items)

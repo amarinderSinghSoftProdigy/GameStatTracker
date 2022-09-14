@@ -19,7 +19,6 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.ui.features.components.AppScrollableTabRow
 import com.softprodigy.ballerapp.ui.features.components.AppTabLikeViewPager
-import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
 import com.softprodigy.ballerapp.ui.features.components.SelectTeamDialog
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
 import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
@@ -109,9 +108,9 @@ fun TeamsScreen(
         }
 
     }
-    if (state.isLoading) {
+   /* if (state.isLoading) {
         CommonProgressBar()
-    }
+    }*/
 }
 
 @OptIn(ExperimentalPagerApi::class)

@@ -32,7 +32,10 @@ class TeamViewModel @Inject constructor(
     private val _teamUiState = mutableStateOf(TeamUIState())
     val teamUiState: State<TeamUIState> = _teamUiState
     fun isDragEnabled(pos: ItemPosition) = true
-    fun isRoasterDragEnabled(pos: ItemPosition) = true
+    fun isRoasterDragEnabled(pos: ItemPosition): Boolean {
+        return _teamUiState.value.roasterTabs[pos.index]._id != _teamUiState.value.roasterTabs[pos.index].position
+    }
+
     fun moveItem(from: ItemPosition, to: ItemPosition) {
         _teamUiState.value =
             _teamUiState.value.copy(
@@ -187,8 +190,8 @@ class TeamViewModel @Inject constructor(
                                     selectedTeam = if (selectionTeam == null) response.data[0] else selectionTeam,
                                     isLoading = true
                                 )
-                            val idToSearch ="63156ea1a13d3cc299a41ab6"
-                                //if (selectionTeam == null) response.data[0]._id else selectionTeam?._id
+                            val idToSearch = "63156ea1a13d3cc299a41ab6"
+                            //if (selectionTeam == null) response.data[0]._id else selectionTeam?._id
                             getTeamByTeamId(idToSearch ?: "")
                             viewModelScope.launch {
                                 dataStoreManager.setId(idToSearch ?: "")
