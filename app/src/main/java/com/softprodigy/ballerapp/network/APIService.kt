@@ -54,6 +54,11 @@ interface APIService {
         @Query("teamId") id: String
     ): BaseResponse<Team>
 
+    @GET(ApiConstants.GET_LEADER_BOARD)
+    suspend fun getLeaderBoard(
+        @Query("teamId") id: String
+    ): BaseResponse<Team>
+
     @POST(ApiConstants.VERIFY_PHONE)
     suspend fun verifyPhone(@Body verifyPhoneRequest: VerifyPhoneRequest): BaseResponse<Any>
 

@@ -3,27 +3,13 @@ package com.softprodigy.ballerapp.ui.features.home.teams.leaderboard
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -43,6 +29,7 @@ import com.google.accompanist.pager.PagerState
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.LeaderBoard
+import com.softprodigy.ballerapp.data.response.team.TeamLeaderBoard
 import com.softprodigy.ballerapp.ui.features.components.AppTab
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
@@ -72,40 +59,50 @@ fun LeaderBoardScreen(vm: LeaderBoardViewModel = hiltViewModel()) {
     val onLeaderSelectionChange = { leader: LeaderBoard ->
         vm.onEvent(LeaderBoardUIEvent.OnLeaderSelected(leader))
     }
-
-    Column(Modifier.fillMaxSize()) {
-        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
-        LeaderTopTabs(pagerState, leaderTabData)
-        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            itemsIndexed(state.leaders) { index, item ->
-                val srNo = index + 1
-                LeaderListItem(
-                    srNo = srNo,
-                    leader = item,
-                    selected = state.selectedLeader == item
+    Box(){
+        if (state.isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center),
+                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+            )
+        }
+        else {
+            Column(Modifier.fillMaxSize()) {
+                Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
+                LeaderTopTabs(pagerState, state.leaderBoard)
+                Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
                 ) {
-                    onLeaderSelectionChange.invoke(item)
+                    itemsIndexed(state.leaders) { index, item ->
+                        val srNo = index + 1
+                        LeaderListItem(
+                            srNo = srNo,
+                            leader = item,
+                            selected = state.selectedLeader == item
+                        ) {
+                            onLeaderSelectionChange.invoke(item)
+                        }
+                    }
                 }
             }
         }
+
     }
 
 }
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun LeaderTopTabs(pagerState: PagerState, tabData: List<LeaderBoardTabItems>) {
+fun LeaderTopTabs(pagerState: PagerState, tabData: List<TeamLeaderBoard>) {
     val coroutineScope = rememberCoroutineScope()
     LazyRow {
         itemsIndexed(tabData) { index, item ->
             Row {
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
                 AppTab(
-                    title = stringResourceByName(item.stringId),
+                    title = item.name,
                     selected = pagerState.currentPage == index,
                     onClick = {
                         coroutineScope.launch {

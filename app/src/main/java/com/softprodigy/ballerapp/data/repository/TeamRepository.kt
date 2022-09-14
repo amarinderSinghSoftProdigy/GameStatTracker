@@ -49,6 +49,10 @@ class TeamRepository @Inject constructor(
         return safeApiCall(dispatcher) { service.getTeamsByTeamId(teamId) }
 
     }
+  override suspend fun getLeaderBoard(teamId: String): ResultWrapper<BaseResponse<Team>> {
+        return safeApiCall(dispatcher) { service.getLeaderBoard(teamId) }
+
+    }
 
     override suspend fun getTeamCoachPlayerByID(id: String): ResultWrapper<BaseResponse<RoasterResponse>> {
         return safeApiCall(dispatcher) { service.getCoachPlayersByID(id = id) }

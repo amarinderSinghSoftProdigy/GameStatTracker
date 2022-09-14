@@ -29,6 +29,8 @@ interface ITeamRepository {
 
     suspend fun getTeamsByTeamID(teamId: String): ResultWrapper<BaseResponse<Team>>
 
+    suspend fun getLeaderBoard(teamId: String): ResultWrapper<BaseResponse<Team>>
+
     suspend fun getTeamsStanding(page: Int = 1, limit: Int = 10): ResultWrapper<BaseResponse<ArrayList<Standing>>>
 
     suspend fun getTeamCoachPlayerByID(id: String): ResultWrapper<BaseResponse<RoasterResponse>>

@@ -181,6 +181,7 @@ class TeamViewModel @Inject constructor(
                                 teams = response.data,
                                 isLoading = false
                             )
+
                     } else {
                         _teamUiState.value =
                             _teamUiState.value.copy(isLoading = false)
