@@ -32,9 +32,9 @@ class TeamViewModel @Inject constructor(
     private val _teamUiState = mutableStateOf(TeamUIState())
     val teamUiState: State<TeamUIState> = _teamUiState
     fun isDragEnabled(pos: ItemPosition) = true
-    fun isRoasterDragEnabled(pos: ItemPosition): Boolean {
-        return _teamUiState.value.roasterTabs[pos.index]._id != _teamUiState.value.roasterTabs[pos.index].position
-    }
+
+    fun isRoasterDragEnabled(pos: ItemPosition) =
+        _teamUiState.value.roasterTabs[pos.index].position.isNotEmpty()
 
     fun moveItem(from: ItemPosition, to: ItemPosition) {
         _teamUiState.value =

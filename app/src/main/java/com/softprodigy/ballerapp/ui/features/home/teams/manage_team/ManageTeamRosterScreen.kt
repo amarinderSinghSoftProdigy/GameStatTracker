@@ -66,12 +66,17 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                     )
 
             ) {
-                if (state.coaches.isNotEmpty())
-                    MangeTeamDataHeaderItem(
-                        title = stringResource(id = R.string.coaches),
-                        coaches = state.coaches
+                if (state.coaches.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
+                    Text(
+                        text = stringResource(id = R.string.coaches),
+                        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        fontWeight = FontWeight.W600,
                     )
-
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                    MangeTeamDataHeaderItem(coaches = state.coaches)
+                }
 
                 LazyColumn(
                     state = recordState.listState,
@@ -93,19 +98,21 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                             val elevation =
                                 animateDpAsState(if (dragging) dimensionResource(id = R.dimen.size_10dp) else 0.dp)
                             if (item.position.isEmpty()) {
-                                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
-                                Text(
-                                    text = item._id,
-                                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                                    fontWeight = FontWeight.W600,
-                                )
-                                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
+                                Column {
+                                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
+                                    Text(
+                                        text = item._id,
+                                        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                        fontWeight = FontWeight.W600,
+                                    )
+                                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                                }
                             } else {
                                 MangeTeamDataHeaderItem(
                                     modifier = Modifier
                                         .shadow(elevation.value),
-                                    title = item.position, players = item
+                                    players = item
                                 )
                             }
                         }
@@ -149,7 +156,6 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
 @Composable
 fun MangeTeamDataHeaderItem(
     modifier: Modifier = Modifier,
-    title: String,
     coaches: ArrayList<Coach>? = null,
     players: Player? = null,
 ) {
@@ -161,19 +167,20 @@ fun MangeTeamDataHeaderItem(
                 }
             }
         } else if (players != null) {
-            TeamUserListItem(teamUser = players, isCoach = false)
+            TeamUserListItem(modifier, teamUser = players, isCoach = false)
         }
     }
 }
 
 @Composable
 fun TeamUserListItem(
+    modifier: Modifier = Modifier,
     teamUser: Player? = null,
     coachUser: Coach? = null,
     isCoach: Boolean = false,
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(top = dimensionResource(id = R.dimen.size_8dp))
             .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
