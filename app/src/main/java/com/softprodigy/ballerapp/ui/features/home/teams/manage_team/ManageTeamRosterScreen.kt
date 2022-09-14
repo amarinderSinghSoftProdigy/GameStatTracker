@@ -52,8 +52,8 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
     val state = vm.teamUiState.value
     val recordState =
         rememberReorderableLazyListState(
-            onMove = vm::moveItem,
-            canDragOver = vm::isDragEnabled
+            onMove = vm::moveItemRoaster,
+            canDragOver = vm::isRoasterDragEnabled
         )
     Box {
         if (state.coaches.isNotEmpty() && state.players.isNotEmpty()) {
@@ -77,10 +77,7 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                     state = recordState.listState,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(
-                            color = Color.White,
-                            shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
-                        )
+                        .padding(bottom = dimensionResource(id = R.dimen.size_80dp))
                         .then(
                             Modifier
                                 .reorderable(recordState)
@@ -88,7 +85,7 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                         ),
 
                     ) {
-                    items(state.players, { item -> item._id }) { item ->
+                    items(state.roasterTabs, { item -> item._id }) { item ->
                         ReorderableItem(
                             reorderableState = recordState,
                             key = item._id,
@@ -98,12 +95,11 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                             MangeTeamDataHeaderItem(
                                 modifier = Modifier
                                     .shadow(elevation.value),
-                                title = item.position, players = state.players
+                                title = item.position, players = item
                             )
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_80dp)))
             }
             Box(
                 modifier = Modifier
@@ -143,30 +139,27 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
 fun MangeTeamDataHeaderItem(
     modifier: Modifier = Modifier,
     title: String,
-    players: ArrayList<Player>? = null,
-    coaches: ArrayList<Coach>? = null
+    coaches: ArrayList<Coach>? = null,
+    players: Player? = null,
 ) {
+
     Column(modifier = modifier) {
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
         Text(
             text = title,
             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-            color = Color.Transparent,
+            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
             fontWeight = FontWeight.W600,
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_6dp)))
-        FlowRow {
-            if (!coaches.isNullOrEmpty()) {
+        if (!coaches.isNullOrEmpty()) {
+            FlowRow {
                 coaches.forEach {
                     TeamUserListItem(coachUser = it, isCoach = true)
                 }
             }
-
-            if (!players.isNullOrEmpty()) {
-                players.forEach {
-                    TeamUserListItem(teamUser = it, isCoach = false)
-                }
-            }
+        } else if (players != null) {
+            TeamUserListItem(teamUser = players, isCoach = false)
         }
     }
 }

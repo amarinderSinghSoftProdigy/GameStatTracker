@@ -9,8 +9,10 @@ import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
+import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
+import com.softprodigy.ballerapp.ui.utils.CommonUtils
 import com.softprodigy.ballerapp.ui.utils.dragDrop.ItemPosition
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -30,6 +32,7 @@ class TeamViewModel @Inject constructor(
     private val _teamUiState = mutableStateOf(TeamUIState())
     val teamUiState: State<TeamUIState> = _teamUiState
     fun isDragEnabled(pos: ItemPosition) = true
+    fun isRoasterDragEnabled(pos: ItemPosition) = true
     fun moveItem(from: ItemPosition, to: ItemPosition) {
         _teamUiState.value =
             _teamUiState.value.copy(
@@ -37,6 +40,16 @@ class TeamViewModel @Inject constructor(
                     .apply {
                         add(to.index, removeAt(from.index))
                     }
+            )
+    }
+
+    fun moveItemRoaster(from: ItemPosition, to: ItemPosition) {
+        _teamUiState.value =
+            _teamUiState.value.copy(
+                roasterTabs = _teamUiState.value.roasterTabs.toMutableList()
+                    .apply {
+                        add(to.index, removeAt(from.index))
+                    } as ArrayList<Player>
             )
     }
 
@@ -174,8 +187,8 @@ class TeamViewModel @Inject constructor(
                                     selectedTeam = if (selectionTeam == null) response.data[0] else selectionTeam,
                                     isLoading = true
                                 )
-                            val idToSearch =
-                                if (selectionTeam == null) response.data[0]._id else selectionTeam?._id
+                            val idToSearch ="63156ea1a13d3cc299a41ab6"
+                                //if (selectionTeam == null) response.data[0]._id else selectionTeam?._id
                             getTeamByTeamId(idToSearch ?: "")
                             viewModelScope.launch {
                                 dataStoreManager.setId(idToSearch ?: "")
@@ -299,6 +312,7 @@ class TeamViewModel @Inject constructor(
                         _teamUiState.value = _teamUiState.value.copy(
                             isLoading = false,
                             players = response.data.players,
+                            roasterTabs = CommonUtils.getPlayerTabs(response.data.players),
                             coaches = response.data.coaches,
                             teamName = response.data.name,
                             teamColor = response.data.colorCode,
