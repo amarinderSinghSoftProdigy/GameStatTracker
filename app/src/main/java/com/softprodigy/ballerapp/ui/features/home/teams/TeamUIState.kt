@@ -13,6 +13,7 @@ data class TeamUIState(
     val players: ArrayList<Player> = ArrayList(),
     val coaches: ArrayList<Coach> = ArrayList(),
     val leaderBoard: List<TeamLeaderBoard> = emptyList(),
+    val roasterTabs: ArrayList<Player> = arrayListOf(),
     val roaster: List<TeamRoaster> = emptyList(),
     val selectedTeam: Team? = null,
     val showDialog: Boolean = false,
