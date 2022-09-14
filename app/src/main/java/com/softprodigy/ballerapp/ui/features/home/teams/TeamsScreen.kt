@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -46,6 +47,9 @@ fun TeamsScreen(
         vm.onEvent(TeamUIEvent.OnTeamSelected(team))
     }
 
+    remember {
+
+    }
     val onTeamSelectionConfirmed = { team: Team? ->
         setupTeamViewModelUpdated.onEvent(
             TeamSetupUIEventUpdated.OnColorSelected(
@@ -70,14 +74,6 @@ fun TeamsScreen(
                 }
                 is TeamChannel.OnTeamDetailsSuccess -> {
                     OnTeamDetailsSuccess.invoke(uiEvent.teamId)
-                }
-                is TeamChannel.OnTeamsUpdate -> {
-                    Toast.makeText(
-                        context,
-                        uiEvent.message.asString(context),
-                        Toast.LENGTH_LONG
-                    ).show()
-                    onBackPress()
                 }
             }
         }

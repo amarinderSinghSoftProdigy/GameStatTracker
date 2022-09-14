@@ -39,8 +39,11 @@ import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.team.Coach
 import com.softprodigy.ballerapp.data.response.team.Player
+import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.ButtonWithLeadingIcon
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
+import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayStatus
 import com.softprodigy.ballerapp.ui.theme.appColors
 import com.softprodigy.ballerapp.ui.utils.dragDrop.ReorderableItem
 import com.softprodigy.ballerapp.ui.utils.dragDrop.detectReorderAfterLongPress
@@ -88,8 +91,7 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                                 .reorderable(recordState)
                                 .detectReorderAfterLongPress(recordState)
                         ),
-
-                    ) {
+                ) {
                     items(state.roasterTabs, { item -> item._id }) { item ->
                         ReorderableItem(
                             reorderableState = recordState,
@@ -97,7 +99,7 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                         ) { dragging ->
                             val elevation =
                                 animateDpAsState(if (dragging) dimensionResource(id = R.dimen.size_10dp) else 0.dp)
-                            if (item.position.isEmpty()) {
+                            if (item.locked) {
                                 Column {
                                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
                                     Text(
@@ -140,14 +142,30 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                 modifier = Modifier
                     .fillMaxSize()
             ) {
-                ButtonWithLeadingIcon(
+                Column(
                     modifier = Modifier.align(Alignment.Center),
-                    text = stringResource(id = R.string.add_player),
-                    onClick = {
-                        onAddPlayerCLick.invoke()
-                    },
-                    painter = painterResource(id = R.drawable.ic_add_button),
-                )
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    AppText(
+                        text = stringResource(id = R.string.no_players_in_team),
+                        color = ColorBWBlack,
+                        style = MaterialTheme.typography.h3
+                    )
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                    AppText(
+                        text = stringResource(id = R.string.please_add_players),
+                        color = ColorBWBlack,
+                        style = MaterialTheme.typography.h5
+                    )
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                    ButtonWithLeadingIcon(
+                        text = stringResource(id = R.string.add_player),
+                        onClick = {
+                            onAddPlayerCLick.invoke()
+                        },
+                        painter = painterResource(id = R.drawable.ic_add_button),
+                    )
+                }
             }
         }
     }
@@ -200,6 +218,10 @@ fun TeamUserListItem(
                 contentDescription = "",
                 modifier =
                 Modifier
+                    .background(
+                        color = ColorBWGrayStatus,
+                        shape = CircleShape
+                    )
                     .size(dimensionResource(id = R.dimen.size_32dp))
                     .clip(CircleShape),
                 contentScale = ContentScale.FillBounds,

@@ -297,7 +297,7 @@ fun DialogButton(
 fun CommonProgressBar() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         CircularProgressIndicator(
-            color = AppConstants.SELECTED_COLOR
+            color = MaterialTheme.appColors.material.primaryVariant
         )
     }
 }

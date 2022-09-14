@@ -25,7 +25,7 @@ data class Player(
     @SerializedName("createdAt")
     val createdAt: String? = "",
     @SerializedName("documents")
-    val documents: Documents ?= null,
+    val documents: Documents? = null,
     @SerializedName("email")
     val email: String? = "",
     @SerializedName("favActivePlayer")
@@ -65,7 +65,7 @@ data class Player(
     @SerializedName("playerId")
     val playerId: String? = "",
     @SerializedName("position")
-    val position: String = "",
+    var position: String = "",
     @SerializedName("positionPlayed")
     val positionPlayed: List<String> = emptyList(),
     @SerializedName("practiceThereeS")
@@ -117,13 +117,15 @@ data class Player(
     @SerializedName("practice3s")
     val practice3s: String? = "",
     @SerializedName("thirdPoint")
-    val thirdPoint: String? = ""
+    val thirdPoint: String? = "",
+
+    var locked: Boolean = false
 
 ) {
     override fun toString(): String {
-            var gson =  Gson();
-            var json = gson.toJson(this,Player::class.java);
-            return  json;
-        }
+        var gson = Gson();
+        var json = gson.toJson(this, Player::class.java);
+        return json;
+    }
 
 }
