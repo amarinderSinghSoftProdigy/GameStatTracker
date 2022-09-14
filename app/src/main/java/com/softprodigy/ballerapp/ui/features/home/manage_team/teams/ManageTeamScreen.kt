@@ -24,6 +24,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
@@ -52,6 +53,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
+import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.argbToHexString
@@ -59,6 +61,8 @@ import com.softprodigy.ballerapp.common.validTeamName
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
+import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
+import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.ColorPickerBottomSheet
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.UpdateColor
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
@@ -71,18 +75,18 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ManageTeamScreen(vm: ManageTeamViewModel = hiltViewModel()) {
+fun ManageTeamScreen(vm: TeamViewModel = hiltViewModel()) {
 
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
 
-    val state = vm.manageTeamUiState.value
+    val state = vm.teamUiState.value
 
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
             if (uri != null)
-                vm.onEvent(ManageTeamUIEvent.OnImageSelected(uri.toString()))
+                vm.onEvent(TeamUIEvent.OnImageSelected(uri.toString()))
         }
     val controller = rememberColorPickerController()
     val selectionUpdated = remember {
@@ -97,7 +101,7 @@ fun ManageTeamScreen(vm: ManageTeamViewModel = hiltViewModel()) {
                 if (!colorEnvelope.hexCode.contentEquals(AppConstants.PICKER_DEFAULT_COLOR)) {
                     AppConstants.SELECTED_COLOR = colorEnvelope.color
                     selectionUpdated.value = colorEnvelope.hexCode
-                    vm.onEvent(ManageTeamUIEvent.OnColorSelected(colorEnvelope.hexCode))
+                    vm.onEvent(TeamUIEvent.OnColorSelected(colorEnvelope.hexCode))
                 }
             }, onDismiss = {
                 scope.launch {
@@ -137,7 +141,7 @@ fun ManageTeamScreen(vm: ManageTeamViewModel = hiltViewModel()) {
                             modifier = Modifier.fillMaxWidth(),
                             value = state.teamName,
                             onValueChange = {
-                                vm.onEvent(ManageTeamUIEvent.OnTeamNameChange(it))
+                                vm.onEvent(TeamUIEvent.OnTeamNameChange(it))
                             },
                             placeholder = {
                                 AppText(
@@ -220,7 +224,7 @@ fun ManageTeamScreen(vm: ManageTeamViewModel = hiltViewModel()) {
 
                         Image(
                             painter = if (state.teamImageUri == null) painterResource(id = R.drawable.ball) else rememberImagePainter(
-                                data = Uri.parse(state.teamImageUri)
+                                data = Uri.parse(BuildConfig.IMAGE_SERVER + state.teamImageUri)
                             ),
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
@@ -300,7 +304,14 @@ fun ManageTeamScreen(vm: ManageTeamViewModel = hiltViewModel()) {
                                 backgroundColor = if (state.teamColor.isEmpty()) {
                                     MaterialTheme.appColors.material.primaryVariant
                                 } else {
-                                    Color(android.graphics.Color.parseColor("#" + state.teamColor))
+                                    if (state.teamColor.substring(0, 1) == "#") {
+                                        Color(android.graphics.Color.parseColor(state.teamColor))
+
+                                    } else {
+                                        Color(android.graphics.Color.parseColor("#" + state.teamColor))
+                                    }
+
+
                                 },
                                 shape = RoundedCornerShape(
                                     dimensionResource(id = R.dimen.size_4dp)
@@ -309,6 +320,13 @@ fun ManageTeamScreen(vm: ManageTeamViewModel = hiltViewModel()) {
                         }
                     }
                 }
+            }
+
+            if (state.isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center),
+                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                )
             }
         }
     }

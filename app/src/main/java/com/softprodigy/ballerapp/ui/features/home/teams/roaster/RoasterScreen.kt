@@ -49,7 +49,6 @@ import com.softprodigy.ballerapp.ui.theme.appColors
 fun RoasterScreen(vm: TeamViewModel = hiltViewModel()) {
 
     val state = vm.teamUiState.value
-    val context = LocalContext.current
 
     Box(
         modifier = Modifier

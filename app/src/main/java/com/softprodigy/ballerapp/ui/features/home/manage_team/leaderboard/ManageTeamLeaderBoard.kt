@@ -1,5 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.home.manage_team.leaderboard
 
+import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -41,7 +43,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.ManageLeaderBoardResponse
+import com.softprodigy.ballerapp.data.response.team.TeamLeaderBoard
 import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
+import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
 import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -51,9 +56,9 @@ import com.softprodigy.ballerapp.ui.utils.dragDrop.rememberReorderableLazyListSt
 import com.softprodigy.ballerapp.ui.utils.dragDrop.reorderable
 
 @Composable
-fun ManageTeamLeaderBoard(vm: ManageLeaderBoardViewModel = hiltViewModel()) {
+fun ManageTeamLeaderBoard(vm: TeamViewModel = hiltViewModel()) {
 
-    val state = vm.manageLeaderBoardUiState.value
+    val state = vm.teamUiState.value
 
     val selected = remember {
         mutableStateOf(false)
@@ -64,8 +69,8 @@ fun ManageTeamLeaderBoard(vm: ManageLeaderBoardViewModel = hiltViewModel()) {
             onMove = vm::moveItem,
             canDragOver = vm::isDragEnabled
         )
-    val onLeaderSelectionChange = { leader: ManageLeaderBoardResponse ->
-        vm.onEvent(ManageLeaderBoardUIEvent.OnItemSelected(leader.name))
+    val onLeaderSelectionChange = { leader: TeamLeaderBoard ->
+        vm.onEvent(TeamUIEvent.OnItemSelected(leader.name))
     }
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -92,7 +97,7 @@ fun ManageTeamLeaderBoard(vm: ManageLeaderBoardViewModel = hiltViewModel()) {
                 Row(
                     modifier = Modifier.clickable {
                         selected.value = !selected.value
-                        onLeaderSelectionChange.invoke(ManageLeaderBoardResponse(name = if (selected.value) "All" else ""))
+                        onLeaderSelectionChange.invoke(TeamLeaderBoard(name = if (selected.value) "All" else ""))
                     },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -142,7 +147,7 @@ fun ManageTeamLeaderBoard(vm: ManageLeaderBoardViewModel = hiltViewModel()) {
                     ),
 
                 ) {
-                items(state.leaderBoardList, { item -> item.name }) { item ->
+                items(state.leaderBoard, { item -> item.name }) { item ->
                     ReorderableItem(
                         reorderableState = recordState,
                         key = item.name,
@@ -162,6 +167,12 @@ fun ManageTeamLeaderBoard(vm: ManageLeaderBoardViewModel = hiltViewModel()) {
                 }
             }
         }
+        if (state.isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center),
+                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+            )
+        }
     }
 }
 
@@ -169,9 +180,9 @@ fun ManageTeamLeaderBoard(vm: ManageLeaderBoardViewModel = hiltViewModel()) {
 fun LeaderBoardItem(
     dragging: Boolean,
     modifier: Modifier = Modifier,
-    item: ManageLeaderBoardResponse,
+    item: TeamLeaderBoard,
     selected: Boolean,
-    onSelectionChange: (ManageLeaderBoardResponse) -> Unit,
+    onSelectionChange: (TeamLeaderBoard) -> Unit,
 ) {
 
     val selection = remember {
