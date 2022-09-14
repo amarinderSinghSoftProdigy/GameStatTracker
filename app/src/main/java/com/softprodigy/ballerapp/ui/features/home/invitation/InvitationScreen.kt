@@ -24,6 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.ui.features.components.DeleteDialog
 import com.softprodigy.ballerapp.ui.features.components.SelectInvitationRoleDialog
 import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
 import com.softprodigy.ballerapp.ui.theme.ColorButtonRed
@@ -43,20 +44,36 @@ fun InvitationScreen(vm: InvitationViewModel = hiltViewModel()) {
                     vm.onEvent(InvitationEvent.OnAcceptCLick(it))
                 }, onDeclineCLick = {
                     vm.onEvent(InvitationEvent.OnDeclineCLick(it))
+//                    vm.onEvent(InvitationEvent.OnDeclineInvitationClick(invitation = it))
+
                 })
             }
         }
 
     }
-    if (state.showDialog) {
+    if (state.showRoleDialog) {
         SelectInvitationRoleDialog(
-            onDismiss = { vm.onEvent(InvitationEvent.OnDialogClick(false)) },
+            onDismiss = { vm.onEvent(InvitationEvent.OnRoleDialogClick(false)) },
             onConfirmClick = { /*TODO*/ },
             onSelectionChange = { vm.onEvent(InvitationEvent.OnRoleClick(role = it)) },
             title = stringResource(id = R.string.what_is_your_role),
             selected = state.selectedRole,
             showLoading = state.showLoading,
             roleList = state.roles
+        )
+    }
+    if (state.showDeclineDialog) {
+        DeleteDialog(
+            item = state.selectedInvitation,
+            message = stringResource(id = R.string.alert_decline_invitation),
+            onDismiss = {
+                vm.onEvent(InvitationEvent.OnDeleteDialogClick(false))
+            },
+            onDelete = {
+                if (state.selectedInvitation.id.isNotEmpty()) {
+                    vm.onEvent(InvitationEvent.OnDeclineConfirmClick(state.selectedInvitation))
+                }
+            }
         )
     }
 }
@@ -149,7 +166,7 @@ fun InvitationItem(
                     Modifier
                         .weight(1f)
                         .clickable {
-                            onAcceptCLick.invoke(invitation)
+                            onDeclineCLick.invoke(invitation)
                         }
                         .padding(dimensionResource(id = R.dimen.size_14dp)),
                     horizontalArrangement = Arrangement.Center,
@@ -175,7 +192,7 @@ fun InvitationItem(
                     Modifier
                         .weight(1f)
                         .clickable {
-                            onDeclineCLick.invoke(invitation)
+                            onAcceptCLick.invoke(invitation)
                         }
                         .padding(dimensionResource(id = R.dimen.size_14dp)),
                     horizontalArrangement = Arrangement.Center,

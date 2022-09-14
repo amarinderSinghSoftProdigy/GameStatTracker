@@ -42,21 +42,38 @@ class InvitationViewModel : ViewModel() {
     fun onEvent(event: InvitationEvent) {
         when (event) {
             is InvitationEvent.OnAcceptCLick -> {
-                invitationState.value = invitationState.value.copy(showDialog = true)
+                invitationState.value = invitationState.value.copy(showRoleDialog = true)
             }
             is InvitationEvent.OnDeclineCLick -> {
-                invitationState.value = invitationState.value.copy(showDialog = true)
+                invitationState.value = invitationState.value.copy(
+                    showDeclineDialog = true,
+                    selectedInvitation = event.invitation
+                )
+
             }
-            is InvitationEvent.OnDialogClick -> {
-                invitationState.value = invitationState.value.copy(showDialog = event.showDialog)
+            is InvitationEvent.OnRoleDialogClick -> {
+                invitationState.value =
+                    invitationState.value.copy(showRoleDialog = event.showRoleDialog)
 
             }
             is InvitationEvent.OnRoleClick -> {
                 invitationState.value = invitationState.value.copy(selectedRole = event.role)
 
             }
+            is InvitationEvent.OnDeclineConfirmClick -> {
+                invitationState.value = invitationState.value.copy(
+                    showDeclineDialog = false,invitations = (((invitationState.value.invitations) - event.invitation) as ArrayList<InvitationDemoModel>)
+                )
+            }
+            is InvitationEvent.OnDeleteDialogClick -> {
+                invitationState.value =
+                    invitationState.value.copy(showDeclineDialog = event.showDeleteDialog)
+
+            }
+
         }
     }
-}
+    }
+
 
 
