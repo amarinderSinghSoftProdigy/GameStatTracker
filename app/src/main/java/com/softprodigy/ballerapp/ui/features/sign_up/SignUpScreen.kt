@@ -36,7 +36,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.ripple.LocalRippleTheme
+import androidx.compose.material.ripple.RippleAlpha
+import androidx.compose.material.ripple.RippleTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -48,6 +52,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -144,6 +149,7 @@ fun SignUpScreen(
     mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
 
     mCalendar.time = Date()
+    val maxEmailChar = 45
 
     val mDate = remember { mutableStateOf("") }
 
@@ -223,11 +229,11 @@ fun SignUpScreen(
                     )
                     vm.onEvent(SignUpUIEvent.OnGoogleClick(googleUser))
                 } else {
-                    Toast.makeText(
-                        context,
-                        context.resources.getString(R.string.something_went_wrong),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    /* Toast.makeText(
+                         context,
+                         context.resources.getString(R.string.something_went_wrong),
+                         Toast.LENGTH_SHORT
+                     ).show()*/
                 }
 
             } catch (e: ApiException) {
@@ -312,7 +318,8 @@ fun SignUpScreen(
                 modifier = Modifier
                     .fillMaxWidth(),
                 onValueChange = {
-                    email = it
+                    if (it.length <= maxEmailChar)
+                        email = it
                 },
                 placeholder = {
                     Text(
@@ -396,67 +403,70 @@ fun SignUpScreen(
             )
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-
-            Column {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(dimensionResource(id = R.dimen.size_50dp))
-                        .clickable {
-                            expanded = !expanded
-                        }
-                        .onGloballyPositioned {
-                            textFieldSize = it.size.toSize()
-                        },
-                    border = BorderStroke(
-                        0.5.dp,
-                        MaterialTheme.appColors.editField.borderUnFocused
-                    ),
-                    backgroundColor = MaterialTheme.appColors.material.background,
-                    shape = RoundedCornerShape(MaterialTheme.spacing.small),
-                    elevation = 0.dp
-                ) {
-                    Row(
+            CompositionLocalProvider(
+                LocalRippleTheme provides ClearRippleTheme
+            ) {
+                Column {
+                    Card(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(
-                                start = dimensionResource(id = R.dimen.size_12dp),
-                                end = dimensionResource(id = R.dimen.size_12dp)
-                            ),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
+                            .fillMaxWidth()
+                            .height(dimensionResource(id = R.dimen.size_50dp))
+                            .clickable() {
+                                expanded = !expanded
+                            }
+                            .onGloballyPositioned {
+                                textFieldSize = it.size.toSize()
+                            },
+                        border = BorderStroke(
+                            0.5.dp,
+                            MaterialTheme.appColors.editField.borderUnFocused
+                        ),
+                        backgroundColor = MaterialTheme.appColors.material.background,
+                        shape = RoundedCornerShape(MaterialTheme.spacing.small),
+                        elevation = 0.dp
                     ) {
-                        if (gender.isEmpty()) {
-                            AppText(
-                                text = stringResource(id = R.string.select_gender),
-                                textAlign = TextAlign.Center,
-                                color = MaterialTheme.appColors.textField.label,
-                                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
-                            )
-                        } else {
-                            AppText(
-                                text = gender,
-                                textAlign = TextAlign.Center,
-                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                                style = androidx.compose.material.LocalTextStyle.current
-                            )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(
+                                    start = dimensionResource(id = R.dimen.size_12dp),
+                                    end = dimensionResource(id = R.dimen.size_12dp)
+                                ),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            if (gender.isEmpty()) {
+                                AppText(
+                                    text = stringResource(id = R.string.select_gender),
+                                    textAlign = TextAlign.Center,
+                                    color = MaterialTheme.appColors.textField.label,
+                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
+                                )
+                            } else {
+                                AppText(
+                                    text = gender,
+                                    textAlign = TextAlign.Center,
+                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                    style = androidx.compose.material.LocalTextStyle.current
+                                )
+                            }
                         }
                     }
-                }
 
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false },
-                    modifier = Modifier
-                        .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
-                        .background(MaterialTheme.colors.background)
-                ) {
-                    genderList.forEach { label ->
-                        DropdownMenuItem(onClick = {
-                            gender = label
-                            expanded = false
-                        }) {
-                            Text(text = label, textAlign = TextAlign.Center)
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false },
+                        modifier = Modifier
+                            .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+                            .background(MaterialTheme.colors.background)
+                    ) {
+                        genderList.forEach { label ->
+                            DropdownMenuItem(onClick = {
+                                gender = label
+                                expanded = false
+                            }) {
+                                Text(text = label, textAlign = TextAlign.Center)
+                            }
                         }
                     }
                 }
@@ -689,4 +699,16 @@ fun SignUpScreen(
     }
 }
 
+object ClearRippleTheme : RippleTheme {
+    @Composable
+    override fun defaultColor(): Color = Color.Transparent
+
+    @Composable
+    override fun rippleAlpha() = RippleAlpha(
+        draggedAlpha = 0.0f,
+        focusedAlpha = 0.0f,
+        hoveredAlpha = 0.0f,
+        pressedAlpha = 0.0f,
+    )
+}
 

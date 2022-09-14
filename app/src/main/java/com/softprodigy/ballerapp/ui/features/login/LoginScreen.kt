@@ -139,17 +139,16 @@ fun LoginScreen(
                     )
                     vm.onEvent(LoginUIEvent.OnGoogleClick(googleUser))
                 } else {
-                    Toast.makeText(
-                        context,
-                        context.resources.getString(R.string.something_went_wrong),
-                        Toast.LENGTH_SHORT
-                    ).show()
+//                    Toast.makeText(
+//                        context,
+//                        context.resources.getString(R.string.something_went_wrong),
+//                        Toast.LENGTH_SHORT
+//                    ).show()
                 }
 
             } catch (e: ApiException) {
                 Timber.i(e.toString())
             }
-
         }
 
     LaunchedEffect(key1 = Unit) {

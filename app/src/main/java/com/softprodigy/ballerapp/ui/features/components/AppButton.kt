@@ -244,7 +244,7 @@ fun InviteTeamMemberButton(
                 width = 1.dp,
                 color =
                 if (isTransParent)
-                    MaterialTheme.appColors.editField.borderFocused else {
+                    Color.Transparent else {
                     AppConstants.SELECTED_COLOR
                 },
                 shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_6dp))
@@ -268,7 +268,7 @@ fun InviteTeamMemberButton(
         Icon(
             painter = painter,
             contentDescription = "",
-            tint= if (isTransParent) {
+            tint = if (isTransParent) {
                 AppConstants.SELECTED_COLOR
             } else {
                 colors.textEnabled
