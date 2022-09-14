@@ -151,7 +151,7 @@ fun MangeTeamDataHeaderItem(
         Text(
             text = title,
             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            color = Color.Transparent,
             fontWeight = FontWeight.W600,
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_6dp)))

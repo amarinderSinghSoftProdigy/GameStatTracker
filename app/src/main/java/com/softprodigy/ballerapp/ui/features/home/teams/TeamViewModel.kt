@@ -8,6 +8,7 @@ import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
+import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import com.softprodigy.ballerapp.ui.utils.dragDrop.ItemPosition
@@ -77,6 +78,12 @@ class TeamViewModel @Inject constructor(
                 }
             }
             is TeamUIEvent.OnDismissClick -> {}
+
+            is TeamUIEvent.OnTeamUpdate -> {
+                viewModelScope.launch {
+                    updateTeam()
+                }
+            }
 
             is TeamUIEvent.ShowToast -> {
                 viewModelScope.launch {
@@ -174,6 +181,70 @@ class TeamViewModel @Inject constructor(
                                 dataStoreManager.setId(idToSearch ?: "")
                             }
                         }
+                    } else {
+                        _teamUiState.value =
+                            _teamUiState.value.copy(isLoading = false)
+                        _teamChannel.send(
+                            TeamChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun updateTeam() {
+        _teamUiState.value =
+            _teamUiState.value.copy(
+                isLoading = true
+            )
+
+        //Need to update the request object.
+        val request = UpdateTeamDetailRequest(
+            id = UserStorage.teamId,
+            leaderboardPoints = _teamUiState.value.leaderBoard,
+            playerPositions = _teamUiState.value.roaster,
+            name = _teamUiState.value.teamName,
+            logo = _teamUiState.value.teamImageUri ?: "",
+            colorCode = _teamUiState.value.teamColor,
+        )
+        val teamResponse = teamRepo.updateTeamDetails(request)
+        when (teamResponse) {
+            is ResultWrapper.GenericError -> {
+                _teamChannel.send(
+                    TeamChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${teamResponse.message}"
+                        )
+                    )
+                )
+                _teamUiState.value =
+                    _teamUiState.value.copy(
+                        isLoading = false
+                    )
+            }
+            is ResultWrapper.NetworkError -> {
+                _teamChannel.send(
+                    TeamChannel.ShowToast(
+                        UiText.DynamicString(
+                            teamResponse.message
+                        )
+                    )
+                )
+                _teamUiState.value =
+                    _teamUiState.value.copy(
+                        isLoading = false
+                    )
+            }
+            is ResultWrapper.Success -> {
+                teamResponse.value.let { response ->
+                    if (response.status) {
+                        //getTeamByTeamId("")
+                        //Handle the case to move back to teams screen and hit the get team deatil api
                     } else {
                         _teamUiState.value =
                             _teamUiState.value.copy(isLoading = false)
