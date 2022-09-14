@@ -31,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -47,6 +46,7 @@ import com.softprodigy.ballerapp.ui.features.components.AppTab
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayStatus
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
 import org.json.JSONObject
@@ -164,7 +164,10 @@ fun StandingListItem(
                     model = BuildConfig.IMAGE_SERVER + standing.logo,
                     contentDescription = "",
                     modifier =
-                    Modifier
+                    Modifier.background(
+                        color = ColorBWGrayStatus,
+                        shape = CircleShape
+                    )
                         .size(dimensionResource(id = R.dimen.size_32dp))
                         .clip(CircleShape),
                     contentScale = ContentScale.FillBounds

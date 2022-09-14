@@ -1,27 +1,51 @@
 package com.softprodigy.ballerapp.ui.features.home.manage_team
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.ui.features.components.AppScrollableTabRow
 import com.softprodigy.ballerapp.ui.features.components.AppTabLikeViewPager
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
 import com.softprodigy.ballerapp.ui.features.home.manage_team.leaderboard.ManageTeamLeaderBoard
 import com.softprodigy.ballerapp.ui.features.home.manage_team.teams.ManageTeamScreen
+import com.softprodigy.ballerapp.ui.features.home.teams.TeamChannel
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.features.home.teams.manage_team.ManageTeamRoster
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun MainManageTeamScreen(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
+fun MainManageTeamScreen(vm: TeamViewModel, onSuccess: () -> Unit, onAddPlayerCLick: () -> Unit) {
+    val context = LocalContext.current
+    LaunchedEffect(key1 = Unit) {
+        vm.teamChannel.collect { uiEvent ->
+            when (uiEvent) {
+                is TeamChannel.OnTeamsUpdate -> {
+                    Toast.makeText(
+                        context,
+                        uiEvent.message.asString(context),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                is TeamChannel.OnTeamDetailsSuccess -> {
+                    UserStorage.teamId = uiEvent.teamId
+                    onSuccess()
+                }
+            }
+        }
+    }
+
     val managedTabData = listOf(
         ManageTeamsTabItems.Team,
         ManageTeamsTabItems.Roaster,

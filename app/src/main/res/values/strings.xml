@@ -194,4 +194,5 @@
     <string name="pending_invitations">Pending Invitation</string>
     <string name="invite">Invite</string>
     <string name="invite_members">Invite Members</string>
+    <string name="please_add_players">Please invite players to the team.</string>
 </resources>
