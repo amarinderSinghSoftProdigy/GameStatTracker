@@ -28,6 +28,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -40,6 +41,7 @@ import com.google.accompanist.pager.HorizontalPager
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.ButtonWithLeadingIcon
 import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
 import com.softprodigy.ballerapp.ui.features.components.PagerIndicator
 import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
@@ -59,7 +61,11 @@ fun HomeScreen(name: String?, logoClick: () -> Unit, onInvitationCLick: () -> Un
         Column(
             Modifier
                 .fillMaxWidth()
-                .padding(all = dimensionResource(id = R.dimen.size_16dp))
+                .padding(
+                    top = dimensionResource(id = R.dimen.size_16dp),
+                    end = dimensionResource(id = R.dimen.size_16dp),
+                    start = dimensionResource(id = R.dimen.size_16dp)
+                )
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Center
         ) {
@@ -81,6 +87,7 @@ fun HomeScreen(name: String?, logoClick: () -> Unit, onInvitationCLick: () -> Un
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
             UserFlowBackground(
                 padding = 0.dp,
+                color = Color.White
             ) {
                 Box(
                     modifier = Modifier
@@ -122,6 +129,7 @@ fun HomeScreen(name: String?, logoClick: () -> Unit, onInvitationCLick: () -> Un
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
             UserFlowBackground(
                 padding = 0.dp,
+                color = Color.White
             ) {
                 Box(
                     Modifier
@@ -149,7 +157,45 @@ fun HomeScreen(name: String?, logoClick: () -> Unit, onInvitationCLick: () -> Un
                             style = MaterialTheme.typography.h6,
                             modifier = Modifier.weight(1f),
                         )
-
+                    }
+                    Text(
+                        text = "2",
+                        fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
+                        modifier = Modifier.align(Alignment.CenterEnd)
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+            UserFlowBackground(
+                padding = 0.dp,
+                color = Color.White
+            ) {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            onInvitationCLick.invoke()
+                        }
+                        .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Row(
+                        Modifier
+                            .fillMaxSize(),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_invite),
+                            contentDescription = "",
+                            tint = MaterialTheme.appColors.material.primaryVariant,
+                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
+                        )
+                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+                        Text(
+                            text = stringResource(id = R.string.pending_invitations),
+                            style = MaterialTheme.typography.h6,
+                            modifier = Modifier.weight(1f),
+                        )
                     }
                     Text(
                         text = "2",
@@ -169,11 +215,12 @@ fun HomeScreen(name: String?, logoClick: () -> Unit, onInvitationCLick: () -> Un
             Row {
                 EventItem("my_events", "events_label", "2")
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                EventItem("my_events", "events_label", "4")
+                EventInviteItem("invite_members")
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
             UserFlowBackground(
                 padding = 0.dp,
+                color = Color.White
             ) {
                 Box(
                     Modifier
@@ -192,6 +239,7 @@ fun HomeScreen(name: String?, logoClick: () -> Unit, onInvitationCLick: () -> Un
                             modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
                         )
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+
                         Text(
                             text = stringResource(id = R.string.opportunities_to_play),
                             style = MaterialTheme.typography.h6,
@@ -212,10 +260,8 @@ fun HomeScreen(name: String?, logoClick: () -> Unit, onInvitationCLick: () -> Un
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
                 EventItem("all_leagues", "leagues", "4", R.drawable.ic_leagues)
             }
-
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
         }
-
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
     }
 }
@@ -232,6 +278,9 @@ fun RowScope.EventItem(
         modifier = Modifier
             .fillMaxWidth()
             .weight(1F)
+            .height(dimensionResource(id = R.dimen.size_160dp)),
+        color = Color.White
+
     ) {
         Column(
             modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp)),
@@ -267,6 +316,60 @@ fun RowScope.EventItem(
                 style = MaterialTheme.typography.h6,
                 color = MaterialTheme.appColors.textField.label
             )
+        }
+    }
+}
+
+@Composable
+fun RowScope.EventInviteItem(
+    headingId: String,
+    painter: Int = R.drawable.ic_invite
+) {
+    UserFlowBackground(
+        padding = 0.dp,
+        modifier = Modifier
+            .fillMaxWidth()
+            .weight(1F)
+            .height(dimensionResource(id = R.dimen.size_160dp)),
+        color = Color.White
+    ) {
+        Column(
+            modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp)),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    painter = painterResource(painter),
+                    contentDescription = null,
+                    tint = MaterialTheme.appColors.material.primaryVariant,
+                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
+                )
+
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+                AppText(
+                    text = stringResourceByName(headingId),
+                    style = MaterialTheme.typography.h6,
+                    color = ColorBWBlack
+                )
+            }
+
+            Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
+                ButtonWithLeadingIcon(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally),
+                    text = stringResource(id = R.string.invite),
+                    onClick = { },
+                    painter = painterResource(id = R.drawable.ic_add_button),
+                    isTransParent = false,
+                    iconSize = dimensionResource(id = R.dimen.size_10dp)
+                )
+            }
+
         }
     }
 }
