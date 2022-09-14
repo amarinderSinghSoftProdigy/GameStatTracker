@@ -23,6 +23,7 @@ object AppConstants {
     const val PUBLIC_PROFILE = "public_profile"
     const val EMAIL = "email"
     const val SKIP = "skip"
+    var DEFAULT_COLOR: Color = Color(0xFF0177C1)
     var SELECTED_COLOR: Color = Color(0xFF0177C1)
 }
 
@@ -44,6 +45,8 @@ object Route {
     const val ROASTER_SCREEN = "roasterScreen"
     const val MANAGED_TEAM_SCREEN = "managedTeamScreen"
     const val SELECT_PROFILE = "selectProfile"
+    const val PROFILE_SCREEN = "profileScreen"
+    const val PROFILE_EDIT_SCREEN = "profileeditscreen"
     const val INVITATION_SCREEN="invitationScreen"
 }
 

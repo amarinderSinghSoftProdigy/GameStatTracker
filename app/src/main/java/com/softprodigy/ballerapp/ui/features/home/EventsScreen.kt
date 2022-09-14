@@ -88,7 +88,7 @@ fun Tabs(pagerState: PagerState, tabUpdate: (Int) -> Unit) {
                 text = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
-                            painter = painterResource(id = item.icon),
+                                painter = painterResource(id = item.icon),
                             contentDescription = null,
                             tint = if (pagerState.currentPage == index) MaterialTheme.appColors.material.primaryVariant else MaterialTheme.appColors.textField.label
                         )

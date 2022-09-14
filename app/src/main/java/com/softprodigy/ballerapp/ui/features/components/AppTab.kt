@@ -77,6 +77,27 @@ fun AppScrollableTabRow(
     )
 }
 
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+fun AppStaticTabRow(
+    pagerState: PagerState,
+    modifier: Modifier = Modifier,
+    tabs: @Composable @UiComposable () -> Unit
+) {
+    TabRow(
+        modifier = modifier,
+        selectedTabIndex = pagerState.currentPage,
+        indicator = { tabPositions ->
+            TabRowDefaults.Indicator(
+                Modifier.pagerTabIndicatorOffset(pagerState, tabPositions),
+                color = MaterialTheme.appColors.material.primaryVariant
+            )
+        },
+        backgroundColor = MaterialTheme.appColors.material.surface,
+        tabs = tabs
+    )
+}
+
 @Composable
 fun AppTabLikeViewPager(
     modifier: Modifier = Modifier,

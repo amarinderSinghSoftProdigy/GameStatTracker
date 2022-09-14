@@ -14,23 +14,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowDownward
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
@@ -38,7 +30,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.R
@@ -47,14 +38,15 @@ import com.softprodigy.ballerapp.data.response.HomeItemResponse
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.ButtonWithLeadingIcon
 import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
-import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
-import com.softprodigy.ballerapp.ui.features.home.manage_team.leaderboard.LeaderBoardItem
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun HomeFirstTimeLoginScreen(viewModel: HomeViewModel = hiltViewModel(), onCreateTeamClick: () -> Unit) {
+fun HomeFirstTimeLoginScreen(
+    viewModel: HomeViewModel = hiltViewModel(),
+    onCreateTeamClick: () -> Unit
+) {
 
     val state = viewModel.state.value
     val dataStoreManager = DataStoreManager(LocalContext.current)
@@ -67,9 +59,7 @@ fun HomeFirstTimeLoginScreen(viewModel: HomeViewModel = hiltViewModel(), onCreat
                 .padding(all = dimensionResource(id = R.dimen.size_16dp)),
             verticalArrangement = Arrangement.Center
         ) {
-
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))
-
             AppText(
                 text = stringResource(id = R.string.hey_label).replace("name", "George"),
                 style = MaterialTheme.typography.h5,

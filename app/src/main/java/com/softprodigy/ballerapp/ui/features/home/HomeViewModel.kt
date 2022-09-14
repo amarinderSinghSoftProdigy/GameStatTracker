@@ -8,8 +8,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.ui.features.components.TopBarData
 import com.softprodigy.ballerapp.data.response.HomeItemResponse
+import com.softprodigy.ballerapp.ui.features.components.TopBarData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,9 +25,7 @@ class HomeViewModel @Inject constructor(
     val state: State<HomeState> = _state
 
     init {
-
         getHomeList()
-
     }
 
     private fun getHomeList() {
@@ -53,7 +51,6 @@ class HomeViewModel @Inject constructor(
                 total = "2"
             )
         )
-
         _state.value = _state.value.copy(homeItemList = homeList)
     }
 
@@ -62,7 +59,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun setTopBar(topBar: TopBarData) {
-        _state.value = _state.value.copy(topBar = topBar)
+        _state.value = _state.value.copy(topBar = topBar, appBar = true)
     }
 
     fun setDialog(show: Boolean) {
@@ -75,6 +72,10 @@ class HomeViewModel @Inject constructor(
 
     fun setScreen(screen: Boolean) {
         _state.value = _state.value.copy(screen = screen)
+    }
+
+    fun setAppBar(screen: Boolean) {
+        _state.value = _state.value.copy(appBar = screen)
     }
 
     fun clearToken() {

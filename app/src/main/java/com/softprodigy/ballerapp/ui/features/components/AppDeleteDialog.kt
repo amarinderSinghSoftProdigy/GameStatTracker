@@ -1,5 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -58,8 +59,11 @@ import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.argbToHexString
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
+import com.softprodigy.ballerapp.ui.features.profile.tabs.DetailItem
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
+import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
@@ -234,6 +238,117 @@ fun SelectTeamDialog(
                             border = ButtonDefaults.outlinedBorder,
                             enabled = (selected?.name ?: "").isNotEmpty(),
                             onlyBorder = false,
+                        )
+                    }
+                }
+            },
+        )
+    }
+}
+
+@Composable
+fun ShowParentDialog(
+
+    onDismiss: () -> Unit,
+    onConfirmClick: () -> Unit,
+) {
+    BallerAppMainTheme {
+        AlertDialog(
+            modifier = Modifier
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+            onDismissRequest = onDismiss,
+            buttons = {
+                Column(
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(
+                            all = dimensionResource(
+                                id = R.dimen.size_16dp
+                            )
+                        ),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = stringResource(id = R.string.parent),
+                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                            fontWeight = FontWeight.W600,
+                        )
+
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_close_color_picker),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(dimensionResource(id = R.dimen.size_12dp))
+                                .align(Alignment.TopEnd)
+                                .clickable {
+                                    onDismiss()
+                                }
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
+
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(dimensionResource(id = R.dimen.size_16dp))
+                            .background(color = Color.White)
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.user_demo),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(dimensionResource(id = R.dimen.size_200dp))
+                                .clip(CircleShape)
+                        )
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
+                        AppText(
+                            text = "George Will",
+                            style = MaterialTheme.typography.h6,
+                            color = ColorBWBlack,
+                            fontSize = dimensionResource(id = R.dimen.txt_size_20).value.sp
+                        )
+                        AppText(
+                            text = "Mother",
+                            style = MaterialTheme.typography.h4,
+                            color = ColorBWGrayLight
+                        )
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                        Row(
+                            modifier = Modifier
+                        ) {
+                            DetailItem("email", "joe@gmail.com")
+                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+                            DetailItem("number", "9888834352")
+                        }
+
+                    }
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(color = Color.White),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        ButtonWithLeadingIconGrayed(
+                            text = stringResource(R.string.message),
+                            onClick = onDismiss,
+                            modifier = Modifier
+                                .weight(1f),
+                            painter = painterResource(id = R.drawable.ic_message),
+                        )
+                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
+                        ButtonWithLeadingIcon(
+                            text = stringResource(R.string.call),
+                            onClick = {
+                                onConfirmClick.invoke()
+                            },
+                            modifier = Modifier
+                                .weight(1f),
+                            iconSize = dimensionResource(id = R.dimen.size_20dp),
+                            painter = painterResource(id = R.drawable.ic_call),
                         )
                     }
                 }

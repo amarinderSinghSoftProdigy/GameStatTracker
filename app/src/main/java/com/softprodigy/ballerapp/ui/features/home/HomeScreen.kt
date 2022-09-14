@@ -52,12 +52,25 @@ import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun HomeScreen(name: String?, logoClick: () -> Unit, onInvitationCLick: () -> Unit) {
+fun HomeScreen(
+    name: String?,
+    logoClick: () -> Unit,
+    onInvitationCLick: () -> Unit,
+    gotToProfile: () -> Unit
+) {
     val dataStoreManager = DataStoreManager(LocalContext.current)
     val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
-
+    CoachFlowBackground(colorCode = color.value, teamLogo = "", click = {
+        when (it) {
+            Options.PROFILE -> {
+                gotToProfile()
+            }
+            Options.LOGOUT -> {
+                logoClick()
+            }
+        }
+    }) {
     Box {
-        CoachFlowBackground(colorCode = color.value.ifEmpty { "0177C1" }, teamLogo = "")
         Column(
             Modifier
                 .fillMaxWidth()
@@ -73,7 +86,7 @@ fun HomeScreen(name: String?, logoClick: () -> Unit, onInvitationCLick: () -> Un
             AppText(
                 text = stringResource(id = R.string.hey_label).replace("name", "George"),
                 style = MaterialTheme.typography.h5,
-                fontWeight = FontWeight.W500,
+                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                 color = ColorBWBlack
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
@@ -129,7 +142,6 @@ fun HomeScreen(name: String?, logoClick: () -> Unit, onInvitationCLick: () -> Un
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
             UserFlowBackground(
                 padding = 0.dp,
-                color = Color.White
             ) {
                 Box(
                     Modifier
@@ -138,64 +150,27 @@ fun HomeScreen(name: String?, logoClick: () -> Unit, onInvitationCLick: () -> Un
                             onInvitationCLick.invoke()
                         }
                         .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-                    contentAlignment = Alignment.Center
                 ) {
                     Row(
                         Modifier
-                            .fillMaxSize(),
+                            .fillMaxWidth()
+                            ,
                         verticalAlignment = Alignment.CenterVertically,
-                    ) {
+
+                        ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_briefcase),
                             contentDescription = "",
                             tint = MaterialTheme.appColors.material.primaryVariant,
-                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
+                                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
                         )
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
                         Text(
                             text = stringResource(id = R.string.opportunities_to_work),
                             style = MaterialTheme.typography.h6,
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier.weight(1f)
                         )
-                    }
-                    Text(
-                        text = "2",
-                        fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
-                        modifier = Modifier.align(Alignment.CenterEnd)
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-            UserFlowBackground(
-                padding = 0.dp,
-                color = Color.White
-            ) {
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            onInvitationCLick.invoke()
-                        }
-                        .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Row(
-                        Modifier
-                            .fillMaxSize(),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_invite),
-                            contentDescription = "",
-                            tint = MaterialTheme.appColors.material.primaryVariant,
-                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
-                        )
-                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
-                        Text(
-                            text = stringResource(id = R.string.pending_invitations),
-                            style = MaterialTheme.typography.h6,
-                            modifier = Modifier.weight(1f),
-                        )
+
                     }
                     Text(
                         text = "2",
@@ -236,15 +211,15 @@ fun HomeScreen(name: String?, logoClick: () -> Unit, onInvitationCLick: () -> Un
                             painter = painterResource(id = R.drawable.ic_home),
                             contentDescription = "",
                             tint = MaterialTheme.appColors.material.primaryVariant,
-                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
+                                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
                         )
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
-
                         Text(
                             text = stringResource(id = R.string.opportunities_to_play),
                             style = MaterialTheme.typography.h6,
                             modifier = Modifier.weight(1f)
                         )
+
                     }
                     Text(
                         text = "2",
@@ -260,11 +235,14 @@ fun HomeScreen(name: String?, logoClick: () -> Unit, onInvitationCLick: () -> Un
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
                 EventItem("all_leagues", "leagues", "4", R.drawable.ic_leagues)
             }
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
+
         }
+
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
     }
 }
+
 
 @Composable
 fun RowScope.EventItem(

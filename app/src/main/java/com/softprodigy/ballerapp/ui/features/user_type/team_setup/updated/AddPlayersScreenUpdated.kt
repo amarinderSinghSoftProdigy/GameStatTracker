@@ -2,12 +2,26 @@ package com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated
 
 import android.annotation.SuppressLint
 import android.widget.Toast
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -37,7 +51,13 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.isValidEmail
 import com.softprodigy.ballerapp.common.validName
 import com.softprodigy.ballerapp.data.response.team.Player
-import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.components.AppSearchOutlinedTextField
+import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.BottomButtons
+import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
+import com.softprodigy.ballerapp.ui.features.components.DeleteDialog
+import com.softprodigy.ballerapp.ui.features.components.InviteTeamMemberButton
+import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -99,27 +119,26 @@ fun AddPlayersScreenUpdated(
             }
         }
     }
+    CoachFlowBackground(
+        colorCode = state.teamColorPrimary,
+        teamLogo = state.teamImageUri
+    ) {
+        Box(Modifier.fillMaxSize()) {
 
-    Box(Modifier.fillMaxSize()) {
-        CoachFlowBackground(
-            colorCode = state.teamColorPrimary,
-            teamLogo = state.teamImageUri
-        )
-        Column(
-            Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.Center
-        ) {
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_64dp)))
-
-            AppText(
-                modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp)),
-                text = stringResource(id = R.string.invite_team_member),
-                style = MaterialTheme.typography.h3,
-                color = ColorBWBlack
-            )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_64dp)))
+                AppText(
+                    modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp)),
+                    text = stringResource(id = R.string.invite_team_member),
+                    style = MaterialTheme.typography.h3,
+                    color = ColorBWBlack
+                )
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_30dp)))
 
             UserFlowBackground(
                 modifier = Modifier.weight(1F),
@@ -129,12 +148,12 @@ fun AddPlayersScreenUpdated(
                     Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp))
                 ) {
 
-                    LazyColumn(
-                        Modifier.fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        items(state.inviteMemberCount) { index ->
-                            Column(Modifier.fillMaxSize()) {
+                        LazyColumn(
+                            Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            items(state.inviteMemberCount) { index ->
+                                Column(Modifier.fillMaxSize()) {
 
                                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
                                 Box(modifier = Modifier.fillMaxWidth()) {
@@ -171,7 +190,7 @@ fun AddPlayersScreenUpdated(
                                             singleLine = true,
                                             isError = !validName(state.inviteMemberName[index])
                                                     && state.inviteMemberName[index].isNotEmpty(),
-//                                                || state.inviteMemberName[index].length > 30,
+//                                                  || state.inviteMemberName[index].length > 30,
                                             errorMessage = stringResource(id = R.string.valid_first_name),
                                         )
                                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
@@ -255,20 +274,20 @@ fun AddPlayersScreenUpdated(
                         item {
                             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
 
-                            InviteTeamMemberButton(
-                                modifier = Modifier.fillMaxWidth(),
-                                text = stringResource(id = R.string.add),
-                                onClick = {
-                                    updateItem(addIntent = true)
-                                },
-                                painter = painterResource(
-                                    id = R.drawable.ic_add_button
-                                ),
-                                isTransParent = true
-                            )
+                                InviteTeamMemberButton(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = stringResource(id = R.string.add),
+                                    onClick = {
+                                        updateItem(addIntent = true)
+                                    },
+                                    painter = painterResource(
+                                        id = R.drawable.ic_add_button
+                                    ),
+                                    isTransParent = true
+                                )
+                            }
                         }
                     }
-                }
 
 
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
@@ -281,36 +300,35 @@ fun AddPlayersScreenUpdated(
                         } else {
                             vm.onEvent(TeamSetupUIEventUpdated.OnInviteTeamMembers(teamId))
 
-                        }
+                            }
+                        },
+                        enableState =
+                        state.inviteMemberName.isNotEmpty() &&
+                                state.inviteMemberName.all() { it.isNotEmpty() } &&
+                                state.inviteMemberName.all() { validName(it) }
+                                && state.inviteMemberEmail.all() { it.isValidEmail() },
+                        themed = true,
+                    )
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
+                }
+            }
+
+            if (state.showDialog) {
+                DeleteDialog(
+                    item = state.removePlayer,
+                    message = stringResource(id = R.string.alert_remove_player),
+                    onDismiss = {
+                        vm.onEvent(TeamSetupUIEventUpdated.OnDismissDialogCLick(false))
                     },
-                    enableState =
-                    state.inviteMemberName.isNotEmpty() &&
-                            state.inviteMemberName.all() { it.isNotEmpty() } &&
-                            state.inviteMemberName.all() { validName(it) }
-                            && state.inviteMemberEmail.all() { it.isValidEmail() },
-                    themed = true,
+                    onDelete = {
+                        if (state.removePlayer != null) {
+                            vm.onEvent(TeamSetupUIEventUpdated.OnRemovePlayerConfirmClick(state.removePlayer))
+                        }
+                    }
                 )
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
             }
         }
-
-        if (state.showDialog) {
-            DeleteDialog(
-                item = state.removePlayer,
-                message = stringResource(id = R.string.alert_remove_player),
-                onDismiss = {
-                    vm.onEvent(TeamSetupUIEventUpdated.OnDismissDialogCLick(false))
-                },
-                onDelete = {
-                    if (state.removePlayer != null) {
-                        vm.onEvent(TeamSetupUIEventUpdated.OnRemovePlayerConfirmClick(state.removePlayer))
-                    }
-                }
-            )
-        }
     }
-
-
 }
 
 @Composable

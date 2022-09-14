@@ -103,6 +103,7 @@
     <string name="teams_label">Team</string>
     <string name="player_label">Player</string>
     <string name="parent_label">Parent</string>
+    <string name="parents_label">Parents</string>
     <string name="game_staff_label">Game Staff</string>
     <string name="program_label">Program Staff</string>
     <string name="fan_label">Fan</string>
@@ -152,6 +153,34 @@
     <string name="gb_label">GB</string>
     <string name="away_label">Away</string>
     <string name="pf_label">PF</string>
+    <string name="mother">Mother</string>
+    <string name="father">Father</string>
+    <string name="birthday">Birthday</string>
+    <string name="classof">Class of</string>
+    <string name="positons">Positions Played</string>
+    <string name="parents">Parents</string>
+    <string name="jersey_pref">Jersey Preferences</string>
+    <string name="jersey_number">Jersey Number</string>
+    <string name="shirt_size">Shirt Size</string>
+    <string name="waist_size">Waist Size</string>
+    <string name="fun_facts">Fun Facts</string>
+    <string name="favorite_college_team">Favorite College Team</string>
+    <string name="favorite_nba_team">Favorite NBA Team</string>
+    <string name="favorite_active_player">Favorite Active Player</string>
+    <string name="favoritea_all_time_tlayer">Favorite All-Time Player</string>
+    <string name="pg">PG</string>
+    <string name="sg">SG</string>
+    <string name="sf">SF</string>
+    <string name="pf">PF</string>
+    <string name="c">C</string>
+
+
+    <string name="birth_certificate">Birth Certificate</string>
+    <string name="grade_verification">Grade Verification</string>
+    <string name="permission_slip">Permission Slip</string>
+    <string name="aau_card">AAU Card</string>
+    <string name="waiver">Waiver</string>
+    <string name="vaccine_card">Vaccine Card</string>
     <string name="player">player</string>
     <string name="coaches">Coaches</string>
     <string name="add_uers">Add User</string>
@@ -164,7 +193,6 @@
     <string name="fts_label">FT\'s</string>
     <string name="fg_percent_label">FG%</string>
     <string name="assistance_label">Assistance</string>
-    <string name="profile_label">Profile</string>
     <string name="add_new_team_member">Add New Team Member</string>
     <string name="create_new_team">Create New Team</string>
     <string name="select_profile">Select Profile</string>
@@ -194,4 +222,16 @@
     <string name="pending_invitations">Pending Invitation</string>
     <string name="invite">Invite</string>
     <string name="invite_members">Invite Members</string>
+    <string name="role">Role</string>
+    <string name="leave_team">Leave Team</string>
+    <string name="position">Position</string>
+    <string name="my_profile">My Profile</string>
+    <string name="logout">Logout</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="documents">Documents</string>
+    <string name="profile_label">Profile</string>
+    <string name="parent">Parent</string>
+    <string name="call">Call</string>
+    <string name="message">Message</string>
+
 </resources>
