@@ -151,7 +151,7 @@ fun SelectTeamDialog(
                         Text(
                             text = stringResource(id = R.string.pick_team),
                             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                            fontWeight = FontWeight.W600,
+                            fontWeight = FontWeight.W700,
                         )
 
                         Icon(
@@ -169,7 +169,12 @@ fun SelectTeamDialog(
 
                     LazyColumn(
                         modifier = Modifier
-                            .height(dimensionResource(id = R.dimen.size_150dp)),
+                            .height(dimensionResource(id = R.dimen.size_150dp))
+                            .padding(
+                                bottom = dimensionResource(
+                                    id = R.dimen.size_10dp
+                                )
+                            ),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -189,7 +194,7 @@ fun SelectTeamDialog(
                             }
                         }
                     }
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                    //  Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
                     ButtonWithLeadingIcon(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(id = R.string.create_new_team),

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -65,12 +66,16 @@ fun HomeScreen(name: String?, logoClick: () -> Unit, onInvitationCLick: () -> Un
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))
             AppText(
                 text = stringResource(id = R.string.hey_label).replace("name", "George"),
-                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                style = MaterialTheme.typography.h5,
+                fontWeight = FontWeight.W500,
                 color = ColorBWBlack
             )
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
             AppText(
                 text = stringResource(id = R.string.welcome_back),
                 fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
+                fontWeight = FontWeight.W600,
+                style = MaterialTheme.typography.subtitle1,
                 color = MaterialTheme.appColors.material.primaryVariant
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
@@ -125,24 +130,24 @@ fun HomeScreen(name: String?, logoClick: () -> Unit, onInvitationCLick: () -> Un
                             onInvitationCLick.invoke()
                         }
                         .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                    contentAlignment = Alignment.Center
                 ) {
                     Row(
                         Modifier
-                            .fillMaxWidth()
-                            ,
+                            .fillMaxSize(),
                         verticalAlignment = Alignment.CenterVertically,
-
-                        ) {
+                    ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_briefcase),
                             contentDescription = "",
-                            tint = MaterialTheme.appColors.material.primaryVariant
+                            tint = MaterialTheme.appColors.material.primaryVariant,
+                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
                         )
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
                         Text(
                             text = stringResource(id = R.string.opportunities_to_work),
                             style = MaterialTheme.typography.h6,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
                         )
 
                     }
@@ -174,6 +179,7 @@ fun HomeScreen(name: String?, logoClick: () -> Unit, onInvitationCLick: () -> Un
                     Modifier
                         .fillMaxWidth()
                         .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                    contentAlignment = Alignment.Center
                 ) {
                     Row(
                         Modifier.fillMaxWidth(),
@@ -182,7 +188,8 @@ fun HomeScreen(name: String?, logoClick: () -> Unit, onInvitationCLick: () -> Un
                         Icon(
                             painter = painterResource(id = R.drawable.ic_home),
                             contentDescription = "",
-                            tint = MaterialTheme.appColors.material.primaryVariant
+                            tint = MaterialTheme.appColors.material.primaryVariant,
+                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
                         )
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
                         Text(
@@ -190,7 +197,6 @@ fun HomeScreen(name: String?, logoClick: () -> Unit, onInvitationCLick: () -> Un
                             style = MaterialTheme.typography.h6,
                             modifier = Modifier.weight(1f)
                         )
-
                     }
                     Text(
                         text = "2",
@@ -238,7 +244,9 @@ fun RowScope.EventItem(
                 Icon(
                     painter = painterResource(painter),
                     contentDescription = null,
-                    tint = MaterialTheme.appColors.material.primaryVariant
+                    tint = MaterialTheme.appColors.material.primaryVariant,
+                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
+
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
                 AppText(
