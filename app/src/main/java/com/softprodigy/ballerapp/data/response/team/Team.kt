@@ -18,6 +18,6 @@ data class Team(
     val name: String = "",
     @SerializedName("playerDetails")
     val players: List<Player> = emptyList(),
-    @SerializedName("teamLeaderboard")
-    val teamLeaderBoard: List<TeamLeaderBoard> = emptyList()
+    @SerializedName("leaderboardPoints")
+    val     teamLeaderBoard: List<TeamLeaderBoard> = emptyList()
 )

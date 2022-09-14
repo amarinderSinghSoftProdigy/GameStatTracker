@@ -55,6 +55,7 @@ object ApiConstants {
     const val CREATE_TEAM = "v1/team"
     const val GET_TEAMS = "v1/team"
     const val GET_TEAM_BY_ID = "v1/team/getTeamById"
+    const val GET_LEADER_BOARD = "v1/team/getTeamLeaderBoard"
     const val COACH_PLAYER = "v1/team/coachPlayers"
     const val GET_TEAM_STANDING = "v1/team/standings"
     const val SEND_INVITATION = "v1/team/inviteTeamMembers"
