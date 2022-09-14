@@ -71,6 +71,7 @@ object ApiConstants {
     const val CONFIRM_PHONE = "v1/auth/confirmPhone"
     const val RESET_PASS = "/reset/password/"
     const val RESEND_OTP = "/resendOtp"
+    const val UPDATE_TEAM = "/team/update"
     const val first_name = "first_name"
     const val last_name = "lastName"
     const val mobile = "mobile"

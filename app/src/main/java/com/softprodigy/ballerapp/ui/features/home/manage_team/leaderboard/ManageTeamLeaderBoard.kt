@@ -1,6 +1,5 @@
 package com.softprodigy.ballerapp.ui.features.home.manage_team.leaderboard
 
-import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -40,9 +39,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.data.response.ManageLeaderBoardResponse
 import com.softprodigy.ballerapp.data.response.team.TeamLeaderBoard
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
@@ -56,7 +53,7 @@ import com.softprodigy.ballerapp.ui.utils.dragDrop.rememberReorderableLazyListSt
 import com.softprodigy.ballerapp.ui.utils.dragDrop.reorderable
 
 @Composable
-fun ManageTeamLeaderBoard(vm: TeamViewModel = hiltViewModel()) {
+fun ManageTeamLeaderBoard(vm: TeamViewModel) {
 
     val state = vm.teamUiState.value
 

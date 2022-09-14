@@ -1,6 +1,8 @@
 package com.softprodigy.ballerapp.data.request
 
 import com.google.gson.annotations.SerializedName
+import com.softprodigy.ballerapp.data.response.team.TeamLeaderBoard
+import com.softprodigy.ballerapp.data.response.team.TeamRoaster
 
 data class CreateTeamRequest(
 
@@ -15,6 +17,15 @@ data class CreateTeamRequest(
 data class UpdateTeamRequest(
     @SerializedName("teamID") val teamID: String = "",
     @SerializedName("members") val members: List<Members> = arrayListOf(),
+)
+
+data class UpdateTeamDetailRequest(
+    @SerializedName("id") val id: String = "",
+    @SerializedName("name") val name: String = "",
+    @SerializedName("colorCode") val colorCode: String = "",
+    @SerializedName("logo") val logo: String = "",
+    @SerializedName("leaderboardPoints") val leaderboardPoints: List<TeamLeaderBoard> = arrayListOf(),
+    @SerializedName("playerPositions") val playerPositions: List<TeamRoaster> = arrayListOf()
 )
 
 

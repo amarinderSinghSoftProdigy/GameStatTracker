@@ -19,6 +19,7 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.ui.features.components.AppScrollableTabRow
 import com.softprodigy.ballerapp.ui.features.components.AppTabLikeViewPager
+import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
 import com.softprodigy.ballerapp.ui.features.components.SelectTeamDialog
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
 import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
@@ -32,21 +33,23 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun TeamsScreen(
-    name: String?,
+    vm: TeamViewModel = hiltViewModel(),
     showDialog: Boolean,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
     dismissDialog: (Boolean) -> Unit,
     OnTeamDetailsSuccess: (String) -> Unit,
     onCreateTeamClick: () -> Unit
 ) {
-    val vm: TeamViewModel = hiltViewModel()
     val context = LocalContext.current
     val state = vm.teamUiState.value
     val onTeamSelectionChange = { team: Team ->
         vm.onEvent(TeamUIEvent.OnTeamSelected(team))
+    }
+
+    val onTeamSelectionConfirmed = { team: Team? ->
         setupTeamViewModelUpdated.onEvent(
             TeamSetupUIEventUpdated.OnColorSelected(
-                team.colorCode.replace(
+                (team?.colorCode ?: "").replace(
                     "#",
                     ""
                 )
@@ -82,9 +85,6 @@ fun TeamsScreen(
         pageCount = tabData.size,
         initialOffScreenLimit = 1,
     )
-    val tabIndex = pagerState.currentPage
-    val coroutineScope = rememberCoroutineScope()
-
 
     Column {
         TeamsTopTabs(pagerState = pagerState, tabData = tabData)
@@ -93,12 +93,14 @@ fun TeamsScreen(
 
 
     Box(Modifier.fillMaxSize()) {
-
         if (showDialog) {
             SelectTeamDialog(
                 teams = vm.teamUiState.value.teams,
                 onDismiss = { dismissDialog.invoke(false) },
-                onConfirmClick = { vm.onEvent(TeamUIEvent.OnConfirmTeamClick(it)) },
+                onConfirmClick = {
+                    vm.onEvent(TeamUIEvent.OnConfirmTeamClick(it))
+                    onTeamSelectionConfirmed(state.selectedTeam)
+                },
                 onSelectionChange = onTeamSelectionChange,
                 selected = state.selectedTeam,
                 showLoading = state.isLoading,
@@ -106,44 +108,9 @@ fun TeamsScreen(
             )
         }
 
-/*        Column(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Image(
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                painter = painterResource(id = R.drawable.ic_teams_large),
-                contentDescription = null,
-            )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_44dp)))
-            Text(
-                color = MaterialTheme.appColors.textField.label,
-                text = stringResource(id = R.string.no_players_in_team),
-                fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
-            )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
-            Text(
-                color = MaterialTheme.appColors.textField.label,
-                text = stringResource(id = R.string.add_players_to_use_app),
-                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-            )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-
-
-            LeadingIconAppButton(
-                icon = painterResource(id = R.drawable.ic_add_player),
-                text = stringResource(id = R.string.add_players),
-                onClick = {
-                    if (state.selectedTeam == null) {
-                        vm.onEvent(TeamUIEvent.ShowToast(message))
-                    } else {
-                        addPlayerClick(state.selectedTeam)
-                    }
-                },
-            )
-        }*/
+    }
+    if (state.isLoading) {
+        CommonProgressBar()
     }
 }
 
