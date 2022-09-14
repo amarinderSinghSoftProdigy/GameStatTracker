@@ -71,7 +71,7 @@ fun CoachFlowBackground(
                     ),
                     modifier = Modifier
                         .padding(
-                            bottom = dimensionResource(id = R.dimen.size_30dp),
+                            bottom = dimensionResource(id = R.dimen.size_10dp),
                             end = dimensionResource(id = R.dimen.size_20dp),
                             start = dimensionResource(id = R.dimen.size_20dp),
                             top = dimensionResource(id = R.dimen.size_20dp)

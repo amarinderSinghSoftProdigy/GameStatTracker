@@ -80,6 +80,7 @@ fun TeamSetupScreenUpdated(
     vm: SetupTeamViewModelUpdated
 ) {
 
+    val maxTeamChar = 30
     var currentColorType: ColorType? by remember {
         mutableStateOf(null)
     }
@@ -144,7 +145,7 @@ fun TeamSetupScreenUpdated(
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.Center
             ) {
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_64dp)))
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_60dp)))
                 AppText(
                     modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp)),
                     text = stringResource(id = R.string.create_a_team),
@@ -152,7 +153,7 @@ fun TeamSetupScreenUpdated(
                     color = ColorBWBlack
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
-                UserFlowBackground {
+                UserFlowBackground(color = MaterialTheme.appColors.buttonColor.textEnabled) {
                     Column(
                         Modifier
                             .fillMaxWidth()
@@ -168,7 +169,8 @@ fun TeamSetupScreenUpdated(
                             modifier = Modifier.fillMaxWidth(),
                             value = state.teamName,
                             onValueChange = {
-                                vm.onEvent(TeamSetupUIEventUpdated.OnTeamNameChange(it))
+                                if (it.length <= maxTeamChar)
+                                    vm.onEvent(TeamSetupUIEventUpdated.OnTeamNameChange(it))
                             },
                             placeholder = {
                                 AppText(
@@ -226,7 +228,7 @@ fun TeamSetupScreenUpdated(
                             .background(
 
                                 color = if (state.teamImageUri == null) ColorPrimaryTransparent
-                                        else MaterialTheme.appColors.material.surface,
+                                else MaterialTheme.appColors.material.surface,
                                 shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                             )
                             .clickable {
@@ -256,7 +258,7 @@ fun TeamSetupScreenUpdated(
                             Image(
                                 painter = rememberImagePainter(data = Uri.parse(it)),
                                 contentDescription = null,
-                                contentScale = ContentScale.Crop,
+                                contentScale = ContentScale.FillWidth,
                                 modifier = Modifier
                                     .align(Alignment.Center)
                                     .size(dimensionResource(id = R.dimen.size_160dp))
@@ -518,7 +520,11 @@ fun ColorPickerBottomSheet(
     colorEnvelope: (ColorEnvelope) -> Unit,
     onDismiss: () -> Unit
 ) {
-    Column {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .padding(bottom = dimensionResource(id = R.dimen.size_40dp))
+    ) {
         Box(
             Modifier
                 .fillMaxWidth()

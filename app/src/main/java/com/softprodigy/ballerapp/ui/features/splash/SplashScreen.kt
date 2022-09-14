@@ -23,14 +23,11 @@ import kotlinx.coroutines.delay
 @Composable
 fun SplashScreen(onNextClick: () -> Unit) {
 
-
     // Animation
     LaunchedEffect(key1 = true) {
-
-        delay(1000L)
+        delay(2000L)
         onNextClick()
     }
-
 
     // Image
     Column(

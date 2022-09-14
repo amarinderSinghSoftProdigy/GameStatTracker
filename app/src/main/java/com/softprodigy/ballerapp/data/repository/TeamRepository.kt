@@ -4,13 +4,13 @@ import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.safeApiCall
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.CreateTeamRequest
+import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
 import com.softprodigy.ballerapp.data.request.UpdateTeamRequest
 import com.softprodigy.ballerapp.data.response.CreateTeamResponse
-import com.softprodigy.ballerapp.data.response.Standing
 import com.softprodigy.ballerapp.data.response.StandingData
-import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.data.response.team.Player
+import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.domain.BaseResponse
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import com.softprodigy.ballerapp.network.APIService
@@ -60,6 +60,10 @@ class TeamRepository @Inject constructor(
 
     override suspend fun getTeamCoachPlayerByID(id: String): ResultWrapper<BaseResponse<RoasterResponse>> {
         return safeApiCall(dispatcher) { service.getCoachPlayersByID(id = id) }
+    }
+
+    override suspend fun updateTeamDetails(id: UpdateTeamDetailRequest): ResultWrapper<BaseResponse<Any>> {
+        return safeApiCall(dispatcher) { service.updateTeamDetails(id) }
     }
 
     override suspend fun inviteMembersByTeamId(updateTeamRequest: UpdateTeamRequest): ResultWrapper<BaseResponse<Any>> {

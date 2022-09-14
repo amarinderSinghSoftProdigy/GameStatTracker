@@ -18,7 +18,7 @@ data class Coach(
     @SerializedName("coachId")
     val coachId: String? = "",
     @SerializedName("coachPosition")
-    val coachPosition: String? = "",
+    val coachPosition: String = "",
     @SerializedName("createdAt")
     val createdAt: String? = "",
     @SerializedName("email")
@@ -36,7 +36,7 @@ data class Coach(
     @SerializedName("loginType")
     val loginType: String? = "",
     @SerializedName("name")
-    val name: String? = "",
+    val name: String = "",
     @SerializedName("password")
     val password: String? = "",
     @SerializedName("phone")
@@ -46,7 +46,7 @@ data class Coach(
     @SerializedName("practiceThereeS")
     val practiceThereeS: String? = "",
     @SerializedName("profileImage")
-    val profileImage: String? = "",
+    val profileImage: String = "",
     @SerializedName("refreshToken")
     val refreshToken: String? = "",
     @SerializedName("refreshTokenExpireAt")
@@ -54,7 +54,7 @@ data class Coach(
     @SerializedName("reounding")
     val reounding: String? = "",
     @SerializedName("role")
-    val role: String? = "",
+    val role: String = "",
     @SerializedName("steals")
     val steals: String? = "",
     @SerializedName("teamId")

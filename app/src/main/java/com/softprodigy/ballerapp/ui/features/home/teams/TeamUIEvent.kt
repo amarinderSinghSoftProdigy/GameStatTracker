@@ -16,5 +16,5 @@ sealed class TeamUIEvent {
     data class OnSearch(val searchKey:String) : TeamUIEvent()
     data class OnPlayerClick(val player: Player): TeamUIEvent()
     data class OnItemSelected(val name: String) : TeamUIEvent()
-
+    object OnTeamUpdate : TeamUIEvent()
 }

@@ -2,13 +2,28 @@ package com.softprodigy.ballerapp.ui.features.home.teams.standing
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -32,7 +47,6 @@ import com.softprodigy.ballerapp.ui.features.components.AppTab
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
-import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
 import org.json.JSONObject
@@ -42,28 +56,13 @@ import org.json.JSONObject
 fun StandingScreen(
     vm: StandingViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
     val state = vm.standingUiState.value
-
-    val standingTabData = listOf(
-        StandingTabItems.RECORD,
-        StandingTabItems.WIN,
-        StandingTabItems.GB,
-        StandingTabItems.HOME,
-        StandingTabItems.AWAY,
-        StandingTabItems.PF
-    )
-
-
     val onStandingSelectionChange = { standing: Standing ->
         vm.onEvent(StandingUIEvent.OnStandingSelected(standing))
     }
-    Box() {
+    Box {
         if (state.isLoading) {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center),
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
-            )
+            CommonProgressBar()
         } else {
             val pagerState = rememberPagerState(
                 pageCount = state.categories.size,
@@ -90,8 +89,8 @@ fun StandingScreen(
 
                     }
                 }
+                Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_24dp)))
             }
-
         }
     }
 
