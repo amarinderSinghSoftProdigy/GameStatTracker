@@ -2,10 +2,7 @@ package com.softprodigy.ballerapp.network
 
 import com.softprodigy.ballerapp.common.ApiConstants
 import com.softprodigy.ballerapp.data.request.*
-import com.softprodigy.ballerapp.data.response.CreateTeamResponse
-import com.softprodigy.ballerapp.data.response.ImageUpload
-import com.softprodigy.ballerapp.data.response.Standing
-import com.softprodigy.ballerapp.data.response.UserInfo
+import com.softprodigy.ballerapp.data.response.*
 import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
