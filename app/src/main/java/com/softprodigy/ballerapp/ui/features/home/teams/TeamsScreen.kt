@@ -38,7 +38,8 @@ fun TeamsScreen(
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
     dismissDialog: (Boolean) -> Unit,
     OnTeamDetailsSuccess: (String) -> Unit,
-    onCreateTeamClick: () -> Unit
+    onCreateTeamClick: () -> Unit,
+    onBackPress: () -> Unit
 ) {
     val context = LocalContext.current
     val state = vm.teamUiState.value
@@ -70,6 +71,14 @@ fun TeamsScreen(
                 }
                 is TeamChannel.OnTeamDetailsSuccess -> {
                     OnTeamDetailsSuccess.invoke(uiEvent.teamId)
+                }
+                is TeamChannel.OnTeamsUpdate -> {
+                    Toast.makeText(
+                        context,
+                        uiEvent.message.asString(context),
+                        Toast.LENGTH_LONG
+                    ).show()
+                    onBackPress()
                 }
             }
         }
