@@ -1,5 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.home.teams
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -11,6 +12,7 @@ import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
+import com.softprodigy.ballerapp.data.response.team.TeamRoaster
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import com.softprodigy.ballerapp.ui.utils.CommonUtils
 import com.softprodigy.ballerapp.ui.utils.dragDrop.ItemPosition
@@ -218,12 +220,24 @@ class TeamViewModel @Inject constructor(
             _teamUiState.value.copy(
                 isLoading = true
             )
-
+        var newLeaderBoardList=_teamUiState.value.leaderBoard.map {
+            if (_teamUiState.value.selected.contains(it.name)) {
+                var leaderBoard = it.copy(status = true)
+                leaderBoard
+            } else {
+                var leaderBoard = it.copy(status = false)
+                leaderBoard
+            }
+        }
+        var newRoaster= arrayListOf<TeamRoaster>()
+         _teamUiState.value.roasterTabs.forEach{
+            newRoaster.add(TeamRoaster(it._id,it.position))
+        }
         //Need to update the request object.
         val request = UpdateTeamDetailRequest(
             id = UserStorage.teamId,
-            leaderboardPoints = _teamUiState.value.leaderBoard,
-            playerPositions = _teamUiState.value.roaster,
+            leaderboardPoints = newLeaderBoardList,
+            playerPositions = newRoaster,
             name = _teamUiState.value.teamName,
             logo = _teamUiState.value.teamImageUri ?: "",
             colorCode = _teamUiState.value.teamColor,
@@ -259,8 +273,16 @@ class TeamViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 teamResponse.value.let { response ->
                     if (response.status) {
-                        //getTeamByTeamId("")
-                        //Handle the case to move back to teams screen and hit the get team deatil api
+                        _teamUiState.value =
+                            _teamUiState.value.copy(isLoading = false)
+                        _teamChannel.send(
+                            TeamChannel.OnTeamsUpdate(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+
                     } else {
                         _teamUiState.value =
                             _teamUiState.value.copy(isLoading = false)
@@ -345,5 +367,6 @@ class TeamViewModel @Inject constructor(
 
 sealed class TeamChannel {
     data class ShowToast(val message: UiText) : TeamChannel()
+    data class OnTeamsUpdate(val message: UiText) : TeamChannel()
     data class OnTeamDetailsSuccess(val teamId: String) : TeamChannel()
 }

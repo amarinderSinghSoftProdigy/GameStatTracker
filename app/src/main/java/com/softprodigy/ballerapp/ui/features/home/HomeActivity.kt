@@ -198,6 +198,9 @@ fun NavControllerComposable(
                     navController.navigate(Route.TEAM_SETUP_SCREEN) {
                         navController.popBackStack()
                     }
+                },
+                onBackPress={
+                    navController.popBackStack()
                 }
             )
         }
