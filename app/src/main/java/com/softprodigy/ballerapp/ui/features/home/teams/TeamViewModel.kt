@@ -153,6 +153,7 @@ class TeamViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 teamResponse.value.let { response ->
                     if (response.status) {
+
                         if (_teamUiState.value.selectedTeam == null && response.data.size > 0) {
                             var selectionTeam: Team? = null
                             response.data.toMutableList().forEach {
