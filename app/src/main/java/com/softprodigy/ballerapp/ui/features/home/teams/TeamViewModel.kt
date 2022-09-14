@@ -165,6 +165,7 @@ class TeamViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 teamResponse.value.let { response ->
                     if (response.status) {
+
                         if (_teamUiState.value.selectedTeam == null && response.data.size > 0) {
                             _teamUiState.value =
                                 _teamUiState.value.copy(
