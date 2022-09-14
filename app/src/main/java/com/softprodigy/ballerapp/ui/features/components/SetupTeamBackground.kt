@@ -83,7 +83,7 @@ fun CoachFlowBackground(
                             .size(dimensionResource(id = R.dimen.size_200dp))
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_ball_green),
+                            painter = painterResource(id = R.drawable.ic_ball_lines),
                             contentDescription = "center ball Icon",
                             tint = colorResource(id = R.color.black),
                             modifier = Modifier.fillMaxSize()

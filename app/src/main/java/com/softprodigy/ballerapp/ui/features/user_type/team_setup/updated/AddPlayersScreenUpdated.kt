@@ -34,7 +34,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.isValidEmail
 import com.softprodigy.ballerapp.common.validName
 import com.softprodigy.ballerapp.data.response.team.Player
@@ -134,97 +133,118 @@ fun AddPlayersScreenUpdated(
                             Column(Modifier.fillMaxSize()) {
 
                                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
-                                Row(
-                                    Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.Center,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    AppSearchOutlinedTextField(
-                                        modifier = Modifier
-                                            .width(dimensionResource(id = R.dimen.size_100dp))
-                                            .focusRequester(focusRequester),
-                                        value = state.inviteMemberName[index],
-                                        onValueChange = { name ->
-                                            vm.onEvent(
-                                                TeamSetupUIEventUpdated.OnNameValueChange(
-                                                    index = index,
-                                                    name
+                                Box(modifier = Modifier.fillMaxWidth()) {
+                                    Row(
+                                        Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.Center,
+                                        verticalAlignment = Alignment.Top
+                                    ) {
+                                        AppSearchOutlinedTextField(
+                                            modifier = Modifier
+                                                .width(dimensionResource(id = R.dimen.size_100dp))
+                                                .focusRequester(focusRequester),
+                                            value = state.inviteMemberName[index],
+                                            onValueChange = { name ->
+                                                vm.onEvent(
+                                                    TeamSetupUIEventUpdated.OnNameValueChange(
+                                                        index = index,
+                                                        name
+                                                    )
                                                 )
-                                            )
-                                        },
-                                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                                            focusedBorderColor = ColorBWGrayBorder,
-                                            unfocusedBorderColor = ColorBWGrayBorder,
-                                            cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                                            backgroundColor = MaterialTheme.appColors.material.background
-                                        ),
-                                        placeholder = {
-                                            Text(
-                                                text = stringResource(id = R.string.name),
-                                                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
-                                            )
-                                        },
-                                        singleLine = true,
-                                        isError = !validName(state.inviteMemberName[index])
-                                                && state.inviteMemberName[index].isNotEmpty()
-                                                || state.inviteMemberName[index].length > 30,
-                                        errorMessage = stringResource(id = R.string.valid_first_name),
-                                    )
-                                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-
-                                    AppSearchOutlinedTextField(
-                                        modifier = Modifier
-                                            .weight(1f)
-                                            .focusRequester(focusRequester),
-                                        value = state.inviteMemberEmail[index],
-                                        onValueChange = { email ->
-                                            vm.onEvent(
-                                                TeamSetupUIEventUpdated.OnEmailValueChange(
-                                                    index = index,
-                                                    email
+                                            },
+                                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                                focusedBorderColor = ColorBWGrayBorder,
+                                                unfocusedBorderColor = ColorBWGrayBorder,
+                                                cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                                backgroundColor = MaterialTheme.appColors.material.background
+                                            ),
+                                            placeholder = {
+                                                Text(
+                                                    text = stringResource(id = R.string.name),
+                                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
                                                 )
-                                            )
-                                        },
-                                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                                            focusedBorderColor = ColorBWGrayBorder,
-                                            unfocusedBorderColor = ColorBWGrayBorder,
-                                            cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                                            backgroundColor = MaterialTheme.appColors.material.background
-                                        ),
-                                        placeholder = {
-                                            Text(
-                                                text = stringResource(id = R.string.email),
-                                                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
-                                            )
-                                        },
-                                        singleLine = true,
-                                        keyboardOptions = KeyboardOptions(
-                                            imeAction = ImeAction.Next,
-                                            keyboardType = KeyboardType.Email
+                                            },
+                                            singleLine = true,
+                                            isError = !validName(state.inviteMemberName[index])
+                                                    && state.inviteMemberName[index].isNotEmpty(),
+//                                                || state.inviteMemberName[index].length > 30,
+                                            errorMessage = stringResource(id = R.string.valid_first_name),
+                                        )
+                                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
 
-                                        ),
-                                        isError = (!state.inviteMemberEmail[index].isValidEmail()
-                                                && state.inviteMemberEmail[index].isNotEmpty()
-                                                || state.inviteMemberEmail[index].length > 45),
-                                        errorMessage = stringResource(id = R.string.email_error)
-                                    )
+                                        AppSearchOutlinedTextField(
+                                            modifier = Modifier
+                                                .weight(1f)
+                                                .focusRequester(focusRequester),
+                                            value = state.inviteMemberEmail[index],
+                                            onValueChange = { email ->
+                                                vm.onEvent(
+                                                    TeamSetupUIEventUpdated.OnEmailValueChange(
+                                                        index = index,
+                                                        email
+                                                    )
+                                                )
+                                            },
+                                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                                focusedBorderColor = ColorBWGrayBorder,
+                                                unfocusedBorderColor = ColorBWGrayBorder,
+                                                cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                                backgroundColor = MaterialTheme.appColors.material.background
+                                            ),
+                                            placeholder = {
+                                                Text(
+                                                    text = stringResource(id = R.string.email),
+                                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
+                                                )
+                                            },
+                                            singleLine = true,
+                                            keyboardOptions = KeyboardOptions(
+                                                imeAction = ImeAction.Next,
+                                                keyboardType = KeyboardType.Email
 
-                                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.ic_remove),
-                                        contentDescription = "",
-                                        tint = Color.Unspecified,
-                                        modifier = Modifier
-                                            .background(
-                                                AppConstants.SELECTED_COLOR,
-                                                shape = RoundedCornerShape(50)
-                                            )
-                                            .padding(dimensionResource(id = R.dimen.size_2dp))
-                                            .clickable {
-                                                /*Remove a specific  item from list*/
+                                            ),
+                                            isError = (!state.inviteMemberEmail[index].isValidEmail()
+                                                    && state.inviteMemberEmail[index].isNotEmpty()
+                                                    || state.inviteMemberEmail[index].length > 45),
+                                            errorMessage = stringResource(id = R.string.email_error)
+                                        )
+
+                                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
+                                        /*   Icon(
+                                               painter = painterResource(id = R.drawable.ic_remove),
+                                               contentDescription = "",
+                                               tint = Color.Unspecified,
+                                               modifier = Modifier
+                                                   .background(
+                                                       AppConstants.SELECTED_COLOR,
+                                                       shape = RoundedCornerShape(50)
+                                                   )
+                                                   .padding(dimensionResource(id = R.dimen.size_2dp))
+                                                   .clickable {
+                                                       *//*Remove a specific  item from list*//*
                                                 updateItem(index, false)
                                             }
-                                    )
+                                    )*/
+                                    }
+                                    if (state.inviteMemberName[index].isEmpty()
+                                        && state.inviteMemberEmail[index].isEmpty()) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.ic_remove),
+                                            contentDescription = "",
+                                            tint = Color.Unspecified,
+                                            modifier = Modifier
+                                                .align(Alignment.TopEnd)
+                                                .background(
+                                                    MaterialTheme.appColors.material.primaryVariant,
+                                                    shape = RoundedCornerShape(50)
+                                                )
+                                                .padding(dimensionResource(id = R.dimen.size_2dp))
+                                                .clickable {
+                                                    /*Remove a specific  item from list*/
+                                                    updateItem(index, false)
+                                                }
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -249,6 +269,7 @@ fun AddPlayersScreenUpdated(
 
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
                 BottomButtons(
+                    secondText = stringResource(id = R.string.finish),
                     onBackClick = { onBackClick.invoke() },
                     onNextClick = {
                         if (teamId.isNullOrEmpty()) {
