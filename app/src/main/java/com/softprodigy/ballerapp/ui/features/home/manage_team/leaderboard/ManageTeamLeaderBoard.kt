@@ -48,6 +48,7 @@ import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
+import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
 import com.softprodigy.ballerapp.ui.theme.appColors
 import com.softprodigy.ballerapp.ui.utils.dragDrop.ReorderableItem
 import com.softprodigy.ballerapp.ui.utils.dragDrop.detectReorderAfterLongPress
@@ -154,6 +155,7 @@ fun ManageTeamLeaderBoard(vm: TeamViewModel = hiltViewModel()) {
                         val elevation =
                             animateDpAsState(if (dragging) dimensionResource(id = R.dimen.size_10dp) else 0.dp)
                         LeaderBoardItem(
+                            dragging = dragging,
                             modifier = Modifier
                                 .shadow(elevation.value),
                             item = item,
@@ -176,6 +178,7 @@ fun ManageTeamLeaderBoard(vm: TeamViewModel = hiltViewModel()) {
 
 @Composable
 fun LeaderBoardItem(
+    dragging: Boolean,
     modifier: Modifier = Modifier,
     item: TeamLeaderBoard,
     selected: Boolean,
@@ -187,7 +190,7 @@ fun LeaderBoardItem(
     }
     Row(
         modifier = modifier
-            .background(color = Color.White)
+            .background(color = if (dragging) Color.White else Color.Transparent)
             .fillMaxWidth()
             .padding(
                 start = dimensionResource(id = R.dimen.size_16dp),
@@ -213,9 +216,9 @@ fun LeaderBoardItem(
                     )
                     .background(color = if (selected || selection.value) MaterialTheme.appColors.material.primaryVariant else Color.White)
                     .border(
-                        width = if (!selection.value || !selected) dimensionResource(id = R.dimen.size_1dp) else 0.dp,
+                        width = if (selection.value || selected) 0.dp else dimensionResource(id = R.dimen.size_1dp),
                         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)),
-                        color = if (!selection.value || !selected) MaterialTheme.appColors.buttonColor.bckgroundDisabled else Color.Transparent
+                        color = if (selection.value || selected) Color.Transparent else MaterialTheme.appColors.buttonColor.bckgroundDisabled
                     )
             ) {
                 Icon(
@@ -228,7 +231,7 @@ fun LeaderBoardItem(
 
             AppText(
                 text = item.name.capitalize(),
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = if (selected || selection.value) MaterialTheme.appColors.buttonColor.bckgroundEnabled else ColorGreyLighter,
                 style = MaterialTheme.typography.h6
             )
         }
@@ -240,6 +243,5 @@ fun LeaderBoardItem(
                 .size(dimensionResource(id = R.dimen.size_12dp))
         )
     }
-
     Divider(color = MaterialTheme.colors.primary)
 }

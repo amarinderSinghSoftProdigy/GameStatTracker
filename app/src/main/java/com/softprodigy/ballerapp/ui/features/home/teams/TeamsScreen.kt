@@ -81,8 +81,6 @@ fun TeamsScreen(
     val pagerState = rememberPagerState(
         pageCount = tabData.size,
         initialOffScreenLimit = 1,
-        infiniteLoop = true,
-        initialPage = 0,
     )
     val tabIndex = pagerState.currentPage
     val coroutineScope = rememberCoroutineScope()

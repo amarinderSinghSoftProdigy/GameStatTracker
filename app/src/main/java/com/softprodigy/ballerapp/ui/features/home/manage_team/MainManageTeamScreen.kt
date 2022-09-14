@@ -12,6 +12,7 @@ import com.google.accompanist.pager.PagerState
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppScrollableTabRow
 import com.softprodigy.ballerapp.ui.features.components.AppTabLikeViewPager
+import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
 import com.softprodigy.ballerapp.ui.features.home.manage_team.leaderboard.ManageTeamLeaderBoard
 import com.softprodigy.ballerapp.ui.features.home.manage_team.teams.ManageTeamScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.manage_team.ManageTeamRoster
@@ -27,11 +28,9 @@ fun MainManageTeamScreen(onAddPlayerCLick: () -> Unit) {
         /*ManageTeamsTabItems.Users,*/
     )
 
-    val pagerState = com.softprodigy.ballerapp.ui.features.components.rememberPagerState(
+    val pagerState = rememberPagerState(
         pageCount = managedTabData.size,
         initialOffScreenLimit = 1,
-        infiniteLoop = true,
-        initialPage = 0,
     )
 
     Column {
