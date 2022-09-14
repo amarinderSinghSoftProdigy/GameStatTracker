@@ -35,14 +35,7 @@ import com.softprodigy.ballerapp.common.IntentData
 import com.softprodigy.ballerapp.common.Route
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
-import com.softprodigy.ballerapp.ui.features.components.BottomNavigationBar
-import com.softprodigy.ballerapp.ui.features.components.CommonTabView
-import com.softprodigy.ballerapp.ui.features.components.LogoutDialog
-import com.softprodigy.ballerapp.ui.features.components.TabBar
-import com.softprodigy.ballerapp.ui.features.components.TopBar
-import com.softprodigy.ballerapp.ui.features.components.TopBarData
-import com.softprodigy.ballerapp.ui.features.components.fromHex
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.invitation.InvitationScreen
 import com.softprodigy.ballerapp.ui.features.home.manage_team.MainManageTeamScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
@@ -178,7 +171,9 @@ fun NavControllerComposable(
                     homeViewModel.setLogoutDialog(true)
                 })
             else {
-                HomeFirstTimeLoginScreen()
+                HomeFirstTimeLoginScreen(onCreateTeamClick = {
+                    navController.navigate(Route.TEAM_SETUP_SCREEN)
+                })
             }
         }
         composable(route = Route.TEAMS_SCREEN) {

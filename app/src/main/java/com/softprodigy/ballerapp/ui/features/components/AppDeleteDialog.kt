@@ -151,12 +151,13 @@ fun SelectTeamDialog(
                         Text(
                             text = stringResource(id = R.string.pick_team),
                             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                            fontWeight = FontWeight.W600,
+                            fontWeight = FontWeight.Bold,
                         )
 
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_close_color_picker),
+                            painter = painterResource(id = R.drawable.ic_cross_1),
                             contentDescription = "",
+                            tint = MaterialTheme.appColors.buttonColor.textDisabled,
                             modifier = Modifier
                                 .size(dimensionResource(id = R.dimen.size_12dp))
                                 .align(Alignment.TopEnd)
@@ -169,7 +170,12 @@ fun SelectTeamDialog(
 
                     LazyColumn(
                         modifier = Modifier
-                            .height(dimensionResource(id = R.dimen.size_150dp)),
+                            .height(dimensionResource(id = R.dimen.size_150dp))
+                            .padding(
+                                bottom = dimensionResource(
+                                    id = R.dimen.size_10dp
+                                )
+                            ),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -189,7 +195,7 @@ fun SelectTeamDialog(
                             }
                         }
                     }
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                    //  Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
                     ButtonWithLeadingIcon(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(id = R.string.create_new_team),
@@ -329,13 +335,13 @@ fun TeamListItem(team: Team, selected: Boolean, onClick: (Team) -> Unit) {
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
             Text(
                 text = team.name,
-                fontWeight = FontWeight.W400,
+                fontWeight = FontWeight.W500,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                 modifier = Modifier.weight(1f),
                 color = if (selected) {
                     MaterialTheme.appColors.buttonColor.textEnabled
                 } else {
-                    MaterialTheme.appColors.buttonColor.textDisabled
+                    MaterialTheme.appColors.buttonColor.bckgroundEnabled
                 }
             )
         }

@@ -27,11 +27,13 @@ import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -40,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.response.HomeItemResponse
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.ButtonWithLeadingIcon
@@ -51,19 +54,22 @@ import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun HomeFirstTimeLoginScreen(viewModel: HomeViewModel = hiltViewModel()) {
+fun HomeFirstTimeLoginScreen(viewModel: HomeViewModel = hiltViewModel(), onCreateTeamClick: () -> Unit) {
 
     val state = viewModel.state.value
-
+    val dataStoreManager = DataStoreManager(LocalContext.current)
+    val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
     Box {
-        CoachFlowBackground(teamLogo = "")
+        CoachFlowBackground(colorCode = color.value.ifEmpty { "0177C1" }, teamLogo = "")
         Column(
             Modifier
                 .fillMaxWidth()
                 .padding(all = dimensionResource(id = R.dimen.size_16dp)),
             verticalArrangement = Arrangement.Center
         ) {
+
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))
+
             AppText(
                 text = stringResource(id = R.string.hey_label).replace("name", "George"),
                 style = MaterialTheme.typography.h5,
@@ -143,7 +149,7 @@ fun HomeFirstTimeLoginScreen(viewModel: HomeViewModel = hiltViewModel()) {
                 ButtonWithLeadingIcon(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.create_new_team),
-                    onClick = { },
+                    onClick = onCreateTeamClick,
                     painter = painterResource(id = R.drawable.ic_add_circle),
                     isTransParent = false,
                     iconSize = dimensionResource(id = R.dimen.size_20dp)
