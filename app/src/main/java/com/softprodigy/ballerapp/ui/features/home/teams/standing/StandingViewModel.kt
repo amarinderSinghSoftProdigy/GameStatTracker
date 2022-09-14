@@ -26,25 +26,28 @@ class StandingViewModel @Inject constructor(
         private set
 
     init {
+        viewModelScope.launch {
+            getStandings()
+        }
         // TODO: temp data for design
 //        getStandings()
-
-        val standingData= arrayListOf<Standing>(
-            Standing("aaaaaaa", name = "Team 1", logo = "profileImage/1662458857474-selected_image_4465069980681186921.jpg", standings = "10-5"),
-            Standing("addaaaa", name = "Team 3", logo = "profileImage/1662458857474-selected_image_4465069980681186921.jpg", standings = "7-10"),
-            Standing("bb", name = "Team 4", logo = "profileImage/1662458857474-selected_image_4465069980681186921.jpg", standings = "8-9"),
-            Standing("fdsf", name = "Team 5", logo = "profileImage/1662458857474-selected_image_4465069980681186921.jpg", standings = "1-33"),
-            Standing("addaafsdfdaa", name = "Team 6", logo = "profileImage/1662458857474-selected_image_4465069980681186921.jpg", standings = "3-4"),
-            Standing("fds", name = "Team 7", logo = "profileImage/1662458857474-selected_image_4465069980681186921.jpg", standings = "8-1"),
-            Standing("gsfg", name = "Team 8", logo = "profileImage/1662458857474-selected_image_4465069980681186921.jpg", standings = "7-10"),
-            Standing("gds", name = "Team 9", logo = "profileImage/1662458857474-selected_image_4465069980681186921.jpg", standings = "9-10"),
-
-            )
-        _standingUiState.value =
-            _standingUiState.value.copy(
-                standing = standingData,
-                isLoading = false
-            )
+//
+//        val standingData= arrayListOf<Standing>(
+//            Standing("aaaaaaa", name = "Team 1", logo = "profileImage/1662458857474-selected_image_4465069980681186921.jpg", standings = "10-5"),
+//            Standing("addaaaa", name = "Team 3", logo = "profileImage/1662458857474-selected_image_4465069980681186921.jpg", standings = "7-10"),
+//            Standing("bb", name = "Team 4", logo = "profileImage/1662458857474-selected_image_4465069980681186921.jpg", standings = "8-9"),
+//            Standing("fdsf", name = "Team 5", logo = "profileImage/1662458857474-selected_image_4465069980681186921.jpg", standings = "1-33"),
+//            Standing("addaafsdfdaa", name = "Team 6", logo = "profileImage/1662458857474-selected_image_4465069980681186921.jpg", standings = "3-4"),
+//            Standing("fds", name = "Team 7", logo = "profileImage/1662458857474-selected_image_4465069980681186921.jpg", standings = "8-1"),
+//            Standing("gsfg", name = "Team 8", logo = "profileImage/1662458857474-selected_image_4465069980681186921.jpg", standings = "7-10"),
+//            Standing("gds", name = "Team 9", logo = "profileImage/1662458857474-selected_image_4465069980681186921.jpg", standings = "9-10"),
+//
+//            )
+//        _standingUiState.value =
+//            _standingUiState.value.copy(
+//                standing = standingData,
+//                isLoading = false
+//            )
     }
 
     private fun getStandings() {
@@ -89,7 +92,8 @@ class StandingViewModel @Inject constructor(
                     if (response.status) {
                         _standingUiState.value =
                             _standingUiState.value.copy(
-                                standing = response.data,
+                                standing = response.data.teamsStandings,
+                                categories = response.data.categories,
                                 isLoading = false
                             )
                     } else {

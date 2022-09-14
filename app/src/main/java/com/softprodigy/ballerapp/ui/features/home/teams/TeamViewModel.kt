@@ -67,12 +67,12 @@ class TeamViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             getTeams()
-            getTeamById()
+            //getTeamById()
         }
     }
 
     private suspend fun getTeamById() {
-        dataStoreManager.getId.collect{
+        dataStoreManager.getId.collect {
             getTeamByTeamId(it)
         }
 
@@ -82,18 +82,7 @@ class TeamViewModel @Inject constructor(
         when (event) {
             is TeamUIEvent.OnConfirmTeamClick -> {
                 viewModelScope.launch {
-/*
-                    dataStoreManager.getId.map {
-                        Log.d("harsh", "onEvent: " + it)
-                        userId = it
-                    }
-                        .shareIn(viewModelScope, SharingStarted.WhileSubscribed(500L), 1)
-*/
-
-                    dataStoreManager.getId.collect{
-                        userId = it
-                    }
-                    getTeamByTeamId(userId)
+                    getTeamByTeamId(event.teamId)
                 }
             }
             is TeamUIEvent.OnDismissClick -> {}
@@ -176,12 +165,18 @@ class TeamViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 teamResponse.value.let { response ->
                     if (response.status) {
-                        _teamUiState.value =
-                            _teamUiState.value.copy(
-                                teams = response.data,
-                                isLoading = false
-                            )
 
+                        if (_teamUiState.value.selectedTeam == null && response.data.size > 0) {
+                            _teamUiState.value =
+                                _teamUiState.value.copy(
+                                    selectedTeam = response.data[0],
+                                    isLoading = true
+                                )
+                            getTeamByTeamId(response.data[0]._id)
+                            viewModelScope.launch {
+                                dataStoreManager.setId(response.data[0]._id)
+                            }
+                        }
                     } else {
                         _teamUiState.value =
                             _teamUiState.value.copy(isLoading = false)
@@ -205,10 +200,7 @@ class TeamViewModel @Inject constructor(
                 isLoading = true
             )
 
-        val teamResponse =
-            teamRepo.getTeamsByTeamID(
-                _teamUiState.value.selectedTeam?._id ?: userId
-            )
+        val teamResponse = teamRepo.getTeamsByTeamID(userId)
         _teamUiState.value =
             _teamUiState.value.copy(
                 isLoading = false,

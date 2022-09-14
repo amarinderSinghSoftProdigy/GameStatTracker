@@ -78,7 +78,7 @@ interface APIService {
     suspend fun getTeamStandings(
         @Query("page") page: Int,
         @Query("limit") limit: Int
-    ): BaseResponse<ArrayList<Standing>>
+    ): BaseResponse<StandingData>
 
 
     @GET("${ApiConstants.COACH_PLAYER}/{id}")

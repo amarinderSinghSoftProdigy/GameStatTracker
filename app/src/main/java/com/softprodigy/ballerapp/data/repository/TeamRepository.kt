@@ -7,6 +7,7 @@ import com.softprodigy.ballerapp.data.request.CreateTeamRequest
 import com.softprodigy.ballerapp.data.request.UpdateTeamRequest
 import com.softprodigy.ballerapp.data.response.CreateTeamResponse
 import com.softprodigy.ballerapp.data.response.Standing
+import com.softprodigy.ballerapp.data.response.StandingData
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.data.response.team.Player
@@ -65,7 +66,7 @@ class TeamRepository @Inject constructor(
     override suspend fun getTeamsStanding(
         page: Int,
         limit: Int
-    ): ResultWrapper<BaseResponse<ArrayList<Standing>>> {
+    ): ResultWrapper<BaseResponse<StandingData>> {
         return safeApiCall(dispatcher) { service.getTeamStandings(page = page, limit = limit) }
     }
 }

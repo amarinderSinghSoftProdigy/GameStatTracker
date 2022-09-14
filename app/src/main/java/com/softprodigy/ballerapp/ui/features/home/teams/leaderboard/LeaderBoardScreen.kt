@@ -1,5 +1,7 @@
 package com.softprodigy.ballerapp.ui.features.home.teams.leaderboard
 
+import android.util.Log
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -29,6 +31,7 @@ import com.google.accompanist.pager.PagerState
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.LeaderBoard
+import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.TeamLeaderBoard
 import com.softprodigy.ballerapp.ui.features.components.AppTab
 import com.softprodigy.ballerapp.ui.features.components.AppText
@@ -37,36 +40,28 @@ import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
 import com.softprodigy.ballerapp.ui.theme.ColorPrimaryOrange
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun LeaderBoardScreen(vm: LeaderBoardViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val state = vm.leaderUiState.value
 
-    val leaderTabData = listOf(
-        LeaderBoardTabItems.RECORD,
-        LeaderBoardTabItems.WIN,
-        LeaderBoardTabItems.GB,
-        LeaderBoardTabItems.HOME,
-        LeaderBoardTabItems.AWAY,
-        LeaderBoardTabItems.PF
-    )
-    val pagerState = rememberPagerState(
-        pageCount = leaderTabData.size,
-        initialOffScreenLimit = 1,
-    )
-
-    val onLeaderSelectionChange = { leader: LeaderBoard ->
+    val onLeaderSelectionChange = { leader: Player ->
         vm.onEvent(LeaderBoardUIEvent.OnLeaderSelected(leader))
     }
-    Box(){
+    Box() {
         if (state.isLoading) {
             CircularProgressIndicator(
                 modifier = Modifier.align(Alignment.Center),
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
             )
-        }
-        else {
+        } else {
+            val pagerState = rememberPagerState(
+                pageCount = state.leaderBoard.size,
+                initialOffScreenLimit = 1,
+            )
             Column(Modifier.fillMaxSize()) {
                 Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
                 LeaderTopTabs(pagerState, state.leaderBoard)
@@ -80,7 +75,8 @@ fun LeaderBoardScreen(vm: LeaderBoardViewModel = hiltViewModel()) {
                         LeaderListItem(
                             srNo = srNo,
                             leader = item,
-                            selected = state.selectedLeader == item
+                            selected = state.selectedLeader == item,
+                            key=state.leaderBoard[pagerState.currentPage].key
                         ) {
                             onLeaderSelectionChange.invoke(item)
                         }
@@ -119,10 +115,19 @@ fun LeaderTopTabs(pagerState: PagerState, tabData: List<TeamLeaderBoard>) {
 fun LeaderListItem(
     modifier: Modifier = Modifier,
     srNo: Int,
-    leader: LeaderBoard,
+    leader: Player,
     selected: Boolean,
-    onClick: (LeaderBoard) -> Unit
+    key:String,
+    onClick: (Player) -> Unit,
 ) {
+    val jsonPlayer = JSONObject(leader.toString())
+    var points:String=""
+    try {
+        points= jsonPlayer[key].toString()
+    }
+    catch (e:Exception){
+        points=""
+    }
     Row(
         modifier
             .fillMaxWidth()
@@ -165,7 +170,7 @@ fun LeaderListItem(
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
                 AsyncImage(
-                    model = BuildConfig.IMAGE_SERVER + leader.logo,
+                    model = leader.profileImage,
                     contentDescription = "",
                     modifier =
                     Modifier
@@ -207,7 +212,7 @@ fun LeaderListItem(
                 }
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
                 Text(
-                    text = leader.points,
+                    text = points,
                     fontWeight = FontWeight.Bold,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                     color = if (selected) {
