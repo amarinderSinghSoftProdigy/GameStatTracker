@@ -28,6 +28,7 @@ import com.softprodigy.ballerapp.ui.features.home.teams.roaster.RoasterScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.standing.StandingScreen
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
@@ -47,9 +48,8 @@ fun TeamsScreen(
         vm.onEvent(TeamUIEvent.OnTeamSelected(team))
     }
 
-    remember {
+    val scope = rememberCoroutineScope()
 
-    }
     val onTeamSelectionConfirmed = { team: Team? ->
         setupTeamViewModelUpdated.onEvent(
             TeamSetupUIEventUpdated.OnColorSelected(
@@ -113,9 +113,9 @@ fun TeamsScreen(
         }
 
     }
-   /* if (state.isLoading) {
-        CommonProgressBar()
-    }*/
+    /* if (state.isLoading) {
+         CommonProgressBar()
+     }*/
 }
 
 @OptIn(ExperimentalPagerApi::class)
@@ -159,5 +159,5 @@ enum class TeamsTabItems(val icon: Int, val stringId: String) {
     Standings(R.drawable.ic_standing, stringId = "standings"),
     Chat(R.drawable.ic_chat, stringId = "chat"),
     Roaster(R.drawable.ic_roaster, stringId = "roaster"),
-    Leaderboard(R.drawable.ic_leaderboard, stringId = "leaderboard")
+    Leaderboard(R.drawable.ic_leaderboard, stringId = "leaderboards")
 }

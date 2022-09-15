@@ -39,6 +39,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -177,6 +178,7 @@ fun HomeScreenItem(data: HomeItemResponse) {
                 color = Color.White,
                 shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
             ),
+
     ) {
 
         Row(
@@ -185,8 +187,8 @@ fun HomeScreenItem(data: HomeItemResponse) {
                 .height(dimensionResource(id = R.dimen.size_72dp))
                 .padding(
                     start = dimensionResource(id = R.dimen.size_16dp),
-                    top = dimensionResource(id = R.dimen.size_16dp),
-                    bottom = dimensionResource(id = R.dimen.size_16dp),
+                    /*top = dimensionResource(id = R.dimen.size_16dp),
+                    bottom = dimensionResource(id = R.dimen.size_16dp),*/
                     end = dimensionResource(id = R.dimen.size_24dp)
                 ),
             verticalAlignment = Alignment.CenterVertically,
@@ -219,7 +221,7 @@ fun HomeScreenItem(data: HomeItemResponse) {
                 fontWeight = FontWeight.W300,
                 fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
                 color = ColorBWBlack,
-                style = MaterialTheme.typography.h1
+                style = MaterialTheme.typography.h1,
             )
         }
 

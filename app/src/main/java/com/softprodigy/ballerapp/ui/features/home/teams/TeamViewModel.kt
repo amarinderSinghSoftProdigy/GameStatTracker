@@ -18,6 +18,7 @@ import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.data.response.team.TeamRoaster
 import com.softprodigy.ballerapp.domain.repository.IImageUploadRepo
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
 import com.softprodigy.ballerapp.ui.utils.CommonUtils
 import com.softprodigy.ballerapp.ui.utils.dragDrop.ItemPosition
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -197,11 +198,12 @@ class TeamViewModel @Inject constructor(
                                 _teamUiState.value.copy(
                                     teams = response.data,
                                     selectedTeam = if (selectionTeam == null) response.data[0] else selectionTeam,
-                                    isLoading = true
+                                    isLoading = false
                                 )
                             val idToSearch =
                                 if (selectionTeam == null) response.data[0]._id else selectionTeam?._id
                             getTeamByTeamId(idToSearch ?: "")
+
                             viewModelScope.launch {
                                 dataStoreManager.setId(idToSearch ?: "")
                             }
@@ -251,6 +253,7 @@ class TeamViewModel @Inject constructor(
             logo = _teamUiState.value.logo ?: "",
             colorCode = _teamUiState.value.teamColor,
         )
+        _teamUiState.value = _teamUiState.value.copy(updatedTeam = request)
         val teamResponse = teamRepo.updateTeamDetails(request)
         when (teamResponse) {
             is ResultWrapper.GenericError -> {
@@ -283,7 +286,7 @@ class TeamViewModel @Inject constructor(
                 teamResponse.value.let { response ->
                     if (response.status) {
                         _teamUiState.value =
-                            _teamUiState.value.copy(isLoading = false)
+                            _teamUiState.value.copy(isLoading = false, selectedTeam = null)
                         _teamChannel.send(
                             TeamChannel.OnTeamsUpdate(
                                 UiText.DynamicString(
@@ -291,7 +294,8 @@ class TeamViewModel @Inject constructor(
                                 )
                             )
                         )
-                        getTeamByTeamId(UserStorage.teamId)
+                        getTeams()
+                        // getTeamByTeamId(UserStorage.teamId)
                     } else {
                         _teamUiState.value =
                             _teamUiState.value.copy(isLoading = false)
@@ -353,8 +357,8 @@ class TeamViewModel @Inject constructor(
                                 )
                             updateTeam()
                         } else {
-                        _teamUiState.value =
-                            _teamUiState.value.copy(isLoading = false)
+                            _teamUiState.value =
+                                _teamUiState.value.copy(isLoading = false)
                             _teamChannel.send(
                                 TeamChannel.ShowToast(
                                     UiText.DynamicString(

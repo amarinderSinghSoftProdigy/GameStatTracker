@@ -132,6 +132,7 @@ fun ConfirmPhoneScreen(
                         .size(dimensionResource(id = com.softprodigy.ballerapp.R.dimen.size_16dp))
                         .clickable {
                             onDismiss.invoke()
+                            currentTime = 59L * 1000L
                         }
                 )
             }
@@ -147,7 +148,6 @@ fun ConfirmPhoneScreen(
             )
 
             Spacer(modifier = Modifier.height(dimensionResource(id = com.softprodigy.ballerapp.R.dimen.size_60dp)))
-
 
             AppText(
                 text = stringResource(id = R.string.enter_otp),
@@ -272,7 +272,7 @@ fun ConfirmPhoneScreen(
                         color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                     )
                 ) {
-                    append("00:" + (currentTime / 1000L).toString())
+                    append("00:" + if ((currentTime / 1000L).toString().length == 1) "0" + (currentTime / 1000L).toString() else (currentTime / 1000L).toString())
                 }
             }
             if (currentTime <= 0L) {

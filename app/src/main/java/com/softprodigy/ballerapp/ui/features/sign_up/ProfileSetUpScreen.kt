@@ -108,7 +108,6 @@ fun ProfileSetUpScreen(
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
-
     var currentBottomSheet: BottomSheetType? by remember {
         mutableStateOf(null)
     }
@@ -116,9 +115,11 @@ fun ProfileSetUpScreen(
     val maxChar = 30
     val maxEmailChar = 45
     val maxPhoneNumber = 10
+
     var imageUri by remember {
         mutableStateOf<Uri?>(null)
     }
+
     val imagePicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri ->
@@ -136,16 +137,17 @@ fun ProfileSetUpScreen(
                 signUpViewModel.onEvent(SignUpUIEvent.OnImageSelected(imageUri.toString()))
         }
     )
+
     val scope = rememberCoroutineScope()
     val state = signUpViewModel.signUpUiState.value
     var expanded by remember { mutableStateOf(false) }
+
     val icon = if (expanded)
         Icons.Filled.KeyboardArrowUp
     else
         Icons.Filled.KeyboardArrowDown
 
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
-
 
     val context = LocalContext.current
 
@@ -165,7 +167,6 @@ fun ProfileSetUpScreen(
     mCalendar.time = Date()
 
     val focus = LocalFocusManager.current
-
 
     val mDatePickerDialog = DatePickerDialog(
         context,

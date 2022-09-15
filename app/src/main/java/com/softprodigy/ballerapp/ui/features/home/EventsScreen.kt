@@ -153,7 +153,7 @@ fun BoxScope.TabContentScreen(data: String) {
             color = MaterialTheme.appColors.textField.label,
             text = stringResource(id = R.string.no_upcoming_events),
             fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
-            fontWeight = FontWeight.W600
+            fontWeight = FontWeight.W700
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
         Text(
