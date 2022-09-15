@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -19,7 +20,6 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.ui.features.components.AppScrollableTabRow
 import com.softprodigy.ballerapp.ui.features.components.AppTabLikeViewPager
-import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
 import com.softprodigy.ballerapp.ui.features.components.SelectTeamDialog
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
 import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
@@ -38,7 +38,8 @@ fun TeamsScreen(
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
     dismissDialog: (Boolean) -> Unit,
     OnTeamDetailsSuccess: (String) -> Unit,
-    onCreateTeamClick: () -> Unit
+    onCreateTeamClick: () -> Unit,
+    onBackPress: () -> Unit
 ) {
     val context = LocalContext.current
     val state = vm.teamUiState.value
@@ -46,6 +47,9 @@ fun TeamsScreen(
         vm.onEvent(TeamUIEvent.OnTeamSelected(team))
     }
 
+    remember {
+
+    }
     val onTeamSelectionConfirmed = { team: Team? ->
         setupTeamViewModelUpdated.onEvent(
             TeamSetupUIEventUpdated.OnColorSelected(
@@ -109,9 +113,9 @@ fun TeamsScreen(
         }
 
     }
-    if (state.isLoading) {
+   /* if (state.isLoading) {
         CommonProgressBar()
-    }
+    }*/
 }
 
 @OptIn(ExperimentalPagerApi::class)

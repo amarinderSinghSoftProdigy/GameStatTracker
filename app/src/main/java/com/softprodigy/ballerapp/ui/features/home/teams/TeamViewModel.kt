@@ -1,16 +1,22 @@
 package com.softprodigy.ballerapp.ui.features.home.teams
 
+import android.app.Application
+import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.ResultWrapper
+import com.softprodigy.ballerapp.common.getFileFromUri
 import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
+import com.softprodigy.ballerapp.data.response.team.TeamRoaster
+import com.softprodigy.ballerapp.domain.repository.IImageUploadRepo
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import com.softprodigy.ballerapp.ui.utils.CommonUtils
 import com.softprodigy.ballerapp.ui.utils.dragDrop.ItemPosition
@@ -18,13 +24,16 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class TeamViewModel @Inject constructor(
     private val teamRepo: ITeamRepository,
+    private val imageUploadRepo: IImageUploadRepo,
     private val dataStoreManager: DataStoreManager,
-) : ViewModel() {
+    application: Application
+) : AndroidViewModel(application) {
 
     private val _teamChannel = Channel<TeamChannel>()
     val teamChannel = _teamChannel.receiveAsFlow()
@@ -32,7 +41,10 @@ class TeamViewModel @Inject constructor(
     private val _teamUiState = mutableStateOf(TeamUIState())
     val teamUiState: State<TeamUIState> = _teamUiState
     fun isDragEnabled(pos: ItemPosition) = true
-    fun isRoasterDragEnabled(pos: ItemPosition) = true
+
+    fun isRoasterDragEnabled(pos: ItemPosition) =
+        _teamUiState.value.roasterTabs.toMutableList().getOrNull(pos.index)?.locked != true
+
     fun moveItem(from: ItemPosition, to: ItemPosition) {
         _teamUiState.value =
             _teamUiState.value.copy(
@@ -187,8 +199,8 @@ class TeamViewModel @Inject constructor(
                                     selectedTeam = if (selectionTeam == null) response.data[0] else selectionTeam,
                                     isLoading = true
                                 )
-                            val idToSearch ="63156ea1a13d3cc299a41ab6"
-                                //if (selectionTeam == null) response.data[0]._id else selectionTeam?._id
+                            val idToSearch =
+                                if (selectionTeam == null) response.data[0]._id else selectionTeam?._id
                             getTeamByTeamId(idToSearch ?: "")
                             viewModelScope.launch {
                                 dataStoreManager.setId(idToSearch ?: "")
@@ -215,12 +227,26 @@ class TeamViewModel @Inject constructor(
             _teamUiState.value.copy(
                 isLoading = true
             )
-
+        val newLeaderBoardList = _teamUiState.value.leaderBoard.map {
+            if (_teamUiState.value.selected.contains(it.name)) {
+                val leaderBoard = it.copy(status = true)
+                leaderBoard
+            } else {
+                val leaderBoard = it.copy(status = false)
+                leaderBoard
+            }
+        }
+        val newRoaster = arrayListOf<TeamRoaster>()
+        _teamUiState.value.roasterTabs.forEach {
+            val position = it.position.ifEmpty { it._id }
+            if (it.position.isNotEmpty())
+                newRoaster.add(TeamRoaster(it._id, position))
+        }
         //Need to update the request object.
         val request = UpdateTeamDetailRequest(
             id = UserStorage.teamId,
-            leaderboardPoints = _teamUiState.value.leaderBoard,
-            playerPositions = _teamUiState.value.roaster,
+            leaderboardPoints = newLeaderBoardList,
+            playerPositions = newRoaster,
             name = _teamUiState.value.teamName,
             logo = _teamUiState.value.teamImageUri ?: "",
             colorCode = _teamUiState.value.teamColor,
@@ -256,8 +282,67 @@ class TeamViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 teamResponse.value.let { response ->
                     if (response.status) {
-                        //getTeamByTeamId("")
-                        //Handle the case to move back to teams screen and hit the get team deatil api
+                        _teamUiState.value =
+                            _teamUiState.value.copy(isLoading = false)
+                        _teamChannel.send(
+                            TeamChannel.OnTeamsUpdate(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                        getTeamByTeamId(UserStorage.teamId)
+                    } else {
+                        _teamUiState.value =
+                            _teamUiState.value.copy(isLoading = false)
+                        _teamChannel.send(
+                            TeamChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+    private suspend fun uploadTeamLogo() {
+        val uri = Uri.parse(teamUiState.value.teamImageUri)
+
+        val file = getFileFromUri(getApplication<Application>().applicationContext, uri)
+
+        if (file != null) {
+            val size = Integer.parseInt((file.length() / 1024).toString())
+            Timber.i("Filesize compressed --> $size")
+        }
+
+        when (val uploadLogoResponse = imageUploadRepo.uploadSingleImage(
+            type = AppConstants.TEAM_LOGO,
+            file
+        )) {
+            is ResultWrapper.GenericError -> {
+                _teamChannel.send(
+                    TeamChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${uploadLogoResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _teamChannel.send(
+                    TeamChannel.ShowToast(
+                        UiText.DynamicString(
+                            uploadLogoResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                uploadLogoResponse.value.let { response ->
+                    if (response.status) {
+                        updateTeam()
                     } else {
                         _teamUiState.value =
                             _teamUiState.value.copy(isLoading = false)
@@ -322,7 +407,6 @@ class TeamViewModel @Inject constructor(
                         _teamChannel.send(
                             TeamChannel.OnTeamDetailsSuccess(response.data._id)
                         )
-
                     } else {
                         _teamUiState.value =
                             _teamUiState.value.copy(isLoading = false)
@@ -342,5 +426,6 @@ class TeamViewModel @Inject constructor(
 
 sealed class TeamChannel {
     data class ShowToast(val message: UiText) : TeamChannel()
+    data class OnTeamsUpdate(val message: UiText) : TeamChannel()
     data class OnTeamDetailsSuccess(val teamId: String) : TeamChannel()
 }

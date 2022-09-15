@@ -2,7 +2,17 @@ package com.softprodigy.ballerapp.ui.features.home.invitation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -140,7 +150,7 @@ fun InvitationItem(
                     text = " ${stringResource(id = R.string.sent_by)} ${invitation.name}",
                     color = MaterialTheme.appColors.textField.label,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                    fontWeight = FontWeight.W400,
+                    fontWeight = FontWeight.W500,
                 )
             }
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
@@ -152,7 +162,7 @@ fun InvitationItem(
                     text = apiToUIDateFormat(invitation.createdAt),
                     color = MaterialTheme.appColors.textField.label,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                    fontWeight = FontWeight.W400,
+                    fontWeight = FontWeight.W500,
                     modifier = Modifier.align(Alignment.BottomStart)
                 )
             }
@@ -286,7 +296,7 @@ fun InvitationItem(
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                 Text(
-                    text = stringResource(id = R.string.decline),
+                    text = stringResource(id = R.string.declined),
                     color = MaterialTheme.appColors.buttonColor.textEnabled,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                     fontWeight = FontWeight.W500,

@@ -24,7 +24,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
@@ -60,6 +59,7 @@ import com.softprodigy.ballerapp.common.argbToHexString
 import com.softprodigy.ballerapp.common.validTeamName
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
 import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
@@ -68,6 +68,7 @@ import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.Update
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayStatus
 import com.softprodigy.ballerapp.ui.theme.ColorMainPrimary
 import com.softprodigy.ballerapp.ui.theme.ColorPrimaryTransparent
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -175,12 +176,10 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                                 text = stringResource(id = R.string.change),
                                 color = ColorBWGrayLight,
                                 modifier = Modifier.clickable {
-                                    if (state.teamImageUri != null) {
-                                        scope.launch {
-                                            modalBottomSheetState.hide()
-                                        }
-                                        launcher.launch("image/*")
+                                    scope.launch {
+                                        modalBottomSheetState.hide()
                                     }
+                                    launcher.launch("image/*")
                                 },
                                 fontSize = dimensionResource(id = R.dimen.txt_size_13).value.sp
                             )
@@ -208,18 +207,20 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                             }
 
                     ) {
-                        Row(modifier = Modifier.align(Alignment.Center)) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_upload),
-                                contentDescription = null,
-                                tint = Color.Unspecified
-                            )
-                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
-                            AppText(
-                                text = stringResource(id = R.string.upload_files),
-                                style = MaterialTheme.typography.h6,
-                                color = ColorMainPrimary
-                            )
+                        if (state.teamImageUri == null) {
+                            Row(modifier = Modifier.align(Alignment.Center)) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_upload),
+                                    contentDescription = null,
+                                    tint = Color.Unspecified
+                                )
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+                                AppText(
+                                    text = stringResource(id = R.string.upload_files),
+                                    style = MaterialTheme.typography.h6,
+                                    color = ColorMainPrimary
+                                )
+                            }
                         }
 
 
@@ -231,6 +232,10 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                                 Modifier
                                     .size(dimensionResource(id = R.dimen.size_160dp))
                                     .clip(CircleShape)
+                                    .background(
+                                        color = ColorBWGrayStatus,
+                                        shape = CircleShape
+                                    )
                                     .align(Alignment.Center),
                                 contentScale = ContentScale.Crop,
                             )
@@ -336,10 +341,7 @@ fun ManageTeamScreen(vm: TeamViewModel) {
             }
 
             if (state.isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center),
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
-                )
+                CommonProgressBar()
             }
         }
     }

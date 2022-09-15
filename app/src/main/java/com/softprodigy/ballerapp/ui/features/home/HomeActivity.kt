@@ -14,8 +14,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -33,9 +31,6 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.IntentData
 import com.softprodigy.ballerapp.common.Route
-import com.softprodigy.ballerapp.common.Route.HOME_SCREEN
-import com.softprodigy.ballerapp.common.Route.INVITATION_SCREEN
-import com.softprodigy.ballerapp.common.Route.TEAMS_SCREEN
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
@@ -78,7 +73,6 @@ class HomeActivity : ComponentActivity() {
             homeViewModel.setColor(AppConstants.SELECTED_COLOR)
             BallerAppMainTheme(customColor = state.color ?: Color.White) {
                 val navController = rememberNavController()
-                val userType = remember { mutableStateOf(BottomNavKey.HOME) }
                 if (state.screen) {
                     Surface(
                         color = MaterialTheme.appColors.material.primary
@@ -94,7 +88,7 @@ class HomeActivity : ComponentActivity() {
                     Scaffold(
                         backgroundColor = MaterialTheme.appColors.material.primary,
                         topBar = {
-                            if (userType.value != BottomNavKey.HOME) {
+                            if (state.appBar) {
                                 TabBar(color = MaterialTheme.appColors.material.primaryVariant) {
                                     CommonTabView(
                                         state.topBar,
@@ -113,7 +107,7 @@ class HomeActivity : ComponentActivity() {
                                                     navController.navigate(Route.MANAGED_TEAM_SCREEN)
                                                 }
                                                 TopBar.MANAGE_TEAM -> {
-                                                   teamViewModel.onEvent(TeamUIEvent.OnTeamUpdate)
+                                                    teamViewModel.onEvent(TeamUIEvent.OnTeamUpdate)
                                                 }
                                                 else -> {}
                                                 //Add events cases for tool bar icon clicks
@@ -145,7 +139,11 @@ class HomeActivity : ComponentActivity() {
                                 navController = navController,
                                 selectionColor = state.color ?: Color.Black
                             ) {
-                                userType.value = it
+                                if (it == BottomNavKey.HOME) {
+                                    homeViewModel.setAppBar(false)
+                                } else {
+                                    homeViewModel.setAppBar(true)
+                                }
                             }
                         },
                     )
@@ -174,14 +172,17 @@ fun NavControllerComposable(
     val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = hiltViewModel()
     NavHost(navController, startDestination = Route.HOME_SCREEN) {
         composable(route = Route.HOME_SCREEN) {
+            homeViewModel.setAppBar(false)
             if (fromSplash)
                 HomeScreen(name = "", onInvitationCLick = {
-                    navController.navigate(INVITATION_SCREEN)
+                    navController.navigate(Route.INVITATION_SCREEN)
                 }, logoClick = {
                     homeViewModel.setLogoutDialog(true)
                 })
             else {
-                HomeFirstTimeLoginScreen()
+                HomeFirstTimeLoginScreen(onCreateTeamClick = {
+                    navController.navigate(Route.TEAM_SETUP_SCREEN)
+                })
             }
         }
         composable(route = Route.TEAMS_SCREEN) {
@@ -206,6 +207,9 @@ fun NavControllerComposable(
                     navController.navigate(Route.TEAM_SETUP_SCREEN) {
                         navController.popBackStack()
                     }
+                },
+                onBackPress = {
+                    navController.popBackStack()
                 }
             )
         }
@@ -225,13 +229,14 @@ fun NavControllerComposable(
                     topBar = TopBar.MANAGE_TEAM,
                 )
             )
-            MainManageTeamScreen(teamViewModel, onAddPlayerCLick = {
+            MainManageTeamScreen(teamViewModel,onSuccess={
+                navController.popBackStack()
+            }, onAddPlayerCLick = {
                 navController.navigate(Route.ADD_PLAYER_SCREEN + "/${UserStorage.teamId}")
             })
         }
 
         composable(route = Route.ADD_PLAYER_SCREEN) {
-
             homeViewModel.setScreen(true)
             BackHandler {
                 homeViewModel.setScreen(false)
@@ -242,8 +247,8 @@ fun NavControllerComposable(
                 vm = setupTeamViewModelUpdated,
                 onBackClick = { navController.popBackStack() },
                 onNextClick = {
-                    navController.navigate(TEAMS_SCREEN) {
-                        popUpTo(HOME_SCREEN)
+                    navController.navigate(Route.TEAMS_SCREEN) {
+                        popUpTo(Route.HOME_SCREEN)
                     }
                     homeViewModel.setScreen(false)
                 }, onInvitationSuccess = {
@@ -277,23 +282,21 @@ fun NavControllerComposable(
                 })
         }
 
-        composable(route = INVITATION_SCREEN) {
+        composable(route = Route.INVITATION_SCREEN) {
             homeViewModel.setTopBar(
                 TopBarData(
                     label = stringResource(id = R.string.invitation),
                     topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
-            homeViewModel.setScreen(true)
             BackHandler {
-                homeViewModel.setScreen(false)
+                homeViewModel.setAppBar(false)
                 navController.popBackStack()
             }
             InvitationScreen()
 
         }
         composable(route = Route.TEAM_SETUP_SCREEN) {
-
             homeViewModel.setScreen(true)
             BackHandler {
                 homeViewModel.setScreen(false)

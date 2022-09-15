@@ -47,6 +47,7 @@ import com.softprodigy.ballerapp.ui.features.components.AppTab
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayStatus
 import com.softprodigy.ballerapp.ui.theme.ColorPrimaryOrange
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
@@ -179,6 +180,10 @@ fun LeaderListItem(
                     Modifier
                         .size(dimensionResource(id = R.dimen.size_32dp))
                         .clip(CircleShape)
+                        .background(
+                            color = ColorBWGrayStatus,
+                            shape = CircleShape
+                        )
                         .border(
                             width = dimensionResource(id = R.dimen.size_2dp),
                             color = if (srNo <= 3) ColorPrimaryOrange else Color.Transparent,

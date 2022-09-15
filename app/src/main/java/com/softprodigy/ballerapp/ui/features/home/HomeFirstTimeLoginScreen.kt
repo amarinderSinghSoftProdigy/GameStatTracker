@@ -54,7 +54,7 @@ import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun HomeFirstTimeLoginScreen(viewModel: HomeViewModel = hiltViewModel()) {
+fun HomeFirstTimeLoginScreen(viewModel: HomeViewModel = hiltViewModel(), onCreateTeamClick: () -> Unit) {
 
     val state = viewModel.state.value
     val dataStoreManager = DataStoreManager(LocalContext.current)
@@ -149,7 +149,7 @@ fun HomeFirstTimeLoginScreen(viewModel: HomeViewModel = hiltViewModel()) {
                 ButtonWithLeadingIcon(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.create_new_team),
-                    onClick = { },
+                    onClick = onCreateTeamClick,
                     painter = painterResource(id = R.drawable.ic_add_circle),
                     isTransParent = false,
                     iconSize = dimensionResource(id = R.dimen.size_20dp)
