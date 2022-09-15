@@ -33,6 +33,8 @@ import com.softprodigy.ballerapp.common.IntentData
 import com.softprodigy.ballerapp.common.Route
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
+import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
+import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
 import com.softprodigy.ballerapp.ui.features.components.BottomNavigationBar
 import com.softprodigy.ballerapp.ui.features.components.CommonTabView
@@ -49,6 +51,7 @@ import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.AddPlayersScreenUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupScreenUpdated
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
 import com.softprodigy.ballerapp.ui.theme.appColors
 import dagger.hilt.android.AndroidEntryPoint
@@ -64,6 +67,7 @@ class HomeActivity : ComponentActivity() {
             val fromSplash = intent.getBooleanExtra(IntentData.FROM_SPLASH, false)
             val homeViewModel: HomeViewModel = hiltViewModel()
             val teamViewModel: TeamViewModel = hiltViewModel()
+            val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = hiltViewModel()
             val state = homeViewModel.state.value
             val dataStoreManager = DataStoreManager(LocalContext.current)
             val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
@@ -71,6 +75,18 @@ class HomeActivity : ComponentActivity() {
             UserStorage.teamId = teamId.value
             AppConstants.SELECTED_COLOR = fromHex(color.value.ifEmpty { "0177C1" })
             homeViewModel.setColor(AppConstants.SELECTED_COLOR)
+
+            val onTeamSelectionConfirmed = { updatedTeam: UpdateTeamDetailRequest? ->
+                setupTeamViewModelUpdated.onEvent(
+                    TeamSetupUIEventUpdated.OnColorSelected(
+                        (updatedTeam?.colorCode ?: "").replace(
+                            "#",
+                            ""
+                        )
+                    )
+                )
+            }
+
             BallerAppMainTheme(customColor = state.color ?: Color.White) {
                 val navController = rememberNavController()
                 if (state.screen) {
@@ -108,6 +124,7 @@ class HomeActivity : ComponentActivity() {
                                                 }
                                                 TopBar.MANAGE_TEAM -> {
                                                     teamViewModel.onEvent(TeamUIEvent.OnTeamUpdate)
+                                                    onTeamSelectionConfirmed(teamViewModel.teamUiState.value.updatedTeam)
                                                 }
                                                 else -> {}
                                                 //Add events cases for tool bar icon clicks
@@ -229,7 +246,7 @@ fun NavControllerComposable(
                     topBar = TopBar.MANAGE_TEAM,
                 )
             )
-            MainManageTeamScreen(teamViewModel,onSuccess={
+            MainManageTeamScreen(teamViewModel, onSuccess = {
                 navController.popBackStack()
             }, onAddPlayerCLick = {
                 navController.navigate(Route.ADD_PLAYER_SCREEN + "/${UserStorage.teamId}")

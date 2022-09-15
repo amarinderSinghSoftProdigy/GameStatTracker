@@ -251,6 +251,7 @@ class TeamViewModel @Inject constructor(
             logo = _teamUiState.value.logo ?: "",
             colorCode = _teamUiState.value.teamColor,
         )
+        _teamUiState.value = _teamUiState.value.copy(updatedTeam = request)
         val teamResponse = teamRepo.updateTeamDetails(request)
         when (teamResponse) {
             is ResultWrapper.GenericError -> {

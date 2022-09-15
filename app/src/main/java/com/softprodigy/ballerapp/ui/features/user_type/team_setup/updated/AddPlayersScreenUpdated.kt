@@ -309,8 +309,6 @@ fun AddPlayersScreenUpdated(
             )
         }
     }
-
-
 }
 
 @Composable
