@@ -307,6 +307,7 @@ class TeamViewModel @Inject constructor(
             }
         }
     }
+
     private suspend fun uploadTeamLogo() {
         val uri = Uri.parse(teamUiState.value.teamImageUri)
 
@@ -342,6 +343,8 @@ class TeamViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 uploadLogoResponse.value.let { response ->
                     if (response.status) {
+                        _teamUiState.value =
+                            _teamUiState.value.copy(teamImageUri = uploadLogoResponse.value.data.data)
                         updateTeam()
                     } else {
                         _teamUiState.value =
