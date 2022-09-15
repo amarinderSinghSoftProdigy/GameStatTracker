@@ -3,17 +3,7 @@ package com.softprodigy.ballerapp.ui.features.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.absoluteOffset
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
@@ -32,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -89,11 +80,8 @@ fun CoachFlowBackground(
                             modifier = Modifier.fillMaxSize()
                         )
                         teamLogo?.let {
-                            Image(
-                                painter = if(teamLogo.isNotEmpty()) rememberImagePainter(data = teamLogo) else painterResource(
-                                    id = R.drawable.app_logo
-                                ),
-                                contentDescription = null,
+                            AsyncImage(
+                                model = it, contentDescription = null,
                                 contentScale = ContentScale.Crop,            // crop the image if it's not a square
                                 modifier = Modifier
                                     .size(dimensionResource(id = R.dimen.size_65dp))
@@ -103,7 +91,8 @@ fun CoachFlowBackground(
                                         MaterialTheme.colors.surface,
                                         CircleShape
                                     )
-                                    .align(Alignment.Center)
+                                    .align(Alignment.Center),
+                                error = painterResource(id = R.drawable.ball)
                             )
                         }
                     }

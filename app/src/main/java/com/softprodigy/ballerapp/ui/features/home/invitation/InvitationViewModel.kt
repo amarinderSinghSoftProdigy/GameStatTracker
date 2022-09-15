@@ -157,6 +157,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                 )
             }
             is ResultWrapper.Success -> {
+                getAllInvitation()
                 acceptInviteResponse.value.let { response ->
                     _invitationChannel.send(
                         InvitationChannel.ShowToast(
@@ -201,6 +202,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                 )
             }
             is ResultWrapper.Success -> {
+                getAllInvitation()
                 rejectInviteResponse.value.let { response ->
                     _invitationChannel.send(
                         InvitationChannel.Success(

@@ -26,6 +26,4 @@ interface IUserRepository {
     suspend fun updateUserProfile(userProfile: SignUpData): ResultWrapper<BaseResponse<UserInfo>>
 
     suspend fun getUserProfile(): ResultWrapper<BaseResponse<User>>
-
-
 }

@@ -1,4 +1,4 @@
-package com.softprodigy.ballerapp.ui.features.home
+package com.softprodigy.ballerapp.ui.features.home.home_screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -24,25 +25,37 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.home.HomeViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun HomeScreen(name: String?,vm: HomeViewModel,logoClick: () -> Unit, onInvitationCLick: () -> Unit) {
+fun HomeScreen(
+    name: String?,
+    vm: HomeViewModel,
+    logoClick: () -> Unit,
+    onInvitationCLick: () -> Unit
+) {
+
     val dataStoreManager = DataStoreManager(LocalContext.current)
     val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
-
-    val state=vm.state.value
+    val homeScreenViewModel: HomeScreenViewModel = hiltViewModel()
+    val homeState = vm.state.value
+    val homeScreenState = homeScreenViewModel.homeScreenState.value
 
     Box {
-        CoachFlowBackground(colorCode = color.value.ifEmpty { "0177C1" }, teamLogo = "")
+        CoachFlowBackground(
+            colorCode = color.value.ifEmpty { "0177C1" },
+            teamLogo = BuildConfig.IMAGE_SERVER + homeState.user.profileImage
+        )
         Column(
             Modifier
                 .fillMaxWidth()
@@ -56,7 +69,7 @@ fun HomeScreen(name: String?,vm: HomeViewModel,logoClick: () -> Unit, onInvitati
         ) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))
             AppText(
-                text = stringResource(id = R.string.hey_label).replace("name", state.user.firstName),
+                text = stringResource(id = R.string.hey_label).replace("name", homeState.user.firstName),
                 style = MaterialTheme.typography.h5,
                 fontWeight = FontWeight.W500,
                 color = ColorBWBlack
@@ -144,7 +157,7 @@ fun HomeScreen(name: String?,vm: HomeViewModel,logoClick: () -> Unit, onInvitati
                         )
                     }
                     Text(
-                        text = "2",
+                        text = homeScreenState.homePageCoachModel.opportunityToWork.toString(),
                         fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
                         modifier = Modifier.align(Alignment.CenterEnd)
                     )
@@ -183,7 +196,7 @@ fun HomeScreen(name: String?,vm: HomeViewModel,logoClick: () -> Unit, onInvitati
                         )
                     }
                     Text(
-                        text = "2",
+                        text = homeScreenState.homePageCoachModel.pendingInvitations.toString(),
                         fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
                         modifier = Modifier.align(Alignment.CenterEnd)
                     )
@@ -198,7 +211,7 @@ fun HomeScreen(name: String?,vm: HomeViewModel,logoClick: () -> Unit, onInvitati
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))*/
 
             Row {
-                EventItem("my_events", "events_label", "2")
+                EventItem("my_events", "events_label", homeScreenState.homePageCoachModel.myEvents.toString())
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
                 EventInviteItem("invite_members")
             }
@@ -232,7 +245,7 @@ fun HomeScreen(name: String?,vm: HomeViewModel,logoClick: () -> Unit, onInvitati
                         )
                     }
                     Text(
-                        text = "2",
+                        text = homeScreenState.homePageCoachModel.opportunityToPlay.toString(),
                         fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
                         modifier = Modifier.align(Alignment.CenterEnd)
                     )
@@ -241,11 +254,17 @@ fun HomeScreen(name: String?,vm: HomeViewModel,logoClick: () -> Unit, onInvitati
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
             Row {
-                EventItem("my_leagues", "leagues", "2", R.drawable.ic_leagues)
+                EventItem("my_leagues", "leagues", homeScreenState.homePageCoachModel.myLeagues.toString(), R.drawable.ic_leagues)
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                EventItem("all_leagues", "leagues", "4", R.drawable.ic_leagues)
+                EventItem("all_leagues", "leagues", homeScreenState.homePageCoachModel.allLeagues.toString(), R.drawable.ic_leagues)
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
+        }
+        if (homeState.isDataLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center),
+                color = MaterialTheme.appColors.material.primaryVariant
+            )
         }
 
     }

@@ -42,6 +42,7 @@ import com.softprodigy.ballerapp.ui.features.components.TabBar
 import com.softprodigy.ballerapp.ui.features.components.TopBar
 import com.softprodigy.ballerapp.ui.features.components.TopBarData
 import com.softprodigy.ballerapp.ui.features.components.fromHex
+import com.softprodigy.ballerapp.ui.features.home.home_screen.HomeScreen
 import com.softprodigy.ballerapp.ui.features.home.invitation.InvitationScreen
 import com.softprodigy.ballerapp.ui.features.home.manage_team.MainManageTeamScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
@@ -200,7 +201,7 @@ fun NavControllerComposable(
            /* else {
                 HomeFirstTimeLoginScreen(onCreateTeamClick = {
                     navController.navigate(Route.TEAM_SETUP_SCREEN)
-                })
+                }, viewModel = homeViewModel)
             }*/
         }
         composable(route = Route.TEAMS_SCREEN) {

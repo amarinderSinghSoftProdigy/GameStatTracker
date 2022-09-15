@@ -6,6 +6,7 @@ import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
 import com.softprodigy.ballerapp.data.request.UpdateTeamRequest
 import com.softprodigy.ballerapp.data.response.CreateTeamResponse
 import com.softprodigy.ballerapp.data.response.StandingData
+import com.softprodigy.ballerapp.data.response.homepage.HomePageCoachModel
 import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
@@ -50,4 +51,8 @@ interface ITeamRepository {
     suspend fun acceptTeamInvitation(invitationId: String, role: String): ResultWrapper<BaseResponse<Any>>
 
     suspend fun rejectTeamInvitation(invitationId: String): ResultWrapper<BaseResponse<Any>>
+
+    suspend fun getHomePageDetails():ResultWrapper<BaseResponse<HomePageCoachModel>>
+
+
 }
