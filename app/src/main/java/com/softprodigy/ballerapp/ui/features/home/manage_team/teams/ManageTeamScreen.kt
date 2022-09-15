@@ -73,6 +73,7 @@ import com.softprodigy.ballerapp.ui.theme.ColorMainPrimary
 import com.softprodigy.ballerapp.ui.theme.ColorPrimaryTransparent
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -321,15 +322,15 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                                 modifier = Modifier.size(dimensionResource(id = R.dimen.size_32dp)),
                                 backgroundColor = if (state.teamColor.isEmpty()) {
                                     MaterialTheme.appColors.material.primaryVariant
+                                } else if (state.teamColor.length < 6) {
+                                    MaterialTheme.appColors.material.primaryVariant
                                 } else {
-                                    if (state.teamColor.substring(0, 1) == "#") {
+                                    Timber.e("color " + state.teamColor)
+                                    if (state.teamColor.startsWith("#")) {
                                         Color(android.graphics.Color.parseColor(state.teamColor))
-
                                     } else {
                                         Color(android.graphics.Color.parseColor("#" + state.teamColor))
                                     }
-
-
                                 },
                                 shape = RoundedCornerShape(
                                     dimensionResource(id = R.dimen.size_4dp)
