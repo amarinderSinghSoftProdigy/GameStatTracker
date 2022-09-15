@@ -22,9 +22,9 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
     val invitationChannel = _invitationChannel.receiveAsFlow()
 
     init {
-        /*viewModelScope.launch {
+        viewModelScope.launch {
             getAllInvitation()
-        }*/
+        }
     }
 
     fun onEvent(event: InvitationEvent) {
@@ -203,7 +203,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
             is ResultWrapper.Success -> {
                 rejectInviteResponse.value.let { response ->
                     _invitationChannel.send(
-                        InvitationChannel.ShowToast(
+                        InvitationChannel.Success(
                             UiText.DynamicString(
                                 response.statusMessage
                             )
@@ -219,4 +219,5 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
 
 sealed class InvitationChannel {
     data class ShowToast(val message: UiText) : InvitationChannel()
+    data class Success(val message: UiText) : InvitationChannel()
 }
