@@ -3,36 +3,11 @@ package com.softprodigy.ballerapp.ui.features.home.manage_team.teams
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Card
-import androidx.compose.material.Divider
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,7 +25,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import coil.compose.rememberImagePainter
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
@@ -172,7 +146,7 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                             text = stringResource(id = R.string.team_logo),
                             style = MaterialTheme.typography.h6
                         )
-                        if (state.teamImageUri != null) {
+                        if (state.logo != null) {
                             Text(
                                 text = stringResource(id = R.string.change),
                                 color = ColorBWGrayLight,
@@ -199,7 +173,7 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                                 shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                             )
                             .clickable {
-                                if (state.teamImageUri == null) {
+                                if (state.logo == null) {
                                     scope.launch {
                                         modalBottomSheetState.hide()
                                     }
@@ -208,7 +182,7 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                             }
 
                     ) {
-                        if (state.teamImageUri == null) {
+                        if (state.logo == null) {
                             Row(modifier = Modifier.align(Alignment.Center)) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.ic_upload),
@@ -225,9 +199,9 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                         }
 
 
-                        if (!state.teamImageUri.isNullOrEmpty() && state.teamImageUri.contains("http")) {
+                        if (state.localLogo != null) {
                             AsyncImage(
-                                model = state.teamImageUri,
+                                model = state.localLogo,
                                 contentDescription = "",
                                 modifier =
                                 Modifier
@@ -239,20 +213,26 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                                     )
                                     .align(Alignment.Center),
                                 contentScale = ContentScale.Crop,
+                                error = painterResource(id = R.drawable.ball)
                             )
+
                         } else {
-                            Image(
-                                painter = if (state.teamImageUri == null) painterResource(id = R.drawable.ball) else rememberImagePainter(
-                                    data = Uri.parse(BuildConfig.IMAGE_SERVER + state.teamImageUri)
-                                ),
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .align(Alignment.Center)
+                            AsyncImage(
+                                model = BuildConfig.IMAGE_SERVER + state.logo,
+                                contentDescription = "",
+                                modifier =
+                                Modifier
                                     .size(dimensionResource(id = R.dimen.size_160dp))
                                     .clip(CircleShape)
-                                    .align(Alignment.Center)
+                                    .background(
+                                        color = ColorBWGrayStatus,
+                                        shape = CircleShape
+                                    )
+                                    .align(Alignment.Center),
+                                contentScale = ContentScale.Crop,
+                                error = painterResource(id = R.drawable.ball)
                             )
+
                         }
                     }
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
