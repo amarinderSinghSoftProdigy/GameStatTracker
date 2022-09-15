@@ -28,6 +28,7 @@ import com.softprodigy.ballerapp.ui.features.home.teams.roaster.RoasterScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.standing.StandingScreen
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
@@ -47,9 +48,12 @@ fun TeamsScreen(
         vm.onEvent(TeamUIEvent.OnTeamSelected(team))
     }
 
+    val scope = rememberCoroutineScope()
+
     remember {
 
     }
+
     val onTeamSelectionConfirmed = { team: Team? ->
         setupTeamViewModelUpdated.onEvent(
             TeamSetupUIEventUpdated.OnColorSelected(
@@ -113,9 +117,9 @@ fun TeamsScreen(
         }
 
     }
-   /* if (state.isLoading) {
-        CommonProgressBar()
-    }*/
+    /* if (state.isLoading) {
+         CommonProgressBar()
+     }*/
 }
 
 @OptIn(ExperimentalPagerApi::class)

@@ -307,8 +307,12 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                                         ),
                                     textAlign = TextAlign.Center,
                                     text = if (state.teamColor.isNotEmpty()) {
-                                        "#" +
-                                                state.teamColor
+                                        if (state.teamColor.substring(0, 1) == "#") {
+                                            state.teamColor
+                                        } else {
+                                            "#" +
+                                                    state.teamColor
+                                        }
                                     } else {
                                         MaterialTheme.appColors.material.primaryVariant.toArgb()
                                             .argbToHexString()
@@ -323,12 +327,12 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                                 backgroundColor = if (state.teamColor.isEmpty()) {
                                     MaterialTheme.appColors.material.primaryVariant
                                 } else {
-                                    /*if (state.teamColor.substring(0, 1) == "#") {*/
-                                    Color(android.graphics.Color.parseColor(state.teamColor))
+                                    if (state.teamColor.substring(0, 1) == "#") {
+                                        Color(android.graphics.Color.parseColor(state.teamColor))
 
-                                    /* } else {
-                                         Color(android.graphics.Color.parseColor("#" + state.teamColor))
-                                     }*/
+                                    } else {
+                                        Color(android.graphics.Color.parseColor("#" + state.teamColor))
+                                    }
                                 },
                                 shape = RoundedCornerShape(
                                     dimensionResource(id = R.dimen.size_4dp)
