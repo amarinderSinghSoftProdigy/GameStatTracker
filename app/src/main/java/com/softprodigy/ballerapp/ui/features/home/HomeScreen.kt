@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -42,7 +43,7 @@ fun HomeScreen(name: String?,vm: HomeViewModel,logoClick: () -> Unit, onInvitati
     val state=vm.state.value
 
     Box {
-        CoachFlowBackground(colorCode = color.value.ifEmpty { "0177C1" }, teamLogo = "")
+        CoachFlowBackground(colorCode = color.value.ifEmpty { "0177C1" }, teamLogo = BuildConfig.IMAGE_SERVER+state.user.profileImage)
         Column(
             Modifier
                 .fillMaxWidth()
@@ -246,6 +247,12 @@ fun HomeScreen(name: String?,vm: HomeViewModel,logoClick: () -> Unit, onInvitati
                 EventItem("all_leagues", "leagues", "4", R.drawable.ic_leagues)
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
+        }
+        if (state.isDataLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center),
+                color = MaterialTheme.appColors.material.primaryVariant
+            )
         }
 
     }

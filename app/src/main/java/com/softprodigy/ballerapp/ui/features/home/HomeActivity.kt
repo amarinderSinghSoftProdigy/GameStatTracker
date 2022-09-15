@@ -182,7 +182,7 @@ fun NavControllerComposable(
             else {
                 HomeFirstTimeLoginScreen(onCreateTeamClick = {
                     navController.navigate(Route.TEAM_SETUP_SCREEN)
-                })
+                }, viewModel = homeViewModel)
             }
         }
         composable(route = Route.TEAMS_SCREEN) {
