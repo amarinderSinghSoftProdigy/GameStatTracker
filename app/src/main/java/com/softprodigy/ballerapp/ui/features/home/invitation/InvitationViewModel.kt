@@ -81,9 +81,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
     suspend fun getAllInvitation() {
         invitationState.value =
             invitationState.value.copy(showLoading = true)
-
         val inviteResponse = teamRepo.getAllInvitation()
-
         invitationState.value =
             invitationState.value.copy(showLoading = false)
 
@@ -114,7 +112,6 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                                 invitations = response.data
                             )
                     } else {
-
                         _invitationChannel.send(
                             InvitationChannel.ShowToast(
                                 UiText.DynamicString(
@@ -157,14 +154,12 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                 )
             }
             is ResultWrapper.Success -> {
-                getAllInvitation()
                 acceptInviteResponse.value.let { response ->
                     _invitationChannel.send(
-                        InvitationChannel.ShowToast(
+                        InvitationChannel.Success(
                             UiText.DynamicString(
                                 response.statusMessage
                             )
-
                         )
                     )
                 }
@@ -202,14 +197,12 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                 )
             }
             is ResultWrapper.Success -> {
-                getAllInvitation()
                 rejectInviteResponse.value.let { response ->
                     _invitationChannel.send(
                         InvitationChannel.Success(
                             UiText.DynamicString(
                                 response.statusMessage
                             )
-
                         )
                     )
                 }
