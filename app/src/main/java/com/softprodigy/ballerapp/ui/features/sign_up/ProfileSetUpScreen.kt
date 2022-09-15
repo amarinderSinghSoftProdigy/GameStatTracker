@@ -198,7 +198,7 @@ fun ProfileSetUpScreen(
                     signUpViewModel.onEvent(SignUpUIEvent.OnImageUploadSuccess)
                 }
 
-                is SignUpChannel.OnSignUpSuccess -> {
+                is SignUpChannel.OnProfileUpdateSuccess -> {
                     Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
                         .show()
                     onNext()

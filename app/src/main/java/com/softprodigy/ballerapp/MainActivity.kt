@@ -244,6 +244,7 @@ fun NavControllerComposable(activity: MainActivity) {
     val context = LocalContext.current
     val dataStoreManager = DataStoreManager(activity)
     val userToken = dataStoreManager.userToken.collectAsState(initial = "")
+    UserStorage.token = userToken.value
     val getRole = dataStoreManager.getRole.collectAsState(initial = "")
     val email = dataStoreManager.getEmail.collectAsState(initial = "")
     val scope = rememberCoroutineScope()
@@ -323,6 +324,7 @@ fun NavControllerComposable(activity: MainActivity) {
                                 firstName = it?.user?.firstName ?: "",
                                 lastName = it?.user?.lastName ?: "",
                             )
+                        signUpViewModel.signUpUiState.value.isSocialUser =true
                     }
                     val check =
                         it?.user?.role.equals(AppConstants.USER_TYPE_USER, ignoreCase = true)
