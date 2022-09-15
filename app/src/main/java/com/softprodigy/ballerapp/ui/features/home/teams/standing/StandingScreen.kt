@@ -34,6 +34,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
@@ -44,7 +45,9 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.Standing
 import com.softprodigy.ballerapp.ui.features.components.AppTab
 import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.CoilImage
 import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
+import com.softprodigy.ballerapp.ui.features.components.Placeholder
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayStatus
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -157,21 +160,35 @@ fun StandingListItem(
                     fontSize = dimensionResource(
                         id = R.dimen.txt_size_12
                     ).value.sp,
-                    fontWeight = FontWeight.W600
+                    fontWeight = FontWeight.W600,
+                    modifier = Modifier.width(dimensionResource(id = R.dimen.size_20dp))
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
-                AsyncImage(
-                    model = BuildConfig.IMAGE_SERVER + standing.logo,
-                    contentDescription = "",
-                    modifier =
-                    Modifier.background(
-                        color = ColorBWGrayStatus,
-                        shape = CircleShape
-                    )
+                /*  AsyncImage(
+                      model = BuildConfig.IMAGE_SERVER + standing.logo,
+                      contentDescription = "",
+                      modifier =
+                      Modifier
+                          .background(
+                              color = ColorBWGrayStatus,
+                              shape = CircleShape
+                          )
+                          .size(dimensionResource(id = R.dimen.size_32dp))
+                          .clip(CircleShape),
+                      contentScale = ContentScale.FillBounds
+
+                  )*/
+
+                CoilImage(
+                    src = BuildConfig.IMAGE_SERVER + standing.logo,
+                    modifier = Modifier
                         .size(dimensionResource(id = R.dimen.size_32dp))
                         .clip(CircleShape),
-                    contentScale = ContentScale.FillBounds
-
+                    onError = {
+                        Placeholder(R.drawable.ball)
+                    },
+                    onLoading = { Placeholder(R.drawable.ball) },
+                    isCrossFadeEnabled = false
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
                 Text(

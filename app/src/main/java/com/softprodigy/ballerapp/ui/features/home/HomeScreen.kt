@@ -21,12 +21,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
-import com.softprodigy.ballerapp.BuildConfig
+
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.ui.features.components.*
@@ -35,11 +36,16 @@ import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun HomeScreen(name: String?,vm: HomeViewModel,logoClick: () -> Unit, onInvitationCLick: () -> Unit) {
+fun HomeScreen(
+    name: String?,
+    vm: HomeViewModel,
+    logoClick: () -> Unit,
+    onInvitationCLick: () -> Unit
+) {
     val dataStoreManager = DataStoreManager(LocalContext.current)
     val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
 
-    val state=vm.state.value
+    val state = vm.state.value
 
     Box {
         CoachFlowBackground(colorCode = color.value.ifEmpty { "0177C1" }, teamLogo = "")
@@ -56,7 +62,10 @@ fun HomeScreen(name: String?,vm: HomeViewModel,logoClick: () -> Unit, onInvitati
         ) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))
             AppText(
-                text = stringResource(id = R.string.hey_label).replace("name", state.user.firstName),
+                text = stringResource(id = R.string.hey_label).replace(
+                    "name",
+                    state.user.firstName
+                ),
                 style = MaterialTheme.typography.h5,
                 fontWeight = FontWeight.W500,
                 color = ColorBWBlack
@@ -95,6 +104,7 @@ fun HomeScreen(name: String?,vm: HomeViewModel,logoClick: () -> Unit, onInvitati
                                 .size(dimensionResource(id = R.dimen.size_48dp))
                                 .clip(CircleShape),
                         )
+
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
                         Text(
                             text = stringResource(id = R.string.team_total_hoop),

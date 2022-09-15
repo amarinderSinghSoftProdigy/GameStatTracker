@@ -5,7 +5,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -28,19 +32,28 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainManageTeamScreen(vm: TeamViewModel, onSuccess: () -> Unit, onAddPlayerCLick: () -> Unit) {
     val context = LocalContext.current
+    var toastMessage by remember {
+        mutableStateOf("")
+    }
     LaunchedEffect(key1 = Unit) {
         vm.teamChannel.collect { uiEvent ->
             when (uiEvent) {
                 is TeamChannel.OnTeamsUpdate -> {
-                    Toast.makeText(
+                    /*Toast.makeText(
                         context,
                         uiEvent.message.asString(context),
                         Toast.LENGTH_LONG
-                    ).show()
+                    ).show()*/
+                    toastMessage = uiEvent.message.asString(context = context)
                 }
                 is TeamChannel.OnTeamDetailsSuccess -> {
                     UserStorage.teamId = uiEvent.teamId
                     onSuccess()
+                    Toast.makeText(
+                        context,
+                        toastMessage,
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
         }
