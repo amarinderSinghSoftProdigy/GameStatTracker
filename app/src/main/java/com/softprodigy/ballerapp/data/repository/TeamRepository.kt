@@ -8,6 +8,7 @@ import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
 import com.softprodigy.ballerapp.data.request.UpdateTeamRequest
 import com.softprodigy.ballerapp.data.response.CreateTeamResponse
 import com.softprodigy.ballerapp.data.response.StandingData
+import com.softprodigy.ballerapp.data.response.homepage.HomePageCoachModel
 import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
@@ -107,6 +108,12 @@ class TeamRepository @Inject constructor(
             .build()
         return safeApiCall(dispatcher) {
             service.rejectTeamInvitation(request)
+        }
+    }
+
+    override suspend fun getHomePageDetails(): ResultWrapper<BaseResponse<HomePageCoachModel>> {
+        return safeApiCall(dispatcher) {
+            service.getHomePageDetails()
         }
     }
 

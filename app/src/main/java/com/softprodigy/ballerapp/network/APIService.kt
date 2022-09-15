@@ -10,6 +10,7 @@ import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
 import com.softprodigy.ballerapp.data.request.UpdateTeamRequest
 import com.softprodigy.ballerapp.data.request.VerifyPhoneRequest
 import com.softprodigy.ballerapp.data.response.*
+import com.softprodigy.ballerapp.data.response.homepage.HomePageCoachModel
 import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
@@ -111,5 +112,8 @@ open interface APIService {
 
     @GET(ApiConstants.GET_USER_DETAILS)
     suspend fun getUserDetails():BaseResponse<User>
+
+    @GET(ApiConstants.GET_HOME_PAGE_DETAILS)
+    suspend fun getHomePageDetails():BaseResponse<HomePageCoachModel>
 
 }

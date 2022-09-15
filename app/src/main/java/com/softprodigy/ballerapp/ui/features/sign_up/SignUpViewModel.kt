@@ -6,7 +6,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.common.ApiConstants
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.ResultWrapper
@@ -90,7 +89,7 @@ class SignUpViewModel @Inject constructor(
             }
 
             is SignUpUIEvent.OnImageUploadSuccess -> {
-                if (_signUpUiState.value.signUpData.token == null) {
+              /*  if (_signUpUiState.value.signUpData.token == null) {
                     viewModelScope.launch {
                         signUp()
                     }
@@ -98,11 +97,21 @@ class SignUpViewModel @Inject constructor(
                     viewModelScope.launch {
                         updateUserProfile()
                     }
+                }*/
+                viewModelScope.launch {
+                    updateUserProfile()
                 }
             }
 
             is SignUpUIEvent.OnScreenNext -> {
-                viewModelScope.launch { uploadProfilePic() }
+                viewModelScope.launch {
+                    if (_signUpUiState.value.isSocialUser) /*Means we have token to call upload profile pic*/
+                        imageUpload()
+                    else{
+                        /*Means we don't have token to call upload profile pic*/
+                        signUp()
+                    }
+                }
             }
 
             is SignUpUIEvent.OnSignUpDataSelected -> {
@@ -196,9 +205,16 @@ class SignUpViewModel @Inject constructor(
                 is ResultWrapper.Success -> {
                     loginResponse.value.let { response ->
                         if (response.status) {
-                            setToken(response.data.token, response.data.user.role,response.data.user.email)
+                            setToken(
+                                response.data.token,
+                                response.data.user.role,
+                                response.data.user.email
+                            )
                             setLoginDataToState(response.data)
                             _signUpChannel.send(SignUpChannel.OnLoginSuccess(response.data))
+                            _signUpUiState.value = _signUpUiState.value.copy(
+                                isSocialUser = true
+                            )
                         } else {
                             _signUpUiState.value = _signUpUiState.value.copy(
                                 errorMessage = response.statusMessage,
@@ -240,7 +256,7 @@ class SignUpViewModel @Inject constructor(
             )
     }
 
-    private suspend fun uploadProfilePic() {
+    private suspend fun imageUpload() {
         _signUpUiState.value =
             _signUpUiState.value.copy(isLoading = true)
 
@@ -319,7 +335,7 @@ class SignUpViewModel @Inject constructor(
             firstName = signUpData.firstName,
             lastName = signUpData.lastName,
             email = signUpData.email,
-            profileImage = signUpData.profileImage,
+//            profileImage = signUpData.profileImage,
             phone = signUpUiState.value.phoneCode + signUpData.phone,
             address = signUpData.address,
             phoneVerified = signUpData.phoneVerified,
@@ -354,13 +370,15 @@ class SignUpViewModel @Inject constructor(
                                 errorMessage = null,
                                 successMessage = response.statusMessage
                             )
-                            _signUpChannel.send(
+                          /*  _signUpChannel.send(
                                 SignUpChannel.OnSignUpSuccess(
                                     UiText.DynamicString(
                                         signUpResponse.value.statusMessage
                                     )
                                 )
-                            )
+
+                            )*/
+                            imageUpload()
 
                         } else {
                             _signUpUiState.value = _signUpUiState.value.copy(
@@ -451,7 +469,7 @@ class SignUpViewModel @Inject constructor(
                             successMessage = response.statusMessage
                         )
                         _signUpChannel.send(
-                            SignUpChannel.OnSignUpSuccess(
+                            SignUpChannel.OnProfileUpdateSuccess(
                                 UiText.DynamicString(
                                     updateProfileResp.value.statusMessage
                                 )
@@ -613,7 +631,7 @@ class SignUpViewModel @Inject constructor(
 sealed class SignUpChannel {
     data class ShowToast(val message: UiText) : SignUpChannel()
     object OnProfileImageUpload : SignUpChannel()
-    data class OnSignUpSuccess(val message: UiText) : SignUpChannel()
+    data class OnProfileUpdateSuccess(val message: UiText) : SignUpChannel()
     data class OnSuccess(val message: UiText) : SignUpChannel()
     object OnOTPScreen : SignUpChannel()
     object OnSignUpSelected : SignUpChannel()
