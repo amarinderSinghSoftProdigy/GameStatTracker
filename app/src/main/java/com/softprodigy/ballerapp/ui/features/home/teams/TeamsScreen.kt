@@ -50,10 +50,6 @@ fun TeamsScreen(
 
     val scope = rememberCoroutineScope()
 
-    remember {
-
-    }
-
     val onTeamSelectionConfirmed = { team: Team? ->
         setupTeamViewModelUpdated.onEvent(
             TeamSetupUIEventUpdated.OnColorSelected(
