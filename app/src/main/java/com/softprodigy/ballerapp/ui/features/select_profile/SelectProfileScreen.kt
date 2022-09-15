@@ -86,7 +86,7 @@ fun SelectProfileScreen(vm: SelectProfileViewModel = hiltViewModel(), onNextClic
             Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
-                .padding(bottom = dimensionResource(id = R.dimen.size_40dp))
+                .padding(bottom = dimensionResource(id = R.dimen.size_50dp))
         )
         {
             BottomButtons(
