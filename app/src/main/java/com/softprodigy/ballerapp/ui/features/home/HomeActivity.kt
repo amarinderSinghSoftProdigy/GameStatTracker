@@ -178,7 +178,7 @@ fun NavControllerComposable(
                     navController.navigate(Route.INVITATION_SCREEN)
                 }, logoClick = {
                     homeViewModel.setLogoutDialog(true)
-                })
+                }, vm = homeViewModel)
             else {
                 HomeFirstTimeLoginScreen(onCreateTeamClick = {
                     navController.navigate(Route.TEAM_SETUP_SCREEN)

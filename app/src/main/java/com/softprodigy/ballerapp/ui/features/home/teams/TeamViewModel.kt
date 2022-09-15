@@ -106,7 +106,7 @@ class TeamViewModel @Inject constructor(
 
             is TeamUIEvent.OnTeamUpdate -> {
                 viewModelScope.launch {
-                    updateTeam()
+                    uploadTeamLogo()
                 }
             }
 
@@ -125,7 +125,7 @@ class TeamViewModel @Inject constructor(
 
             is TeamUIEvent.OnImageSelected -> {
                 _teamUiState.value =
-                    _teamUiState.value.copy(teamImageUri = event.teamImageUri)
+                    _teamUiState.value.copy(localLogo = event.teamImageUri)
             }
 
             is TeamUIEvent.OnTeamNameChange -> {
@@ -248,7 +248,7 @@ class TeamViewModel @Inject constructor(
             leaderboardPoints = newLeaderBoardList,
             playerPositions = newRoaster,
             name = _teamUiState.value.teamName,
-            logo = _teamUiState.value.teamImageUri ?: "",
+            logo = _teamUiState.value.logo ?: "",
             colorCode = _teamUiState.value.teamColor,
         )
         val teamResponse = teamRepo.updateTeamDetails(request)
@@ -309,56 +309,65 @@ class TeamViewModel @Inject constructor(
     }
 
     private suspend fun uploadTeamLogo() {
-        val uri = Uri.parse(teamUiState.value.teamImageUri)
+        val isLocalImageTaken = _teamUiState.value.localLogo != null
 
-        val file = getFileFromUri(getApplication<Application>().applicationContext, uri)
+        if (isLocalImageTaken) {
+            val uri = Uri.parse(teamUiState.value.localLogo)
 
-        if (file != null) {
-            val size = Integer.parseInt((file.length() / 1024).toString())
-            Timber.i("Filesize compressed --> $size")
-        }
+            val file = getFileFromUri(getApplication<Application>().applicationContext, uri)
 
-        when (val uploadLogoResponse = imageUploadRepo.uploadSingleImage(
-            type = AppConstants.TEAM_LOGO,
-            file
-        )) {
-            is ResultWrapper.GenericError -> {
-                _teamChannel.send(
-                    TeamChannel.ShowToast(
-                        UiText.DynamicString(
-                            "${uploadLogoResponse.message}"
-                        )
-                    )
-                )
+            if (file != null) {
+                val size = Integer.parseInt((file.length() / 1024).toString())
+                Timber.i("Filesize compressed --> $size")
             }
-            is ResultWrapper.NetworkError -> {
-                _teamChannel.send(
-                    TeamChannel.ShowToast(
-                        UiText.DynamicString(
-                            uploadLogoResponse.message
-                        )
-                    )
-                )
-            }
-            is ResultWrapper.Success -> {
-                uploadLogoResponse.value.let { response ->
-                    if (response.status) {
-                        _teamUiState.value =
-                            _teamUiState.value.copy(teamImageUri = uploadLogoResponse.value.data.data)
-                        updateTeam()
-                    } else {
-                        _teamUiState.value =
-                            _teamUiState.value.copy(isLoading = false)
-                        _teamChannel.send(
-                            TeamChannel.ShowToast(
-                                UiText.DynamicString(
-                                    response.statusMessage
-                                )
+
+            when (val uploadLogoResponse = imageUploadRepo.uploadSingleImage(
+                type = AppConstants.TEAM_LOGO,
+                file
+            )) {
+                is ResultWrapper.GenericError -> {
+                    _teamChannel.send(
+                        TeamChannel.ShowToast(
+                            UiText.DynamicString(
+                                "${uploadLogoResponse.message}"
                             )
                         )
+                    )
+                }
+                is ResultWrapper.NetworkError -> {
+                    _teamChannel.send(
+                        TeamChannel.ShowToast(
+                            UiText.DynamicString(
+                                uploadLogoResponse.message
+                            )
+                        )
+                    )
+                }
+                is ResultWrapper.Success -> {
+                    uploadLogoResponse.value.let { response ->
+                        if (response.status) {
+                            _teamUiState.value =
+                                _teamUiState.value.copy(
+                                    logo = uploadLogoResponse.value.data.data,
+                                    localLogo = null
+                                )
+                            updateTeam()
+                        } else {
+                        _teamUiState.value =
+                            _teamUiState.value.copy(isLoading = false)
+                            _teamChannel.send(
+                                TeamChannel.ShowToast(
+                                    UiText.DynamicString(
+                                        response.statusMessage
+                                    )
+                                )
+                            )
+                        }
                     }
                 }
             }
+        } else {
+            updateTeam()
         }
     }
 
@@ -404,7 +413,7 @@ class TeamViewModel @Inject constructor(
                             coaches = response.data.coaches,
                             teamName = response.data.name,
                             teamColor = response.data.colorCode,
-                            teamImageUri = response.data.logo,
+                            logo = response.data.logo,
                             leaderBoard = response.data.teamLeaderBoard
                         )
                         _teamChannel.send(

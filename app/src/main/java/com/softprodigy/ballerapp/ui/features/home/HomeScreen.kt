@@ -1,20 +1,8 @@
 package com.softprodigy.ballerapp.ui.features.home
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -38,23 +26,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
+import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.ButtonWithLeadingIcon
-import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
-import com.softprodigy.ballerapp.ui.features.components.PagerIndicator
-import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
-import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
-import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun HomeScreen(name: String?, logoClick: () -> Unit, onInvitationCLick: () -> Unit) {
+fun HomeScreen(name: String?,vm: HomeViewModel,logoClick: () -> Unit, onInvitationCLick: () -> Unit) {
     val dataStoreManager = DataStoreManager(LocalContext.current)
     val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
+
+    val state=vm.state.value
 
     Box {
         CoachFlowBackground(colorCode = color.value.ifEmpty { "0177C1" }, teamLogo = "")
@@ -71,7 +56,7 @@ fun HomeScreen(name: String?, logoClick: () -> Unit, onInvitationCLick: () -> Un
         ) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))
             AppText(
-                text = stringResource(id = R.string.hey_label).replace("name", "George"),
+                text = stringResource(id = R.string.hey_label).replace("name", state.user.firstName),
                 style = MaterialTheme.typography.h5,
                 fontWeight = FontWeight.W500,
                 color = ColorBWBlack
@@ -134,9 +119,9 @@ fun HomeScreen(name: String?, logoClick: () -> Unit, onInvitationCLick: () -> Un
                 Box(
                     Modifier
                         .fillMaxWidth()
-                        .clickable {
+                        /*.clickable {
                             onInvitationCLick.invoke()
-                        }
+                        }*/
                         .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                     contentAlignment = Alignment.Center
                 ) {
