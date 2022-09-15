@@ -20,7 +20,8 @@ data class TeamUIState(
     val showDialog: Boolean = false,
     val teamColor: String = "",
     val teamName: String = "",
-    val teamImageUri: String? = null,
+    val logo: String? = null, //server
+    val localLogo: String? = null, //local uri
     val search: String = "",
     val selected: ArrayList<String> = ArrayList(),
     val checked: Boolean = false,
