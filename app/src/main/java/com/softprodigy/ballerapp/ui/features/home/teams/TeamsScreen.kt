@@ -159,5 +159,5 @@ enum class TeamsTabItems(val icon: Int, val stringId: String) {
     Standings(R.drawable.ic_standing, stringId = "standings"),
     Chat(R.drawable.ic_chat, stringId = "chat"),
     Roaster(R.drawable.ic_roaster, stringId = "roaster"),
-    Leaderboard(R.drawable.ic_leaderboard, stringId = "leaderboard")
+    Leaderboard(R.drawable.ic_leaderboard, stringId = "leaderboards")
 }
