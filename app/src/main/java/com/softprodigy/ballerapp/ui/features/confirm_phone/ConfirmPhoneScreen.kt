@@ -272,7 +272,7 @@ fun ConfirmPhoneScreen(
                         color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                     )
                 ) {
-                    append("00:" + (currentTime / 1000L).toString())
+                    append("00:" + if ((currentTime / 1000L).toString().length == 1) "0" + (currentTime / 1000L).toString() else (currentTime / 1000L).toString())
                 }
             }
             if (currentTime <= 0L) {
