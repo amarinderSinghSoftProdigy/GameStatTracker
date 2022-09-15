@@ -22,6 +22,8 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,13 +40,21 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.apiToUIDateFormat
 import com.softprodigy.ballerapp.ui.features.components.DeleteDialog
 import com.softprodigy.ballerapp.ui.features.components.SelectInvitationRoleDialog
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayStatus
 import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
 import com.softprodigy.ballerapp.ui.theme.ColorButtonRed
 import com.softprodigy.ballerapp.ui.theme.appColors
+import kotlinx.coroutines.launch
 
 @Composable
 fun InvitationScreen(vm: InvitationViewModel = hiltViewModel()) {
     val state = vm.invitationState.value
+    val coroutineScope = rememberCoroutineScope()
+    remember {
+        coroutineScope.launch {
+            vm.getAllInvitation()
+        }
+    }
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             Modifier
@@ -132,7 +142,11 @@ fun InvitationItem(
                 modifier =
                 Modifier
                     .size(dimensionResource(id = R.dimen.size_44dp))
-                    .clip(CircleShape),
+                    .clip(CircleShape)
+                    .background(
+                        color = ColorBWGrayStatus,
+                        shape = CircleShape
+                    ),
                 contentScale = ContentScale.FillBounds
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))

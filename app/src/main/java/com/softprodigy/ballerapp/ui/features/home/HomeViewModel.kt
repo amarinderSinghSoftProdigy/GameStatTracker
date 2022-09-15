@@ -10,9 +10,9 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.data.repository.UserRepository
 import com.softprodigy.ballerapp.data.response.HomeItemResponse
 import com.softprodigy.ballerapp.domain.repository.IUserRepository
+import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
 import com.softprodigy.ballerapp.ui.features.components.TopBarData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -71,6 +71,10 @@ class HomeViewModel @Inject constructor(
 
     fun setColor(color: Color) {
         _state.value = _state.value.copy(color = color)
+    }
+
+    fun setBottomNav(color: BottomNavKey) {
+        _state.value = _state.value.copy(bottomBar = color)
     }
     fun setDialog(show: Boolean) {
         _state.value = _state.value.copy(showDialog = show)

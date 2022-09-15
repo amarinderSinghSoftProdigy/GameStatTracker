@@ -22,9 +22,9 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
     val invitationChannel = _invitationChannel.receiveAsFlow()
 
     init {
-        viewModelScope.launch {
+        /*viewModelScope.launch {
             getAllInvitation()
-        }
+        }*/
     }
 
     fun onEvent(event: InvitationEvent) {
@@ -78,7 +78,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
         }
     }
 
-    private suspend fun getAllInvitation() {
+    suspend fun getAllInvitation() {
         invitationState.value =
             invitationState.value.copy(showLoading = true)
 

@@ -34,7 +34,6 @@ import com.softprodigy.ballerapp.common.Route
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
-import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
 import com.softprodigy.ballerapp.ui.features.components.BottomNavigationBar
 import com.softprodigy.ballerapp.ui.features.components.CommonTabView
@@ -153,9 +152,11 @@ class HomeActivity : ComponentActivity() {
                         },
                         bottomBar = {
                             BottomNavigationBar(
+                                state.bottomBar,
                                 navController = navController,
                                 selectionColor = state.color ?: Color.Black
                             ) {
+                                homeViewModel.setBottomNav(it)
                                 if (it == BottomNavKey.HOME) {
                                     homeViewModel.setAppBar(false)
                                 } else {
@@ -190,17 +191,17 @@ fun NavControllerComposable(
     NavHost(navController, startDestination = Route.HOME_SCREEN) {
         composable(route = Route.HOME_SCREEN) {
             homeViewModel.setAppBar(false)
-            if (fromSplash)
+            //if (fromSplash)
                 HomeScreen(name = "", onInvitationCLick = {
                     navController.navigate(Route.INVITATION_SCREEN)
                 }, logoClick = {
                     homeViewModel.setLogoutDialog(true)
                 }, vm = homeViewModel)
-            else {
+           /* else {
                 HomeFirstTimeLoginScreen(onCreateTeamClick = {
                     navController.navigate(Route.TEAM_SETUP_SCREEN)
                 })
-            }
+            }*/
         }
         composable(route = Route.TEAMS_SCREEN) {
             homeViewModel.setTopBar(
