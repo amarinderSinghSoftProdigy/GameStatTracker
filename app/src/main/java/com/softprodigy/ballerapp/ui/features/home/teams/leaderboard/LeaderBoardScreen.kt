@@ -40,12 +40,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
+import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.TeamLeaderBoard
 import com.softprodigy.ballerapp.ui.features.components.AppTab
 import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.CoilImage
 import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
+import com.softprodigy.ballerapp.ui.features.components.Placeholder
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayStatus
 import com.softprodigy.ballerapp.ui.theme.ColorPrimaryOrange
@@ -170,10 +173,11 @@ fun LeaderListItem(
                     fontSize = dimensionResource(
                         id = R.dimen.txt_size_12
                     ).value.sp,
-                    fontWeight = FontWeight.W600
+                    fontWeight = FontWeight.W600,
+                    modifier = Modifier.width(dimensionResource(id = R.dimen.size_20dp))
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
-                AsyncImage(
+                /*AsyncImage(
                     model = leader.profileImage,
                     contentDescription = "",
                     modifier =
@@ -192,7 +196,25 @@ fun LeaderListItem(
                     contentScale = ContentScale.FillBounds
 
 
+                )*/
+
+                CoilImage(
+                    src = leader.profileImage.toString(),
+                    modifier = Modifier
+                        .size(dimensionResource(id = R.dimen.size_32dp))
+                        .clip(CircleShape)
+                        .border(
+                            width = dimensionResource(id = R.dimen.size_2dp),
+                            color = if (srNo <= 3) ColorPrimaryOrange else Color.Transparent,
+                            shape = CircleShape
+                        ),
+                    onError = {
+                        Placeholder(R.drawable.ball)
+                    },
+                    onLoading = { Placeholder(R.drawable.ball) },
+                    isCrossFadeEnabled = false
                 )
+
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
                 Text(
                     text = leader.name,
