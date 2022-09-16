@@ -3,32 +3,12 @@ package com.softprodigy.ballerapp.ui.features.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Divider
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -319,18 +299,19 @@ fun TeamListItem(team: Team, selected: Boolean, onClick: (Team) -> Unit) {
                     )
                 ), verticalAlignment = Alignment.CenterVertically
         ) {
-            AsyncImage(
-                model = BuildConfig.IMAGE_SERVER + team.logo,
-                contentDescription = "",
+            CoilImage(
+                src = BuildConfig.IMAGE_SERVER + team.logo,
                 modifier = Modifier
                     .size(dimensionResource(id = R.dimen.size_32dp))
                     .clip(CircleShape)
-                    .background(color = MaterialTheme.appColors.material.secondaryVariant)
                     .border(
                         dimensionResource(id = R.dimen.size_2dp),
                         MaterialTheme.colors.surface,
-                        CircleShape
-                    )
+                        CircleShape,
+                        ),
+                isCrossFadeEnabled = false,
+                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                onError = { Placeholder(R.drawable.ic_team_placeholder) }
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
             Text(
@@ -534,13 +515,14 @@ fun PlayerListDialogItem(
                 .padding(horizontal = dimensionResource(id = R.dimen.size_10dp)),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AsyncImage(
-                model = BuildConfig.IMAGE_SERVER + player.profileImage,
-                contentDescription = "",
+            CoilImage(
+                src = BuildConfig.IMAGE_SERVER + player.profileImage,
                 modifier = Modifier
                     .size(dimensionResource(id = R.dimen.size_32dp))
                     .clip(CircleShape),
-                contentScale = ContentScale.FillBounds
+                isCrossFadeEnabled = false,
+                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                onError = {Placeholder(R.drawable.ic_team_placeholder)}
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
             Text(

@@ -41,6 +41,8 @@ import com.softprodigy.ballerapp.data.response.team.Coach
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.ButtonWithLeadingIcon
+import com.softprodigy.ballerapp.ui.features.components.CoilImage
+import com.softprodigy.ballerapp.ui.features.components.Placeholder
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayStatus
@@ -213,9 +215,8 @@ fun TeamUserListItem(
         ) {
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
             val url = "" + if (isCoach) coachUser?.profileImage else teamUser?.profileImage
-            AsyncImage(
-                model = if (url.contains("http")) url else BuildConfig.IMAGE_SERVER + url,
-                contentDescription = "",
+            CoilImage(
+                src = if (url.contains("http")) url else BuildConfig.IMAGE_SERVER + url,
                 modifier =
                 Modifier
                     .background(
@@ -224,8 +225,9 @@ fun TeamUserListItem(
                     )
                     .size(dimensionResource(id = R.dimen.size_32dp))
                     .clip(CircleShape),
-                contentScale = ContentScale.FillBounds,
-
+                isCrossFadeEnabled = false,
+                onLoading = { Placeholder(R.drawable.ic_profile_placeholder) },
+                onError = {Placeholder(R.drawable.ic_profile_placeholder)}
                 )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
             Text(

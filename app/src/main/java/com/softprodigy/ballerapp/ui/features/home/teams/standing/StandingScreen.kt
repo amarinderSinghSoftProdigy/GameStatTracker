@@ -160,20 +160,6 @@ fun StandingListItem(
                     modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp))
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
-                /*  AsyncImage(
-                      model = BuildConfig.IMAGE_SERVER + standing.logo,
-                      contentDescription = "",
-                      modifier =
-                      Modifier
-                          .background(
-                              color = ColorBWGrayStatus,
-                              shape = CircleShape
-                          )
-                          .size(dimensionResource(id = R.dimen.size_32dp))
-                          .clip(CircleShape),
-                      contentScale = ContentScale.FillBounds
-
-                  )*/
 
                 CoilImage(
                     src = BuildConfig.IMAGE_SERVER + standing.logo,

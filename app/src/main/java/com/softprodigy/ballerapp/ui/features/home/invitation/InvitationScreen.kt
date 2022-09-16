@@ -27,6 +27,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -39,7 +40,9 @@ import coil.compose.AsyncImage
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.apiToUIDateFormat
+import com.softprodigy.ballerapp.ui.features.components.CoilImage
 import com.softprodigy.ballerapp.ui.features.components.DeleteDialog
+import com.softprodigy.ballerapp.ui.features.components.Placeholder
 import com.softprodigy.ballerapp.ui.features.components.SelectInvitationRoleDialog
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayStatus
 import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
@@ -148,17 +151,19 @@ fun InvitationItem(
                 ),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AsyncImage(
-                model = BuildConfig.IMAGE_SERVER + invitation.team.logo, contentDescription = "",
+            CoilImage(
+                src = BuildConfig.IMAGE_SERVER + invitation.team.logo,
                 modifier =
                 Modifier
                     .size(dimensionResource(id = R.dimen.size_44dp))
                     .clip(CircleShape)
                     .background(
-                        color = ColorBWGrayStatus,
+                        color = Color.Transparent,
                         shape = CircleShape
                     ),
-                contentScale = ContentScale.FillBounds
+                isCrossFadeEnabled = false,
+                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                onError = {Placeholder(R.drawable.ic_team_placeholder)}
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
 
