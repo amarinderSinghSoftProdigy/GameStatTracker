@@ -42,6 +42,7 @@
         <entry key="..\:/Users/user/baller-app/app/src/main/res/drawable/ic_users.xml" value="0.1" />
         <entry key="..\:/Users/user/baller-app/app/src/main/res/drawable/splash_background.xml" value="0.1" />
         <entry key="..\:/Users/user/baller-app/app/src/main/res/mipmap-anydpi-v26/ic_app_logo.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_add_button.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_add_player.xml" value="0.131" />
         <entry key="app/src/main/res/drawable/ic_ball.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_ball_center.xml" value="0.144" />
@@ -55,10 +56,14 @@
         <entry key="app/src/main/res/drawable/ic_drag.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_facebook.xml" value="0.136" />
         <entry key="app/src/main/res/drawable/ic_hike_green.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_leaderboard.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_league.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_leagues.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_logo.xml" value="0.136" />
         <entry key="app/src/main/res/drawable/ic_remove.xml" value="0.104" />
         <entry key="app/src/main/res/drawable/ic_scanner.xml" value="0.131" />
         <entry key="app/src/main/res/drawable/ic_settings.xml" value="0.139" />
+        <entry key="app/src/main/res/drawable/ic_standing.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_upload.xml" value="0.131" />
         <entry key="app/src/main/res/layout/activity_details.xml" value="0.25" />
         <entry key="app/src/main/res/layout/twitter_login.xml" value="0.25" />

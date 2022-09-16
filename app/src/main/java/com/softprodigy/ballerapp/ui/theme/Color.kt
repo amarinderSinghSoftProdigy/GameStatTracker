@@ -102,4 +102,5 @@ val ColorBWGrayDark = Color(0xFF3C4348)
 val ColorGreyLighter = Color(0xFFA7B9C7)
 val ColorButtonGreen = Color(0xFF2ECC71)
 val ColorButtonRed = Color(0xFFE3584A)
+val GreenColor = Color(0xFF2ECC71)
 

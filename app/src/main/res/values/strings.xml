@@ -23,6 +23,7 @@
     <string name="your_name">Full Name</string>
     <string name="create_account">Create Account</string>
     <string name="accepted">Accepted</string>
+    <string name="going">Going</string>
     <string name="accept">Accept</string>
     <string name="your_password">Enter password</string>
     <string name="ur_password">Your password</string>
@@ -128,6 +129,8 @@
     <string name="no_players_in_team">No players in your team</string>
     <string name="add_players_to_use_app">Add new players to create teams and events.</string>
     <string name="no_upcoming_events">No Upcoming Events</string>
+    <string name="no_opportunities">No Opportunities Events</string>
+    <string name="no_league">No Leagues found</string>
     <string name="add_events_to_use_app">Add events to other features of app.</string>
     <string name="add_events">Add Event</string>
     <string name="my_events">My Events</string>
@@ -195,4 +198,10 @@
     <string name="invite">Invite</string>
     <string name="invite_members">Invite Members</string>
     <string name="please_add_players">Please invite players to the team.</string>
+    <string name="upcoming_Events">Upcoming Events</string>
+    <string name="past_event">Past Events</string>
+    <string name="switch_teams">Switch Teams</string>
+    <string name="decline_head">Decline RSVP</string>
+    <string name="reason_not_going">Reason for not going</string>
+    <string name="not_going">Not going</string>
 </resources>
