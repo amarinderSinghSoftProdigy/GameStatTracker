@@ -89,11 +89,11 @@ class TeamViewModel @Inject constructor(
             )
     }
 
-    init {
+  /*  init {
         viewModelScope.launch {
             getTeams()
         }
-    }
+    }*/
 
     fun onEvent(event: TeamUIEvent) {
         when (event) {
@@ -149,12 +149,16 @@ class TeamViewModel @Inject constructor(
         )
     }
 
-    private suspend fun getTeams() {
+     suspend fun getTeams() {
         _teamUiState.value =
             _teamUiState.value.copy(
                 isLoading = true
             )
         val teamResponse = teamRepo.getTeams()
+         _teamUiState.value =
+             _teamUiState.value.copy(
+                 isLoading = false
+             )
 
         when (teamResponse) {
             is ResultWrapper.GenericError -> {
@@ -187,7 +191,7 @@ class TeamViewModel @Inject constructor(
                 teamResponse.value.let { response ->
                     if (response.status) {
 
-                        if (_teamUiState.value.selectedTeam == null && response.data.size > 0) {
+                        if (/*_teamUiState.value.selectedTeam == null && */response.data.size > 0) {
                             var selectionTeam: Team? = null
                             response.data.toMutableList().forEach {
                                 if (UserStorage.teamId == it._id) {

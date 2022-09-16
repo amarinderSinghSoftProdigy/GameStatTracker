@@ -92,8 +92,8 @@ data class Player(
     val status: String? = "",
     @SerializedName("steals")
     val steals: String? = "",
-    @SerializedName("teamId")
-    val teamId: List<String> = emptyList(),
+//    @SerializedName("teamId")
+//    val teamId: List<String> = emptyList(),
     @SerializedName("threePtPerc")
     val threePtPerc: String? = "",
     @SerializedName("totalFtS")

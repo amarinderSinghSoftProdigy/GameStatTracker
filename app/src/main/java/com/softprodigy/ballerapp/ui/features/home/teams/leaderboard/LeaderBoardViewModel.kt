@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
+import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
@@ -107,7 +108,7 @@ class LeaderBoardViewModel @Inject constructor(
             )
         dataStoreManager.getId.collect {
 //            val leaderReponse = teamRepo.getLeaderBoard(it)
-            val leaderReponse = teamRepo.getLeaderBoard("6304b10244cae324b011e1b5")
+            val leaderReponse = teamRepo.getLeaderBoard(UserStorage.teamId)
 
             when (leaderReponse) {
                 is ResultWrapper.GenericError -> {
