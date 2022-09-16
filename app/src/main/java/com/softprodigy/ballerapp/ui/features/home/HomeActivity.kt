@@ -72,6 +72,7 @@ class HomeActivity : ComponentActivity() {
             val dataStoreManager = DataStoreManager(LocalContext.current)
             val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
             val teamId = dataStoreManager.getId.collectAsState(initial = "")
+            val role = dataStoreManager.getRole.collectAsState(initial = "")
             UserStorage.teamId = teamId.value
             AppConstants.SELECTED_COLOR = fromHex(color.value.ifEmpty { "0177C1" })
             homeViewModel.setColor(AppConstants.SELECTED_COLOR)
@@ -107,7 +108,8 @@ class HomeActivity : ComponentActivity() {
                             if (state.appBar) {
                                 TabBar(color = MaterialTheme.appColors.material.primaryVariant) {
                                     CommonTabView(
-                                        state.topBar,
+                                        topBarData =state.topBar,
+                                        userRole = role.value,
                                         backClick = {
                                             navController.popBackStack()
                                         },

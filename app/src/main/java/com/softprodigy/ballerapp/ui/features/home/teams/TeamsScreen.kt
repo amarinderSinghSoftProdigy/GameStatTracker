@@ -4,13 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -20,11 +14,9 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.response.team.Team
-import com.softprodigy.ballerapp.ui.features.components.AppScrollableTabRow
-import com.softprodigy.ballerapp.ui.features.components.AppTabLikeViewPager
-import com.softprodigy.ballerapp.ui.features.components.SelectTeamDialog
-import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.leaderboard.LeaderBoardScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.roaster.RoasterScreen
@@ -45,6 +37,8 @@ fun TeamsScreen(
     onCreateTeamClick: () -> Unit,
     onBackPress: () -> Unit
 ) {
+    val dataStoreManager = DataStoreManager(LocalContext.current)
+    val role = dataStoreManager.getRole.collectAsState(initial = "")
     val context = LocalContext.current
     val state = vm.teamUiState.value
     val onTeamSelectionChange = { team: Team ->
@@ -114,7 +108,8 @@ fun TeamsScreen(
                 onSelectionChange = onTeamSelectionChange,
                 selected = state.selectedTeam,
                 showLoading = state.isLoading,
-                onCreateTeamClick = onCreateTeamClick
+                onCreateTeamClick = onCreateTeamClick,
+                showCreateTeamButton = role.value.equals(UserType.COACH.key,ignoreCase = true)
             )
         }
 

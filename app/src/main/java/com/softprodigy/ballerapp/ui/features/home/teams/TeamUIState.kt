@@ -9,6 +9,7 @@ import com.softprodigy.ballerapp.data.response.team.TeamRoaster
 
 
 data class TeamUIState(
+    val userRole:String="",
     val isLoading: Boolean = false,
     val teams: ArrayList<Team> = ArrayList(),
     val players: ArrayList<Player> = ArrayList(),

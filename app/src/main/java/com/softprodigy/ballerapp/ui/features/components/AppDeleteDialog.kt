@@ -21,7 +21,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
@@ -31,7 +30,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import coil.compose.AsyncImage
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
@@ -105,7 +103,8 @@ fun SelectTeamDialog(
     selected: Team?,
     showLoading: Boolean,
     teams: ArrayList<Team>,
-    onCreateTeamClick: () -> Unit
+    onCreateTeamClick: () -> Unit,
+    showCreateTeamButton: Boolean = false
 ) {
     val teamId = remember {
         mutableStateOf("")
@@ -176,14 +175,17 @@ fun SelectTeamDialog(
                         }
                     }
                     //  Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-                    ButtonWithLeadingIcon(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(id = R.string.create_new_team),
-                        onClick = { onCreateTeamClick.invoke() },
-                        painter = painterResource(id = R.drawable.ic_add_button),
-                        isTransParent = true
 
-                    )
+                    if (showCreateTeamButton) {
+                        ButtonWithLeadingIcon(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.create_new_team),
+                            onClick = { onCreateTeamClick.invoke() },
+                            painter = painterResource(id = R.drawable.ic_add_button),
+                            isTransParent = true
+
+                        )
+                    }
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
