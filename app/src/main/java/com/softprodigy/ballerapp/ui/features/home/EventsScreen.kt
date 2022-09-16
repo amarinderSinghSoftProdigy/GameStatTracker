@@ -33,6 +33,7 @@ import com.google.accompanist.pager.rememberPagerState
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.LeadingIconAppButton
 import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
+import com.softprodigy.ballerapp.ui.features.home.events.NewEventScreen
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
 
@@ -118,7 +119,7 @@ fun Tabs(pagerState: PagerState) {
 fun TabsContent(pagerState: PagerState) {
     HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
         when (page) {
-            0 -> TabContentScreen(data = "Welcome to Home Screen")
+            0 -> NewEventScreen()
             1 -> TabContentScreen(data = "Welcome to Shopping Screen")
             2 -> TabContentScreen(data = "Welcome to Settings Screen")
         }
