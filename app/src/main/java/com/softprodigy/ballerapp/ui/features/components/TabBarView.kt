@@ -47,12 +47,13 @@ import com.softprodigy.ballerapp.ui.theme.appColors
  */
 @Composable
 fun BottomNavigationBar(
+    navKey: BottomNavKey,
     navController: NavController,
     height: Dp = dimensionResource(id = R.dimen.size_64dp),
     selectionColor: Color = MaterialTheme.appColors.material.primaryVariant,
     selectedValue: (BottomNavKey) -> Unit
 ) {
-    val selected: MutableState<BottomNavKey> = remember { mutableStateOf(BottomNavKey.HOME) }
+    val selected: MutableState<BottomNavKey> = remember { mutableStateOf(navKey) }
     Surface(
         elevation = dimensionResource(id = R.dimen.size_12dp),
         color = Color.White,

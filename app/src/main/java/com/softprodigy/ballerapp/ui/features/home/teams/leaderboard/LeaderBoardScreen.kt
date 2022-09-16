@@ -31,16 +31,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
-import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.TeamLeaderBoard
@@ -50,7 +47,6 @@ import com.softprodigy.ballerapp.ui.features.components.CoilImage
 import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
 import com.softprodigy.ballerapp.ui.features.components.Placeholder
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
-import com.softprodigy.ballerapp.ui.theme.ColorBWGrayStatus
 import com.softprodigy.ballerapp.ui.theme.ColorPrimaryOrange
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
@@ -173,10 +169,10 @@ fun LeaderListItem(
                     fontSize = dimensionResource(
                         id = R.dimen.txt_size_12
                     ).value.sp,
-                    fontWeight = FontWeight.W600,
-                    modifier = Modifier.width(dimensionResource(id = R.dimen.size_20dp))
+                    fontWeight = FontWeight.W400,
+                    modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp))
                 )
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
                 /*AsyncImage(
                     model = leader.profileImage,
                     contentDescription = "",
