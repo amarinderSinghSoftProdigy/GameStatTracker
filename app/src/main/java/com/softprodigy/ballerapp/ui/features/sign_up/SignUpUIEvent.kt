@@ -23,6 +23,6 @@ sealed class SignUpUIEvent {
     data class OnGoogleClick(val socialUser: SocialUserModel) : SignUpUIEvent()
     data class OnTwitterClick(val socialUser: SocialUserModel) : SignUpUIEvent()
     data class OnGenderChange(val gender: String) : SignUpUIEvent()
-
+    data class OnCountryCode(val countryCode: String) : SignUpUIEvent()
 
 }
