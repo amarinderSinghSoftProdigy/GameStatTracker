@@ -160,14 +160,15 @@ fun ButtonWithLeadingIcon(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    painter: Painter,
+    painter: Painter? = null,
     colors: ButtonColor = MaterialTheme.appColors.buttonColor,
     contentPadding: PaddingValues = PaddingValues(
         vertical = dimensionResource(id = R.dimen.size_16dp),
         horizontal = dimensionResource(id = R.dimen.size_24dp),
     ),
     isTransParent: Boolean = false,
-    iconSize: Dp = dimensionResource(id = R.dimen.size_10dp)
+    iconSize: Dp = dimensionResource(id = R.dimen.size_10dp),
+    iconAllowed: Boolean = true
 ) {
     Row(
         modifier = modifier
@@ -197,20 +198,22 @@ fun ButtonWithLeadingIcon(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            painter = painter,
-            contentDescription = "",
-            tint = if (isTransParent) {
-                AppConstants.SELECTED_COLOR
-            } else {
-                colors.textEnabled
-            },
-            modifier = Modifier.size(
-                iconSize
-            )
+        if (iconAllowed) {
+            Icon(
+                painter = painter!!,
+                contentDescription = "",
+                tint = if (isTransParent) {
+                    AppConstants.SELECTED_COLOR
+                } else {
+                    colors.textEnabled
+                },
+                modifier = Modifier.size(
+                    iconSize
+                )
 
-        )
-        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_12dp)))
+            )
+            Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_12dp)))
+        }
 
         AppText(
             text = text,
