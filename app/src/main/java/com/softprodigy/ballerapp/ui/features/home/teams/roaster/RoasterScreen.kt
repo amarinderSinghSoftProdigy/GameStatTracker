@@ -3,17 +3,7 @@ package com.softprodigy.ballerapp.ui.features.home.teams.roaster
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -24,18 +14,19 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.team.Coach
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.CoilImage
 import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
+import com.softprodigy.ballerapp.ui.features.components.Placeholder
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayStatus
@@ -133,20 +124,20 @@ fun CoachListItem(
     ) {
 
         val url = "" + if (isCoach) coach?.profileImage else player?.profileImage
-        AsyncImage(
-            model = if (url.contains("http")) url else BuildConfig.IMAGE_SERVER + url,
-            contentDescription = "",
+        CoilImage(
+            src = if (url.contains("http")) url else BuildConfig.IMAGE_SERVER + url,
             modifier =
             Modifier
                 .background(
-                    color = ColorBWGrayStatus,
+                    color = Color.Transparent,
                     shape = CircleShape
                 )
                 .size(dimensionResource(id = R.dimen.size_80dp))
                 .clip(CircleShape),
-            contentScale = ContentScale.Crop,
-
-            )
+            isCrossFadeEnabled = false,
+            onLoading = { Placeholder(R.drawable.ic_profile_placeholder) },
+            onError = { Placeholder(R.drawable.ic_profile_placeholder) }
+        )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
         AppText(

@@ -17,35 +17,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.argbToHexString
 import com.softprodigy.ballerapp.common.validTeamName
-import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
-import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
-import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.ColorPickerBottomSheet
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.UpdateColor
-import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
-import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
-import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
-import com.softprodigy.ballerapp.ui.theme.ColorBWGrayStatus
-import com.softprodigy.ballerapp.ui.theme.ColorMainPrimary
-import com.softprodigy.ballerapp.ui.theme.ColorPrimaryTransparent
-import com.softprodigy.ballerapp.ui.theme.appColors
+import com.softprodigy.ballerapp.ui.theme.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -200,37 +189,38 @@ fun ManageTeamScreen(vm: TeamViewModel) {
 
 
                         if (state.localLogo != null) {
-                            AsyncImage(
-                                model = state.localLogo,
-                                contentDescription = "",
+                            CoilImage(
+                                src = state.localLogo,
                                 modifier =
                                 Modifier
                                     .size(dimensionResource(id = R.dimen.size_160dp))
                                     .clip(CircleShape)
                                     .background(
-                                        color = ColorBWGrayStatus,
+                                        color = Color.Transparent,
                                         shape = CircleShape
                                     )
                                     .align(Alignment.Center),
-                                contentScale = ContentScale.Crop,
-                                error = painterResource(id = R.drawable.ball)
+                                isCrossFadeEnabled = false,
+                                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                                onError = { Placeholder(R.drawable.ic_team_placeholder) }
+
                             )
 
                         } else {
-                            AsyncImage(
-                                model = BuildConfig.IMAGE_SERVER + state.logo,
-                                contentDescription = "",
+                            CoilImage(
+                                src = BuildConfig.IMAGE_SERVER + state.logo,
                                 modifier =
                                 Modifier
                                     .size(dimensionResource(id = R.dimen.size_160dp))
                                     .clip(CircleShape)
                                     .background(
-                                        color = ColorBWGrayStatus,
+                                        color = Color.Transparent,
                                         shape = CircleShape
                                     )
                                     .align(Alignment.Center),
-                                contentScale = ContentScale.Crop,
-                                error = painterResource(id = R.drawable.ball)
+                                isCrossFadeEnabled = false,
+                                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                                onError = { Placeholder(R.drawable.ic_team_placeholder) }
                             )
 
                         }

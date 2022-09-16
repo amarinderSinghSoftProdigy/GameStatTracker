@@ -1,6 +1,5 @@
 package com.softprodigy.ballerapp.ui.features.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -15,15 +14,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.compose.rememberImagePainter
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.theme.appColors
 
@@ -80,9 +76,8 @@ fun CoachFlowBackground(
                             modifier = Modifier.fillMaxSize()
                         )
                         teamLogo?.let {
-                            AsyncImage(
-                                model = it, contentDescription = null,
-                                contentScale = ContentScale.Crop,            // crop the image if it's not a square
+                            CoilImage(
+                                src = it,
                                 modifier = Modifier
                                     .size(dimensionResource(id = R.dimen.size_65dp))
                                     .clip(CircleShape)
@@ -92,7 +87,9 @@ fun CoachFlowBackground(
                                         CircleShape
                                     )
                                     .align(Alignment.Center),
-                                error = painterResource(id = R.drawable.ball)
+                                isCrossFadeEnabled = false,
+                                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                                onError = { Placeholder(R.drawable.ic_team_placeholder) }
                             )
                         }
                     }
