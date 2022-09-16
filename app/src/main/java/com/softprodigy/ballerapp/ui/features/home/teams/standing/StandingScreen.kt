@@ -39,6 +39,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.data.response.Categories
 import com.softprodigy.ballerapp.data.response.Standing
 import com.softprodigy.ballerapp.ui.features.components.AppTab
 import com.softprodigy.ballerapp.ui.features.components.AppText
@@ -81,7 +82,7 @@ fun StandingScreen(
                             index + 1,
                             standing = standing,
                             selected = state.selectedStanding == standing,
-                            key = state.categories[pagerState.currentPage]
+                            key = state.categories[pagerState.currentPage].key
                         ) {
                             onStandingSelectionChange.invoke(standing)
                         }
@@ -107,7 +108,7 @@ fun StandingListItem(
     onClick: (Standing) -> Unit
 ) {
     var points: String = ""
-    if (key == "Win %") {
+    if (key == "winPer") {
         points = standing.WinPer
     } else {
         val jsonPlayer = JSONObject(standing.toString())
@@ -227,14 +228,14 @@ enum class StandingTabItems(val stringId: String, val key: String) {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun StandingTopTabs(pagerState: PagerState, tabData: List<String>) {
+fun StandingTopTabs(pagerState: PagerState, tabData: List<Categories>) {
     val coroutineScope = rememberCoroutineScope()
     LazyRow {
         itemsIndexed(tabData) { index, item ->
             Row {
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
                 AppTab(
-                    title = item,
+                    title = item.name,
                     selected = pagerState.currentPage == index,
                     onClick = {
                         coroutineScope.launch {

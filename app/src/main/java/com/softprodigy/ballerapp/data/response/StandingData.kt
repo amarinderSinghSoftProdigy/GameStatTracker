@@ -6,7 +6,7 @@ import com.softprodigy.ballerapp.data.response.team.Player
 
 data class StandingData(
     @SerializedName("categories")
-    val categories: List<String> = emptyList(),
+    val categories: List<Categories> = emptyList(),
     @SerializedName("teamsStandings")
     val teamsStandings: List<Standing> = emptyList(),
 )
@@ -28,4 +28,11 @@ data class Standing(
         return json;
     }
 }
+
+
+data class Categories (
+    @SerializedName("name" ) val name : String = "",
+    @SerializedName("key"  ) val key  : String = ""
+
+)
 

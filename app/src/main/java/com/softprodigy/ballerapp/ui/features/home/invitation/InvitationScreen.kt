@@ -264,7 +264,8 @@ fun InvitationItem(
                 }
 
             }
-        } else if (invitation.status.equals(InvitationStatus.ACCEPT.status, ignoreCase = true)) {
+        } else if (invitation.status.equals(InvitationStatus.ACCEPT.status, ignoreCase = true) ||
+            invitation.status.equals(InvitationStatus.ACCEPTED.status, ignoreCase = true)) {
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -298,7 +299,8 @@ fun InvitationItem(
                     fontWeight = FontWeight.W500,
                 )
             }
-        } else if (invitation.status.equals(InvitationStatus.REJECT.status, ignoreCase = true)) {
+        } else if (invitation.status.equals(InvitationStatus.REJECT.status, ignoreCase = true)
+            || invitation.status.equals(InvitationStatus.DECLINED.status, ignoreCase = true)) {
             Row(
                 Modifier
                     .fillMaxWidth()
