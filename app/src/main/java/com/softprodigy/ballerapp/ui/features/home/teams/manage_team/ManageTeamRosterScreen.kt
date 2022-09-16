@@ -26,14 +26,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
 import com.google.accompanist.flowlayout.FlowRow
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
@@ -226,8 +224,8 @@ fun TeamUserListItem(
                     .size(dimensionResource(id = R.dimen.size_32dp))
                     .clip(CircleShape),
                 isCrossFadeEnabled = false,
-                onLoading = { Placeholder(R.drawable.ic_profile_placeholder) },
-                onError = {Placeholder(R.drawable.ic_profile_placeholder)}
+                onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
+                onError = {Placeholder(R.drawable.ic_user_profile_icon)}
                 )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
             Text(

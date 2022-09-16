@@ -20,7 +20,7 @@ data class Invitation(
 )
 
 enum class InvitationStatus(val status: String) {
-    ACCEPT("Accept"),
-    REJECT("Reject"),
+    ACCEPT("Accepted"),
+    REJECT("Rejected"),
     PENDING("Pending")
 }

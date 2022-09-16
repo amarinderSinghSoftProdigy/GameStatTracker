@@ -3,7 +3,17 @@ package com.softprodigy.ballerapp.ui.features.home.teams.roaster
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -29,7 +39,6 @@ import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
 import com.softprodigy.ballerapp.ui.features.components.Placeholder
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
-import com.softprodigy.ballerapp.ui.theme.ColorBWGrayStatus
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -135,8 +144,8 @@ fun CoachListItem(
                 .size(dimensionResource(id = R.dimen.size_80dp))
                 .clip(CircleShape),
             isCrossFadeEnabled = false,
-            onLoading = { Placeholder(R.drawable.ic_profile_placeholder) },
-            onError = { Placeholder(R.drawable.ic_profile_placeholder) }
+            onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
+            onError = { Placeholder(R.drawable.ic_user_profile_icon) }
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 

@@ -205,9 +205,9 @@ fun LeaderListItem(
                             shape = CircleShape
                         ),
                     onError = {
-                        Placeholder(R.drawable.ball)
+                        Placeholder(R.drawable.ic_user_profile_icon)
                     },
-                    onLoading = { Placeholder(R.drawable.ball) },
+                    onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
                     isCrossFadeEnabled = false
                 )
 

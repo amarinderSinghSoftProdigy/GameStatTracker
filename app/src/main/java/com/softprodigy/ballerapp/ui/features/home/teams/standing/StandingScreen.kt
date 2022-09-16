@@ -167,9 +167,9 @@ fun StandingListItem(
                         .size(dimensionResource(id = R.dimen.size_32dp))
                         .clip(CircleShape),
                     onError = {
-                        Placeholder(R.drawable.ball)
+                        Placeholder(R.drawable.ic_team_placeholder)
                     },
-                    onLoading = { Placeholder(R.drawable.ball) },
+                    onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
                     isCrossFadeEnabled = false
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))

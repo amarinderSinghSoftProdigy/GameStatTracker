@@ -2,15 +2,12 @@ package com.softprodigy.ballerapp.ui.features.home.home_screen
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
-import com.softprodigy.ballerapp.data.repository.TeamRepository
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,14 +25,14 @@ class HomeScreenViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
             }
         }
 
-    }*/
+    }
     init {
         viewModelScope.launch {
             getHomePageDetails()
         }
-    }
+    }*/
 
-    private suspend fun getHomePageDetails() {
+    suspend fun getHomePageDetails() {
         homeScreenState.value = homeScreenState.value.copy(isLoading = true)
         val homeResponse = teamRepo.getHomePageDetails()
         homeScreenState.value = homeScreenState.value.copy(isLoading = false)

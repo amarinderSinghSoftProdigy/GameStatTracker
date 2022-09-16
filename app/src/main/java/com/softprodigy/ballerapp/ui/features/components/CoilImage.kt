@@ -3,6 +3,8 @@ package com.softprodigy.ballerapp.ui.features.components
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -14,6 +16,7 @@ import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.CachePolicy
 import coil.request.ImageRequest
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
@@ -45,9 +48,11 @@ fun CoilImage(
 
 @Composable
 fun Placeholder(id: Int) {
-    Image(
-        painter = painterResource(id),
-        contentDescription = null,
-        modifier = Modifier.fillMaxSize(),
-    )
+    Surface(color = ColorBWGrayLight, shape = CircleShape) {
+        Image(
+            painter = painterResource(id),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+        )
+    }
 }
