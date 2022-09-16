@@ -2,6 +2,7 @@ package com.softprodigy.ballerapp.ui.features.sign_up
 
 import android.app.Application
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
@@ -89,15 +90,15 @@ class SignUpViewModel @Inject constructor(
             }
 
             is SignUpUIEvent.OnImageUploadSuccess -> {
-              /*  if (_signUpUiState.value.signUpData.token == null) {
-                    viewModelScope.launch {
-                        signUp()
-                    }
-                } else {
-                    viewModelScope.launch {
-                        updateUserProfile()
-                    }
-                }*/
+                /*  if (_signUpUiState.value.signUpData.token == null) {
+                      viewModelScope.launch {
+                          signUp()
+                      }
+                  } else {
+                      viewModelScope.launch {
+                          updateUserProfile()
+                      }
+                  }*/
                 viewModelScope.launch {
                     updateUserProfile()
                 }
@@ -107,7 +108,7 @@ class SignUpViewModel @Inject constructor(
                 viewModelScope.launch {
                     if (_signUpUiState.value.isSocialUser) /*Means we have token to call upload profile pic*/
                         imageUpload()
-                    else{
+                    else {
                         /*Means we don't have token to call upload profile pic*/
                         signUp()
                     }
@@ -190,6 +191,10 @@ class SignUpViewModel @Inject constructor(
                             role = event.role
                         )
                     )
+            }
+
+            is SignUpUIEvent.OnCountryCode -> {
+                _signUpUiState.value = _signUpUiState.value.copy(phoneCode = event.countryCode)
             }
         }
     }
@@ -351,6 +356,7 @@ class SignUpViewModel @Inject constructor(
 
             val signUpResponse =
                 IUserRepository.signUp(signUpDataRequest)
+
             _signUpUiState.value =
                 _signUpUiState.value.copy(isLoading = false)
             when (signUpResponse) {
@@ -370,14 +376,14 @@ class SignUpViewModel @Inject constructor(
                                 errorMessage = null,
                                 successMessage = response.statusMessage
                             )
-                          /*  _signUpChannel.send(
-                                SignUpChannel.OnSignUpSuccess(
-                                    UiText.DynamicString(
-                                        signUpResponse.value.statusMessage
-                                    )
-                                )
+                            /*  _signUpChannel.send(
+                                  SignUpChannel.OnSignUpSuccess(
+                                      UiText.DynamicString(
+                                          signUpResponse.value.statusMessage
+                                      )
+                                  )
 
-                            )*/
+                              )*/
                             imageUpload()
 
                         } else {
@@ -616,9 +622,9 @@ class SignUpViewModel @Inject constructor(
 
     private fun setToken(token: String, role: String, email: String) {
         viewModelScope.launch {
-            if (token.isNotEmpty()){
+            if (token.isNotEmpty()) {
                 dataStore.saveToken(token)
-                UserStorage.token=token
+                UserStorage.token = token
             }
             if (role.isNotEmpty())
                 dataStore.setRole(role)

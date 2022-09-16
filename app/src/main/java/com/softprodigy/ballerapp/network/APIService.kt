@@ -87,7 +87,6 @@ open interface APIService {
         @Query("limit") limit: Int
     ): BaseResponse<StandingData>
 
-
     @GET("${ApiConstants.COACH_PLAYER}/{id}")
     suspend fun getCoachPlayersByID(@Path("id") id: String): BaseResponse<RoasterResponse>
 

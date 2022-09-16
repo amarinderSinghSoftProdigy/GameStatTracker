@@ -506,10 +506,16 @@ fun ProfileSetUpScreen(
                                     backgroundColor = Color.Transparent
                                 )
                                 CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
-                                    state.phoneCode = getDefaultPhoneCode
+                                    /* state.phoneCode = getDefaultPhoneCode*/
+                                    signUpViewModel.onEvent(
+                                        SignUpUIEvent.OnCountryCode(
+                                            getDefaultPhoneCode
+                                        )
+                                    )
                                     TogiCountryCodePicker(
                                         pickedCountry = {
-                                            state.phoneCode = it.countryPhoneCode
+                                            /*  state.phoneCode = it.countryPhoneCode*/
+                                            signUpViewModel.onEvent(SignUpUIEvent.OnCountryCode(it.countryCode))
                                             defaultLang = it.countryCode
                                         },
                                         defaultCountry = getLibCountries().single { it.countryCode == defaultLang },
@@ -664,5 +670,6 @@ fun SheetLayout(
                 viewModel = signUpViewModel,
                 onDismiss = onDismiss,
             )
+
     }
 }

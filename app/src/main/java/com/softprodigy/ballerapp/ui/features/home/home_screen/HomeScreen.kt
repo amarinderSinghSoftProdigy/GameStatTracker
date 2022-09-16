@@ -375,7 +375,6 @@ fun RowScope.EventInviteItem(
                     iconSize = dimensionResource(id = R.dimen.size_10dp)
                 )
             }
-
         }
     }
 }
@@ -408,7 +407,6 @@ fun MessageComponent() {
                     .fillMaxWidth()
                     .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                 verticalAlignment = Alignment.CenterVertically,
-
                 ) {
                 Image(
                     painter = painterResource(id = R.drawable.user_demo),
