@@ -8,6 +8,7 @@ import com.softprodigy.ballerapp.data.request.ForgotPasswordRequest
 import com.softprodigy.ballerapp.data.request.LoginRequest
 import com.softprodigy.ballerapp.data.request.SignUpData
 import com.softprodigy.ballerapp.data.request.VerifyPhoneRequest
+import com.softprodigy.ballerapp.data.response.User
 import com.softprodigy.ballerapp.data.response.UserInfo
 import com.softprodigy.ballerapp.domain.BaseResponse
 import com.softprodigy.ballerapp.domain.repository.IUserRepository
@@ -51,9 +52,15 @@ class UserRepository @Inject constructor(
         return safeApiCall(dispatcher = dispatcher) { service.forgotPassword(requestBody) }
     }
 
-    override suspend fun updateUserProfile(userProfile: SignUpData): ResultWrapper<BaseResponse<Any>> {
+    override suspend fun updateUserProfile(userProfile: SignUpData): ResultWrapper<BaseResponse<UserInfo>> {
         return safeApiCall(dispatcher = dispatcher) {
             service.updateUserProfile(userProfile = userProfile)
+        }
+    }
+
+    override suspend fun getUserProfile(): ResultWrapper<BaseResponse<User>> {
+        return safeApiCall(dispatcher = dispatcher) {
+            service.getUserDetails()
         }
     }
 

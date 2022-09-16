@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -31,7 +32,6 @@ import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.ui.features.components.LeadingIconAppButton
 import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
 import com.softprodigy.ballerapp.ui.features.home.events.NewEventScreen
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -39,9 +39,9 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun EventsScreen(name: String?) {
+fun EventsScreen(name: String?, tabUpdate: (Int) -> Unit) {
     Box(Modifier.fillMaxSize()) {
-        TabLayout()
+        TabLayout(tabUpdate)
     }
 }
 
@@ -49,15 +49,15 @@ fun EventsScreen(name: String?) {
 // composable function for our tab layout
 @ExperimentalPagerApi
 @Composable
-fun TabLayout() {
+fun TabLayout(tabUpdate: (Int) -> Unit) {
     // on below line we are creating variable for pager state.
     val pagerState = rememberPagerState(pageCount = 3) // Add the count for number of pages
     Column(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Tabs(pagerState = pagerState)
-        TabsContent(pagerState = pagerState)
+        Tabs(pagerState = pagerState, tabUpdate)
+        TabsContent(pagerState = pagerState, tabUpdate)
     }
 }
 
@@ -65,7 +65,7 @@ fun TabLayout() {
 // creating a function for tabs
 @ExperimentalPagerApi
 @Composable
-fun Tabs(pagerState: PagerState) {
+fun Tabs(pagerState: PagerState, tabUpdate: (Int) -> Unit) {
     val list = listOf(
         TabItems.Events,
         TabItems.Leagues,
@@ -87,7 +87,7 @@ fun Tabs(pagerState: PagerState) {
         list.forEachIndexed { index, item ->
             Tab(
                 text = {
-                    Row {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             painter = painterResource(id = item.icon),
                             contentDescription = null,
@@ -104,6 +104,7 @@ fun Tabs(pagerState: PagerState) {
                 selected = pagerState.currentPage == index,
                 onClick = {
                     scope.launch {
+                        tabUpdate(index)
                         pagerState.animateScrollToPage(index)
                     }
                 }
@@ -116,9 +117,18 @@ fun Tabs(pagerState: PagerState) {
 // in which we will be displaying the individual page of our tab .
 @ExperimentalPagerApi
 @Composable
-fun TabsContent(pagerState: PagerState) {
+fun TabsContent(pagerState: PagerState, tabUpdate: (Int) -> Unit) {
     HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
         when (page) {
+            0 -> {
+                TabContentScreen(data = "Welcome to Home Screen")
+            }
+            1 -> {
+                TabContentScreen(data = "Welcome to Shopping Screen")
+            }
+            2 -> {
+                TabContentScreen(data = "Welcome to Settings Screen")
+            }
             0 -> NewEventScreen()
             1 -> TabContentScreen(data = "Welcome to Shopping Screen")
             2 -> TabContentScreen(data = "Welcome to Settings Screen")
@@ -147,6 +157,7 @@ fun BoxScope.TabContentScreen(data: String) {
             color = MaterialTheme.appColors.textField.label,
             text = stringResource(id = R.string.no_upcoming_events),
             fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
+            fontWeight = FontWeight.W700
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
         Text(
@@ -156,14 +167,13 @@ fun BoxScope.TabContentScreen(data: String) {
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
-        LeadingIconAppButton(
-            icon = painterResource(id = R.drawable.ic_add_player),
-            text = stringResource(id = R.string.add_events),
-            onClick = {},
-        )
+        /* LeadingIconAppButton(
+             icon = painterResource(id = R.drawable.ic_add_player),
+             text = stringResource(id = R.string.add_events),
+             onClick = {},
+         )*/
     }
 }
-
 
 enum class TabItems(val icon: Int, val stringId: String) {
     Events(R.drawable.ic_events, stringId = "my_events"),

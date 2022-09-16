@@ -41,6 +41,10 @@ object Route {
     const val TEAM_SETUP_SCREEN = "teamSetupScreen"
     const val ADD_PLAYER_SCREEN = "addPlayerScreen"
     const val PROFILE_SETUP_SCREEN = "profileSetupScreen"
+    const val ROASTER_SCREEN = "roasterScreen"
+    const val MANAGED_TEAM_SCREEN = "managedTeamScreen"
+    const val SELECT_PROFILE = "selectProfile"
+    const val INVITATION_SCREEN="invitationScreen"
 }
 
 object ApiConstants {
@@ -50,7 +54,14 @@ object ApiConstants {
     const val UPLOAD_SINGLE_IMAGE = "v1/upload/single"
     const val CREATE_TEAM = "v1/team"
     const val GET_TEAMS = "v1/team"
-
+    const val GET_TEAM_BY_ID = "v1/team/getTeamById"
+    const val GET_LEADER_BOARD = "v1/team/getTeamLeaderBoard"
+    const val COACH_PLAYER = "v1/team/coachPlayers"
+    const val GET_TEAM_STANDING = "v1/team/standings"
+    const val SEND_INVITATION = "v1/team/inviteTeamMembers"
+    const val GET_ALL_INVITATION = "v1/team/getAllTeamsInvitations"
+    const val ACCEPT_TEAM_INVITATION = "v1/team/acceptTeamInvitation"
+    const val REJECT_TEAM_INVITATION = "v1/team/rejectTeamInvitation"
 
     const val SOCIAL_LOGIN = "/social_login"
     const val SIGNUP = "v1/auth/register"
@@ -60,6 +71,9 @@ object ApiConstants {
     const val CONFIRM_PHONE = "v1/auth/confirmPhone"
     const val RESET_PASS = "/reset/password/"
     const val RESEND_OTP = "/resendOtp"
+    const val UPDATE_TEAM = "v1/team/update"
+    const val GET_USER_DETAILS="v1/auth/getUserProfile"
+    const val GET_HOME_PAGE_DETAILS="v1/coach/event/getHomePageDetails"
     const val first_name = "first_name"
     const val last_name = "lastName"
     const val mobile = "mobile"
@@ -74,4 +88,7 @@ object ApiConstants {
 object RequestCode {
     const val GOOGLE_ACCESS = 100
 
+}
+object IntentData{
+    const val FROM_SPLASH = "fromSplash"
 }

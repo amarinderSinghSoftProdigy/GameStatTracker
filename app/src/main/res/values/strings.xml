@@ -22,12 +22,14 @@
     <string name="or_login_with">Or Login With</string>
     <string name="your_name">Full Name</string>
     <string name="create_account">Create Account</string>
+    <string name="accepted">Accepted</string>
+    <string name="accept">Accept</string>
     <string name="your_password">Enter password</string>
     <string name="ur_password">Your password</string>
     <string name="confirm_your_password">Enter Confirm password</string>
     <string name="generic_error">Generic Error</string>
     <string name="email_error">Enter a valid Email</string>
-    <string name="password_error">Password must contain at least one lower, one upper , one Special character, numeric character,minimum 6 characters and maximum 16 characters</string>
+    <string name="password_error">Password must contain at least\n - one lower, one upper, one Special character,\n - numeric character,\n - min 6 characters and max 16 characters</string>
     <string name="confirm_password_error">Confirm Password must be same as password </string>
     <string name="forgot_password_subtitle">Enter registered e-mail to receive password reset instruction.</string>
     <string name="send">Send</string>
@@ -47,8 +49,8 @@
     <string name="setup_your_team">Set up your team</string>
     <string name="team_logo">Team Logo</string>
     <string name="team_name">Team Name</string>
-    <string name="or_sign_in_with">or sign in with</string>
-    <string name="or_sign_up_with">or sign up with</string>
+    <string name="or_sign_in_with">or sign-in with</string>
+    <string name="or_sign_up_with">or sign-up with</string>
     <string name="baller">Baller</string>
     <string name="what_type_of_user_are_you">What type of user are you?</string>
     <string name="your_team_name">Your team name</string>
@@ -58,10 +60,13 @@
     <string name="back">Back</string>
     <string name="colors">Colors</string>
     <string name="add_players">Add players</string>
+    <string name="add_player">Add Player</string>
     <string name="invite_players">Invite Players</string>
+    <string name="invite_team_member">Invite \nTeam Members</string>
     <string name="search">Search</string>
     <string name="added_players">Added Players</string>
     <string name="search_by_name_or_email">Search by name or email</string>
+    <string name="invited_player">Invited Players</string>
 
     <string name="get_started"> Get Started</string>
     <string name="name">Name</string>
@@ -85,6 +90,7 @@
     <string name="valid_team_name">Team name must contain alphanumeric character and use only these special character @ and $</string>
     <string name="valid_search">Invalid Keyword</string>
     <string name="alert_remove_player">Are you sure you want to remove the player?</string>
+    <string name="alert_decline_invitation">Are you sure you decline this team request?</string>
     <string name="enter_valid_full_name">Please enter a valid name</string>
     <string name="enter_full_name">Enter Full Name</string>
     <string name="verify_number">Verify Phone Number</string>
@@ -94,7 +100,7 @@
 
     <string name="home_label">Home</string>
     <string name="events_label">Events</string>
-    <string name="teams_label">Teams</string>
+    <string name="teams_label">Team</string>
     <string name="player_label">Player</string>
     <string name="parent_label">Parent</string>
     <string name="game_staff_label">Game Staff</string>
@@ -106,22 +112,23 @@
     <string name="pick_team">Pick Team</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
-    <string name="sign_up">Signup</string>
+    <string name="sign_up">Sign-up</string>
     <string name="new_user">New User?</string>
+    <string name="create">Create</string>
 
     <string name="already_registered">Already Registered?</string>
     <string name="enter_otp">Enter OTP</string>
-    <string name="welcome_back">Welcome Back!</string>
+    <string name="welcome_back">Welcome back!</string>
     <string name="hey_label">Hey name,</string>
     <string name="pending_rsvp_label">Pending RSVPs</string>
     <string name="opportunities_label">Opportunities to play</string>
     <string name="player_already_added">Player already added</string>
     <string name="something_went_wrong">Something went wrong</string>
-    <string name="signin">SignIn</string>
+    <string name="signin">Sign-in</string>
     <string name="no_players_in_team">No players in your team</string>
     <string name="add_players_to_use_app">Add new players to create teams and events.</string>
     <string name="no_upcoming_events">No Upcoming Events</string>
-    <string name="add_events_to_use_app">Add eveents to other features of app.</string>
+    <string name="add_events_to_use_app">Add events to other features of app.</string>
     <string name="add_events">Add Event</string>
     <string name="my_events">My Events</string>
     <string name="my_leagues">My Leagues</string>
@@ -134,8 +141,62 @@
     <string name="gallery">Gallery</string>
     <string name="select_image_from">Select image from</string>
     <string name="logout_message">Are you sure you want to logout?</string>
+    <string name="submit">Submit</string>
+    <string name="standings">Standings</string>
+    <string name="chat">Chat</string>
+    <string name="roaster">Roster</string>
+    <string name="leaderboard">Leaderboard</string>
+    <string name="leaderboards">Leaderboards</string>
+    <string name="record_label">Record</string>
+    <string name="win_percent_label">Win %</string>
+    <string name="gb_label">GB</string>
+    <string name="away_label">Away</string>
+    <string name="pf_label">PF</string>
+    <string name="player">player</string>
+    <string name="coaches">Coaches</string>
+    <string name="add_uers">Add User</string>
+    <string name="select_all">Select All</string>
+
+    <string name="points_label">Points</string>
+    <string name="points_guard">Points Guards</string>
+    <string name="rebounds_label">Rebounds</string>
+    <string name="_3s_label">3\'s</string>
+    <string name="fts_label">FT\'s</string>
+    <string name="fg_percent_label">FG%</string>
+    <string name="assistance_label">Assistance</string>
+    <string name="profile_label">Profile</string>
+    <string name="add_new_team_member">Add New Team Member</string>
+    <string name="create_new_team">Create New Team</string>
+    <string name="select_profile">Select Profile</string>
+    <string name="primary_team_color">Primary Team Color</string>
+    <string name="secondary_team_color">Secondary Team Color</string>
+    <string name="tertiary_team_color">Tertiary Team Color</string>
+    <string name="create_a_team">Create a Team</string>
+    <string name="add">Add</string>
+
+    <string name="welcome_to_total_hoop">Welcome to Total Hoop</string>
+    <string name="team_total_hoop">Team Total Hoop</string>
+    <string name="opportunities_to_play">Opportunities To Play</string>
+    <string name="opportunities_to_work">Opportunities To Work</string>
+    <string name="four">4</string>
+    <string name="team">Team</string>
+    <string name="manage_team">Manage Team</string>
+    <string name="coming_soon">Coming Soon!</string>
+    <string name="all_leagues">All Leagues</string>
+    <string name="leagues">Leagues</string>
+    <string name="decline">Decline</string>
+    <string name="declined">Declined</string>
+    <string name="invitation">Invitation</string>
+    <string name="sent_by">Sent by</string>
+    <string name="what_is_your_role">What is your role on this team?</string>
+    <string name="finish">Finish</string>
+    <string name="resend_code_in">Resend code in</string>
+    <string name="pending_invitations">Pending Invitation</string>
+    <string name="invite">Invite</string>
+    <string name="invite_members">Invite Members</string>
+    <string name="please_add_players">Please invite players to the team.</string>
     <string name="practice">Practice</string>
     <string name="game">Game</string>
     <string name="activity">Activity</string>
-    
+
 </resources>

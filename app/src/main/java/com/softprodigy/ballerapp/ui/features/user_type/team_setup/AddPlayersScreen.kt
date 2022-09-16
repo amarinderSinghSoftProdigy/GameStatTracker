@@ -1,5 +1,5 @@
 package com.softprodigy.ballerapp.ui.features.user_type.team_setup
-
+/*
 import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -112,7 +112,7 @@ fun AddPlayersScreen(
                 style = MaterialTheme.typography.h3,
                 color = ColorBWBlack
             )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_30dp)))
 
             UserFlowBackground(modifier = Modifier.weight(1F)) {
                 Column(
@@ -139,7 +139,8 @@ fun AddPlayersScreen(
                             colors = TextFieldDefaults.outlinedTextFieldColors(
                                 focusedBorderColor = ColorBWGrayBorder,
                                 unfocusedBorderColor = ColorBWGrayBorder,
-                                cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                                cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                backgroundColor = MaterialTheme.appColors.material.background
                             ),
                             placeholder = {
                                 Text(
@@ -149,12 +150,12 @@ fun AddPlayersScreen(
                             },
                             singleLine = true
                         )
-                        /*Icon(
+                        *//*Icon(
                             painter = painterResource(id = R.drawable.ic_scanner),
                             contentDescription = "",
                             modifier = Modifier.padding(dimensionResource(id = R.dimen.size_16dp)),
                             tint = Color.Unspecified
-                        )*/
+                        )*//*
                     }
 
                     if (!validName(state.search) && state.search.isNotEmpty()) {
@@ -198,7 +199,7 @@ fun AddPlayersScreen(
                                 })
                     }
 
-                    if (state.selectedPlayers.isNotEmpty()) {
+                    if (state.selectedPlayers.isNotEmpty() || state.search.isNotEmpty()) {
                         Row(
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically,
@@ -206,26 +207,27 @@ fun AddPlayersScreen(
                         ) {
                             Row {
                                 AppText(
-                                    text = stringResource(id = R.string.added_players),
+                                    text = stringResource(id = R.string.invited_player),
                                     fontWeight = FontWeight.W500,
                                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                                     color = ColorBWBlack
                                 )
 
                                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-
-                                AppText(
-                                    text = state.selectedPlayers.size.toString(),
-                                    fontWeight = FontWeight.W500,
-                                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                                    color = MaterialTheme.appColors.textField.label
-                                )
+                                if (state.selectedPlayers.isNotEmpty()) {
+                                    AppText(
+                                        text = state.selectedPlayers.size.toString(),
+                                        fontWeight = FontWeight.W500,
+                                        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                                        color = MaterialTheme.appColors.textField.label
+                                    )
+                                }
                             }
 
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_info),
                                 contentDescription = "",
-                                modifier = Modifier.padding(dimensionResource(id = R.dimen.size_20dp)),
+                                modifier = Modifier.padding(dimensionResource(id = R.dimen.size_10dp)),
                                 tint = Color.Unspecified
                             )
                         }
@@ -260,7 +262,6 @@ fun AddPlayersScreen(
                     if (teamId.isNullOrEmpty()) {
                         vm.onEvent(TeamSetupUIEvent.OnAddPlayerScreenNext)
                     } else {
-                        //TODO Add uupdate team api and add the newly selected player in the api.
                     }
                 },
                 enableState = state.selectedPlayers.isNotEmpty(),
@@ -367,7 +368,7 @@ fun PlayerListItem(
                 modifier = Modifier.weight(1f)
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
-            AddRemoveButton(icon, teamColor = "0177C1") { onItemClick(player) }
+            AddRemoveButton(icon, teamColor = teamColor) { onItemClick(player) }
         }
     }
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
@@ -380,7 +381,7 @@ fun AddRemoveButton(icon: Painter, teamColor: String, onItemClick: () -> Unit) {
             .size(dimensionResource(id = R.dimen.size_20dp))
             .background(
                 shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)),
-                color = Color(android.graphics.Color.parseColor("#$teamColor"))
+                            color = Color(android.graphics.Color.parseColor("#$teamColor"))
             )
     ) {
 
@@ -393,4 +394,4 @@ fun AddRemoveButton(icon: Painter, teamColor: String, onItemClick: () -> Unit) {
             tint = Color.White
         )
     }
-}
+}*/

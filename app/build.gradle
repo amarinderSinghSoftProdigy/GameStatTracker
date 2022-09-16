@@ -7,14 +7,14 @@ plugins {
 }
 
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.softprodigy.ballerapp"
         minSdk 21
-        targetSdk 32
+        targetSdk 33
         versionCode 1
-        versionName "1.0"
+        versionName "1.7"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -52,6 +52,7 @@ android {
         create("demo") {
             dimension = "ballerapp"
             buildConfigField("String", "API_SERVER", "\"https://ballerapi.softprodigy.in/api/\"")
+//            buildConfigField("String", "API_SERVER", "\"https://ballerapi-qa.softprodigy.in/api/\"")
             buildConfigField("String", "SERVER", "\"http://baller-app.softprodigyphp.in\"")
             buildConfigField("String", "IMAGE_SERVER", "\"http://ballerapp.s3.us-east-2.amazonaws.com/\"")
             buildConfigField("Integer", "CONNECT_TIMEOUT", "120")
@@ -62,6 +63,8 @@ android {
         create("develop") {
             dimension = "ballerapp"
             buildConfigField("String", "API_SERVER", "\"https://ballerapi.softprodigy.in/api/\"")
+//            buildConfigField("String", "API_SERVER", "\"https://ballerapi-qa.softprodigy.in/api/\"")
+
             buildConfigField("String", "SERVER", "\"http://baller-app.softprodigyphp.in\"")
             buildConfigField("String", "IMAGE_SERVER", "\"http://ballerapp.s3.us-east-2.amazonaws.com/\"")
             buildConfigField("Integer", "CONNECT_TIMEOUT", "120")
@@ -153,4 +156,9 @@ dependencies {
     implementation "com.google.accompanist:accompanist-pager:0.13.0"
     implementation "com.google.accompanist:accompanist-pager-indicators:0.13.0"
     implementation project(path: ':ccp')
+
+    implementation 'id.zelory:compressor:3.0.1'
+    implementation 'androidx.compose.ui:ui-util:1.0.0-alpha10'
+    implementation 'com.google.accompanist:accompanist-flowlayout:0.20.0'
+
 }

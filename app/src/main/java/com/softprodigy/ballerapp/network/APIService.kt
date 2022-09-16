@@ -6,13 +6,16 @@ import com.softprodigy.ballerapp.data.request.CreateTeamRequest
 import com.softprodigy.ballerapp.data.request.ForgotPasswordRequest
 import com.softprodigy.ballerapp.data.request.LoginRequest
 import com.softprodigy.ballerapp.data.request.SignUpData
+import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
+import com.softprodigy.ballerapp.data.request.UpdateTeamRequest
 import com.softprodigy.ballerapp.data.request.VerifyPhoneRequest
-import com.softprodigy.ballerapp.data.response.CreateTeamResponse
-import com.softprodigy.ballerapp.data.response.ImageUpload
-import com.softprodigy.ballerapp.data.response.Player
-import com.softprodigy.ballerapp.data.response.Team
-import com.softprodigy.ballerapp.data.response.UserInfo
+import com.softprodigy.ballerapp.data.response.*
+import com.softprodigy.ballerapp.data.response.homepage.HomePageCoachModel
+import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
+import com.softprodigy.ballerapp.data.response.team.Player
+import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.domain.BaseResponse
+import com.softprodigy.ballerapp.ui.features.home.invitation.Invitation
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -24,7 +27,7 @@ import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-interface APIService {
+open interface APIService {
 
     @POST(ApiConstants.LOGIN)
     suspend fun userLogin(@Body loginRequest: LoginRequest): BaseResponse<UserInfo>
@@ -47,13 +50,20 @@ interface APIService {
     suspend fun createTeam(@Body request: CreateTeamRequest): BaseResponse<CreateTeamResponse>
 
     @GET(ApiConstants.GET_TEAMS)
-    suspend fun getTeams(   @Query("page") page: Int,
-                            @Query("limit") limit: Int,
-                            @Query("sort") sort: String):BaseResponse<ArrayList<Team>>
+    suspend fun getTeams(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int,
+        @Query("sort") sort: String
+    ): BaseResponse<ArrayList<Team>>
 
-    @GET("${ApiConstants.GET_TEAMS}/{id}")
+    @GET(ApiConstants.GET_TEAM_BY_ID)
     suspend fun getTeamsByTeamId(
-        @Path("id") id: String
+        @Query("teamId") id: String
+    ): BaseResponse<Team>
+
+    @GET(ApiConstants.GET_LEADER_BOARD)
+    suspend fun getLeaderBoard(
+        @Query("teamId") id: String
     ): BaseResponse<Team>
 
     @POST(ApiConstants.VERIFY_PHONE)
@@ -69,6 +79,40 @@ interface APIService {
     suspend fun forgotPassword(@Body forgotPasswordRequest: ForgotPasswordRequest): BaseResponse<Any>
 
     @PUT(ApiConstants.UPDATE_PROFILE)
-    suspend fun updateUserProfile(@Body userProfile: SignUpData): BaseResponse<Any>
+    suspend fun updateUserProfile(@Body userProfile: SignUpData): BaseResponse<UserInfo>
+
+    @GET(ApiConstants.GET_TEAM_STANDING)
+    suspend fun getTeamStandings(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int
+    ): BaseResponse<StandingData>
+
+    @GET("${ApiConstants.COACH_PLAYER}/{id}")
+    suspend fun getCoachPlayersByID(@Path("id") id: String): BaseResponse<RoasterResponse>
+
+    @PUT(ApiConstants.SEND_INVITATION)
+    suspend fun sendInvitation(@Body updateTeamRequest: UpdateTeamRequest): BaseResponse<Any>
+
+    @GET(ApiConstants.GET_ALL_INVITATION)
+    suspend fun getAllInvitation(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int,
+        @Query("sort") sort: String
+    ): BaseResponse<ArrayList<Invitation>>
+
+    @PUT(ApiConstants.ACCEPT_TEAM_INVITATION)
+    suspend fun acceptTeamInvitation(@Body request: RequestBody): BaseResponse<Any>
+
+    @PUT(ApiConstants.REJECT_TEAM_INVITATION)
+    suspend fun rejectTeamInvitation(@Body request: RequestBody): BaseResponse<Any>
+
+    @PUT(ApiConstants.UPDATE_TEAM)
+    suspend fun updateTeamDetails(@Body updateTeamRequest: UpdateTeamDetailRequest): BaseResponse<Any>
+
+    @GET(ApiConstants.GET_USER_DETAILS)
+    suspend fun getUserDetails():BaseResponse<User>
+
+    @GET(ApiConstants.GET_HOME_PAGE_DETAILS)
+    suspend fun getHomePageDetails():BaseResponse<HomePageCoachModel>
 
 }

@@ -7,7 +7,8 @@ data class SignUpUIState(
     var errorMessage: String? = null,
     var successMessage: String? = null,
     var signUpData: SignUpData = SignUpData(),
-    val token: String? = null,
+//    val token: String? = null,
     var phoneCode: String ?= null,
-    var registered: Boolean = false
+    var registered: Boolean = false,
+    var isSocialUser:Boolean=false
 )

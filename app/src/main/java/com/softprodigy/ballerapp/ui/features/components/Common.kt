@@ -5,24 +5,10 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -41,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.ui.theme.ButtonColor
 import com.softprodigy.ballerapp.ui.theme.appColors
 
@@ -73,43 +60,71 @@ fun TabBar(
 
 @Composable
 fun BoxScope.CommonTabView(
-    canMoveBack: Boolean = true,
-    user: BottomNavKey,
-    label: String = "",
-    icon: Painter,
-    onLabelClick: () -> Unit,
-    iconClick: () -> Unit
+    topBarData: TopBarData,
+    userRole: String,
+    backClick: () -> Unit = {},
+    iconClick: (() -> Unit)? = null,
+    labelClick: (() -> Unit)? = null,
 ) {
+    if (topBarData.topBar == TopBar.EMPTY) {
+        return
+    }
 
-    if (canMoveBack) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_back),
-            contentDescription = "",
-            modifier = Modifier
-                .clickable { }
-                .align(Alignment.CenterStart),
-            tint = Color.White
-        )
+    if (topBarData.topBar.back) {
+        Box(modifier = Modifier
+            .align(Alignment.CenterStart)
+            .clickable {
+                backClick()
+            }) {
+            Icon(
+                modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                painter = painterResource(id = R.drawable.ic_back),
+                contentDescription = "", tint = Color.White
+            )
+        }
+    } else if (topBarData.topBar == TopBar.MY_EVENT) {
+        Box(modifier = Modifier
+            .align(Alignment.CenterStart)
+            .clickable {
+
+            }) {
+            Icon(
+                modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                painter = painterResource(id = R.drawable.ic_dots),
+                contentDescription = "", tint = Color.White
+            )
+        }
     }
 
     Row(
         modifier = Modifier
             .align(Alignment.Center)
             .background(Color.Transparent)
-            .clickable {
-                if (user == BottomNavKey.TEAMS)
-                    onLabelClick()
+            .clickable(enabled = topBarData.topBar == TopBar.TEAMS) {
+                if (topBarData.topBar == TopBar.TEAMS) {
+                    if (labelClick != null) {
+                        labelClick()
+                    }
+                }
             }
             .padding(all = dimensionResource(id = R.dimen.size_16dp)),
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        val label = if (topBarData.topBar.stringId.isEmpty()) {
+            if (!topBarData.label.isNullOrEmpty())
+                topBarData.label
+            else
+                stringResource(id = R.string.app_name)
+        } else {
+            stringResourceByName(name = topBarData.topBar.stringId)
+        }
         Text(
             textAlign = TextAlign.Center,
             text = label,
             style = MaterialTheme.typography.h3,
             color = Color.White
         )
-        if (user == BottomNavKey.TEAMS) {
+        if (topBarData.topBar == TopBar.TEAMS) {
             AppSpacer(Modifier.size(dimensionResource(id = R.dimen.size_5dp)))
             Icon(
                 painter = painterResource(id = R.drawable.ic_arrow_down),
@@ -118,15 +133,54 @@ fun BoxScope.CommonTabView(
             )
         }
     }
-    Icon(
-        painter = icon,
-        contentDescription = "",
-        modifier = Modifier
-            .align(Alignment.CenterEnd)
-            .clickable { iconClick() }
-            .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-        tint = Color.White
-    )
+
+    var icon: Painter? = null
+    //Add the checks where we want to display the icon on the right corner
+    when (topBarData.topBar) {
+        TopBar.TEAMS -> {
+            if (userRole.equals(UserType.COACH.key, ignoreCase = true))
+                icon = painterResource(id = R.drawable.ic_settings)
+        }
+        TopBar.MY_EVENT -> {
+            icon = painterResource(id = R.drawable.ic_add_circle)
+        }
+        TopBar.EVENT_OPPORTUNITIES -> {
+            icon = painterResource(id = R.drawable.ic_filter)
+        }
+        else -> {}
+    }
+    icon?.let {
+        Icon(
+            painter = icon,
+            contentDescription = "",
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .clickable {
+                    if (iconClick != null) {
+                        iconClick()
+                    }
+                }
+                .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+            tint = Color.White
+        )
+    }
+
+    if (TopBar.MANAGE_TEAM == topBarData.topBar) {
+        Text(
+            textAlign = TextAlign.Center,
+            text = stringResource(id = R.string.save),
+            style = MaterialTheme.typography.h5,
+            color = Color.White,
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .clickable {
+                    if (iconClick != null) {
+                        iconClick()
+                    }
+                }
+                .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+        )
+    }
 
 }
 
@@ -203,9 +257,9 @@ fun DialogButton(
         color = if (onlyBorder)
             Color.Transparent
         else if (enabled)
-            MaterialTheme.appColors.material.primaryVariant
+            AppConstants.SELECTED_COLOR
         else
-            Color.Transparent,
+            colors.bckgroundDisabled,
         contentColor = contentColor.copy(alpha = 1f),
         border = border,
     ) {
@@ -223,4 +277,30 @@ fun DialogButton(
             }
         }
     }
+}
+
+@Composable
+fun CommonProgressBar() {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        CircularProgressIndicator(
+            color = MaterialTheme.appColors.material.primaryVariant
+        )
+    }
+}
+
+data class TopBarData(
+    val label: String? = "",
+    val topBar: TopBar,
+)
+
+enum class TopBar(val stringId: String, val back: Boolean) {
+    PROFILE(stringId = "profile_label", back = false),
+    MY_EVENT(stringId = "events_label", back = false),
+    EVENT_LEAGUES(stringId = "events_label", back = false),
+    TEAMS(stringId = "teams_label", back = false),
+    EVENT_OPPORTUNITIES(stringId = "events_label", back = false),
+    MANAGE_TEAM(stringId = "", back = true),
+    SINGLE_LABEL_BACK(stringId = "", back = true),
+    SINGLE_LABEL(stringId = "", back = false),
+    EMPTY(stringId = "", back = false),
 }

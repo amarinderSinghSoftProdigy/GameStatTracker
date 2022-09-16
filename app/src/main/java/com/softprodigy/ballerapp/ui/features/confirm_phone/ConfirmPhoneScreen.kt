@@ -50,11 +50,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.Text
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpUIEvent
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpViewModel
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -68,8 +70,25 @@ import kotlin.time.ExperimentalTime
 fun ConfirmPhoneScreen(
     viewModel: SignUpViewModel,
     phoneNumber: String,
-    onDismiss:()->Unit
+    onDismiss: () -> Unit
 ) {
+
+    /*For
+    Timer*/
+
+    var size by remember {
+        mutableStateOf(IntSize.Zero)
+    }
+    // create variable for value
+    var value by remember {
+        mutableStateOf(1f)
+    }
+    // create variable for current time
+    var currentTime by remember {
+        mutableStateOf(59L * 1000L)
+    }
+
+    val totalTime = 59L * 1000L
 
     val (editValue, setEditValue) = remember { mutableStateOf("") }
     val otpLength = remember { 6 }
@@ -80,11 +99,11 @@ fun ConfirmPhoneScreen(
     val scope = rememberCoroutineScope()
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    var ticks by remember { mutableStateOf(0) }
-    LaunchedEffect(Unit) {
-        while(true) {
-            delay(1.seconds)
-            ticks++
+    LaunchedEffect(key1 = currentTime) {
+        if (currentTime > 0) {
+            delay(100L)
+            currentTime -= 100L
+            value = currentTime / totalTime.toFloat()
         }
     }
 
@@ -96,7 +115,6 @@ fun ConfirmPhoneScreen(
                 vertical = dimensionResource(id = R.dimen.size_20dp)
             )
     ) {
-
 
         Column(
             modifier = Modifier
@@ -114,6 +132,7 @@ fun ConfirmPhoneScreen(
                         .size(dimensionResource(id = com.softprodigy.ballerapp.R.dimen.size_16dp))
                         .clickable {
                             onDismiss.invoke()
+                            currentTime = 59L * 1000L
                         }
                 )
             }
@@ -121,7 +140,7 @@ fun ConfirmPhoneScreen(
             Spacer(modifier = Modifier.height(dimensionResource(id = com.softprodigy.ballerapp.R.dimen.size_100dp)))
 
             Image(
-                painter = painterResource(id = com.softprodigy.ballerapp.R.drawable.ic_logo),
+                painter = painterResource(id = R.drawable.ic_logo),
                 contentDescription = null,
                 modifier = Modifier
                     .height(dimensionResource(id = com.softprodigy.ballerapp.R.dimen.size_95dp))
@@ -130,9 +149,8 @@ fun ConfirmPhoneScreen(
 
             Spacer(modifier = Modifier.height(dimensionResource(id = com.softprodigy.ballerapp.R.dimen.size_60dp)))
 
-
             AppText(
-                text = stringResource(id = com.softprodigy.ballerapp.R.string.enter_otp),
+                text = stringResource(id = R.string.enter_otp),
                 style = MaterialTheme.typography.h6,
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                 modifier = Modifier.fillMaxWidth(),
@@ -211,6 +229,7 @@ fun ConfirmPhoneScreen(
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
 
+
             val annotatedText = buildAnnotatedString {
 
                 withStyle(
@@ -237,25 +256,52 @@ fun ConfirmPhoneScreen(
                 pop()
 
             }
+            val timer = buildAnnotatedString {
 
-            ClickableText(
-                text = annotatedText,
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally),
-                onClick = {
-                    annotatedText.getStringAnnotations(
-                        tag = "Resend Code",
-                        start = it,
-                        end = it
-                    ).forEach { _ ->
-                        viewModel.onEvent(
-                            SignUpUIEvent.OnVerifyNumber
-                        )
-                    }
-                },
-                style = MaterialTheme.typography.h4
-            )
+                withStyle(
+                    style = SpanStyle(
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    )
+                ) {
+                    append(stringResource(id = R.string.resend_code_in))
+                }
+                append(" ")
 
+                withStyle(
+                    style = SpanStyle(
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    )
+                ) {
+                    append("00:" + if ((currentTime / 1000L).toString().length == 1) "0" + (currentTime / 1000L).toString() else (currentTime / 1000L).toString())
+                }
+            }
+            if (currentTime <= 0L) {
+                ClickableText(
+                    text = annotatedText,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally),
+                    onClick = {
+                        annotatedText.getStringAnnotations(
+                            tag = "Resend Code",
+                            start = it,
+                            end = it
+                        ).forEach { _ ->
+                            viewModel.onEvent(
+                                SignUpUIEvent.OnVerifyNumber
+                            )
+                        }
+                        currentTime = 59L * 1000L
+                    },
+                    style = MaterialTheme.typography.h4
+                )
+            } else {
+
+                Text(
+                    text = timer,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally),
+                )
+            }
         }
     }
 }

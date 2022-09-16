@@ -33,7 +33,7 @@ import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 
 @Composable
 fun UserTypeScreen(
-    onNextClick: () -> Unit,
+    onNextClick: (String) -> Unit,
     signUpvm: SignUpViewModel
 ) {
     Box(
@@ -47,7 +47,7 @@ fun UserTypeScreen(
 @SuppressLint("RememberReturnType")
 @Composable
 fun UserTypeSelector(
-    onNextClick: () -> Unit,
+    onNextClick: (String) -> Unit,
     signUpvm: SignUpViewModel,
 ) {
 
@@ -68,7 +68,6 @@ fun UserTypeSelector(
     val onSelectionChange = { text: String ->
         selectedUserType.value = text
     }
-
 
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val column = createRef()
@@ -127,13 +126,14 @@ fun UserTypeSelector(
                     top.linkTo(column.bottom)
                     end.linkTo(parent.end)
                     bottom.linkTo(parent.bottom)
-                }) {
+                })
+        {
             BottomButtons(
                 firstText = stringResource(id = R.string.back),
                 secondText = stringResource(id = R.string.next),
                 onBackClick = { },
                 onNextClick = {
-                    onNextClick.invoke()
+                    onNextClick.invoke(selectedUserType.value ?: "")
                 },
                 enableState = (selectedUserType.value ?: "").isNotEmpty(),
                 showOnlyNext = true,

@@ -1,5 +1,6 @@
-package com.softprodigy.ballerapp.ui.features.user_type.team_setup
 
+package com.softprodigy.ballerapp.ui.features.user_type.team_setup
+/*
 import android.app.Application
 import android.net.Uri
 import androidx.compose.runtime.State
@@ -21,6 +22,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -165,6 +167,11 @@ class SetupTeamViewModel @Inject constructor(
 
         val file = getFileFromUri(getApplication<Application>().applicationContext, uri)
 
+        if (file != null) {
+            val size = Integer.parseInt((file.length()/1024).toString())
+            Timber.i("Filesize compressed --> $size")
+        }
+
         when (val uploadLogoResponse = imageUploadRepo.uploadSingleImage(
             type = AppConstants.TEAM_LOGO,
             file
@@ -191,7 +198,7 @@ class SetupTeamViewModel @Inject constructor(
                 uploadLogoResponse.value.let { response ->
                     if (response.status) {
                         _teamSetupUiState.value =
-                            _teamSetupUiState.value.copy(teamImageServerUrl = "${BuildConfig.IMAGE_SERVER}${uploadLogoResponse.value.data.data}")
+                            _teamSetupUiState.value.copy(teamImageServerUrl =uploadLogoResponse.value.data.data)
                         _teamSetupChannel.send(
                             TeamSetupChannel.OnLogoUpload
                         )
@@ -220,7 +227,7 @@ class SetupTeamViewModel @Inject constructor(
             name = _teamSetupUiState.value.teamName,
             colorCode = _teamSetupUiState.value.teamColor,
             players = playersId as ArrayList<String>,
-            coaches = arrayListOf("6304540bb9165453b9859fa1"),
+            coaches = arrayListOf("6315a53881aa3c6a26d51121"),
             logo = _teamSetupUiState.value.teamImageServerUrl
         )
 
@@ -248,8 +255,10 @@ class SetupTeamViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 createTeamResponse.value.let { response ->
                     if (response.status) {
-                        /*   _teamSetupUiState.value =
-                               _teamSetupUiState.value.copy(teamImageUri = createTeamResponse.value.data)*/
+                        */
+/*   _teamSetupUiState.value =
+                               _teamSetupUiState.value.copy(teamImageUri = createTeamResponse.value.data)*//*
+
                         _teamSetupChannel.send(
                             TeamSetupChannel.OnTeamCreate(response.data.Id)
                         )
@@ -284,4 +293,4 @@ sealed class TeamSetupChannel {
     object OnLogoUpload : TeamSetupChannel()
     data class OnTeamCreate(val teamId: String) : TeamSetupChannel()
 
-}
+}*/

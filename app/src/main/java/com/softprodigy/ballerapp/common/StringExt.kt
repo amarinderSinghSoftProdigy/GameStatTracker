@@ -9,6 +9,8 @@ private const val PASS_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{4
 fun String.isValidEmail(): Boolean {
     if (this.isEmpty()) {
         return false
+    } else if (this.length > 45) {
+        return false
     }
     val pattern = Patterns.EMAIL_ADDRESS
     return pattern.matcher(this).matches()
@@ -33,11 +35,13 @@ fun String.isValidFullName(): Boolean {
     if (this.isEmpty()) {
         return false
     }
-    return (this.trim().contains(" ") && this.length >= 5 && this.matches(regex.toRegex()) )
+    return (this.trim().contains(" ") && this.length >= 5 && this.matches(regex.toRegex()))
 }
 
 fun validName(name: String): Boolean {
-    val regex = "^[A-Za-z]+$"
+    if (name.length > 30)
+        return false
+    val regex = "^[A-Za-z ]+$"
     return name.matches(regex.toRegex())
 }
 
@@ -47,7 +51,7 @@ fun validPhoneNumber(number: String): Boolean {
 }
 
 fun validTeamName(name: String): Boolean {
-    val regex = "^[A-Za-z0-9@$]*$"
+    val regex = "^[A-Za-z0-9@$ ]*$"
     return name.matches(regex = regex.toRegex())
 }
 

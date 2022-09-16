@@ -7,19 +7,9 @@ import android.widget.DatePicker
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,36 +17,18 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Divider
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -72,18 +44,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
-import coil.compose.rememberImagePainter
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.ComposeFileProvider
 import com.softprodigy.ballerapp.common.isValidEmail
 import com.softprodigy.ballerapp.common.validName
 import com.softprodigy.ballerapp.common.validPhoneNumber
-import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.BottomButtons
-import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
-import com.softprodigy.ballerapp.ui.features.components.EditFields
-import com.softprodigy.ballerapp.ui.features.components.ImagePickerBottomSheet
-import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.confirm_phone.ConfirmPhoneScreen
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorPrimaryTransparent
@@ -108,14 +74,18 @@ fun ProfileSetUpScreen(
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
-
     var currentBottomSheet: BottomSheetType? by remember {
         mutableStateOf(null)
     }
 
+    val maxChar = 30
+    val maxEmailChar = 45
+    val maxPhoneNumber = 10
+
     var imageUri by remember {
         mutableStateOf<Uri?>(null)
     }
+
     val imagePicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri ->
@@ -133,16 +103,17 @@ fun ProfileSetUpScreen(
                 signUpViewModel.onEvent(SignUpUIEvent.OnImageSelected(imageUri.toString()))
         }
     )
+
     val scope = rememberCoroutineScope()
     val state = signUpViewModel.signUpUiState.value
     var expanded by remember { mutableStateOf(false) }
+
     val icon = if (expanded)
         Icons.Filled.KeyboardArrowUp
     else
         Icons.Filled.KeyboardArrowDown
 
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
-
 
     val context = LocalContext.current
 
@@ -163,13 +134,13 @@ fun ProfileSetUpScreen(
 
     val focus = LocalFocusManager.current
 
-
     val mDatePickerDialog = DatePickerDialog(
         context,
         { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
             signUpViewModel.onEvent(SignUpUIEvent.OnBirthdayChanged("$year-${month + 1}-$dayOfMonth"))
         }, mYear, mMonth, mDay
     )
+    mDatePickerDialog.datePicker.maxDate = System.currentTimeMillis()
 
     var defaultLang by rememberSaveable { mutableStateOf(getDefaultLangCode(context)) }
     //val phoneNumber = rememberSaveable { mutableStateOf("") }
@@ -194,7 +165,7 @@ fun ProfileSetUpScreen(
                     signUpViewModel.onEvent(SignUpUIEvent.OnImageUploadSuccess)
                 }
 
-                is SignUpChannel.OnSignUpSuccess -> {
+                is SignUpChannel.OnProfileUpdateSuccess -> {
                     Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
                         .show()
                     onNext()
@@ -259,7 +230,6 @@ fun ProfileSetUpScreen(
         ) {
             CoachFlowBackground()
 
-
             Column(
                 Modifier
                     .fillMaxWidth()
@@ -316,14 +286,15 @@ fun ProfileSetUpScreen(
                                 )
                             }
                             state.signUpData.profileImageUri?.let {
-                                Image(
-                                    painter = rememberImagePainter(data = Uri.parse(it)),
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop,
+                                CoilImage(
+                                    src = Uri.parse(it),
                                     modifier = Modifier
                                         .size(dimensionResource(id = R.dimen.size_300dp))
                                         .clip(CircleShape)
-                                        .align(Alignment.Center)
+                                        .align(Alignment.Center),
+                                    isCrossFadeEnabled = false,
+                                    onLoading = { Placeholder(R.drawable.ic_profile_placeholder) },
+                                    onError = { Placeholder(R.drawable.ic_profile_placeholder) }
                                 )
                             }
                         }
@@ -335,11 +306,12 @@ fun ProfileSetUpScreen(
                         EditFields(
                             state.signUpData.firstName,
                             onValueChange = {
-                                signUpViewModel.onEvent(
-                                    SignUpUIEvent.OnFirstNameChanged(
-                                        it
+                                if (it.length <= maxChar)
+                                    signUpViewModel.onEvent(
+                                        SignUpUIEvent.OnFirstNameChanged(
+                                            it
+                                        )
                                     )
-                                )
                             },
                             stringResource(id = R.string.first_name),
                             isError = !validName(state.signUpData.firstName) && state.signUpData.firstName.isNotEmpty() || state.signUpData.firstName.length > 30,
@@ -355,7 +327,8 @@ fun ProfileSetUpScreen(
                         EditFields(
                             state.signUpData.lastName,
                             onValueChange = {
-                                signUpViewModel.onEvent(SignUpUIEvent.OnLastNameChanged(it))
+                                if (it.length <= maxChar)
+                                    signUpViewModel.onEvent(SignUpUIEvent.OnLastNameChanged(it))
                             },
                             stringResource(id = R.string.last_name),
                             isError = !validName(state.signUpData.lastName) && state.signUpData.lastName.isNotEmpty() || state.signUpData.lastName.length > 30,
@@ -369,10 +342,10 @@ fun ProfileSetUpScreen(
                         Divider(thickness = dimensionResource(id = R.dimen.divider))
 
                         EditFields(
-                            data = state.signUpData.email?:"",
+                            data = state.signUpData.email ?: "",
                             onValueChange = {
-                                signUpViewModel.onEvent(SignUpUIEvent.OnEmailChanged(it))
-
+                                if (it.length <= maxEmailChar)
+                                    signUpViewModel.onEvent(SignUpUIEvent.OnEmailChanged(it))
                             },
                             stringResource(id = R.string.email),
                             keyboardOptions = KeyboardOptions(
@@ -384,110 +357,6 @@ fun ProfileSetUpScreen(
                             errorMessage = stringResource(id = R.string.email_error),
                             enabled = true
                         )
-
-
-                        Divider(thickness = dimensionResource(id = R.dimen.divider))
-                        Column{
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(dimensionResource(id = R.dimen.size_56dp)),
-                                /* verticalAlignment = Alignment.CenterVertically,
-                                 horizontalArrangement = Arrangement.SpaceBetween*/
-                            ) {
-
-                                val customTextSelectionColors = TextSelectionColors(
-                                    handleColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                                    backgroundColor = Color.Transparent
-                                )
-                                CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
-                                    state.phoneCode = getDefaultPhoneCode
-                                    TogiCountryCodePicker(
-                                        pickedCountry = {
-                                            state.phoneCode = it.countryPhoneCode
-                                            defaultLang = it.countryCode
-                                        },
-                                        defaultCountry = getLibCountries().single { it.countryCode == defaultLang },
-                                        focusedBorderColor = Color.Transparent,
-                                        unfocusedBorderColor = Color.Transparent,
-                                        dialogAppBarTextColor = Color.Black,
-                                        dialogAppBarColor = Color.White,
-                                        error = state.signUpData.phone.length > 10,
-                                        text = state.signUpData.phone,
-                                        onValueChange = {
-                                            signUpViewModel.onEvent(
-                                                SignUpUIEvent.OnPhoneNumberChanged(
-                                                    it
-                                                )
-                                            )
-                                        },
-                                        readOnly = state.signUpData.phoneVerified,
-                                        cursorColor = Color.Black,
-                                        content = {
-                                            AppText(
-                                                text = stringResource(id = R.string.phone_num),
-                                                style = MaterialTheme.typography.h6,
-                                                color = ColorBWBlack,
-                                                modifier = Modifier
-                                                    .align(Alignment.CenterStart)
-                                                    .padding(start = dimensionResource(id = R.dimen.size_16dp))
-                                            )
-                                        }
-                                    )
-                                }
-                            }
-
-                            if ((!validPhoneNumber(state.signUpData.phone) && state.signUpData.phone.isNotEmpty())) {
-                                Text(
-                                    text = stringResource(id = R.string.valid_phone_number),
-                                    color = MaterialTheme.colors.error,
-                                    style = MaterialTheme.typography.caption,
-                                    modifier = Modifier
-                                        .padding(4.dp)
-                                        .fillMaxWidth(),
-                                    textAlign = TextAlign.End
-                                )
-                            }
-                        }
-
-
-                        if (validPhoneNumber(state.signUpData.phone) && !state.signUpData.phoneVerified) {
-
-                            Column(
-                                modifier = Modifier
-                                    .align(Alignment.End)
-                                    .clickable {
-                                        scope.launch {
-                                            signUpViewModel.onEvent(
-                                                SignUpUIEvent.OnVerifyNumber
-                                            )
-                                            focus.clearFocus()
-                                        }
-                                    },
-                                horizontalAlignment = Alignment.End
-                            ) {
-                                AppText(
-                                    text = stringResource(id = R.string.verify),
-                                    style = MaterialTheme.typography.h6,
-                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                                    modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_20dp)),
-                                    textAlign = TextAlign.End
-                                )
-                            }
-                        }
-
-                        if (state.signUpData.phoneVerified) {
-                            AppText(
-                                text = stringResource(id = R.string.verified),
-                                style = MaterialTheme.typography.h6,
-                                color = Color.Green,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(all = dimensionResource(id = R.dimen.size_20dp)),
-                                textAlign = TextAlign.End
-                            )
-                        }
-
                         state.signUpData.token?.let { _ ->
                             Divider(thickness = dimensionResource(id = R.dimen.divider))
 
@@ -587,6 +456,114 @@ fun ProfileSetUpScreen(
                                 }
                             }
                         }
+
+                        Divider(thickness = dimensionResource(id = R.dimen.divider))
+
+                        Column {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(dimensionResource(id = R.dimen.size_56dp)),
+                                /* verticalAlignment = Alignment.CenterVertically,
+                                 horizontalArrangement = Arrangement.SpaceBetween*/
+                            ) {
+
+                                val customTextSelectionColors = TextSelectionColors(
+                                    handleColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                    backgroundColor = Color.Transparent
+                                )
+                                CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
+                                    /* state.phoneCode = getDefaultPhoneCode*/
+                                    signUpViewModel.onEvent(
+                                        SignUpUIEvent.OnCountryCode(
+                                            getDefaultPhoneCode
+                                        )
+                                    )
+                                    TogiCountryCodePicker(
+                                        pickedCountry = {
+                                            /*  state.phoneCode = it.countryPhoneCode*/
+                                            signUpViewModel.onEvent(SignUpUIEvent.OnCountryCode(it.countryCode))
+                                            defaultLang = it.countryCode
+                                        },
+                                        defaultCountry = getLibCountries().single { it.countryCode == defaultLang },
+                                        focusedBorderColor = Color.Transparent,
+                                        unfocusedBorderColor = Color.Transparent,
+                                        dialogAppBarTextColor = Color.Black,
+                                        dialogAppBarColor = Color.White,
+                                        error = state.signUpData.phone.length > 10,
+                                        text = state.signUpData.phone,
+                                        onValueChange = {
+                                            if (it.length <= maxPhoneNumber)
+                                                signUpViewModel.onEvent(
+                                                    SignUpUIEvent.OnPhoneNumberChanged(
+                                                        it
+                                                    )
+                                                )
+                                        },
+                                        readOnly = state.signUpData.phoneVerified,
+                                        cursorColor = Color.Black,
+                                        content = {
+                                            AppText(
+                                                text = stringResource(id = R.string.phone_num),
+                                                style = MaterialTheme.typography.h6,
+                                                color = ColorBWBlack,
+                                                modifier = Modifier
+                                                    .align(Alignment.CenterStart)
+                                                    .padding(start = dimensionResource(id = R.dimen.size_16dp))
+                                            )
+                                        }
+                                    )
+                                }
+                            }
+
+                            if ((!validPhoneNumber(state.signUpData.phone) && state.signUpData.phone.isNotEmpty())) {
+                                Text(
+                                    text = stringResource(id = R.string.valid_phone_number),
+                                    color = MaterialTheme.colors.error,
+                                    style = MaterialTheme.typography.caption,
+                                    modifier = Modifier
+                                        .padding(4.dp)
+                                        .fillMaxWidth(),
+                                    textAlign = TextAlign.End
+                                )
+                            }
+                        }
+                        if (validPhoneNumber(state.signUpData.phone) && !state.signUpData.phoneVerified) {
+
+                            Column(
+                                modifier = Modifier
+                                    .align(Alignment.End)
+                                    .clickable {
+                                        scope.launch {
+                                            signUpViewModel.onEvent(
+                                                SignUpUIEvent.OnVerifyNumber
+                                            )
+                                            focus.clearFocus()
+                                        }
+                                    },
+                                horizontalAlignment = Alignment.End
+                            ) {
+                                AppText(
+                                    text = stringResource(id = R.string.verify),
+                                    style = MaterialTheme.typography.h6,
+                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                    modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_20dp)),
+                                    textAlign = TextAlign.End
+                                )
+                            }
+                        }
+                        if (state.signUpData.phoneVerified) {
+                            AppText(
+                                text = stringResource(id = R.string.verified),
+                                style = MaterialTheme.typography.h6,
+                                color = Color.Green,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(all = dimensionResource(id = R.dimen.size_20dp)),
+                                textAlign = TextAlign.End
+                            )
+                        }
+
                     }
                 }
 
@@ -652,8 +629,7 @@ fun SheetLayout(
                 onCameraClick = onCameraClick,
                 onGalleryClick = onGalleryCLick,
                 onDismiss = onDismiss,
-
-                )
+            )
 
         BottomSheetType.OTP ->
             ConfirmPhoneScreen(
@@ -663,5 +639,4 @@ fun SheetLayout(
             )
 
     }
-
 }

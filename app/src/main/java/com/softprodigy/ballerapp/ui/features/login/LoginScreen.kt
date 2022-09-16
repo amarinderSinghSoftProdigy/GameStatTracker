@@ -65,6 +65,7 @@ import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.SocialLoginSection
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayDark
 import com.softprodigy.ballerapp.ui.theme.appColors
 import timber.log.Timber
 
@@ -77,7 +78,7 @@ fun LoginScreen(
     onForgetPasswordClick: () -> Unit,
     onTwitterClick: () -> Unit,
     twitterUser: SocialUserModel?,
-    onLoginFail:()->Unit
+    onLoginFail: () -> Unit
 ) {
 
     val context = LocalContext.current
@@ -138,17 +139,16 @@ fun LoginScreen(
                     )
                     vm.onEvent(LoginUIEvent.OnGoogleClick(googleUser))
                 } else {
-                    Toast.makeText(
-                        context,
-                        context.resources.getString(R.string.something_went_wrong),
-                        Toast.LENGTH_SHORT
-                    ).show()
+//                    Toast.makeText(
+//                        context,
+//                        context.resources.getString(R.string.something_went_wrong),
+//                        Toast.LENGTH_SHORT
+//                    ).show()
                 }
 
             } catch (e: ApiException) {
                 Timber.i(e.toString())
             }
-
         }
 
     LaunchedEffect(key1 = Unit) {
@@ -156,7 +156,11 @@ fun LoginScreen(
             when (uiEvent) {
                 is LoginChannel.OnLoginFailed -> {
                     onLoginFail.invoke()
-                    Toast.makeText(context, uiEvent.errorMessage.asString(context), Toast.LENGTH_LONG)
+                    Toast.makeText(
+                        context,
+                        uiEvent.errorMessage.asString(context),
+                        Toast.LENGTH_LONG
+                    )
                         .show()
                 }
                 is LoginChannel.OnLoginSuccess -> {
@@ -346,7 +350,7 @@ fun LoginScreen(
                     .align(Alignment.CenterHorizontally),
                 onClick = {
                     annotatedText.getStringAnnotations(
-                        tag = "Signup",
+                        tag = "Sign-up",
                         start = it,
                         end = it
                     ).forEach { _ ->
@@ -360,7 +364,7 @@ fun LoginScreen(
 
             AppText(
                 text = stringResource(id = R.string.forgot_password),
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = ColorBWGrayDark,
                 style = MaterialTheme.typography.h6,
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)

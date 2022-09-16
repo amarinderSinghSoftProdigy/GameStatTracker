@@ -89,7 +89,7 @@ val button_background_enable = Color(0xFF17191B)
 val button_background_disable = Color(0xFFE4EBF0)
 
 val button_text_enable = Color(0xFFFFFFFF)
-val button_text_disable = Color(0xBF58636B)
+val button_text_disable = Color(0xFFA7B9C7)
 val ColorBWBlack = Color(0xFF17191B)
 val ColorBWGrayMedium = Color(0xFF58636B)
 val ColorBWGrayBorder = Color(0xFFE4EBF0)
@@ -98,5 +98,8 @@ val ColorBWGrayStatus = Color(0x80808080)
 val ColorPrimaryTransparent = Color(0x1A0177C1)
 val ColorMainPrimary = Color(0xFF0177C1)
 val ColorPrimaryOrange = Color(0xFFFF923D)
-
+val ColorBWGrayDark = Color(0xFF3C4348)
+val ColorGreyLighter = Color(0xFFA7B9C7)
+val ColorButtonGreen = Color(0xFF2ECC71)
+val ColorButtonRed = Color(0xFFE3584A)
 

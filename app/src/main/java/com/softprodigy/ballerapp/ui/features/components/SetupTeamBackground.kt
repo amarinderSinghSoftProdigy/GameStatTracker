@@ -1,19 +1,8 @@
 package com.softprodigy.ballerapp.ui.features.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.absoluteOffset
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
@@ -25,14 +14,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberImagePainter
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.theme.appColors
 
@@ -70,7 +57,12 @@ fun CoachFlowBackground(
                         )
                     ),
                     modifier = Modifier
-                        .padding(all = dimensionResource(id = R.dimen.size_20dp))
+                        .padding(
+                            bottom = dimensionResource(id = R.dimen.size_10dp),
+                            end = dimensionResource(id = R.dimen.size_20dp),
+                            start = dimensionResource(id = R.dimen.size_20dp),
+                            top = dimensionResource(id = R.dimen.size_20dp)
+                        )
                         .size(dimensionResource(id = R.dimen.size_200dp))
                 ) {
                     Box(
@@ -78,35 +70,34 @@ fun CoachFlowBackground(
                             .size(dimensionResource(id = R.dimen.size_200dp))
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_ball_green),
+                            painter = painterResource(id = R.drawable.ic_ball_lines),
                             contentDescription = "center ball Icon",
                             tint = colorResource(id = R.color.black),
                             modifier = Modifier.fillMaxSize()
                         )
                         teamLogo?.let {
-                            Image(
-                                painter = rememberImagePainter(data = teamLogo),
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop,            // crop the image if it's not a square
+                            CoilImage(
+                                src = it,
                                 modifier = Modifier
-                                    .size(dimensionResource(id = R.dimen.size_44dp))
+                                    .size(dimensionResource(id = R.dimen.size_65dp))
                                     .clip(CircleShape)
                                     .border(
                                         dimensionResource(id = R.dimen.size_3dp),
                                         MaterialTheme.colors.surface,
                                         CircleShape
                                     )
-                                    .align(Alignment.Center)
+                                    .align(Alignment.Center),
+                                isCrossFadeEnabled = false,
+                                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                                onError = { Placeholder(R.drawable.ic_team_placeholder) }
                             )
                         }
-
                     }
                 }
             }
         }
     }
 }
-
 
 @Composable
 fun UserFlowBackground(
