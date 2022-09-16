@@ -231,7 +231,7 @@ fun TeamUserListItem(
                 )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
             Text(
-                text = if (isCoach) coachUser?.name ?: "" else teamUser?.name ?: "",
+                text = if (isCoach) "${coachUser?.firstName} ${coachUser?.lastName}" ?: "" else "${teamUser?.firstName} ${teamUser?.lastName}" ,
                 fontWeight = FontWeight.Bold,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
