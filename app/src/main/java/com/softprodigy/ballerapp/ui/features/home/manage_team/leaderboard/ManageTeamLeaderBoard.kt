@@ -183,7 +183,7 @@ fun LeaderBoardItem(
 ) {
 
     val selection = remember {
-        mutableStateOf(false)
+        mutableStateOf(selected)
     }
     Row(
         modifier = modifier
@@ -193,11 +193,7 @@ fun LeaderBoardItem(
                 start = dimensionResource(id = R.dimen.size_16dp),
                 end = dimensionResource(id = R.dimen.size_16dp)
             )
-            .height(dimensionResource(id = R.dimen.size_48dp))
-            .clickable {
-                selection.value = !selection.value
-                onSelectionChange(item)
-            },
+            .height(dimensionResource(id = R.dimen.size_48dp)),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -207,6 +203,10 @@ fun LeaderBoardItem(
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
+                    .clickable {
+                        selection.value = !selection.value
+                        onSelectionChange(item)
+                    }
                     .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)))
                     .size(
                         dimensionResource(id = R.dimen.size_16dp)
@@ -223,6 +223,8 @@ fun LeaderBoardItem(
                     contentDescription = null,
                 )
             }
+
+           // Checkbox(checked = selection.value, onCheckedChange = { onSelectionChange(item) })
 
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
 
