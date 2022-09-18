@@ -293,6 +293,9 @@ class SetupTeamViewModelUpdated @Inject constructor(
     }
 
     private suspend fun uploadTeamLogo() {
+        _teamSetupUiState.value =
+            teamSetupUiState.value.copy(isLoading = true)
+
         val uri = Uri.parse(teamSetupUiState.value.teamImageUri)
 
         val file = getFileFromUri(getApplication<Application>().applicationContext, uri)
@@ -301,11 +304,14 @@ class SetupTeamViewModelUpdated @Inject constructor(
             val size = Integer.parseInt((file.length() / 1024).toString())
             Timber.i("Filesize compressed --> $size")
         }
-
-        when (val uploadLogoResponse = imageUploadRepo.uploadSingleImage(
+        val uploadLogoResponse = imageUploadRepo.uploadSingleImage(
             type = AppConstants.TEAM_LOGO,
             file
-        )) {
+        )
+        _teamSetupUiState.value =
+            teamSetupUiState.value.copy(isLoading = false)
+
+        when (uploadLogoResponse) {
             is ResultWrapper.GenericError -> {
                 _teamSetupChannel.send(
                     TeamSetupChannel.ShowToast(
@@ -350,6 +356,8 @@ class SetupTeamViewModelUpdated @Inject constructor(
 
     private suspend fun createTeam() {
 
+        _teamSetupUiState.value =
+            teamSetupUiState.value.copy(isLoading = true)
 
         val members = _teamSetupUiState.value.inviteMemberName.mapIndexed { index, name ->
             Members(name = name, email = _teamSetupUiState.value.inviteMemberEmail[index])
@@ -364,10 +372,13 @@ class SetupTeamViewModelUpdated @Inject constructor(
         )
 
         Log.i("createTeamRequest", "createTeamRequest:$request ")
-
-        when (val createTeamResponse = teamRepo.createTeamAPI(
+        val createTeamResponse = teamRepo.createTeamAPI(
             request
-        )) {
+        )
+        _teamSetupUiState.value =
+            teamSetupUiState.value.copy(isLoading = false)
+
+        when (createTeamResponse) {
             is ResultWrapper.GenericError -> {
                 _teamSetupChannel.send(
                     TeamSetupChannel.ShowToast(
