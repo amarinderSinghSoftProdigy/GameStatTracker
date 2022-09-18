@@ -233,7 +233,6 @@ fun SelectTeamDialog(
     }
 }
 
-
 @Composable
 fun LogoutDialog(
     onDismiss: () -> Unit,
@@ -691,7 +690,6 @@ fun SelectInvitationRoleDialog(
                     }
                 }
 
-
             },
         )
     }
@@ -752,7 +750,6 @@ fun SelectInvitationRoleItem(
                     )
                     .padding(dimensionResource(id = R.dimen.size_8dp))
             )
-
 
         }
     }
