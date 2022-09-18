@@ -2,16 +2,14 @@ package com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated
 
 import android.annotation.SuppressLint
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -60,6 +58,12 @@ fun AddPlayersScreenUpdated(
     val focusManager = LocalFocusManager.current
 
     Timber.i("AddPlayersScreenUpdated-- teamId--$teamId")
+
+    BackHandler() {
+        onBackClick.invoke()
+        vm.onEvent(TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen)
+
+    }
 
     fun updateItem(index: Int? = null, addIntent: Boolean) {
         if (addIntent) {
@@ -267,31 +271,37 @@ fun AddPlayersScreenUpdated(
                                 isTransParent = true
                             )
                         }
+
                     }
                 }
 
 
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
-                BottomButtons(
-                    secondText = stringResource(id = R.string.finish),
-                    onBackClick = { onBackClick.invoke() },
-                    onNextClick = {
-                        if (teamId.isNullOrEmpty()) {
-                            vm.onEvent(TeamSetupUIEventUpdated.OnAddPlayerScreenNext)
-                        } else {
-                            vm.onEvent(TeamSetupUIEventUpdated.OnInviteTeamMembers(teamId))
 
-                        }
-                    },
-                    enableState =
-                    state.inviteMemberName.isNotEmpty() &&
-                            state.inviteMemberName.all() { it.isNotEmpty() } &&
-                            state.inviteMemberName.all() { validName(it) }
-                            && state.inviteMemberEmail.all() { it.isValidEmail() },
-                    themed = true,
-                )
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
+
             }
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
+            BottomButtons(
+                secondText = stringResource(id = R.string.finish),
+                onBackClick = {
+                    onBackClick.invoke()
+                    vm.onEvent(TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen)
+                   },
+                onNextClick = {
+                    if (teamId.isNullOrEmpty()) {
+                        vm.onEvent(TeamSetupUIEventUpdated.OnAddPlayerScreenNext)
+                    } else {
+                        vm.onEvent(TeamSetupUIEventUpdated.OnInviteTeamMembers(teamId))
+
+                    }
+                },
+                enableState =
+                state.inviteMemberName.isNotEmpty() &&
+                        state.inviteMemberName.all() { it.isNotEmpty() } &&
+                        state.inviteMemberName.all() { validName(it) }
+                        && state.inviteMemberEmail.all() { it.isValidEmail() },
+                themed = true,
+            )
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
         }
 
         if (state.showDialog) {
@@ -306,6 +316,12 @@ fun AddPlayersScreenUpdated(
                         vm.onEvent(TeamSetupUIEventUpdated.OnRemovePlayerConfirmClick(state.removePlayer))
                     }
                 }
+            )
+        }
+        if (state.isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center),
+                color = MaterialTheme.appColors.material.primaryVariant
             )
         }
     }

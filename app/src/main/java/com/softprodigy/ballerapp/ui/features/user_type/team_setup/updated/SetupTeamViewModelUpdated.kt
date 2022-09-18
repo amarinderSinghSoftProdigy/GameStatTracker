@@ -170,6 +170,10 @@ class SetupTeamViewModelUpdated @Inject constructor(
                     invitePlayers(event.teamId)
                 }
             }
+
+            TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen-> {
+                resetMemberValues()
+            }
         }
     }
 
@@ -298,12 +302,17 @@ class SetupTeamViewModelUpdated @Inject constructor(
             val size = Integer.parseInt((file.length() / 1024).toString())
             Timber.i("Filesize compressed --> $size")
         }
+        val uploadLogoResponse = imageUploadRepo.uploadSingleImage(
         _teamSetupUiState.value = _teamSetupUiState.value.copy(isLoading = true)
 
         when (val uploadLogoResponse = imageUploadRepo.uploadSingleImage(
             type = AppConstants.TEAM_LOGO,
             file
-        )) {
+        )
+        _teamSetupUiState.value =
+            teamSetupUiState.value.copy(isLoading = false)
+
+        when (uploadLogoResponse) {
             is ResultWrapper.GenericError -> {
                 _teamSetupUiState.value = _teamSetupUiState.value.copy(isLoading = false)
                 _teamSetupChannel.send(
@@ -350,6 +359,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
 
     private suspend fun createTeam() {
 
+
         val members = _teamSetupUiState.value.inviteMemberName.mapIndexed { index, name ->
             Members(name = name, email = _teamSetupUiState.value.inviteMemberEmail[index])
         }
@@ -366,7 +376,11 @@ class SetupTeamViewModelUpdated @Inject constructor(
 
         when (val createTeamResponse = teamRepo.createTeamAPI(
             request
-        )) {
+        )
+        _teamSetupUiState.value =
+            teamSetupUiState.value.copy(isLoading = false)
+
+        when (createTeamResponse) {
             is ResultWrapper.GenericError -> {
                 _teamSetupUiState.value = _teamSetupUiState.value.copy(isLoading = false)
                 _teamSetupChannel.send(
