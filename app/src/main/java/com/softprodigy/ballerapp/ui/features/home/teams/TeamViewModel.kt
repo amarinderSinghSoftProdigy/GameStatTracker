@@ -313,6 +313,7 @@ class TeamViewModel @Inject constructor(
     }
 
     private suspend fun uploadTeamLogo() {
+        _teamUiState.value=_teamUiState.value.copy(isLoading = true)
         val isLocalImageTaken = _teamUiState.value.localLogo != null
 
         if (isLocalImageTaken) {
@@ -324,11 +325,13 @@ class TeamViewModel @Inject constructor(
                 val size = Integer.parseInt((file.length() / 1024).toString())
                 Timber.i("Filesize compressed --> $size")
             }
-
-            when (val uploadLogoResponse = imageUploadRepo.uploadSingleImage(
+            val uploadLogoResponse = imageUploadRepo.uploadSingleImage(
                 type = AppConstants.TEAM_LOGO,
                 file
-            )) {
+            )
+            _teamUiState.value=_teamUiState.value.copy(isLoading = false)
+
+            when (uploadLogoResponse) {
                 is ResultWrapper.GenericError -> {
                     _teamChannel.send(
                         TeamChannel.ShowToast(

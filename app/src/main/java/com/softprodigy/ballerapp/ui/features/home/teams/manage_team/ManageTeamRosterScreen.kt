@@ -37,10 +37,7 @@ import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.team.Coach
 import com.softprodigy.ballerapp.data.response.team.Player
-import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.ButtonWithLeadingIcon
-import com.softprodigy.ballerapp.ui.features.components.CoilImage
-import com.softprodigy.ballerapp.ui.features.components.Placeholder
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayStatus
@@ -168,6 +165,9 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                 }
             }
         }
+        if(state.isLoading){
+            CommonProgressBar()
+        }
     }
 }
 
@@ -254,7 +254,7 @@ fun TeamUserListItem(
                     text = teamUser?.position ?: "",
                     fontWeight = FontWeight.Bold,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                    color = MaterialTheme.appColors.textField.label
+                    color = MaterialTheme.appColors.textField.label.copy(alpha = 1f)
                 )
             }
 
