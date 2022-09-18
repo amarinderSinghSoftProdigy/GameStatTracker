@@ -50,7 +50,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
@@ -58,8 +57,6 @@ import com.softprodigy.ballerapp.common.argbToHexString
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
-import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
-import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -129,8 +126,6 @@ fun SelectTeamDialog(
     teams: ArrayList<Team>,
     onCreateTeamClick: () -> Unit,
     showCreateTeamButton: Boolean = false,
-    vm: TeamViewModel = hiltViewModel(),
-    teamId: String
 ) {
     val teamId = remember {
         mutableStateOf(UserStorage.teamId)

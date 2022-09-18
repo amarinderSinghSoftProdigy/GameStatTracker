@@ -4,18 +4,21 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.CachePolicy
 import coil.request.ImageRequest
+import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
 
 @OptIn(ExperimentalCoilApi::class)
@@ -77,6 +80,17 @@ fun CoilImageBox(
 @Composable
 fun Placeholder(id: Int) {
     Surface(color = ColorBWGrayLight, shape = CircleShape) {
+        Image(
+            painter = painterResource(id),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+        )
+    }
+}
+
+@Composable
+fun PlaceholderRect(id: Int) {
+    Surface(color = ColorBWGrayLight, shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_10dp))) {
         Image(
             painter = painterResource(id),
             contentDescription = null,

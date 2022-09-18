@@ -44,7 +44,6 @@ import com.softprodigy.ballerapp.data.response.team.TeamLeaderBoard
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
-import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
 import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
 import com.softprodigy.ballerapp.ui.theme.appColors
 import com.softprodigy.ballerapp.ui.utils.dragDrop.ReorderableItem
@@ -56,11 +55,11 @@ import com.softprodigy.ballerapp.ui.utils.dragDrop.reorderable
 fun ManageTeamLeaderBoard(vm: TeamViewModel) {
 
     val state = vm.teamUiState.value
-
+    val leaderBoard = state.leaderBoard
     val selected = remember {
-        mutableStateOf(false)
+        mutableStateOf(state.all)
     }
-    val list = state.selected
+
     val recordState =
         rememberReorderableLazyListState(
             onMove = vm::moveItem,
@@ -105,11 +104,11 @@ fun ManageTeamLeaderBoard(vm: TeamViewModel) {
                             .size(
                                 dimensionResource(id = R.dimen.size_16dp)
                             )
-                            .background(color = if (selected.value) MaterialTheme.appColors.material.primaryVariant else Color.White)
+                            .background(color = if (state.all) MaterialTheme.appColors.material.primaryVariant else Color.White)
                             .border(
-                                width = if (!selected.value) dimensionResource(id = R.dimen.size_1dp) else 0.dp,
+                                width = if (!state.all) dimensionResource(id = R.dimen.size_1dp) else 0.dp,
                                 shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)),
-                                color = if (!selected.value) MaterialTheme.appColors.buttonColor.bckgroundDisabled else Color.Transparent
+                                color = if (!state.all) MaterialTheme.appColors.buttonColor.bckgroundDisabled else Color.Transparent
                             )
                     ) {
                         Icon(
@@ -120,15 +119,14 @@ fun ManageTeamLeaderBoard(vm: TeamViewModel) {
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
                     AppText(
                         text = stringResource(id = R.string.select_all),
-                        style = MaterialTheme.typography.h4,
+                        color = if (state.all) MaterialTheme.appColors.buttonColor.bckgroundEnabled else ColorGreyLighter,
+                        style = if (state.all) MaterialTheme.typography.h6 else MaterialTheme.typography.h4,
                         fontSize = dimensionResource(id = R.dimen.txt_size_10).value.sp,
-                        color = ColorBWGrayLight,
                     )
                 }
             }
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
-
             LazyColumn(
                 state = recordState.listState,
                 modifier = Modifier
@@ -144,7 +142,8 @@ fun ManageTeamLeaderBoard(vm: TeamViewModel) {
                     ),
 
                 ) {
-                items(state.leaderBoard, { item -> item.name }) { item ->
+                items(leaderBoard, { item -> item.name }) { item ->
+                    val status = item.status
                     ReorderableItem(
                         reorderableState = recordState,
                         key = item.name,
@@ -156,9 +155,10 @@ fun ManageTeamLeaderBoard(vm: TeamViewModel) {
                             modifier = Modifier
                                 .shadow(elevation.value),
                             item = item,
-                            selected = list.contains(item.name),
+                            status = status,
+                            all = state.all,
                         ) {
-                            onLeaderSelectionChange.invoke(it)
+                            vm.onEvent(TeamUIEvent.OnItemSelected(it.name))
                         }
                     }
                 }
@@ -174,17 +174,18 @@ fun ManageTeamLeaderBoard(vm: TeamViewModel) {
 }
 
 @Composable
-fun LeaderBoardItem(
-    dragging: Boolean,
+inline fun LeaderBoardItem(
     modifier: Modifier = Modifier,
+    dragging: Boolean = false,
     item: TeamLeaderBoard,
-    selected: Boolean,
-    onSelectionChange: (TeamLeaderBoard) -> Unit,
+    status: Boolean,
+    all: Boolean,
+    crossinline onSelectionChange: (TeamLeaderBoard) -> Unit,
 ) {
-
     val selection = remember {
-        mutableStateOf(selected)
+        mutableStateOf(status)
     }
+
     Row(
         modifier = modifier
             .background(color = if (dragging) Color.White else Color.Transparent)
@@ -211,11 +212,11 @@ fun LeaderBoardItem(
                     .size(
                         dimensionResource(id = R.dimen.size_16dp)
                     )
-                    .background(color = if (selected || selection.value) MaterialTheme.appColors.material.primaryVariant else Color.White)
+                    .background(color = if (item.status || selection.value) MaterialTheme.appColors.material.primaryVariant else Color.White)
                     .border(
-                        width = if (selection.value || selected) 0.dp else dimensionResource(id = R.dimen.size_1dp),
+                        width = if (item.status || selection.value) 0.dp else dimensionResource(id = R.dimen.size_1dp),
                         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)),
-                        color = if (selection.value || selected) Color.Transparent else MaterialTheme.appColors.buttonColor.bckgroundDisabled
+                        color = if (item.status || selection.value) Color.Transparent else MaterialTheme.appColors.buttonColor.bckgroundDisabled
                     )
             ) {
                 Icon(
@@ -223,14 +224,12 @@ fun LeaderBoardItem(
                     contentDescription = null,
                 )
             }
-
-           // Checkbox(checked = selection.value, onCheckedChange = { onSelectionChange(item) })
-
+            //Checkbox(checked = item.status, onCheckedChange = { onSelectionChange(item) })
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
 
             AppText(
                 text = item.name.capitalize(),
-                color = if (selected || selection.value) MaterialTheme.appColors.buttonColor.bckgroundEnabled else ColorGreyLighter,
+                color = if (item.status || selection.value) MaterialTheme.appColors.buttonColor.bckgroundEnabled else ColorGreyLighter,
                 style = MaterialTheme.typography.h6
             )
         }

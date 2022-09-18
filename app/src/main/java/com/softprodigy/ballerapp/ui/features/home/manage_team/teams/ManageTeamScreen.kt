@@ -56,7 +56,7 @@ import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.CoilImage
 import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
-import com.softprodigy.ballerapp.ui.features.components.Placeholder
+import com.softprodigy.ballerapp.ui.features.components.PlaceholderRect
 import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
@@ -233,8 +233,8 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                                 )
                                 .align(Alignment.Center),
                             isCrossFadeEnabled = false,
-                            onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
-                            onError = { Placeholder(R.drawable.ic_team_placeholder) }
+                            onLoading = { PlaceholderRect(R.drawable.ic_user_profile_icon) },
+                            onError = { PlaceholderRect(R.drawable.ic_user_profile_icon) }
                         )
 
                     }
