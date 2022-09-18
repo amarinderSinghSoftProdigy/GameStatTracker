@@ -170,6 +170,10 @@ class SetupTeamViewModelUpdated @Inject constructor(
                     invitePlayers(event.teamId)
                 }
             }
+
+            TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen-> {
+                resetMemberValues()
+            }
         }
     }
 

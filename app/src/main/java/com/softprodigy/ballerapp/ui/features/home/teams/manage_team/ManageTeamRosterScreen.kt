@@ -256,7 +256,7 @@ fun TeamUserListItem(
                     text = teamUser?.position ?: "",
                     fontWeight = FontWeight.Bold,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                    color = MaterialTheme.appColors.textField.label
+                    color = MaterialTheme.appColors.textField.label.copy(alpha = 1f)
                 )
             }
 
