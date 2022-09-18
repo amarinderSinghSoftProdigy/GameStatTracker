@@ -89,11 +89,11 @@ class TeamViewModel @Inject constructor(
             )
     }
 
-  /*  init {
-        viewModelScope.launch {
-            getTeams()
-        }
-    }*/
+    /*  init {
+          viewModelScope.launch {
+              getTeams()
+          }
+      }*/
 
     fun onEvent(event: TeamUIEvent) {
         when (event) {
@@ -136,6 +136,10 @@ class TeamViewModel @Inject constructor(
             is TeamUIEvent.OnItemSelected -> {
                 updateSelection(event.name)
             }
+
+            is TeamUIEvent.OnTeamIdSelected -> {
+                _teamUiState.value = _teamUiState.value.copy(teamId = event.teamId)
+            }
         }
     }
 
@@ -149,16 +153,16 @@ class TeamViewModel @Inject constructor(
         )
     }
 
-     suspend fun getTeams() {
+    suspend fun getTeams() {
         _teamUiState.value =
             _teamUiState.value.copy(
                 isLoading = true
             )
         val teamResponse = teamRepo.getTeams()
-         _teamUiState.value =
-             _teamUiState.value.copy(
-                 isLoading = false
-             )
+        _teamUiState.value =
+            _teamUiState.value.copy(
+                isLoading = false
+            )
 
         when (teamResponse) {
             is ResultWrapper.GenericError -> {
@@ -198,14 +202,16 @@ class TeamViewModel @Inject constructor(
                                     selectionTeam = it
                                 }
                             }
+                            val idToSearch =
+                                if (selectionTeam == null) response.data[0]._id else selectionTeam?._id
                             _teamUiState.value =
                                 _teamUiState.value.copy(
                                     teams = response.data,
                                     selectedTeam = if (selectionTeam == null) response.data[0] else selectionTeam,
-                                    isLoading = false
+                                    isLoading = false,
+                                    teamId = idToSearch!!
                                 )
-                            val idToSearch =
-                                if (selectionTeam == null) response.data[0]._id else selectionTeam?._id
+
                             getTeamByTeamId(idToSearch ?: "")
 
                             viewModelScope.launch {

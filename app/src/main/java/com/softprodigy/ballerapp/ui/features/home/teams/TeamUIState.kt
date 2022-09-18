@@ -26,5 +26,6 @@ data class TeamUIState(
     val search: String = "",
     val selected: ArrayList<String> = ArrayList(),
     val checked: Boolean = false,
-    val updatedTeam: UpdateTeamDetailRequest = UpdateTeamDetailRequest()
+    val updatedTeam: UpdateTeamDetailRequest = UpdateTeamDetailRequest(),
+    val teamId: String = ""
 )

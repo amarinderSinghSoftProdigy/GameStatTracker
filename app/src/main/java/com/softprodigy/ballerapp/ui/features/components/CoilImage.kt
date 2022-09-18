@@ -30,7 +30,7 @@ fun CoilImage(
         }).build())
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
         Image(
-            contentScale = ContentScale.FillBounds,
+            contentScale = ContentScale.Crop,
             painter = painter,
             modifier = modifier,
             contentDescription = null,
