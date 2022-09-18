@@ -33,7 +33,6 @@ import com.softprodigy.ballerapp.common.IntentData
 import com.softprodigy.ballerapp.common.Route
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
 import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
 import com.softprodigy.ballerapp.ui.features.components.BottomNavigationBar
 import com.softprodigy.ballerapp.ui.features.components.CommonTabView
@@ -67,7 +66,6 @@ class HomeActivity : ComponentActivity() {
             val fromSplash = intent.getBooleanExtra(IntentData.FROM_SPLASH, false)
             val homeViewModel: HomeViewModel = hiltViewModel()
             val teamViewModel: TeamViewModel = hiltViewModel()
-            val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = hiltViewModel()
             val state = homeViewModel.state.value
             val dataStoreManager = DataStoreManager(LocalContext.current)
             val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
@@ -76,17 +74,6 @@ class HomeActivity : ComponentActivity() {
             UserStorage.teamId = teamId.value
             AppConstants.SELECTED_COLOR = fromHex(color.value.ifEmpty { "0177C1" })
             homeViewModel.setColor(AppConstants.SELECTED_COLOR)
-
-            val onTeamSelectionConfirmed = { updatedTeam: UpdateTeamDetailRequest? ->
-                setupTeamViewModelUpdated.onEvent(
-                    TeamSetupUIEventUpdated.OnColorSelected(
-                        (updatedTeam?.colorCode ?: "").replace(
-                            "#",
-                            ""
-                        )
-                    )
-                )
-            }
 
             BallerAppMainTheme(customColor = state.color ?: Color.White) {
                 val navController = rememberNavController()
@@ -108,7 +95,7 @@ class HomeActivity : ComponentActivity() {
                             if (state.appBar) {
                                 TabBar(color = MaterialTheme.appColors.material.primaryVariant) {
                                     CommonTabView(
-                                        topBarData =state.topBar,
+                                        topBarData = state.topBar,
                                         userRole = role.value,
                                         backClick = {
                                             navController.popBackStack()
@@ -126,7 +113,6 @@ class HomeActivity : ComponentActivity() {
                                                 }
                                                 TopBar.MANAGE_TEAM -> {
                                                     teamViewModel.onEvent(TeamUIEvent.OnTeamUpdate)
-                                                    onTeamSelectionConfirmed(teamViewModel.teamUiState.value.updatedTeam)
                                                 }
                                                 else -> {}
                                                 //Add events cases for tool bar icon clicks
@@ -195,16 +181,16 @@ fun NavControllerComposable(
         composable(route = Route.HOME_SCREEN) {
             homeViewModel.setAppBar(false)
             //if (fromSplash)
-                HomeScreen(name = "", onInvitationCLick = {
-                    navController.navigate(Route.INVITATION_SCREEN)
-                }, logoClick = {
-                    homeViewModel.setLogoutDialog(true)
-                }, vm = homeViewModel)
-           /* else {
-                HomeFirstTimeLoginScreen(onCreateTeamClick = {
-                    navController.navigate(Route.TEAM_SETUP_SCREEN)
-                }, viewModel = homeViewModel)
-            }*/
+            HomeScreen(name = "", onInvitationCLick = {
+                navController.navigate(Route.INVITATION_SCREEN)
+            }, logoClick = {
+                homeViewModel.setLogoutDialog(true)
+            }, vm = homeViewModel)
+            /* else {
+                 HomeFirstTimeLoginScreen(onCreateTeamClick = {
+                     navController.navigate(Route.TEAM_SETUP_SCREEN)
+                 }, viewModel = homeViewModel)
+             }*/
         }
         composable(route = Route.TEAMS_SCREEN) {
             homeViewModel.setTopBar(
@@ -227,6 +213,14 @@ fun NavControllerComposable(
                 onCreateTeamClick = {
                     navController.navigate(Route.TEAM_SETUP_SCREEN) {
                         navController.popBackStack()
+                        setupTeamViewModelUpdated.onEvent(
+                            TeamSetupUIEventUpdated.OnColorSelected(
+                                (it?.colorCode ?: "").replace(
+                                    "#",
+                                    ""
+                                )
+                            )
+                        )
                     }
                 },
                 onBackPress = {
@@ -253,6 +247,10 @@ fun NavControllerComposable(
             MainManageTeamScreen(teamViewModel, onSuccess = {
                 navController.popBackStack()
             }, onAddPlayerCLick = {
+                setColorUpdate(
+                    setupTeamViewModelUpdated,
+                    teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
+                )
                 navController.navigate(Route.ADD_PLAYER_SCREEN + "/${UserStorage.teamId}")
             })
         }
@@ -285,8 +283,7 @@ fun NavControllerComposable(
         ) {
             homeViewModel.setScreen(true)
             BackHandler {
-                homeViewModel.setScreen(false)
-                navController.popBackStack()
+                moveBackFromAddPlayer(homeViewModel, navController)
             }
             val teamId = it.arguments?.getString("teamId")
             AddPlayersScreenUpdated(
@@ -320,12 +317,23 @@ fun NavControllerComposable(
         composable(route = Route.TEAM_SETUP_SCREEN) {
             homeViewModel.setScreen(true)
             BackHandler {
-                homeViewModel.setScreen(false)
-                navController.popBackStack()
+                setColorToOriginalOnBack(
+                    navController,
+                    setupTeamViewModelUpdated,
+                    homeViewModel,
+                    teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
+                )
             }
             TeamSetupScreenUpdated(
                 vm = setupTeamViewModelUpdated,
-                onBackClick = { navController.popBackStack() },
+                onBackClick = {
+                    setColorToOriginalOnBack(
+                        navController,
+                        setupTeamViewModelUpdated,
+                        homeViewModel,
+                        teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
+                    )
+                },
                 onNextClick = {
                     navController.navigate(Route.ADD_PLAYER_SCREEN)
                 })
@@ -336,6 +344,39 @@ fun NavControllerComposable(
 
 }
 
+fun setColorToOriginalOnBack(
+    navController: NavHostController,
+    setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
+    homeViewModel: HomeViewModel,
+    colorCode: String
+) {
+    moveBackFromAddPlayer(homeViewModel, navController)
+    if (colorCode.isNotEmpty()) {
+        setupTeamViewModelUpdated.onEvent(
+            TeamSetupUIEventUpdated.OnColorSelected(
+                colorCode.replace(
+                    "#",
+                    ""
+                )
+            )
+        )
+    }
+}
+
+fun setColorUpdate(
+    setupTeamViewModelUpdated: SetupTeamViewModelUpdated, colorCode: String
+) {
+    if (colorCode.isNotEmpty()) {
+        setupTeamViewModelUpdated.onEvent(
+            TeamSetupUIEventUpdated.OnColorSelected(
+                colorCode.replace(
+                    "#",
+                    ""
+                )
+            )
+        )
+    }
+}
 
 fun moveBackFromAddPlayer(homeViewModel: HomeViewModel, navController: NavHostController) {
     homeViewModel.setScreen(false)

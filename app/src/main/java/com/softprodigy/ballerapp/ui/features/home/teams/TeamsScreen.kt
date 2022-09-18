@@ -4,7 +4,11 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -14,16 +18,20 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.response.team.Team
-import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.components.AppScrollableTabRow
+import com.softprodigy.ballerapp.ui.features.components.AppTabLikeViewPager
+import com.softprodigy.ballerapp.ui.features.components.SelectTeamDialog
+import com.softprodigy.ballerapp.ui.features.components.UserType
+import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
 import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.leaderboard.LeaderBoardScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.roaster.RoasterScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.standing.StandingScreen
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
@@ -34,7 +42,7 @@ fun TeamsScreen(
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
     dismissDialog: (Boolean) -> Unit,
     OnTeamDetailsSuccess: (String) -> Unit,
-    onCreateTeamClick: () -> Unit,
+    onCreateTeamClick: (Team?) -> Unit,
     onBackPress: () -> Unit
 ) {
     val dataStoreManager = DataStoreManager(LocalContext.current)
@@ -108,14 +116,16 @@ fun TeamsScreen(
                 teams = vm.teamUiState.value.teams,
                 onDismiss = { dismissDialog.invoke(false) },
                 onConfirmClick = {
-                    vm.onEvent(TeamUIEvent.OnConfirmTeamClick(it))
-                    onTeamSelectionConfirmed(state.selectedTeam)
+                    if (UserStorage.teamId != it) {
+                        onTeamSelectionConfirmed(state.selectedTeam)
+                        vm.onEvent(TeamUIEvent.OnConfirmTeamClick(it))
+                    }
                 },
                 onSelectionChange = onTeamSelectionChange,
                 selected = state.selectedTeam,
                 showLoading = state.isLoading,
-                onCreateTeamClick = onCreateTeamClick,
-                showCreateTeamButton = role.value.equals(UserType.COACH.key,ignoreCase = true)
+                onCreateTeamClick = { onCreateTeamClick(state.selectedTeam) },
+                showCreateTeamButton = role.value.equals(UserType.COACH.key, ignoreCase = true)
             )
         }
 
@@ -134,7 +144,7 @@ fun TeamsContent(pagerState: PagerState, viewModel: TeamViewModel) {
     ) { index ->
         when (index) {
             0 -> StandingScreen()
-            1 -> EmptyScreen()
+            1 -> EmptyScreen(singleText = true, heading = stringResource(id = R.string.coming_soon))
             2 -> RoasterScreen(viewModel)
             3 -> LeaderBoardScreen()
         }

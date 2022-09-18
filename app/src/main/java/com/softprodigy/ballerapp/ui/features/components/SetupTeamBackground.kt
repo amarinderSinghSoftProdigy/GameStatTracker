@@ -91,6 +91,10 @@ fun CoachFlowBackground(
                                 modifier = Modifier
                                     .size(dimensionResource(id = R.dimen.size_65dp))
                                     .clip(CircleShape)
+                                    .background(
+                                        color = MaterialTheme.appColors.material.onSurface,
+                                        CircleShape
+                                    )
                                     .border(
                                         dimensionResource(id = R.dimen.size_3dp),
                                         MaterialTheme.colors.surface,

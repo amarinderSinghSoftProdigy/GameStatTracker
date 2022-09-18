@@ -195,4 +195,6 @@
     <string name="invite">Invite</string>
     <string name="invite_members">Invite Members</string>
     <string name="please_add_players">Please invite players to the team.</string>
+    <string name="no_data_found">No data found!!</string>
+    <string name="try_something_else">Please try again later.</string>
 </resources>

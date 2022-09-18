@@ -63,7 +63,7 @@ class TeamRepository @Inject constructor(
         return safeApiCall(dispatcher) { service.getCoachPlayersByID(id = id) }
     }
 
-    override suspend fun updateTeamDetails(id: UpdateTeamDetailRequest): ResultWrapper<BaseResponse<Any>> {
+    override suspend fun updateTeamDetails(id: UpdateTeamDetailRequest): ResultWrapper<BaseResponse<Team>> {
         return safeApiCall(dispatcher) { service.updateTeamDetails(id) }
     }
 

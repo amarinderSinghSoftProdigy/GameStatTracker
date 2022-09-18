@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
@@ -222,42 +221,22 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                         }
 
 
-                        if (state.localLogo != null) {
-                            CoilImage(
-                                src = state.localLogo,
-                                modifier =
-                                Modifier
-                                    .size(dimensionResource(id = R.dimen.size_160dp))
-                                    .clip(CircleShape)
-                                    .background(
-                                        color = Color.Transparent,
-                                        shape = CircleShape
-                                    )
-                                    .align(Alignment.Center),
-                                isCrossFadeEnabled = false,
-                                onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
-                                onError = { Placeholder(R.drawable.ic_user_profile_icon) }
+                        CoilImage(
+                            src = state.localLogo ?: (BuildConfig.IMAGE_SERVER + state.logo),
+                            modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                                .background(
+                                    color = Color.Transparent,
+                                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+                                )
+                                .align(Alignment.Center),
+                            isCrossFadeEnabled = false,
+                            onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                            onError = { Placeholder(R.drawable.ic_team_placeholder) }
+                        )
 
-                            )
-
-                        } else {
-                            CoilImage(
-                                src = BuildConfig.IMAGE_SERVER + state.logo,
-                                modifier =
-                                Modifier
-                                    .size(dimensionResource(id = R.dimen.size_160dp))
-                                    .clip(CircleShape)
-                                    .background(
-                                        color = Color.Transparent,
-                                        shape = CircleShape
-                                    )
-                                    .align(Alignment.Center),
-                                isCrossFadeEnabled = false,
-                                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
-                                onError = { Placeholder(R.drawable.ic_team_placeholder) }
-                            )
-
-                        }
                     }
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
                     Divider(thickness = dimensionResource(id = R.dimen.divider))

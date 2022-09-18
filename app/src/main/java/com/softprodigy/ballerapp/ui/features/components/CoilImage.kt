@@ -33,7 +33,35 @@ fun CoilImage(
         }).build())
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
         Image(
-            contentScale = ContentScale.FillBounds,
+            contentScale = ContentScale.None,
+            painter = painter,
+            modifier = modifier,
+            contentDescription = null,
+        )
+        when (val state = painter.state) {
+            is AsyncImagePainter.State.Loading -> onLoading?.invoke()
+            is AsyncImagePainter.State.Success -> Unit
+            is AsyncImagePainter.State.Error, is AsyncImagePainter.State.Empty -> onError?.invoke()
+        }
+    }
+}
+
+@OptIn(ExperimentalCoilApi::class)
+@Composable
+fun CoilImageBox(
+    src: Any,
+    modifier: Modifier,
+    isCrossFadeEnabled: Boolean = true,
+    onError: @Composable (() -> Unit)? = null,
+    onLoading: @Composable (() -> Unit)? = null,
+) {
+    val painter =
+        rememberAsyncImagePainter(ImageRequest.Builder(LocalContext.current).data(src).apply(block = fun ImageRequest.Builder.() {
+            memoryCachePolicy(policy = CachePolicy.ENABLED)
+        }).build())
+    Box(modifier = modifier, contentAlignment = Alignment.Center) {
+        Image(
+            contentScale = ContentScale.None,
             painter = painter,
             modifier = modifier,
             contentDescription = null,
