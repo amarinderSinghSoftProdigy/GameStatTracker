@@ -136,6 +136,10 @@ class TeamViewModel @Inject constructor(
             is TeamUIEvent.OnItemSelected -> {
                 updateSelection(event.name)
             }
+
+            is TeamUIEvent.OnTeamIdSelected -> {
+                _teamUiState.value = _teamUiState.value.copy(teamId = event.teamId)
+            }
         }
     }
 
@@ -187,15 +191,19 @@ class TeamViewModel @Inject constructor(
                                     selectionTeam = it
                                 }
                             }
+                            val idToSearch =
+                                if (selectionTeam == null) response.data[0]._id else selectionTeam?._id
                             _teamUiState.value =
                                 _teamUiState.value.copy(
                                     teams = response.data,
                                     selectedTeam = if (selectionTeam == null) response.data[0] else selectionTeam,
                                     isLoading = false,
+                                    teamId = idToSearch!!
                                     localLogo = null,
                                 )
-                            val idToSearch =
-                                if (selectionTeam == null) response.data[0]._id else selectionTeam?._id
+
+                            getTeamByTeamId(idToSearch ?: "")
+
                             viewModelScope.launch {
                                 if (!idToSearch.isNullOrEmpty()) {
                                     getTeamByTeamId(idToSearch)

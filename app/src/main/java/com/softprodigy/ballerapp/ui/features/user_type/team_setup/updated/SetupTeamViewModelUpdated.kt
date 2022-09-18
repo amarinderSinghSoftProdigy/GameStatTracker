@@ -171,7 +171,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
                 }
             }
 
-            TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen-> {
+            TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen -> {
                 resetMemberValues()
             }
         }
@@ -195,11 +195,11 @@ class SetupTeamViewModelUpdated @Inject constructor(
         _teamSetupUiState.value =
             _teamSetupUiState.value.copy(isLoading = true)
 
-       val inviteMemberResponse= teamRepo.inviteMembersByTeamId(request)
+        val inviteMemberResponse = teamRepo.inviteMembersByTeamId(request)
 
         _teamSetupUiState.value =
             _teamSetupUiState.value.copy(isLoading = false)
-        when(inviteMemberResponse){
+        when (inviteMemberResponse) {
             is ResultWrapper.GenericError -> {
                 _teamSetupChannel.send(
                     TeamSetupChannel.ShowToast(
@@ -222,11 +222,12 @@ class SetupTeamViewModelUpdated @Inject constructor(
                 inviteMemberResponse.value.let { response ->
                     if (response.status) {
                         _teamSetupChannel.send(
-                        TeamSetupChannel.OnInvitationSuccess(
-                            UiText.DynamicString(
-                                response.statusMessage
+                            TeamSetupChannel.OnInvitationSuccess(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
                             )
-                        ))
+                        )
                         resetMemberValues()
                     } else {
                         _teamSetupUiState.value =
@@ -293,9 +294,6 @@ class SetupTeamViewModelUpdated @Inject constructor(
     }
 
     private suspend fun uploadTeamLogo() {
-        _teamSetupUiState.value =
-            teamSetupUiState.value.copy(isLoading = true)
-
         val uri = Uri.parse(teamSetupUiState.value.teamImageUri)
 
         val file = getFileFromUri(getApplication<Application>().applicationContext, uri)
@@ -304,15 +302,16 @@ class SetupTeamViewModelUpdated @Inject constructor(
             val size = Integer.parseInt((file.length() / 1024).toString())
             Timber.i("Filesize compressed --> $size")
         }
+
         val uploadLogoResponse = imageUploadRepo.uploadSingleImage(
             type = AppConstants.TEAM_LOGO,
             file
         )
-        _teamSetupUiState.value =
-            teamSetupUiState.value.copy(isLoading = false)
+
 
         when (uploadLogoResponse) {
             is ResultWrapper.GenericError -> {
+                _teamSetupUiState.value = _teamSetupUiState.value.copy(isLoading = false)
                 _teamSetupChannel.send(
                     TeamSetupChannel.ShowToast(
                         UiText.DynamicString(
@@ -322,6 +321,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
+                _teamSetupUiState.value = _teamSetupUiState.value.copy(isLoading = false)
                 _teamSetupChannel.send(
                     TeamSetupChannel.ShowToast(
                         UiText.DynamicString(
@@ -334,7 +334,10 @@ class SetupTeamViewModelUpdated @Inject constructor(
                 uploadLogoResponse.value.let { response ->
                     if (response.status) {
                         _teamSetupUiState.value =
-                            _teamSetupUiState.value.copy(teamImageServerUrl = uploadLogoResponse.value.data.data)
+                            _teamSetupUiState.value.copy(
+                                isLoading = false,
+                                teamImageServerUrl = uploadLogoResponse.value.data.data
+                            )
                         _teamSetupChannel.send(
                             TeamSetupChannel.OnLogoUpload
                         )
@@ -356,8 +359,6 @@ class SetupTeamViewModelUpdated @Inject constructor(
 
     private suspend fun createTeam() {
 
-        _teamSetupUiState.value =
-            teamSetupUiState.value.copy(isLoading = true)
 
         val members = _teamSetupUiState.value.inviteMemberName.mapIndexed { index, name ->
             Members(name = name, email = _teamSetupUiState.value.inviteMemberEmail[index])
@@ -371,15 +372,15 @@ class SetupTeamViewModelUpdated @Inject constructor(
             members = members
         )
 
-        Log.i("createTeamRequest", "createTeamRequest:$request ")
+        _teamSetupUiState.value = _teamSetupUiState.value.copy(isLoading = true)
+
         val createTeamResponse = teamRepo.createTeamAPI(
             request
         )
-        _teamSetupUiState.value =
-            teamSetupUiState.value.copy(isLoading = false)
 
         when (createTeamResponse) {
             is ResultWrapper.GenericError -> {
+                _teamSetupUiState.value = _teamSetupUiState.value.copy(isLoading = false)
                 _teamSetupChannel.send(
                     TeamSetupChannel.ShowToast(
                         UiText.DynamicString(
@@ -389,6 +390,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
+                _teamSetupUiState.value = _teamSetupUiState.value.copy(isLoading = false)
                 _teamSetupChannel.send(
                     TeamSetupChannel.ShowToast(
                         UiText.DynamicString(
@@ -400,7 +402,8 @@ class SetupTeamViewModelUpdated @Inject constructor(
             is ResultWrapper.Success -> {
                 createTeamResponse.value.let { response ->
                     if (response.status) {
-                     _teamSetupChannel.send(
+                        _teamSetupUiState.value = _teamSetupUiState.value.copy(isLoading = false)
+                        _teamSetupChannel.send(
                             TeamSetupChannel.OnTeamCreate(response.statusMessage)
                         )
                     } else {

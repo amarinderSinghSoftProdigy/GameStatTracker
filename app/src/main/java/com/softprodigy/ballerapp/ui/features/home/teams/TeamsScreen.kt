@@ -126,6 +126,7 @@ fun TeamsScreen(
                 showLoading = state.isLoading,
                 onCreateTeamClick = { onCreateTeamClick(state.selectedTeam) },
                 showCreateTeamButton = role.value.equals(UserType.COACH.key, ignoreCase = true)
+                teamId = vm.teamUiState.value.teamId
             )
         }
 
