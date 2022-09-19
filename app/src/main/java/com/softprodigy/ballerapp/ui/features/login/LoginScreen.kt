@@ -269,8 +269,8 @@ fun LoginScreen(
                     imeAction = ImeAction.Next,
                     keyboardType = KeyboardType.Password
                 ),
-                isError = (!password.isValidPassword() && password.isNotEmpty()),
-                errorMessage = stringResource(id = R.string.password_error),
+               /* isError = (!password.isValidPassword() && password.isNotEmpty()),
+                errorMessage = stringResource(id = R.string.password_error),*/
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
                     unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,

@@ -149,13 +149,15 @@ fun CoachListItem(
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
         AppText(
-            text = if (isCoach) ((("${coach?.firstName} ${coach?.lastName}") ?: "")).capitalize() else ("${player?.firstName} ${player?.lastName}"
+            text = if (isCoach) ((("${coach?.firstName} ${coach?.lastName}")
+                ?: "")).capitalize() else ("${player?.firstName} ${player?.lastName}"
                 ?: "").capitalize(),
             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             style = MaterialTheme.typography.h6,
             overflow = TextOverflow.Ellipsis,
-            maxLines = 1
+            maxLines = 1,
+            modifier = Modifier.width(dimensionResource(id = R.dimen.size_100dp))
         )
 
         Row(
@@ -177,7 +179,6 @@ fun CoachListItem(
                     color = MaterialTheme.appColors.textField.label,
                     style = MaterialTheme.typography.h6
                 )
-
             }
         }
     }

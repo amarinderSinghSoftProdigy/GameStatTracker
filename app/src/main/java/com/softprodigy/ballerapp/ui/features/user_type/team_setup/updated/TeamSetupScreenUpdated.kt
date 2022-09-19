@@ -150,7 +150,6 @@ fun TeamSetupScreenUpdated(
 
                     Divider(thickness = dimensionResource(id = R.dimen.divider))
 
-
                     Row(
                         Modifier
                             .fillMaxWidth()
@@ -201,18 +200,20 @@ fun TeamSetupScreenUpdated(
                             }
 
                     ) {
-                        Row(modifier = Modifier.align(Alignment.Center)) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_upload),
-                                contentDescription = null,
-                                tint = Color.Unspecified
-                            )
-                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
-                            AppText(
-                                text = stringResource(id = R.string.upload_files),
-                                style = MaterialTheme.typography.h6,
-                                color = ColorMainPrimary
-                            )
+                        if (state.teamImageUri == null) {
+                            Row(modifier = Modifier.align(Alignment.Center)) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_upload),
+                                    contentDescription = null,
+                                    tint = Color.Unspecified
+                                )
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+                                AppText(
+                                    text = stringResource(id = R.string.upload_files),
+                                    style = MaterialTheme.typography.h6,
+                                    color = ColorMainPrimary
+                                )
+                            }
                         }
                         state.teamImageUri?.let {
                             CoilImage(
