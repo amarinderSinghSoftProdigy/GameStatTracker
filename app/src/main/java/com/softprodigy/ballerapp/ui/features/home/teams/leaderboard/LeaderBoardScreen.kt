@@ -81,7 +81,7 @@ fun LeaderBoardScreen(vm: LeaderBoardViewModel = hiltViewModel()) {
                             srNo = srNo,
                             leader = item,
                             selected = state.selectedLeader == item,
-                            key = state.leaderBoard[pagerState.currentPage].key
+                            key = state.leaderBoard[pagerState.currentPage].key.trim()
                         ) {
                             onLeaderSelectionChange.invoke(item)
                         }
