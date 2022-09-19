@@ -30,12 +30,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.argbToHexString
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
+import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
+import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -104,11 +107,11 @@ fun SelectTeamDialog(
     showLoading: Boolean,
     teams: ArrayList<Team>,
     onCreateTeamClick: () -> Unit,
-    showCreateTeamButton: Boolean = false
+    showCreateTeamButton: Boolean = false,
+    vm: TeamViewModel = hiltViewModel(),
+    teamId: String
 ) {
-    val teamId = remember {
-        mutableStateOf("")
-    }
+
     BallerAppMainTheme {
         AlertDialog(
             modifier = Modifier
@@ -169,7 +172,7 @@ fun SelectTeamDialog(
                             teams.forEach {
                                 TeamListItem(team = it, selected = selected == it) { team ->
                                     onSelectionChange.invoke(team)
-                                    teamId.value = team._id
+                                    vm.onEvent(TeamUIEvent.OnTeamIdSelected(team._id))
                                 }
                             }
                         }
@@ -208,7 +211,13 @@ fun SelectTeamDialog(
                         DialogButton(
                             text = stringResource(R.string.dialog_button_confirm),
                             onClick = {
-                                onConfirmClick.invoke(teamId.value)
+                                onConfirmClick.invoke(
+                                    (if (vm.teamUiState.value.teamId.isNotEmpty()) {
+                                        vm.teamUiState.value.teamId
+                                    } else {
+                                        teamId
+                                    })
+                                )
                                 onDismiss.invoke()
                             },
                             modifier = Modifier
@@ -223,7 +232,6 @@ fun SelectTeamDialog(
         )
     }
 }
-
 
 @Composable
 fun LogoutDialog(
@@ -310,7 +318,7 @@ fun TeamListItem(team: Team, selected: Boolean, onClick: (Team) -> Unit) {
                         dimensionResource(id = R.dimen.size_2dp),
                         MaterialTheme.colors.surface,
                         CircleShape,
-                        ),
+                    ),
                 isCrossFadeEnabled = false,
                 onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
                 onError = { Placeholder(R.drawable.ic_team_placeholder) }
@@ -524,7 +532,7 @@ fun PlayerListDialogItem(
                     .clip(CircleShape),
                 isCrossFadeEnabled = false,
                 onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
-                onError = {Placeholder(R.drawable.ic_team_placeholder)}
+                onError = { Placeholder(R.drawable.ic_team_placeholder) }
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
             Text(
@@ -682,7 +690,6 @@ fun SelectInvitationRoleDialog(
                     }
                 }
 
-
             },
         )
     }
@@ -743,7 +750,6 @@ fun SelectInvitationRoleItem(
                     )
                     .padding(dimensionResource(id = R.dimen.size_8dp))
             )
-
 
         }
     }

@@ -81,7 +81,7 @@ fun LeaderBoardScreen(vm: LeaderBoardViewModel = hiltViewModel()) {
                             srNo = srNo,
                             leader = item,
                             selected = state.selectedLeader == item,
-                            key = state.leaderBoard[pagerState.currentPage].key
+                            key = state.leaderBoard[pagerState.currentPage].key.trim()
                         ) {
                             onLeaderSelectionChange.invoke(item)
                         }
@@ -213,7 +213,7 @@ fun LeaderListItem(
 
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
                 Text(
-                    text = leader.name,
+                    text = "${leader.firstName} ${leader.lastName}",
                     fontWeight = FontWeight.Bold,
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                     color = if (selected) {

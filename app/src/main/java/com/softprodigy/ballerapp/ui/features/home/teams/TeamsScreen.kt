@@ -47,6 +47,12 @@ fun TeamsScreen(
 
     val scope = rememberCoroutineScope()
 
+    remember {
+        scope.launch {
+            vm.getTeams()
+        }
+    }
+
     val onTeamSelectionConfirmed = { team: Team? ->
         setupTeamViewModelUpdated.onEvent(
             TeamSetupUIEventUpdated.OnColorSelected(
@@ -109,7 +115,8 @@ fun TeamsScreen(
                 selected = state.selectedTeam,
                 showLoading = state.isLoading,
                 onCreateTeamClick = onCreateTeamClick,
-                showCreateTeamButton = role.value.equals(UserType.COACH.key,ignoreCase = true)
+                showCreateTeamButton = role.value.equals(UserType.COACH.key,ignoreCase = true),
+                teamId = vm.teamUiState.value.teamId
             )
         }
 

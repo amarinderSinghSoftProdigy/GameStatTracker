@@ -89,11 +89,11 @@ class TeamViewModel @Inject constructor(
             )
     }
 
-    init {
-        viewModelScope.launch {
-            getTeams()
-        }
-    }
+    /*  init {
+          viewModelScope.launch {
+              getTeams()
+          }
+      }*/
 
     fun onEvent(event: TeamUIEvent) {
         when (event) {
@@ -136,6 +136,10 @@ class TeamViewModel @Inject constructor(
             is TeamUIEvent.OnItemSelected -> {
                 updateSelection(event.name)
             }
+
+            is TeamUIEvent.OnTeamIdSelected -> {
+                _teamUiState.value = _teamUiState.value.copy(teamId = event.teamId)
+            }
         }
     }
 
@@ -149,12 +153,16 @@ class TeamViewModel @Inject constructor(
         )
     }
 
-    private suspend fun getTeams() {
+    suspend fun getTeams() {
         _teamUiState.value =
             _teamUiState.value.copy(
                 isLoading = true
             )
         val teamResponse = teamRepo.getTeams()
+        _teamUiState.value =
+            _teamUiState.value.copy(
+                isLoading = false
+            )
 
         when (teamResponse) {
             is ResultWrapper.GenericError -> {
@@ -187,21 +195,23 @@ class TeamViewModel @Inject constructor(
                 teamResponse.value.let { response ->
                     if (response.status) {
 
-                        if (_teamUiState.value.selectedTeam == null && response.data.size > 0) {
+                        if (/*_teamUiState.value.selectedTeam == null && */response.data.size > 0) {
                             var selectionTeam: Team? = null
                             response.data.toMutableList().forEach {
                                 if (UserStorage.teamId == it._id) {
                                     selectionTeam = it
                                 }
                             }
+                            val idToSearch =
+                                if (selectionTeam == null) response.data[0]._id else selectionTeam?._id
                             _teamUiState.value =
                                 _teamUiState.value.copy(
                                     teams = response.data,
                                     selectedTeam = if (selectionTeam == null) response.data[0] else selectionTeam,
-                                    isLoading = false
+                                    isLoading = false,
+                                    teamId = idToSearch!!
                                 )
-                            val idToSearch =
-                                if (selectionTeam == null) response.data[0]._id else selectionTeam?._id
+
                             getTeamByTeamId(idToSearch ?: "")
 
                             viewModelScope.launch {
@@ -313,6 +323,7 @@ class TeamViewModel @Inject constructor(
     }
 
     private suspend fun uploadTeamLogo() {
+        _teamUiState.value=_teamUiState.value.copy(isLoading = true)
         val isLocalImageTaken = _teamUiState.value.localLogo != null
 
         if (isLocalImageTaken) {
@@ -324,11 +335,13 @@ class TeamViewModel @Inject constructor(
                 val size = Integer.parseInt((file.length() / 1024).toString())
                 Timber.i("Filesize compressed --> $size")
             }
-
-            when (val uploadLogoResponse = imageUploadRepo.uploadSingleImage(
+            val uploadLogoResponse = imageUploadRepo.uploadSingleImage(
                 type = AppConstants.TEAM_LOGO,
                 file
-            )) {
+            )
+            _teamUiState.value=_teamUiState.value.copy(isLoading = false)
+
+            when (uploadLogoResponse) {
                 is ResultWrapper.GenericError -> {
                     _teamChannel.send(
                         TeamChannel.ShowToast(

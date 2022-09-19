@@ -141,7 +141,7 @@ fun CoachListItem(
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
         AppText(
-            text = if (isCoach) (coach?.name ?: "").capitalize() else (player?.name
+            text = if (isCoach) ((("${coach?.firstName} ${coach?.lastName}") ?: "")).capitalize() else ("${player?.firstName} ${player?.lastName}"
                 ?: "").capitalize(),
             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,

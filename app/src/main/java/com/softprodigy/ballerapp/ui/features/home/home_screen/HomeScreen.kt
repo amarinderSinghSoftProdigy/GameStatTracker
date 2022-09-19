@@ -262,7 +262,7 @@ fun HomeScreen(
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
         }
-        if (homeState.isDataLoading) {
+        if (homeScreenState.isLoading) {
             CircularProgressIndicator(
                 modifier = Modifier.align(Alignment.Center),
                 color = MaterialTheme.appColors.material.primaryVariant
