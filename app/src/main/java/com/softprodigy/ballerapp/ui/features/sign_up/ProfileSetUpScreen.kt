@@ -290,7 +290,10 @@ fun ProfileSetUpScreen(
                                     src = Uri.parse(it),
                                     modifier = Modifier
                                         .size(dimensionResource(id = R.dimen.size_300dp))
-                                        .clip(CircleShape)
+                                        .background(
+                                            color = MaterialTheme.appColors.material.onSurface,
+                                            CircleShape
+                                        )
                                         .align(Alignment.Center),
                                     isCrossFadeEnabled = false,
                                     onLoading = { Placeholder(R.drawable.ic_profile_placeholder) },
