@@ -283,7 +283,6 @@ fun TeamSetupScreenUpdated(
                                     },
                                     color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
 
-
                                 )
                             }
                             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))

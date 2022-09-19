@@ -108,7 +108,7 @@ fun HomeScreen(
             AppText(
                 text = stringResource(id = R.string.welcome_back),
                 fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
-                fontWeight = FontWeight.W600,
+                fontWeight = FontWeight.W700,
                 style = MaterialTheme.typography.subtitle1,
                 color = MaterialTheme.appColors.material.primaryVariant
             )
@@ -177,7 +177,7 @@ fun HomeScreen(
                             painter = painterResource(id = R.drawable.ic_briefcase),
                             contentDescription = "",
                             tint = MaterialTheme.appColors.material.primaryVariant,
-                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
+                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_18dp))
                         )
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
                         Text(
@@ -216,7 +216,7 @@ fun HomeScreen(
                             painter = painterResource(id = R.drawable.ic_invite),
                             contentDescription = "",
                             tint = MaterialTheme.appColors.material.primaryVariant,
-                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
+                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_18dp))
                         )
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
                         Text(
@@ -268,7 +268,7 @@ fun HomeScreen(
                             painter = painterResource(id = R.drawable.ic_home),
                             contentDescription = "",
                             tint = MaterialTheme.appColors.material.primaryVariant,
-                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
+                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_18dp))
                         )
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
 
@@ -342,7 +342,7 @@ fun RowScope.EventItem(
                     painter = painterResource(painter),
                     contentDescription = null,
                     tint = MaterialTheme.appColors.material.primaryVariant,
-                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
+                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_18dp))
 
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
@@ -394,7 +394,7 @@ fun RowScope.EventInviteItem(
                     painter = painterResource(painter),
                     contentDescription = null,
                     tint = MaterialTheme.appColors.material.primaryVariant,
-                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
+                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_18dp))
                 )
 
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))

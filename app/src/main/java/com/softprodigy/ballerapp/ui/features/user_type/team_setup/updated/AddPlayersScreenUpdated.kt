@@ -56,7 +56,7 @@ fun AddPlayersScreenUpdated(
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
-
+    val maxChar = 45
     Timber.i("AddPlayersScreenUpdated-- teamId--$teamId")
 
     BackHandler() {
@@ -153,12 +153,13 @@ fun AddPlayersScreenUpdated(
                                                 .focusRequester(focusRequester),
                                             value = state.inviteMemberName[index],
                                             onValueChange = { name ->
-                                                vm.onEvent(
-                                                    TeamSetupUIEventUpdated.OnNameValueChange(
-                                                        index = index,
-                                                        name
+                                                if (name.length <= maxChar)
+                                                    vm.onEvent(
+                                                        TeamSetupUIEventUpdated.OnNameValueChange(
+                                                            index = index,
+                                                            name
+                                                        )
                                                     )
-                                                )
                                             },
                                             colors = TextFieldDefaults.outlinedTextFieldColors(
                                                 focusedBorderColor = ColorBWGrayBorder,
@@ -186,12 +187,13 @@ fun AddPlayersScreenUpdated(
                                                 .focusRequester(focusRequester),
                                             value = state.inviteMemberEmail[index],
                                             onValueChange = { email ->
-                                                vm.onEvent(
-                                                    TeamSetupUIEventUpdated.OnEmailValueChange(
-                                                        index = index,
-                                                        email
+                                                if (email.length <= maxChar)
+                                                    vm.onEvent(
+                                                        TeamSetupUIEventUpdated.OnEmailValueChange(
+                                                            index = index,
+                                                            email
+                                                        )
                                                     )
-                                                )
                                             },
                                             colors = TextFieldDefaults.outlinedTextFieldColors(
                                                 focusedBorderColor = ColorBWGrayBorder,
@@ -235,7 +237,8 @@ fun AddPlayersScreenUpdated(
                                     )*/
                                     }
                                     if (state.inviteMemberName[index].isEmpty()
-                                        && state.inviteMemberEmail[index].isEmpty()) {
+                                        && state.inviteMemberEmail[index].isEmpty()
+                                    ) {
                                         Icon(
                                             painter = painterResource(id = R.drawable.ic_remove),
                                             contentDescription = "",
@@ -276,8 +279,6 @@ fun AddPlayersScreenUpdated(
                 }
 
 
-
-
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
             BottomButtons(
@@ -285,7 +286,7 @@ fun AddPlayersScreenUpdated(
                 onBackClick = {
                     onBackClick.invoke()
                     vm.onEvent(TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen)
-                   },
+                },
                 onNextClick = {
                     if (teamId.isNullOrEmpty()) {
                         vm.onEvent(TeamSetupUIEventUpdated.OnAddPlayerScreenNext)

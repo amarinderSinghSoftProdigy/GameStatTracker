@@ -87,7 +87,8 @@ fun LoginScreen(
     var passwordVisibility by rememberSaveable { mutableStateOf(false) }
     val callbackManager = LocalFacebookCallbackManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
-
+    var maxPasswordChar = 16
+    var maxEmailChar = 45
     val loginState = vm.loginUiState.value
     DisposableEffect(Unit) {
 
@@ -211,7 +212,8 @@ fun LoginScreen(
                 modifier = Modifier
                     .fillMaxWidth(),
                 onValueChange = {
-                    email = it
+                    if (it.length <= maxEmailChar)
+                        email = it
                 },
                 placeholder = {
                     Text(
@@ -256,7 +258,8 @@ fun LoginScreen(
                 modifier = Modifier
                     .fillMaxWidth(),
                 onValueChange = {
-                    password = it
+                    if (it.length <= maxPasswordChar)
+                        password = it
                 },
                 placeholder = {
                     Text(
@@ -269,8 +272,8 @@ fun LoginScreen(
                     imeAction = ImeAction.Next,
                     keyboardType = KeyboardType.Password
                 ),
-               /* isError = (!password.isValidPassword() && password.isNotEmpty()),
-                errorMessage = stringResource(id = R.string.password_error),*/
+                /* isError = (!password.isValidPassword() && password.isNotEmpty()),
+                 errorMessage = stringResource(id = R.string.password_error),*/
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
                     unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
