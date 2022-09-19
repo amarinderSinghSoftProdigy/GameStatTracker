@@ -229,6 +229,8 @@ class SetupTeamViewModelUpdated @Inject constructor(
                             )
                         )
                         resetMemberValues()
+                        inItToDefaultData()
+
                     } else {
                         _teamSetupUiState.value =
                             _teamSetupUiState.value.copy(isLoading = false)
@@ -365,6 +367,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
         }
         val request = CreateTeamRequest(
             name = _teamSetupUiState.value.teamName,
+            colorCode = "#" + _teamSetupUiState.value.teamColorPrimary,
             primaryTeamColor = "#" + _teamSetupUiState.value.teamColorPrimary,
             secondaryTeamColor = "#" + _teamSetupUiState.value.teamColorSec,
             tertiaryTeamColor = "#" + _teamSetupUiState.value.teamColorThird,
@@ -406,6 +409,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
                         _teamSetupChannel.send(
                             TeamSetupChannel.OnTeamCreate(response.statusMessage)
                         )
+                        inItToDefaultData()
                     } else {
                         _teamSetupUiState.value =
                             _teamSetupUiState.value.copy(isLoading = false)
@@ -428,6 +432,11 @@ class SetupTeamViewModelUpdated @Inject constructor(
             dataStoreManager.setRole("")
             dataStoreManager.setEmail("")
         }
+    }
+
+    private fun inItToDefaultData(){
+        Log.i("inItToDefaultData", "inItToDefaultData: ")
+       _teamSetupUiState.value= TeamSetupUIStateUpdated(teamColorPrimary=_teamSetupUiState.value.teamColorPrimary )
     }
 }
 
