@@ -375,7 +375,7 @@ fun SignUpScreen(
                 },
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Next,
-                    keyboardType = KeyboardType.Text,
+                    keyboardType = KeyboardType.Email,
                     capitalization = KeyboardCapitalization.Sentences
                 ),
                 errorMessage = stringResource(id = R.string.address_error),

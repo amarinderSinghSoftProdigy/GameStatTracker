@@ -278,7 +278,6 @@ fun AddPlayersScreenUpdated(
                     }
                 }
 
-
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
             BottomButtons(
