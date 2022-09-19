@@ -44,7 +44,7 @@ interface ITeamRepository {
 
     suspend fun getAllInvitation(
         page: Int = 1,
-        limit: Int = 20,
+        limit: Int = 50,
         sort: String = ""
     ): ResultWrapper<BaseResponse<ArrayList<Invitation>>>
 
