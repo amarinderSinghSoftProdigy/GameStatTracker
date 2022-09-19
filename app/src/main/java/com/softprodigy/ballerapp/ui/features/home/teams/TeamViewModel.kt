@@ -242,7 +242,7 @@ class TeamViewModel @Inject constructor(
             name = _teamUiState.value.teamName,
             logo = _teamUiState.value.logo ?: "",
             colorCode = _teamUiState.value.teamColor,
-            primaryTeamColor = "#" + _teamUiState.value.teamColor,
+            primaryTeamColor =_teamUiState.value.teamColor,
 
             )
         _teamUiState.value = _teamUiState.value.copy(updatedTeam = request)
