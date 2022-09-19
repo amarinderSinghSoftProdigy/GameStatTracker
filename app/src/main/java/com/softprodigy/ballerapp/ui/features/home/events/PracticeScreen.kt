@@ -104,10 +104,7 @@ fun PracticeScreen() {
                     iconAllowed = false
                 )
             }
-
         }
-
-
     }
 }
 

@@ -123,7 +123,6 @@ fun TabsContent(pagerState: PagerState, tabUpdate: (Int) -> Unit) {
         when (page) {
             0 -> {
                 NewEventScreen()
-
             }
             1 -> {
                 TabContentScreen(data = "Welcome to Shopping Screen")
