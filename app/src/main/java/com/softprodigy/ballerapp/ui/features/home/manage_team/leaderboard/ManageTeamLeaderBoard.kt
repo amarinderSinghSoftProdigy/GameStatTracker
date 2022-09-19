@@ -56,10 +56,6 @@ fun ManageTeamLeaderBoard(vm: TeamViewModel) {
 
     val state = vm.teamUiState.value
     val leaderBoard = state.leaderBoard
-    val selected = remember {
-        mutableStateOf(state.all)
-    }
-
     val recordState =
         rememberReorderableLazyListState(
             onMove = vm::moveItem,
@@ -92,8 +88,7 @@ fun ManageTeamLeaderBoard(vm: TeamViewModel) {
 
                 Row(
                     modifier = Modifier.clickable {
-                        selected.value = !selected.value
-                        onLeaderSelectionChange.invoke(TeamLeaderBoard(name = if (selected.value) "All" else ""))
+                        onLeaderSelectionChange.invoke(TeamLeaderBoard(name = if (!state.all) "All" else ""))
                     },
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -183,7 +178,7 @@ inline fun LeaderBoardItem(
     crossinline onSelectionChange: (TeamLeaderBoard) -> Unit,
 ) {
     val selection = remember {
-        mutableStateOf(status)
+        mutableStateOf(item.status)
     }
 
     Row(
@@ -212,11 +207,31 @@ inline fun LeaderBoardItem(
                     .size(
                         dimensionResource(id = R.dimen.size_16dp)
                     )
-                    .background(color = if (item.status || selection.value) MaterialTheme.appColors.material.primaryVariant else Color.White)
+                    .background(
+                        color = if (all) {
+                            MaterialTheme.appColors.material.primaryVariant
+                        } else {
+                            if (selection.value) {
+                                MaterialTheme.appColors.material.primaryVariant
+                            } else Color.White
+                        }
+                    )
                     .border(
-                        width = if (item.status || selection.value) 0.dp else dimensionResource(id = R.dimen.size_1dp),
+                        width =
+                        if (all) {
+                            0.dp
+                        } else {
+                            if (selection.value) {
+                                0.dp
+                            } else dimensionResource(id = R.dimen.size_1dp)
+                        },
                         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)),
-                        color = if (item.status || selection.value) Color.Transparent else MaterialTheme.appColors.buttonColor.bckgroundDisabled
+                        color = if (selection.value) {
+                            if (all)
+                                Color.Transparent
+                            else
+                                MaterialTheme.appColors.buttonColor.bckgroundDisabled
+                        } else MaterialTheme.appColors.buttonColor.bckgroundDisabled
                     )
             ) {
                 Icon(
@@ -229,7 +244,14 @@ inline fun LeaderBoardItem(
 
             AppText(
                 text = item.name.capitalize(),
-                color = if (item.status || selection.value) MaterialTheme.appColors.buttonColor.bckgroundEnabled else ColorGreyLighter,
+                color =
+                if (all) {
+                    MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                } else {
+                    if (selection.value) {
+                        MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                    } else ColorGreyLighter
+                },
                 style = MaterialTheme.typography.h6
             )
         }
