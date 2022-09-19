@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 
 data class Player(
+    var uniqueId: Int = 0,
     @SerializedName("__v")
     val __v: Int? = null,
     @SerializedName("_id")

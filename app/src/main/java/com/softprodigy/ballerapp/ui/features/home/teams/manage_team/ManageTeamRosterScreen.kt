@@ -1,5 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.home.teams.manage_team
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,11 +24,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.flowlayout.FlowRow
 import com.softprodigy.ballerapp.BuildConfig
@@ -43,6 +46,7 @@ import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayStatus
 import com.softprodigy.ballerapp.ui.theme.appColors
+import com.softprodigy.ballerapp.ui.utils.dragDrop.ReorderableItem
 import com.softprodigy.ballerapp.ui.utils.dragDrop.detectReorderAfterLongPress
 import com.softprodigy.ballerapp.ui.utils.dragDrop.rememberReorderableLazyListState
 import com.softprodigy.ballerapp.ui.utils.dragDrop.reorderable
@@ -99,32 +103,33 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                                     .detectReorderAfterLongPress(recordState)
                             ),
                     ) {
-                        items(state.players) { item ->
-                           /* ReorderableItem(
+                        items(state.players, key = { item -> item.uniqueId }) { item ->
+                            ReorderableItem(
                                 reorderableState = recordState,
-                                key = item._id,
+                                key = item.uniqueId,
                             ) { dragging ->
                                 val elevation =
                                     animateDpAsState(if (dragging) dimensionResource(id = R.dimen.size_10dp) else 0.dp)
-                             */  /* if (item.locked) {
-                                    Column {
-                                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
-                                        Text(
-                                            text = item._id,
-                                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                                            fontWeight = FontWeight.W600,
-                                        )
-                                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                                    }
-                                } else {*/
-                                    MangeTeamDataHeaderItem(
-                                       /* modifier = Modifier
-                                            .shadow(elevation.value),*/
-                                        players = item
-                                    )
-                               // }
-                           // }
+                                /* if (item.locked) {
+                                     Column {
+                                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
+                                         Text(
+                                             text = item._id,
+                                             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                                             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                             fontWeight = FontWeight.W600,
+                                         )
+                                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                                     }
+                                 } else {*/
+                                MangeTeamDataHeaderItem(
+                                    modifier = Modifier
+                                        .shadow(elevation.value),
+                                    dragging = dragging,
+                                    players = item
+                                )
+                                // }
+                            }
                         }
                     }
                 }
@@ -185,6 +190,7 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
 @Composable
 fun MangeTeamDataHeaderItem(
     modifier: Modifier = Modifier,
+    dragging: Boolean = false,
     coaches: ArrayList<Coach>? = null,
     players: Player? = null,
 ) {
@@ -196,7 +202,7 @@ fun MangeTeamDataHeaderItem(
                 }
             }
         } else if (players != null) {
-            TeamUserListItem(modifier, teamUser = players, isCoach = false)
+            TeamUserListItem(modifier, teamUser = players, isCoach = false, dragging = dragging)
         }
     }
 }
@@ -204,86 +210,93 @@ fun MangeTeamDataHeaderItem(
 @Composable
 fun TeamUserListItem(
     modifier: Modifier = Modifier,
+    dragging: Boolean = false,
     teamUser: Player? = null,
     coachUser: Coach? = null,
     isCoach: Boolean = false,
 ) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(top = dimensionResource(id = R.dimen.size_8dp))
-            .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-            .background(color = MaterialTheme.appColors.material.surface),
-    ) {
-        Row(
-            modifier = Modifier
-                .height(IntrinsicSize.Min)
-                .align(Alignment.CenterStart)
-                .padding(vertical = dimensionResource(id = R.dimen.size_8dp)),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-            val url = "" + if (isCoach) coachUser?.profileImage else teamUser?.profileImage
-            CoilImage(
-                src = if (url.contains("http")) url else BuildConfig.IMAGE_SERVER + url,
-                modifier =
-                Modifier
-                    .background(
-                        color = ColorBWGrayStatus,
-                        shape = CircleShape
-                    )
-                    .size(dimensionResource(id = R.dimen.size_32dp))
-                    .clip(CircleShape),
-                isCrossFadeEnabled = false,
-                onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
-                onError = { Placeholder(R.drawable.ic_user_profile_icon) }
-            )
-            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
-            Text(
-                text = if (isCoach) "${coachUser?.firstName} ${coachUser?.lastName}"
-                    ?: "" else "${teamUser?.firstName} ${teamUser?.lastName}",
-                fontWeight = FontWeight.Bold,
-                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
-            )
-            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_4dp)))
-        }
-
-        Row(
-            modifier = Modifier.align(Alignment.CenterEnd),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text = if (isCoach) coachUser?.coachPosition ?: "" else teamUser?.jerseyNumber
-                    ?: "",
-                fontWeight = FontWeight.Bold,
-                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                color = MaterialTheme.appColors.material.primaryVariant
-            )
-            if (!isCoach) {
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
-                Text(
-                    text = teamUser?.position ?: "",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                    color = MaterialTheme.appColors.textField.label.copy(alpha = 1f)
+    Column {
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+        Box(
+            modifier = modifier
+                .fillMaxWidth()
+                .background(
+                    color = Color.White,
+                    RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                 )
-            }
-
-            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_14dp)))
-            if (!isCoach) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_drag),
-                    contentDescription = "",
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                .background(color = MaterialTheme.appColors.material.surface),
+        ) {
+            Row(
+                modifier = Modifier
+                    .height(IntrinsicSize.Min)
+                    .align(Alignment.CenterStart)
+                    .padding(vertical = dimensionResource(id = R.dimen.size_8dp)),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+                val url = "" + if (isCoach) coachUser?.profileImage else teamUser?.profileImage
+                CoilImage(
+                    src = if (url.contains("http")) url else BuildConfig.IMAGE_SERVER + url,
                     modifier =
                     Modifier
-                        .size(dimensionResource(id = R.dimen.size_12dp)),
-                    tint = Color.Unspecified
+                        .background(
+                            color = ColorBWGrayStatus,
+                            shape = CircleShape
+                        )
+                        .size(dimensionResource(id = R.dimen.size_32dp))
+                        .clip(CircleShape),
+                    isCrossFadeEnabled = false,
+                    onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
+                    onError = { Placeholder(R.drawable.ic_user_profile_icon) }
                 )
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+                Text(
+                    text = if (isCoach) "${coachUser?.firstName} ${coachUser?.lastName}"
+                        ?: "" else "${teamUser?.firstName} ${teamUser?.lastName}",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                )
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_4dp)))
             }
-            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_20dp)))
+
+            Row(
+                modifier = Modifier.align(Alignment.CenterEnd),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = if (isCoach) coachUser?.coachPosition ?: "" else teamUser?.jerseyNumber
+                        ?: "",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                    color = MaterialTheme.appColors.material.primaryVariant
+                )
+                if (!isCoach) {
+                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
+                    Text(
+                        text = teamUser?.position ?: "",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                        color = MaterialTheme.appColors.textField.label.copy(alpha = 1f)
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_14dp)))
+                if (!isCoach) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_drag),
+                        contentDescription = "",
+                        modifier =
+                        Modifier
+                            .size(dimensionResource(id = R.dimen.size_12dp)),
+                        tint = Color.Unspecified
+                    )
+                }
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_20dp)))
+
+            }
 
         }
-
     }
 }

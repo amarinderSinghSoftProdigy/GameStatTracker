@@ -222,7 +222,11 @@ fun TeamSetupScreenUpdated(
                                     .align(Alignment.Center)
                                     .size(dimensionResource(id = R.dimen.size_160dp))
                                     .clip(CircleShape)
-                                    .align(Alignment.Center),
+                                    .align(Alignment.Center)
+                                    .background(
+                                        color = MaterialTheme.appColors.material.onSurface,
+                                        CircleShape
+                                    ),
                                 isCrossFadeEnabled = false,
                                 onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
                                 onError = { Placeholder(R.drawable.ic_team_placeholder) }

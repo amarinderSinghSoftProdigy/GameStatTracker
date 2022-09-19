@@ -88,7 +88,7 @@ class TeamViewModel @Inject constructor(
 
         _teamUiState.value =
             _teamUiState.value.copy(
-                all = if (name == "All") true else if (name.isEmpty()) false else count,
+                all = count,
                 leaderBoard = _teamUiState.value.leaderBoard
             )
         delay(200)
@@ -242,7 +242,9 @@ class TeamViewModel @Inject constructor(
             name = _teamUiState.value.teamName,
             logo = _teamUiState.value.logo ?: "",
             colorCode = _teamUiState.value.teamColor,
-        )
+            primaryTeamColor = "#" + _teamUiState.value.teamColor,
+
+            )
         _teamUiState.value = _teamUiState.value.copy(updatedTeam = request)
         when (val teamResponse = teamRepo.updateTeamDetails(request)) {
             is ResultWrapper.GenericError -> {
@@ -398,8 +400,7 @@ class TeamViewModel @Inject constructor(
                     if (response.status) {
                         _teamUiState.value = _teamUiState.value.copy(
                             isLoading = false,
-                            players = response.data.players,
-                            //roasterTabs = CommonUtils.getPlayerTabs(response.data.players),
+                            players = CommonUtils.getPlayerTabs(response.data.players),
                             coaches = response.data.coaches,
                             teamName = response.data.name,
                             teamColor = response.data.colorCode,
