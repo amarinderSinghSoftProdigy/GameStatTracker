@@ -11,11 +11,8 @@
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_home.xml" value="0.2425" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_leagues.xml" value="0.226" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_logo.xml" value="0.2265" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_profile_placeholder.xml" value="0.2425" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_remove.xml" value="0.2425" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_team_placeholder.xml" value="0.2425" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_teams_large.xml" value="0.226" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_user_profile_icon.xml" value="0.2425" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/layout/twitter_login.xml" value="0.1838768115942029" />
         <entry key="..\:/Users/user/baller-app/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
         <entry key="..\:/Users/user/baller-app/app/src/main/res/drawable/ic_add_player.xml" value="0.1" />
@@ -46,6 +43,7 @@
         <entry key="..\:/Users/user/baller-app/app/src/main/res/drawable/ic_upload.xml" value="0.1" />
         <entry key="..\:/Users/user/baller-app/app/src/main/res/drawable/ic_users.xml" value="0.1" />
         <entry key="..\:/Users/user/baller-app/app/src/main/res/drawable/splash_background.xml" value="0.1" />
+        <entry key="..\:/Users/user/baller-app/app/src/main/res/drawable/splash_background_color.xml" value="0.1" />
         <entry key="..\:/Users/user/baller-app/app/src/main/res/mipmap-anydpi-v26/ic_app_logo.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_add_button.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_add_player.xml" value="0.131" />
