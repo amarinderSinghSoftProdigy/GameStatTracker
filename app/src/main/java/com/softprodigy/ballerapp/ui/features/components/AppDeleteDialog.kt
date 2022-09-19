@@ -541,7 +541,10 @@ fun PlayerListDialogItem(
                 src = BuildConfig.IMAGE_SERVER + player.profileImage,
                 modifier = Modifier
                     .size(dimensionResource(id = R.dimen.size_32dp))
-                    .clip(CircleShape),
+                    .clip(CircleShape).background(
+                        color = MaterialTheme.appColors.material.onSurface,
+                        CircleShape
+                    ),
                 isCrossFadeEnabled = false,
                 onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
                 onError = { Placeholder(R.drawable.ic_team_placeholder) }
