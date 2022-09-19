@@ -88,7 +88,7 @@ class TeamViewModel @Inject constructor(
 
         _teamUiState.value =
             _teamUiState.value.copy(
-                all = if (name == "All") true else if (name.isEmpty()) false else count,
+                all = count,
                 leaderBoard = _teamUiState.value.leaderBoard
             )
         delay(200)
