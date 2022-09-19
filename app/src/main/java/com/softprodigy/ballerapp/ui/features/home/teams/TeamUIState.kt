@@ -24,8 +24,8 @@ data class TeamUIState(
     val logo: String? = null, //server
     val localLogo: String? = null, //local uri
     val search: String = "",
-    val selected: ArrayList<String> = ArrayList(),
+    //val selected: ArrayList<String> = ArrayList(),
     val checked: Boolean = false,
     val updatedTeam: UpdateTeamDetailRequest = UpdateTeamDetailRequest(),
-    val teamId: String = ""
+    val all: Boolean = false
 )

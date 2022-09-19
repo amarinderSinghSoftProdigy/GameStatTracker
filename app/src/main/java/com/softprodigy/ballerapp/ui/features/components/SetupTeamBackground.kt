@@ -2,7 +2,17 @@ package com.softprodigy.ballerapp.ui.features.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.absoluteOffset
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
@@ -81,6 +91,10 @@ fun CoachFlowBackground(
                                 modifier = Modifier
                                     .size(dimensionResource(id = R.dimen.size_65dp))
                                     .clip(CircleShape)
+                                    .background(
+                                        color = MaterialTheme.appColors.material.onSurface,
+                                        CircleShape
+                                    )
                                     .border(
                                         dimensionResource(id = R.dimen.size_3dp),
                                         MaterialTheme.colors.surface,
@@ -88,8 +102,8 @@ fun CoachFlowBackground(
                                     )
                                     .align(Alignment.Center),
                                 isCrossFadeEnabled = false,
-                                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
-                                onError = { Placeholder(R.drawable.ic_team_placeholder) }
+                                onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
+                                onError = { Placeholder(R.drawable.ic_user_profile_icon) }
                             )
                         }
                     }

@@ -3,7 +3,17 @@ package com.softprodigy.ballerapp.ui.features.home.teams.roaster
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -14,7 +24,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -29,7 +38,6 @@ import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
 import com.softprodigy.ballerapp.ui.features.components.Placeholder
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
-import com.softprodigy.ballerapp.ui.theme.ColorBWGrayStatus
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -129,14 +137,14 @@ fun CoachListItem(
             modifier =
             Modifier
                 .background(
-                    color = Color.Transparent,
+                    color = MaterialTheme.appColors.material.onSurface,
                     shape = CircleShape
                 )
                 .size(dimensionResource(id = R.dimen.size_80dp))
                 .clip(CircleShape),
             isCrossFadeEnabled = false,
-            onLoading = { Placeholder(R.drawable.ic_profile_placeholder) },
-            onError = { Placeholder(R.drawable.ic_profile_placeholder) }
+            onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
+            onError = { Placeholder(R.drawable.ic_user_profile_icon) }
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 

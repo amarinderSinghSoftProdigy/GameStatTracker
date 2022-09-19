@@ -3,11 +3,34 @@ package com.softprodigy.ballerapp.ui.features.home.manage_team.teams
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Card
+import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,12 +52,22 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.argbToHexString
 import com.softprodigy.ballerapp.common.validTeamName
-import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
+import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.CoilImage
+import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
+import com.softprodigy.ballerapp.ui.features.components.PlaceholderRect
+import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.ColorPickerBottomSheet
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.UpdateColor
-import com.softprodigy.ballerapp.ui.theme.*
+import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
+import com.softprodigy.ballerapp.ui.theme.ColorMainPrimary
+import com.softprodigy.ballerapp.ui.theme.ColorPrimaryTransparent
+import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -188,42 +221,22 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                         }
 
 
-                        if (state.localLogo != null) {
-                            CoilImage(
-                                src = state.localLogo,
-                                modifier =
-                                Modifier
-                                    .size(dimensionResource(id = R.dimen.size_160dp))
-                                    .clip(CircleShape)
-                                    .background(
-                                        color = Color.Transparent,
-                                        shape = CircleShape
-                                    )
-                                    .align(Alignment.Center),
-                                isCrossFadeEnabled = false,
-                                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
-                                onError = { Placeholder(R.drawable.ic_team_placeholder) }
+                        CoilImage(
+                            src = state.localLogo ?: (BuildConfig.IMAGE_SERVER + state.logo),
+                            modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                                .background(
+                                    color = Color.Transparent,
+                                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+                                )
+                                .align(Alignment.Center),
+                            isCrossFadeEnabled = false,
+                            onLoading = { PlaceholderRect(R.drawable.ic_user_profile_icon) },
+                            onError = { PlaceholderRect(R.drawable.ic_user_profile_icon) }
+                        )
 
-                            )
-
-                        } else {
-                            CoilImage(
-                                src = BuildConfig.IMAGE_SERVER + state.logo,
-                                modifier =
-                                Modifier
-                                    .size(dimensionResource(id = R.dimen.size_160dp))
-                                    .clip(CircleShape)
-                                    .background(
-                                        color = Color.Transparent,
-                                        shape = CircleShape
-                                    )
-                                    .align(Alignment.Center),
-                                isCrossFadeEnabled = false,
-                                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
-                                onError = { Placeholder(R.drawable.ic_team_placeholder) }
-                            )
-
-                        }
                     }
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
                     Divider(thickness = dimensionResource(id = R.dimen.divider))
