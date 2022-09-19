@@ -400,8 +400,7 @@ class TeamViewModel @Inject constructor(
                     if (response.status) {
                         _teamUiState.value = _teamUiState.value.copy(
                             isLoading = false,
-                            players = response.data.players,
-                            //roasterTabs = CommonUtils.getPlayerTabs(response.data.players),
+                            players = CommonUtils.getPlayerTabs(response.data.players),
                             coaches = response.data.coaches,
                             teamName = response.data.name,
                             teamColor = response.data.colorCode,
