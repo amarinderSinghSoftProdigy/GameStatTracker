@@ -197,4 +197,5 @@
     <string name="please_add_players">Please invite players to the team.</string>
     <string name="no_data_found">No data found!!</string>
     <string name="try_something_else">Please try again later.</string>
+    <string name="all_players">All Players</string>
 </resources>

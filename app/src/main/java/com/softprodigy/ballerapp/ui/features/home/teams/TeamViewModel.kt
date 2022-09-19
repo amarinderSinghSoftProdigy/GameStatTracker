@@ -45,7 +45,7 @@ class TeamViewModel @Inject constructor(
     fun isDragEnabled(pos: ItemPosition) = true
 
     fun isRoasterDragEnabled(pos: ItemPosition) =
-        _teamUiState.value.roasterTabs.toMutableList().getOrNull(pos.index)?.locked != true
+        _teamUiState.value.players.toMutableList().getOrNull(pos.index)?.locked != true
 
     fun moveItem(from: ItemPosition, to: ItemPosition) {
         _teamUiState.value =
@@ -60,7 +60,7 @@ class TeamViewModel @Inject constructor(
     fun moveItemRoaster(from: ItemPosition, to: ItemPosition) {
         _teamUiState.value =
             _teamUiState.value.copy(
-                roasterTabs = _teamUiState.value.roasterTabs.toMutableList()
+                players = _teamUiState.value.players.toMutableList()
                     .apply {
                         add(to.index, removeAt(from.index))
                     } as ArrayList<Player>
@@ -229,10 +229,10 @@ class TeamViewModel @Inject constructor(
                 isLoading = true
             )
         val newRoaster = arrayListOf<TeamRoaster>()
-        _teamUiState.value.roasterTabs.forEach {
-            val position = it.position.ifEmpty { it._id }
+        _teamUiState.value.players.forEach {
+            //val position = it.position.ifEmpty { it._id }
             if (it.position.isNotEmpty())
-                newRoaster.add(TeamRoaster(it._id, position))
+                newRoaster.add(TeamRoaster(it._id, ""))
         }
         //Need to update the request object.
         val request = UpdateTeamDetailRequest(
@@ -376,19 +376,7 @@ class TeamViewModel @Inject constructor(
     }
 
     private suspend fun getTeamByTeamId(userId: String) {
-
-        _teamUiState.value =
-            _teamUiState.value.copy(
-                isLoading = true
-            )
-
-        val teamResponse = teamRepo.getTeamsByTeamID(userId)
-        _teamUiState.value =
-            _teamUiState.value.copy(
-                isLoading = false,
-            )
-
-        when (teamResponse) {
+        when (val teamResponse = teamRepo.getTeamsByTeamID(userId)) {
             is ResultWrapper.GenericError -> {
                 _teamChannel.send(
                     TeamChannel.ShowToast(
@@ -413,7 +401,7 @@ class TeamViewModel @Inject constructor(
                         _teamUiState.value = _teamUiState.value.copy(
                             isLoading = false,
                             players = response.data.players,
-                            roasterTabs = CommonUtils.getPlayerTabs(response.data.players),
+                            //roasterTabs = CommonUtils.getPlayerTabs(response.data.players),
                             coaches = response.data.coaches,
                             teamName = response.data.name,
                             teamColor = response.data.colorCode,
