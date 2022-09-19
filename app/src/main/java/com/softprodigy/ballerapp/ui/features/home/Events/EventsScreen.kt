@@ -34,7 +34,10 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun EventsScreen(vm: EventViewModel = hiltViewModel(), tabUpdate: (Int) -> Unit) {
+fun EventsScreen(
+    vm: EventViewModel = hiltViewModel(),
+    tabUpdate: (Int) -> Unit)
+ {
     val state = vm.eventState.value
     Box(Modifier.fillMaxSize()) {
         TabLayout(tabUpdate, state, vm)

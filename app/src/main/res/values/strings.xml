@@ -130,6 +130,7 @@
     <string name="add_players_to_use_app">Add new players to create teams and events.</string>
     <string name="no_upcoming_events">No Upcoming Events</string>
     <string name="no_opportunities">No Opportunities Events</string>
+    <string name="filter_events">Filter Events</string>
     <string name="no_league">No Leagues found</string>
     <string name="add_events_to_use_app">Add events to other features of app.</string>
     <string name="add_events">Add Event</string>
@@ -204,4 +205,17 @@
     <string name="decline_head">Decline RSVP</string>
     <string name="reason_not_going">Reason for not going</string>
     <string name="not_going">Not going</string>
+    <string name="clinic">Clinic</string>
+    <string name="camp">Camp</string>
+    <string name="league">League</string>
+    <string name="individual">League</string>
+    <string name="elite">Elite</string>
+    <string name="competitive">Competitive</string>
+    <string name="developmental">Developmental</string>
+    <string name="learning">Learning</string>
+    <string name="level">Level</string>
+    <string name="format">Format</string>
+    <string name="event_type">Event Type</string>
+    <string name="distance">Distance</string>
+    <string name="max_dis">Max Distance</string>
 </resources>

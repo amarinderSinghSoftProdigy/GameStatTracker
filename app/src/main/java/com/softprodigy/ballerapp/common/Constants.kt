@@ -35,6 +35,7 @@ object Route {
     const val NEW_PASSWORD_SCREEN = "newPasswordScreen"
     const val HOME_SCREEN = "homeScreen"
     const val EVENTS_SCREEN = "eventsScreen"
+    const val EVENTS_FILTER_SCREEN = "events_filter_screen"
     const val TEAMS_SCREEN = "teamsScreen"
     const val SPLASH_SCREEN = "splashScreen"
     const val SELECT_USER_TYPE = "selectUserTypeScreen"

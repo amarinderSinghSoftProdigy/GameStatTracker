@@ -41,7 +41,9 @@ import com.softprodigy.ballerapp.ui.features.components.TabBar
 import com.softprodigy.ballerapp.ui.features.components.TopBar
 import com.softprodigy.ballerapp.ui.features.components.TopBarData
 import com.softprodigy.ballerapp.ui.features.components.fromHex
+import com.softprodigy.ballerapp.ui.features.home.Events.EventViewModel
 import com.softprodigy.ballerapp.ui.features.home.Events.EventsScreen
+import com.softprodigy.ballerapp.ui.features.home.Events.FilterScreen
 import com.softprodigy.ballerapp.ui.features.home.invitation.InvitationScreen
 import com.softprodigy.ballerapp.ui.features.home.manage_team.MainManageTeamScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
@@ -65,6 +67,7 @@ class HomeActivity : ComponentActivity() {
             val fromSplash = intent.getBooleanExtra(IntentData.FROM_SPLASH, false)
             val homeViewModel: HomeViewModel = hiltViewModel()
             val teamViewModel: TeamViewModel = hiltViewModel()
+            val eventViewModel: EventViewModel = hiltViewModel()
             val state = homeViewModel.state.value
             val dataStoreManager = DataStoreManager(LocalContext.current)
             val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
@@ -81,6 +84,7 @@ class HomeActivity : ComponentActivity() {
                         NavControllerComposable(
                             homeViewModel,
                             teamViewModel,
+                            eventViewModel,
                             navController = navController,
                             fromSplash = fromSplash
                         )
@@ -102,7 +106,7 @@ class HomeActivity : ComponentActivity() {
                                         iconClick = {
                                             when (state.topBar.topBar) {
                                                 TopBar.MY_EVENT -> {
-                                                    navController.navigate(Route.MANAGED_TEAM_SCREEN)
+                                                    navController.navigate(Route.EVENTS_FILTER_SCREEN)
                                                 }
                                                 TopBar.TEAMS -> {
                                                     navController.navigate(Route.MANAGED_TEAM_SCREEN)
@@ -129,6 +133,7 @@ class HomeActivity : ComponentActivity() {
                                 NavControllerComposable(
                                     homeViewModel,
                                     teamViewModel,
+                                    eventViewModel,
                                     navController = navController,
                                     showDialog = state.showDialog,
                                     fromSplash = fromSplash
@@ -166,6 +171,7 @@ class HomeActivity : ComponentActivity() {
 fun NavControllerComposable(
     homeViewModel: HomeViewModel,
     teamViewModel: TeamViewModel,
+    eventViewModel: EventViewModel,
     showDialog: Boolean = false,
     navController: NavHostController = rememberNavController(),
     fromSplash: Boolean = false
@@ -220,9 +226,16 @@ fun NavControllerComposable(
                     topBar = TopBar.MY_EVENT,
                 )
             )
-            EventsScreen() { }
+            EventsScreen(eventViewModel){}
         }
-
+        composable(route = Route.EVENTS_FILTER_SCREEN) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    topBar = TopBar.FILTER_EVENT,
+                )
+            )
+            FilterScreen(eventViewModel)
+        }
         composable(route = Route.MANAGED_TEAM_SCREEN) {
             homeViewModel.setTopBar(
                 TopBarData(
