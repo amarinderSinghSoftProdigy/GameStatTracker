@@ -35,6 +35,8 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
 import com.softprodigy.ballerapp.ui.features.home.events.NewEventScreen
 import com.softprodigy.ballerapp.ui.features.home.events.PracticeScreen
+import com.softprodigy.ballerapp.ui.features.home.events.division.DivisionScreen
+import com.softprodigy.ballerapp.ui.features.home.events.venues.VenuesScreen
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
 
@@ -122,7 +124,7 @@ fun TabsContent(pagerState: PagerState, tabUpdate: (Int) -> Unit) {
     HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
         when (page) {
             0 -> {
-                NewEventScreen()
+                VenuesScreen()
             }
             1 -> {
                 TabContentScreen(data = "Welcome to Shopping Screen")

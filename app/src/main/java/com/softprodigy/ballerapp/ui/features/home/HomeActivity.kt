@@ -41,6 +41,7 @@ import com.softprodigy.ballerapp.ui.features.components.TabBar
 import com.softprodigy.ballerapp.ui.features.components.TopBar
 import com.softprodigy.ballerapp.ui.features.components.TopBarData
 import com.softprodigy.ballerapp.ui.features.components.fromHex
+import com.softprodigy.ballerapp.ui.features.home.events.NewEventScreen
 import com.softprodigy.ballerapp.ui.features.home.home_screen.HomeScreen
 import com.softprodigy.ballerapp.ui.features.home.invitation.InvitationScreen
 import com.softprodigy.ballerapp.ui.features.home.manage_team.MainManageTeamScreen
@@ -255,6 +256,7 @@ fun NavControllerComposable(
             })
         }
 
+
         composable(route = Route.ADD_PLAYER_SCREEN) {
             homeViewModel.setScreen(true)
             BackHandler {
@@ -337,11 +339,20 @@ fun NavControllerComposable(
                 onNextClick = {
                     navController.navigate(Route.ADD_PLAYER_SCREEN)
                 })
+
+
         }
 
-
+        composable(route = Route.NEW_EVENT) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = stringResource(id = R.string.new_event),
+                    topBar = TopBar.NEW_EVENT,
+                )
+            )
+            NewEventScreen()
+        }
     }
-
 }
 
 fun setColorToOriginalOnBack(

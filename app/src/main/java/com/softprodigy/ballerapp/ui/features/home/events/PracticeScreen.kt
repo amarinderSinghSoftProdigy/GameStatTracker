@@ -1,8 +1,13 @@
 package com.softprodigy.ballerapp.ui.features.home.events
 
+import android.annotation.SuppressLint
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.graphics.drawable.Icon
+import android.widget.DatePicker
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,66 +33,137 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.ButtonWithLeadingIcon
 import com.softprodigy.ballerapp.ui.theme.appColors
+import java.text.SimpleDateFormat
+import java.util.*
 
+@SuppressLint("SimpleDateFormat")
 @Composable
-fun PracticeScreen() {
+fun PracticeScreen(vm: PracticeViewModel = hiltViewModel()) {
+
+    val state = vm.practiceUiState.value
+
+    val context = LocalContext.current
+    val mCalendar = Calendar.getInstance()
+    val mYear: Int = mCalendar.get(Calendar.YEAR)
+    val mMonth: Int = mCalendar.get(Calendar.MONTH)
+    val mDay: Int = mCalendar.get(Calendar.DAY_OF_MONTH)
+    val mHour = mCalendar[Calendar.HOUR_OF_DAY]
+    val mMinute = mCalendar[Calendar.MINUTE]
+    val month_date = SimpleDateFormat("MMM")
+
+    val mDatePickerDialog = DatePickerDialog(
+        context,
+        { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
+            vm.onEvent(PracticeUIEvent.OnDateChanged("${month_date.format(mMonth + 1)} $mDayOfMonth,$mYear"))
+        }, mYear, mMonth, mDay
+    )
+
+    val mArrivalPickerDialog = TimePickerDialog(
+        context,
+        { _, mHour: Int, mMinute: Int ->
+            vm.onEvent(PracticeUIEvent.OnArrivalTimeChanged("$mHour:$mMinute"))
+        }, mHour, mMinute, false
+    )
+
+    val mStartTimePickerDialog = TimePickerDialog(
+        context,
+        { _, mHour: Int, mMinute: Int ->
+            vm.onEvent(PracticeUIEvent.OnStartTimeChanged("$mHour:$mMinute"))
+        }, mHour, mMinute, false
+    )
+
+    val mEndTimePickerDialog = TimePickerDialog(
+        context,
+        { _, mHour: Int, mMinute: Int ->
+            vm.onEvent(PracticeUIEvent.OnEndTimeChanged("$mHour:$mMinute"))
+        }, mHour, mMinute, false
+    )
 
     Box(modifier = Modifier.fillMaxSize()) {
 
         Column(modifier = Modifier.fillMaxSize()) {
 
             Divider(color = MaterialTheme.appColors.material.primary)
+
             PracticeItem(
-                stringResource(R.string.date),
-                "May 23, 2022",
-                painterResource(id = R.drawable.ic_calender)
-            )
+                title = stringResource(R.string.date),
+                icon = painterResource(id = R.drawable.ic_calender),
+                label = stringResource(id = R.string.select_date),
+                selectedValue = state.selectedDate
+            ) {
+                mDatePickerDialog.show()
+            }
+
             Divider(color = MaterialTheme.appColors.material.primary)
+
             PracticeItem(
-                stringResource(R.string.arrival_time),
-                "5:45 PM",
-                painterResource(id = R.drawable.ic_date)
-            )
+                title = stringResource(R.string.arrival_time),
+                label = stringResource(id = R.string.select_arrival_time),
+                icon = painterResource(id = R.drawable.ic_date),
+                selectedValue = state.selectedArrivalTime
+            ) {
+                mArrivalPickerDialog.show()
+            }
+
             Divider(color = MaterialTheme.appColors.material.primary)
+
             PracticeItem(
-                stringResource(R.string.start_time),
-                "6:00 PM",
-                painterResource(id = R.drawable.ic_date)
-            )
+                title = stringResource(R.string.start_time),
+                label = stringResource(id = R.string.select_start_time),
+                icon = painterResource(id = R.drawable.ic_date),
+                selectedValue = state.selectedStartTime
+            ) {
+                mStartTimePickerDialog.show()
+            }
+
             Divider(color = MaterialTheme.appColors.material.primary)
+
             PracticeItem(
-                stringResource(R.string.end_time),
-                "7:00 PM",
-                painterResource(id = R.drawable.ic_date)
-            )
+                title = stringResource(R.string.end_time),
+                label = stringResource(id = R.string.select_end_time),
+                icon = painterResource(id = R.drawable.ic_date),
+                selectedValue = state.selectedEndTime
+            ) {
+                mEndTimePickerDialog.show()
+
+            }
+
             Divider(color = MaterialTheme.appColors.material.primary)
+
             PracticeItem(
-                stringResource(R.string.location),
-                stringResource(R.string.select_location),
-                painterResource(id = R.drawable.ic_next),
-                choose = true
-            )
+                title = stringResource(R.string.location),
+                label = stringResource(R.string.select_location),
+                icon = painterResource(id = R.drawable.ic_next),
+                color = MaterialTheme.appColors.buttonColor.bckgroundDisabled
+            ) {}
+
             Divider(color = MaterialTheme.appColors.material.primary)
+
             PracticeItem(
-                stringResource(R.string.address),
-                stringResource(R.string.send_address),
-                painterResource(id = R.drawable.ic_next),
-                choose = true
-            )
+                title = stringResource(R.string.address),
+                label = stringResource(R.string.send_address),
+                icon = painterResource(id = R.drawable.ic_next),
+                color = MaterialTheme.appColors.buttonColor.bckgroundDisabled
+            ) {}
+
             Divider(color = MaterialTheme.appColors.material.primary)
+
             PracticeItem(
                 stringResource(R.string.send_push_notification),
-                onlyIcon = true
-            )
+                onlyIcon = true,
+            ) {}
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+
             Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center) {
                 ButtonWithLeadingIcon(
                     modifier = Modifier
@@ -111,10 +187,12 @@ fun PracticeScreen() {
 @Composable
 fun PracticeItem(
     title: String,
-    subtitle: String = "",
+    selectedValue: String = "",
+    label: String = "",
     icon: Painter? = null,
-    choose: Boolean = false,
-    onlyIcon: Boolean = false
+    onlyIcon: Boolean = false,
+    color: Color = MaterialTheme.appColors.material.primaryVariant,
+    OnClick: () -> Unit
 ) {
 
     var notification by remember {
@@ -145,36 +223,34 @@ fun PracticeItem(
             )
 
             Row(verticalAlignment = Alignment.CenterVertically) {
-                if (!choose && !onlyIcon) {
-                    AppText(
-                        text = subtitle,
-                        style = MaterialTheme.typography.h6,
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                    )
-                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_14dp)))
+                if (!onlyIcon) {
 
-                    if (icon != null) {
-                        Image(
-                            painter = icon, contentDescription = "", modifier = Modifier.size(
-                                dimensionResource(id = R.dimen.size_14dp)
-                            ),
-                            colorFilter = ColorFilter.tint(MaterialTheme.appColors.material.primaryVariant)
+                    if (selectedValue.isEmpty()) {
+                        AppText(
+                            text = label,
+                            style = MaterialTheme.typography.h4,
+                            color = MaterialTheme.appColors.textField.label,
                         )
+                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_14dp)))
+
+                    } else {
+                        AppText(
+                            text = selectedValue,
+                            style = MaterialTheme.typography.h6,
+                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        )
+                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_14dp)))
+
                     }
-                } else if (choose && !onlyIcon) {
-                    AppText(
-                        text = subtitle,
-                        style = MaterialTheme.typography.h4,
-                        color = MaterialTheme.appColors.textField.label,
-                    )
-                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_14dp)))
 
                     if (icon != null) {
                         Image(
-                            painter = icon, contentDescription = "", modifier = Modifier.size(
-                                dimensionResource(id = R.dimen.size_8dp)
-                            ),
-                            colorFilter = ColorFilter.tint(MaterialTheme.appColors.textField.label)
+                            painter = icon, contentDescription = "", modifier = Modifier
+                                .size(
+                                    dimensionResource(id = R.dimen.size_14dp)
+                                )
+                                .clickable { OnClick() },
+                            colorFilter = ColorFilter.tint(color = color)
                         )
                     }
                 } else {
