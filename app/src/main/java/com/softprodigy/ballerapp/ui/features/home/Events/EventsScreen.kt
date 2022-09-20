@@ -37,11 +37,11 @@ import kotlinx.coroutines.launch
 fun EventsScreen(
     vm: EventViewModel = hiltViewModel(),
     tabUpdate: (Int) -> Unit,
-    moveToEventDetail: (String) -> Unit,
+    moveToPracticeDetail: (String) -> Unit,moveToGameDetail: (String) -> Unit
 ) {
     val state = vm.eventState.value
     Box(Modifier.fillMaxSize()) {
-        TabLayout(tabUpdate, state, vm, moveToEventDetail)
+        TabLayout(tabUpdate, state, vm, moveToPracticeDetail,moveToGameDetail)
     }
 }
 
@@ -53,7 +53,7 @@ fun TabLayout(
     tabUpdate: (Int) -> Unit,
     state: EventState,
     vm: EventViewModel,
-    moveToEventDetail: (String) -> Unit
+    moveToPracticeDetail: (String) -> Unit,moveToGameDetail: (String) -> Unit
 ) {
     // on below line we are creating variable for pager state.
     val pagerState = rememberPagerState(pageCount = 3) // Add the count for number of pages
@@ -62,7 +62,7 @@ fun TabLayout(
             .fillMaxSize()
     ) {
         Tabs(pagerState = pagerState, tabUpdate)
-        TabsContent(pagerState = pagerState, state, vm, tabUpdate, moveToEventDetail)
+        TabsContent(pagerState = pagerState, state, vm, tabUpdate, moveToPracticeDetail,moveToGameDetail)
     }
 }
 
@@ -127,12 +127,12 @@ fun TabsContent(
     state: EventState,
     vm: EventViewModel,
     tabUpdate: (Int) -> Unit,
-    moveToEventDetail: (String) -> Unit
+    moveToPracticeDetail: (String) -> Unit,moveToGameDetail: (String) -> Unit
 ) {
     HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
         when (page) {
             0 -> {
-                MyEvents(state, vm, moveToEventDetail)
+                MyEvents(state, vm, moveToPracticeDetail,moveToGameDetail)
             }
             1 -> {
                 MyLeagueScreen(state, vm)
@@ -148,7 +148,7 @@ fun TabsContent(
 // on below line we are creating a Tab Content
 // Screen for displaying a simple text message.
 @Composable
-fun BoxScope.MyEvents(state: EventState, vm: EventViewModel, moveToEventDetail: (String) -> Unit) {
+fun BoxScope.MyEvents(state: EventState, vm: EventViewModel, moveToPracticeDetail: (String) -> Unit,moveToGameDetail: (String) -> Unit) {
     if (state.currentEvents.size > 0) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
@@ -173,7 +173,7 @@ fun BoxScope.MyEvents(state: EventState, vm: EventViewModel, moveToEventDetail: 
                         }, onDeclineCLick = {
                             vm.onEvent(EvEvents.OnDeclineCLick(it))
 //                    vm.onEvent(InvitationEvent.OnDeclineInvitationClick(invitation = it))
-                        }, moveToEventDetail = moveToEventDetail )
+                        },moveToPracticeDetail = moveToPracticeDetail, moveToGameDetail = moveToGameDetail  )
                     }
                 }
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
@@ -191,7 +191,7 @@ fun BoxScope.MyEvents(state: EventState, vm: EventViewModel, moveToEventDetail: 
                         }, onDeclineCLick = {
                             vm.onEvent(EvEvents.OnDeclineCLick(it))
 
-                        }, moveToEventDetail = moveToEventDetail )
+                        }, moveToPracticeDetail = moveToPracticeDetail, moveToGameDetail = moveToGameDetail )
                     }
                 }
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
@@ -270,12 +270,17 @@ fun EventItem(
     events: Events,
     onAcceptCLick: (Events) -> Unit,
     onDeclineCLick: (Events) -> Unit,
-    moveToEventDetail: (String) -> Unit
+    moveToPracticeDetail: (String) -> Unit,
+    moveToGameDetail: (String) -> Unit,
 ) {
     Box(
         modifier = modifier
             .clickable {
-                moveToEventDetail(events.title)
+                if( events.type!!.type==EventType.PRACTICE.type)
+                    moveToPracticeDetail(events.title)
+                else if( events.type!!.type==EventType.GAME.type){
+                    moveToGameDetail(events.title)
+                }
             }
     ) {
         Column(
@@ -312,11 +317,11 @@ fun EventItem(
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-                                .background(color = GreenColor)
+                                .background(color = events.type!!.color)
                                 .padding(dimensionResource(id = R.dimen.size_4dp))
                         ) {
                             Text(
-                                text = events.type,
+                                text = events.type!!.type,
                                 color = Color.White,
                                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                                 fontWeight = FontWeight.Bold,

@@ -32,31 +32,15 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
                             "Venue Name",
                             "6:00 PM - 7:00 PM",
                             EventStatus.PENDING.status,
-                            "Practice"
+                            EventType.PRACTICE
                         ),
                         Events(
                             "2",
-                            "Practice Title1",
+                            "Game Title",
                             "Venue Name1",
                             "6:00 PM - 7:00 PM",
-                            EventStatus.REJECT.status,
-                            "Game"
-                        ),
-                        Events(
-                            "3",
-                            "Practice Title2",
-                            "Venue Name2",
-                            "6:00 PM - 7:00 PM",
-                            EventStatus.REJECT.status,
-                            "Activity"
-                        ),
-                        Events(
-                            "3",
-                            "Practice Title2",
-                            "Venue Name2",
-                            "6:00 PM - 7:00 PM",
                             EventStatus.ACCEPT.status,
-                            "Scrimmage"
+                            EventType.GAME,
                         ),
                     ),
                     pastEvents = arrayListOf(
@@ -66,7 +50,7 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
                             "Venue Name",
                             "6:00 PM - 7:00 PM",
                             EventStatus.PAST.status,
-                            "Practice",
+                            EventType.PRACTICE,
                         ),
                         Events(
                             "2",
@@ -74,7 +58,7 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
                             "Venue Name1",
                             "6:00 PM - 7:00 PM",
                             EventStatus.PAST.status,
-                            "Game"
+                            EventType.ACTIVITY
                         ),
                         Events(
                             "3",
@@ -82,15 +66,7 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
                             "Venue Name2",
                             "6:00 PM - 7:00 PM",
                             EventStatus.PAST.status,
-                            "Activity"
-                        ),
-                        Events(
-                            "3",
-                            "Practice Title2",
-                            "Venue Name2",
-                            "6:00 PM - 7:00 PM",
-                            EventStatus.PAST.status,
-                            "Scrimmage"
+                            EventType.SCRIMMAGE
                         ),
                     ),
                     leagues = arrayListOf(

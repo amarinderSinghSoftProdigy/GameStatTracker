@@ -229,4 +229,9 @@
     <string name="jersey_color">Jersey Color</string>
     <string name="pre_practive_head">Pre-practice prep and agenda</string>
     <string name="post_practive_head">Post-practice notes</string>
+    <string name="game_details">Game Details</string>
+    <string name="summary">Summary</string>
+    <string name="details">Details</string>
+    <string name="stats">Stats</string>
+    <string name="games_rules">Games Rules</string>
 </resources>
