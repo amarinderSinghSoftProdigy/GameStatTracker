@@ -2,7 +2,18 @@ package com.softprodigy.ballerapp.ui.features.home.home_screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -14,6 +25,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,7 +35,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,14 +42,20 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.softprodigy.ballerapp.BuildConfig
-
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.ButtonWithLeadingIcon
+import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
+import com.softprodigy.ballerapp.ui.features.components.PagerIndicator
+import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
+import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
+import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
 import com.softprodigy.ballerapp.ui.features.home.HomeViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
 import com.softprodigy.ballerapp.ui.theme.appColors
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
@@ -52,6 +70,13 @@ fun HomeScreen(
     val homeScreenViewModel: HomeScreenViewModel = hiltViewModel()
     val homeState = vm.state.value
     val homeScreenState = homeScreenViewModel.homeScreenState.value
+    val coroutineScope = rememberCoroutineScope()
+
+    remember {
+        coroutineScope.launch {
+            homeScreenViewModel.getHomePageDetails()
+        }
+    }
 
     Box {
         CoachFlowBackground(
@@ -71,7 +96,10 @@ fun HomeScreen(
         ) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))
             AppText(
-                text = stringResource(id = R.string.hey_label).replace("name", homeState.user.firstName),
+                text = stringResource(id = R.string.hey_label).replace(
+                    "name",
+                    homeState.user.firstName
+                ),
                 style = MaterialTheme.typography.h5,
                 fontWeight = FontWeight.W500,
                 color = ColorBWBlack
@@ -80,7 +108,7 @@ fun HomeScreen(
             AppText(
                 text = stringResource(id = R.string.welcome_back),
                 fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
-                fontWeight = FontWeight.W600,
+                fontWeight = FontWeight.W700,
                 style = MaterialTheme.typography.subtitle1,
                 color = MaterialTheme.appColors.material.primaryVariant
             )
@@ -149,7 +177,7 @@ fun HomeScreen(
                             painter = painterResource(id = R.drawable.ic_briefcase),
                             contentDescription = "",
                             tint = MaterialTheme.appColors.material.primaryVariant,
-                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
+                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_18dp))
                         )
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
                         Text(
@@ -188,7 +216,7 @@ fun HomeScreen(
                             painter = painterResource(id = R.drawable.ic_invite),
                             contentDescription = "",
                             tint = MaterialTheme.appColors.material.primaryVariant,
-                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
+                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_18dp))
                         )
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
                         Text(
@@ -213,7 +241,11 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))*/
 
             Row {
-                EventItem("my_events", "events_label", homeScreenState.homePageCoachModel.myEvents.toString())
+                EventItem(
+                    "my_events",
+                    "events_label",
+                    homeScreenState.homePageCoachModel.myEvents.toString()
+                )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
                 EventInviteItem("invite_members")
             }
@@ -236,7 +268,7 @@ fun HomeScreen(
                             painter = painterResource(id = R.drawable.ic_home),
                             contentDescription = "",
                             tint = MaterialTheme.appColors.material.primaryVariant,
-                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
+                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_18dp))
                         )
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
 
@@ -256,9 +288,19 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
             Row {
-                EventItem("my_leagues", "leagues", homeScreenState.homePageCoachModel.myLeagues.toString(), R.drawable.ic_leagues)
+                EventItem(
+                    "my_leagues",
+                    "leagues",
+                    homeScreenState.homePageCoachModel.myLeagues.toString(),
+                    R.drawable.ic_leagues
+                )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                EventItem("all_leagues", "leagues", homeScreenState.homePageCoachModel.allLeagues.toString(), R.drawable.ic_leagues)
+                EventItem(
+                    "all_leagues",
+                    "leagues",
+                    homeScreenState.homePageCoachModel.allLeagues.toString(),
+                    R.drawable.ic_leagues
+                )
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
         }
@@ -300,7 +342,7 @@ fun RowScope.EventItem(
                     painter = painterResource(painter),
                     contentDescription = null,
                     tint = MaterialTheme.appColors.material.primaryVariant,
-                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
+                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_18dp))
 
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
@@ -352,7 +394,7 @@ fun RowScope.EventInviteItem(
                     painter = painterResource(painter),
                     contentDescription = null,
                     tint = MaterialTheme.appColors.material.primaryVariant,
-                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
+                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_18dp))
                 )
 
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
@@ -407,7 +449,7 @@ fun MessageComponent() {
                     .fillMaxWidth()
                     .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                 verticalAlignment = Alignment.CenterVertically,
-                ) {
+            ) {
                 Image(
                     painter = painterResource(id = R.drawable.user_demo),
                     contentDescription = "",

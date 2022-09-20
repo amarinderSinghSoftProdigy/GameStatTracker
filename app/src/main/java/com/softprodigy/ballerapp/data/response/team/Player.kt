@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 
 data class Player(
+    var uniqueId: Int = 0,
     @SerializedName("__v")
     val __v: Int? = null,
     @SerializedName("_id")
@@ -92,8 +93,8 @@ data class Player(
     val status: String? = "",
     @SerializedName("steals")
     val steals: String? = "",
-//    @SerializedName("teamId")
-//    val teamId: List<String> = emptyList(),
+    @SerializedName("teamId")
+    val teamId: String = "",
     @SerializedName("threePtPerc")
     val threePtPerc: String? = "",
     @SerializedName("totalFtS")

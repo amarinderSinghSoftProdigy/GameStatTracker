@@ -9,7 +9,11 @@ import com.softprodigy.ballerapp.data.request.SignUpData
 import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
 import com.softprodigy.ballerapp.data.request.UpdateTeamRequest
 import com.softprodigy.ballerapp.data.request.VerifyPhoneRequest
-import com.softprodigy.ballerapp.data.response.*
+import com.softprodigy.ballerapp.data.response.CreateTeamResponse
+import com.softprodigy.ballerapp.data.response.ImageUpload
+import com.softprodigy.ballerapp.data.response.StandingData
+import com.softprodigy.ballerapp.data.response.User
+import com.softprodigy.ballerapp.data.response.UserInfo
 import com.softprodigy.ballerapp.data.response.homepage.HomePageCoachModel
 import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.data.response.team.Player
@@ -107,7 +111,7 @@ open interface APIService {
     suspend fun rejectTeamInvitation(@Body request: RequestBody): BaseResponse<Any>
 
     @PUT(ApiConstants.UPDATE_TEAM)
-    suspend fun updateTeamDetails(@Body updateTeamRequest: UpdateTeamDetailRequest): BaseResponse<Any>
+    suspend fun updateTeamDetails(@Body updateTeamRequest: UpdateTeamDetailRequest): BaseResponse<Team>
 
     @GET(ApiConstants.GET_USER_DETAILS)
     suspend fun getUserDetails():BaseResponse<User>

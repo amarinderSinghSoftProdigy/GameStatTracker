@@ -166,11 +166,14 @@ fun StandingListItem(
                     src = BuildConfig.IMAGE_SERVER + standing.logo,
                     modifier = Modifier
                         .size(dimensionResource(id = R.dimen.size_32dp))
-                        .clip(CircleShape),
+                        .clip(CircleShape).background(
+                            color = MaterialTheme.appColors.material.onSurface,
+                            CircleShape
+                        ),
                     onError = {
-                        Placeholder(R.drawable.ball)
+                        Placeholder(R.drawable.ic_team_placeholder)
                     },
-                    onLoading = { Placeholder(R.drawable.ball) },
+                    onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
                     isCrossFadeEnabled = false
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))

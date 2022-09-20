@@ -150,7 +150,6 @@ fun TeamSetupScreenUpdated(
 
                     Divider(thickness = dimensionResource(id = R.dimen.divider))
 
-
                     Row(
                         Modifier
                             .fillMaxWidth()
@@ -201,18 +200,20 @@ fun TeamSetupScreenUpdated(
                             }
 
                     ) {
-                        Row(modifier = Modifier.align(Alignment.Center)) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_upload),
-                                contentDescription = null,
-                                tint = Color.Unspecified
-                            )
-                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
-                            AppText(
-                                text = stringResource(id = R.string.upload_files),
-                                style = MaterialTheme.typography.h6,
-                                color = ColorMainPrimary
-                            )
+                        if (state.teamImageUri == null) {
+                            Row(modifier = Modifier.align(Alignment.Center)) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_upload),
+                                    contentDescription = null,
+                                    tint = Color.Unspecified
+                                )
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+                                AppText(
+                                    text = stringResource(id = R.string.upload_files),
+                                    style = MaterialTheme.typography.h6,
+                                    color = ColorMainPrimary
+                                )
+                            }
                         }
                         state.teamImageUri?.let {
                             CoilImage(
@@ -221,7 +222,11 @@ fun TeamSetupScreenUpdated(
                                     .align(Alignment.Center)
                                     .size(dimensionResource(id = R.dimen.size_160dp))
                                     .clip(CircleShape)
-                                    .align(Alignment.Center),
+                                    .align(Alignment.Center)
+                                    .background(
+                                        color = MaterialTheme.appColors.material.onSurface,
+                                        CircleShape
+                                    ),
                                 isCrossFadeEnabled = false,
                                 onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
                                 onError = { Placeholder(R.drawable.ic_team_placeholder) }
@@ -281,7 +286,6 @@ fun TeamSetupScreenUpdated(
                                         ""
                                     },
                                     color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
-
 
                                 )
                             }

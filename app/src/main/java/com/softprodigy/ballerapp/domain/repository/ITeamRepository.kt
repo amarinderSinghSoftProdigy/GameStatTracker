@@ -38,13 +38,13 @@ interface ITeamRepository {
 
     suspend fun getTeamCoachPlayerByID(id: String): ResultWrapper<BaseResponse<RoasterResponse>>
 
-    suspend fun updateTeamDetails(id: UpdateTeamDetailRequest): ResultWrapper<BaseResponse<Any>>
+    suspend fun updateTeamDetails(id: UpdateTeamDetailRequest): ResultWrapper<BaseResponse<Team>>
 
     suspend fun inviteMembersByTeamId(updateTeamRequest: UpdateTeamRequest): ResultWrapper<BaseResponse<Any>>
 
     suspend fun getAllInvitation(
         page: Int = 1,
-        limit: Int = 20,
+        limit: Int = 50,
         sort: String = ""
     ): ResultWrapper<BaseResponse<ArrayList<Invitation>>>
 

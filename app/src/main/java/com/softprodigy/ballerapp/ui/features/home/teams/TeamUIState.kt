@@ -15,7 +15,7 @@ data class TeamUIState(
     val players: ArrayList<Player> = ArrayList(),
     val coaches: ArrayList<Coach> = ArrayList(),
     val leaderBoard: List<TeamLeaderBoard> = emptyList(),
-    val roasterTabs: List<Player> = emptyList(),
+    //val roasterTabs: List<Player> = emptyList(),
     val roaster: List<TeamRoaster> = emptyList(),
     val selectedTeam: Team? = null,
     val showDialog: Boolean = false,
@@ -24,8 +24,8 @@ data class TeamUIState(
     val logo: String? = null, //server
     val localLogo: String? = null, //local uri
     val search: String = "",
-    val selected: ArrayList<String> = ArrayList(),
+    //val selected: ArrayList<String> = ArrayList(),
     val checked: Boolean = false,
     val updatedTeam: UpdateTeamDetailRequest = UpdateTeamDetailRequest(),
-    val teamId: String = ""
+    val all: Boolean = false
 )

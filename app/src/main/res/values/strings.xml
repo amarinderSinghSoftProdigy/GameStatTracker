@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Baller App</string>
+    <string name="app_name">Baller</string>
     <string name="facebook_app_id">486006362864421</string>
     <string name="fb_login_protocol_scheme">fb486006362864421</string>
     <string name="facebook_client_token">d8ec9dfd5e83b29b3e3d14ebf82736cb</string>
@@ -207,4 +207,7 @@
     <string name="arrival_time">Arrival Time</string>
     <string name="start_time">Start Time</string>
     <string name="end_time">End Time</string>
+    <string name="no_data_found">No data found!!</string>
+    <string name="try_something_else">Please try again later.</string>
+    <string name="all_players">All Players</string>
 </resources>
