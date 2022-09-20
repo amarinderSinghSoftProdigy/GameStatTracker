@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Baller App</string>
     <string name="facebook_app_id">486006362864421</string>
     <string name="fb_login_protocol_scheme">fb486006362864421</string>
@@ -101,6 +101,7 @@
 
     <string name="home_label">Home</string>
     <string name="events_label">Events</string>
+    <string name="events_detail">Event Details</string>
     <string name="teams_label">Team</string>
     <string name="player_label">Player</string>
     <string name="parent_label">Parent</string>
@@ -218,4 +219,14 @@
     <string name="event_type">Event Type</string>
     <string name="distance">Distance</string>
     <string name="max_dis">Max Distance</string>
+    <string name="events_info">Events Info</string>
+    <string name="arrival_time">Arrival Time</string>
+    <string name="date">Date</string>
+    <string name="duration">Duration</string>
+    <string name="location">Location</string>
+    <string name="navigate">Navigate</string>
+    <string name="rsvp">RSVP</string>
+    <string name="jersey_color">Jersey Color</string>
+    <string name="pre_practive_head">Pre-practice prep and agenda</string>
+    <string name="post_practive_head">Post-practice notes</string>
 </resources>

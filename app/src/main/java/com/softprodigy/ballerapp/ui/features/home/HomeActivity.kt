@@ -12,8 +12,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -41,6 +41,7 @@ import com.softprodigy.ballerapp.ui.features.components.TabBar
 import com.softprodigy.ballerapp.ui.features.components.TopBar
 import com.softprodigy.ballerapp.ui.features.components.TopBarData
 import com.softprodigy.ballerapp.ui.features.components.fromHex
+import com.softprodigy.ballerapp.ui.features.home.Events.EventDetailsScreen
 import com.softprodigy.ballerapp.ui.features.home.Events.EventViewModel
 import com.softprodigy.ballerapp.ui.features.home.Events.EventsScreen
 import com.softprodigy.ballerapp.ui.features.home.Events.FilterScreen
@@ -177,6 +178,7 @@ fun NavControllerComposable(
     fromSplash: Boolean = false
 ) {
     val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = hiltViewModel()
+    var eventTitle by rememberSaveable { mutableStateOf("") }
     NavHost(navController, startDestination = Route.HOME_SCREEN) {
         composable(route = Route.HOME_SCREEN) {
             homeViewModel.setAppBar(false)
@@ -226,7 +228,10 @@ fun NavControllerComposable(
                     topBar = TopBar.MY_EVENT,
                 )
             )
-            EventsScreen(eventViewModel){}
+            EventsScreen(eventViewModel, tabUpdate = {}, moveToEventDetail = {
+                eventTitle=it
+                navController.navigate(Route.EVENTS_DETAIL_SCREEN)
+            })
         }
         composable(route = Route.EVENTS_FILTER_SCREEN) {
             homeViewModel.setTopBar(
@@ -236,6 +241,15 @@ fun NavControllerComposable(
             )
             FilterScreen(eventViewModel)
         }
+        composable(route = Route.EVENTS_DETAIL_SCREEN) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    topBar = TopBar.EVENT_DETAILS,
+                    label = eventTitle
+                )
+            )
+            EventDetailsScreen(eventViewModel)
+        }
         composable(route = Route.MANAGED_TEAM_SCREEN) {
             homeViewModel.setTopBar(
                 TopBarData(
@@ -243,7 +257,7 @@ fun NavControllerComposable(
                     topBar = TopBar.MANAGE_TEAM,
                 )
             )
-            MainManageTeamScreen(teamViewModel,onSuccess={
+            MainManageTeamScreen(teamViewModel, onSuccess = {
                 navController.popBackStack()
             }, onAddPlayerCLick = {
                 navController.navigate(Route.ADD_PLAYER_SCREEN + "/${UserStorage.teamId}")

@@ -310,6 +310,7 @@ data class TopBarData(
 enum class TopBar(val stringId: String, val back: Boolean) {
     PROFILE(stringId = "profile_label", back = false),
     MY_EVENT(stringId = "events_label", back = false),
+    EVENT_DETAILS(stringId = "events_detail", back = true),
     FILTER_EVENT(stringId = "filter_events", back = true),
     EVENT_LEAGUES(stringId = "events_label", back = false),
     TEAMS(stringId = "teams_label", back = false),
