@@ -1,5 +1,5 @@
-<resources>
-    <string name="app_name">Baller</string>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">Baller App</string>
     <string name="facebook_app_id">486006362864421</string>
     <string name="fb_login_protocol_scheme">fb486006362864421</string>
     <string name="facebook_client_token">d8ec9dfd5e83b29b3e3d14ebf82736cb</string>
@@ -23,6 +23,7 @@
     <string name="your_name">Full Name</string>
     <string name="create_account">Create Account</string>
     <string name="accepted">Accepted</string>
+    <string name="going">Going</string>
     <string name="accept">Accept</string>
     <string name="your_password">Enter password</string>
     <string name="ur_password">Your password</string>
@@ -100,6 +101,7 @@
 
     <string name="home_label">Home</string>
     <string name="events_label">Events</string>
+    <string name="events_detail">Event Details</string>
     <string name="teams_label">Team</string>
     <string name="player_label">Player</string>
     <string name="parent_label">Parent</string>
@@ -128,6 +130,9 @@
     <string name="no_players_in_team">No players in your team</string>
     <string name="add_players_to_use_app">Add new players to create teams and events.</string>
     <string name="no_upcoming_events">No Upcoming Events</string>
+    <string name="no_opportunities">No Opportunities Events</string>
+    <string name="filter_events">Filter Events</string>
+    <string name="no_league">No Leagues found</string>
     <string name="add_events_to_use_app">Add events to other features of app.</string>
     <string name="add_events">Add Event</string>
     <string name="my_events">My Events</string>
@@ -173,7 +178,6 @@
     <string name="tertiary_team_color">Tertiary Team Color</string>
     <string name="create_a_team">Create a Team</string>
     <string name="add">Add</string>
-
     <string name="welcome_to_total_hoop">Welcome to Total Hoop</string>
     <string name="team_total_hoop">Team Total Hoop</string>
     <string name="opportunities_to_play">Opportunities To Play</string>
@@ -195,6 +199,51 @@
     <string name="invite">Invite</string>
     <string name="invite_members">Invite Members</string>
     <string name="please_add_players">Please invite players to the team.</string>
+    <string name="upcoming_Events">Upcoming Events</string>
+    <string name="past_event">Past Events</string>
+    <string name="switch_teams">Switch Teams</string>
+    <string name="decline_head">Decline RSVP</string>
+    <string name="reason_not_going">Reason for not going</string>
+    <string name="not_going">Not going</string>
+    <string name="clinic">Clinic</string>
+    <string name="camp">Camp</string>
+    <string name="league">League</string>
+    <string name="individual">League</string>
+    <string name="elite">Elite</string>
+    <string name="competitive">Competitive</string>
+    <string name="developmental">Developmental</string>
+    <string name="learning">Learning</string>
+    <string name="level">Level</string>
+    <string name="format">Format</string>
+    <string name="event_type">Event Type</string>
+    <string name="distance">Distance</string>
+    <string name="max_dis">Max Distance</string>
+    <string name="events_info">Events Info</string>
+    <string name="arrival_time">Arrival Time</string>
+    <string name="date">Date</string>
+    <string name="duration">Duration</string>
+    <string name="location">Location</string>
+    <string name="navigate">Navigate</string>
+    <string name="rsvp">RSVP</string>
+    <string name="jersey_color">Jersey Color</string>
+    <string name="pre_practive_head">Pre-practice prep and agenda</string>
+    <string name="post_practive_head">Post-practice notes</string>
+    <string name="game_details">Game Details</string>
+    <string name="summary">Summary</string>
+    <string name="details">Details</string>
+    <string name="stats">Stats</string>
+    <string name="games_rules">Game Rules</string>
+    <string name="periods">Periods</string>
+    <string name="period_length">Period Length</string>
+    <string name="free_throws">Free Throws</string>
+    <string name="variances">Variances</string>
+    <string name="timeout">Timeouts</string>
+    <string name="full_timeout">Full Timeouts Per</string>
+    <string name="timeout_30">30s Timeouts Per</string>
+    <string name="clock_stoppage">Clock Stoppage</string>
+    <string name="halftime">Halftime Length</string>
+    <string name="shot_clock">Shot Clock</string>
+    <string name="fouling_out">Fouling Out</string>
     <string name="no_data_found">No data found!!</string>
     <string name="try_something_else">Please try again later.</string>
     <string name="all_players">All Players</string>

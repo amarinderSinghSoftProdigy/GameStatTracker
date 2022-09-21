@@ -302,6 +302,9 @@ data class TopBarData(
 enum class TopBar(val stringId: String, val back: Boolean) {
     PROFILE(stringId = "profile_label", back = false),
     MY_EVENT(stringId = "events_label", back = false),
+    EVENT_DETAILS(stringId = "events_detail", back = true),
+    FILTER_EVENT(stringId = "filter_events", back = true),
+    GAME_DETAILS(stringId = "game_details", back = true),
     EVENT_LEAGUES(stringId = "events_label", back = false),
     TEAMS(stringId = "teams_label", back = false),
     EVENT_OPPORTUNITIES(stringId = "events_label", back = false),
@@ -309,6 +312,7 @@ enum class TopBar(val stringId: String, val back: Boolean) {
     SINGLE_LABEL_BACK(stringId = "", back = true),
     SINGLE_LABEL(stringId = "", back = false),
     EMPTY(stringId = "", back = false),
+    GAME_RULES(stringId = "games_rules", back = true),
 }
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
