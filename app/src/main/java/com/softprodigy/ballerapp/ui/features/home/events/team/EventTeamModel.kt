@@ -1,4 +1,4 @@
-package com.softprodigy.ballerapp.ui.features.home.event_kd.event_team
+package com.softprodigy.ballerapp.ui.features.home.events.team
 
 import com.softprodigy.ballerapp.data.response.team.Team
 

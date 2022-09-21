@@ -1,4 +1,4 @@
-package com.softprodigy.ballerapp.ui.features.home.event_kd.event_team
+package com.softprodigy.ballerapp.ui.features.home.events.team
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel

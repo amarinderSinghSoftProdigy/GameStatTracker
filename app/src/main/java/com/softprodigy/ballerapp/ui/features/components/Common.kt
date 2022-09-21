@@ -33,7 +33,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
-import com.softprodigy.ballerapp.ui.features.home.event_kd.schedule.Space
+import com.softprodigy.ballerapp.ui.features.home.events.schedule.Space
 import com.softprodigy.ballerapp.ui.theme.ButtonColor
 import com.softprodigy.ballerapp.ui.theme.appColors
 

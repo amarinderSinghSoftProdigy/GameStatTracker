@@ -1,4 +1,4 @@
-package com.softprodigy.ballerapp.ui.features.home.event_kd.schedule
+package com.softprodigy.ballerapp.ui.features.home.events.schedule
 
 import com.softprodigy.ballerapp.data.response.team.Team
 

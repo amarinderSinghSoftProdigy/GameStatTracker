@@ -1,4 +1,4 @@
-package com.softprodigy.ballerapp.ui.features.home.event_kd.schedule
+package com.softprodigy.ballerapp.ui.features.home.events.schedule
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
