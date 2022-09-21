@@ -45,13 +45,13 @@ import com.softprodigy.ballerapp.ui.features.components.TabBar
 import com.softprodigy.ballerapp.ui.features.components.TopBar
 import com.softprodigy.ballerapp.ui.features.components.TopBarData
 import com.softprodigy.ballerapp.ui.features.components.fromHex
-import com.softprodigy.ballerapp.ui.features.home.Events.EventDetailsScreen
 import com.softprodigy.ballerapp.ui.features.home.Events.EventViewModel
-import com.softprodigy.ballerapp.ui.features.home.Events.EventsScreen
 import com.softprodigy.ballerapp.ui.features.home.Events.FilterScreen
 import com.softprodigy.ballerapp.ui.features.home.Events.Game.GameDetailsScreen
 import com.softprodigy.ballerapp.ui.features.home.Events.Game.GameRuleScreen
 import com.softprodigy.ballerapp.ui.features.home.event_kd.MyLeagueDetailScreen
+import com.softprodigy.ballerapp.ui.features.home.events.*
+import com.softprodigy.ballerapp.ui.features.home.events.NewEventScreen
 import com.softprodigy.ballerapp.ui.features.home.home_screen.HomeScreen
 import com.softprodigy.ballerapp.ui.features.home.invitation.InvitationScreen
 import com.softprodigy.ballerapp.ui.features.home.manage_team.MainManageTeamScreen
@@ -119,7 +119,7 @@ class HomeActivity : ComponentActivity() {
                                         iconClick = {
                                             when (state.topBar.topBar) {
                                                 TopBar.MY_EVENT -> {
-                                                    navController.navigate(Route.EVENTS_FILTER_SCREEN)
+                                                    navController.navigate(Route.NEW_EVENT)
                                                 }
                                                 TopBar.TEAMS -> {
                                                     navController.navigate(Route.MANAGED_TEAM_SCREEN)
@@ -259,6 +259,9 @@ fun NavControllerComposable(
                 moveToGameDetail = {
                     eventTitle = it
                     navController.navigate(Route.GAME_DETAIL_SCREEN)
+                },
+                moveToLeague = {
+                    navController.navigate(Route.MY_LEAGUE)
                 }
             )
         }
@@ -321,6 +324,7 @@ fun NavControllerComposable(
                 navController.navigate(Route.ADD_PLAYER_SCREEN + "/${UserStorage.teamId}")
             })
         }
+
 
         composable(route = Route.ADD_PLAYER_SCREEN) {
             homeViewModel.setScreen(true)
@@ -404,11 +408,30 @@ fun NavControllerComposable(
                 onNextClick = {
                     navController.navigate(Route.ADD_PLAYER_SCREEN)
                 })
+
+
         }
 
+        composable(route = Route.NEW_EVENT) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = stringResource(id = R.string.new_event),
+                    topBar = TopBar.NEW_EVENT,
+                )
+            )
+            NewEventScreen()
+        }
 
+        composable(route = Route.MY_LEAGUE) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = stringResource(id = R.string.back_to_school_tournament),
+                    topBar = TopBar.MY_LEAGUE
+                )
+            )
+            MyLeagueDetailScreen()
+        }
     }
-
 }
 
 fun setColorToOriginalOnBack(

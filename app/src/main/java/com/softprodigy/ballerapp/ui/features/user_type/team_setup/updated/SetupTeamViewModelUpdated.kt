@@ -174,7 +174,26 @@ class SetupTeamViewModelUpdated @Inject constructor(
             TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen -> {
                 resetMemberValues()
             }
+
+            is TeamSetupUIEventUpdated.OnTeamNameJerseyChange -> {
+                _teamSetupUiState.value = _teamSetupUiState.value.copy(teamNameOnJerseys = event.teamNameOnJersey)
+
+            }
+            is TeamSetupUIEventUpdated.OnTeamNameTournamentsChange -> {
+                _teamSetupUiState.value = _teamSetupUiState.value.copy(teamNameOnTournaments = event.teamNameOnTournaments)
+
+            }
+            is TeamSetupUIEventUpdated.OnVenueChange -> {
+                _teamSetupUiState.value = _teamSetupUiState.value.copy(venueName = event.venueName)
+
+            }
+            is TeamSetupUIEventUpdated.OnAddressChange -> {
+                _teamSetupUiState.value = _teamSetupUiState.value.copy(address = event.address)
+
+            }
         }
+
+
     }
 
     private fun resetMemberValues() {
@@ -367,12 +386,16 @@ class SetupTeamViewModelUpdated @Inject constructor(
         }
         val request = CreateTeamRequest(
             name = _teamSetupUiState.value.teamName,
+            teamNameOnJersey = _teamSetupUiState.value.teamNameOnJerseys,
+            teamNameOnTournaments = _teamSetupUiState.value.teamNameOnTournaments,
+            nameOfVenue = _teamSetupUiState.value.venueName,
+            address = _teamSetupUiState.value.address,
             colorCode = "#" + _teamSetupUiState.value.teamColorPrimary,
             primaryTeamColor = "#" + _teamSetupUiState.value.teamColorPrimary,
             secondaryTeamColor = "#" + _teamSetupUiState.value.teamColorSec,
             tertiaryTeamColor = "#" + _teamSetupUiState.value.teamColorThird,
             logo = _teamSetupUiState.value.teamImageServerUrl,
-            members = members
+            members = members,
         )
 
         _teamSetupUiState.value = _teamSetupUiState.value.copy(isLoading = true)
