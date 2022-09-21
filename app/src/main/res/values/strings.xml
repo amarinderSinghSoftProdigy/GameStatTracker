@@ -200,4 +200,8 @@
     <string name="all_players">All Players</string>
     <string name="games">games</string>
     <string name="vs">vs</string>
+    <string name="schedule">Schedule</string>
+    <string name="divisions">Divisions</string>
+    <string name="teams">Teams</string>
+    <string name="venues">Venues</string>
 </resources>

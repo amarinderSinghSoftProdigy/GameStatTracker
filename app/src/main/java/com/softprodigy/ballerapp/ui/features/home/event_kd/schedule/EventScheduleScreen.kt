@@ -39,29 +39,31 @@ fun EventScheduleScreen(vm: EventScheduleViewModel = hiltViewModel()) {
         false
     }
 
-    LazyColumn(Modifier.fillMaxWidth()) {
-        items(state.leagueSchedules) { item: LeagueScheduleModel ->
-            FoldableItem(
-                expanded = expand,
-                headerBackground = MaterialTheme.appColors.material.surface,
-                headerBorder = BorderStroke(0.dp, Color.Transparent),
-                header = { isExpanded ->
-                    EventScheduleHeaderItem(
-                        isExpanded = isExpanded,
-                        date = item.date,
-                        gamesCount = item.gameCount
-                    )
-                },
-                childItems = item.matches,
-                hasItemLeadingSpacing = false,
-                hasItemTrailingSpacing = false,
-                itemSpacing = 0.dp,
-                itemHorizontalPadding = 0.dp,
-                itemsBackground = MaterialTheme.appColors.material.primary,
-                item = { match, index ->
-                    EventScheduleSubItem(match, index)
-                }
-            )
+    Column(Modifier.fillMaxSize()) {
+        LazyColumn(Modifier.fillMaxWidth()) {
+            items(state.leagueSchedules) { item: LeagueScheduleModel ->
+                FoldableItem(
+                    expanded = expand,
+                    headerBackground = MaterialTheme.appColors.material.surface,
+                    headerBorder = BorderStroke(0.dp, Color.Transparent),
+                    header = { isExpanded ->
+                        EventScheduleHeaderItem(
+                            isExpanded = isExpanded,
+                            date = item.date,
+                            gamesCount = item.gameCount
+                        )
+                    },
+                    childItems = item.matches,
+                    hasItemLeadingSpacing = false,
+                    hasItemTrailingSpacing = false,
+                    itemSpacing = 0.dp,
+                    itemHorizontalPadding = 0.dp,
+                    itemsBackground = MaterialTheme.appColors.material.primary,
+                    item = { match, index ->
+                        EventScheduleSubItem(match, index)
+                    }
+                )
+            }
         }
     }
 
