@@ -132,7 +132,7 @@ fun StandingListItem(
             modifier = Modifier
                 .weight(1f)
                 .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-                .background(color = if (selected) MaterialTheme.appColors.material.primaryVariant else Color.White)
+                .background(color = if (selected) MaterialTheme.appColors.material.primaryVariant else MaterialTheme.appColors.material.surface)
                 .clickable { onClick(standing) },
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
