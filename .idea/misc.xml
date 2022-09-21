@@ -47,10 +47,12 @@
         <entry key="..\:/Users/user/baller-app/app/src/main/res/mipmap-anydpi-v26/ic_app_logo.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_add_button.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_add_player.xml" value="0.131" />
+        <entry key="app/src/main/res/drawable/ic_arrow_down.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_ball.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_ball_center.xml" value="0.144" />
         <entry key="app/src/main/res/drawable/ic_ball_green.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_ball_lines.xml" value="0.11" />
+        <entry key="app/src/main/res/drawable/ic_baseline_calendar_month_24.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_check.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_checkbox.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_circle_next.xml" value="0.1" />
@@ -58,6 +60,7 @@
         <entry key="app/src/main/res/drawable/ic_close_color_picker.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_cross_2.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_default_ball_without_lines.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_divisions.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_drag.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_facebook.xml" value="0.136" />
         <entry key="app/src/main/res/drawable/ic_hike_green.xml" value="0.1" />
