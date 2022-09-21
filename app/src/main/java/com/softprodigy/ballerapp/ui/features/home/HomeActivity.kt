@@ -258,7 +258,9 @@ fun NavControllerComposable(
                     topBar = TopBar.GAME_DETAILS,
                 )
             )
-            GameDetailsScreen(eventViewModel)
+            GameDetailsScreen(eventViewModel,moveToGameRules={
+                navController.navigate(Route.GAME_RULES_SCREENS)
+            })
         }
         composable(route = Route.EVENTS_FILTER_SCREEN) {
             homeViewModel.setTopBar(

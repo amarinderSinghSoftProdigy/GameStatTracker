@@ -30,7 +30,7 @@ import com.softprodigy.ballerapp.ui.features.home.Events.EventViewModel
 import com.softprodigy.ballerapp.ui.theme.*
 
 @Composable
-fun GameDetailsTab(vm: EventViewModel) {
+fun GameDetailsTab(vm: EventViewModel,moveToGameRules:()->Unit) {
     val state = vm.eventState.value
     var images = arrayListOf<String>("", "", "", "", "")
     Box(modifier = Modifier
@@ -271,7 +271,9 @@ fun GameDetailsTab(vm: EventViewModel) {
                     modifier = Modifier.weight(1f)
                 )
                 Icon(
-                    modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                    modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp)).clickable {
+                        moveToGameRules()
+                    },
                     painter = painterResource(id = R.drawable.ic_forward),
                     contentDescription = "", tint = ColorGreyLighter
                 )

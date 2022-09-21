@@ -40,11 +40,11 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun GameDetailsScreen(vm: EventViewModel) {
+fun GameDetailsScreen(vm: EventViewModel,moveToGameRules:()->Unit) {
         val pagerState = rememberPagerState(pageCount = 3)
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Tabs(pagerState = pagerState)
-            TabsContent(pagerState = pagerState,vm)
+            TabsContent(pagerState = pagerState,vm,moveToGameRules)
         }
     }
 
@@ -99,10 +99,10 @@ fun Tabs(pagerState: PagerState) {
 
     @ExperimentalPagerApi
     @Composable
-    fun TabsContent(pagerState: PagerState,vm: EventViewModel) {
+    fun TabsContent(pagerState: PagerState,vm: EventViewModel,moveToGameRules:()->Unit) {
         HorizontalPager(state = pagerState) { page ->
             when (page) {
-                0 -> GameDetailsTab(vm)
+                0 -> GameDetailsTab(vm,moveToGameRules)
                 1 -> GameStatsTab()
                 2 -> GameSumTab()
             }
