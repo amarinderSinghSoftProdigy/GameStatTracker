@@ -227,14 +227,10 @@
     <string name="learning">Learning</string>
     <string name="level">Level</string>
     <string name="format">Format</string>
-    <string name="event_type">Event Type</string>
     <string name="distance">Distance</string>
     <string name="max_dis">Max Distance</string>
     <string name="events_info">Events Info</string>
-    <string name="arrival_time">Arrival Time</string>
-    <string name="date">Date</string>
     <string name="duration">Duration</string>
-    <string name="location">Location</string>
     <string name="navigate">Navigate</string>
     <string name="rsvp">RSVP</string>
     <string name="jersey_color">Jersey Color</string>
@@ -270,4 +266,5 @@
     <string name="divisions">Divisions</string>
     <string name="teams">Teams</string>
     <string name="venues">Venues</string>
+    <string name="back_to_school_tournament">Back To School Tournament</string>
 </resources>

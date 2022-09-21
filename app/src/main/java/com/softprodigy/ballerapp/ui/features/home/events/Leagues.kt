@@ -1,9 +1,7 @@
-package com.softprodigy.ballerapp.ui.features.home.Events
+package com.softprodigy.ballerapp.ui.features.home.events
 
 import androidx.compose.ui.graphics.Color
 import com.google.gson.annotations.SerializedName
-import com.softprodigy.ballerapp.data.response.User
-import com.softprodigy.ballerapp.data.response.team.Team
 
 data class Leagues(
     @SerializedName("_id") val id: String = "",

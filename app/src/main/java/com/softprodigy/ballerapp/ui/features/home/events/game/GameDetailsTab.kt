@@ -1,4 +1,4 @@
-package com.softprodigy.ballerapp.ui.features.home.Events.Game
+package com.softprodigy.ballerapp.ui.features.home.events.game
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -21,12 +21,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import com.google.accompanist.flowlayout.MainAxisAlignment
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppDivider
-import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.TransparentButtonButton
-import com.softprodigy.ballerapp.ui.features.home.Events.EventViewModel
+import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
 import com.softprodigy.ballerapp.ui.theme.*
 
 @Composable

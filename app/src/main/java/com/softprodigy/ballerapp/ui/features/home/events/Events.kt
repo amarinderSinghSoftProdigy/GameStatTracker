@@ -1,4 +1,4 @@
-package com.softprodigy.ballerapp.ui.features.home.Events
+package com.softprodigy.ballerapp.ui.features.home.events
 
 import androidx.compose.ui.graphics.Color
 import com.google.gson.annotations.SerializedName

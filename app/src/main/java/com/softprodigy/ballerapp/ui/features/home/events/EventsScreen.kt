@@ -1,9 +1,7 @@
-package com.softprodigy.ballerapp.ui.features.home.Events
+package com.softprodigy.ballerapp.ui.features.home.events
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -18,7 +16,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.flowlayout.FlowColumn
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -28,7 +25,6 @@ import com.google.accompanist.pager.rememberPagerState
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.ui.features.components.*
-import com.softprodigy.ballerapp.ui.features.home.invitation.*
 import com.softprodigy.ballerapp.ui.theme.*
 import kotlinx.coroutines.launch
 
@@ -37,11 +33,12 @@ import kotlinx.coroutines.launch
 fun EventsScreen(
     vm: EventViewModel = hiltViewModel(),
     tabUpdate: (Int) -> Unit,
-    moveToPracticeDetail: (String) -> Unit, moveToGameDetail: (String) -> Unit
+    moveToPracticeDetail: (String) -> Unit, moveToGameDetail: (String) -> Unit,
+    moveToLeague: () -> Unit
 ) {
     val state = vm.eventState.value
     Box(Modifier.fillMaxSize()) {
-        TabLayout(tabUpdate, state, vm, moveToPracticeDetail, moveToGameDetail)
+        TabLayout(tabUpdate, state, vm, moveToPracticeDetail, moveToGameDetail, moveToLeague)
     }
 }
 
@@ -53,7 +50,9 @@ fun TabLayout(
     tabUpdate: (Int) -> Unit,
     state: EventState,
     vm: EventViewModel,
-    moveToPracticeDetail: (String) -> Unit, moveToGameDetail: (String) -> Unit
+    moveToPracticeDetail: (String) -> Unit,
+    moveToGameDetail: (String) -> Unit,
+    moveToLeague: () -> Unit
 ) {
     // on below line we are creating variable for pager state.
     val pagerState = rememberPagerState(pageCount = 3) // Add the count for number of pages
@@ -68,7 +67,8 @@ fun TabLayout(
             vm,
             tabUpdate,
             moveToPracticeDetail,
-            moveToGameDetail
+            moveToGameDetail,
+            moveToLeague
         )
     }
 }
@@ -134,7 +134,9 @@ fun TabsContent(
     state: EventState,
     vm: EventViewModel,
     tabUpdate: (Int) -> Unit,
-    moveToPracticeDetail: (String) -> Unit, moveToGameDetail: (String) -> Unit
+    moveToPracticeDetail: (String) -> Unit,
+    moveToGameDetail: (String) -> Unit,
+    moveToLeague: () -> Unit
 ) {
     HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
         when (page) {
@@ -142,7 +144,7 @@ fun TabsContent(
                 MyEvents(state, vm, moveToPracticeDetail, moveToGameDetail)
             }
             1 -> {
-                MyLeagueScreen(state, vm)
+                MyLeagueScreen(state, vm, moveToLeague)
             }
             2 -> {
                 OpportunitieScreen(state, vm)
@@ -187,7 +189,7 @@ fun BoxScope.MyEvents(
 //                    vm.onEvent(InvitationEvent.OnDeclineInvitationClick(invitation = it))
                         }, moveToPracticeDetail = moveToPracticeDetail,
                             moveToGameDetail = moveToGameDetail,
-                            isPast=false
+                            isPast = false
 
                         )
                     }
@@ -210,7 +212,7 @@ fun BoxScope.MyEvents(
 
                             }, moveToPracticeDetail = moveToPracticeDetail,
                                 moveToGameDetail = moveToGameDetail,
-                                isPast=true
+                                isPast = true
 
                             )
                         }
@@ -295,7 +297,7 @@ fun EventItem(
     onDeclineCLick: (Events) -> Unit,
     moveToPracticeDetail: (String) -> Unit,
     moveToGameDetail: (String) -> Unit,
-    isPast:Boolean
+    isPast: Boolean
 ) {
     Box(
         modifier = modifier
@@ -509,11 +511,12 @@ fun EventItem(
             }
 
         }
-        if(isPast)
-        Box(
-            modifier = Modifier.matchParentSize()
-                .background(color = BackgroundColor)
-        )
+        if (isPast)
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .background(color = BackgroundColor)
+            )
     }
 
 }

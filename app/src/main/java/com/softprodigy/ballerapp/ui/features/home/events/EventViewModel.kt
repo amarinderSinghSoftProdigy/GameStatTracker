@@ -1,4 +1,4 @@
-package com.softprodigy.ballerapp.ui.features.home.Events
+package com.softprodigy.ballerapp.ui.features.home.events
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel

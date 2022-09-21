@@ -50,6 +50,7 @@ object Route {
     const val SELECT_PROFILE = "selectProfile"
     const val INVITATION_SCREEN="invitationScreen"
     const val NEW_EVENT = "newEvent"
+    const val MY_LEAGUE = "myLeague"
 }
 
 object ApiConstants {

@@ -312,9 +312,11 @@ enum class TopBar(val stringId: String, val back: Boolean) {
     SINGLE_LABEL_BACK(stringId = "", back = true),
     SINGLE_LABEL(stringId = "", back = false),
     EMPTY(stringId = "", back = false),
-    NEW_EVENT(stringId = "", back = true)
+    NEW_EVENT(stringId = "", back = true),
+    MY_LEAGUE(stringId = "", back = true),
     GAME_RULES(stringId = "games_rules", back = true),
 }
+
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun <T> FoldableItem(

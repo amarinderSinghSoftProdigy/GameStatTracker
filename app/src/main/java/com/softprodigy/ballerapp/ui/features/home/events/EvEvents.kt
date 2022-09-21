@@ -1,4 +1,4 @@
-package com.softprodigy.ballerapp.ui.features.home.Events
+package com.softprodigy.ballerapp.ui.features.home.events
 
 sealed class EvEvents {
     data class OnGoingCLick(val event: Events) : EvEvents()

@@ -1,6 +1,4 @@
-package com.softprodigy.ballerapp.ui.features.home.Events
-
-import com.softprodigy.ballerapp.ui.features.home.invitation.Invitation
+package com.softprodigy.ballerapp.ui.features.home.events
 
 
 data class EventState(
