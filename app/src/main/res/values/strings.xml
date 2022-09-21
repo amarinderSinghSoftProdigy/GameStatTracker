@@ -89,6 +89,7 @@
     <string name="valid_phone_number">Please enter a valid phone number</string>
     <string name="valid_image">Please select an image</string>
     <string name="valid_team_name">Team name must contain alphanumeric character and use only these special character @ and $</string>
+    <string name="valid_venue_name">Venue name must contain alphanumeric character and use only these special character @ and $</string>
     <string name="valid_search">Invalid Keyword</string>
     <string name="alert_remove_player">Are you sure you want to remove the player?</string>
     <string name="alert_decline_invitation">Are you sure you decline this team request?</string>
@@ -98,7 +99,6 @@
     <string name="number_same_as_confirm">Verify Number must be same as Phone number</string>
     <string name="enter_number">Enter your phone number</string>
     <string name="verified">Verified</string>
-
     <string name="home_label">Home</string>
     <string name="events_label">Events</string>
     <string name="events_detail">Event Details</string>
@@ -267,4 +267,12 @@
     <string name="teams">Teams</string>
     <string name="venues">Venues</string>
     <string name="back_to_school_tournament">Back To School Tournament</string>
+    <string name="team_name_jerseys">Team Name as Displayed on Jerseys</string>
+    <string name="your_team_name_on_jersey">Your Team Name as Displayed on Jerseys</string>
+    <string name="your_team_name_on_tournaments">Your Team Name as Displayed on Tournaments</string>
+    <string name="team_name_tournament">Team Name Displayed at Tournaments</string>
+    <string name="home_court">Home Court</string>
+    <string name="name_of_venue">Name of Venue</string>
+    <string name="enter_venue_name">Venue Name</string>
+    <string name="enter_address">Enter Address</string>
 </resources>
