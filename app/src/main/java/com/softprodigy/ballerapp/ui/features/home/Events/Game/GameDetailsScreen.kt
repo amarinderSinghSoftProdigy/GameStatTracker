@@ -104,7 +104,7 @@ fun Tabs(pagerState: PagerState) {
             when (page) {
                 0 -> GameDetailsTab(vm)
                 1 -> GameStatsTab()
-                1 -> GameSumTab()
+                2 -> GameSumTab()
             }
         }
     }

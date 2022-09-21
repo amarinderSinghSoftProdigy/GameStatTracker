@@ -37,6 +37,7 @@ object Route {
     const val EVENTS_SCREEN = "eventsScreen"
     const val EVENTS_FILTER_SCREEN = "events_filter_screen"
     const val EVENTS_DETAIL_SCREEN = "events_detail_screen"
+    const val GAME_RULES_SCREENS = "game_rules_screen"
     const val GAME_DETAIL_SCREEN = "game_detail_screen"
     const val TEAMS_SCREEN = "teamsScreen"
     const val SPLASH_SCREEN = "splashScreen"

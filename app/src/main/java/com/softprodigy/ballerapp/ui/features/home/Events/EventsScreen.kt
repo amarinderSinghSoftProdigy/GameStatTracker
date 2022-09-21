@@ -37,11 +37,11 @@ import kotlinx.coroutines.launch
 fun EventsScreen(
     vm: EventViewModel = hiltViewModel(),
     tabUpdate: (Int) -> Unit,
-    moveToPracticeDetail: (String) -> Unit,moveToGameDetail: (String) -> Unit
+    moveToPracticeDetail: (String) -> Unit, moveToGameDetail: (String) -> Unit
 ) {
     val state = vm.eventState.value
     Box(Modifier.fillMaxSize()) {
-        TabLayout(tabUpdate, state, vm, moveToPracticeDetail,moveToGameDetail)
+        TabLayout(tabUpdate, state, vm, moveToPracticeDetail, moveToGameDetail)
     }
 }
 
@@ -53,7 +53,7 @@ fun TabLayout(
     tabUpdate: (Int) -> Unit,
     state: EventState,
     vm: EventViewModel,
-    moveToPracticeDetail: (String) -> Unit,moveToGameDetail: (String) -> Unit
+    moveToPracticeDetail: (String) -> Unit, moveToGameDetail: (String) -> Unit
 ) {
     // on below line we are creating variable for pager state.
     val pagerState = rememberPagerState(pageCount = 3) // Add the count for number of pages
@@ -62,7 +62,14 @@ fun TabLayout(
             .fillMaxSize()
     ) {
         Tabs(pagerState = pagerState, tabUpdate)
-        TabsContent(pagerState = pagerState, state, vm, tabUpdate, moveToPracticeDetail,moveToGameDetail)
+        TabsContent(
+            pagerState = pagerState,
+            state,
+            vm,
+            tabUpdate,
+            moveToPracticeDetail,
+            moveToGameDetail
+        )
     }
 }
 
@@ -127,12 +134,12 @@ fun TabsContent(
     state: EventState,
     vm: EventViewModel,
     tabUpdate: (Int) -> Unit,
-    moveToPracticeDetail: (String) -> Unit,moveToGameDetail: (String) -> Unit
+    moveToPracticeDetail: (String) -> Unit, moveToGameDetail: (String) -> Unit
 ) {
     HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
         when (page) {
             0 -> {
-                MyEvents(state, vm, moveToPracticeDetail,moveToGameDetail)
+                MyEvents(state, vm, moveToPracticeDetail, moveToGameDetail)
             }
             1 -> {
                 MyLeagueScreen(state, vm)
@@ -148,7 +155,12 @@ fun TabsContent(
 // on below line we are creating a Tab Content
 // Screen for displaying a simple text message.
 @Composable
-fun BoxScope.MyEvents(state: EventState, vm: EventViewModel, moveToPracticeDetail: (String) -> Unit,moveToGameDetail: (String) -> Unit) {
+fun BoxScope.MyEvents(
+    state: EventState,
+    vm: EventViewModel,
+    moveToPracticeDetail: (String) -> Unit,
+    moveToGameDetail: (String) -> Unit
+) {
     if (state.currentEvents.size > 0) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
@@ -173,7 +185,11 @@ fun BoxScope.MyEvents(state: EventState, vm: EventViewModel, moveToPracticeDetai
                         }, onDeclineCLick = {
                             vm.onEvent(EvEvents.OnDeclineCLick(it))
 //                    vm.onEvent(InvitationEvent.OnDeclineInvitationClick(invitation = it))
-                        },moveToPracticeDetail = moveToPracticeDetail, moveToGameDetail = moveToGameDetail  )
+                        }, moveToPracticeDetail = moveToPracticeDetail,
+                            moveToGameDetail = moveToGameDetail,
+                            isPast=false
+
+                        )
                     }
                 }
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
@@ -184,15 +200,22 @@ fun BoxScope.MyEvents(state: EventState, vm: EventViewModel, moveToPracticeDetai
                     fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+                Box(
+                ) {
+                    FlowRow(Modifier.fillMaxWidth()) {
+                        state.pastEvents.forEach() {
+                            EventItem(events = it, onAcceptCLick = {
+                            }, onDeclineCLick = {
+                                vm.onEvent(EvEvents.OnDeclineCLick(it))
 
-                FlowRow(Modifier.fillMaxWidth()) {
-                    state.pastEvents.forEach() {
-                        EventItem(events = it, onAcceptCLick = {
-                        }, onDeclineCLick = {
-                            vm.onEvent(EvEvents.OnDeclineCLick(it))
+                            }, moveToPracticeDetail = moveToPracticeDetail,
+                                moveToGameDetail = moveToGameDetail,
+                                isPast=true
 
-                        }, moveToPracticeDetail = moveToPracticeDetail, moveToGameDetail = moveToGameDetail )
+                            )
+                        }
                     }
+
                 }
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
             }
@@ -272,13 +295,14 @@ fun EventItem(
     onDeclineCLick: (Events) -> Unit,
     moveToPracticeDetail: (String) -> Unit,
     moveToGameDetail: (String) -> Unit,
+    isPast:Boolean
 ) {
     Box(
         modifier = modifier
             .clickable {
-                if( events.type!!.type==EventType.PRACTICE.type)
+                if (events.type!!.type == EventType.PRACTICE.type)
                     moveToPracticeDetail(events.title)
-                else if( events.type!!.type==EventType.GAME.type){
+                else if (events.type!!.type == EventType.GAME.type) {
                     moveToGameDetail(events.title)
                 }
             }
@@ -485,7 +509,13 @@ fun EventItem(
             }
 
         }
+        if(isPast)
+        Box(
+            modifier = Modifier.matchParentSize()
+                .background(color = BackgroundColor)
+        )
     }
+
 }
 
 enum class TabItems(val icon: Int, val stringId: String) {

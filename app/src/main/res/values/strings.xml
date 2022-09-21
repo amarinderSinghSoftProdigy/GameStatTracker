@@ -233,5 +233,17 @@
     <string name="summary">Summary</string>
     <string name="details">Details</string>
     <string name="stats">Stats</string>
-    <string name="games_rules">Games Rules</string>
+    <string name="games_rules">Game Rules</string>
+    <string name="periods">Periods</string>
+    <string name="period_length">Period Length</string>
+    <string name="free_throws">Free Throws</string>
+    <string name="variances">Variances</string>
+    <string name="timeout">Timeouts</string>
+    <string name="full_timeout">Full Timeouts Per</string>
+    <string name="timeout_30">30s Timeouts Per</string>
+    <string name="clock_stoppage">Clock Stoppage</string>
+
+    <string name="halftime">Halftime Length</string>
+    <string name="shot_clock">Shot Clock</string>
+    <string name="fouling_out">Fouling Out</string>
 </resources>

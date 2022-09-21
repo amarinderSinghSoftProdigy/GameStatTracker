@@ -320,4 +320,5 @@ enum class TopBar(val stringId: String, val back: Boolean) {
     SINGLE_LABEL_BACK(stringId = "", back = true),
     SINGLE_LABEL(stringId = "", back = false),
     EMPTY(stringId = "", back = false),
+    GAME_RULES(stringId = "games_rules", back = true),
 }
