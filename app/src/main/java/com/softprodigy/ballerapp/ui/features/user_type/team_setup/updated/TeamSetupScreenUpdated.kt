@@ -4,12 +4,39 @@ import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ModalBottomSheetLayout
+import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,8 +54,20 @@ import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.validTeamName
-import com.softprodigy.ballerapp.ui.features.components.*
-import com.softprodigy.ballerapp.ui.theme.*
+import com.softprodigy.ballerapp.ui.features.components.AppDivider
+import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
+import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.BottomButtons
+import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
+import com.softprodigy.ballerapp.ui.features.components.CoilImage
+import com.softprodigy.ballerapp.ui.features.components.Placeholder
+import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
+import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
+import com.softprodigy.ballerapp.ui.theme.ColorMainPrimary
+import com.softprodigy.ballerapp.ui.theme.ColorPrimaryTransparent
+import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
 
 
@@ -148,7 +187,7 @@ fun TeamSetupScreenUpdated(
                         )
                     }
 
-                    Divider(thickness = dimensionResource(id = R.dimen.divider))
+                    AppDivider()
 
                     Row(
                         Modifier
@@ -236,7 +275,7 @@ fun TeamSetupScreenUpdated(
 
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
-                    Divider(thickness = dimensionResource(id = R.dimen.divider))
+                    AppDivider()
                     Row(
                         Modifier
                             .fillMaxWidth()
@@ -305,7 +344,7 @@ fun TeamSetupScreenUpdated(
                         }
 
                     }
-                    Divider(thickness = dimensionResource(id = R.dimen.divider))
+                    AppDivider()
 
                     Row(
                         Modifier
@@ -379,7 +418,7 @@ fun TeamSetupScreenUpdated(
                         }
 
                     }
-                    Divider(thickness = dimensionResource(id = R.dimen.divider))
+                    AppDivider()
 
                     Row(
                         Modifier

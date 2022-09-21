@@ -671,7 +671,7 @@ fun SelectInvitationRoleDialog(
                         }
                     }
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                    Divider()
+                    AppDivider()
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -913,7 +913,7 @@ fun SwitchTeamDialog(
                         }
                     }
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                    Divider()
+                AppDivider()
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -1034,7 +1034,7 @@ fun DeclineEventDialog(
 
                 }
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                Divider()
+                AppDivider()
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()

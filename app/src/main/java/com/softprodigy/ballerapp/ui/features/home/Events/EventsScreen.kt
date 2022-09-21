@@ -1,24 +1,45 @@
 package com.softprodigy.ballerapp.ui.features.home.Events
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Tab
+import androidx.compose.material.TabRow
+import androidx.compose.material.TabRowDefaults
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.flowlayout.FlowColumn
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -27,21 +48,25 @@ import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.team.Team
-import com.softprodigy.ballerapp.ui.features.components.*
-import com.softprodigy.ballerapp.ui.features.home.invitation.*
-import com.softprodigy.ballerapp.ui.theme.*
+import com.softprodigy.ballerapp.ui.features.components.DeclineEventDialog
+import com.softprodigy.ballerapp.ui.features.components.SwitchTeamDialog
+import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
+import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
+import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
+import com.softprodigy.ballerapp.ui.theme.ColorButtonRed
+import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun EventsScreen(
     vm: EventViewModel = hiltViewModel(),
-    tabUpdate: (Int) -> Unit,
+    moveToDetail: () -> Unit,
     moveToPracticeDetail: (String) -> Unit, moveToGameDetail: (String) -> Unit
 ) {
     val state = vm.eventState.value
     Box(Modifier.fillMaxSize()) {
-        TabLayout(tabUpdate, state, vm, moveToPracticeDetail, moveToGameDetail)
+        TabLayout(moveToDetail, state, vm, moveToPracticeDetail, moveToGameDetail)
     }
 }
 
@@ -50,7 +75,7 @@ fun EventsScreen(
 @ExperimentalPagerApi
 @Composable
 fun TabLayout(
-    tabUpdate: (Int) -> Unit,
+    moveToDetail: () -> Unit,
     state: EventState,
     vm: EventViewModel,
     moveToPracticeDetail: (String) -> Unit, moveToGameDetail: (String) -> Unit
@@ -61,12 +86,12 @@ fun TabLayout(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Tabs(pagerState = pagerState, tabUpdate)
+        Tabs(pagerState = pagerState)
         TabsContent(
             pagerState = pagerState,
             state,
             vm,
-            tabUpdate,
+            moveToDetail,
             moveToPracticeDetail,
             moveToGameDetail
         )
@@ -77,7 +102,7 @@ fun TabLayout(
 // creating a function for tabs
 @ExperimentalPagerApi
 @Composable
-fun Tabs(pagerState: PagerState, tabUpdate: (Int) -> Unit) {
+fun Tabs(pagerState: PagerState) {
     val list = listOf(
         TabItems.Events,
         TabItems.Leagues,
@@ -116,7 +141,6 @@ fun Tabs(pagerState: PagerState, tabUpdate: (Int) -> Unit) {
                 selected = pagerState.currentPage == index,
                 onClick = {
                     scope.launch {
-                        tabUpdate(index)
                         pagerState.animateScrollToPage(index)
                     }
                 }
@@ -133,7 +157,7 @@ fun TabsContent(
     pagerState: PagerState,
     state: EventState,
     vm: EventViewModel,
-    tabUpdate: (Int) -> Unit,
+    moveToDetail: () -> Unit,
     moveToPracticeDetail: (String) -> Unit, moveToGameDetail: (String) -> Unit
 ) {
     HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
@@ -142,10 +166,10 @@ fun TabsContent(
                 MyEvents(state, vm, moveToPracticeDetail, moveToGameDetail)
             }
             1 -> {
-                MyLeagueScreen(state, vm)
+                MyLeagueScreen(state, vm,moveToDetail)
             }
             2 -> {
-                OpportunitieScreen(state, vm)
+                OpportunitieScreen(state, vm, moveToDetail)
             }
         }
     }
@@ -169,49 +193,65 @@ fun BoxScope.MyEvents(
                     .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
                     .verticalScroll(rememberScrollState()),
             ) {
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
-                AppText(
-                    text = "${stringResource(id = R.string.upcoming_Events)}(${state.currentEvents.size})",
-                    style = MaterialTheme.typography.h6,
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
+                var text = buildAnnotatedString {
+                    append(stringResource(id = R.string.upcoming_Events))
+                    val startIndex = length
+                    append(" ( ")
+                    append("" + state.currentEvents.size)
+                    append(" )")
+                    addStyle(
+                        SpanStyle(color = MaterialTheme.appColors.textField.label),
+                        startIndex,
+                        length,
+                    )
+                }
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.h2,
                     color = ColorBWBlack,
-                    fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp
                 )
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
-
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_6dp)))
                 FlowRow(Modifier.fillMaxWidth()) {
-                    state.currentEvents.forEach() {
+                    state.currentEvents.forEach {
                         EventItem(events = it, onAcceptCLick = {
                             vm.onEvent(EvEvents.OnGoingCLick(it))
                         }, onDeclineCLick = {
                             vm.onEvent(EvEvents.OnDeclineCLick(it))
-//                    vm.onEvent(InvitationEvent.OnDeclineInvitationClick(invitation = it))
                         }, moveToPracticeDetail = moveToPracticeDetail,
                             moveToGameDetail = moveToGameDetail,
-                            isPast=false
-
+                            isPast = false
                         )
                     }
                 }
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
-                AppText(
-                    text = "${stringResource(id = R.string.past_event)}(${state.pastEvents.size})",
-                    style = MaterialTheme.typography.h6,
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
+                text = buildAnnotatedString {
+                    append(stringResource(id = R.string.past_event))
+                    val startIndex = length
+                    append(" ( ")
+                    append("" + state.pastEvents.size)
+                    append(" )")
+                    addStyle(
+                        SpanStyle(color = MaterialTheme.appColors.textField.label),
+                        startIndex,
+                        length,
+                    )
+                }
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.h2,
                     color = ColorBWBlack,
-                    fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp
                 )
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
-                Box(
-                ) {
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_6dp)))
+                Box {
                     FlowRow(Modifier.fillMaxWidth()) {
-                        state.pastEvents.forEach() {
+                        state.pastEvents.forEach {
                             EventItem(events = it, onAcceptCLick = {
                             }, onDeclineCLick = {
                                 vm.onEvent(EvEvents.OnDeclineCLick(it))
-
                             }, moveToPracticeDetail = moveToPracticeDetail,
                                 moveToGameDetail = moveToGameDetail,
-                                isPast=true
-
+                                isPast = true
                             )
                         }
                     }
@@ -220,7 +260,7 @@ fun BoxScope.MyEvents(
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
             }
             if (state.showGoingDialog) {
-                var teams: ArrayList<Team> = arrayListOf<Team>(
+                val teams: ArrayList<Team> = arrayListOf<Team>(
                     Team(name = "Springfield Bucks"),
                 )
                 SwitchTeamDialog(
@@ -230,7 +270,6 @@ fun BoxScope.MyEvents(
                         vm.onEvent(EvEvents.onCancel(false))
                     },
                     onConfirmClick = {
-
                     }
                 )
             }
@@ -295,14 +334,14 @@ fun EventItem(
     onDeclineCLick: (Events) -> Unit,
     moveToPracticeDetail: (String) -> Unit,
     moveToGameDetail: (String) -> Unit,
-    isPast:Boolean
+    isPast: Boolean
 ) {
     Box(
         modifier = modifier
             .clickable {
                 if (events.type!!.type == EventType.PRACTICE.type)
                     moveToPracticeDetail(events.title)
-                else if (events.type!!.type == EventType.GAME.type) {
+                else if (events.type.type == EventType.GAME.type) {
                     moveToGameDetail(events.title)
                 }
             }
@@ -310,18 +349,19 @@ fun EventItem(
         Column(
             modifier = modifier
                 .fillMaxWidth()
+                .alpha(if (isPast) 0.5F else 1F)
         ) {
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
             Row(
                 Modifier
                     .fillMaxWidth()
                     .background(
                         color = MaterialTheme.appColors.material.surface,
                         shape = RoundedCornerShape(
-                            topStart = dimensionResource(
-                                id = R.dimen.size_8dp
-                            ),
-                            topEnd = dimensionResource(id = R.dimen.size_8dp)
+                            topStart = dimensionResource(id = R.dimen.size_8dp),
+                            topEnd = dimensionResource(id = R.dimen.size_8dp),
+                            bottomEnd = if (isPast) dimensionResource(id = R.dimen.size_8dp) else 0.dp,
+                            bottomStart = if (isPast) dimensionResource(id = R.dimen.size_8dp) else 0.dp,
                         )
                     )
                     .padding(
@@ -345,7 +385,7 @@ fun EventItem(
                                 .padding(dimensionResource(id = R.dimen.size_4dp))
                         ) {
                             Text(
-                                text = events.type!!.type,
+                                text = events.type.type,
                                 color = Color.White,
                                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                                 fontWeight = FontWeight.Bold,
@@ -509,11 +549,12 @@ fun EventItem(
             }
 
         }
-        if(isPast)
-        Box(
-            modifier = Modifier.matchParentSize()
-                .background(color = BackgroundColor)
-        )
+        /* if (isPast)
+             Box(
+                 modifier = Modifier
+                     .matchParentSize()
+                     .background(color = BackgroundColor)
+             )*/
     }
 
 }
