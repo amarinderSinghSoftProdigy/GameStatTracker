@@ -12,11 +12,7 @@ import androidx.compose.material.TabPosition
 import androidx.compose.material.TabRow
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -29,6 +25,7 @@ import com.google.accompanist.pager.rememberPagerState
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.home.TabContentScreen
+import com.softprodigy.ballerapp.ui.features.home.events.practice.PracticeScreen
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
 

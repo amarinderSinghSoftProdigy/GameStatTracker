@@ -1,4 +1,4 @@
-package com.softprodigy.ballerapp.ui.features.home.events
+package com.softprodigy.ballerapp.ui.features.home.events.practice
 
 import java.net.Inet4Address
 

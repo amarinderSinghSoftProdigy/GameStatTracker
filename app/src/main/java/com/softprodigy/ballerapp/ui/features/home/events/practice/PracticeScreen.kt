@@ -1,9 +1,8 @@
-package com.softprodigy.ballerapp.ui.features.home.events
+package com.softprodigy.ballerapp.ui.features.home.events.practice
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.graphics.drawable.Icon
 import android.widget.DatePicker
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -39,6 +38,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.get24HoursTimeWithAMPM
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.ButtonWithLeadingIcon
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -63,28 +63,32 @@ fun PracticeScreen(vm: PracticeViewModel = hiltViewModel()) {
     val mDatePickerDialog = DatePickerDialog(
         context,
         { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
-            vm.onEvent(PracticeUIEvent.OnDateChanged("${month_date.format(mMonth + 1)} $mDayOfMonth,$mYear"))
+            mCalendar.set(Calendar.MONTH, mMonth)
+            val month_name = month_date.format(mCalendar.time)
+            vm.onEvent(PracticeUIEvent.OnDateChanged("$month_name $mDayOfMonth, $mYear"))
         }, mYear, mMonth, mDay
     )
 
     val mArrivalPickerDialog = TimePickerDialog(
         context,
         { _, mHour: Int, mMinute: Int ->
-            vm.onEvent(PracticeUIEvent.OnArrivalTimeChanged("$mHour:$mMinute"))
+            vm.onEvent(PracticeUIEvent.OnArrivalTimeChanged(get24HoursTimeWithAMPM("$mHour:$mMinute")))
         }, mHour, mMinute, false
     )
 
     val mStartTimePickerDialog = TimePickerDialog(
         context,
         { _, mHour: Int, mMinute: Int ->
-            vm.onEvent(PracticeUIEvent.OnStartTimeChanged("$mHour:$mMinute"))
+
+            vm.onEvent(PracticeUIEvent.OnStartTimeChanged(get24HoursTimeWithAMPM("$mHour:$mMinute")))
+
         }, mHour, mMinute, false
     )
 
     val mEndTimePickerDialog = TimePickerDialog(
         context,
         { _, mHour: Int, mMinute: Int ->
-            vm.onEvent(PracticeUIEvent.OnEndTimeChanged("$mHour:$mMinute"))
+            vm.onEvent(PracticeUIEvent.OnEndTimeChanged(get24HoursTimeWithAMPM("$mHour:$mMinute")))
         }, mHour, mMinute, false
     )
 
@@ -143,7 +147,8 @@ fun PracticeScreen(vm: PracticeViewModel = hiltViewModel()) {
                 title = stringResource(R.string.location),
                 label = stringResource(R.string.select_location),
                 icon = painterResource(id = R.drawable.ic_next),
-                color = MaterialTheme.appColors.buttonColor.bckgroundDisabled
+                color = MaterialTheme.appColors.buttonColor.bckgroundDisabled,
+                selectedValue = state.selectedLocation
             ) {}
 
             Divider(color = MaterialTheme.appColors.material.primary)
@@ -152,7 +157,8 @@ fun PracticeScreen(vm: PracticeViewModel = hiltViewModel()) {
                 title = stringResource(R.string.address),
                 label = stringResource(R.string.send_address),
                 icon = painterResource(id = R.drawable.ic_next),
-                color = MaterialTheme.appColors.buttonColor.bckgroundDisabled
+                color = MaterialTheme.appColors.buttonColor.bckgroundDisabled,
+                selectedValue = state.selectedAddress
             ) {}
 
             Divider(color = MaterialTheme.appColors.material.primary)

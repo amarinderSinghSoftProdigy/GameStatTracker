@@ -33,9 +33,6 @@ import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
-import com.softprodigy.ballerapp.ui.features.home.events.NewEventScreen
-import com.softprodigy.ballerapp.ui.features.home.events.PracticeScreen
-import com.softprodigy.ballerapp.ui.features.home.events.division.DivisionScreen
 import com.softprodigy.ballerapp.ui.features.home.events.venues.VenuesScreen
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
