@@ -120,7 +120,7 @@
 
     <string name="already_registered">Already Registered?</string>
     <string name="enter_otp">Enter OTP</string>
-    <string name="welcome_back">Welcome Back!</string>
+    <string name="welcome_back">Welcome back!</string>
     <string name="hey_label">Hey name,</string>
     <string name="pending_rsvp_label">Pending RSVPs</string>
     <string name="opportunities_label">Opportunities to play</string>
@@ -149,7 +149,7 @@
     <string name="submit">Submit</string>
     <string name="standings">Standings</string>
     <string name="chat">Chat</string>
-    <string name="roaster">Roaster</string>
+    <string name="roaster">Roster</string>
     <string name="leaderboard">Leaderboard</string>
     <string name="leaderboards">Leaderboards</string>
     <string name="record_label">Record</string>
@@ -178,7 +178,6 @@
     <string name="tertiary_team_color">Tertiary Team Color</string>
     <string name="create_a_team">Create a Team</string>
     <string name="add">Add</string>
-
     <string name="welcome_to_total_hoop">Welcome to Total Hoop</string>
     <string name="team_total_hoop">Team Total Hoop</string>
     <string name="opportunities_to_play">Opportunities To Play</string>
@@ -242,8 +241,16 @@
     <string name="full_timeout">Full Timeouts Per</string>
     <string name="timeout_30">30s Timeouts Per</string>
     <string name="clock_stoppage">Clock Stoppage</string>
-
     <string name="halftime">Halftime Length</string>
     <string name="shot_clock">Shot Clock</string>
     <string name="fouling_out">Fouling Out</string>
+    <string name="no_data_found">No data found!!</string>
+    <string name="try_something_else">Please try again later.</string>
+    <string name="all_players">All Players</string>
+    <string name="games">games</string>
+    <string name="vs">vs</string>
+    <string name="schedule">Schedule</string>
+    <string name="divisions">Divisions</string>
+    <string name="teams">Teams</string>
+    <string name="venues">Venues</string>
 </resources>

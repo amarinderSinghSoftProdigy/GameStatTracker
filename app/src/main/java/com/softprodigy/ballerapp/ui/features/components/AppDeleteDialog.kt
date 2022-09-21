@@ -35,7 +35,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
@@ -50,12 +49,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import coil.compose.AsyncImage
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.argbToHexString
 import com.softprodigy.ballerapp.common.isValidPassword
+import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
@@ -126,10 +125,11 @@ fun SelectTeamDialog(
     selected: Team?,
     showLoading: Boolean,
     teams: ArrayList<Team>,
-    onCreateTeamClick: () -> Unit
+    onCreateTeamClick: () -> Unit,
+    showCreateTeamButton: Boolean = false,
 ) {
     val teamId = remember {
-        mutableStateOf("")
+        mutableStateOf(UserStorage.teamId)
     }
     BallerAppMainTheme {
         AlertDialog(
@@ -197,14 +197,17 @@ fun SelectTeamDialog(
                         }
                     }
                     //  Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-                    ButtonWithLeadingIcon(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(id = R.string.create_new_team),
-                        onClick = { onCreateTeamClick.invoke() },
-                        painter = painterResource(id = R.drawable.ic_add_button),
-                        isTransParent = true
 
-                    )
+                    if (showCreateTeamButton) {
+                        ButtonWithLeadingIcon(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.create_new_team),
+                            onClick = { onCreateTeamClick.invoke() },
+                            painter = painterResource(id = R.drawable.ic_add_button),
+                            isTransParent = true
+
+                        )
+                    }
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -242,7 +245,6 @@ fun SelectTeamDialog(
         )
     }
 }
-
 
 @Composable
 fun LogoutDialog(
@@ -320,18 +322,19 @@ fun TeamListItem(team: Team, selected: Boolean, onClick: (Team) -> Unit) {
                     )
                 ), verticalAlignment = Alignment.CenterVertically
         ) {
-            AsyncImage(
-                model = BuildConfig.IMAGE_SERVER + team.logo,
-                contentDescription = "",
+            CoilImage(
+                src = BuildConfig.IMAGE_SERVER + team.logo,
                 modifier = Modifier
                     .size(dimensionResource(id = R.dimen.size_32dp))
                     .clip(CircleShape)
-                    .background(color = MaterialTheme.appColors.material.secondaryVariant)
                     .border(
                         dimensionResource(id = R.dimen.size_2dp),
                         MaterialTheme.colors.surface,
-                        CircleShape
-                    )
+                        CircleShape,
+                    ),
+                isCrossFadeEnabled = false,
+                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                onError = { Placeholder(R.drawable.ic_team_placeholder) }
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
             Text(
@@ -535,13 +538,17 @@ fun PlayerListDialogItem(
                 .padding(horizontal = dimensionResource(id = R.dimen.size_10dp)),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AsyncImage(
-                model = BuildConfig.IMAGE_SERVER + player.profileImage,
-                contentDescription = "",
+            CoilImage(
+                src = BuildConfig.IMAGE_SERVER + player.profileImage,
                 modifier = Modifier
                     .size(dimensionResource(id = R.dimen.size_32dp))
-                    .clip(CircleShape),
-                contentScale = ContentScale.FillBounds
+                    .clip(CircleShape).background(
+                        color = MaterialTheme.appColors.material.onSurface,
+                        CircleShape
+                    ),
+                isCrossFadeEnabled = false,
+                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                onError = { Placeholder(R.drawable.ic_team_placeholder) }
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
             Text(
@@ -699,7 +706,6 @@ fun SelectInvitationRoleDialog(
                     }
                 }
 
-
             },
         )
     }
@@ -760,7 +766,6 @@ fun SelectInvitationRoleItem(
                     )
                     .padding(dimensionResource(id = R.dimen.size_8dp))
             )
-
 
         }
     }

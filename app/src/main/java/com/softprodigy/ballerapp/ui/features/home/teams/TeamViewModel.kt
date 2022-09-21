@@ -21,7 +21,9 @@ import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import com.softprodigy.ballerapp.ui.utils.CommonUtils
 import com.softprodigy.ballerapp.ui.utils.dragDrop.ItemPosition
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -34,7 +36,7 @@ class TeamViewModel @Inject constructor(
     private val dataStoreManager: DataStoreManager,
     application: Application
 ) : AndroidViewModel(application) {
-
+    var searchJob: Job? = null
     private val _teamChannel = Channel<TeamChannel>()
     val teamChannel = _teamChannel.receiveAsFlow()
 
@@ -43,7 +45,7 @@ class TeamViewModel @Inject constructor(
     fun isDragEnabled(pos: ItemPosition) = true
 
     fun isRoasterDragEnabled(pos: ItemPosition) =
-        _teamUiState.value.roasterTabs.toMutableList().getOrNull(pos.index)?.locked != true
+        _teamUiState.value.players.toMutableList().getOrNull(pos.index)?.locked != true
 
     fun moveItem(from: ItemPosition, to: ItemPosition) {
         _teamUiState.value =
@@ -58,40 +60,39 @@ class TeamViewModel @Inject constructor(
     fun moveItemRoaster(from: ItemPosition, to: ItemPosition) {
         _teamUiState.value =
             _teamUiState.value.copy(
-                roasterTabs = _teamUiState.value.roasterTabs.toMutableList()
+                players = _teamUiState.value.players.toMutableList()
                     .apply {
                         add(to.index, removeAt(from.index))
                     } as ArrayList<Player>
             )
     }
 
-    private fun updateSelection(name: String) {
-        val list = _teamUiState.value.selected
+    private suspend fun updateSelection(name: String): Boolean {
         if (name == "All") {
             _teamUiState.value.leaderBoard.forEach {
-                if (!list.contains(it.name))
-                    list.add(it.name)
+                it.status = true
             }
         } else if (name.isEmpty()) {
-            list.clear()
+            _teamUiState.value.leaderBoard.forEach {
+                it.status = false
+            }
         } else {
-            if (list.contains(name)) {
-                list.remove(name)
-            } else {
-                list.add(name)
+            _teamUiState.value.leaderBoard.forEach {
+                if (it.name == name) {
+                    it.status = !it.status
+                }
             }
         }
+        val count =
+            CommonUtils.getSelectedList(_teamUiState.value.leaderBoard)
+
         _teamUiState.value =
             _teamUiState.value.copy(
-                selected = list,
-                leaderBoard = _teamUiState.value.leaderBoard.toMutableList()
+                all = count,
+                leaderBoard = _teamUiState.value.leaderBoard
             )
-    }
-
-    init {
-        viewModelScope.launch {
-            getTeams()
-        }
+        delay(200)
+        return true
     }
 
     fun onEvent(event: TeamUIEvent) {
@@ -99,6 +100,7 @@ class TeamViewModel @Inject constructor(
             is TeamUIEvent.OnConfirmTeamClick -> {
                 viewModelScope.launch {
                     dataStoreManager.setId(event.teamId)
+                    UserStorage.teamId = event.teamId
                     getTeamByTeamId(event.teamId)
                 }
             }
@@ -106,7 +108,7 @@ class TeamViewModel @Inject constructor(
 
             is TeamUIEvent.OnTeamUpdate -> {
                 viewModelScope.launch {
-                    updateTeam()
+                    uploadTeamLogo()
                 }
             }
 
@@ -125,7 +127,7 @@ class TeamViewModel @Inject constructor(
 
             is TeamUIEvent.OnImageSelected -> {
                 _teamUiState.value =
-                    _teamUiState.value.copy(teamImageUri = event.teamImageUri)
+                    _teamUiState.value.copy(localLogo = event.teamImageUri)
             }
 
             is TeamUIEvent.OnTeamNameChange -> {
@@ -133,7 +135,10 @@ class TeamViewModel @Inject constructor(
             }
 
             is TeamUIEvent.OnItemSelected -> {
-                updateSelection(event.name)
+                searchJob?.cancel()
+                searchJob = viewModelScope.launch {
+                    updateSelection(event.name)
+                }
             }
         }
     }
@@ -148,14 +153,8 @@ class TeamViewModel @Inject constructor(
         )
     }
 
-    private suspend fun getTeams() {
-        _teamUiState.value =
-            _teamUiState.value.copy(
-                isLoading = true
-            )
-        val teamResponse = teamRepo.getTeams()
-
-        when (teamResponse) {
+    suspend fun getTeams() {
+        when (val teamResponse = teamRepo.getTeams()) {
             is ResultWrapper.GenericError -> {
                 _teamChannel.send(
                     TeamChannel.ShowToast(
@@ -185,25 +184,27 @@ class TeamViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 teamResponse.value.let { response ->
                     if (response.status) {
-
-                        if (_teamUiState.value.selectedTeam == null && response.data.size > 0) {
+                        if (/*_teamUiState.value.selectedTeam == null && */response.data.size > 0) {
                             var selectionTeam: Team? = null
                             response.data.toMutableList().forEach {
                                 if (UserStorage.teamId == it._id) {
                                     selectionTeam = it
                                 }
                             }
+                            val idToSearch =
+                                if (selectionTeam == null) response.data[0]._id else selectionTeam?._id
                             _teamUiState.value =
                                 _teamUiState.value.copy(
                                     teams = response.data,
                                     selectedTeam = if (selectionTeam == null) response.data[0] else selectionTeam,
-                                    isLoading = true
+                                    isLoading = false,
+                                    localLogo = null,
                                 )
-                            val idToSearch =
-                                if (selectionTeam == null) response.data[0]._id else selectionTeam?._id
-                            getTeamByTeamId(idToSearch ?: "")
                             viewModelScope.launch {
-                                dataStoreManager.setId(idToSearch ?: "")
+                                if (!idToSearch.isNullOrEmpty()) {
+                                    getTeamByTeamId(idToSearch)
+                                    dataStoreManager.setId(idToSearch)
+                                }
                             }
                         }
                     } else {
@@ -227,32 +228,25 @@ class TeamViewModel @Inject constructor(
             _teamUiState.value.copy(
                 isLoading = true
             )
-        val newLeaderBoardList = _teamUiState.value.leaderBoard.map {
-            if (_teamUiState.value.selected.contains(it.name)) {
-                val leaderBoard = it.copy(status = true)
-                leaderBoard
-            } else {
-                val leaderBoard = it.copy(status = false)
-                leaderBoard
-            }
-        }
         val newRoaster = arrayListOf<TeamRoaster>()
-        _teamUiState.value.roasterTabs.forEach {
-            val position = it.position.ifEmpty { it._id }
+        _teamUiState.value.players.forEach {
+            //val position = it.position.ifEmpty { it._id }
             if (it.position.isNotEmpty())
-                newRoaster.add(TeamRoaster(it._id, position))
+                newRoaster.add(TeamRoaster(it._id, ""))
         }
         //Need to update the request object.
         val request = UpdateTeamDetailRequest(
             id = UserStorage.teamId,
-            leaderboardPoints = newLeaderBoardList,
+            leaderboardPoints = _teamUiState.value.leaderBoard,
             playerPositions = newRoaster,
             name = _teamUiState.value.teamName,
-            logo = _teamUiState.value.teamImageUri ?: "",
+            logo = _teamUiState.value.logo ?: "",
             colorCode = _teamUiState.value.teamColor,
-        )
-        val teamResponse = teamRepo.updateTeamDetails(request)
-        when (teamResponse) {
+            primaryTeamColor =_teamUiState.value.teamColor,
+
+            )
+        _teamUiState.value = _teamUiState.value.copy(updatedTeam = request)
+        when (val teamResponse = teamRepo.updateTeamDetails(request)) {
             is ResultWrapper.GenericError -> {
                 _teamChannel.send(
                     TeamChannel.ShowToast(
@@ -283,15 +277,22 @@ class TeamViewModel @Inject constructor(
                 teamResponse.value.let { response ->
                     if (response.status) {
                         _teamUiState.value =
-                            _teamUiState.value.copy(isLoading = false)
+                            _teamUiState.value.copy(
+                                isLoading = false,
+                                selectedTeam = teamResponse.value.data,
+                                localLogo = null,
+                            )
                         _teamChannel.send(
                             TeamChannel.OnTeamsUpdate(
                                 UiText.DynamicString(
                                     response.statusMessage
-                                )
+                                ),
+                                response.data._id
                             )
                         )
-                        getTeamByTeamId(UserStorage.teamId)
+                        viewModelScope.launch {
+                            dataStoreManager.setColor(response.data.colorCode)
+                        }
                     } else {
                         _teamUiState.value =
                             _teamUiState.value.copy(isLoading = false)
@@ -309,73 +310,73 @@ class TeamViewModel @Inject constructor(
     }
 
     private suspend fun uploadTeamLogo() {
-        val uri = Uri.parse(teamUiState.value.teamImageUri)
+        _teamUiState.value = _teamUiState.value.copy(isLoading = true)
+        val isLocalImageTaken = _teamUiState.value.localLogo != null
 
-        val file = getFileFromUri(getApplication<Application>().applicationContext, uri)
+        if (isLocalImageTaken) {
+            val uri = Uri.parse(teamUiState.value.localLogo)
 
-        if (file != null) {
-            val size = Integer.parseInt((file.length() / 1024).toString())
-            Timber.i("Filesize compressed --> $size")
-        }
+            val file = getFileFromUri(getApplication<Application>().applicationContext, uri)
 
-        when (val uploadLogoResponse = imageUploadRepo.uploadSingleImage(
-            type = AppConstants.TEAM_LOGO,
-            file
-        )) {
-            is ResultWrapper.GenericError -> {
-                _teamChannel.send(
-                    TeamChannel.ShowToast(
-                        UiText.DynamicString(
-                            "${uploadLogoResponse.message}"
-                        )
-                    )
-                )
+            if (file != null) {
+                val size = Integer.parseInt((file.length() / 1024).toString())
+                Timber.i("Filesize compressed --> $size")
             }
-            is ResultWrapper.NetworkError -> {
-                _teamChannel.send(
-                    TeamChannel.ShowToast(
-                        UiText.DynamicString(
-                            uploadLogoResponse.message
-                        )
-                    )
-                )
-            }
-            is ResultWrapper.Success -> {
-                uploadLogoResponse.value.let { response ->
-                    if (response.status) {
-                        _teamUiState.value =
-                            _teamUiState.value.copy(teamImageUri = uploadLogoResponse.value.data.data)
-                        updateTeam()
-                    } else {
-                        _teamUiState.value =
-                            _teamUiState.value.copy(isLoading = false)
-                        _teamChannel.send(
-                            TeamChannel.ShowToast(
-                                UiText.DynamicString(
-                                    response.statusMessage
-                                )
+            val uploadLogoResponse = imageUploadRepo.uploadSingleImage(
+                type = AppConstants.TEAM_LOGO,
+                file
+            )
+            _teamUiState.value = _teamUiState.value.copy(isLoading = false)
+
+            when (uploadLogoResponse) {
+                is ResultWrapper.GenericError -> {
+                    _teamChannel.send(
+                        TeamChannel.ShowToast(
+                            UiText.DynamicString(
+                                "${uploadLogoResponse.message}"
                             )
                         )
+                    )
+                }
+                is ResultWrapper.NetworkError -> {
+                    _teamChannel.send(
+                        TeamChannel.ShowToast(
+                            UiText.DynamicString(
+                                uploadLogoResponse.message
+                            )
+                        )
+                    )
+                }
+                is ResultWrapper.Success -> {
+                    uploadLogoResponse.value.let { response ->
+                        if (response.status) {
+                            _teamUiState.value =
+                                _teamUiState.value.copy(
+                                    logo = uploadLogoResponse.value.data.data,
+                                    localLogo = null
+                                )
+                            updateTeam()
+                        } else {
+                            _teamUiState.value =
+                                _teamUiState.value.copy(isLoading = false)
+                            _teamChannel.send(
+                                TeamChannel.ShowToast(
+                                    UiText.DynamicString(
+                                        response.statusMessage
+                                    )
+                                )
+                            )
+                        }
                     }
                 }
             }
+        } else {
+            updateTeam()
         }
     }
 
     private suspend fun getTeamByTeamId(userId: String) {
-
-        _teamUiState.value =
-            _teamUiState.value.copy(
-                isLoading = true
-            )
-
-        val teamResponse = teamRepo.getTeamsByTeamID(userId)
-        _teamUiState.value =
-            _teamUiState.value.copy(
-                isLoading = false,
-            )
-
-        when (teamResponse) {
+        when (val teamResponse = teamRepo.getTeamsByTeamID(userId)) {
             is ResultWrapper.GenericError -> {
                 _teamChannel.send(
                     TeamChannel.ShowToast(
@@ -399,13 +400,13 @@ class TeamViewModel @Inject constructor(
                     if (response.status) {
                         _teamUiState.value = _teamUiState.value.copy(
                             isLoading = false,
-                            players = response.data.players,
-                            roasterTabs = CommonUtils.getPlayerTabs(response.data.players),
+                            players = CommonUtils.getPlayerTabs(response.data.players),
                             coaches = response.data.coaches,
                             teamName = response.data.name,
                             teamColor = response.data.colorCode,
-                            teamImageUri = response.data.logo,
-                            leaderBoard = response.data.teamLeaderBoard
+                            logo = response.data.logo,
+                            leaderBoard = response.data.teamLeaderBoard,
+                            all = CommonUtils.getSelectedList(response.data.teamLeaderBoard)
                         )
                         _teamChannel.send(
                             TeamChannel.OnTeamDetailsSuccess(response.data._id)
@@ -429,6 +430,6 @@ class TeamViewModel @Inject constructor(
 
 sealed class TeamChannel {
     data class ShowToast(val message: UiText) : TeamChannel()
-    data class OnTeamsUpdate(val message: UiText) : TeamChannel()
+    data class OnTeamsUpdate(val message: UiText, val teamId: String) : TeamChannel()
     data class OnTeamDetailsSuccess(val teamId: String) : TeamChannel()
 }

@@ -150,6 +150,7 @@ fun SignUpScreen(
 
     mCalendar.time = Date()
     val maxEmailChar = 45
+    var maxPasswordChar = 16
 
     val mDate = remember { mutableStateOf("") }
 
@@ -374,7 +375,7 @@ fun SignUpScreen(
                 },
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Next,
-                    keyboardType = KeyboardType.Text,
+                    keyboardType = KeyboardType.Email,
                     capitalization = KeyboardCapitalization.Sentences
                 ),
                 errorMessage = stringResource(id = R.string.address_error),
@@ -509,7 +510,8 @@ fun SignUpScreen(
                 modifier = Modifier
                     .fillMaxWidth(),
                 onValueChange = {
-                    password = it
+                    if (it.length <= maxPasswordChar)
+                        password = it
                 },
                 placeholder = {
                     Text(
@@ -567,7 +569,8 @@ fun SignUpScreen(
                 modifier = Modifier
                     .fillMaxWidth(),
                 onValueChange = {
-                    confirmPassword.value = it
+                    if (it.length <= maxPasswordChar)
+                        confirmPassword.value = it
                 },
                 placeholder = {
                     Text(

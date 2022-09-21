@@ -1,5 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.home.invitation
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,10 +23,13 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -36,8 +40,11 @@ import coil.compose.AsyncImage
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.apiToUIDateFormat
+import com.softprodigy.ballerapp.ui.features.components.CoilImage
 import com.softprodigy.ballerapp.ui.features.components.DeleteDialog
+import com.softprodigy.ballerapp.ui.features.components.Placeholder
 import com.softprodigy.ballerapp.ui.features.components.SelectInvitationRoleDialog
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayStatus
 import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
 import com.softprodigy.ballerapp.ui.theme.ColorButtonRed
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -45,6 +52,25 @@ import com.softprodigy.ballerapp.ui.theme.appColors
 @Composable
 fun InvitationScreen(vm: InvitationViewModel = hiltViewModel()) {
     val state = vm.invitationState.value
+    val context = LocalContext.current
+
+
+    LaunchedEffect(key1 = true) {
+        vm.invitationChannel.collect {
+            when (it) {
+                is InvitationChannel.ShowToast -> {
+                    Toast.makeText(context, it.message.asString(context), Toast.LENGTH_LONG)
+                        .show()
+                }
+                is InvitationChannel.Success -> {
+                    Toast.makeText(context, it.message.asString(context), Toast.LENGTH_LONG)
+                        .show()
+                    vm.getAllInvitation()
+                }
+            }
+        }
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             Modifier
@@ -57,8 +83,6 @@ fun InvitationScreen(vm: InvitationViewModel = hiltViewModel()) {
                         vm.onEvent(InvitationEvent.OnAcceptCLick(it))
                     }, onDeclineCLick = {
                         vm.onEvent(InvitationEvent.OnDeclineCLick(it))
-//                    vm.onEvent(InvitationEvent.OnDeclineInvitationClick(invitation = it))
-
                     })
                 }
             }
@@ -127,13 +151,19 @@ fun InvitationItem(
                 ),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AsyncImage(
-                model = BuildConfig.IMAGE_SERVER + invitation.team.logo, contentDescription = "",
+            CoilImage(
+                src = BuildConfig.IMAGE_SERVER + invitation.team.logo,
                 modifier =
                 Modifier
                     .size(dimensionResource(id = R.dimen.size_44dp))
-                    .clip(CircleShape),
-                contentScale = ContentScale.FillBounds
+                    .clip(CircleShape)
+                    .background(
+                        color = Color.Transparent,
+                        shape = CircleShape
+                    ),
+                isCrossFadeEnabled = false,
+                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                onError = {Placeholder(R.drawable.ic_team_placeholder)}
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
 
@@ -234,7 +264,8 @@ fun InvitationItem(
                 }
 
             }
-        } else if (invitation.status.equals(InvitationStatus.ACCEPT.status, ignoreCase = true)) {
+        } else if (invitation.status.equals(InvitationStatus.ACCEPT.status, ignoreCase = true) ||
+            invitation.status.equals(InvitationStatus.ACCEPTED.status, ignoreCase = true)) {
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -268,7 +299,8 @@ fun InvitationItem(
                     fontWeight = FontWeight.W500,
                 )
             }
-        } else if (invitation.status.equals(InvitationStatus.REJECT.status, ignoreCase = true)) {
+        } else if (invitation.status.equals(InvitationStatus.REJECT.status, ignoreCase = true)
+            || invitation.status.equals(InvitationStatus.DECLINED.status, ignoreCase = true)) {
             Row(
                 Modifier
                     .fillMaxWidth()

@@ -2,16 +2,14 @@ package com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated
 
 import android.annotation.SuppressLint
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -58,8 +56,14 @@ fun AddPlayersScreenUpdated(
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
-
+    val maxChar = 45
     Timber.i("AddPlayersScreenUpdated-- teamId--$teamId")
+
+    BackHandler() {
+        onBackClick.invoke()
+        vm.onEvent(TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen)
+
+    }
 
     fun updateItem(index: Int? = null, addIntent: Boolean) {
         if (addIntent) {
@@ -149,12 +153,13 @@ fun AddPlayersScreenUpdated(
                                                 .focusRequester(focusRequester),
                                             value = state.inviteMemberName[index],
                                             onValueChange = { name ->
-                                                vm.onEvent(
-                                                    TeamSetupUIEventUpdated.OnNameValueChange(
-                                                        index = index,
-                                                        name
+                                                if (name.length <= maxChar)
+                                                    vm.onEvent(
+                                                        TeamSetupUIEventUpdated.OnNameValueChange(
+                                                            index = index,
+                                                            name
+                                                        )
                                                     )
-                                                )
                                             },
                                             colors = TextFieldDefaults.outlinedTextFieldColors(
                                                 focusedBorderColor = ColorBWGrayBorder,
@@ -182,12 +187,13 @@ fun AddPlayersScreenUpdated(
                                                 .focusRequester(focusRequester),
                                             value = state.inviteMemberEmail[index],
                                             onValueChange = { email ->
-                                                vm.onEvent(
-                                                    TeamSetupUIEventUpdated.OnEmailValueChange(
-                                                        index = index,
-                                                        email
+                                                if (email.length <= maxChar)
+                                                    vm.onEvent(
+                                                        TeamSetupUIEventUpdated.OnEmailValueChange(
+                                                            index = index,
+                                                            email
+                                                        )
                                                     )
-                                                )
                                             },
                                             colors = TextFieldDefaults.outlinedTextFieldColors(
                                                 focusedBorderColor = ColorBWGrayBorder,
@@ -231,7 +237,8 @@ fun AddPlayersScreenUpdated(
                                     )*/
                                     }
                                     if (state.inviteMemberName[index].isEmpty()
-                                        && state.inviteMemberEmail[index].isEmpty()) {
+                                        && state.inviteMemberEmail[index].isEmpty()
+                                    ) {
                                         Icon(
                                             painter = painterResource(id = R.drawable.ic_remove),
                                             contentDescription = "",
@@ -267,31 +274,34 @@ fun AddPlayersScreenUpdated(
                                 isTransParent = true
                             )
                         }
+
                     }
                 }
 
-
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
-                BottomButtons(
-                    secondText = stringResource(id = R.string.finish),
-                    onBackClick = { onBackClick.invoke() },
-                    onNextClick = {
-                        if (teamId.isNullOrEmpty()) {
-                            vm.onEvent(TeamSetupUIEventUpdated.OnAddPlayerScreenNext)
-                        } else {
-                            vm.onEvent(TeamSetupUIEventUpdated.OnInviteTeamMembers(teamId))
-
-                        }
-                    },
-                    enableState =
-                    state.inviteMemberName.isNotEmpty() &&
-                            state.inviteMemberName.all() { it.isNotEmpty() } &&
-                            state.inviteMemberName.all() { validName(it) }
-                            && state.inviteMemberEmail.all() { it.isValidEmail() },
-                    themed = true,
-                )
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
             }
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
+            BottomButtons(
+                secondText = stringResource(id = R.string.finish),
+                onBackClick = {
+                    onBackClick.invoke()
+                    vm.onEvent(TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen)
+                },
+                onNextClick = {
+                    if (teamId.isNullOrEmpty()) {
+                        vm.onEvent(TeamSetupUIEventUpdated.OnAddPlayerScreenNext)
+                    } else {
+                        vm.onEvent(TeamSetupUIEventUpdated.OnInviteTeamMembers(teamId))
+
+                    }
+                },
+                enableState =
+                state.inviteMemberName.isNotEmpty() &&
+                        state.inviteMemberName.all() { it.isNotEmpty() } &&
+                        state.inviteMemberName.all() { validName(it) }
+                        && state.inviteMemberEmail.all() { it.isValidEmail() },
+                themed = true,
+            )
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
         }
 
         if (state.showDialog) {
@@ -308,9 +318,13 @@ fun AddPlayersScreenUpdated(
                 }
             )
         }
+        if (state.isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center),
+                color = MaterialTheme.appColors.material.primaryVariant
+            )
+        }
     }
-
-
 }
 
 @Composable

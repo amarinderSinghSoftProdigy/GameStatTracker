@@ -4,7 +4,6 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -20,7 +19,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
@@ -42,15 +40,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
-import coil.compose.rememberImagePainter
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
@@ -59,7 +54,9 @@ import com.softprodigy.ballerapp.common.argbToHexString
 import com.softprodigy.ballerapp.common.validTeamName
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.CoilImage
 import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
+import com.softprodigy.ballerapp.ui.features.components.PlaceholderRect
 import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
@@ -68,7 +65,6 @@ import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.Update
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
-import com.softprodigy.ballerapp.ui.theme.ColorBWGrayStatus
 import com.softprodigy.ballerapp.ui.theme.ColorMainPrimary
 import com.softprodigy.ballerapp.ui.theme.ColorPrimaryTransparent
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -172,7 +168,7 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                             text = stringResource(id = R.string.team_logo),
                             style = MaterialTheme.typography.h6
                         )
-                        if (state.teamImageUri != null) {
+                        if (state.logo != null) {
                             Text(
                                 text = stringResource(id = R.string.change),
                                 color = ColorBWGrayLight,
@@ -199,7 +195,7 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                                 shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                             )
                             .clickable {
-                                if (state.teamImageUri == null) {
+                                if (state.logo == null) {
                                     scope.launch {
                                         modalBottomSheetState.hide()
                                     }
@@ -208,7 +204,7 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                             }
 
                     ) {
-                        if (state.teamImageUri == null) {
+                        if (state.logo == null) {
                             Row(modifier = Modifier.align(Alignment.Center)) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.ic_upload),
@@ -225,35 +221,22 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                         }
 
 
-                        if (!state.teamImageUri.isNullOrEmpty() && state.teamImageUri.contains("http")) {
-                            AsyncImage(
-                                model = state.teamImageUri,
-                                contentDescription = "",
-                                modifier =
-                                Modifier
-                                    .size(dimensionResource(id = R.dimen.size_160dp))
-                                    .clip(CircleShape)
-                                    .background(
-                                        color = ColorBWGrayStatus,
-                                        shape = CircleShape
-                                    )
-                                    .align(Alignment.Center),
-                                contentScale = ContentScale.Crop,
-                            )
-                        } else {
-                            Image(
-                                painter = if (state.teamImageUri == null) painterResource(id = R.drawable.ball) else rememberImagePainter(
-                                    data = Uri.parse(BuildConfig.IMAGE_SERVER + state.teamImageUri)
-                                ),
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .align(Alignment.Center)
-                                    .size(dimensionResource(id = R.dimen.size_160dp))
-                                    .clip(CircleShape)
-                                    .align(Alignment.Center)
-                            )
-                        }
+                        CoilImage(
+                            src = state.localLogo ?: (BuildConfig.IMAGE_SERVER + state.logo),
+                            modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                                .background(
+                                    color = Color.Transparent,
+                                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+                                )
+                                .align(Alignment.Center),
+                            isCrossFadeEnabled = false,
+                            onLoading = { PlaceholderRect(R.drawable.ic_user_profile_icon) },
+                            onError = { PlaceholderRect(R.drawable.ic_user_profile_icon) }
+                        )
+
                     }
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
                     Divider(thickness = dimensionResource(id = R.dimen.divider))
@@ -308,7 +291,12 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                                         ),
                                     textAlign = TextAlign.Center,
                                     text = if (state.teamColor.isNotEmpty()) {
-                                        "#" + state.teamColor
+                                        if (state.teamColor.substring(0, 1) == "#") {
+                                            state.teamColor
+                                        } else {
+                                            "#" +
+                                                    state.teamColor
+                                        }
                                     } else {
                                         MaterialTheme.appColors.material.primaryVariant.toArgb()
                                             .argbToHexString()

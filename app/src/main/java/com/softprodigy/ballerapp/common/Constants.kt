@@ -76,6 +76,8 @@ object ApiConstants {
     const val RESET_PASS = "/reset/password/"
     const val RESEND_OTP = "/resendOtp"
     const val UPDATE_TEAM = "v1/team/update"
+    const val GET_USER_DETAILS="v1/auth/getUserProfile"
+    const val GET_HOME_PAGE_DETAILS="v1/coach/event/getHomePageDetails"
     const val first_name = "first_name"
     const val last_name = "lastName"
     const val mobile = "mobile"

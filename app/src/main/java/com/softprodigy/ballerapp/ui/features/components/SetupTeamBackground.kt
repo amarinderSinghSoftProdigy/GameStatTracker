@@ -1,6 +1,5 @@
 package com.softprodigy.ballerapp.ui.features.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -25,14 +24,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil.compose.rememberImagePainter
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.theme.appColors
 
@@ -89,21 +86,24 @@ fun CoachFlowBackground(
                             modifier = Modifier.fillMaxSize()
                         )
                         teamLogo?.let {
-                            Image(
-                                painter = if(teamLogo.isNotEmpty()) rememberImagePainter(data = teamLogo) else painterResource(
-                                    id = R.drawable.app_logo
-                                ),
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop,            // crop the image if it's not a square
+                            CoilImage(
+                                src = it,
                                 modifier = Modifier
                                     .size(dimensionResource(id = R.dimen.size_65dp))
                                     .clip(CircleShape)
+                                    .background(
+                                        color = MaterialTheme.appColors.material.onSurface,
+                                        CircleShape
+                                    )
                                     .border(
                                         dimensionResource(id = R.dimen.size_3dp),
                                         MaterialTheme.colors.surface,
                                         CircleShape
                                     )
-                                    .align(Alignment.Center)
+                                    .align(Alignment.Center),
+                                isCrossFadeEnabled = false,
+                                onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
+                                onError = { Placeholder(R.drawable.ic_user_profile_icon) }
                             )
                         }
                     }

@@ -71,7 +71,11 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
     }
 
     val getColor: Flow<String> = settingsDataStore.data.map { preferences ->
-        preferences[COLOR] ?: ""
+       val color = preferences[COLOR]?.replace(
+           "#",
+           ""
+       )?: ""
+        color
     }
 
     val getWalkThrough: Flow<String> = settingsDataStore.data.map { preferences ->
@@ -85,8 +89,12 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
     }
 
     suspend fun setColor(color: String) {
+        val newColor= color.replace(
+            "#",
+            ""
+        )
         settingsDataStore.edit { settings ->
-            settings[COLOR] = color
+            settings[COLOR] = newColor
         }
     }
 

@@ -32,14 +32,12 @@ fun MainManageTeamScreen(vm: TeamViewModel, onSuccess: () -> Unit, onAddPlayerCL
         vm.teamChannel.collect { uiEvent ->
             when (uiEvent) {
                 is TeamChannel.OnTeamsUpdate -> {
+                    UserStorage.teamId = uiEvent.teamId
                     Toast.makeText(
                         context,
-                        uiEvent.message.asString(context),
+                        uiEvent.message.asString(context = context),
                         Toast.LENGTH_LONG
                     ).show()
-                }
-                is TeamChannel.OnTeamDetailsSuccess -> {
-                    UserStorage.teamId = uiEvent.teamId
                     onSuccess()
                 }
             }
