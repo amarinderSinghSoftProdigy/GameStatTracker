@@ -1,7 +1,5 @@
 package com.softprodigy.ballerapp.ui.features.home.events.venues
 
-import com.softprodigy.ballerapp.data.response.division.DivisionData
-import com.softprodigy.ballerapp.data.response.division.DivisionTabs
 import com.softprodigy.ballerapp.data.response.division.VenuesData
 
 data class VenuesUIState(

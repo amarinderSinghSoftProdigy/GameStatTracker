@@ -45,12 +45,11 @@ import com.softprodigy.ballerapp.ui.features.components.TabBar
 import com.softprodigy.ballerapp.ui.features.components.TopBar
 import com.softprodigy.ballerapp.ui.features.components.TopBarData
 import com.softprodigy.ballerapp.ui.features.components.fromHex
-import com.softprodigy.ballerapp.ui.features.home.Events.EventViewModel
-import com.softprodigy.ballerapp.ui.features.home.Events.FilterScreen
-import com.softprodigy.ballerapp.ui.features.home.Events.Game.GameDetailsScreen
-import com.softprodigy.ballerapp.ui.features.home.Events.Game.GameRuleScreen
-import com.softprodigy.ballerapp.ui.features.home.event_kd.MyLeagueDetailScreen
-import com.softprodigy.ballerapp.ui.features.home.events.*
+import com.softprodigy.ballerapp.ui.features.home.events.EventDetailsScreen
+import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
+import com.softprodigy.ballerapp.ui.features.home.events.EventsScreen
+import com.softprodigy.ballerapp.ui.features.home.events.FilterScreen
+import com.softprodigy.ballerapp.ui.features.home.events.MyLeagueDetailScreen
 import com.softprodigy.ballerapp.ui.features.home.events.NewEventScreen
 import com.softprodigy.ballerapp.ui.features.home.home_screen.HomeScreen
 import com.softprodigy.ballerapp.ui.features.home.invitation.InvitationScreen
@@ -271,7 +270,7 @@ fun NavControllerComposable(
                     topBar = TopBar.GAME_DETAILS,
                 )
             )
-            GameDetailsScreen(eventViewModel)
+            //GameDetailsScreen(eventViewModel)
         }
         composable(route = Route.LEAGUE_DETAIL_SCREEN) {
             homeViewModel.setTopBar(
@@ -305,7 +304,7 @@ fun NavControllerComposable(
                     label = eventTitle
                 )
             )
-            GameRuleScreen(eventViewModel)
+            //GameRuleScreen(eventViewModel)
         }
         composable(route = Route.MANAGED_TEAM_SCREEN) {
             homeViewModel.setTopBar(

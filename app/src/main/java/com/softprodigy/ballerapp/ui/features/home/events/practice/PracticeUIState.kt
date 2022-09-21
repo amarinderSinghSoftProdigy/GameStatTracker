@@ -1,7 +1,5 @@
 package com.softprodigy.ballerapp.ui.features.home.events.practice
 
-import java.net.Inet4Address
-
 data class PracticeUIState(
     val isLoading: Boolean = false,
     val selectedDate: String = "",

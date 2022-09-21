@@ -28,12 +28,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.flowlayout.FlowRow
@@ -44,10 +48,14 @@ import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.team.Team
-import com.softprodigy.ballerapp.ui.features.components.*
-import com.softprodigy.ballerapp.ui.theme.*
+import com.softprodigy.ballerapp.ui.features.components.DeclineEventDialog
+import com.softprodigy.ballerapp.ui.features.components.SwitchTeamDialog
+import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
+import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
+import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
+import com.softprodigy.ballerapp.ui.theme.ColorButtonRed
+import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
-import androidx.compose.ui.draw.alpha
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -59,7 +67,7 @@ fun EventsScreen(
 ) {
     val state = vm.eventState.value
     Box(Modifier.fillMaxSize()) {
-        TabLayout(moveToDetail, state, vm, moveToPracticeDetail, moveToGameDetail,moveToLeague)
+        TabLayout(moveToDetail, state, vm, moveToPracticeDetail, moveToGameDetail, moveToLeague)
     }
 }
 
@@ -163,7 +171,7 @@ fun TabsContent(
                 MyEvents(state, vm, moveToPracticeDetail, moveToGameDetail)
             }
             1 -> {
-                MyLeagueScreen(state, vm,moveToDetail, moveToLeague)
+                MyLeagueScreen(state, vm, moveToDetail, moveToLeague)
             }
             2 -> {
                 OpportunitieScreen(state, vm, moveToDetail)

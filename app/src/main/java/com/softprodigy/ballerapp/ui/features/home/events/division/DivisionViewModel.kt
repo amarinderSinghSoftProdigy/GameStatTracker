@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import com.softprodigy.ballerapp.data.response.division.DivisionData
 import com.softprodigy.ballerapp.data.response.division.DivisionTabs
-import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

@@ -13,7 +13,7 @@ data class Events(
     @SerializedName("venue") val venue: String = "",
     @SerializedName("date") val date: String = "",
     @SerializedName("status") val status: String = "",
-    @SerializedName("type") val type: EventType ?= null,
+    @SerializedName("type") val type: EventType? = null,
 //    @SerializedName("backgroundColor") val backgroundColor: String = "",
 )
 
@@ -26,7 +26,7 @@ enum class EventStatus(val status: String) {
 
 enum class EventType(val type: String, val color: Color) {
     PRACTICE("Practice", GreenColor),
-    GAME("Game",ColorMainPrimary),
-    ACTIVITY("Activity",Yellow700),
-    SCRIMMAGE("Scrimmage",ColorButtonRed),
+    GAME("Game", ColorMainPrimary),
+    ACTIVITY("Activity", Yellow700),
+    SCRIMMAGE("Scrimmage", ColorButtonRed),
 }

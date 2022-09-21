@@ -122,7 +122,7 @@ class EventTeamViewModel @Inject constructor(dataStoreManager: DataStoreManager)
                         )
                 ),
 
-            )
+                )
         )
     }
 }

@@ -13,9 +13,9 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppScrollableTabRow
 import com.softprodigy.ballerapp.ui.features.components.AppTabLikeViewPager
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
-import com.softprodigy.ballerapp.ui.features.home.events.team.EventTeamsScreen
 import com.softprodigy.ballerapp.ui.features.home.events.division.DivisionScreen
 import com.softprodigy.ballerapp.ui.features.home.events.schedule.EventScheduleScreen
+import com.softprodigy.ballerapp.ui.features.home.events.team.EventTeamsScreen
 import com.softprodigy.ballerapp.ui.features.home.events.venues.VenuesScreen
 import kotlinx.coroutines.launch
 

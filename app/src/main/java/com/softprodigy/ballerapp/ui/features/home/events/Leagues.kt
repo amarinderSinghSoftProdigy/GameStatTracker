@@ -10,7 +10,7 @@ data class Leagues(
     @SerializedName("logo") val logo: String = "",
     @SerializedName("date") val date: String = "",
     @SerializedName("type") val type: String = "",
-    @SerializedName("color") val color: Color ?=null,
+    @SerializedName("color") val color: Color? = null,
 )
 
 enum class LeaguesTypes(val status: String) {

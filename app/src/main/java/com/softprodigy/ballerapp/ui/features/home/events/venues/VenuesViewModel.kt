@@ -4,8 +4,6 @@ import android.app.Application
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
-import com.softprodigy.ballerapp.data.response.division.DivisionData
-import com.softprodigy.ballerapp.data.response.division.DivisionTabs
 import com.softprodigy.ballerapp.data.response.division.VenuesData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
