@@ -22,4 +22,12 @@ data class TeamSetupUIStateUpdated(
     val inviteMemberName: ArrayList<String> = arrayListOf("","",""),
     val inviteMemberEmail: ArrayList<String> = arrayListOf("","",""),
     var inviteMemberCount: Int = 3,
+
+    val teamNameOnJerseys: String = "",
+    val teamNameOnTournaments: String = "",
+    val venueName: String = "",
+    val address: String = "",
+
+
+
     )

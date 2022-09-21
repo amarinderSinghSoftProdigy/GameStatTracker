@@ -2,17 +2,7 @@ package com.softprodigy.ballerapp.ui.features.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.absoluteOffset
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
@@ -135,6 +125,7 @@ fun UserFlowBackground(
 
 @Composable
 fun BottomButtons(
+    modifier: Modifier = Modifier,
     firstText: String = stringResource(id = R.string.back),
     secondText: String = stringResource(id = R.string.next),
     onBackClick: () -> Unit,
@@ -144,8 +135,7 @@ fun BottomButtons(
     themed: Boolean = false,
 ) {
     Row(
-        Modifier
-            .fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
             .padding(
                 start = dimensionResource(id = R.dimen.size_16dp),
                 end = dimensionResource(id = R.dimen.size_16dp)

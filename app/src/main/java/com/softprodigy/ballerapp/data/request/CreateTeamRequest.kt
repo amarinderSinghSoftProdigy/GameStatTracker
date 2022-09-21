@@ -7,6 +7,10 @@ import com.softprodigy.ballerapp.data.response.team.TeamRoaster
 data class CreateTeamRequest(
 
     @SerializedName("name") val name: String = "",
+    @SerializedName("teamNameOnJersey") val teamNameOnJersey: String = "",
+    @SerializedName("teamNameOnTournaments") val teamNameOnTournaments: String = "",
+    @SerializedName("nameOfVenue") val nameOfVenue: String = "",
+    @SerializedName("address") val address: String = "",
     @SerializedName("primaryTeamColor") val primaryTeamColor: String = "",
     @SerializedName("colorCode") val colorCode: String = "",
     @SerializedName("secondaryTeamColor") val secondaryTeamColor: String = "",
