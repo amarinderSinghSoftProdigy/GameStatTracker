@@ -51,6 +51,7 @@ import com.softprodigy.ballerapp.ui.features.home.events.EventsScreen
 import com.softprodigy.ballerapp.ui.features.home.events.FilterScreen
 import com.softprodigy.ballerapp.ui.features.home.events.MyLeagueDetailScreen
 import com.softprodigy.ballerapp.ui.features.home.events.NewEventScreen
+import com.softprodigy.ballerapp.ui.features.home.events.game.GameDetailsScreen
 import com.softprodigy.ballerapp.ui.features.home.home_screen.HomeScreen
 import com.softprodigy.ballerapp.ui.features.home.invitation.InvitationScreen
 import com.softprodigy.ballerapp.ui.features.home.manage_team.MainManageTeamScreen
@@ -270,7 +271,7 @@ fun NavControllerComposable(
                     topBar = TopBar.GAME_DETAILS,
                 )
             )
-            //GameDetailsScreen(eventViewModel)
+            GameDetailsScreen(eventViewModel)
         }
         composable(route = Route.LEAGUE_DETAIL_SCREEN) {
             homeViewModel.setTopBar(
