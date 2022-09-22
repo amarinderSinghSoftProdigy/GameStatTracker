@@ -1,9 +1,7 @@
-package com.softprodigy.ballerapp.ui.features.home.Events
+package com.softprodigy.ballerapp.ui.features.home.events
 
 import androidx.compose.ui.graphics.Color
 import com.google.gson.annotations.SerializedName
-import com.softprodigy.ballerapp.data.response.User
-import com.softprodigy.ballerapp.data.response.team.Team
 
 data class Leagues(
     @SerializedName("_id") val id: String = "",
@@ -12,7 +10,7 @@ data class Leagues(
     @SerializedName("logo") val logo: String = "",
     @SerializedName("date") val date: String = "",
     @SerializedName("type") val type: String = "",
-    @SerializedName("color") val color: Color ?=null,
+    @SerializedName("color") val color: Color? = null,
 )
 
 enum class LeaguesTypes(val status: String) {

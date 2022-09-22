@@ -48,7 +48,10 @@ object Route {
     const val ROASTER_SCREEN = "roasterScreen"
     const val MANAGED_TEAM_SCREEN = "managedTeamScreen"
     const val SELECT_PROFILE = "selectProfile"
+    const val LEAGUE_DETAIL_SCREEN = "leagueDetailScreen"
     const val INVITATION_SCREEN="invitationScreen"
+    const val NEW_EVENT = "newEvent"
+    const val MY_LEAGUE = "myLeague"
 }
 
 object ApiConstants {

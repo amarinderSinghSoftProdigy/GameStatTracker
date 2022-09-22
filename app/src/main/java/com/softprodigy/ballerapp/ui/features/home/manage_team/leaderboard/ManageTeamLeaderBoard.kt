@@ -20,7 +20,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
@@ -41,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.team.TeamLeaderBoard
+import com.softprodigy.ballerapp.ui.features.components.AppDivider
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
@@ -263,5 +263,5 @@ inline fun LeaderBoardItem(
                 .size(dimensionResource(id = R.dimen.size_12dp))
         )
     }
-    Divider(color = MaterialTheme.colors.primary)
+    AppDivider(color = MaterialTheme.colors.primary)
 }

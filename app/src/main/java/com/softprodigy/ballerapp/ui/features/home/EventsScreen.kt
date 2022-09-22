@@ -33,6 +33,7 @@ import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
+import com.softprodigy.ballerapp.ui.features.home.events.venues.VenuesScreen
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
 
@@ -120,7 +121,7 @@ fun TabsContent(pagerState: PagerState, tabUpdate: (Int) -> Unit) {
     HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
         when (page) {
             0 -> {
-                TabContentScreen(data = "Welcome to Home Screen")
+                VenuesScreen()
             }
             1 -> {
                 TabContentScreen(data = "Welcome to Shopping Screen")

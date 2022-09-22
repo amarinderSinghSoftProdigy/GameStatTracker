@@ -22,7 +22,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
-import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -52,6 +51,7 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.argbToHexString
 import com.softprodigy.ballerapp.common.validTeamName
+import com.softprodigy.ballerapp.ui.features.components.AppDivider
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.CoilImage
@@ -156,7 +156,7 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                         )
                     }
 
-                    Divider(thickness = dimensionResource(id = R.dimen.divider))
+                    AppDivider()
 
                     Row(
                         Modifier
@@ -239,7 +239,7 @@ fun ManageTeamScreen(vm: TeamViewModel) {
 
                     }
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-                    Divider(thickness = dimensionResource(id = R.dimen.divider))
+                    AppDivider()
                     Row(
                         Modifier
                             .fillMaxWidth()

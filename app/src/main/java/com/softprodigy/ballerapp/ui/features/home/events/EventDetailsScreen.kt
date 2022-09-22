@@ -1,20 +1,27 @@
-package com.softprodigy.ballerapp.ui.features.home.Events
+package com.softprodigy.ballerapp.ui.features.home.events
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -22,31 +29,31 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
-import com.google.accompanist.pager.pagerTabIndicatorOffset
-import com.google.accompanist.pager.rememberPagerState
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.data.response.team.Team
-import com.softprodigy.ballerapp.ui.features.components.*
-import com.softprodigy.ballerapp.ui.features.home.invitation.InvitationEvent
-import com.softprodigy.ballerapp.ui.features.home.invitation.InvitationItem
-import com.softprodigy.ballerapp.ui.theme.*
-import kotlinx.coroutines.launch
+import com.softprodigy.ballerapp.ui.features.components.AppDivider
+import com.softprodigy.ballerapp.ui.features.components.TransparentButtonButton
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
+import com.softprodigy.ballerapp.ui.theme.GreenColor
+import com.softprodigy.ballerapp.ui.theme.appColors
+import com.softprodigy.ballerapp.ui.theme.md_theme_light_outline
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun EventDetailsScreen(vm: EventViewModel) {
     val state = vm.eventState.value
-    var images = arrayListOf<String>("", "", "", "", "")
-    Box(modifier = Modifier.fillMaxSize()) {
+    val images = arrayListOf<String>("", "", "", "", "", "", "")
+    Column(
+        Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+    ) {
         Column(
             Modifier
-                .fillMaxSize()
-                .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
-                .verticalScroll(rememberScrollState()),
+                .padding(
+                    start = dimensionResource(id = R.dimen.size_16dp),
+                    end = dimensionResource(id = R.dimen.size_16dp)
+                )
         ) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             Text(
@@ -56,7 +63,7 @@ fun EventDetailsScreen(vm: EventViewModel) {
                 fontWeight = FontWeight.Bold,
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-            Row() {
+            Row {
                 Text(
                     text = stringResource(id = R.string.date),
                     color = ColorBWGrayLight,
@@ -78,7 +85,7 @@ fun EventDetailsScreen(vm: EventViewModel) {
                 )
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
-            Row() {
+            Row {
                 Text(
                     text = "Friday, May 27",
                     color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
@@ -130,69 +137,87 @@ fun EventDetailsScreen(vm: EventViewModel) {
                 )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
             Box(
-                modifier = Modifier.background(color=md_theme_light_outline).height(dimensionResource(id = R.dimen.size_100dp)).fillMaxWidth()
-            ){
+                modifier = Modifier
+                    .background(color = md_theme_light_outline)
+                    .height(dimensionResource(id = R.dimen.size_100dp))
+                    .fillMaxWidth()
+            ) {
                 Text(
-                text = "Google Map",
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
-                fontWeight = FontWeight.Bold,
-            )
+                    text = "Google Map",
+                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
+                    fontWeight = FontWeight.Bold,
+                )
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-            LazyRow {
-                itemsIndexed(images) { index, item ->
-                           Image(
-                               painter = rememberAsyncImagePainter("https://picsum.photos/200"),
-                               contentDescription = null,
-                               modifier = Modifier
-                                   .padding(horizontal = dimensionResource(id = R.dimen.size_10dp))
-                                   .clip(RoundedCornerShape(dimensionResource(R.dimen.size_10dp)))                                   .size(100.dp)
-                                   .height(100.dp)
-                                   .width(100.dp)
-
-                           )
-                }
+        }
+        LazyRow {
+            itemsIndexed(images) { index, item ->
+                Image(
+                    painter = rememberAsyncImagePainter("https://picsum.photos/200"),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(horizontal = dimensionResource(id = R.dimen.size_10dp))
+                        .clip(RoundedCornerShape(dimensionResource(R.dimen.size_10dp)))
+                        .size(dimensionResource(id = R.dimen.size_72dp))
+                )
             }
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-            AppDivider()
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+        }
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+        AppDivider()
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+        Column(
+            Modifier
+                .padding(
+                    start = dimensionResource(id = R.dimen.size_16dp),
+                    end = dimensionResource(id = R.dimen.size_16dp)
+                )
+        ) {
             Text(
                 text = stringResource(id = R.string.rsvp),
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                 fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
                 fontWeight = FontWeight.Bold,
             )
-            LazyRow {
-                itemsIndexed(images) { index, item ->
-                    Column(modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.size_10dp)),
+        }
+        LazyRow {
+            itemsIndexed(images) { index, item ->
+                Column(
+                    modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.size_10dp)),
                     horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
-                        Image(
-                            painter = painterResource(id = R.drawable.user_demo),
-                            contentDescription = null,
-                            modifier = Modifier.size(60.dp)
-                        )
-                        Text(
-                            text = "Zair",
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                            fontWeight = FontWeight.Bold,
-                        )
-                        Text(
-                            text = stringResource(id = R.string.going),
-                            color = GreenColor,
-                            fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                            fontWeight = FontWeight.Bold,
-                        )
-
-                    }
+                ) {
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+                    Image(
+                        painter = painterResource(id = R.drawable.user_demo),
+                        contentDescription = null,
+                        modifier = Modifier.size(60.dp)
+                    )
+                    Text(
+                        text = "Zair",
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    Text(
+                        text = stringResource(id = R.string.going),
+                        color = GreenColor,
+                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
 
                 }
+
             }
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-            AppDivider()
+        }
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+        AppDivider()
+        Column(
+            Modifier
+                .padding(
+                    start = dimensionResource(id = R.dimen.size_16dp),
+                    end = dimensionResource(id = R.dimen.size_16dp)
+                )
+        ) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -211,7 +236,15 @@ fun EventDetailsScreen(vm: EventViewModel) {
             }
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-            AppDivider()
+        }
+        AppDivider()
+        Column(
+            Modifier
+                .padding(
+                    start = dimensionResource(id = R.dimen.size_16dp),
+                    end = dimensionResource(id = R.dimen.size_16dp)
+                )
+        ) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
             Text(
@@ -227,11 +260,13 @@ fun EventDetailsScreen(vm: EventViewModel) {
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                 fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
             )
-            Row(verticalAlignment = Alignment.CenterVertically){
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
                     painter = painterResource(id = R.drawable.user_demo),
                     contentDescription = null,
-                    modifier = Modifier.size(60.dp).padding(end=dimensionResource(id = R.dimen.txt_size_16))
+                    modifier = Modifier
+                        .size(60.dp)
+                        .padding(end = dimensionResource(id = R.dimen.txt_size_16))
                 )
                 Text(
                     text = "Coach Sam",
@@ -242,7 +277,15 @@ fun EventDetailsScreen(vm: EventViewModel) {
             }
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-            AppDivider()
+        }
+        AppDivider()
+        Column(
+            Modifier
+                .padding(
+                    start = dimensionResource(id = R.dimen.size_16dp),
+                    end = dimensionResource(id = R.dimen.size_16dp)
+                )
+        ) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
             Text(
@@ -258,11 +301,13 @@ fun EventDetailsScreen(vm: EventViewModel) {
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                 fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
             )
-            Row( verticalAlignment = Alignment.CenterVertically){
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
                     painter = painterResource(id = R.drawable.user_demo),
                     contentDescription = null,
-                    modifier = Modifier.size(60.dp).padding(end=dimensionResource(id = R.dimen.txt_size_16))
+                    modifier = Modifier
+                        .size(60.dp)
+                        .padding(end = dimensionResource(id = R.dimen.txt_size_16))
                 )
                 Text(
                     text = "Coach Sam",
