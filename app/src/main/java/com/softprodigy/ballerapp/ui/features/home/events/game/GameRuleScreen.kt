@@ -17,6 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppDivider
@@ -65,6 +68,12 @@ fun GameRuleScreen(vm: EventViewModel) {
                 "15 min", "24s", "7",
                 "Ut augue sapien porta leo adipiscing bibendum dui."
             )
+            OtherItem(stringResource(id = R.string.full_court), "Eleifend enim sit posuere placerat sit quis.",)
+            OtherItem(stringResource(id = R.string.technical_fouls), "Eleifend enim sit posuere placerat sit quis.",)
+            OtherItem(stringResource(id = R.string.coach_rules), "Eleifend enim sit posuere placerat sit quis.",)
+            OtherItem(stringResource(id = R.string.forfeit), "Eleifend enim sit posuere placerat sit quis.",)
+            OtherItem(stringResource(id = R.string.other_rules), "Eleifend enim sit posuere placerat sit quis.",)
+
         }
     }
 }
@@ -108,20 +117,21 @@ fun GameRuleItem(
             text = value1,
             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         )
         Text(
             text = value2,
             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+
 
         )
         Text(
             text = value3,
             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         )
     }
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
@@ -137,8 +147,25 @@ fun GameRuleItem(
         color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
     )
-    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
     AppDivider()
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
 }
 
+@Composable
+fun OtherItem(key:String,value:String){
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+
+    Text(
+        text =key,
+        color = ColorBWGrayLight,
+        fontSize = dimensionResource(id = R.dimen.txt_size_13).value.sp,
+    )
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+    Text(
+        text = value,
+        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+    )
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
+}

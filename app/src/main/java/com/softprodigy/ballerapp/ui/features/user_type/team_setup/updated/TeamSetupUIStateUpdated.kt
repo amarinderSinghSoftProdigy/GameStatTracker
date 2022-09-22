@@ -28,6 +28,8 @@ data class TeamSetupUIStateUpdated(
     val venueName: String = "",
     val address: String = "",
 
-
+    val coachName:String="",
+    val coachRole:String="",
+    val coachEmail:String="",
 
     )

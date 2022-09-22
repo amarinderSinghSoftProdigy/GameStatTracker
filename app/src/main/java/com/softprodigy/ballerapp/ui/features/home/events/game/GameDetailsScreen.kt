@@ -31,12 +31,12 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun GameDetailsScreen(vm: EventViewModel) {
-    val pagerState = rememberPagerState(pageCount = 3)
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Tabs(pagerState = pagerState)
-        TabsContent(pagerState = pagerState, vm)
-    }
+fun GameDetailsScreen(vm: EventViewModel,moveToGameRules:()->Unit) {
+        val pagerState = rememberPagerState(pageCount = 3)
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Tabs(pagerState = pagerState)
+            TabsContent(pagerState = pagerState,vm,moveToGameRules)
+        }
 }
 
 @ExperimentalPagerApi
@@ -88,17 +88,17 @@ fun Tabs(pagerState: PagerState) {
     }
 }
 
-@ExperimentalPagerApi
-@Composable
-fun TabsContent(pagerState: PagerState, vm: EventViewModel) {
-    HorizontalPager(state = pagerState) { page ->
-        when (page) {
-            0 -> GameDetailsTab(vm)
-            1 -> GameStatsTab()
-            2 -> GameSumTab()
+    @ExperimentalPagerApi
+    @Composable
+    fun TabsContent(pagerState: PagerState,vm: EventViewModel,moveToGameRules:()->Unit) {
+        HorizontalPager(state = pagerState) { page ->
+            when (page) {
+                0 -> GameDetailsTab(vm,moveToGameRules)
+                1 -> GameStatsTab()
+                2 -> GameSumTab()
+            }
         }
     }
-}
 
 enum class GameTabItems(val icon: Int, val stringId: String) {
     Details(R.drawable.ic_details, stringId = "details"),

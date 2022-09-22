@@ -343,6 +343,8 @@ enum class TopBar(val stringId: String, val back: Boolean) {
     NEW_EVENT(stringId = "", back = true),
     MY_LEAGUE(stringId = "", back = true),
     GAME_RULES(stringId = "games_rules", back = true),
+    CREATE_TEAM(stringId = "create_a_team", back = true),
+    INVITE_TEAM_MEMBERS(stringId = "invite_team_member", back = true),
 }
 
 @OptIn(ExperimentalAnimationApi::class)

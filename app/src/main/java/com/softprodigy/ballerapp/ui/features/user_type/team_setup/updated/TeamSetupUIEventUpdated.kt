@@ -31,5 +31,9 @@ sealed class TeamSetupUIEventUpdated {
     data class OnVenueChange(val venueName: String) : TeamSetupUIEventUpdated()
     data class OnAddressChange(val address: String) : TeamSetupUIEventUpdated()
 
+    data class OnCoachNameChange(val coachName: String) : TeamSetupUIEventUpdated()
+    data class OnCoachRoleChange(val coachRole: String) : TeamSetupUIEventUpdated()
+    data class OnCoachEmailChange(val coachEmail: String) : TeamSetupUIEventUpdated()
+
 
 }
