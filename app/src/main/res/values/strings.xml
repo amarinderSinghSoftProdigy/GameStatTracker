@@ -265,4 +265,10 @@
     <string name="four_q">4Q</string>
     <string name="game_result">Game Result</string>
     <string name="game_champions">Game Champions</string>
+    <string name="offensive">Offensive</string>
+    <string name="defensive">Defensive</string>
+    <string name="choose_playerr">Choose Player</string>
+    <string name="bonus_points">Bonus points:</string>
+    <string name="post_game_notes">Post-game notes</string>
+    <string name="average">Average</string>
 </resources>
