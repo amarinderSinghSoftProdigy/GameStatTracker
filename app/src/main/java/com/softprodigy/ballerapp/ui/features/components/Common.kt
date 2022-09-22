@@ -313,6 +313,7 @@ enum class TopBar(val stringId: String, val back: Boolean) {
     SINGLE_LABEL(stringId = "", back = false),
     EMPTY(stringId = "", back = false),
     GAME_RULES(stringId = "games_rules", back = true),
+    CREATE_TEAM(stringId = "create_a_team", back = true),
 }
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
