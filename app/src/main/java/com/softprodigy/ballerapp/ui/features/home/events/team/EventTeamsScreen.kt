@@ -4,8 +4,9 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,6 +38,7 @@ import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.ui.features.components.CoilImage
+import com.softprodigy.ballerapp.ui.features.components.DividerCommon
 import com.softprodigy.ballerapp.ui.features.components.FoldableItem
 import com.softprodigy.ballerapp.ui.features.components.Placeholder
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -54,7 +56,12 @@ fun EventTeamsScreen(vm: EventTeamViewModel = hiltViewModel()) {
                 headerBackground = MaterialTheme.appColors.material.primary,
                 headerBorder = BorderStroke(0.dp, Color.Transparent),
                 header = { isExpanded ->
-                    EventTeamHeader(divisionName = item.divisionName, isExpanded)
+                    Column {
+                        EventTeamHeader(divisionName = item.divisionName, isExpanded)
+                        if (!isExpanded) {
+                            DividerCommon()
+                        }
+                    }
                 },
                 childItems = item.teams,
                 hasItemLeadingSpacing = false,
@@ -63,8 +70,34 @@ fun EventTeamsScreen(vm: EventTeamViewModel = hiltViewModel()) {
                 itemHorizontalPadding = 0.dp,
                 itemsBackground = MaterialTheme.appColors.material.primary,
                 item = { team, index ->
-//                    EventScheduleSubItem(match, index)
-                    EventTeamSubItem(team)
+                    Column {
+                        Box(
+                            modifier = Modifier
+                                .padding(
+                                    start = dimensionResource(id = R.dimen.size_16dp),
+                                    end = dimensionResource(id = R.dimen.size_16dp)
+                                )
+                                .background(
+                                    color = MaterialTheme.appColors.material.surface,
+                                    shape = RoundedCornerShape(
+                                        topStart = if (index == 0) dimensionResource(id = R.dimen.size_8dp) else 0.dp,
+                                        topEnd = if (index == 0) dimensionResource(id = R.dimen.size_8dp) else 0.dp,
+                                        bottomEnd = if (index == item.teams.size - 1) dimensionResource(
+                                            id = R.dimen.size_8dp
+                                        ) else 0.dp,
+                                        bottomStart = if (index == item.teams.size - 1) dimensionResource(
+                                            id = R.dimen.size_8dp
+                                        ) else 0.dp
+                                    )
+                                )
+                        ) {
+                            EventTeamSubItem(team)
+                        }
+                        if (index == item.teams.size - 1) {
+                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                            DividerCommon()
+                        }
+                    }
                 }
             )
         }
@@ -111,71 +144,57 @@ fun EventTeamSubItem(team: Team) {
     Row(
         Modifier
             .fillMaxWidth()
+            .clickable { }
             .padding(
-                horizontal = dimensionResource(id = R.dimen.size_12dp),
-                vertical = dimensionResource(id = R.dimen.size_1dp)
-            )
-    ) {
+                horizontal = dimensionResource(id = R.dimen.size_16dp),
+                vertical = dimensionResource(id = R.dimen.size_12dp)
+            ),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
 
+    ) {
         Row(
             modifier = Modifier
-                .weight(1f)
-                .background(color = MaterialTheme.appColors.material.surface)
-                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-                .clickable { },
-            horizontalArrangement = Arrangement.SpaceBetween,
+                .height(IntrinsicSize.Min),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
+            CoilImage(
+                src = BuildConfig.IMAGE_SERVER + team.logo,
                 modifier = Modifier
-                    .height(IntrinsicSize.Min)
-                    .padding(
-                        PaddingValues(
-                            dimensionResource(id = R.dimen.size_12dp),
-                            dimensionResource(id = R.dimen.size_12dp)
-                        )
-                    ), verticalAlignment = Alignment.CenterVertically
-            ) {
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                CoilImage(
-                    src = BuildConfig.IMAGE_SERVER + team.logo,
-                    modifier = Modifier
-                        .size(dimensionResource(id = R.dimen.size_32dp))
-                        .clip(CircleShape)
-                        .background(
-                            color = MaterialTheme.appColors.material.onSurface,
-                            CircleShape
-                        ),
-                    onError = {
-                        Placeholder(R.drawable.ic_team_placeholder)
-                    },
-                    onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
-                    isCrossFadeEnabled = false
-                )
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
-                Text(
-                    text = team.name,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                    color =
-                    MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                    .size(dimensionResource(id = R.dimen.size_32dp))
+                    .clip(CircleShape)
+                    .background(
+                        color = MaterialTheme.appColors.material.onSurface,
+                        CircleShape
+                    ),
+                onError = {
+                    Placeholder(R.drawable.ic_team_placeholder)
+                },
+                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                isCrossFadeEnabled = false
+            )
+            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+            Text(
+                text = team.name,
+                fontWeight = FontWeight.Bold,
+                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                color =
+                MaterialTheme.appColors.buttonColor.bckgroundEnabled
 
-                )
-            }
-            Row() {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_arrow_bottom_event),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(
-                            height = dimensionResource(id = R.dimen.size_6dp),
-                            width = dimensionResource(id = R.dimen.size_8dp)
-                        )
-                        .rotate(270f),
-                    tint = MaterialTheme.appColors.buttonColor.textDisabled
-                )
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_24dp)))
-            }
+            )
+        }
+        Row {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_arrow_bottom_event),
+                contentDescription = "",
+                modifier = Modifier
+                    .size(
+                        height = dimensionResource(id = R.dimen.size_6dp),
+                        width = dimensionResource(id = R.dimen.size_8dp)
+                    )
+                    .rotate(270f),
+                tint = MaterialTheme.appColors.buttonColor.textDisabled
+            )
         }
     }
 }

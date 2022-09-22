@@ -24,7 +24,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Checkbox
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
@@ -662,7 +661,8 @@ fun PlayerListDialogItem(
                 src = BuildConfig.IMAGE_SERVER + player.profileImage,
                 modifier = Modifier
                     .size(dimensionResource(id = R.dimen.size_32dp))
-                    .clip(CircleShape).background(
+                    .clip(CircleShape)
+                    .background(
                         color = MaterialTheme.appColors.material.onSurface,
                         CircleShape
                     ),
@@ -894,7 +894,7 @@ fun SelectInvitationRoleItem(
 
 
 @Composable
-fun  SwitchTeamDialogg(
+fun SwitchTeamDialogg(
     teams: ArrayList<Team>,
     title: @Composable (() -> Unit)? = null,
     onDismiss: () -> Unit,
@@ -912,7 +912,7 @@ fun  SwitchTeamDialogg(
                 )
             },
 
-                    buttons = {
+            buttons = {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -955,11 +955,17 @@ fun SwitchTeamDialog(
     onConfirmClick: (teams: ArrayList<Team>) -> Unit,
     title: String,
     teams: ArrayList<Team>,
-    ) {
-    var selectedTeams= arrayListOf<Team>()
+) {
+    val selectedTeams = remember {
+        mutableStateOf(false)
+    }
     BallerAppMainTheme {
         AlertDialog(
             modifier = Modifier
+                .background(
+                    Color.White,
+                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+                )
                 .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
             onDismissRequest = onDismiss,
             buttons = {
@@ -980,7 +986,6 @@ fun SwitchTeamDialog(
                             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                             fontWeight = FontWeight.W600,
                         )
-
                         Icon(
                             painter = painterResource(id = R.drawable.ic_close_color_picker),
                             contentDescription = "",
@@ -993,54 +998,52 @@ fun SwitchTeamDialog(
                         )
                     }
                     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
-
                     LazyColumn(
-//                        modifier = Modifier
-//                            .height(dimensionResource(id = R.dimen.size_250dp)),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         items(teams) { team ->
-                            Row(modifier = Modifier.weight(1f),
-                            verticalAlignment = Alignment.CenterVertically
+
+                            Column(
+                                modifier = Modifier
+                                    .padding(bottom = dimensionResource(id = R.dimen.size_8dp))
+                                    .background(
+                                        color = if (selectedTeams.value) MaterialTheme.appColors.material.primary else Color.White,
+                                        shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
+                                    )
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_8dp)),
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.user_demo),
-                                    contentDescription = "",
-                                    modifier = Modifier
-                                        .size(dimensionResource(id = R.dimen.size_20dp))
-                                        .clip(CircleShape)
-                                )
-                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
-                                Text(
-                                    modifier = Modifier.weight(1f),
-                                    text = team.name,
-                                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                                    fontWeight = FontWeight.W500,
-                                )
-                                Checkbox(
-                                    checked = selectedTeams.contains(team),
-                                    onCheckedChange = {
-                                        if (it) {
-                                            selectedTeams.add(team)
-                                        } else {
-                                            selectedTeams.remove(team)
-                                        }
-                                    }
-                                )
+                                    Image(
+                                        painter = painterResource(id = R.drawable.user_demo),
+                                        contentDescription = "",
+                                        modifier = Modifier
+                                            .size(dimensionResource(id = R.dimen.size_32dp))
+                                            .clip(CircleShape)
+                                    )
+                                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
+                                    Text(
+                                        modifier = Modifier.weight(1f),
+                                        text = team.name,
+                                        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                                        fontWeight = FontWeight.W500,
+                                    )
+                                    CustomCheckBox(
+                                        selectedTeams.value
+                                    ) { selectedTeams.value = !selectedTeams.value }
+                                }
                             }
                         }
-                        }
                     }
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                AppDivider()
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                    AppDivider()
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(color = Color.White)
-                            .padding(
-                                all = dimensionResource(id = R.dimen.size_16dp)
-                            ),
+                            .background(color = Color.White),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         DialogButton(
@@ -1056,7 +1059,8 @@ fun SwitchTeamDialog(
                         DialogButton(
                             text = stringResource(R.string.dialog_button_confirm),
                             onClick = {
-                                onConfirmClick.invoke(selectedTeams)
+                                //TODO add list to be sent back in callback
+                                onConfirmClick.invoke(ArrayList())
                                 onDismiss.invoke()
                             },
                             modifier = Modifier
@@ -1064,13 +1068,12 @@ fun SwitchTeamDialog(
                             border = ButtonDefaults.outlinedBorder,
                             onlyBorder = false,
                         )
+                    }
                 }
             },
         )
     }
 }
-
-
 
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -1129,7 +1132,7 @@ fun DeclineEventDialog(
                         },
                         placeholder = {
                             Text(
-                                text = stringResource(id = R.string.reason_not_going),
+                                text = stringResource(id = R.string.reason_not_going)+"\n\n\n",
                                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                 textAlign = TextAlign.Center
                             )
@@ -1151,40 +1154,35 @@ fun DeclineEventDialog(
                             keyboardController?.hide()
                         }),
                     )
-
-                }
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                AppDivider()
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(color = Color.White)
-                        .padding(
-                            all = dimensionResource(id = R.dimen.size_16dp)
-                        ),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    DialogButton(
-                        text = stringResource(R.string.dialog_button_cancel),
-                        onClick = onDismiss,
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                    Row(
                         modifier = Modifier
-                            .weight(1f)
-                            .padding(end = dimensionResource(id = R.dimen.size_10dp)),
-                        border = ButtonDefaults.outlinedBorder,
-                        onlyBorder = true,
-                        enabled = false
-                    )
-                    DialogButton(
-                        text = stringResource(R.string.dialog_button_confirm),
-                        onClick = {
-                            onConfirmClick.invoke()
-                            onDismiss.invoke()
-                        },
-                        modifier = Modifier
-                            .weight(1f),
-                        border = ButtonDefaults.outlinedBorder,
-                        onlyBorder = false,
-                    )
+                            .fillMaxWidth()
+                            .background(color = Color.White),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        DialogButton(
+                            text = stringResource(R.string.dialog_button_cancel),
+                            onClick = onDismiss,
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = dimensionResource(id = R.dimen.size_10dp)),
+                            border = ButtonDefaults.outlinedBorder,
+                            onlyBorder = true,
+                            enabled = false
+                        )
+                        DialogButton(
+                            text = stringResource(R.string.dialog_button_confirm),
+                            onClick = {
+                                onConfirmClick.invoke()
+                                onDismiss.invoke()
+                            },
+                            modifier = Modifier
+                                .weight(1f),
+                            border = ButtonDefaults.outlinedBorder,
+                            onlyBorder = false,
+                        )
+                    }
                 }
             },
         )

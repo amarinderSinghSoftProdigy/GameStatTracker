@@ -264,9 +264,11 @@ fun BoxScope.MyEvents(
                 }
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
             }
+
             if (state.showGoingDialog) {
-                val teams: ArrayList<Team> = arrayListOf<Team>(
+                val teams: ArrayList<Team> = arrayListOf(
                     Team(name = "Springfield Bucks"),
+                    Team(name = "Springfield Sprouts"),
                 )
                 SwitchTeamDialog(
                     teams = teams,

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -112,12 +113,12 @@ fun LeagueItem(league: Leagues, state: EventState, onClick: () -> Unit, OnNextCl
                 .padding(
                     dimensionResource(id = R.dimen.size_12dp)
                 ),
-            verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
                 painter = painterResource(id = R.drawable.rect_image),
                 contentDescription = "",
                 modifier = Modifier
+                    .align(Alignment.CenterVertically)
                     .background(
                         color = MaterialTheme.appColors.material.surface,
                         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
@@ -127,7 +128,12 @@ fun LeagueItem(league: Leagues, state: EventState, onClick: () -> Unit, OnNextCl
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
 
-            Column(modifier = Modifier.weight(1f)) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
+                verticalArrangement = Arrangement.Center
+            ) {
                 Text(
                     text = league.title,
                     color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
@@ -152,6 +158,7 @@ fun LeagueItem(league: Leagues, state: EventState, onClick: () -> Unit, OnNextCl
             }
             Box(
                 modifier = Modifier
+                    .align(Alignment.Top)
                     .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
                     .background(league.color!!)
                     .padding(dimensionResource(id = R.dimen.size_6dp)),

@@ -24,7 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -38,18 +37,19 @@ import com.softprodigy.ballerapp.ui.features.components.Placeholder
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun VenuesScreen( moveToOpenVenues: (String) -> Unit, vm: VenuesViewModel = hiltViewModel()) {
-
+fun VenuesScreen(moveToOpenVenues: (String) -> Unit, vm: VenuesViewModel = hiltViewModel()) {
     val state = vm.venuesUiState.value
-
     Box(modifier = Modifier.fillMaxSize()) {
-
         Column(modifier = Modifier.fillMaxSize()) {
-
-            Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(all = dimensionResource(id = R.dimen.size_16dp))
+                    .background(
+                        shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
+                        color = MaterialTheme.colors.onPrimary
+                    )
+
             ) {
                 itemsIndexed(state.venuesData) { index, item ->
                     VenuesItem(item) {
@@ -67,13 +67,7 @@ fun VenuesItem(item: VenuesData, moveToOpenVenues: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(
-                horizontal = dimensionResource(
-                    id = R.dimen.size_16dp
-                )
-            )
             .height(dimensionResource(id = R.dimen.size_56dp))
-            .background(shape = RectangleShape, color = MaterialTheme.colors.onPrimary)
             .clickable {
                 moveToOpenVenues()
             },

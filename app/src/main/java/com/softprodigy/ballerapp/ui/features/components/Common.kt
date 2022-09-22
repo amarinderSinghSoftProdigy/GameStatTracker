@@ -6,6 +6,7 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,6 +32,8 @@ import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
@@ -316,9 +319,10 @@ fun CommonProgressBar() {
         )
     }
 }
+
 @Composable
 fun DividerCommon() {
-    Divider(thickness=dimensionResource(id = R.dimen.divider))
+    Divider(thickness = dimensionResource(id = R.dimen.divider))
 }
 
 data class TopBarData(
@@ -400,5 +404,39 @@ fun <T> FoldableItem(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun CustomCheckBox(selected: Boolean, onClick: () -> Unit) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .clickable {
+                onClick()
+            }
+            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)))
+            .size(
+                dimensionResource(id = R.dimen.size_16dp)
+            )
+            .background(
+                color = if (selected) {
+                    MaterialTheme.appColors.material.primaryVariant
+                } else Color.White
+            )
+            .border(
+                width = if (selected) {
+                    0.dp
+                } else dimensionResource(id = R.dimen.size_1dp),
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)),
+                color = if (selected) {
+                    Color.Transparent
+                } else MaterialTheme.appColors.buttonColor.bckgroundDisabled
+            )
+    ) {
+        Icon(
+            imageVector = Icons.Default.Check,
+            contentDescription = null,
+        )
     }
 }
