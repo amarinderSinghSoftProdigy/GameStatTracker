@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.SelectProfileResponse
+import com.softprodigy.ballerapp.ui.features.components.AppDivider
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.BottomButtons
 import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
@@ -82,24 +82,23 @@ fun SelectProfileScreen(vm: SelectProfileViewModel = hiltViewModel(), onNextClic
                 }
             }
 
-            Box(
-                Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = dimensionResource(id = R.dimen.size_30dp))
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .padding(bottom = dimensionResource(id = R.dimen.size_50dp))
+        )
+        {
+            BottomButtons(
+                firstText = stringResource(id = R.string.back),
+                secondText = stringResource(id = R.string.next),
+                onBackClick = { },
+                onNextClick = {
+                    onNextClick()
+                },
+                enableState = state.isSelectedRole.isNotEmpty(),
+                showOnlyNext = true,
             )
-            {
-                BottomButtons(
-                    firstText = stringResource(id = R.string.back),
-                    secondText = stringResource(id = R.string.next),
-                    onBackClick = { },
-                    onNextClick = {
-                        onNextClick()
-                    },
-                    enableState = state.isSelectedRole.isNotEmpty(),
-                    showOnlyNext = true,
-                )
-            }
         }
     }
 }
@@ -188,5 +187,5 @@ fun SelectProfileItems(
             }
         }
     }
-    Divider(color = MaterialTheme.appColors.material.primary)
+    AppDivider(color = MaterialTheme.appColors.material.primary)
 }

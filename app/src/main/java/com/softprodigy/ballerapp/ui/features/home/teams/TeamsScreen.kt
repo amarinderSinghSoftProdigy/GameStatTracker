@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -16,10 +18,13 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.data.UserStorage
+import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.ui.features.components.AppScrollableTabRow
 import com.softprodigy.ballerapp.ui.features.components.AppTabLikeViewPager
 import com.softprodigy.ballerapp.ui.features.components.SelectTeamDialog
+import com.softprodigy.ballerapp.ui.features.components.UserType
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
 import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.leaderboard.LeaderBoardScreen
@@ -37,12 +42,23 @@ fun TeamsScreen(
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
     dismissDialog: (Boolean) -> Unit,
     OnTeamDetailsSuccess: (String) -> Unit,
-    onCreateTeamClick: () -> Unit
+    onCreateTeamClick: (Team?) -> Unit,
+    onBackPress: () -> Unit
 ) {
+    val dataStoreManager = DataStoreManager(LocalContext.current)
+    val role = dataStoreManager.getRole.collectAsState(initial = "")
     val context = LocalContext.current
     val state = vm.teamUiState.value
     val onTeamSelectionChange = { team: Team ->
         vm.onEvent(TeamUIEvent.OnTeamSelected(team))
+    }
+
+    val scope = rememberCoroutineScope()
+
+    remember {
+        scope.launch {
+            vm.getTeams()
+        }
     }
 
     val onTeamSelectionConfirmed = { team: Team? ->
@@ -57,7 +73,10 @@ fun TeamsScreen(
     }
 
     val message = stringResource(id = R.string.no_team_selected)
+
     LaunchedEffect(key1 = Unit) {
+
+
         vm.teamChannel.collect { uiEvent ->
             when (uiEvent) {
                 is TeamChannel.ShowToast -> {
@@ -97,20 +116,23 @@ fun TeamsScreen(
                 teams = vm.teamUiState.value.teams,
                 onDismiss = { dismissDialog.invoke(false) },
                 onConfirmClick = {
-                    vm.onEvent(TeamUIEvent.OnConfirmTeamClick(it))
-                    onTeamSelectionConfirmed(state.selectedTeam)
+                    if (UserStorage.teamId != it) {
+                        onTeamSelectionConfirmed(state.selectedTeam)
+                        vm.onEvent(TeamUIEvent.OnConfirmTeamClick(it))
+                    }
                 },
                 onSelectionChange = onTeamSelectionChange,
                 selected = state.selectedTeam,
                 showLoading = state.isLoading,
-                onCreateTeamClick = onCreateTeamClick
+                onCreateTeamClick = { onCreateTeamClick(state.selectedTeam) },
+                showCreateTeamButton = role.value.equals(UserType.COACH.key, ignoreCase = true)
             )
         }
 
     }
-   /* if (state.isLoading) {
-        CommonProgressBar()
-    }*/
+    /* if (state.isLoading) {
+         CommonProgressBar()
+     }*/
 }
 
 @OptIn(ExperimentalPagerApi::class)
@@ -122,7 +144,7 @@ fun TeamsContent(pagerState: PagerState, viewModel: TeamViewModel) {
     ) { index ->
         when (index) {
             0 -> StandingScreen()
-            1 -> EmptyScreen()
+            1 -> EmptyScreen(singleText = true, heading = stringResource(id = R.string.coming_soon))
             2 -> RoasterScreen(viewModel)
             3 -> LeaderBoardScreen()
         }
@@ -154,5 +176,5 @@ enum class TeamsTabItems(val icon: Int, val stringId: String) {
     Standings(R.drawable.ic_standing, stringId = "standings"),
     Chat(R.drawable.ic_chat, stringId = "chat"),
     Roaster(R.drawable.ic_roaster, stringId = "roaster"),
-    Leaderboard(R.drawable.ic_leaderboard, stringId = "leaderboard")
+    Leaderboard(R.drawable.ic_leaderboard, stringId = "leaderboards")
 }

@@ -4,7 +4,6 @@ import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -24,7 +23,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
-import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -43,14 +41,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberImagePainter
 import com.github.skydoves.colorpicker.compose.ColorEnvelope
 import com.github.skydoves.colorpicker.compose.ColorPickerController
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
@@ -58,10 +54,13 @@ import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.validTeamName
+import com.softprodigy.ballerapp.ui.features.components.AppDivider
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.BottomButtons
 import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
+import com.softprodigy.ballerapp.ui.features.components.CoilImage
+import com.softprodigy.ballerapp.ui.features.components.Placeholder
 import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
@@ -170,7 +169,8 @@ fun TeamSetupScreenUpdated(
                                 modifier = Modifier.fillMaxWidth(),
                                 value = state.teamName,
                                 onValueChange = {
-                                    vm.onEvent(TeamSetupUIEventUpdated.OnTeamNameChange(it))
+                                    if (it.length <= maxTeamChar)
+                                        vm.onEvent(TeamSetupUIEventUpdated.OnTeamNameChange(it))
                                 },
                                 placeholder = {
                                     AppText(
@@ -179,17 +179,78 @@ fun TeamSetupScreenUpdated(
                                     )
                                 },
                                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                                    unfocusedBorderColor = ColorBWGrayBorder,
+                                    unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
                                     cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
 
                                 ),
                                 isError = !validTeamName(state.teamName) && state.teamName.isNotEmpty(),
                                 errorMessage = stringResource(id = R.string.valid_team_name)
                             )
+
+                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+                            AppText(
+                                text = stringResource(id = R.string.team_name_jerseys),
+                                style = MaterialTheme.typography.h6,
+                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                            )
+                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+                            AppOutlineTextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                value = state.teamNameOnJerseys,
+                                onValueChange = {
+                                    if (it.length <= maxTeamChar)
+                                        vm.onEvent(TeamSetupUIEventUpdated.OnTeamNameJerseyChange(it))
+                                },
+                                placeholder = {
+                                    AppText(
+                                        text = stringResource(id = R.string.your_team_name_on_jersey),
+                                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
+                                    )
+                                },
+                                colors = TextFieldDefaults.outlinedTextFieldColors(
+                                    unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
+                                    cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+
+                                ),
+                                isError = !validTeamName(state.teamNameOnJerseys) && state.teamNameOnJerseys.isNotEmpty(),
+                                errorMessage = stringResource(id = R.string.valid_team_name)
+                            )
+
+                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+                            AppText(
+                                text = stringResource(id = R.string.team_name_tournament),
+                                style = MaterialTheme.typography.h6,
+                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                            )
+                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+                            AppOutlineTextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                value = state.teamNameOnTournaments,
+                                onValueChange = {
+                                    if (it.length <= maxTeamChar)
+                                        vm.onEvent(
+                                            TeamSetupUIEventUpdated.OnTeamNameTournamentsChange(
+                                                it
+                                            )
+                                        )
+                                },
+                                placeholder = {
+                                    AppText(
+                                        text = stringResource(id = R.string.your_team_name_on_tournaments),
+                                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
+                                    )
+                                },
+                                colors = TextFieldDefaults.outlinedTextFieldColors(
+                                    unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
+                                    cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+
+                                ),
+                                isError = !validTeamName(state.teamNameOnTournaments) && state.teamNameOnTournaments.isNotEmpty(),
+                                errorMessage = stringResource(id = R.string.valid_team_name)
+                            )
                         }
 
-                        Divider(thickness = dimensionResource(id = R.dimen.divider))
-
+                        AppDivider()
 
                         Row(
                             Modifier
@@ -199,7 +260,8 @@ fun TeamSetupScreenUpdated(
                         ) {
                             AppText(
                                 text = stringResource(id = R.string.team_logo),
-                                style = MaterialTheme.typography.h6
+                                style = MaterialTheme.typography.h6,
+                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
                             )
                             if (state.teamImageUri != null) {
                                 Text(
@@ -241,36 +303,43 @@ fun TeamSetupScreenUpdated(
                                 }
 
                         ) {
-                            Row(modifier = Modifier.align(Alignment.Center)) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_upload),
-                                    contentDescription = null,
-                                    tint = Color.Unspecified
-                                )
-                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
-                                AppText(
-                                    text = stringResource(id = R.string.upload_files),
-                                    style = MaterialTheme.typography.h6,
-                                    color = ColorMainPrimary
-                                )
+                            if (state.teamImageUri == null) {
+                                Row(modifier = Modifier.align(Alignment.Center)) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_upload),
+                                        contentDescription = null,
+                                        tint = Color.Unspecified
+                                    )
+                                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+                                    AppText(
+                                        text = stringResource(id = R.string.upload_files),
+                                        style = MaterialTheme.typography.h6,
+                                        color = ColorMainPrimary
+                                    )
+                                }
                             }
                             state.teamImageUri?.let {
-                                Image(
-                                    painter = rememberImagePainter(data = Uri.parse(it)),
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Crop,
+                                CoilImage(
+                                    src = Uri.parse(it),
                                     modifier = Modifier
                                         .align(Alignment.Center)
                                         .size(dimensionResource(id = R.dimen.size_160dp))
                                         .clip(CircleShape)
                                         .align(Alignment.Center)
+                                        .background(
+                                            color = MaterialTheme.appColors.material.onSurface,
+                                            CircleShape
+                                        ),
+                                    isCrossFadeEnabled = false,
+                                    onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                                    onError = { Placeholder(R.drawable.ic_team_placeholder) }
                                 )
                             }
                         }
 
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
-                        Divider(thickness = dimensionResource(id = R.dimen.divider))
+                        AppDivider()
                         Row(
                             Modifier
                                 .fillMaxWidth()
@@ -281,6 +350,7 @@ fun TeamSetupScreenUpdated(
                         ) {
                             AppText(
                                 text = stringResource(id = R.string.primary_team_color),
+                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                                 style = MaterialTheme.typography.h6
                             )
                             Row(
@@ -300,7 +370,7 @@ fun TeamSetupScreenUpdated(
                                         .height(dimensionResource(id = R.dimen.size_32dp))
                                         .border(
                                             width = dimensionResource(id = R.dimen.size_1dp),
-                                            color = ColorBWGrayBorder,
+                                            color = MaterialTheme.appColors.editField.borderUnFocused,
                                             shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_6dp))
 
                                         )
@@ -340,7 +410,7 @@ fun TeamSetupScreenUpdated(
                             }
 
                         }
-                        Divider(thickness = dimensionResource(id = R.dimen.divider))
+                        AppDivider()
 
                         Row(
                             Modifier
@@ -352,7 +422,8 @@ fun TeamSetupScreenUpdated(
                         ) {
                             AppText(
                                 text = stringResource(id = R.string.secondary_team_color),
-                                style = MaterialTheme.typography.h6
+                                style = MaterialTheme.typography.h6,
+                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
                             )
                             Row(
                                 horizontalArrangement = Arrangement.Center,
@@ -375,7 +446,7 @@ fun TeamSetupScreenUpdated(
                                             ColorBWGrayBorder
                                         )*/
                                             width = dimensionResource(id = R.dimen.size_1dp),
-                                            color = ColorBWGrayBorder,
+                                            color = MaterialTheme.appColors.editField.borderUnFocused,
                                             shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_6dp))
                                         )
                                         .background(
@@ -414,7 +485,7 @@ fun TeamSetupScreenUpdated(
                             }
 
                         }
-                        Divider(thickness = dimensionResource(id = R.dimen.divider))
+                        AppDivider()
 
                         Row(
                             Modifier
@@ -426,7 +497,8 @@ fun TeamSetupScreenUpdated(
                         ) {
                             AppText(
                                 text = stringResource(id = R.string.tertiary_team_color),
-                                style = MaterialTheme.typography.h6
+                                style = MaterialTheme.typography.h6,
+                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
                             )
                             Row(
                                 horizontalArrangement = Arrangement.Center,
@@ -447,7 +519,7 @@ fun TeamSetupScreenUpdated(
                                              ColorBWGrayBorder
                                          )*/
                                             width = dimensionResource(id = R.dimen.size_1dp),
-                                            color = ColorBWGrayBorder,
+                                            color = MaterialTheme.appColors.editField.borderUnFocused,
                                             shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_6dp))
 
                                         )
@@ -489,10 +561,98 @@ fun TeamSetupScreenUpdated(
                             }
 
                         }
+
                     }
+
+                    AppText(
+                        text = stringResource(id = R.string.home_court),
+                        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        style = MaterialTheme.typography.h6,
+                        modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
+                    )
+
+                    UserFlowBackground() {
+
+                        Column(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(dimensionResource(id = R.dimen.size_16dp))
+                        ) {
+
+//                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+                            AppText(
+                                text = stringResource(id = R.string.name_of_venue),
+                                style = MaterialTheme.typography.h6,
+                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                            )
+                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+                            AppOutlineTextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                value = state.venueName,
+                                onValueChange = {
+                                    if (it.length <= maxTeamChar)
+                                        vm.onEvent(TeamSetupUIEventUpdated.OnVenueChange(it))
+                                },
+                                placeholder = {
+                                    AppText(
+                                        text = stringResource(id = R.string.enter_venue_name),
+                                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
+                                    )
+                                },
+                                colors = TextFieldDefaults.outlinedTextFieldColors(
+                                    unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
+                                    cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+
+                                ),
+                                isError = !validTeamName(state.venueName) && state.venueName.isNotEmpty(),
+                                errorMessage = stringResource(id = R.string.valid_venue_name)
+                            )
+                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+                            AppText(
+                                text = stringResource(id = R.string.address),
+                                style = MaterialTheme.typography.h6,
+                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                            )
+                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+
+                            AppOutlineTextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                value = state.address,
+                                onValueChange = {
+//                                if (it.length <= maxTeamChar)
+                                    vm.onEvent(TeamSetupUIEventUpdated.OnAddressChange(it))
+                                },
+                                placeholder = {
+                                    AppText(
+                                        text = stringResource(id = R.string.enter_address),
+                                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
+                                    )
+                                },
+                                colors = TextFieldDefaults.outlinedTextFieldColors(
+                                    unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
+                                    cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+
+                                ),
+                                isError = (state.address.isNotEmpty() && state.address.length <= 4),
+                                errorMessage = stringResource(id = R.string.address_error),
+                            )
+                        }
+                    }
+
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
                     val enable =
-                        validTeamName(state.teamName) && state.teamImageUri != null && state.teamColorPrimary.isNotEmpty() && state.teamColorSec.isNotEmpty() && state.teamColorThird.isNotEmpty() && state.teamName.isNotEmpty()
+                        validTeamName(state.teamName)
+                                && state.teamImageUri != null
+                                && state.teamColorPrimary.isNotEmpty()
+                                && state.teamColorSec.isNotEmpty()
+                                && state.teamColorThird.isNotEmpty()
+                                && state.teamName.isNotEmpty()
+                                && state.teamNameOnJerseys.isNotEmpty()
+                                && state.teamNameOnTournaments.isNotEmpty()
+                                && validTeamName(state.venueName)
+                                && state.address.isNotEmpty()
+                                && state.address.length >= 4
                     BottomButtons(
                         firstText = stringResource(id = R.string.back),
                         secondText = stringResource(id = R.string.next),
@@ -510,7 +670,7 @@ fun TeamSetupScreenUpdated(
                         BackHandler {}
                     }
                 }
-            }
+            } //column
         }
     }
 }

@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class TeamLeaderBoard(
     @SerializedName("status")
-    val status: Boolean = false,
+    var status: Boolean = false,
     @SerializedName("name")
     val name: String = "",
     @SerializedName("key")

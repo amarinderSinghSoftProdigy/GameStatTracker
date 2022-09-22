@@ -39,7 +39,7 @@ fun String.isValidFullName(): Boolean {
 }
 
 fun validName(name: String): Boolean {
-    if (name.length > 30)
+    if (name.length > 45)
         return false
     val regex = "^[A-Za-z ]+$"
     return name.matches(regex.toRegex())

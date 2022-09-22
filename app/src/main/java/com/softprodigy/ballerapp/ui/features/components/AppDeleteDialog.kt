@@ -42,21 +42,26 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import coil.compose.AsyncImage
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.argbToHexString
+import com.softprodigy.ballerapp.common.isValidPassword
+import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.ui.features.profile.tabs.DetailItem
@@ -129,10 +134,11 @@ fun SelectTeamDialog(
     selected: Team?,
     showLoading: Boolean,
     teams: ArrayList<Team>,
-    onCreateTeamClick: () -> Unit
+    onCreateTeamClick: () -> Unit,
+    showCreateTeamButton: Boolean = false,
 ) {
     val teamId = remember {
-        mutableStateOf("")
+        mutableStateOf(UserStorage.teamId)
     }
     BallerAppMainTheme {
         AlertDialog(
@@ -200,14 +206,17 @@ fun SelectTeamDialog(
                         }
                     }
                     //  Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-                    ButtonWithLeadingIcon(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(id = R.string.create_new_team),
-                        onClick = { onCreateTeamClick.invoke() },
-                        painter = painterResource(id = R.drawable.ic_add_button),
-                        isTransParent = true
 
-                    )
+                    if (showCreateTeamButton) {
+                        ButtonWithLeadingIcon(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.create_new_team),
+                            onClick = { onCreateTeamClick.invoke() },
+                            painter = painterResource(id = R.drawable.ic_add_button),
+                            isTransParent = true
+
+                        )
+                    }
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -434,18 +443,19 @@ fun TeamListItem(team: Team, selected: Boolean, onClick: (Team) -> Unit) {
                     )
                 ), verticalAlignment = Alignment.CenterVertically
         ) {
-            AsyncImage(
-                model = BuildConfig.IMAGE_SERVER + team.logo,
-                contentDescription = "",
+            CoilImage(
+                src = BuildConfig.IMAGE_SERVER + team.logo,
                 modifier = Modifier
                     .size(dimensionResource(id = R.dimen.size_32dp))
                     .clip(CircleShape)
-                    .background(color = MaterialTheme.appColors.material.secondaryVariant)
                     .border(
                         dimensionResource(id = R.dimen.size_2dp),
                         MaterialTheme.colors.surface,
-                        CircleShape
-                    )
+                        CircleShape,
+                    ),
+                isCrossFadeEnabled = false,
+                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                onError = { Placeholder(R.drawable.ic_team_placeholder) }
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
             Text(
@@ -649,13 +659,17 @@ fun PlayerListDialogItem(
                 .padding(horizontal = dimensionResource(id = R.dimen.size_10dp)),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AsyncImage(
-                model = BuildConfig.IMAGE_SERVER + player.profileImage,
-                contentDescription = "",
+            CoilImage(
+                src = BuildConfig.IMAGE_SERVER + player.profileImage,
                 modifier = Modifier
                     .size(dimensionResource(id = R.dimen.size_32dp))
-                    .clip(CircleShape),
-                contentScale = ContentScale.FillBounds
+                    .clip(CircleShape).background(
+                        color = MaterialTheme.appColors.material.onSurface,
+                        CircleShape
+                    ),
+                isCrossFadeEnabled = false,
+                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                onError = { Placeholder(R.drawable.ic_team_placeholder) }
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
             Text(
@@ -778,7 +792,7 @@ fun SelectInvitationRoleDialog(
                         }
                     }
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                    Divider()
+                    AppDivider()
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -812,7 +826,6 @@ fun SelectInvitationRoleDialog(
                         )
                     }
                 }
-
 
             },
         )
@@ -875,9 +888,306 @@ fun SelectInvitationRoleItem(
                     .padding(dimensionResource(id = R.dimen.size_8dp))
             )
 
-
         }
     }
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
 }
 
+
+@Composable
+fun  SwitchTeamDialogg(
+    teams: ArrayList<Team>,
+    title: @Composable (() -> Unit)? = null,
+    onDismiss: () -> Unit,
+    onConfirm: (Team) -> Unit,
+) {
+    BallerAppMainTheme {
+        AlertDialog(
+            onDismissRequest = onDismiss,
+            backgroundColor = Color.White,
+            title = title,
+            text = {
+                Text(
+                    text = stringResource(id = (R.string.switch_teams)),
+                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp
+                )
+            },
+
+                    buttons = {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            horizontal = dimensionResource(id = R.dimen.size_10dp),
+                            vertical = dimensionResource(id = R.dimen.size_10dp)
+                        )
+                ) {
+                    AppButton(
+                        text = stringResource(R.string.dialog_button_cancel),
+                        onClick = onDismiss,
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(end = dimensionResource(id = R.dimen.size_10dp)),
+                        border = ButtonDefaults.outlinedBorder,
+                        singleButton = true
+                    )
+                    AppButton(
+                        text = stringResource(R.string.dialog_button_confirm),
+                        onClick = { },
+                        modifier = Modifier
+                            .weight(1f),
+                        border = ButtonDefaults.outlinedBorder,
+                        enabled = true,
+                        singleButton = true,
+                        themed = true,
+                        isForceEnableNeeded = true
+                    )
+                }
+            },
+            properties = DialogProperties(dismissOnClickOutside = false)
+        )
+    }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun SwitchTeamDialog(
+    onDismiss: () -> Unit,
+    onConfirmClick: (teams: ArrayList<Team>) -> Unit,
+    title: String,
+    teams: ArrayList<Team>,
+    ) {
+    var selectedTeams= arrayListOf<Team>()
+    BallerAppMainTheme {
+        AlertDialog(
+            modifier = Modifier
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+            onDismissRequest = onDismiss,
+            buttons = {
+                Column(
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(
+                            all = dimensionResource(
+                                id = R.dimen.size_16dp
+                            )
+                        ),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = title,
+                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                            fontWeight = FontWeight.W600,
+                        )
+
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_close_color_picker),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(dimensionResource(id = R.dimen.size_12dp))
+                                .align(Alignment.TopEnd)
+                                .clickable {
+                                    onDismiss()
+                                }
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
+
+                    LazyColumn(
+//                        modifier = Modifier
+//                            .height(dimensionResource(id = R.dimen.size_250dp)),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        items(teams) { team ->
+                            Row(modifier = Modifier.weight(1f),
+                            verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.user_demo),
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .size(dimensionResource(id = R.dimen.size_20dp))
+                                        .clip(CircleShape)
+                                )
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
+                                Text(
+                                    modifier = Modifier.weight(1f),
+                                    text = team.name,
+                                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                                    fontWeight = FontWeight.W500,
+                                )
+                                Checkbox(
+                                    checked = selectedTeams.contains(team),
+                                    onCheckedChange = {
+                                        if (it) {
+                                            selectedTeams.add(team)
+                                        } else {
+                                            selectedTeams.remove(team)
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                AppDivider()
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(color = Color.White)
+                            .padding(
+                                all = dimensionResource(id = R.dimen.size_16dp)
+                            ),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        DialogButton(
+                            text = stringResource(R.string.dialog_button_cancel),
+                            onClick = onDismiss,
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = dimensionResource(id = R.dimen.size_10dp)),
+                            border = ButtonDefaults.outlinedBorder,
+                            onlyBorder = true,
+                            enabled = false
+                        )
+                        DialogButton(
+                            text = stringResource(R.string.dialog_button_confirm),
+                            onClick = {
+                                onConfirmClick.invoke(selectedTeams)
+                                onDismiss.invoke()
+                            },
+                            modifier = Modifier
+                                .weight(1f),
+                            border = ButtonDefaults.outlinedBorder,
+                            onlyBorder = false,
+                        )
+                }
+            },
+        )
+    }
+}
+
+
+
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun DeclineEventDialog(
+    onDismiss: () -> Unit,
+    onConfirmClick: () -> Unit,
+    title: String,
+    reason: String,
+    onReasonChange: (String) -> Unit,
+) {
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+    BallerAppMainTheme {
+        AlertDialog(
+            modifier = Modifier
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+            onDismissRequest = onDismiss,
+            buttons = {
+                Column(
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(
+                            all = dimensionResource(
+                                id = R.dimen.size_16dp
+                            )
+                        ),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = title,
+                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                            fontWeight = FontWeight.W600,
+                        )
+
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_close_color_picker),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(dimensionResource(id = R.dimen.size_12dp))
+                                .align(Alignment.TopEnd)
+                                .clickable {
+                                    onDismiss()
+                                }
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
+                    AppOutlineTextField(
+                        value = reason,
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        onValueChange = {
+                            onReasonChange(it)
+                        },
+                        placeholder = {
+                            Text(
+                                text = stringResource(id = R.string.reason_not_going),
+                                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                textAlign = TextAlign.Center
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                            keyboardType = KeyboardType.Text
+                        ),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
+                            unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
+                            backgroundColor = MaterialTheme.appColors.material.background,
+                            textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            placeholderColor = MaterialTheme.appColors.textField.label,
+                            cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+
+                        ),
+                        keyboardActions = KeyboardActions(onDone = {
+                            keyboardController?.hide()
+                        }),
+                    )
+
+                }
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                AppDivider()
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = Color.White)
+                        .padding(
+                            all = dimensionResource(id = R.dimen.size_16dp)
+                        ),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    DialogButton(
+                        text = stringResource(R.string.dialog_button_cancel),
+                        onClick = onDismiss,
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(end = dimensionResource(id = R.dimen.size_10dp)),
+                        border = ButtonDefaults.outlinedBorder,
+                        onlyBorder = true,
+                        enabled = false
+                    )
+                    DialogButton(
+                        text = stringResource(R.string.dialog_button_confirm),
+                        onClick = {
+                            onConfirmClick.invoke()
+                            onDismiss.invoke()
+                        },
+                        modifier = Modifier
+                            .weight(1f),
+                        border = ButtonDefaults.outlinedBorder,
+                        onlyBorder = false,
+                    )
+                }
+            },
+        )
+    }
+}

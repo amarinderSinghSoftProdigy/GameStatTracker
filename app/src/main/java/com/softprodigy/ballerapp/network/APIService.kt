@@ -12,7 +12,9 @@ import com.softprodigy.ballerapp.data.request.VerifyPhoneRequest
 import com.softprodigy.ballerapp.data.response.CreateTeamResponse
 import com.softprodigy.ballerapp.data.response.ImageUpload
 import com.softprodigy.ballerapp.data.response.StandingData
+import com.softprodigy.ballerapp.data.response.User
 import com.softprodigy.ballerapp.data.response.UserInfo
+import com.softprodigy.ballerapp.data.response.homepage.HomePageCoachModel
 import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
@@ -89,7 +91,6 @@ open interface APIService {
         @Query("limit") limit: Int
     ): BaseResponse<StandingData>
 
-
     @GET("${ApiConstants.COACH_PLAYER}/{id}")
     suspend fun getCoachPlayersByID(@Path("id") id: String): BaseResponse<RoasterResponse>
 
@@ -110,6 +111,12 @@ open interface APIService {
     suspend fun rejectTeamInvitation(@Body request: RequestBody): BaseResponse<Any>
 
     @PUT(ApiConstants.UPDATE_TEAM)
-    suspend fun updateTeamDetails(@Body updateTeamRequest: UpdateTeamDetailRequest): BaseResponse<Any>
+    suspend fun updateTeamDetails(@Body updateTeamRequest: UpdateTeamDetailRequest): BaseResponse<Team>
+
+    @GET(ApiConstants.GET_USER_DETAILS)
+    suspend fun getUserDetails():BaseResponse<User>
+
+    @GET(ApiConstants.GET_HOME_PAGE_DETAILS)
+    suspend fun getHomePageDetails():BaseResponse<HomePageCoachModel>
 
 }

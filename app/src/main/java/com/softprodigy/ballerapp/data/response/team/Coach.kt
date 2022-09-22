@@ -35,8 +35,8 @@ data class Coach(
     val lastName: String? = "",
     @SerializedName("loginType")
     val loginType: String? = "",
-    @SerializedName("name")
-    val name: String = "",
+//    @SerializedName("name")
+//    val name: String = "",
     @SerializedName("password")
     val password: String? = "",
     @SerializedName("phone")

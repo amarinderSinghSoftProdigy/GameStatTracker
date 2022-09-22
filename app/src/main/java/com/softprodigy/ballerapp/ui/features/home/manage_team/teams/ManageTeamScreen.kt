@@ -4,7 +4,6 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -20,12 +19,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -43,23 +39,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
-import coil.compose.rememberImagePainter
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.argbToHexString
 import com.softprodigy.ballerapp.common.validTeamName
+import com.softprodigy.ballerapp.ui.features.components.AppDivider
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.CoilImage
+import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
+import com.softprodigy.ballerapp.ui.features.components.PlaceholderRect
 import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
@@ -72,6 +69,7 @@ import com.softprodigy.ballerapp.ui.theme.ColorMainPrimary
 import com.softprodigy.ballerapp.ui.theme.ColorPrimaryTransparent
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -158,7 +156,7 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                         )
                     }
 
-                    Divider(thickness = dimensionResource(id = R.dimen.divider))
+                    AppDivider()
 
                     Row(
                         Modifier
@@ -170,17 +168,15 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                             text = stringResource(id = R.string.team_logo),
                             style = MaterialTheme.typography.h6
                         )
-                        if (state.teamImageUri != null) {
+                        if (state.logo != null) {
                             Text(
                                 text = stringResource(id = R.string.change),
                                 color = ColorBWGrayLight,
                                 modifier = Modifier.clickable {
-                                    if (state.teamImageUri != null) {
-                                        scope.launch {
-                                            modalBottomSheetState.hide()
-                                        }
-                                        launcher.launch("image/*")
+                                    scope.launch {
+                                        modalBottomSheetState.hide()
                                     }
+                                    launcher.launch("image/*")
                                 },
                                 fontSize = dimensionResource(id = R.dimen.txt_size_13).value.sp
                             )
@@ -199,7 +195,7 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                                 shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                             )
                             .clickable {
-                                if (state.teamImageUri == null) {
+                                if (state.logo == null) {
                                     scope.launch {
                                         modalBottomSheetState.hide()
                                     }
@@ -208,49 +204,42 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                             }
 
                     ) {
-                        Row(modifier = Modifier.align(Alignment.Center)) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_upload),
-                                contentDescription = null,
-                                tint = Color.Unspecified
-                            )
-                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
-                            AppText(
-                                text = stringResource(id = R.string.upload_files),
-                                style = MaterialTheme.typography.h6,
-                                color = ColorMainPrimary
-                            )
+                        if (state.logo == null) {
+                            Row(modifier = Modifier.align(Alignment.Center)) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_upload),
+                                    contentDescription = null,
+                                    tint = Color.Unspecified
+                                )
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+                                AppText(
+                                    text = stringResource(id = R.string.upload_files),
+                                    style = MaterialTheme.typography.h6,
+                                    color = ColorMainPrimary
+                                )
+                            }
                         }
 
 
-                        if (!state.teamImageUri.isNullOrEmpty() && state.teamImageUri.contains("http")) {
-                            AsyncImage(
-                                model = state.teamImageUri,
-                                contentDescription = "",
-                                modifier =
-                                Modifier
-                                    .size(dimensionResource(id = R.dimen.size_160dp))
-                                    .clip(CircleShape)
-                                    .align(Alignment.Center),
-                                contentScale = ContentScale.Crop,
-                            )
-                        } else {
-                            Image(
-                                painter = if (state.teamImageUri == null) painterResource(id = R.drawable.ball) else rememberImagePainter(
-                                    data = Uri.parse(BuildConfig.IMAGE_SERVER + state.teamImageUri)
-                                ),
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .align(Alignment.Center)
-                                    .size(dimensionResource(id = R.dimen.size_160dp))
-                                    .clip(CircleShape)
-                                    .align(Alignment.Center)
-                            )
-                        }
+                        CoilImage(
+                            src = state.localLogo ?: (BuildConfig.IMAGE_SERVER + state.logo),
+                            modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                                .background(
+                                    color = Color.Transparent,
+                                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+                                )
+                                .align(Alignment.Center),
+                            isCrossFadeEnabled = false,
+                            onLoading = { PlaceholderRect(R.drawable.ic_user_profile_icon) },
+                            onError = { PlaceholderRect(R.drawable.ic_user_profile_icon) }
+                        )
+
                     }
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-                    Divider(thickness = dimensionResource(id = R.dimen.divider))
+                    AppDivider()
                     Row(
                         Modifier
                             .fillMaxWidth()
@@ -302,7 +291,12 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                                         ),
                                     textAlign = TextAlign.Center,
                                     text = if (state.teamColor.isNotEmpty()) {
-                                        "#" + state.teamColor
+                                        if (state.teamColor.substring(0, 1) == "#") {
+                                            state.teamColor
+                                        } else {
+                                            "#" +
+                                                    state.teamColor
+                                        }
                                     } else {
                                         MaterialTheme.appColors.material.primaryVariant.toArgb()
                                             .argbToHexString()
@@ -316,15 +310,15 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                                 modifier = Modifier.size(dimensionResource(id = R.dimen.size_32dp)),
                                 backgroundColor = if (state.teamColor.isEmpty()) {
                                     MaterialTheme.appColors.material.primaryVariant
+                                } else if (state.teamColor.length < 6) {
+                                    MaterialTheme.appColors.material.primaryVariant
                                 } else {
-                                    if (state.teamColor.substring(0, 1) == "#") {
+                                    Timber.e("color " + state.teamColor)
+                                    if (state.teamColor.startsWith("#")) {
                                         Color(android.graphics.Color.parseColor(state.teamColor))
-
                                     } else {
                                         Color(android.graphics.Color.parseColor("#" + state.teamColor))
                                     }
-
-
                                 },
                                 shape = RoundedCornerShape(
                                     dimensionResource(id = R.dimen.size_4dp)
@@ -336,10 +330,7 @@ fun ManageTeamScreen(vm: TeamViewModel) {
             }
 
             if (state.isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center),
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
-                )
+                CommonProgressBar()
             }
         }
     }

@@ -1,22 +1,19 @@
 package com.softprodigy.ballerapp.ui.features.home.teams.leaderboard
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
+import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import com.softprodigy.ballerapp.ui.utils.dragDrop.ItemPosition
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import javax.inject.Inject
 
 @HiltViewModel
@@ -107,7 +104,7 @@ class LeaderBoardViewModel @Inject constructor(
             )
         dataStoreManager.getId.collect {
 //            val leaderReponse = teamRepo.getLeaderBoard(it)
-            val leaderReponse = teamRepo.getLeaderBoard("6304b10244cae324b011e1b5")
+            val leaderReponse = teamRepo.getLeaderBoard(UserStorage.teamId)
 
             when (leaderReponse) {
                 is ResultWrapper.GenericError -> {
@@ -139,22 +136,6 @@ class LeaderBoardViewModel @Inject constructor(
                 is ResultWrapper.Success -> {
                     leaderReponse.value.let { response ->
                         if (response.status) {
-                            var gson=Gson()
-//                            var leaderBoardItems : HashMap<String, List<Player>> = HashMap<String, List<Player>>()
-//                            response.data.teamLeaderBoard.forEach {
-//                                var temTeamObject=it
-//                               var filterPlayers=response.data.players.filter {
-//                                    val player = JSONObject(it.toString())
-//                                    try {
-//                                        player[temTeamObject.key] == "0"
-//                                    }
-//                                    catch (e:Exception){
-//                                        false
-//                                    }
-//                                }
-//                                leaderBoardItems.put(temTeamObject.key,filterPlayers)
-//                            }
-//                            Log.e("==========>2",leaderBoardItems.toString())
                             _leaderUiState.value =
                                 _leaderUiState.value.copy(
                                     players = response.data.players,

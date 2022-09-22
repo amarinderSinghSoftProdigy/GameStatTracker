@@ -7,7 +7,6 @@ import android.widget.DatePicker
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,7 +27,6 @@ import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Divider
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
@@ -56,7 +54,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -72,17 +69,19 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
-import coil.compose.rememberImagePainter
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.ComposeFileProvider
 import com.softprodigy.ballerapp.common.isValidEmail
 import com.softprodigy.ballerapp.common.validName
 import com.softprodigy.ballerapp.common.validPhoneNumber
+import com.softprodigy.ballerapp.ui.features.components.AppDivider
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.BottomButtons
 import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
+import com.softprodigy.ballerapp.ui.features.components.CoilImage
 import com.softprodigy.ballerapp.ui.features.components.EditFields
 import com.softprodigy.ballerapp.ui.features.components.ImagePickerBottomSheet
+import com.softprodigy.ballerapp.ui.features.components.Placeholder
 import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
 import com.softprodigy.ballerapp.ui.features.confirm_phone.ConfirmPhoneScreen
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
@@ -108,7 +107,6 @@ fun ProfileSetUpScreen(
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
-
     var currentBottomSheet: BottomSheetType? by remember {
         mutableStateOf(null)
     }
@@ -116,9 +114,11 @@ fun ProfileSetUpScreen(
     val maxChar = 30
     val maxEmailChar = 45
     val maxPhoneNumber = 10
+
     var imageUri by remember {
         mutableStateOf<Uri?>(null)
     }
+
     val imagePicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri ->
@@ -136,16 +136,17 @@ fun ProfileSetUpScreen(
                 signUpViewModel.onEvent(SignUpUIEvent.OnImageSelected(imageUri.toString()))
         }
     )
+
     val scope = rememberCoroutineScope()
     val state = signUpViewModel.signUpUiState.value
     var expanded by remember { mutableStateOf(false) }
+
     val icon = if (expanded)
         Icons.Filled.KeyboardArrowUp
     else
         Icons.Filled.KeyboardArrowDown
 
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
-
 
     val context = LocalContext.current
 
@@ -165,7 +166,6 @@ fun ProfileSetUpScreen(
     mCalendar.time = Date()
 
     val focus = LocalFocusManager.current
-
 
     val mDatePickerDialog = DatePickerDialog(
         context,
@@ -198,7 +198,7 @@ fun ProfileSetUpScreen(
                     signUpViewModel.onEvent(SignUpUIEvent.OnImageUploadSuccess)
                 }
 
-                is SignUpChannel.OnSignUpSuccess -> {
+                is SignUpChannel.OnProfileUpdateSuccess -> {
                     Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
                         .show()
                     onNext()
@@ -308,33 +308,37 @@ fun ProfileSetUpScreen(
 
                                 contentAlignment = Alignment.Center
 
-                            ) {
-                                Row(modifier = Modifier.align(Alignment.Center)) {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.ic_camera),
-                                        contentDescription = null,
-                                        tint = Color.Unspecified,
-                                        modifier = Modifier
-                                            .width(dimensionResource(id = R.dimen.size_35dp))
-                                            .height(dimensionResource(id = R.dimen.size_35dp))
-                                    )
-                                }
-                                state.signUpData.profileImageUri?.let {
-                                    Image(
-                                        painter = rememberImagePainter(data = Uri.parse(it)),
-                                        contentDescription = null,
-                                        contentScale = ContentScale.Crop,
-                                        modifier = Modifier
-                                            .size(dimensionResource(id = R.dimen.size_300dp))
-                                            .clip(CircleShape)
-                                            .align(Alignment.Center)
-                                    )
-                                }
+                        ) {
+                            Row(modifier = Modifier.align(Alignment.Center)) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_camera),
+                                    contentDescription = null,
+                                    tint = Color.Unspecified,
+                                    modifier = Modifier
+                                        .width(dimensionResource(id = R.dimen.size_35dp))
+                                        .height(dimensionResource(id = R.dimen.size_35dp))
+                                )
                             }
+                            state.signUpData.profileImageUri?.let {
+                                CoilImage(
+                                    src = Uri.parse(it),
+                                    modifier = Modifier
+                                        .size(dimensionResource(id = R.dimen.size_300dp))
+                                        .background(
+                                            color = MaterialTheme.appColors.material.onSurface,
+                                            CircleShape
+                                        )
+                                        .align(Alignment.Center),
+                                    isCrossFadeEnabled = false,
+                                    onLoading = { Placeholder(R.drawable.ic_profile_placeholder) },
+                                    onError = { Placeholder(R.drawable.ic_profile_placeholder) }
+                                )
+                            }
+                        }
 
                             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_48dp)))
 
-                            Divider(thickness = dimensionResource(id = R.dimen.divider))
+                        AppDivider()
 
                         EditFields(
                             state.signUpData.firstName,
@@ -355,7 +359,7 @@ fun ProfileSetUpScreen(
                             )
                         )
 
-                            Divider(thickness = dimensionResource(id = R.dimen.divider))
+                        AppDivider()
 
                         EditFields(
                             state.signUpData.lastName,
@@ -371,8 +375,8 @@ fun ProfileSetUpScreen(
                                 capitalization = KeyboardCapitalization.Sentences
                             )
 
-                            )
-                            Divider(thickness = dimensionResource(id = R.dimen.divider))
+                        )
+                        AppDivider()
 
                         EditFields(
                             data = state.signUpData.email ?: "",
@@ -392,126 +396,130 @@ fun ProfileSetUpScreen(
                             enabled = true
                         )
                         state.signUpData.token?.let { _ ->
-                            Divider(thickness = dimensionResource(id = R.dimen.divider))
+                            AppDivider()
 
+                            EditFields(
+                                state.signUpData.address,
+                                onValueChange = {
+                                    signUpViewModel.onEvent(SignUpUIEvent.OnAddressChanged(it))
+                                },
+                                stringResource(id = R.string.address),
+                                KeyboardOptions(
+                                    imeAction = ImeAction.Next,
+                                    keyboardType = KeyboardType.Text,
+                                    capitalization = KeyboardCapitalization.Sentences
+                                ),
+                                isError = (state.signUpData.address.isNotEmpty() && state.signUpData.address.length <= 4),
+                                errorMessage = stringResource(id = R.string.address_error),
+                            )
+                            AppDivider()
+
+                            Column {
                                 EditFields(
-                                    state.signUpData.address,
+                                    state.signUpData.gender,
                                     onValueChange = {
-                                        signUpViewModel.onEvent(SignUpUIEvent.OnAddressChanged(it))
+                                        signUpViewModel.onEvent(SignUpUIEvent.OnGenderChange(it))
                                     },
-                                    stringResource(id = R.string.address),
+                                    stringResource(id = R.string.gender),
                                     KeyboardOptions(
                                         imeAction = ImeAction.Next,
-                                        keyboardType = KeyboardType.Text,
-                                        capitalization = KeyboardCapitalization.Sentences
+                                        keyboardType = KeyboardType.Text
                                     ),
-                                    isError = (state.signUpData.address.isNotEmpty() && state.signUpData.address.length <= 4),
-                                    errorMessage = stringResource(id = R.string.address_error),
+                                    modifier = Modifier.onGloballyPositioned {
+                                        textFieldSize = it.size.toSize()
+                                    },
+                                    trailingIcon = {
+                                        Icon(
+                                            icon,
+                                            contentDescription = null,
+                                            modifier = Modifier.clickable { expanded = !expanded })
+                                    },
+                                    enabled = true
                                 )
-                                Divider(thickness = dimensionResource(id = R.dimen.divider))
-
-                                Column {
-                                    EditFields(
-                                        state.signUpData.gender,
-                                        onValueChange = {
-                                            signUpViewModel.onEvent(SignUpUIEvent.OnGenderChange(it))
-                                        },
-                                        stringResource(id = R.string.gender),
-                                        KeyboardOptions(
-                                            imeAction = ImeAction.Next,
-                                            keyboardType = KeyboardType.Text
-                                        ),
-                                        modifier = Modifier.onGloballyPositioned {
-                                            textFieldSize = it.size.toSize()
-                                        },
-                                        trailingIcon = {
-                                            Icon(
-                                                icon,
-                                                contentDescription = null,
-                                                modifier = Modifier.clickable {
-                                                    expanded = !expanded
-                                                })
-                                        },
-                                        enabled = true
-                                    )
-                                    DropdownMenu(
-                                        expanded = expanded,
-                                        onDismissRequest = { expanded = false },
-                                        modifier = Modifier
-                                            .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
-                                            .background(MaterialTheme.colors.background)
-                                    ) {
-                                        genderList.forEach { label ->
-                                            DropdownMenuItem(onClick = {
-                                                signUpViewModel.onEvent(
-                                                    SignUpUIEvent.OnGenderChange(
-                                                        label
-                                                    )
+                                DropdownMenu(
+                                    expanded = expanded,
+                                    onDismissRequest = { expanded = false },
+                                    modifier = Modifier
+                                        .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+                                        .background(MaterialTheme.colors.background)
+                                ) {
+                                    genderList.forEach { label ->
+                                        DropdownMenuItem(onClick = {
+                                            signUpViewModel.onEvent(
+                                                SignUpUIEvent.OnGenderChange(
+                                                    label
                                                 )
-                                                expanded = false
-                                            }) {
-                                                Text(text = label, textAlign = TextAlign.Center)
-                                            }
+                                            )
+                                            expanded = false
+                                        }) {
+                                            Text(text = label, textAlign = TextAlign.Center)
                                         }
                                     }
                                 }
-                                Divider(thickness = dimensionResource(id = R.dimen.divider))
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(
-                                            start = dimensionResource(id = R.dimen.size_16dp),
-                                            end = dimensionResource(id = R.dimen.size_16dp)
-                                        )
-                                        .height(dimensionResource(id = R.dimen.size_56dp))
-                                ) {
-                                    AppText(
-                                        text = stringResource(id = R.string.birthdate),
-                                        style = MaterialTheme.typography.h6,
-                                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                                        modifier = Modifier
-                                            .align(Alignment.CenterStart)
-                                            .padding(start = dimensionResource(id = R.dimen.size_3dp)),
-                                        textAlign = TextAlign.Start
+                            }
+                            AppDivider()
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(
+                                        start = dimensionResource(id = R.dimen.size_16dp),
+                                        end = dimensionResource(id = R.dimen.size_16dp)
                                     )
-                                    Row(
-                                        modifier = Modifier
-                                            .align(Alignment.CenterEnd)
-                                            .clickable { mDatePickerDialog.show() },
-                                        verticalAlignment = Alignment.CenterVertically,
-                                    ) {
-                                        Text(
-                                            text = state.signUpData.birthdate,
-                                        )
-                                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_5dp)))
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.ic_baseline_calendar_month_24),
-                                            contentDescription = null,
-                                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_24dp))
-                                        )
-                                    }
+                                    .height(dimensionResource(id = R.dimen.size_56dp))
+                            ) {
+                                AppText(
+                                    text = stringResource(id = R.string.birthdate),
+                                    style = MaterialTheme.typography.h6,
+                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                    modifier = Modifier
+                                        .align(Alignment.CenterStart)
+                                        .padding(start = dimensionResource(id = R.dimen.size_3dp)),
+                                    textAlign = TextAlign.Start
+                                )
+                                Row(
+                                    modifier = Modifier
+                                        .align(Alignment.CenterEnd)
+                                        .clickable { mDatePickerDialog.show() },
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Text(
+                                        text = state.signUpData.birthdate,
+                                    )
+                                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_5dp)))
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_baseline_calendar_month_24),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(dimensionResource(id = R.dimen.size_24dp))
+                                    )
                                 }
                             }
+                        }
 
-                            Divider(thickness = dimensionResource(id = R.dimen.divider))
-                            Column {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(dimensionResource(id = R.dimen.size_56dp)),
-                                    /* verticalAlignment = Alignment.CenterVertically,
-                                     horizontalArrangement = Arrangement.SpaceBetween*/
-                                ) {
+                            AppDivider()
+                        Column {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(dimensionResource(id = R.dimen.size_56dp)),
+                                /* verticalAlignment = Alignment.CenterVertically,
+                                 horizontalArrangement = Arrangement.SpaceBetween*/
+                            ) {
 
                                 val customTextSelectionColors = TextSelectionColors(
                                     handleColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                                     backgroundColor = Color.Transparent
                                 )
                                 CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
-                                    state.phoneCode = getDefaultPhoneCode
+                                    /* state.phoneCode = getDefaultPhoneCode*/
+                                    signUpViewModel.onEvent(
+                                        SignUpUIEvent.OnCountryCode(
+                                            getDefaultPhoneCode
+                                        )
+                                    )
                                     TogiCountryCodePicker(
                                         pickedCountry = {
-                                            state.phoneCode = it.countryPhoneCode
+                                            /*  state.phoneCode = it.countryPhoneCode*/
+                                            signUpViewModel.onEvent(SignUpUIEvent.OnCountryCode(it.countryCode))
                                             defaultLang = it.countryCode
                                         },
                                         defaultCountry = getLibCountries().single { it.countryCode == defaultLang },
@@ -667,5 +675,6 @@ fun SheetLayout(
                 viewModel = signUpViewModel,
                 onDismiss = onDismiss,
             )
+
     }
 }

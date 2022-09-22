@@ -118,7 +118,7 @@ fun AppTabLikeViewPager(
             Text(
                 stringResourceByName(name = title),
                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                color = if (selected) MaterialTheme.appColors.material.primaryVariant else MaterialTheme.appColors.textField.label
+                color = if (selected) MaterialTheme.appColors.buttonColor.bckgroundEnabled else MaterialTheme.appColors.textField.label
             )
         }
 

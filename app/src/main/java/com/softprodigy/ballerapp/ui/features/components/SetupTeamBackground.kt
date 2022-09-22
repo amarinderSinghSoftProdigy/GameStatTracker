@@ -1,6 +1,5 @@
 package com.softprodigy.ballerapp.ui.features.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -30,7 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -112,35 +110,29 @@ fun CoachFlowBackground(
                     modifier = Modifier.align(Alignment.TopEnd)
                 ) {
                     Box(
-                        modifier = Modifier
+                        modifier = Modifier.clickable{
+                            showOptions.value = !showOptions.value
+                        },
                             .size(dimensionResource(id = R.dimen.size_200dp))
                     ) {
-                        Image(
-                            painter = if ((teamLogo
-                                    ?: "").isNotEmpty()
-                            ) rememberImagePainter(data = teamLogo) else painterResource(
-                                id = R.drawable.ic_ball
-                            ),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
+                        CoilImage(
+                            src = it,
                             modifier = Modifier
-                                .align(Alignment.CenterEnd)
-                                .padding(
-                                    end = dimensionResource(id = R.dimen.size_16dp),
-                                    top = dimensionResource(
-                                        id = R.dimen.size_18dp
-                                    )
-                                )
                                 .size(dimensionResource(id = R.dimen.size_65dp))
                                 .clip(CircleShape)
+                                .background(
+                                    color = MaterialTheme.appColors.material.onSurface,
+                                    CircleShape
+                                )
                                 .border(
                                     dimensionResource(id = R.dimen.size_3dp),
                                     MaterialTheme.colors.surface,
                                     CircleShape
                                 )
-                                .clickable {
-                                    showOptions.value = !showOptions.value
-                                }
+                                .align(Alignment.Center),
+                            isCrossFadeEnabled = false,
+                            onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
+                            onError = { Placeholder(R.drawable.ic_user_profile_icon) }
                         )
                     }
                     if (showOptions.value) {
@@ -229,6 +221,7 @@ fun UserFlowBackground(
 
 @Composable
 fun BottomButtons(
+    modifier: Modifier = Modifier,
     firstText: String = stringResource(id = R.string.back),
     secondText: String = stringResource(id = R.string.next),
     onBackClick: () -> Unit,
@@ -238,8 +231,7 @@ fun BottomButtons(
     themed: Boolean = false,
 ) {
     Row(
-        Modifier
-            .fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
             .padding(
                 start = dimensionResource(id = R.dimen.size_16dp),
                 end = dimensionResource(id = R.dimen.size_16dp)
