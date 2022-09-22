@@ -66,6 +66,7 @@ fun NewEventScreen() {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
             PracticeScreen()
         }
+
         ButtonWithLeadingIcon(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
