@@ -29,6 +29,7 @@ fun CoilImage(
     isCrossFadeEnabled: Boolean = true,
     onError: @Composable (() -> Unit)? = null,
     onLoading: @Composable (() -> Unit)? = null,
+    contentScale: ContentScale = ContentScale.None
 ) {
     val painter =
         rememberAsyncImagePainter(ImageRequest.Builder(LocalContext.current).data(src).apply(block = fun ImageRequest.Builder.() {
@@ -36,7 +37,7 @@ fun CoilImage(
         }).build())
     Box(modifier = modifier, contentAlignment = Alignment.Center) {
         Image(
-            contentScale = ContentScale.None,
+            contentScale = contentScale,
             painter = painter,
             modifier = modifier,
             contentDescription = null,

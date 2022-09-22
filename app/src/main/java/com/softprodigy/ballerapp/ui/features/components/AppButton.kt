@@ -307,8 +307,8 @@ fun TransparentButtonButton(
     border: BorderStroke? = null,
     colors: ButtonColor = MaterialTheme.appColors.buttonColor,// = ButtonDefaults.buttonColors(ColorBWBlack),
     contentPadding: PaddingValues = PaddingValues(
-        vertical = dimensionResource(id = R.dimen.size_5dp),
-        horizontal = dimensionResource(id = R.dimen.size_5dp),
+        vertical = dimensionResource(id = R.dimen.size_10dp),
+        horizontal = dimensionResource(id = R.dimen.size_10dp),
     ),
     text: String? = null,
     icon: Painter? = null,

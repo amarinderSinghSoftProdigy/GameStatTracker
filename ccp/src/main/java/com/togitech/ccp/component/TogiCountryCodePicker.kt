@@ -99,10 +99,10 @@ fun TogiCountryCodePicker(
                     visualTransformation = PhoneNumberTransformation(defaultCountry.countryCode.uppercase()),
                     placeholder = {
                         Box(contentAlignment = Alignment.CenterEnd) {
-                            Text(
+                           /* Text(
                                 textAlign = TextAlign.End,
                                 text = stringResource(id = getNumberHint(defaultCountry.countryCode))
-                            )
+                            )*/
                         }
                     },
                     keyboardOptions = KeyboardOptions.Default.copy(
