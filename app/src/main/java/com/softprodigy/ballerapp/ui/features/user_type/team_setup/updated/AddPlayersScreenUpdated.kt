@@ -3,16 +3,45 @@ package com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated
 import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Card
+import androidx.compose.material.Divider
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.ripple.LocalRippleTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -26,8 +55,6 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -43,7 +70,14 @@ import com.softprodigy.ballerapp.common.isValidEmail
 import com.softprodigy.ballerapp.common.validName
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.response.team.Player
-import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.components.AppSearchOutlinedTextField
+import com.softprodigy.ballerapp.ui.features.components.AppSearchOutlinedTextField2
+import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.BottomButtons
+import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
+import com.softprodigy.ballerapp.ui.features.components.DeleteDialog
+import com.softprodigy.ballerapp.ui.features.components.InviteTeamMemberButton
+import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
 import com.softprodigy.ballerapp.ui.features.sign_up.ClearRippleTheme
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -62,9 +96,7 @@ fun AddPlayersScreenUpdated(
 ) {
     val context = LocalContext.current
     val state = vm.teamSetupUiState.value
-    val keyboardController = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
-    val focusManager = LocalFocusManager.current
     val maxChar = 45
     Timber.i("AddPlayersScreenUpdated-- teamId--$teamId")
     val dataStoreManager = DataStoreManager(LocalContext.current)
@@ -82,12 +114,13 @@ fun AddPlayersScreenUpdated(
 
     vm.onEvent(
         TeamSetupUIEventUpdated.OnCoachEmailChange(
-            email.value))
+            email.value
+        )
+    )
 
     BackHandler() {
         onBackClick.invoke()
         vm.onEvent(TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen)
-
     }
 
     fun updateItem(index: Int? = null, addIntent: Boolean) {
@@ -167,7 +200,9 @@ fun AddPlayersScreenUpdated(
                                       )*/
                                 vm.onEvent(
                                     TeamSetupUIEventUpdated.OnCoachNameChange(
-                                        name))
+                                        name
+                                    )
+                                )
                             },
                             colors = TextFieldDefaults.outlinedTextFieldColors(
                                 focusedBorderColor = ColorBWGrayBorder,
@@ -190,13 +225,13 @@ fun AddPlayersScreenUpdated(
                         )
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
 
-                      /*  AppSearchOutlinedTextField(
-                            modifier = Modifier
-                                .weight(1f)
-                                .focusRequester(focusRequester),
-                            value = state.coachRole,
-                            onValueChange = { role ->
-                                *//*  if (email.length <= maxChar)
+                        /*  AppSearchOutlinedTextField(
+                              modifier = Modifier
+                                  .weight(1f)
+                                  .focusRequester(focusRequester),
+                              value = state.coachRole,
+                              onValueChange = { role ->
+                                  *//*  if (email.length <= maxChar)
                                       vm.onEvent(
                                           TeamSetupUIEventUpdated.OnEmailValueChange(
                                               index = index,
@@ -233,13 +268,15 @@ fun AddPlayersScreenUpdated(
                         CompositionLocalProvider(
                             LocalRippleTheme provides ClearRippleTheme
                         ) {
-                            Column( modifier = Modifier
-                                .weight(1f)) {
+                            Column(
+                                modifier = Modifier
+                                    .weight(1f)
+                            ) {
                                 Card(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(dimensionResource(id = R.dimen.size_56dp))
-                                        .clickable() {
+                                        .clickable {
                                             expanded = !expanded
                                         }
                                         .onGloballyPositioned {
@@ -305,9 +342,13 @@ fun AddPlayersScreenUpdated(
                                             role = label
                                             expanded = false
                                         }) {
-                                            Text(text = label, textAlign = TextAlign.Center, fontSize = dimensionResource(
-                                                id = R.dimen.txt_size_12
-                                            ).value.sp)
+                                            Text(
+                                                text = label,
+                                                textAlign = TextAlign.Center,
+                                                fontSize = dimensionResource(
+                                                    id = R.dimen.txt_size_12
+                                                ).value.sp
+                                            )
                                         }
                                     }
                                 }
@@ -320,16 +361,18 @@ fun AddPlayersScreenUpdated(
                     }
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
 
-                        AppSearchOutlinedTextField2(
+                    AppSearchOutlinedTextField2(
                         modifier = Modifier
                             .fillMaxWidth()
                             .focusRequester(focusRequester),
-                            readOnly = true,
+                        readOnly = true,
                         value = state.coachEmail,
                         onValueChange = { email ->
                             vm.onEvent(
                                 TeamSetupUIEventUpdated.OnCoachEmailChange(
-                                    email))
+                                    email
+                                )
+                            )
                         },
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             focusedBorderColor = ColorBWGrayBorder,
@@ -503,7 +546,6 @@ fun AddPlayersScreenUpdated(
                                 isTransParent = true
                             )
                         }
-
                     }
                 }
 
@@ -525,34 +567,31 @@ fun AddPlayersScreenUpdated(
                 },
                 enableState =
                 state.inviteMemberName.isNotEmpty() &&
-                        state.inviteMemberName.all() { it.isNotEmpty() } &&
-                        state.inviteMemberName.all() { validName(it) }
-                        && state.inviteMemberEmail.all() { it.isValidEmail() },
+                        state.inviteMemberName.all { it.isNotEmpty() } &&
+                        state.inviteMemberName.all { validName(it) }
+                        && state.inviteMemberEmail.all { it.isValidEmail() },
                 themed = true,
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
         }
+    }
 
-        if (state.showDialog) {
-            DeleteDialog(
-                item = state.removePlayer,
-                message = stringResource(id = R.string.alert_remove_player),
-                onDismiss = {
-                    vm.onEvent(TeamSetupUIEventUpdated.OnDismissDialogCLick(false))
-                },
-                onDelete = {
-                    if (state.removePlayer != null) {
-                        vm.onEvent(TeamSetupUIEventUpdated.OnRemovePlayerConfirmClick(state.removePlayer))
-                    }
+    if (state.showDialog) {
+        DeleteDialog(
+            item = state.removePlayer,
+            message = stringResource(id = R.string.alert_remove_player),
+            onDismiss = {
+                vm.onEvent(TeamSetupUIEventUpdated.OnDismissDialogCLick(false))
+            },
+            onDelete = {
+                if (state.removePlayer != null) {
+                    vm.onEvent(TeamSetupUIEventUpdated.OnRemovePlayerConfirmClick(state.removePlayer))
                 }
-            )
-        }
-        if (state.isLoading) {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center),
-                color = MaterialTheme.appColors.material.primaryVariant
-            )
-        }
+            }
+        )
+    }
+    if (state.isLoading) {
+        CommonProgressBar()
     }
 }
 

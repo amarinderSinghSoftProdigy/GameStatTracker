@@ -11,7 +11,8 @@ import com.softprodigy.ballerapp.ui.features.components.TopBarData
 data class HomeState(
     val color: Color? = null,
     val screen: Boolean = false,
-    val isDataLoading: Boolean = false,
+    val appBar: Boolean = false,
+   val isDataLoading: Boolean = false,
     val showTopAppBar: Boolean = false,
     val showBottomAppBar: Boolean = false,
     val errorMessage: String? = null,

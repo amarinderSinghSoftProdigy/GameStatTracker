@@ -6,11 +6,34 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.LocalContentColor
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
@@ -146,6 +169,9 @@ fun BoxScope.CommonTabView(
         TopBar.TEAMS -> {
             if (userRole.equals(UserType.COACH.key, ignoreCase = true))
                 icon = painterResource(id = R.drawable.ic_settings)
+        }
+        TopBar.PROFILE -> {
+            icon = painterResource(id = R.drawable.ic_edit)
         }
         TopBar.MY_EVENT -> {
             icon = painterResource(id = R.drawable.ic_add_circle)
@@ -294,13 +320,19 @@ fun CommonProgressBar() {
     }
 }
 
+@Composable
+fun DividerCommon() {
+    Divider(thickness = dimensionResource(id = R.dimen.divider))
+}
+
 data class TopBarData(
     val label: String? = "",
     val topBar: TopBar,
 )
 
 enum class TopBar(val stringId: String, val back: Boolean) {
-    PROFILE(stringId = "profile_label", back = false),
+    PROFILE(stringId = "profile_label", back = true),
+    EDIT_PROFILE(stringId = "edit_profile", back = true),
     MY_EVENT(stringId = "events_label", back = false),
     EVENT_DETAILS(stringId = "events_detail", back = true),
     FILTER_EVENT(stringId = "filter_events", back = true),
@@ -372,5 +404,39 @@ fun <T> FoldableItem(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun CustomCheckBox(selected: Boolean, onClick: () -> Unit) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .clickable {
+                onClick()
+            }
+            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)))
+            .size(
+                dimensionResource(id = R.dimen.size_16dp)
+            )
+            .background(
+                color = if (selected) {
+                    MaterialTheme.appColors.material.primaryVariant
+                } else Color.White
+            )
+            .border(
+                width = if (selected) {
+                    0.dp
+                } else dimensionResource(id = R.dimen.size_1dp),
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)),
+                color = if (selected) {
+                    Color.Transparent
+                } else MaterialTheme.appColors.buttonColor.bckgroundDisabled
+            )
+    ) {
+        Icon(
+            imageVector = Icons.Default.Check,
+            contentDescription = null,
+        )
     }
 }

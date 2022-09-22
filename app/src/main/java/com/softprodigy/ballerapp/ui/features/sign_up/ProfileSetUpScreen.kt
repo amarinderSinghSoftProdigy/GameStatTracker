@@ -256,57 +256,58 @@ fun ProfileSetUpScreen(
         ),
         sheetBackgroundColor = colorResource(id = R.color.white),
     ) {
-
-        Box(
-            Modifier
-                .fillMaxWidth()
-
-        ) {
-            CoachFlowBackground()
-
-            Column(
+        CoachFlowBackground()
+        {
+            Box(
                 Modifier
                     .fillMaxWidth()
-                    .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.Center
+
             ) {
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_64dp)))
-                AppText(
-                    text = stringResource(id = R.string.set_your_profile),
-                    style = MaterialTheme.typography.h3,
-                    color = ColorBWBlack,
-                    modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
-                )
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
 
-                UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
 
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.Center
-                    ) {
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_64dp)))
+                    AppText(
+                        text = stringResource(id = R.string.set_your_profile),
+                        style = MaterialTheme.typography.h3,
+                        color = ColorBWBlack,
+                        modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
+                    )
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
 
-                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_48dp)))
+                    UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
 
-                        Box(
-                            Modifier
-                                .width(dimensionResource(id = R.dimen.size_200dp))
-                                .height(dimensionResource(id = R.dimen.size_200dp))
-                                .clip(shape = CircleShape)
-                                .background(color = ColorPrimaryTransparent)
-                                .clickable {
-                                    keyboardController?.hide()
-                                    currentBottomSheet = BottomSheetType.IMAGE_PICKER
-                                    scope.launch {
-                                        modalBottomSheetState.animateTo(
-                                            ModalBottomSheetValue.Expanded
-                                        )
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.Center
+                        ) {
+
+                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_48dp)))
+
+                            Box(
+                                Modifier
+                                    .width(dimensionResource(id = R.dimen.size_200dp))
+                                    .height(dimensionResource(id = R.dimen.size_200dp))
+                                    .clip(shape = CircleShape)
+                                    .background(color = ColorPrimaryTransparent)
+                                    .clickable {
+                                        keyboardController?.hide()
+                                        currentBottomSheet = BottomSheetType.IMAGE_PICKER
+                                        scope.launch {
+                                            modalBottomSheetState.animateTo(
+                                                ModalBottomSheetValue.Expanded
+                                            )
+                                        }
+
                                     }
+                                    .align(Alignment.CenterHorizontally),
 
-                                }
-                                .align(Alignment.CenterHorizontally),
-
-                            contentAlignment = Alignment.Center
+                                contentAlignment = Alignment.Center
 
                         ) {
                             Row(modifier = Modifier.align(Alignment.Center)) {
@@ -336,7 +337,7 @@ fun ProfileSetUpScreen(
                             }
                         }
 
-                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_48dp)))
+                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_48dp)))
 
                         AppDivider()
 
@@ -344,11 +345,11 @@ fun ProfileSetUpScreen(
                             state.signUpData.firstName,
                             onValueChange = {
                                 if (it.length <= maxChar)
-                                    signUpViewModel.onEvent(
-                                        SignUpUIEvent.OnFirstNameChanged(
-                                            it
-                                        )
+                                signUpViewModel.onEvent(
+                                    SignUpUIEvent.OnFirstNameChanged(
+                                        it
                                     )
+                                )
                             },
                             stringResource(id = R.string.first_name),
                             isError = !validName(state.signUpData.firstName) && state.signUpData.firstName.isNotEmpty() || state.signUpData.firstName.length > 30,
@@ -365,7 +366,7 @@ fun ProfileSetUpScreen(
                             state.signUpData.lastName,
                             onValueChange = {
                                 if (it.length <= maxChar)
-                                    signUpViewModel.onEvent(SignUpUIEvent.OnLastNameChanged(it))
+                                signUpViewModel.onEvent(SignUpUIEvent.OnLastNameChanged(it))
                             },
                             stringResource(id = R.string.last_name),
                             isError = !validName(state.signUpData.lastName) && state.signUpData.lastName.isNotEmpty() || state.signUpData.lastName.length > 30,
@@ -382,7 +383,8 @@ fun ProfileSetUpScreen(
                             data = state.signUpData.email ?: "",
                             onValueChange = {
                                 if (it.length <= maxEmailChar)
-                                    signUpViewModel.onEvent(SignUpUIEvent.OnEmailChanged(it))
+                                signUpViewModel.onEvent(SignUpUIEvent.OnEmailChanged(it))
+
                             },
                             stringResource(id = R.string.email),
                             keyboardOptions = KeyboardOptions(
@@ -494,8 +496,7 @@ fun ProfileSetUpScreen(
                             }
                         }
 
-                        AppDivider()
-
+                            AppDivider()
                         Column {
                             Box(
                                 modifier = Modifier
@@ -531,11 +532,11 @@ fun ProfileSetUpScreen(
                                         text = state.signUpData.phone,
                                         onValueChange = {
                                             if (it.length <= maxPhoneNumber)
-                                                signUpViewModel.onEvent(
-                                                    SignUpUIEvent.OnPhoneNumberChanged(
-                                                        it
-                                                    )
+                                            signUpViewModel.onEvent(
+                                                SignUpUIEvent.OnPhoneNumberChanged(
+                                                    it
                                                 )
+                                            )
                                         },
                                         readOnly = state.signUpData.phoneVerified,
                                         cursorColor = Color.Black,
@@ -553,92 +554,93 @@ fun ProfileSetUpScreen(
                                 }
                             }
 
-                            if ((!validPhoneNumber(state.signUpData.phone) && state.signUpData.phone.isNotEmpty())) {
-                                Text(
-                                    text = stringResource(id = R.string.valid_phone_number),
-                                    color = MaterialTheme.colors.error,
-                                    style = MaterialTheme.typography.caption,
+                                if ((!validPhoneNumber(state.signUpData.phone) && state.signUpData.phone.isNotEmpty())) {
+                                    Text(
+                                        text = stringResource(id = R.string.valid_phone_number),
+                                        color = MaterialTheme.colors.error,
+                                        style = MaterialTheme.typography.caption,
+                                        modifier = Modifier
+                                            .padding(4.dp)
+                                            .fillMaxWidth(),
+                                        textAlign = TextAlign.End
+                                    )
+                                }
+                            }
+                            if (validPhoneNumber(state.signUpData.phone) && !state.signUpData.phoneVerified) {
+
+                                Column(
                                     modifier = Modifier
-                                        .padding(4.dp)
-                                        .fillMaxWidth(),
-                                    textAlign = TextAlign.End
-                                )
+                                        .align(Alignment.End)
+                                        .clickable {
+                                            scope.launch {
+                                                signUpViewModel.onEvent(
+                                                    SignUpUIEvent.OnVerifyNumber
+                                                )
+                                                focus.clearFocus()
+                                            }
+                                        },
+                                    horizontalAlignment = Alignment.End
+                                ) {
+                                    AppText(
+                                        text = stringResource(id = R.string.verify),
+                                        style = MaterialTheme.typography.h6,
+                                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                        modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_20dp)),
+                                        textAlign = TextAlign.End
+                                    )
+                                }
                             }
-                        }
-                        if (validPhoneNumber(state.signUpData.phone) && !state.signUpData.phoneVerified) {
-
-                            Column(
-                                modifier = Modifier
-                                    .align(Alignment.End)
-                                    .clickable {
-                                        scope.launch {
-                                            signUpViewModel.onEvent(
-                                                SignUpUIEvent.OnVerifyNumber
-                                            )
-                                            focus.clearFocus()
-                                        }
-                                    },
-                                horizontalAlignment = Alignment.End
-                            ) {
+                            if (state.signUpData.phoneVerified) {
                                 AppText(
-                                    text = stringResource(id = R.string.verify),
+                                    text = stringResource(id = R.string.verified),
                                     style = MaterialTheme.typography.h6,
-                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                                    modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_20dp)),
+                                    color = Color.Green,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(all = dimensionResource(id = R.dimen.size_20dp)),
                                     textAlign = TextAlign.End
                                 )
                             }
-                        }
-                        if (state.signUpData.phoneVerified) {
-                            AppText(
-                                text = stringResource(id = R.string.verified),
-                                style = MaterialTheme.typography.h6,
-                                color = Color.Green,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(all = dimensionResource(id = R.dimen.size_20dp)),
-                                textAlign = TextAlign.End
-                            )
-                        }
 
+                        }
                     }
+
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_44dp)))
+
+                    val check = state.signUpData.token?.let {
+                        state.signUpData.birthdate.isNotEmpty()
+                                && state.signUpData.address.isNotEmpty()
+                                && state.signUpData.gender.isNotEmpty()
+                    } ?: true
+                    BottomButtons(
+                        onBackClick = { onBack() },
+                        onNextClick = {
+                            if (state.registered) {
+                                onNext()
+                            } else {
+                                signUpViewModel.onEvent(SignUpUIEvent.OnScreenNext)
+                            }
+                        },
+                        enableState = validName(state.signUpData.firstName)
+                                && validName(state.signUpData.lastName)
+                                && validPhoneNumber(state.signUpData.phone)
+                                && (state.signUpData.email ?: "".isValidEmail()) != true
+                                && state.signUpData.profileImageUri != null
+                                && state.signUpData.phoneVerified && check,
+                        firstText = stringResource(id = R.string.back),
+                        secondText = stringResource(id = R.string.next)
+                    )
+
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+
                 }
 
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_44dp)))
-
-                val check = state.signUpData.token?.let {
-                    state.signUpData.birthdate.isNotEmpty()
-                            && state.signUpData.address.isNotEmpty()
-                            && state.signUpData.gender.isNotEmpty()
-                } ?: true
-                BottomButtons(
-                    onBackClick = { onBack() },
-                    onNextClick = {
-                        if (state.registered) {
-                            onNext()
-                        } else {
-                            signUpViewModel.onEvent(SignUpUIEvent.OnScreenNext)
-                        }
-                    },
-                    enableState = validName(state.signUpData.firstName)
-                            && validName(state.signUpData.lastName)
-                            && validPhoneNumber(state.signUpData.phone)
-                            && (state.signUpData.email ?: "".isValidEmail()) != true
-                            && state.signUpData.profileImageUri != null
-                            && state.signUpData.phoneVerified && check,
-                    firstText = stringResource(id = R.string.back),
-                    secondText = stringResource(id = R.string.next)
-                )
-
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-
-            }
-
-            if (state.isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center),
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
-                )
+                if (state.isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center),
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                    )
+                }
             }
         }
     }

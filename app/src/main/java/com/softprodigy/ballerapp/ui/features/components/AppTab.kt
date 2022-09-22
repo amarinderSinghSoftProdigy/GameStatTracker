@@ -12,6 +12,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Tab
+import androidx.compose.material.TabRow
 import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -74,6 +75,27 @@ fun AppScrollableTabRow(
         },
         backgroundColor = MaterialTheme.appColors.material.surface,
         edgePadding = dimensionResource(id = R.dimen.size_25dp), tabs = tabs
+    )
+}
+
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+fun AppStaticTabRow(
+    pagerState: PagerState,
+    modifier: Modifier = Modifier,
+    tabs: @Composable @UiComposable () -> Unit
+) {
+    TabRow(
+        modifier = modifier,
+        selectedTabIndex = pagerState.currentPage,
+        indicator = { tabPositions ->
+            TabRowDefaults.Indicator(
+                Modifier.pagerTabIndicatorOffset(pagerState, tabPositions),
+                color = MaterialTheme.appColors.material.primaryVariant
+            )
+        },
+        backgroundColor = MaterialTheme.appColors.material.surface,
+        tabs = tabs
     )
 }
 

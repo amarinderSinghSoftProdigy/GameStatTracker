@@ -5,9 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -46,7 +44,7 @@ import com.softprodigy.ballerapp.ui.theme.appColors
 import com.softprodigy.ballerapp.ui.theme.spacing
 
 @Composable
-fun AppOutlineTextField(
+fun AppTextField(
     value: String,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -111,15 +109,14 @@ fun AppOutlineTextField(
                 style = MaterialTheme.typography.caption,
                 modifier = Modifier
                     .padding(4.dp)
-                    .fillMaxWidth(0.95f),
-
+                    .fillMaxWidth(0.95f)
             )
         }
     }
 }
 
 @Composable
-fun AppOutlineDateField(
+fun AppDateField(
     value: String,
     data: String = "",
     onClick: () -> Unit = {},
@@ -175,144 +172,4 @@ fun AppOutlineDateField(
     }
 }
 
-@Composable
-fun EditFields(
-    data: String,
-    onValueChange: (String) -> Unit,
-    head: String,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-    keyboardActions: KeyboardActions = KeyboardActions.Default,
-    isError: Boolean = false,
-    errorMessage: String = "",
-    enabled: Boolean = false,
-    modifier: Modifier = Modifier,
-    trailingIcon: @Composable (() -> Unit)? = null,
-    placeholder: @Composable (() -> Unit)?=null
-) {
-    val customTextSelectionColors = TextSelectionColors(
-        handleColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-        backgroundColor = Color.Transparent
-    )
-
-    Column(
-        modifier = modifier
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(IntrinsicSize.Min),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-
-            AppText(
-                text = head,
-                style = MaterialTheme.typography.h6,
-                color = ColorBWBlack,
-                modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
-            )
-            CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
-                TextField(
-                    value = data, onValueChange = onValueChange,
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        backgroundColor = Color.Transparent,
-                        focusedBorderColor = Color.Transparent,
-                        unfocusedBorderColor = Color.Transparent,
-                        cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                    ),
-                    textStyle = TextStyle(textAlign = TextAlign.End,color = ColorBWBlack),
-                    singleLine = true,
-                    keyboardActions = keyboardActions,
-                    keyboardOptions = keyboardOptions,
-                    readOnly = enabled,
-                    trailingIcon = trailingIcon ,
-                    placeholder=placeholder
-                )
-            }
-        }
-
-        if (isError) {
-            androidx.compose.material.Text(
-                text = errorMessage,
-                color = MaterialTheme.colors.error,
-                style = MaterialTheme.typography.caption,
-                modifier = Modifier
-                    .padding(4.dp)
-                    .fillMaxWidth(),
-                textAlign = TextAlign.End
-            )
-        }
-    }
-}
-
-
-@Composable
-fun EditProfileFields(
-    data: String,
-    onValueChange: (String) -> Unit,
-    head: String,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-    keyboardActions: KeyboardActions = KeyboardActions.Default,
-    isError: Boolean = false,
-    errorMessage: String = "",
-    enabled: Boolean = false,
-    modifier: Modifier = Modifier,
-    trailingIcon: @Composable (() -> Unit)? = null,
-    placeholder: @Composable (() -> Unit)?=null
-) {
-    val customTextSelectionColors = TextSelectionColors(
-        handleColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-        backgroundColor = Color.Transparent
-    )
-
-    Column(
-        modifier = modifier
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(dimensionResource(id = R.dimen.size_56dp)),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-
-            AppText(
-                text = head,
-                style = MaterialTheme.typography.h6,
-                color = ColorBWBlack,
-                modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
-            )
-            CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
-                TextField(
-                    value = data, onValueChange = onValueChange,
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        backgroundColor = Color.Transparent,
-                        focusedBorderColor = Color.Transparent,
-                        unfocusedBorderColor = Color.Transparent,
-                        cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                    ),
-                    textStyle = TextStyle(textAlign = TextAlign.End,color = ColorBWBlack),
-                    singleLine = true,
-                    keyboardActions = keyboardActions,
-                    keyboardOptions = keyboardOptions,
-                    readOnly = enabled,
-                    trailingIcon = trailingIcon ,
-                    placeholder=placeholder
-                )
-            }
-        }
-
-        if (isError) {
-            androidx.compose.material.Text(
-                text = errorMessage,
-                color = MaterialTheme.colors.error,
-                style = MaterialTheme.typography.caption,
-                modifier = Modifier
-                    .padding(4.dp)
-                    .fillMaxWidth(),
-                textAlign = TextAlign.End
-            )
-        }
-    }
-}
 

@@ -12,8 +12,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -33,17 +37,30 @@ import com.softprodigy.ballerapp.common.IntentData
 import com.softprodigy.ballerapp.common.Route
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.ui.features.components.*
-import com.softprodigy.ballerapp.ui.features.home.events.*
+import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
+import com.softprodigy.ballerapp.ui.features.components.BottomNavigationBar
+import com.softprodigy.ballerapp.ui.features.components.CommonTabView
+import com.softprodigy.ballerapp.ui.features.components.LogoutDialog
+import com.softprodigy.ballerapp.ui.features.components.TabBar
+import com.softprodigy.ballerapp.ui.features.components.TopBar
+import com.softprodigy.ballerapp.ui.features.components.TopBarData
+import com.softprodigy.ballerapp.ui.features.components.fromHex
+import com.softprodigy.ballerapp.ui.features.home.events.EventDetailsScreen
+import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
+import com.softprodigy.ballerapp.ui.features.home.events.EventsScreen
+import com.softprodigy.ballerapp.ui.features.home.events.FilterScreen
+import com.softprodigy.ballerapp.ui.features.home.events.MyLeagueDetailScreen
+import com.softprodigy.ballerapp.ui.features.home.events.NewEventScreen
 import com.softprodigy.ballerapp.ui.features.home.events.game.GameDetailsScreen
 import com.softprodigy.ballerapp.ui.features.home.events.game.GameRuleScreen
-import com.softprodigy.ballerapp.ui.features.home.events.venues.openVenue.OpenVenueTopTabs
 import com.softprodigy.ballerapp.ui.features.home.home_screen.HomeScreen
 import com.softprodigy.ballerapp.ui.features.home.invitation.InvitationScreen
 import com.softprodigy.ballerapp.ui.features.home.manage_team.MainManageTeamScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
+import com.softprodigy.ballerapp.ui.features.profile.ProfileEditScreen
+import com.softprodigy.ballerapp.ui.features.profile.ProfileScreen
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.AddPlayersScreenUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupScreenUpdated
@@ -112,6 +129,9 @@ class HomeActivity : ComponentActivity() {
                                                 }
                                                 TopBar.MANAGE_TEAM -> {
                                                     teamViewModel.onEvent(TeamUIEvent.OnTeamUpdate)
+                                                }
+                                                TopBar.PROFILE -> {
+                                                    navController.navigate(Route.PROFILE_EDIT_SCREEN)
                                                 }
                                                 else -> {}
                                                 //Add events cases for tool bar icon clicks
@@ -189,12 +209,35 @@ fun NavControllerComposable(
                 navController.navigate(Route.INVITATION_SCREEN)
             }, logoClick = {
                 homeViewModel.setLogoutDialog(true)
-            }, vm = homeViewModel)
+            }, vm = homeViewModel, gotToProfile = {
+                navController.navigate(Route.PROFILE_SCREEN)
+            })
             /* else {
                  HomeFirstTimeLoginScreen(onCreateTeamClick = {
                      navController.navigate(Route.TEAM_SETUP_SCREEN)
                  }, viewModel = homeViewModel)
              }*/
+        }
+        composable(route = Route.PROFILE_SCREEN) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    topBar = TopBar.PROFILE,
+                )
+            )
+            ProfileScreen(
+                onBackClick = { navController.popBackStack() },
+                moveToEditProfile = { navController.navigate(Route.PROFILE_EDIT_SCREEN) }
+            )
+        }
+        composable(route = Route.PROFILE_EDIT_SCREEN) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    topBar = TopBar.EDIT_PROFILE,
+                )
+            )
+            ProfileEditScreen(
+                onBackClick = { navController.popBackStack() },
+            )
         }
         composable(route = Route.TEAMS_SCREEN) {
             homeViewModel.setTopBar(
@@ -238,13 +281,13 @@ fun NavControllerComposable(
                     topBar = TopBar.MY_EVENT,
                 )
             )
-            EventsScreen(eventViewModel, moveToDetail = {
-                navController.navigate(Route.LEAGUE_DETAIL_SCREEN)
-            }, moveToPracticeDetail = {
-                eventTitle = it
-                eventTitle = it
-                navController.navigate(Route.EVENTS_DETAIL_SCREEN)
-            },
+            EventsScreen(eventViewModel,
+                moveToDetail = {
+                    navController.navigate(Route.LEAGUE_DETAIL_SCREEN)
+                }, moveToPracticeDetail = {
+                    eventTitle = it
+                    navController.navigate(Route.EVENTS_DETAIL_SCREEN)
+                },
                 moveToGameDetail = {
                     eventTitle = it
                     navController.navigate(Route.GAME_DETAIL_SCREEN)
@@ -260,7 +303,7 @@ fun NavControllerComposable(
                     topBar = TopBar.GAME_DETAILS,
                 )
             )
-            GameDetailsScreen(eventViewModel,moveToGameRules={
+            GameDetailsScreen(eventViewModel, moveToGameRules = {
                 navController.navigate(Route.GAME_RULES_SCREENS)
             })
         }
@@ -343,8 +386,8 @@ fun NavControllerComposable(
                 onBackClick = { navController.popBackStack() },
                 onNextClick = {
                     navController.navigate(Route.TEAMS_SCREEN) {
-                        popUpTo(Route.TEAM_SETUP_SCREEN){
-                            inclusive=true
+                        popUpTo(Route.TEAM_SETUP_SCREEN) {
+                            inclusive = true
                         }
                     }
                     homeViewModel.setScreen(false)
@@ -392,7 +435,6 @@ fun NavControllerComposable(
                 navController.popBackStack()
             }
             InvitationScreen()
-
         }
         composable(route = Route.TEAM_SETUP_SCREEN) {
             homeViewModel.setTopAppBar(true)

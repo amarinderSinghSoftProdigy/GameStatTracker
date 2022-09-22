@@ -40,7 +40,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.get24HoursTimeWithAMPM
 import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.ButtonWithLeadingIcon
 import com.softprodigy.ballerapp.ui.theme.appColors
 import java.text.SimpleDateFormat
 import java.util.*
@@ -92,12 +91,9 @@ fun PracticeScreen(vm: PracticeViewModel = hiltViewModel()) {
         }, mHour, mMinute, false
     )
 
-    Box(modifier = Modifier.fillMaxSize()) {
-
-        Column(modifier = Modifier.fillMaxSize()) {
-
+    Box {
+        Column {
             Divider(color = MaterialTheme.appColors.material.primary)
-
             PracticeItem(
                 title = stringResource(R.string.date),
                 icon = painterResource(id = R.drawable.ic_calender),
@@ -169,23 +165,6 @@ fun PracticeScreen(vm: PracticeViewModel = hiltViewModel()) {
             ) {}
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-
-            Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center) {
-                ButtonWithLeadingIcon(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .width(
-                            dimensionResource(
-                                id = R.dimen.size_140dp
-                            )
-                        ),
-                    text = stringResource(id = R.string.save),
-                    onClick = {
-
-                    },
-                    iconAllowed = false
-                )
-            }
         }
     }
 }

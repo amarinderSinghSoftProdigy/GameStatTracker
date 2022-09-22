@@ -42,63 +42,62 @@ fun SelectProfileScreen(vm: SelectProfileViewModel = hiltViewModel(), onNextClic
 
     val state = vm.selectProfileUiState.value
 
-    Box(
-        Modifier
-            .fillMaxSize()
-    ) {
-
-        CoachFlowBackground()
-
-        Column(
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize()
+    CoachFlowBackground() {
+        Box(
+            Modifier
+                .fillMaxSize()
         ) {
-
-            AppText(
-                text = stringResource(id = R.string.select_profile),
-                style = MaterialTheme.typography.h3,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
-            )
-
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_32dp)))
-
             Column(
-                modifier = Modifier
-                    .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxSize()
             ) {
-                state.selectProfileList.forEachIndexed { index, it ->
 
-                    SelectProfileItems(
-                        it = it,
-                        isSelected = it.role == state.isSelectedRole,
-                        index = index,
-                        selectProfileList = state.selectProfileList
-                    ) {
+                AppText(
+                    text = stringResource(id = R.string.select_profile),
+                    style = MaterialTheme.typography.h3,
+                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                )
 
-                        vm.onEvent(SelectProfileUIEvent.IsSelectedRole(it.role))
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_32dp)))
+
+                Column(
+                    modifier = Modifier
+                        .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
+                ) {
+                    state.selectProfileList.forEachIndexed { index, it ->
+
+                        SelectProfileItems(
+                            it = it,
+                            isSelected = it.role == state.isSelectedRole,
+                            index = index,
+                            selectProfileList = state.selectProfileList
+                        ) {
+
+                            vm.onEvent(SelectProfileUIEvent.IsSelectedRole(it.role))
+                        }
                     }
                 }
             }
-        }
 
-        Box(
-            Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-                .padding(bottom = dimensionResource(id = R.dimen.size_50dp))
-        )
-        {
-            BottomButtons(
-                firstText = stringResource(id = R.string.back),
-                secondText = stringResource(id = R.string.next),
-                onBackClick = { },
-                onNextClick = {
-                    onNextClick()
-                },
-                enableState = state.isSelectedRole.isNotEmpty(),
-                showOnlyNext = true,
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = dimensionResource(id = R.dimen.size_50dp))
             )
+            {
+                BottomButtons(
+                    firstText = stringResource(id = R.string.back),
+                    secondText = stringResource(id = R.string.next),
+                    onBackClick = { },
+                    onNextClick = {
+                        onNextClick()
+                    },
+                    enableState = state.isSelectedRole.isNotEmpty(),
+                    showOnlyNext = true,
+                )
+            }
         }
     }
 }

@@ -1,9 +1,12 @@
 package com.softprodigy.ballerapp.di.modules
 
-import com.softprodigy.ballerapp.network.APIService
 import com.slack.eithernet.ApiResultCallAdapterFactory
 import com.slack.eithernet.ApiResultConverterFactory
-import com.softprodigy.ballerapp.BuildConfig.*
+import com.softprodigy.ballerapp.BuildConfig.API_SERVER
+import com.softprodigy.ballerapp.BuildConfig.CONNECT_TIMEOUT
+import com.softprodigy.ballerapp.BuildConfig.READ_TIMEOUT
+import com.softprodigy.ballerapp.BuildConfig.WRITE_TIMEOUT
+import com.softprodigy.ballerapp.network.APIService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -16,14 +16,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -46,18 +47,24 @@ fun DivisionScreen(vm: DivisionViewModel = hiltViewModel()) {
     val state = vm.divisionUiState.value
     Box(modifier = Modifier.fillMaxSize()) {
 
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(all = dimensionResource(id = R.dimen.size_16dp))
+        ) {
             val pagerState = rememberPagerState(
                 pageCount = state.divisionTab.size,
                 initialOffScreenLimit = 1,
             )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             DivisionTopTabs(pagerState, state.divisionTab)
-
             Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .background(
+                        shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
+                        color = MaterialTheme.colors.onPrimary
+                    )
             ) {
                 itemsIndexed(state.divisionData) { index, item ->
                     DivisionItems(item)
@@ -69,16 +76,10 @@ fun DivisionScreen(vm: DivisionViewModel = hiltViewModel()) {
 
 @Composable
 fun DivisionItems(item: DivisionData) {
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(
-                horizontal = dimensionResource(
-                    id = R.dimen.size_16dp
-                )
-            )
-            .background(shape = RectangleShape, color = MaterialTheme.colors.onPrimary)
+            .background(color = Color.Transparent)
             .height(dimensionResource(id = R.dimen.size_56dp)),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
