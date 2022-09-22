@@ -32,6 +32,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.isValidEmail
 import com.softprodigy.ballerapp.common.validName
 import com.softprodigy.ballerapp.data.response.team.Player
@@ -219,7 +220,7 @@ fun AddPlayersScreenUpdated(
                                             modifier = Modifier
                                                 .align(Alignment.TopEnd)
                                                 .background(
-                                                    MaterialTheme.appColors.material.primaryVariant,
+                                                    AppConstants.SELECTED_COLOR,
                                                     shape = RoundedCornerShape(50)
                                                 )
                                                 .padding(dimensionResource(id = R.dimen.size_2dp))

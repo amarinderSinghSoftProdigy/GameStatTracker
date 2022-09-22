@@ -23,8 +23,12 @@ class MainViewModel @Inject constructor(
                 state.value =
                     state.value.copy(showAppBar = event.showAppBar, topBar = event.topBarData)
             }
-            is MainEvent.OnScreenChanges -> {
-                state.value = state.value.copy(screen = event.screen)
+            is MainEvent.OnColorChanges ->{
+                state.value = state.value.copy(color = event.color)
+
+            }
+            is MainEvent.OnShowTopBar -> {
+                state.value = state.value.copy(showAppBar = event.showAppBar)
 
             }
         }

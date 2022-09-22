@@ -84,14 +84,18 @@ class HomeViewModel @Inject constructor(
         _state.value = _state.value.copy(showLogout = show)
     }
     fun setTopBar(topBar: TopBarData) {
-        _state.value = _state.value.copy(topBar = topBar, appBar = true)
+        _state.value = _state.value.copy(topBar = topBar, showTopAppBar = true)
     }
     fun setScreen(screen: Boolean) {
         _state.value = _state.value.copy(screen = screen)
     }
 
-    fun setAppBar(screen: Boolean) {
-        _state.value = _state.value.copy(appBar = screen)
+    fun setTopAppBar(screen: Boolean) {
+        _state.value = _state.value.copy(showTopAppBar = screen)
+    }
+
+    fun showBottomAppBar(showBottomAppBar: Boolean) {
+        _state.value = _state.value.copy(showBottomAppBar = showBottomAppBar)
     }
 
     fun clearToken() {

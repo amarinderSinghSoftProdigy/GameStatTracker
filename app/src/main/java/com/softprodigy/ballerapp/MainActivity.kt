@@ -62,6 +62,7 @@ import com.softprodigy.ballerapp.ui.features.user_type.UserTypeScreen
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.AddPlayersScreenUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupScreenUpdated
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
 import com.softprodigy.ballerapp.ui.features.welcome.WelcomeScreen
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
 import com.softprodigy.ballerapp.ui.theme.ColorPrimaryOrange
@@ -102,17 +103,11 @@ class MainActivity : ComponentActivity() {
         setContent {
             val mainViewModel: MainViewModel = hiltViewModel()
             val state = mainViewModel.state.value
-            val dataStoreManager = DataStoreManager(LocalContext.current)
-            val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
-            AppConstants.SELECTED_COLOR = fromHex(color.value.ifEmpty { "0177C1" })
-            mainViewModel.onEvent(MainEvent.OnColorChanges(AppConstants.SELECTED_COLOR))
-            /*    mainViewModel.onEvent(MainEvent.OnTopBarChanges(true,TopBarData(
-                    topBar = TopBar.MY_EVENT,
-                )))
-    */
-            BallerAppMainTheme(customColor = state.color ?: ColorPrimaryOrange) {
+            BallerAppMainTheme(
+                customColor = state.color ?: MaterialTheme.appColors.material.primary
+            ) {
                 val navController = rememberNavController()
-                if (state.screen) {
+                if (!state.showAppBar) {
                     Surface(
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.appColors.material.primary
@@ -133,25 +128,12 @@ class MainActivity : ComponentActivity() {
                                         topBarData = state.topBar,
                                         userRole = "",
                                         backClick = {
+                                            mainViewModel.onEvent(MainEvent.OnShowTopBar(showAppBar =false))
                                             navController.popBackStack()
                                         },
                                         labelClick = {
-//                                            homeViewModel.setDialog(true)
                                         },
                                         iconClick = {
-                                            /*   when (state.topBar.topBar) {
-                                                   TopBar.MY_EVENT -> {
-                                                       navController.navigate(Route.EVENTS_FILTER_SCREEN)
-                                                   }
-                                                   TopBar.TEAMS -> {
-                                                       navController.navigate(Route.MANAGED_TEAM_SCREEN)
-                                                   }
-                                                   TopBar.MANAGE_TEAM -> {
-                                                       teamViewModel.onEvent(TeamUIEvent.OnTeamUpdate)
-                                                   }
-                                                   else -> {}
-                                                   //Add events cases for tool bar icon clicks
-                                               }*/
                                         }
                                     )
                                 }
@@ -488,6 +470,8 @@ fun NavControllerComposable(
         }
 
         composable(route = SELECT_USER_TYPE) {
+            mainViewModel.onEvent(MainEvent.OnShowTopBar(showAppBar =false))
+
             BackHandler {}
 
             UserTypeScreen(
@@ -507,19 +491,40 @@ fun NavControllerComposable(
         }
 
         composable(route = TEAM_SETUP_SCREEN) {
-            mainViewModel.onEvent(MainEvent.OnTopBarChanges(true, TopBarData(
-                topBar = TopBar.CREATE_TEAM,
+            mainViewModel.onEvent(
+                MainEvent.OnTopBarChanges(
+                    showAppBar = true, TopBarData(
+                        topBar = TopBar.CREATE_TEAM,
+                    )
+                )
             )
-            ))
+            mainViewModel.onEvent(MainEvent.OnColorChanges(ColorPrimaryOrange))
+
+            BackHandler {
+                mainViewModel.onEvent(MainEvent.OnShowTopBar(showAppBar =false))
+                navController.popBackStack()
+            }
+
             TeamSetupScreenUpdated(
                 vm = setupTeamViewModelUpdated,
-                onBackClick = { navController.popBackStack() },
+                onBackClick = {
+                    mainViewModel.onEvent(MainEvent.OnShowTopBar(showAppBar =false))
+                    navController.popBackStack() },
                 onNextClick = {
                     navController.navigate(ADD_PLAYER_SCREEN)
                 })
         }
 
         composable(route = ADD_PLAYER_SCREEN) {
+            mainViewModel.onEvent(
+                MainEvent.OnTopBarChanges(
+                    showAppBar = true, TopBarData(
+                        topBar = TopBar.INVITE_TEAM_MEMBERS,
+                    )
+                )
+            )
+            mainViewModel.onEvent(MainEvent.OnColorChanges(AppConstants.SELECTED_COLOR))
+
             AddPlayersScreenUpdated(
                 vm = setupTeamViewModelUpdated,
                 onBackClick = { navController.popBackStack() },
