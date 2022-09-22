@@ -1,4 +1,4 @@
-package com.softprodigy.ballerapp.ui.features.home.events
+package com.softprodigy.ballerapp.ui.features.home.events.venues.openVenue
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,32 +16,32 @@ import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
 import com.softprodigy.ballerapp.ui.features.home.events.division.DivisionScreen
 import com.softprodigy.ballerapp.ui.features.home.events.schedule.EventScheduleScreen
 import com.softprodigy.ballerapp.ui.features.home.events.team.EventTeamsScreen
-import com.softprodigy.ballerapp.ui.features.home.events.venues.VenuesScreen
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
-fun MyLeagueDetailScreen(moveToOpenVenues: (String) -> Unit) {
+fun OpenVenueTopTabs() {
+
     val tabData = listOf(
-        MyLeagueTabItems.Schedule,
-        MyLeagueTabItems.Divisions,
-        MyLeagueTabItems.Teams,
-        MyLeagueTabItems.Venues,
-    )
+        OpenVenueTabItems.Details,
+        OpenVenueTabItems.Courts,
+        OpenVenueTabItems.Schedule,
+
+        )
     val pagerState = rememberPagerState(
         pageCount = tabData.size,
         initialOffScreenLimit = 1,
     )
 
     Column {
-        MyLeagueTopTabs(pagerState = pagerState, tabData = tabData)
-        MyLeagueContent(pagerState = pagerState,moveToOpenVenues)
+        OpenVenueTabs(pagerState = pagerState, tabData = tabData)
+        OpenVenueContents(pagerState = pagerState)
     }
-
 }
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun MyLeagueTopTabs(pagerState: PagerState, tabData: List<MyLeagueTabItems>) {
+fun OpenVenueTabs(pagerState: PagerState, tabData: List<OpenVenueTabItems>) {
     val coroutineScope = rememberCoroutineScope()
     AppScrollableTabRow(
         pagerState = pagerState, tabs = {
@@ -62,23 +62,23 @@ fun MyLeagueTopTabs(pagerState: PagerState, tabData: List<MyLeagueTabItems>) {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun MyLeagueContent(pagerState: PagerState, moveToOpenVenues: (String) -> Unit) {
+fun OpenVenueContents(pagerState: PagerState) {
     HorizontalPager(
         state = pagerState,
         modifier = Modifier.fillMaxSize()
     ) { index ->
         when (index) {
-            0 -> EventScheduleScreen()
+            0 -> OpenVenuesDetailsScreen()
             1 -> DivisionScreen()
             2 -> EventTeamsScreen()
-            3 -> VenuesScreen(moveToOpenVenues)
         }
     }
 }
 
-enum class MyLeagueTabItems(val icon: Int, val stringId: String) {
+enum class OpenVenueTabItems(val icon: Int, val stringId: String) {
+
+    Details(R.drawable.ic_details, stringId = "details"),
+    Courts(R.drawable.ic_court, stringId = "courts"),
     Schedule(R.drawable.ic_schedule, stringId = "schedule"),
-    Divisions(R.drawable.ic_divisions, stringId = "divisions"),
-    Teams(R.drawable.ic_users, stringId = "teams"),
-    Venues(R.drawable.ic_location, stringId = "venues")
+
 }

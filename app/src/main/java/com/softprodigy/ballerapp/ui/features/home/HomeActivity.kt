@@ -37,6 +37,7 @@ import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.events.*
 import com.softprodigy.ballerapp.ui.features.home.events.game.GameDetailsScreen
 import com.softprodigy.ballerapp.ui.features.home.events.game.GameRuleScreen
+import com.softprodigy.ballerapp.ui.features.home.events.venues.openVenue.OpenVenueTopTabs
 import com.softprodigy.ballerapp.ui.features.home.home_screen.HomeScreen
 import com.softprodigy.ballerapp.ui.features.home.invitation.InvitationScreen
 import com.softprodigy.ballerapp.ui.features.home.manage_team.MainManageTeamScreen
@@ -269,6 +270,7 @@ fun NavControllerComposable(
                 navController.navigate(Route.LEAGUE_DETAIL_SCREEN)
             }, moveToPracticeDetail = {
                 eventTitle = it
+                eventTitle = it
                 navController.navigate(Route.EVENTS_DETAIL_SCREEN)
             },
                 moveToGameDetail = {
@@ -276,7 +278,7 @@ fun NavControllerComposable(
                     navController.navigate(Route.GAME_DETAIL_SCREEN)
                 },
                 moveToLeague = {
-                    navController.navigate(Route.MY_LEAGUE)
+
                 }
             )
         }
@@ -293,10 +295,16 @@ fun NavControllerComposable(
         composable(route = Route.LEAGUE_DETAIL_SCREEN) {
             homeViewModel.setTopBar(
                 TopBarData(
-                    topBar = TopBar.EVENT_LEAGUES,
+                    label = stringResource(id = R.string.back_to_school_tournament),
+                    topBar = TopBar.MY_LEAGUE
                 )
             )
-            MyLeagueDetailScreen()
+            MyLeagueDetailScreen(moveToOpenVenues = {
+                eventTitle = it
+                navController.navigate(Route.OPEN_VENUE)
+
+            })
+
         }
         composable(route = Route.EVENTS_FILTER_SCREEN) {
             homeViewModel.setTopBar(
@@ -456,7 +464,7 @@ fun NavControllerComposable(
             NewEventScreen()
         }
 
-        composable(route = Route.MY_LEAGUE) {
+        /*composable(route = Route.MY_LEAGUE) {
             homeViewModel.setTopBar(
                 TopBarData(
                     label = stringResource(id = R.string.back_to_school_tournament),
@@ -464,7 +472,7 @@ fun NavControllerComposable(
                 )
             )
             MyLeagueDetailScreen()
-        }
+        }*/
     }
 }
 
