@@ -1,4 +1,4 @@
-package com.softprodigy.ballerapp.ui.features.home.Events
+package com.softprodigy.ballerapp.ui.features.home.events
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -18,8 +18,8 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
     var eventState = mutableStateOf(EventState())
         private set
 
-    private val _invitationChannel = Channel<InvitationChannel>()
-    val invitationChannel = _invitationChannel.receiveAsFlow()
+    private val _eventChannel = Channel<EventChannel>()
+    val eventChannel = _eventChannel.receiveAsFlow()
 
     init {
         viewModelScope.launch {
@@ -79,7 +79,8 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
                             "League",
                             Yellow700
 
-                        ),  Leagues(
+                        ),
+                        Leagues(
                             "2",
                             "Tournament Title",
                             "1389 Aviator Ave, Eagle Mountain",
@@ -98,7 +99,8 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
                             "Sep 1 - Dec 15, 2022",
                             "League",
                             Yellow700
-                        ),  Leagues(
+                        ),
+                        Leagues(
                             "2",
                             "Tournament Title",
                             "1389 Aviator Ave, Eagle Mountain",
@@ -144,6 +146,6 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
 
 }
 
-sealed class InvitationChannel {
-    data class ShowToast(val message: UiText) : InvitationChannel()
+sealed class EventChannel {
+    data class ShowToast(val message: UiText) : EventChannel()
 }

@@ -105,24 +105,12 @@ fun AddPlayersScreenUpdated(
     }
 
     Box(Modifier.fillMaxSize()) {
-        CoachFlowBackground(
-            colorCode = state.teamColorPrimary,
-            teamLogo = state.teamImageUri
-        )
         Column(
             Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Center
         ) {
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_64dp)))
-
-            AppText(
-                modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp)),
-                text = stringResource(id = R.string.invite_team_member),
-                style = MaterialTheme.typography.h3,
-                color = ColorBWBlack
-            )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
 
             UserFlowBackground(
@@ -220,21 +208,6 @@ fun AddPlayersScreenUpdated(
                                         )
 
                                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
-                                        /*   Icon(
-                                               painter = painterResource(id = R.drawable.ic_remove),
-                                               contentDescription = "",
-                                               tint = Color.Unspecified,
-                                               modifier = Modifier
-                                                   .background(
-                                                       AppConstants.SELECTED_COLOR,
-                                                       shape = RoundedCornerShape(50)
-                                                   )
-                                                   .padding(dimensionResource(id = R.dimen.size_2dp))
-                                                   .clickable {
-                                                       *//*Remove a specific  item from list*//*
-                                                updateItem(index, false)
-                                            }
-                                    )*/
                                     }
                                     if (state.inviteMemberName[index].isEmpty()
                                         && state.inviteMemberEmail[index].isEmpty()

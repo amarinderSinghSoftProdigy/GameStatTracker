@@ -1,7 +1,17 @@
-package com.softprodigy.ballerapp.ui.features.home.Events.Game
+package com.softprodigy.ballerapp.ui.features.home.events.game
 
 import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
@@ -21,21 +31,28 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import com.google.accompanist.flowlayout.MainAxisAlignment
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppDivider
-import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.TransparentButtonButton
-import com.softprodigy.ballerapp.ui.features.home.Events.EventViewModel
-import com.softprodigy.ballerapp.ui.theme.*
+import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
+import com.softprodigy.ballerapp.ui.theme.ColorButtonRed
+import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
+import com.softprodigy.ballerapp.ui.theme.ColorMainPrimary
+import com.softprodigy.ballerapp.ui.theme.GreenColor
+import com.softprodigy.ballerapp.ui.theme.appColors
+import com.softprodigy.ballerapp.ui.theme.md_theme_light_outline
+import com.softprodigy.ballerapp.ui.theme.md_theme_light_primary
 
 @Composable
 fun GameDetailsTab(vm: EventViewModel,moveToGameRules:()->Unit) {
     val state = vm.eventState.value
     var images = arrayListOf<String>("", "", "", "", "")
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(color = Color.White)) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color.White)
+    ) {
         Column(
             Modifier
                 .fillMaxSize()
@@ -51,14 +68,15 @@ fun GameDetailsTab(vm: EventViewModel,moveToGameRules:()->Unit) {
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             Row(
-                modifier=Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 TeamItem("My Team", ColorMainPrimary)
                 Column(
-                    modifier=Modifier.padding(horizontal = dimensionResource(id = R.dimen.size_16dp)),
-                    horizontalAlignment = Alignment.CenterHorizontally) {
+                    modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.size_16dp)),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     Text(
                         text = "6:00pm",
                         color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
@@ -289,7 +307,7 @@ fun TeamItem(title: String, color: Color) {
     )
     {
         Column(
-            modifier=Modifier.padding(all = dimensionResource(id = R.dimen.size_20dp)),
+            modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_20dp)),
             horizontalAlignment = Alignment.CenterHorizontally
         )
         {

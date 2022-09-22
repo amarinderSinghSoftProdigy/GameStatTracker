@@ -1,41 +1,32 @@
-package com.softprodigy.ballerapp.ui.features.home.Events.Game
+package com.softprodigy.ballerapp.ui.features.home.events.game
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Tab
+import androidx.compose.material.TabRow
+import androidx.compose.material.TabRowDefaults
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberAsyncImagePainter
-import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.data.response.team.Team
-import com.softprodigy.ballerapp.ui.features.components.*
-import com.softprodigy.ballerapp.ui.features.home.Events.EventViewModel
-import com.softprodigy.ballerapp.ui.features.home.Events.TabItems
-import com.softprodigy.ballerapp.ui.features.home.invitation.InvitationEvent
-import com.softprodigy.ballerapp.ui.features.home.invitation.InvitationItem
-import com.softprodigy.ballerapp.ui.theme.*
+import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
+import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
+import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
@@ -46,7 +37,7 @@ fun GameDetailsScreen(vm: EventViewModel,moveToGameRules:()->Unit) {
             Tabs(pagerState = pagerState)
             TabsContent(pagerState = pagerState,vm,moveToGameRules)
         }
-    }
+}
 
 @ExperimentalPagerApi
 @Composable
@@ -109,8 +100,8 @@ fun Tabs(pagerState: PagerState) {
         }
     }
 
-    enum class GameTabItems(val icon: Int, val stringId: String) {
-        Details(R.drawable.ic_details, stringId = "details"),
-        Stats(R.drawable.ic_stats, stringId = "stats"),
-        Summary(R.drawable.ic_summary, stringId = "summary"),
-    }
+enum class GameTabItems(val icon: Int, val stringId: String) {
+    Details(R.drawable.ic_details, stringId = "details"),
+    Stats(R.drawable.ic_stats, stringId = "stats"),
+    Summary(R.drawable.ic_summary, stringId = "summary"),
+}

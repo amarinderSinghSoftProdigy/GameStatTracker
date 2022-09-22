@@ -33,7 +33,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
-import com.softprodigy.ballerapp.ui.features.home.event_kd.schedule.Space
+import com.softprodigy.ballerapp.ui.features.home.events.schedule.Space
 import com.softprodigy.ballerapp.ui.theme.ButtonColor
 import com.softprodigy.ballerapp.ui.theme.appColors
 
@@ -312,8 +312,11 @@ enum class TopBar(val stringId: String, val back: Boolean) {
     SINGLE_LABEL_BACK(stringId = "", back = true),
     SINGLE_LABEL(stringId = "", back = false),
     EMPTY(stringId = "", back = false),
+    NEW_EVENT(stringId = "", back = true),
+    MY_LEAGUE(stringId = "", back = true),
     GAME_RULES(stringId = "games_rules", back = true),
 }
+
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun <T> FoldableItem(
