@@ -21,6 +21,7 @@
     <string name="forgot_password">Forgot Password?</string>
     <string name="or_login_with">Or Login With</string>
     <string name="your_name">Full Name</string>
+    <string name="your_name_">Your Name</string>
     <string name="create_account">Create Account</string>
     <string name="accepted">Accepted</string>
     <string name="going">Going</string>
@@ -275,4 +276,7 @@
     <string name="name_of_venue">Name of Venue</string>
     <string name="enter_venue_name">Venue Name</string>
     <string name="enter_address">Enter Address</string>
+    <string name="role">Role</string>
+    <string name="your_role">Your Role</string>
+    <string name="head_coach">Head Coach</string>
 </resources>

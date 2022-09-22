@@ -10,18 +10,22 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
+import androidx.compose.material.ripple.LocalRippleTheme
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
@@ -29,17 +33,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.toSize
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.isValidEmail
 import com.softprodigy.ballerapp.common.validName
+import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.ui.features.components.*
-import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
+import com.softprodigy.ballerapp.ui.features.sign_up.ClearRippleTheme
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
 import com.softprodigy.ballerapp.ui.theme.appColors
+import com.softprodigy.ballerapp.ui.theme.spacing
 import timber.log.Timber
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -59,6 +67,22 @@ fun AddPlayersScreenUpdated(
     val focusManager = LocalFocusManager.current
     val maxChar = 45
     Timber.i("AddPlayersScreenUpdated-- teamId--$teamId")
+    val dataStoreManager = DataStoreManager(LocalContext.current)
+    val email = dataStoreManager.getEmail.collectAsState(initial = "Kaushal")
+
+
+    var expanded by remember { mutableStateOf(false) }
+    var textFieldSize by remember { mutableStateOf(Size.Zero) }
+    val coachRoleList =
+        listOf(stringResource(id = R.string.head_coach), stringResource(id = R.string.coach_label))
+    var role by rememberSaveable {
+        mutableStateOf("")
+    }
+
+
+    vm.onEvent(
+        TeamSetupUIEventUpdated.OnCoachEmailChange(
+            email.value))
 
     BackHandler() {
         onBackClick.invoke()
@@ -122,6 +146,235 @@ fun AddPlayersScreenUpdated(
                     Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp))
                 ) {
 
+                    Row(
+                        Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.Top
+                    ) {
+                        AppSearchOutlinedTextField(
+                            modifier = Modifier
+                                .weight(1f)
+                                .focusRequester(focusRequester),
+                            value = state.coachName,
+//                            readOnly=true,
+                            onValueChange = { name ->
+                                /*  if (name.length <= maxChar)
+                                      vm.onEvent(
+                                          TeamSetupUIEventUpdated.OnNameValueChange(
+                                              index = index,
+                                              name
+                                          )
+                                      )*/
+                                vm.onEvent(
+                                    TeamSetupUIEventUpdated.OnCoachNameChange(
+                                        name))
+                            },
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                focusedBorderColor = ColorBWGrayBorder,
+                                unfocusedBorderColor = ColorBWGrayBorder,
+                                cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                backgroundColor = MaterialTheme.appColors.material.background
+                            ),
+                            placeholder = {
+                                Text(
+                                    text = stringResource(id = R.string.your_name_),
+                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                    color = MaterialTheme.appColors.textField.label,
+                                )
+                            },
+                            singleLine = true,
+                            /*    isError = !validName(state.inviteMemberName[index])
+                                        && state.inviteMemberName[index].isNotEmpty(),*/
+//                                                || state.inviteMemberName[index].length > 30,
+                            errorMessage = stringResource(id = R.string.valid_first_name),
+                        )
+                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+
+                      /*  AppSearchOutlinedTextField(
+                            modifier = Modifier
+                                .weight(1f)
+                                .focusRequester(focusRequester),
+                            value = state.coachRole,
+                            onValueChange = { role ->
+                                *//*  if (email.length <= maxChar)
+                                      vm.onEvent(
+                                          TeamSetupUIEventUpdated.OnEmailValueChange(
+                                              index = index,
+                                              email
+                                          )
+                                      )*//*
+                                vm.onEvent(
+                                    TeamSetupUIEventUpdated.OnCoachRoleChange(
+                                       role))
+                            },
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                focusedBorderColor = ColorBWGrayBorder,
+                                unfocusedBorderColor = ColorBWGrayBorder,
+                                cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                backgroundColor = MaterialTheme.appColors.material.background
+                            ),
+                            placeholder = {
+                                Text(
+                                    text = stringResource(id = R.string.role),
+                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
+                                )
+                            },
+                            singleLine = true,
+                            keyboardOptions = KeyboardOptions(
+                                imeAction = ImeAction.Next,
+                                keyboardType = KeyboardType.Email
+
+                            ),
+//                            isError = (!state.inviteMemberEmail[index].isValidEmail()
+//                                    && state.inviteMemberEmail[index].isNotEmpty()
+//                                    || state.inviteMemberEmail[index].length > 45),
+                            errorMessage = stringResource(id = R.string.email_error)
+                        )*/
+                        CompositionLocalProvider(
+                            LocalRippleTheme provides ClearRippleTheme
+                        ) {
+                            Column( modifier = Modifier
+                                .weight(1f)) {
+                                Card(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(dimensionResource(id = R.dimen.size_56dp))
+                                        .clickable() {
+                                            expanded = !expanded
+                                        }
+                                        .onGloballyPositioned {
+                                            textFieldSize = it.size.toSize()
+                                        },
+                                    border = BorderStroke(
+                                        1.dp,
+                                        MaterialTheme.appColors.editField.borderUnFocused
+                                    ),
+                                    backgroundColor = MaterialTheme.appColors.material.background,
+                                    shape = RoundedCornerShape(MaterialTheme.spacing.small),
+                                    elevation = 0.dp
+                                ) {
+                                    Row(
+                                        modifier = Modifier
+//                                            .fillMaxSize()
+                                            .padding(
+                                                start = dimensionResource(id = R.dimen.size_12dp),
+                                                end = dimensionResource(id = R.dimen.size_12dp)
+                                            ),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically,
+                                    ) {
+                                        if (role.isEmpty()) {
+                                            Text(
+                                                text = stringResource(id = R.string.your_role),
+                                                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                                color = MaterialTheme.appColors.textField.label,
+                                            )
+                                        } else {
+                                            AppText(
+                                                text = role,
+                                                textAlign = TextAlign.Center,
+                                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                                fontSize = dimensionResource(
+                                                    id = R.dimen.txt_size_12
+                                                ).value.sp
+//                                                style = androidx.compose.material.LocalTextStyle.current
+                                            )
+                                        }
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.ic_arrow_bottom_event),
+                                            contentDescription = "",
+                                            modifier = Modifier
+                                                .size(
+                                                    height = dimensionResource(id = R.dimen.size_8dp),
+                                                    width = dimensionResource(id = R.dimen.size_10dp)
+                                                ),
+                                            tint = MaterialTheme.appColors.buttonColor.textDisabled
+                                        )
+                                    }
+                                }
+
+                                DropdownMenu(
+                                    expanded = expanded,
+                                    onDismissRequest = { expanded = false },
+                                    modifier = Modifier
+                                        .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+                                        .background(MaterialTheme.colors.background)
+                                ) {
+                                    coachRoleList.forEach { label ->
+                                        DropdownMenuItem(onClick = {
+                                            role = label
+                                            expanded = false
+                                        }) {
+                                            Text(text = label, textAlign = TextAlign.Center, fontSize = dimensionResource(
+                                                id = R.dimen.txt_size_12
+                                            ).value.sp)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+
+                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
+
+                    }
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+
+                        AppSearchOutlinedTextField2(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(focusRequester),
+                            readOnly = true,
+                        value = state.coachEmail,
+                        onValueChange = { email ->
+                            vm.onEvent(
+                                TeamSetupUIEventUpdated.OnCoachEmailChange(
+                                    email))
+                        },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = ColorBWGrayBorder,
+                            unfocusedBorderColor = ColorBWGrayBorder,
+                            cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            backgroundColor = MaterialTheme.appColors.material.background
+                        ),
+                        placeholder = {
+                            Text(
+                                text = stringResource(id = R.string.email),
+                                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                color = MaterialTheme.appColors.textField.label,
+                            )
+                        },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                            keyboardType = KeyboardType.Email
+
+                        ),
+//                            isError = (!state.inviteMemberEmail[index].isValidEmail()
+//                                    && state.inviteMemberEmail[index].isNotEmpty()
+//                                    || state.inviteMemberEmail[index].length > 45),
+                        errorMessage = stringResource(id = R.string.email_error)
+                    )
+//                }
+
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+
+                    //Below divider is used to cover parent container and ignoring padding of parent
+                    Divider(
+                        modifier = Modifier
+                            .layout { measurable, constraints ->
+                                val placeable = measurable.measure(
+                                    constraints.copy(
+                                        maxWidth = constraints.maxWidth + (context.resources.getDimension(
+                                            R.dimen.size_32dp //add the end padding 32dp
+                                        )).dp.roundToPx(),
+                                    )
+                                )
+                                layout(placeable.width, placeable.height) {
+                                    placeable.place(0, 0)
+                                }
+                            })
+
                     LazyColumn(
                         Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -159,7 +412,8 @@ fun AddPlayersScreenUpdated(
                                             placeholder = {
                                                 Text(
                                                     text = stringResource(id = R.string.name),
-                                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
+                                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                                    color = MaterialTheme.appColors.textField.label,
                                                 )
                                             },
                                             singleLine = true,
@@ -193,7 +447,8 @@ fun AddPlayersScreenUpdated(
                                             placeholder = {
                                                 Text(
                                                     text = stringResource(id = R.string.email),
-                                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
+                                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                                    color = MaterialTheme.appColors.textField.label,
                                                 )
                                             },
                                             singleLine = true,

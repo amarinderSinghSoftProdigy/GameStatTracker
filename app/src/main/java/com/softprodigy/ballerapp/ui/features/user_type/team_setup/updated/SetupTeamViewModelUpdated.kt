@@ -191,6 +191,15 @@ class SetupTeamViewModelUpdated @Inject constructor(
                 _teamSetupUiState.value = _teamSetupUiState.value.copy(address = event.address)
 
             }
+            is TeamSetupUIEventUpdated.OnCoachNameChange -> {
+                _teamSetupUiState.value = _teamSetupUiState.value.copy(coachName = event.coachName)
+            }
+            is TeamSetupUIEventUpdated.OnCoachEmailChange -> {
+                _teamSetupUiState.value = _teamSetupUiState.value.copy(coachEmail = event.coachEmail)
+            }
+            is TeamSetupUIEventUpdated.OnCoachRoleChange -> {
+                _teamSetupUiState.value = _teamSetupUiState.value.copy(coachRole = event.coachRole)
+            }
         }
 
 
