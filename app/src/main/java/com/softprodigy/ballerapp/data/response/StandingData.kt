@@ -33,6 +33,5 @@ data class Standing(
 data class Categories (
     @SerializedName("name" ) val name : String = "",
     @SerializedName("key"  ) val key  : String = ""
-
 )
 
