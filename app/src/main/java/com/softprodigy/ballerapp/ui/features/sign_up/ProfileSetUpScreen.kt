@@ -12,6 +12,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -499,7 +500,7 @@ fun ProfileSetUpScreen(
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(dimensionResource(id = R.dimen.size_56dp)),
+                                    .height(IntrinsicSize.Min),
                                 /* verticalAlignment = Alignment.CenterVertically,
                                  horizontalArrangement = Arrangement.SpaceBetween*/
                             ) {
@@ -526,7 +527,7 @@ fun ProfileSetUpScreen(
                                         unfocusedBorderColor = Color.Transparent,
                                         dialogAppBarTextColor = Color.Black,
                                         dialogAppBarColor = Color.White,
-                                        error = state.signUpData.phone.length > 10,
+                                        error = true,
                                         text = state.signUpData.phone,
                                         onValueChange = {
                                             if (it.length <= maxPhoneNumber)

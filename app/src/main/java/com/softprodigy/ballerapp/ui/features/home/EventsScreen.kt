@@ -121,7 +121,7 @@ fun TabsContent(pagerState: PagerState, tabUpdate: (Int) -> Unit) {
     HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
         when (page) {
             0 -> {
-                VenuesScreen()
+                /*VenuesScreen()*/
             }
             1 -> {
                 TabContentScreen(data = "Welcome to Shopping Screen")

@@ -2,6 +2,7 @@ package com.softprodigy.ballerapp.ui.features.home.events.venues
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -36,7 +38,7 @@ import com.softprodigy.ballerapp.ui.features.components.Placeholder
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun VenuesScreen(vm: VenuesViewModel = hiltViewModel()) {
+fun VenuesScreen( moveToOpenVenues: (String) -> Unit, vm: VenuesViewModel = hiltViewModel()) {
 
     val state = vm.venuesUiState.value
 
@@ -50,7 +52,9 @@ fun VenuesScreen(vm: VenuesViewModel = hiltViewModel()) {
                     .fillMaxWidth()
             ) {
                 itemsIndexed(state.venuesData) { index, item ->
-                    VenuesItem(item)
+                    VenuesItem(item) {
+                        moveToOpenVenues(item.title)
+                    }
                 }
             }
         }
@@ -58,7 +62,7 @@ fun VenuesScreen(vm: VenuesViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun VenuesItem(item: VenuesData) {
+fun VenuesItem(item: VenuesData, moveToOpenVenues: () -> Unit) {
 
     Row(
         modifier = Modifier
@@ -69,10 +73,14 @@ fun VenuesItem(item: VenuesData) {
                 )
             )
             .height(dimensionResource(id = R.dimen.size_56dp))
-            .background(shape = RectangleShape, color = MaterialTheme.colors.onPrimary),
+            .background(shape = RectangleShape, color = MaterialTheme.colors.onPrimary)
+            .clickable {
+                moveToOpenVenues()
+            },
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
+        verticalAlignment = Alignment.CenterVertically,
+
+        ) {
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
@@ -89,7 +97,8 @@ fun VenuesItem(item: VenuesData) {
                     ),
                 isCrossFadeEnabled = false,
                 onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
-                onError = { Placeholder(R.drawable.ic_user_profile_icon) }
+                onError = { Placeholder(R.drawable.ic_user_profile_icon) },
+                contentScale = ContentScale.Crop
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
             AppText(

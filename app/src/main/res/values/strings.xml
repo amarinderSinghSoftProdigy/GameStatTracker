@@ -294,6 +294,9 @@
     <string name="name_of_venue">Name of Venue</string>
     <string name="enter_venue_name">Venue Name</string>
     <string name="enter_address">Enter Address</string>
+    <string name="courts">Courts</string>
+    <string name="venue_details">Venue Details</string>
+    <string name="venue_photos">Venue Photos</string>
     <string name="role">Role</string>
     <string name="your_role">Your Role</string>
     <string name="head_coach">Head Coach</string>
