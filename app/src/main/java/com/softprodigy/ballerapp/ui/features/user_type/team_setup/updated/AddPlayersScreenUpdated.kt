@@ -3,6 +3,7 @@ package com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated
 import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,10 +24,24 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.Divider
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.ripple.LocalRippleTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -55,7 +70,14 @@ import com.softprodigy.ballerapp.common.isValidEmail
 import com.softprodigy.ballerapp.common.validName
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.response.team.Player
-import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.components.AppSearchOutlinedTextField
+import com.softprodigy.ballerapp.ui.features.components.AppSearchOutlinedTextField2
+import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.BottomButtons
+import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
+import com.softprodigy.ballerapp.ui.features.components.DeleteDialog
+import com.softprodigy.ballerapp.ui.features.components.InviteTeamMemberButton
+import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
 import com.softprodigy.ballerapp.ui.features.sign_up.ClearRippleTheme
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -254,7 +276,7 @@ fun AddPlayersScreenUpdated(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(dimensionResource(id = R.dimen.size_56dp))
-                                        .clickable() {
+                                        .clickable {
                                             expanded = !expanded
                                         }
                                         .onGloballyPositioned {
@@ -477,12 +499,12 @@ fun AddPlayersScreenUpdated(
                                                 imeAction = ImeAction.Next,
                                                 keyboardType = KeyboardType.Email
 
-                                                ),
-                                                isError = (!state.inviteMemberEmail[index].isValidEmail()
-                                                        && state.inviteMemberEmail[index].isNotEmpty()
-                                                        || state.inviteMemberEmail[index].length > 45),
-                                                errorMessage = stringResource(id = R.string.email_error)
-                                            )
+                                            ),
+                                            isError = (!state.inviteMemberEmail[index].isValidEmail()
+                                                    && state.inviteMemberEmail[index].isNotEmpty()
+                                                    || state.inviteMemberEmail[index].length > 45),
+                                            errorMessage = stringResource(id = R.string.email_error)
+                                        )
 
                                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                                     }
@@ -568,10 +590,9 @@ fun AddPlayersScreenUpdated(
             }
         )
     }
-}
-if (state.isLoading) {
-    CommonProgressBar()
-}
+    if (state.isLoading) {
+        CommonProgressBar()
+    }
 }
 
 @Composable
