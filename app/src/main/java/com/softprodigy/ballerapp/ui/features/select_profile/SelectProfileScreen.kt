@@ -47,8 +47,6 @@ fun SelectProfileScreen(vm: SelectProfileViewModel = hiltViewModel(), onNextClic
             Modifier
                 .fillMaxSize()
         ) {
-
-
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -82,23 +80,24 @@ fun SelectProfileScreen(vm: SelectProfileViewModel = hiltViewModel(), onNextClic
                 }
             }
 
-        Box(
-            Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-                .padding(bottom = dimensionResource(id = R.dimen.size_50dp))
-        )
-        {
-            BottomButtons(
-                firstText = stringResource(id = R.string.back),
-                secondText = stringResource(id = R.string.next),
-                onBackClick = { },
-                onNextClick = {
-                    onNextClick()
-                },
-                enableState = state.isSelectedRole.isNotEmpty(),
-                showOnlyNext = true,
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = dimensionResource(id = R.dimen.size_50dp))
             )
+            {
+                BottomButtons(
+                    firstText = stringResource(id = R.string.back),
+                    secondText = stringResource(id = R.string.next),
+                    onBackClick = { },
+                    onNextClick = {
+                        onNextClick()
+                    },
+                    enableState = state.isSelectedRole.isNotEmpty(),
+                    showOnlyNext = true,
+                )
+            }
         }
     }
 }

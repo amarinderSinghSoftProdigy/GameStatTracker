@@ -14,7 +14,6 @@ import com.softprodigy.ballerapp.data.response.HomeItemResponse
 import com.softprodigy.ballerapp.domain.repository.IUserRepository
 import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
 import com.softprodigy.ballerapp.ui.features.components.TopBarData
-import com.softprodigy.ballerapp.ui.features.components.TopBarData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -24,10 +23,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     val dataStoreManager: DataStoreManager,
-    application: Application,
-    val userRepo: IUserRepository
-) :
-    AndroidViewModel(application) {
+    val userRepo: IUserRepository, application: Application,
+) : AndroidViewModel(application) {
 
     private val _state = mutableStateOf(HomeState())
     val state: State<HomeState> = _state
@@ -75,6 +72,7 @@ class HomeViewModel @Inject constructor(
     fun setBottomNav(color: BottomNavKey) {
         _state.value = _state.value.copy(bottomBar = color)
     }
+
     fun setDialog(show: Boolean) {
         _state.value = _state.value.copy(showDialog = show)
     }
@@ -82,9 +80,11 @@ class HomeViewModel @Inject constructor(
     fun setLogoutDialog(show: Boolean) {
         _state.value = _state.value.copy(showLogout = show)
     }
+
     fun setTopBar(topBar: TopBarData) {
         _state.value = _state.value.copy(topBar = topBar, appBar = true)
     }
+
     fun setScreen(screen: Boolean) {
         _state.value = _state.value.copy(screen = screen)
     }

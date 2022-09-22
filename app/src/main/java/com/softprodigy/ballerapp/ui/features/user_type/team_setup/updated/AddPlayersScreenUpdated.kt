@@ -2,6 +2,7 @@ package com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated
 
 import android.annotation.SuppressLint
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,8 +39,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -52,13 +51,12 @@ import com.softprodigy.ballerapp.common.isValidEmail
 import com.softprodigy.ballerapp.common.validName
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.ui.features.components.AppSearchOutlinedTextField
-import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.BottomButtons
 import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
+import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
 import com.softprodigy.ballerapp.ui.features.components.DeleteDialog
 import com.softprodigy.ballerapp.ui.features.components.InviteTeamMemberButton
 import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
-import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
 import com.softprodigy.ballerapp.ui.theme.appColors
 import timber.log.Timber
@@ -75,16 +73,12 @@ fun AddPlayersScreenUpdated(
 ) {
     val context = LocalContext.current
     val state = vm.teamSetupUiState.value
-    val keyboardController = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
-    val focusManager = LocalFocusManager.current
     val maxChar = 45
     Timber.i("AddPlayersScreenUpdated-- teamId--$teamId")
-
-    BackHandler() {
+    BackHandler {
         onBackClick.invoke()
         vm.onEvent(TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen)
-
     }
 
     fun updateItem(index: Int? = null, addIntent: Boolean) {
@@ -292,9 +286,9 @@ fun AddPlayersScreenUpdated(
                     },
                     enableState =
                     state.inviteMemberName.isNotEmpty() &&
-                            state.inviteMemberName.all() { it.isNotEmpty() } &&
-                            state.inviteMemberName.all() { validName(it) }
-                            && state.inviteMemberEmail.all() { it.isValidEmail() },
+                            state.inviteMemberName.all { it.isNotEmpty() } &&
+                            state.inviteMemberName.all { validName(it) }
+                            && state.inviteMemberEmail.all { it.isValidEmail() },
                     themed = true,
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
@@ -317,12 +311,8 @@ fun AddPlayersScreenUpdated(
         }
     }
     if (state.isLoading) {
-        CircularProgressIndicator(
-            modifier = Modifier.align(Alignment.Center),
-            color = MaterialTheme.appColors.material.primaryVariant
-        )
+        CommonProgressBar()
     }
-}
 }
 
 @Composable

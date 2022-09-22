@@ -13,7 +13,6 @@ data class HomeState(
     val screen: Boolean = false,
     val appBar: Boolean = false,
     val isDataLoading: Boolean = false,
-    val appBar: Boolean = false,
     val errorMessage: String? = null,
     val userNameValid: Boolean = true,
     val userNameValidError: String? = null,

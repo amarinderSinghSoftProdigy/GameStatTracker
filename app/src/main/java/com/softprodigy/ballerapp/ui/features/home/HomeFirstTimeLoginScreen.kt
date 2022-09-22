@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -32,10 +31,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
@@ -54,22 +50,28 @@ fun HomeFirstTimeLoginScreen(viewModel: HomeViewModel, onCreateTeamClick: () -> 
     val dataStoreManager = DataStoreManager(LocalContext.current)
     val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
     Box {
-        CoachFlowBackground(colorCode = color.value.ifEmpty { "0177C1" }, teamLogo = teamLogo = BuildConfig.IMAGE_SERVER+state.user.profileImage)
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-            verticalArrangement = Arrangement.Center
+        CoachFlowBackground(
+            colorCode = color.value.ifEmpty { "0177C1" },
+            teamLogo = BuildConfig.IMAGE_SERVER + state.user.profileImage
         ) {
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                verticalArrangement = Arrangement.Center
+            ) {
 
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))
 
-            AppText(
-                text = stringResource(id = R.string.hey_label).replace("name",  state.user.firstName),
-                style = MaterialTheme.typography.h5,
-                fontWeight = FontWeight.W500,
-                color = ColorBWBlack
-            )
+                AppText(
+                    text = stringResource(id = R.string.hey_label).replace(
+                        "name",
+                        state.user.firstName
+                    ),
+                    style = MaterialTheme.typography.h5,
+                    fontWeight = FontWeight.W500,
+                    color = ColorBWBlack
+                )
 
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
 
@@ -150,12 +152,13 @@ fun HomeFirstTimeLoginScreen(viewModel: HomeViewModel, onCreateTeamClick: () -> 
                     )
                 }
             }
-        }
-        if (state.isDataLoading) {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center),
-                color = MaterialTheme.appColors.material.primaryVariant
-            )
+
+            if (state.isDataLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center),
+                    color = MaterialTheme.appColors.material.primaryVariant
+                )
+            }
         }
     }
 }
@@ -171,7 +174,7 @@ fun HomeScreenItem(data: HomeItemResponse) {
                 shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
             ),
 
-    ) {
+        ) {
 
         Row(
             modifier = Modifier
