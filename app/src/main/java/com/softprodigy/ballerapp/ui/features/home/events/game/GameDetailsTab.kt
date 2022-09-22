@@ -1,7 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.home.events.game
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,10 +14,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -48,7 +45,7 @@ import com.softprodigy.ballerapp.ui.theme.md_theme_light_outline
 import com.softprodigy.ballerapp.ui.theme.md_theme_light_primary
 
 @Composable
-fun GameDetailsTab(vm: EventViewModel) {
+fun GameDetailsTab(vm: EventViewModel,moveToGameRules:()->Unit) {
     val state = vm.eventState.value
     var images = arrayListOf<String>("", "", "", "", "")
     Box(
@@ -292,7 +289,9 @@ fun GameDetailsTab(vm: EventViewModel) {
                     modifier = Modifier.weight(1f)
                 )
                 Icon(
-                    modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                    modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp)).clickable {
+                        moveToGameRules()
+                    },
                     painter = painterResource(id = R.drawable.ic_forward),
                     contentDescription = "", tint = ColorGreyLighter
                 )
