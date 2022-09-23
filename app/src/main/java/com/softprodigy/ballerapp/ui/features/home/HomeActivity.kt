@@ -14,6 +14,10 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -41,14 +45,22 @@ import com.softprodigy.ballerapp.ui.features.components.TabBar
 import com.softprodigy.ballerapp.ui.features.components.TopBar
 import com.softprodigy.ballerapp.ui.features.components.TopBarData
 import com.softprodigy.ballerapp.ui.features.components.fromHex
+import com.softprodigy.ballerapp.ui.features.home.events.*
+import com.softprodigy.ballerapp.ui.features.home.events.game.GameDetailsScreen
+import com.softprodigy.ballerapp.ui.features.home.events.game.GameRuleScreen
+import com.softprodigy.ballerapp.ui.features.home.events.venues.openVenue.OpenVenueTopTabs
+import com.softprodigy.ballerapp.ui.features.home.home_screen.HomeScreen
 import com.softprodigy.ballerapp.ui.features.home.invitation.InvitationScreen
 import com.softprodigy.ballerapp.ui.features.home.manage_team.MainManageTeamScreen
+import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
+import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileEditScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileScreen
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.AddPlayersScreenUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupScreenUpdated
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
 import com.softprodigy.ballerapp.ui.theme.appColors
 import dagger.hilt.android.AndroidEntryPoint
@@ -63,29 +75,44 @@ class HomeActivity : ComponentActivity() {
         setContent {
             val fromSplash = intent.getBooleanExtra(IntentData.FROM_SPLASH, false)
             val homeViewModel: HomeViewModel = hiltViewModel()
+            val teamViewModel: TeamViewModel = hiltViewModel()
+            val eventViewModel: EventViewModel = hiltViewModel()
             val state = homeViewModel.state.value
             val dataStoreManager = DataStoreManager(LocalContext.current)
             val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
+            val teamId = dataStoreManager.getId.collectAsState(initial = "")
+            val role = dataStoreManager.getRole.collectAsState(initial = "")
+            UserStorage.teamId = teamId.value
             AppConstants.SELECTED_COLOR = fromHex(color.value.ifEmpty { "0177C1" })
             homeViewModel.setColor(AppConstants.SELECTED_COLOR)
+            homeViewModel.showBottomAppBar(true)
+            var tabIndex by rememberSaveable { mutableStateOf(0) }
             BallerAppMainTheme(customColor = state.color ?: Color.White) {
                 val navController = rememberNavController()
                 if (state.screen) {
-                    Surface {
+                    Surface(
+                        color = MaterialTheme.appColors.material.primary
+                    ) {
                         NavControllerComposable(
                             homeViewModel,
+                            teamViewModel,
+                            eventViewModel,
                             navController = navController,
-                            fromSplash = fromSplash
+                            fromSplash = fromSplash,
+                            setIndex = {
+                                tabIndex = it
+                            }
                         )
                     }
                 } else {
                     Scaffold(
                         backgroundColor = MaterialTheme.appColors.material.primary,
                         topBar = {
-                            if (state.appBar) {
+                            if (state.showTopAppBar) {
                                 TabBar(color = MaterialTheme.appColors.material.primaryVariant) {
                                     CommonTabView(
-                                        state.topBar,
+                                        topBarData = state.topBar,
+                                        userRole = role.value,
                                         backClick = {
                                             navController.popBackStack()
                                         },
@@ -95,13 +122,17 @@ class HomeActivity : ComponentActivity() {
                                         iconClick = {
                                             when (state.topBar.topBar) {
                                                 TopBar.MY_EVENT -> {
-                                                    navController.navigate(Route.MANAGED_TEAM_SCREEN)
+                                                    if (tabIndex == 2) {
+                                                        navController.navigate(Route.EVENTS_FILTER_SCREEN)
+                                                    } else {
+                                                        navController.navigate(Route.NEW_EVENT)
+                                                    }
                                                 }
                                                 TopBar.TEAMS -> {
                                                     navController.navigate(Route.MANAGED_TEAM_SCREEN)
                                                 }
                                                 TopBar.MANAGE_TEAM -> {
-                                                    //TODO add the login to save the team deatils
+                                                    teamViewModel.onEvent(TeamUIEvent.OnTeamUpdate)
                                                 }
                                                 TopBar.PROFILE -> {
                                                     navController.navigate(Route.PROFILE_EDIT_SCREEN)
@@ -109,7 +140,8 @@ class HomeActivity : ComponentActivity() {
                                                 else -> {}
                                                 //Add events cases for tool bar icon clicks
                                             }
-                                        }
+                                        },
+                                        tabIndex = tabIndex
                                     )
                                 }
                             }
@@ -124,21 +156,30 @@ class HomeActivity : ComponentActivity() {
                             ) {
                                 NavControllerComposable(
                                     homeViewModel,
+                                    teamViewModel,
+                                    eventViewModel,
                                     navController = navController,
                                     showDialog = state.showDialog,
-                                    fromSplash = fromSplash
+                                    fromSplash = fromSplash,
+                                    setIndex = {
+                                        tabIndex = it
+                                    }
                                 )
                             }
                         },
                         bottomBar = {
-                            BottomNavigationBar(
-                                navController = navController,
-                                selectionColor = state.color ?: Color.Black
-                            ) {
-                                if (it == BottomNavKey.HOME) {
-                                    homeViewModel.setAppBar(false)
-                                } else {
-                                    homeViewModel.setAppBar(true)
+                            if (state.showBottomAppBar) {
+                                BottomNavigationBar(
+                                    state.bottomBar,
+                                    navController = navController,
+                                    selectionColor = state.color ?: Color.Black
+                                ) {
+                                    homeViewModel.setBottomNav(it)
+                                    if (it == BottomNavKey.HOME) {
+                                        homeViewModel.setTopAppBar(false)
+                                    } else {
+                                        homeViewModel.setTopAppBar(true)
+                                    }
                                 }
                             }
                         },
@@ -160,23 +201,31 @@ class HomeActivity : ComponentActivity() {
 @Composable
 fun NavControllerComposable(
     homeViewModel: HomeViewModel,
+    teamViewModel: TeamViewModel,
+    eventViewModel: EventViewModel,
     showDialog: Boolean = false,
     navController: NavHostController = rememberNavController(),
-    fromSplash: Boolean = false
+    fromSplash: Boolean = false,
+    setIndex: (index: Int) -> Unit
 ) {
     val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = hiltViewModel()
+    var eventTitle by rememberSaveable { mutableStateOf("") }
     NavHost(navController, startDestination = Route.HOME_SCREEN) {
         composable(route = Route.HOME_SCREEN) {
-            homeViewModel.setAppBar(false)
-            if (fromSplash)
-                HomeScreen(name = "", gotToProfile = {
-                    navController.navigate(Route.PROFILE_SCREEN)
-                }, onInvitationCLick = {
-                    navController.navigate(Route.INVITATION_SCREEN)
-                }, logoClick = { homeViewModel.setLogoutDialog(true) })
-            else {
-                HomeFirstTimeLoginScreen()
-            }
+            homeViewModel.setTopAppBar(false)
+            //if (fromSplash)
+            HomeScreen(name = "", onInvitationCLick = {
+                navController.navigate(Route.INVITATION_SCREEN)
+            }, logoClick = {
+                homeViewModel.setLogoutDialog(true)
+            }, vm = homeViewModel, gotToProfile = {
+                navController.navigate(Route.PROFILE_SCREEN)
+            })
+            /* else {
+                 HomeFirstTimeLoginScreen(onCreateTeamClick = {
+                     navController.navigate(Route.TEAM_SETUP_SCREEN)
+                 }, viewModel = homeViewModel)
+             }*/
         }
         composable(route = Route.PROFILE_SCREEN) {
             homeViewModel.setTopBar(
@@ -210,18 +259,28 @@ fun NavControllerComposable(
                 homeViewModel.setScreen(false)
             }
             TeamsScreen(
-                name = "",
+                teamViewModel,
                 showDialog = showDialog,
                 setupTeamViewModelUpdated = setupTeamViewModelUpdated,
                 dismissDialog = { homeViewModel.setDialog(it) },
                 OnTeamDetailsSuccess = { teamId ->
                     UserStorage.teamId = teamId
-//                    navController.navigate(Route.ADD_PLAYER_SCREEN + "/${teamId}")
                 },
                 onCreateTeamClick = {
                     navController.navigate(Route.TEAM_SETUP_SCREEN) {
-                        navController.popBackStack()
+//                        navController.popBackStack()
+                        setupTeamViewModelUpdated.onEvent(
+                            TeamSetupUIEventUpdated.OnColorSelected(
+                                (it?.colorCode ?: "").replace(
+                                    "#",
+                                    ""
+                                )
+                            )
+                        )
                     }
+                },
+                onBackPress = {
+                    navController.popBackStack()
                 }
             )
         }
@@ -231,9 +290,96 @@ fun NavControllerComposable(
                     topBar = TopBar.MY_EVENT,
                 )
             )
-            EventsScreen(name = "") { }
-        }
+            EventsScreen(eventViewModel,
+                moveToDetail = {
+                    navController.navigate(Route.LEAGUE_DETAIL_SCREEN)
+                }, moveToPracticeDetail = {
+                    eventTitle = it
+                    navController.navigate(Route.EVENTS_DETAIL_SCREEN)
+                },
+                moveToGameDetail = {
+                    eventTitle = it
+                    navController.navigate(Route.GAME_DETAIL_SCREEN)
+                },
+                moveToLeague = {
 
+                },
+                moveToOppDetails = {
+                    navController.navigate(Route.OPP_DETAIL_SCREEN)
+                },
+                setIndex = {
+                    setIndex(it)
+                }
+            )
+        }
+        composable(route = Route.GAME_DETAIL_SCREEN) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    topBar = TopBar.GAME_DETAILS,
+                )
+            )
+            GameDetailsScreen(eventViewModel, moveToGameRules = {
+                navController.navigate(Route.GAME_RULES_SCREENS)
+            })
+        }
+        composable(route = Route.OPP_DETAIL_SCREEN) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    topBar = TopBar.EVENT_DETAILS,
+                )
+            )
+            OppEventDetails(eventViewModel, moveToRegistration = {
+                navController.navigate(Route.EVENT_REGISTRATION)
+            })
+        }
+        composable(route = Route.EVENT_REGISTRATION) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    topBar = TopBar.REGISTRATION_FORM,
+                )
+            )
+            EventRegistraionDetails(eventViewModel)
+        }
+        composable(route = Route.LEAGUE_DETAIL_SCREEN) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = stringResource(id = R.string.back_to_school_tournament),
+                    topBar = TopBar.MY_LEAGUE
+                )
+            )
+            MyLeagueDetailScreen(moveToOpenVenues = {
+                eventTitle = it
+                navController.navigate(Route.OPEN_VENUE)
+
+            })
+
+        }
+        composable(route = Route.EVENTS_FILTER_SCREEN) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    topBar = TopBar.FILTER_EVENT,
+                )
+            )
+            FilterScreen(eventViewModel)
+        }
+        composable(route = Route.EVENTS_DETAIL_SCREEN) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    topBar = TopBar.EVENT_DETAILS,
+                    label = eventTitle
+                )
+            )
+            EventDetailsScreen(eventViewModel)
+        }
+        composable(route = Route.GAME_RULES_SCREENS) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    topBar = TopBar.GAME_RULES,
+                    label = eventTitle
+                )
+            )
+            GameRuleScreen(eventViewModel)
+        }
         composable(route = Route.MANAGED_TEAM_SCREEN) {
             homeViewModel.setTopBar(
                 TopBarData(
@@ -241,14 +387,28 @@ fun NavControllerComposable(
                     topBar = TopBar.MANAGE_TEAM,
                 )
             )
-            MainManageTeamScreen(onAddPlayerCLick = {
+            MainManageTeamScreen(teamViewModel, onSuccess = {
+                navController.popBackStack()
+            }, onAddPlayerCLick = {
+                setColorUpdate(
+                    setupTeamViewModelUpdated,
+                    teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
+                )
                 navController.navigate(Route.ADD_PLAYER_SCREEN + "/${UserStorage.teamId}")
             })
         }
 
+
         composable(route = Route.ADD_PLAYER_SCREEN) {
 
-            homeViewModel.setScreen(true)
+            homeViewModel.setTopBar(
+                TopBarData(
+                    topBar = TopBar.INVITE_TEAM_MEMBERS,
+                )
+            )
+            homeViewModel.setTopAppBar(true)
+            homeViewModel.showBottomAppBar(false)
+
             BackHandler {
                 homeViewModel.setScreen(false)
                 navController.popBackStack()
@@ -259,7 +419,9 @@ fun NavControllerComposable(
                 onBackClick = { navController.popBackStack() },
                 onNextClick = {
                     navController.navigate(Route.TEAMS_SCREEN) {
-                        popUpTo(Route.HOME_SCREEN)
+                        popUpTo(Route.TEAM_SETUP_SCREEN) {
+                            inclusive = true
+                        }
                     }
                     homeViewModel.setScreen(false)
                 }, onInvitationSuccess = {
@@ -273,10 +435,11 @@ fun NavControllerComposable(
                     type = NavType.StringType
                 }),
         ) {
-            homeViewModel.setScreen(true)
+            homeViewModel.setTopAppBar(true)
+            homeViewModel.showBottomAppBar(false)
+
             BackHandler {
-                homeViewModel.setScreen(false)
-                navController.popBackStack()
+                moveBackFromAddPlayer(homeViewModel, navController)
             }
             val teamId = it.arguments?.getString("teamId")
             AddPlayersScreenUpdated(
@@ -300,27 +463,111 @@ fun NavControllerComposable(
                     topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
+            BackHandler {
+                homeViewModel.setTopAppBar(false)
+                navController.popBackStack()
+            }
             InvitationScreen()
         }
         composable(route = Route.TEAM_SETUP_SCREEN) {
-            homeViewModel.setScreen(true)
+            homeViewModel.setTopAppBar(true)
+            homeViewModel.showBottomAppBar(false)
+            homeViewModel.setTopBar(
+                TopBarData(
+                    topBar = TopBar.CREATE_TEAM,
+                )
+            )
             BackHandler {
-                homeViewModel.setScreen(false)
-                navController.popBackStack()
+                setColorToOriginalOnBack(
+                    navController,
+                    setupTeamViewModelUpdated,
+                    homeViewModel,
+                    teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
+                )
             }
             TeamSetupScreenUpdated(
                 vm = setupTeamViewModelUpdated,
-                onBackClick = { navController.popBackStack() },
+                onBackClick = {
+                    setColorToOriginalOnBack(
+                        navController,
+                        setupTeamViewModelUpdated,
+                        homeViewModel,
+                        teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
+                    )
+                },
                 onNextClick = {
                     navController.navigate(Route.ADD_PLAYER_SCREEN)
                 })
+
+
+        }
+
+        composable(route = Route.NEW_EVENT) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = stringResource(id = R.string.new_event),
+                    topBar = TopBar.NEW_EVENT,
+                )
+            )
+            NewEventScreen()
         }
 
 
-    }
+        composable(route = Route.OPEN_VENUE) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = eventTitle,
+                    topBar = TopBar.OPEN_VENUE,
+                )
+            )
+            OpenVenueTopTabs()
+        }
 
+        /*composable(route = Route.MY_LEAGUE) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = stringResource(id = R.string.back_to_school_tournament),
+                    topBar = TopBar.MY_LEAGUE
+                )
+            )
+            MyLeagueDetailScreen()
+        }*/
+    }
 }
 
+fun setColorToOriginalOnBack(
+    navController: NavHostController,
+    setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
+    homeViewModel: HomeViewModel,
+    colorCode: String
+) {
+    moveBackFromAddPlayer(homeViewModel, navController)
+    if (colorCode.isNotEmpty()) {
+        setupTeamViewModelUpdated.onEvent(
+            TeamSetupUIEventUpdated.OnColorSelected(
+                colorCode.replace(
+                    "#",
+                    ""
+                )
+            )
+        )
+    }
+}
+
+fun setColorUpdate(
+    setupTeamViewModelUpdated: SetupTeamViewModelUpdated, colorCode: String
+) {
+    if (colorCode.isNotEmpty()) {
+        setupTeamViewModelUpdated.onEvent(
+            TeamSetupUIEventUpdated.OnColorSelected(
+                colorCode.replace(
+                    "#",
+                    ""
+                )
+            )
+        )
+    }
+}
 
 fun moveBackFromAddPlayer(homeViewModel: HomeViewModel, navController: NavHostController) {
     homeViewModel.setScreen(false)

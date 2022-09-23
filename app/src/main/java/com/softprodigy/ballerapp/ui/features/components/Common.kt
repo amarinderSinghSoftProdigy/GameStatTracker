@@ -1,15 +1,21 @@
 package com.softprodigy.ballerapp.ui.features.components
 
 import androidx.annotation.FloatRange
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,8 +32,12 @@ import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,14 +50,15 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
+import com.softprodigy.ballerapp.ui.features.home.events.schedule.Space
 import com.softprodigy.ballerapp.ui.theme.ButtonColor
 import com.softprodigy.ballerapp.ui.theme.appColors
-import timber.log.Timber
 
 @Composable
 fun stringResourceByName(name: String): String {
@@ -79,10 +90,15 @@ fun TabBar(
 @Composable
 fun BoxScope.CommonTabView(
     topBarData: TopBarData,
+    userRole: String,
     backClick: () -> Unit = {},
     iconClick: (() -> Unit)? = null,
     labelClick: (() -> Unit)? = null,
+    tabIndex:Int=0
 ) {
+    if (topBarData.topBar == TopBar.EMPTY) {
+        return
+    }
 
     if (topBarData.topBar.back) {
         Box(modifier = Modifier
@@ -114,13 +130,11 @@ fun BoxScope.CommonTabView(
         modifier = Modifier
             .align(Alignment.Center)
             .background(Color.Transparent)
-            .clickable {
+            .clickable(enabled = topBarData.topBar == TopBar.TEAMS) {
                 if (topBarData.topBar == TopBar.TEAMS) {
                     if (labelClick != null) {
                         labelClick()
                     }
-                } else {
-                    Timber.e("error")
                 }
             }
             .padding(all = dimensionResource(id = R.dimen.size_16dp)),
@@ -154,16 +168,14 @@ fun BoxScope.CommonTabView(
     //Add the checks where we want to display the icon on the right corner
     when (topBarData.topBar) {
         TopBar.TEAMS -> {
-            icon = painterResource(id = R.drawable.ic_settings)
+            if (userRole.equals(UserType.COACH.key, ignoreCase = true))
+                icon = painterResource(id = R.drawable.ic_settings)
         }
         TopBar.PROFILE -> {
             icon = painterResource(id = R.drawable.ic_edit)
         }
         TopBar.MY_EVENT -> {
-            icon = painterResource(id = R.drawable.ic_add_circle)
-        }
-        TopBar.EVENT_OPPORTUNITIES -> {
-            icon = painterResource(id = R.drawable.ic_filter)
+            icon = painterResource(id = if(tabIndex===2) R.drawable.ic_filter else R.drawable.ic_add_circle)
         }
         else -> {}
     }
@@ -301,13 +313,14 @@ fun DialogButton(
 fun CommonProgressBar() {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         CircularProgressIndicator(
-            color = AppConstants.SELECTED_COLOR
+            color = MaterialTheme.appColors.material.primaryVariant
         )
     }
 }
+
 @Composable
 fun DividerCommon() {
-    Divider(thickness=dimensionResource(id = R.dimen.divider))
+    Divider(thickness = dimensionResource(id = R.dimen.divider))
 }
 
 data class TopBarData(
@@ -319,10 +332,110 @@ enum class TopBar(val stringId: String, val back: Boolean) {
     PROFILE(stringId = "profile_label", back = true),
     EDIT_PROFILE(stringId = "edit_profile", back = true),
     MY_EVENT(stringId = "events_label", back = false),
+    EVENT_DETAILS(stringId = "events_detail", back = true),
+    FILTER_EVENT(stringId = "filter_events", back = true),
+    GAME_DETAILS(stringId = "game_details", back = true),
     EVENT_LEAGUES(stringId = "events_label", back = false),
+    REGISTRATION_FORM(stringId = "registration_form", back = true),
     TEAMS(stringId = "teams_label", back = false),
     EVENT_OPPORTUNITIES(stringId = "events_label", back = false),
     MANAGE_TEAM(stringId = "", back = true),
     SINGLE_LABEL_BACK(stringId = "", back = true),
     SINGLE_LABEL(stringId = "", back = false),
+    EMPTY(stringId = "", back = false),
+    NEW_EVENT(stringId = "", back = true),
+    MY_LEAGUE(stringId = "", back = true),
+    GAME_RULES(stringId = "games_rules", back = true),
+    CREATE_TEAM(stringId = "create_a_team", back = true),
+    INVITE_TEAM_MEMBERS(stringId = "invite_team_member", back = true),
+    OPEN_VENUE(stringId = "", back = true)
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
+fun <T> FoldableItem(
+    expanded: Boolean,
+    headerBackground: Color = Color.LightGray.copy(alpha = 0.2f),
+    headerBorder: BorderStroke? = BorderStroke(1.dp, Color.LightGray.copy(alpha = 0.5f)),
+    headerMinHeight: Dp = 50.dp,
+    header: @Composable RowScope.(Boolean) -> Unit,
+    childItems: List<T>,
+    itemHorizontalPadding: Dp = 8.dp,
+    hasItemLeadingSpacing: Boolean = true,
+    hasItemTrailingSpacing: Boolean = true,
+    itemsBackground: Color = Color.White,
+    itemSpacing: Dp = 12.dp,
+    item: @Composable ColumnScope.(T, Int) -> Unit,
+    elevation: Dp = 0.dp
+) {
+    val isExpanded = remember { mutableStateOf(expanded) }
+    Surface(
+        shape = MaterialTheme.shapes.medium,
+        color = MaterialTheme.colors.background,
+        border = headerBorder,
+        elevation = elevation
+    ) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .background(headerBackground)
+                    .fillMaxWidth()
+//                    .heightIn(min = headerMinHeight)
+//                    .padding(vertical = 8.dp)
+                    .clickable { isExpanded.value = !isExpanded.value }
+            ) {
+                header(isExpanded.value)
+            }
+            AnimatedVisibility(isExpanded.value) {
+                Column(
+                    modifier = Modifier
+                        .background(itemsBackground)
+                        .padding(horizontal = itemHorizontalPadding)
+                ) {
+                    if (hasItemLeadingSpacing) Space(itemSpacing)
+                    childItems.forEachIndexed { index, value ->
+                        item(value, index)
+                        if (index < childItems.lastIndex || hasItemTrailingSpacing) Space(
+                            itemSpacing
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun CustomCheckBox(selected: Boolean, onClick: () -> Unit) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .clickable {
+                onClick()
+            }
+            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)))
+            .size(
+                dimensionResource(id = R.dimen.size_16dp)
+            )
+            .background(
+                color = if (selected) {
+                    MaterialTheme.appColors.material.primaryVariant
+                } else Color.White
+            )
+            .border(
+                width = if (selected) {
+                    0.dp
+                } else dimensionResource(id = R.dimen.size_1dp),
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)),
+                color = if (selected) {
+                    Color.Transparent
+                } else MaterialTheme.appColors.buttonColor.bckgroundDisabled
+            )
+    ) {
+        Icon(
+            imageVector = Icons.Default.Check,
+            contentDescription = null,
+        )
+    }
 }

@@ -12,8 +12,12 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -25,9 +29,11 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -49,7 +55,7 @@ import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.SignUpData
 import com.softprodigy.ballerapp.twitter_login.TwitterConstants
-import com.softprodigy.ballerapp.ui.features.components.UserType
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordScreen
 import com.softprodigy.ballerapp.ui.features.home.HomeActivity
 import com.softprodigy.ballerapp.ui.features.login.LoginScreen
@@ -57,16 +63,18 @@ import com.softprodigy.ballerapp.ui.features.select_profile.SelectProfileScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.ProfileSetUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpViewModel
+import com.softprodigy.ballerapp.ui.features.splash.SplashScreen
 import com.softprodigy.ballerapp.ui.features.user_type.UserTypeScreen
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.AddPlayersScreenUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupScreenUpdated
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
 import com.softprodigy.ballerapp.ui.features.welcome.WelcomeScreen
-import com.softprodigy.ballerapp.ui.theme.BallerAppTheme
+import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
+import com.softprodigy.ballerapp.ui.theme.ColorPrimaryOrange
 import com.softprodigy.ballerapp.ui.theme.appColors
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -99,18 +107,89 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, true)
         setContent {
-            BallerAppTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.appColors.material.primary
-                ) {
-                    CompositionLocalProvider(
-                        LocalFacebookCallbackManager provides callbackManager
+            val mainViewModel: MainViewModel = hiltViewModel()
+            val state = mainViewModel.state.value
+            BallerAppMainTheme(
+                customColor = state.color ?: MaterialTheme.appColors.material.primary
+            ) {
+                val navController = rememberNavController()
+                if (!state.showAppBar) {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.appColors.material.primary
                     ) {
-                        NavControllerComposable(this)
+                        CompositionLocalProvider(
+                            LocalFacebookCallbackManager provides callbackManager
+                        ) {
+                            NavControllerComposable(this, mainViewModel, navController)
+                        }
                     }
+                } else {
+                    Scaffold(
+                        backgroundColor = MaterialTheme.appColors.material.primary,
+                        topBar = {
+                            if (state.showAppBar) {
+                                TabBar(color = MaterialTheme.appColors.material.primaryVariant) {
+                                    CommonTabView(
+                                        topBarData = state.topBar,
+                                        userRole = "",
+                                        backClick = {
+                                            mainViewModel.onEvent(MainEvent.OnShowTopBar(showAppBar =false))
+                                            navController.popBackStack()
+                                        },
+                                        labelClick = {
+                                        },
+                                        iconClick = {
+                                        }
+                                    )
+                                }
+                            }
+                        },
+                        content = {
+                            Box(
+                                modifier = Modifier
+                                    .padding(it)
+                                    .background(
+                                        color = MaterialTheme.appColors.material.primary
+                                    )
+                            ) {
+                                CompositionLocalProvider(
+                                    LocalFacebookCallbackManager provides callbackManager
+                                ) {
+                                    NavControllerComposable(
+                                        this@MainActivity,
+                                        mainViewModel,
+                                        navController
+                                    )
+                                }
+                                /*  com.softprodigy.ballerapp.ui.features.home.NavControllerComposable(
+                                      homeViewModel,
+                                      teamViewModel,
+                                      eventViewModel,
+                                      navController = navController,
+                                      showDialog = state.showDialog,
+                                      fromSplash = fromSplash
+                                  )*/
+                            }
+                        },
+                        /* bottomBar = {
+                             BottomNavigationBar(
+                                 state.bottomBar,
+                                 navController = navController,
+                                 selectionColor = state.color ?: Color.Black
+                             ) {
+                                 homeViewModel.setBottomNav(it)
+                                 if (it == BottomNavKey.HOME) {
+                                     homeViewModel.setAppBar(false)
+                                 } else {
+                                     homeViewModel.setAppBar(true)
+                                 }
+                             }
+                         },*/
+                    )
                 }
+
+
             }
         }
     }
@@ -242,21 +321,25 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun NavControllerComposable(activity: MainActivity) {
-    val navController = rememberNavController()
+fun NavControllerComposable(
+    activity: MainActivity,
+    mainViewModel: MainViewModel,
+    navController: NavHostController
+) {
+//    val navController = rememberNavController()
     val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = viewModel()
     val signUpViewModel: SignUpViewModel = viewModel()
     val context = LocalContext.current
     val dataStoreManager = DataStoreManager(activity)
     val userToken = dataStoreManager.userToken.collectAsState(initial = "")
+    UserStorage.token = userToken.value
     val getRole = dataStoreManager.getRole.collectAsState(initial = "")
     val email = dataStoreManager.getEmail.collectAsState(initial = "")
     val scope = rememberCoroutineScope()
     val color = dataStoreManager.getWalkThrough.collectAsState(initial = "")
     NavHost(navController, startDestination = SPLASH_SCREEN) {
         composable(route = SPLASH_SCREEN) {
-            LaunchedEffect(key1 = true) {
-                delay(1000L)
+            SplashScreen {
                 scope.launch {
                     if (userToken.value.isNotEmpty()) {
                         if (getRole.value.equals(AppConstants.USER_TYPE_USER, ignoreCase = true)) {
@@ -329,6 +412,7 @@ fun NavControllerComposable(activity: MainActivity) {
                                 firstName = it?.user?.firstName ?: "",
                                 lastName = it?.user?.lastName ?: "",
                             )
+                        signUpViewModel.signUpUiState.value.isSocialUser =true
                     }
                     val check =
                         it?.user?.role.equals(AppConstants.USER_TYPE_USER, ignoreCase = true)
@@ -392,6 +476,8 @@ fun NavControllerComposable(activity: MainActivity) {
         }
 
         composable(route = SELECT_USER_TYPE) {
+            mainViewModel.onEvent(MainEvent.OnShowTopBar(showAppBar =false))
+
             BackHandler {}
 
             UserTypeScreen(
@@ -411,15 +497,40 @@ fun NavControllerComposable(activity: MainActivity) {
         }
 
         composable(route = TEAM_SETUP_SCREEN) {
+            mainViewModel.onEvent(
+                MainEvent.OnTopBarChanges(
+                    showAppBar = true, TopBarData(
+                        topBar = TopBar.CREATE_TEAM,
+                    )
+                )
+            )
+            mainViewModel.onEvent(MainEvent.OnColorChanges(ColorPrimaryOrange))
+
+            BackHandler {
+                mainViewModel.onEvent(MainEvent.OnShowTopBar(showAppBar =false))
+                navController.popBackStack()
+            }
+
             TeamSetupScreenUpdated(
                 vm = setupTeamViewModelUpdated,
-                onBackClick = { navController.popBackStack() },
+                onBackClick = {
+                    mainViewModel.onEvent(MainEvent.OnShowTopBar(showAppBar =false))
+                    navController.popBackStack() },
                 onNextClick = {
                     navController.navigate(ADD_PLAYER_SCREEN)
                 })
         }
 
         composable(route = ADD_PLAYER_SCREEN) {
+            mainViewModel.onEvent(
+                MainEvent.OnTopBarChanges(
+                    showAppBar = true, TopBarData(
+                        topBar = TopBar.INVITE_TEAM_MEMBERS,
+                    )
+                )
+            )
+            mainViewModel.onEvent(MainEvent.OnColorChanges(AppConstants.SELECTED_COLOR))
+
             AddPlayersScreenUpdated(
                 vm = setupTeamViewModelUpdated,
                 onBackClick = { navController.popBackStack() },

@@ -18,7 +18,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -66,8 +65,6 @@ fun WelcomeScreen(onNextScreen: () -> Unit) {
     val pagerState = rememberPagerState(
         pageCount = items.size,
         initialOffScreenLimit = 2,
-        infiniteLoop = false,
-        initialPage = 0
     )
 
     Box(

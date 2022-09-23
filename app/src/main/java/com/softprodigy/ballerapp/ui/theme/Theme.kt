@@ -5,11 +5,7 @@ import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.softprodigy.ballerapp.common.AppConstants
@@ -22,6 +18,7 @@ data class EditField(
 
 data class TextFieldColor(
     val label: Color,
+    val labelDark: Color,
     val indicator: Color
 )
 
@@ -89,7 +86,8 @@ private val LightColorPalette = appColors(
     ),
     textField = TextFieldColor(
         label = text_field_label,
-        indicator = text_field_indicator
+        labelDark = text_field_label_dark,
+        indicator = text_field_indicator,
     ),
     spinnerColo = SpinnerColor(
         popupBackground = spiner_popup_background,

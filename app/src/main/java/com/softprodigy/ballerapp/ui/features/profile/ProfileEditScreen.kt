@@ -3,6 +3,9 @@ package com.softprodigy.ballerapp.ui.features.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,8 +21,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Checkbox
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,7 +42,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.CheckBoxData
 import com.softprodigy.ballerapp.data.response.Team
@@ -47,6 +51,7 @@ import com.softprodigy.ballerapp.ui.features.components.DividerCommon
 import com.softprodigy.ballerapp.ui.features.components.EditProfileFields
 import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
+import com.softprodigy.ballerapp.ui.theme.appColors
 import com.softprodigy.ballerapp.ui.theme.error
 
 @Composable
@@ -64,12 +69,12 @@ fun ProfileEditScreen(
     var waistSize by rememberSaveable { mutableStateOf("32") }
     var shirtSize by rememberSaveable { mutableStateOf("Adult, L") }
 
-    var favColgTeam by rememberSaveable { mutableStateOf("Team Name") }
+    val favColgTeam by rememberSaveable { mutableStateOf("Team Name") }
     var favNbaTeam by rememberSaveable { mutableStateOf("Team Name") }
     var favActivePlayer by rememberSaveable { mutableStateOf("Team Name") }
     var favAllTIme by rememberSaveable { mutableStateOf("Team Name") }
 
-    var listOfCheckbox = listOf(
+    val listOfCheckbox = listOf(
         CheckBoxData(stringResource(id = R.string.pg)),
         CheckBoxData(stringResource(id = R.string.sg)),
         CheckBoxData(stringResource(id = R.string.sf)),
@@ -91,6 +96,7 @@ fun ProfileEditScreen(
                     .padding(top = dimensionResource(id = R.dimen.size_16dp)),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_32dp)))
                 Image(
                     painter = painterResource(id = R.drawable.user_demo),
                     contentDescription = "",
@@ -99,6 +105,7 @@ fun ProfileEditScreen(
                         .padding(bottom = dimensionResource(id = R.dimen.size_16dp))
                         .clip(CircleShape)
                 )
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_48dp)))
                 DividerCommon()
                 EditProfileFields(
                     firstName,
@@ -184,16 +191,15 @@ fun ProfileEditScreen(
 
         AppText(
             text = stringResource(id = R.string.positons),
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.h2,
             color = ColorBWBlack,
-            fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
             modifier = Modifier
                 .padding(start = dimensionResource(id = R.dimen.size_16dp))
                 .fillMaxWidth()
         )
 
         UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
-            Row {
+            Row(modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp))) {
                 listOfCheckbox.forEachIndexed { index, item ->
                     CheckBoxItem(item = item)
                 }
@@ -202,9 +208,8 @@ fun ProfileEditScreen(
 
         AppText(
             text = stringResource(id = R.string.teams_label),
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.h2,
             color = ColorBWBlack,
-            fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
             modifier = Modifier
                 .padding(start = dimensionResource(id = R.dimen.size_16dp))
                 .fillMaxWidth(),
@@ -215,9 +220,8 @@ fun ProfileEditScreen(
 
         AppText(
             text = stringResource(id = R.string.jersey_pref),
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.h2,
             color = ColorBWBlack,
-            fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
             modifier = Modifier
                 .padding(start = dimensionResource(id = R.dimen.size_16dp))
                 .fillMaxWidth()
@@ -280,9 +284,8 @@ fun ProfileEditScreen(
         }
         AppText(
             text = stringResource(id = R.string.fun_facts),
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.h2,
             color = ColorBWBlack,
-            fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
             modifier = Modifier
                 .padding(start = dimensionResource(id = R.dimen.size_16dp))
                 .fillMaxWidth(),
@@ -365,34 +368,28 @@ fun Teams() {
     var position by rememberSaveable { mutableStateOf("PG") }
     var jerseyNo by rememberSaveable { mutableStateOf("17") }
 
-    var teams: List<Team> = listOf<Team>(
+    val teams: List<Team> = listOf<Team>(
         Team(name = "Springfield Bucks", role = "Player"),
     )
     teams.forEach {
         Column(
             modifier = Modifier
-                .clip(RoundedCornerShape(10.dp))
+                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
                 .fillMaxSize()
                 .background(color = Color.White)
-                .padding(
-                    top = dimensionResource(id = R.dimen.size_10dp),
-                    bottom = dimensionResource(id = R.dimen.size_10dp)
-                )
         ) {
             Row(
-                modifier = Modifier
-                    .padding(
-                        start = dimensionResource(id = R.dimen.size_10dp),
-                        end = dimensionResource(id = R.dimen.size_10dp),
-                        bottom = dimensionResource(id = R.dimen.size_10dp)
-                    )
+                modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp))
             ) {
-                Row(modifier = Modifier.weight(1f)) {
+                Row(
+                    modifier = Modifier.weight(1f),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Image(
                         painter = painterResource(id = R.drawable.user_demo),
                         contentDescription = "",
                         modifier = Modifier
-                            .size(dimensionResource(id = R.dimen.size_20dp))
+                            .size(dimensionResource(id = R.dimen.size_24dp))
                             .clip(CircleShape)
                     )
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
@@ -457,14 +454,48 @@ fun Teams() {
 
 @Composable
 fun CheckBoxItem(item: CheckBoxData) {
-    Row {
-        Checkbox(
-            checked = item.isChecked,
-            onCheckedChange = { item.isChecked = it },
+    Row(
+        verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(
+            end = dimensionResource(id = R.dimen.size_12dp),
         )
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .clickable {
+                    item.isChecked = !item.isChecked
+                }
+                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)))
+                .size(
+                    dimensionResource(id = R.dimen.size_16dp)
+                )
+                .background(
+                    color =
+                    if (item.isChecked) {
+                        MaterialTheme.appColors.material.primaryVariant
+                    } else Color.White
+                )
+                .border(
+                    width =
+                    if (item.isChecked) {
+                        0.dp
+                    } else dimensionResource(id = R.dimen.size_1dp),
+                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)),
+                    color = if (item.isChecked)
+                        Color.Transparent
+                    else
+                        MaterialTheme.appColors.buttonColor.bckgroundDisabled
+                )
+        ) {
+            Icon(
+                imageVector = Icons.Default.Check,
+                contentDescription = null,
+            )
+        }
+        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
         AppText(
             text = stringResource(id = R.string.pg),
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.body1,
             color = ColorBWBlack,
         )
     }

@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -32,6 +33,7 @@ import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
+import com.softprodigy.ballerapp.ui.features.home.events.venues.VenuesScreen
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
 
@@ -119,7 +121,7 @@ fun TabsContent(pagerState: PagerState, tabUpdate: (Int) -> Unit) {
     HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
         when (page) {
             0 -> {
-                TabContentScreen(data = "Welcome to Home Screen")
+                /*VenuesScreen()*/
             }
             1 -> {
                 TabContentScreen(data = "Welcome to Shopping Screen")
@@ -152,6 +154,7 @@ fun BoxScope.TabContentScreen(data: String) {
             color = MaterialTheme.appColors.textField.label,
             text = stringResource(id = R.string.no_upcoming_events),
             fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
+            fontWeight = FontWeight.W700
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
         Text(

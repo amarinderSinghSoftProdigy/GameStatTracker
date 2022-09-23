@@ -1,20 +1,35 @@
 package com.softprodigy.ballerapp.ui.features.home.invitation
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -24,7 +39,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.apiToUIDateFormat
+import com.softprodigy.ballerapp.ui.features.components.CoilImage
+import com.softprodigy.ballerapp.ui.features.components.DeleteDialog
+import com.softprodigy.ballerapp.ui.features.components.Placeholder
 import com.softprodigy.ballerapp.ui.features.components.SelectInvitationRoleDialog
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayStatus
 import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
 import com.softprodigy.ballerapp.ui.theme.ColorButtonRed
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -32,26 +52,53 @@ import com.softprodigy.ballerapp.ui.theme.appColors
 @Composable
 fun InvitationScreen(vm: InvitationViewModel = hiltViewModel()) {
     val state = vm.invitationState.value
-    Column(
-        Modifier
-            .fillMaxSize()
-            .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
-    ) {
-        LazyColumn(Modifier.fillMaxWidth()) {
-            items(state.invitations) { invitation ->
-                InvitationItem(invitation = invitation, onAcceptCLick = {
-                    vm.onEvent(InvitationEvent.OnAcceptCLick(it))
-                }, onDeclineCLick = {
-                    vm.onEvent(InvitationEvent.OnDeclineCLick(it))
-                })
+    val context = LocalContext.current
+
+
+    LaunchedEffect(key1 = true) {
+        vm.invitationChannel.collect {
+            when (it) {
+                is InvitationChannel.ShowToast -> {
+                    Toast.makeText(context, it.message.asString(context), Toast.LENGTH_LONG)
+                        .show()
+                }
+                is InvitationChannel.Success -> {
+                    Toast.makeText(context, it.message.asString(context), Toast.LENGTH_LONG)
+                        .show()
+                    vm.getAllInvitation()
+                }
             }
         }
-
     }
-    if (state.showDialog) {
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
+        ) {
+            LazyColumn(Modifier.fillMaxWidth()) {
+                items(state.invitations) { invitation ->
+                    InvitationItem(invitation = invitation, onAcceptCLick = {
+                        vm.onEvent(InvitationEvent.OnAcceptCLick(it))
+                    }, onDeclineCLick = {
+                        vm.onEvent(InvitationEvent.OnDeclineCLick(it))
+                    })
+                }
+            }
+
+        }
+        if (state.showLoading) {
+            CircularProgressIndicator(
+                color = MaterialTheme.appColors.material.primaryVariant,
+                modifier = Modifier.align(Alignment.Center)
+            )
+        }
+    }
+    if (state.showRoleDialog) {
         SelectInvitationRoleDialog(
-            onDismiss = { vm.onEvent(InvitationEvent.OnDialogClick(false)) },
-            onConfirmClick = { /*TODO*/ },
+            onDismiss = { vm.onEvent(InvitationEvent.OnRoleDialogClick(false)) },
+            onConfirmClick = { vm.onEvent(InvitationEvent.OnRoleConfirmClick) },
             onSelectionChange = { vm.onEvent(InvitationEvent.OnRoleClick(role = it)) },
             title = stringResource(id = R.string.what_is_your_role),
             selected = state.selectedRole,
@@ -59,14 +106,28 @@ fun InvitationScreen(vm: InvitationViewModel = hiltViewModel()) {
             roleList = state.roles
         )
     }
+    if (state.showDeclineDialog) {
+        DeleteDialog(
+            item = state.selectedInvitation,
+            message = stringResource(id = R.string.alert_decline_invitation),
+            onDismiss = {
+                vm.onEvent(InvitationEvent.OnDeleteDialogClick(false))
+            },
+            onDelete = {
+                if (state.selectedInvitation.id.isNotEmpty()) {
+                    vm.onEvent(InvitationEvent.OnDeclineConfirmClick(state.selectedInvitation))
+                }
+            }
+        )
+    }
 }
 
 @Composable
 fun InvitationItem(
     modifier: Modifier = Modifier,
-    invitation: InvitationDemoModel,
-    onAcceptCLick: (InvitationDemoModel) -> Unit,
-    onDeclineCLick: (InvitationDemoModel) -> Unit
+    invitation: Invitation,
+    onAcceptCLick: (Invitation) -> Unit,
+    onDeclineCLick: (Invitation) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -90,19 +151,25 @@ fun InvitationItem(
                 ),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            AsyncImage(
-                model = BuildConfig.IMAGE_SERVER + invitation.logo, contentDescription = "",
+            CoilImage(
+                src = BuildConfig.IMAGE_SERVER + invitation.team.logo,
                 modifier =
                 Modifier
                     .size(dimensionResource(id = R.dimen.size_44dp))
-                    .clip(CircleShape),
-                contentScale = ContentScale.FillBounds
+                    .clip(CircleShape)
+                    .background(
+                        color = Color.Transparent,
+                        shape = CircleShape
+                    ),
+                isCrossFadeEnabled = false,
+                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                onError = {Placeholder(R.drawable.ic_team_placeholder)}
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
 
             Column(Modifier.weight(1f)) {
                 Text(
-                    text = invitation.title,
+                    text = invitation.team.name,
                     color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                     fontWeight = FontWeight.Bold,
@@ -110,10 +177,10 @@ fun InvitationItem(
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
                 Text(
-                    text = " ${stringResource(id = R.string.sent_by)} ${invitation.sentBy}",
+                    text = " ${stringResource(id = R.string.sent_by)} ${invitation.name}",
                     color = MaterialTheme.appColors.textField.label,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                    fontWeight = FontWeight.W400,
+                    fontWeight = FontWeight.W500,
                 )
             }
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
@@ -122,15 +189,15 @@ fun InvitationItem(
                     .height(dimensionResource(id = R.dimen.size_44dp))
             ) {
                 Text(
-                    text = invitation.time,
+                    text = apiToUIDateFormat(invitation.createdAt),
                     color = MaterialTheme.appColors.textField.label,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                    fontWeight = FontWeight.W400,
+                    fontWeight = FontWeight.W500,
                     modifier = Modifier.align(Alignment.BottomStart)
                 )
             }
         }
-        if (invitation.status.equals("pending", ignoreCase = true)) {
+        if (invitation.status.equals(InvitationStatus.PENDING.status, ignoreCase = true)) {
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -149,7 +216,7 @@ fun InvitationItem(
                     Modifier
                         .weight(1f)
                         .clickable {
-                            onAcceptCLick.invoke(invitation)
+                            onDeclineCLick.invoke(invitation)
                         }
                         .padding(dimensionResource(id = R.dimen.size_14dp)),
                     horizontalArrangement = Arrangement.Center,
@@ -175,7 +242,7 @@ fun InvitationItem(
                     Modifier
                         .weight(1f)
                         .clickable {
-                            onDeclineCLick.invoke(invitation)
+                            onAcceptCLick.invoke(invitation)
                         }
                         .padding(dimensionResource(id = R.dimen.size_14dp)),
                     horizontalArrangement = Arrangement.Center,
@@ -197,7 +264,8 @@ fun InvitationItem(
                 }
 
             }
-        } else if (invitation.status.equals("accepted", ignoreCase = true)) {
+        } else if (invitation.status.equals(InvitationStatus.ACCEPT.status, ignoreCase = true) ||
+            invitation.status.equals(InvitationStatus.ACCEPTED.status, ignoreCase = true)) {
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -231,7 +299,8 @@ fun InvitationItem(
                     fontWeight = FontWeight.W500,
                 )
             }
-        } else if (invitation.status.equals("declined", ignoreCase = true)) {
+        } else if (invitation.status.equals(InvitationStatus.REJECT.status, ignoreCase = true)
+            || invitation.status.equals(InvitationStatus.DECLINED.status, ignoreCase = true)) {
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -259,7 +328,7 @@ fun InvitationItem(
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                 Text(
-                    text = stringResource(id = R.string.decline),
+                    text = stringResource(id = R.string.declined),
                     color = MaterialTheme.appColors.buttonColor.textEnabled,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                     fontWeight = FontWeight.W500,

@@ -13,5 +13,6 @@ data class User(
     @SerializedName("address") val address: String = "",
     @SerializedName("gender") val gender: String = "",
     @SerializedName("birthdate") val birthdate: String = "",
-    @SerializedName("id") val id: String = ""
+    @SerializedName("id") val id: String = "",
+    @SerializedName("profileImage") val profileImage: String = ""
 )

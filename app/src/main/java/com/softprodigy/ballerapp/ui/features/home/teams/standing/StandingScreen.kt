@@ -2,8 +2,8 @@ package com.softprodigy.ballerapp.ui.features.home.teams.standing
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,8 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
@@ -30,79 +30,71 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImage
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.data.response.Categories
 import com.softprodigy.ballerapp.data.response.Standing
 import com.softprodigy.ballerapp.ui.features.components.AppTab
 import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.CoilImage
 import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
+import com.softprodigy.ballerapp.ui.features.components.Placeholder
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
-import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun StandingScreen(
     vm: StandingViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
     val state = vm.standingUiState.value
-
-    val standingTabData = listOf(
-        StandingTabItems.RECORD,
-        StandingTabItems.WIN,
-        StandingTabItems.GB,
-        StandingTabItems.HOME,
-        StandingTabItems.AWAY,
-        StandingTabItems.PF
-    )
-    val pagerState = rememberPagerState(
-        pageCount = standingTabData.size,
-        initialOffScreenLimit = 1,
-        infiniteLoop = true,
-        initialPage = 0,
-    )
-
     val onStandingSelectionChange = { standing: Standing ->
         vm.onEvent(StandingUIEvent.OnStandingSelected(standing))
     }
-
-
-    Column(Modifier.fillMaxSize()) {
-        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
-        StandingTopTabs(pagerState, standingTabData)
-        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-
-            itemsIndexed(state.standing) { index, standing ->
-                StandingListItem(
-                    index + 1,
-                    standing = standing,
-                    selected = state.selectedStanding == standing
+    Box {
+        if (state.isLoading) {
+            CommonProgressBar()
+        } else {
+            val pagerState = rememberPagerState(
+                pageCount = state.categories.size,
+                initialOffScreenLimit = 1,
+            )
+            Column(Modifier.fillMaxSize()) {
+                Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
+                StandingTopTabs(pagerState, state.categories)
+                Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
                 ) {
-                    onStandingSelectionChange.invoke(standing)
-                }
 
+                    itemsIndexed(state.standing) { index, standing ->
+                        StandingListItem(
+                            index + 1,
+                            standing = standing,
+                            selected = state.selectedStanding == standing,
+                            key = state.categories[pagerState.currentPage].key
+                        ) {
+                            onStandingSelectionChange.invoke(standing)
+                        }
+
+                    }
+                }
+                Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_24dp)))
             }
         }
     }
-    if (state.isLoading) {
-        CommonProgressBar()
-    }
+
+
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -112,8 +104,21 @@ fun StandingListItem(
     roundBorderImage: Boolean = false,
     standing: Standing,
     selected: Boolean,
+    key: String,
     onClick: (Standing) -> Unit
 ) {
+    var points: String = ""
+    if (key == "winPer") {
+        points = standing.WinPer
+    } else {
+        val jsonPlayer = JSONObject(standing.toString())
+        try {
+            points = jsonPlayer[key].toString()
+        } catch (e: Exception) {
+            points = ""
+        }
+    }
+
     Row(
         Modifier
             .fillMaxWidth()
@@ -127,7 +132,7 @@ fun StandingListItem(
             modifier = Modifier
                 .weight(1f)
                 .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-                .background(color = if (selected) MaterialTheme.appColors.material.primaryVariant else Color.White)
+                .background(color = if (selected) MaterialTheme.appColors.material.primaryVariant else MaterialTheme.appColors.material.surface)
                 .clickable { onClick(standing) },
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -152,18 +157,24 @@ fun StandingListItem(
                     fontSize = dimensionResource(
                         id = R.dimen.txt_size_12
                     ).value.sp,
-                    fontWeight = FontWeight.W600
+                    fontWeight = FontWeight.W400,
+                    modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp))
                 )
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
-                AsyncImage(
-                    model = BuildConfig.IMAGE_SERVER + standing.logo,
-                    contentDescription = "",
-                    modifier =
-                    Modifier
-                        .size(dimensionResource(id = R.dimen.size_32dp))
-                        .clip(CircleShape),
-                    contentScale = ContentScale.FillBounds
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
 
+                CoilImage(
+                    src = BuildConfig.IMAGE_SERVER + standing.logo,
+                    modifier = Modifier
+                        .size(dimensionResource(id = R.dimen.size_32dp))
+                        .clip(CircleShape).background(
+                            color = MaterialTheme.appColors.material.onSurface,
+                            CircleShape
+                        ),
+                    onError = {
+                        Placeholder(R.drawable.ic_team_placeholder)
+                    },
+                    onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                    isCrossFadeEnabled = false
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
                 Text(
@@ -192,7 +203,7 @@ fun StandingListItem(
                 }
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
                 Text(
-                    text = standing.standings,
+                    text = points,
                     fontWeight = FontWeight.Bold,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                     color = if (selected) {
@@ -220,19 +231,21 @@ enum class StandingTabItems(val stringId: String, val key: String) {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun StandingTopTabs(pagerState: PagerState, tabData: List<StandingTabItems>) {
+fun StandingTopTabs(pagerState: PagerState, tabData: List<Categories>) {
     val coroutineScope = rememberCoroutineScope()
-    Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
-        tabData.forEachIndexed { index, item ->
-            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
-            AppTab(
-                title = stringResourceByName(item.stringId),
-                selected = pagerState.currentPage == index,
-                onClick = {
-                    coroutineScope.launch {
-                        pagerState.animateScrollToPage(index)
-                    }
-                })
+    LazyRow {
+        itemsIndexed(tabData) { index, item ->
+            Row {
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+                AppTab(
+                    title = item.name,
+                    selected = pagerState.currentPage == index,
+                    onClick = {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(index)
+                        }
+                    })
+            }
         }
     }
 }

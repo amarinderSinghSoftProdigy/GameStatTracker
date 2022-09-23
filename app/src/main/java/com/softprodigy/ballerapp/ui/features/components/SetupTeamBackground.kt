@@ -30,7 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -39,7 +38,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberImagePainter
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.theme.appColors
 
@@ -83,7 +81,7 @@ fun CoachFlowBackground(
                     ),
                     modifier = Modifier
                         .padding(
-                            bottom = dimensionResource(id = R.dimen.size_30dp),
+                            bottom = dimensionResource(id = R.dimen.size_10dp),
                             end = dimensionResource(id = R.dimen.size_20dp),
                             start = dimensionResource(id = R.dimen.size_20dp),
                             top = dimensionResource(id = R.dimen.size_20dp)
@@ -95,7 +93,7 @@ fun CoachFlowBackground(
                             .size(dimensionResource(id = R.dimen.size_200dp))
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_ball_green),
+                            painter = painterResource(id = R.drawable.ic_ball_lines),
                             contentDescription = "center ball Icon",
                             tint = colorResource(id = R.color.black),
                             modifier = Modifier.fillMaxSize()
@@ -109,54 +107,54 @@ fun CoachFlowBackground(
             Box(modifier = Modifier.fillMaxSize()) {
                 content()
                 Column(
-                    modifier = Modifier.align(Alignment.TopEnd)
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(end = dimensionResource(id = R.dimen.size_16dp)),
+                    horizontalAlignment = Alignment.End
                 ) {
                     Box(
                         modifier = Modifier
-                            .size(dimensionResource(id = R.dimen.size_200dp))
-                    ) {
-                        Image(
-                            painter = if ((teamLogo
-                                    ?: "").isNotEmpty()
-                            ) rememberImagePainter(data = teamLogo) else painterResource(
-                                id = R.drawable.ic_ball
+                            .background(color = Color.Transparent)
+                            .padding(
+                                top = dimensionResource(id = R.dimen.size_50dp),
+                                bottom = dimensionResource(id = R.dimen.size_16dp)
                             ),
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .align(Alignment.CenterEnd)
-                                .padding(
-                                    end = dimensionResource(id = R.dimen.size_16dp),
-                                    top = dimensionResource(
-                                        id = R.dimen.size_18dp
+                        contentAlignment = Alignment.CenterEnd
+                    ) {
+                        teamLogo?.let {
+                            CoilImage(
+                                src = it,
+                                modifier = Modifier
+                                    .size(dimensionResource(id = R.dimen.size_65dp))
+                                    .clip(CircleShape)
+                                    .clickable {
+                                        showOptions.value = !showOptions.value
+                                    }
+                                    .background(
+                                        color = MaterialTheme.appColors.material.onSurface,
+                                        CircleShape
                                     )
-                                )
-                                .size(dimensionResource(id = R.dimen.size_65dp))
-                                .clip(CircleShape)
-                                .border(
-                                    dimensionResource(id = R.dimen.size_3dp),
-                                    MaterialTheme.colors.surface,
-                                    CircleShape
-                                )
-                                .clickable {
-                                    showOptions.value = !showOptions.value
-                                }
-                        )
+                                    .border(
+                                        dimensionResource(id = R.dimen.size_3dp),
+                                        MaterialTheme.colors.surface,
+                                        CircleShape
+                                    ),
+                                isCrossFadeEnabled = false,
+                                onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
+                                onError = { Placeholder(R.drawable.ic_user_profile_icon) }
+                            )
+                        }
                     }
                     if (showOptions.value) {
                         Surface(
                             modifier = Modifier
-                                .align(Alignment.End)
-                                .absoluteOffset(
-                                    y = -dimensionResource(id = R.dimen.size_50dp)
-                                ),
+                                .align(Alignment.End),
                             elevation = dimensionResource(id = R.dimen.size_10dp),
                             color = Color.Transparent
                         ) {
                             Column(
                                 Modifier
                                     .width(dimensionResource(id = R.dimen.size_150dp))
-                                    .padding(end = dimensionResource(id = R.dimen.size_16dp))
                                     .background(
                                         color = Color.White,
                                         RoundedCornerShape(dimensionResource(id = R.dimen.size_10dp))
@@ -229,6 +227,7 @@ fun UserFlowBackground(
 
 @Composable
 fun BottomButtons(
+    modifier: Modifier = Modifier,
     firstText: String = stringResource(id = R.string.back),
     secondText: String = stringResource(id = R.string.next),
     onBackClick: () -> Unit,
@@ -238,7 +237,7 @@ fun BottomButtons(
     themed: Boolean = false,
 ) {
     Row(
-        Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(
                 start = dimensionResource(id = R.dimen.size_16dp),

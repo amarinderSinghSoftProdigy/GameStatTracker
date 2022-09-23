@@ -11,7 +11,7 @@
     <dimen name="txt_size_20">20sp</dimen>
     <dimen name="txt_size_24">24sp</dimen>
     <dimen name="txt_size_31">31sp</dimen>
-    <dimen name="txt_size_36">18sp</dimen>
+    <dimen name="txt_size_36">36sp</dimen>
 
     <dimen name="size_1dp">1dp</dimen>
     <dimen name="size_2dp">2dp</dimen>

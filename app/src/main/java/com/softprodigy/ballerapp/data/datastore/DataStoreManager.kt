@@ -19,7 +19,7 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
     private val settingsDataStore = appContext.dataStore
 
     suspend fun saveToken(token: String) {
-        UserStorage.token=token
+        UserStorage.token = token
         settingsDataStore.edit { settings ->
             settings[USER_TOKEN] = token
         }
@@ -30,7 +30,7 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
     }
 
     suspend fun setRole(role: String) {
-        UserStorage.role=role
+        UserStorage.role = role
         settingsDataStore.edit { settings ->
             settings[ROLE] = role
         }
@@ -71,21 +71,41 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
     }
 
     val getColor: Flow<String> = settingsDataStore.data.map { preferences ->
-        preferences[COLOR] ?: ""
+       val color = preferences[COLOR]?.replace(
+           "#",
+           ""
+       )?: ""
+        color
     }
 
     val getWalkThrough: Flow<String> = settingsDataStore.data.map { preferences ->
         preferences[SKIP_WALKTHROUGH] ?: ""
     }
+
     suspend fun skipWalkthrough(color: String) {
         settingsDataStore.edit { settings ->
             settings[SKIP_WALKTHROUGH] = color
         }
     }
+
     suspend fun setColor(color: String) {
+        val newColor= color.replace(
+            "#",
+            ""
+        )
         settingsDataStore.edit { settings ->
-            settings[COLOR] = color
+            settings[COLOR] = newColor
         }
+    }
+
+    suspend fun setId(id: String) {
+        settingsDataStore.edit { settings ->
+            settings[ID] = id
+        }
+    }
+
+    val getId: Flow<String> = settingsDataStore.data.map { preferences ->
+        preferences[ID] ?: ""
     }
 
     companion object {
@@ -97,5 +117,6 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
         val COLOR = stringPreferencesKey("COLOR")
         val SKIP_WALKTHROUGH = stringPreferencesKey("SKIP_WALKTHROUGH")
         val EMAIL = stringPreferencesKey("EMAIL")
+        val ID = stringPreferencesKey("ID")
     }
 }

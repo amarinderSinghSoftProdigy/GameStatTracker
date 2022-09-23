@@ -24,6 +24,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.dimensionResource
@@ -34,6 +35,8 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.ui.theme.ButtonColor
 import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
+import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayMedium
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -173,7 +176,7 @@ fun ButtonWithLeadingIcon(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    painter: Painter,
+    painter: Painter? = null,
     colors: ButtonColor = MaterialTheme.appColors.buttonColor,
     contentPadding: PaddingValues = PaddingValues(
         vertical = dimensionResource(id = R.dimen.size_16dp),
@@ -181,6 +184,7 @@ fun ButtonWithLeadingIcon(
     ),
     isTransParent: Boolean = false,
     iconSize: Dp = dimensionResource(id = R.dimen.size_10dp),
+    iconAllowed: Boolean = true
 ) {
     Row(
         modifier = modifier
@@ -210,20 +214,22 @@ fun ButtonWithLeadingIcon(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            painter = painter,
-            contentDescription = "",
-            tint = if (isTransParent) {
-                AppConstants.SELECTED_COLOR
-            } else {
-                colors.textEnabled
-            },
-            modifier = Modifier.size(
-                iconSize
-            )
+        if (iconAllowed) {
+            Icon(
+                painter = painter!!,
+                contentDescription = "",
+                tint = if (isTransParent) {
+                    AppConstants.SELECTED_COLOR
+                } else {
+                    colors.textEnabled
+                },
+                modifier = Modifier.size(
+                    iconSize
+                )
 
-        )
-        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_12dp)))
+            )
+            Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_12dp)))
+        }
 
         AppText(
             text = text,
@@ -306,7 +312,7 @@ fun InviteTeamMemberButton(
                 width = 1.dp,
                 color =
                 if (isTransParent)
-                    MaterialTheme.appColors.editField.borderFocused else {
+                    Color.Transparent else {
                     AppConstants.SELECTED_COLOR
                 },
                 shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_6dp))
@@ -353,6 +359,80 @@ fun InviteTeamMemberButton(
         )
     }
 }
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun TransparentButtonButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    shape: Shape = RoundedCornerShape(8.dp),
+    border: BorderStroke? = BorderStroke(
+        width = dimensionResource(id = R.dimen.size_1dp),
+        color = MaterialTheme.appColors.buttonColor.textDisabled.copy(
+            alpha = 0.4f
+        )
+    ),
+    contentPadding: PaddingValues = PaddingValues(
+        vertical = dimensionResource(id = R.dimen.size_10dp),
+        horizontal = dimensionResource(id = R.dimen.size_10dp),
+    ),
+    text: String? = null,
+    icon: Painter? = null,
+
+    ) {
+//    val contentColor = if (enabled) colors.textEnabled else colors.textDisabled
+
+    Surface(
+        onClick = onClick,
+        modifier = modifier,
+        enabled = enabled,
+        shape = shape,
+        color = Color.Transparent,
+        border = border,
+        elevation = if (enabled && icon != null) {
+            dimensionResource(id = R.dimen.size_10dp)
+        } else {
+            0.dp
+        }
+    ) {
+        Row(
+            Modifier.padding(contentPadding),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+
+            if (icon != null) {
+                Icon(
+                    painter = icon,
+                    modifier = Modifier
+                        .size(dimensionResource(R.dimen.size_10dp)),
+                    contentDescription = null,
+                    tint = MaterialTheme.appColors.buttonColor.textDisabled.copy(
+                        alpha = 0.8f
+                    )
+                )
+                AppText(
+                    textAlign = TextAlign.Center,
+                    text = text!!,
+                    color = ColorBWGrayMedium,
+                    style = MaterialTheme.typography.h6,
+                    modifier = Modifier
+                        .padding(
+                            start = dimensionResource(id = R.dimen.size_10dp),
+                            end = dimensionResource(id = R.dimen.size_10dp)
+                        )
+                )
+            } else {
+                ButtonView(
+                    text = text ?: "",
+                    color = MaterialTheme.appColors.buttonColor.textDisabled
+                )
+            }
+        }
+    }
+}
+
 
 
 

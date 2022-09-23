@@ -5,7 +5,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -109,7 +111,8 @@ fun AppOutlineTextField(
                 style = MaterialTheme.typography.caption,
                 modifier = Modifier
                     .padding(4.dp)
-                    .fillMaxWidth(0.95f)
+                    .fillMaxWidth(0.95f),
+
             )
         }
     }
@@ -197,7 +200,7 @@ fun EditFields(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(dimensionResource(id = R.dimen.size_56dp)),
+                .height(IntrinsicSize.Min),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
