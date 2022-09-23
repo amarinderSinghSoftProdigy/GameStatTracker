@@ -46,8 +46,10 @@ import com.softprodigy.ballerapp.ui.features.components.TopBar
 import com.softprodigy.ballerapp.ui.features.components.TopBarData
 import com.softprodigy.ballerapp.ui.features.components.fromHex
 import com.softprodigy.ballerapp.ui.features.home.events.*
+import com.softprodigy.ballerapp.ui.features.home.events.division.divisionTab.DivisionScreenTab
 import com.softprodigy.ballerapp.ui.features.home.events.game.GameDetailsScreen
 import com.softprodigy.ballerapp.ui.features.home.events.game.GameRuleScreen
+import com.softprodigy.ballerapp.ui.features.home.events.team.team_tabs.EventTeamTabs
 import com.softprodigy.ballerapp.ui.features.home.events.venues.openVenue.OpenVenueTopTabs
 import com.softprodigy.ballerapp.ui.features.home.home_screen.HomeScreen
 import com.softprodigy.ballerapp.ui.features.home.invitation.InvitationScreen
@@ -106,8 +108,7 @@ class HomeActivity : ComponentActivity() {
                         topBar = {
                             if (state.showTopAppBar) {
                                 TabBar(color = MaterialTheme.appColors.material.primaryVariant) {
-                                    CommonTabView(
-                                        topBarData = state.topBar,
+                                    CommonTabView(topBarData = state.topBar,
                                         userRole = role.value,
                                         backClick = {
                                             navController.popBackStack()
@@ -132,8 +133,7 @@ class HomeActivity : ComponentActivity() {
                                                 else -> {}
                                                 //Add events cases for tool bar icon clicks
                                             }
-                                        }
-                                    )
+                                        })
                                 }
                             }
                         },
@@ -174,8 +174,7 @@ class HomeActivity : ComponentActivity() {
                     )
                 }
                 if (state.showLogout) {
-                    LogoutDialog(
-                        onDismiss = { homeViewModel.setLogoutDialog(false) },
+                    LogoutDialog(onDismiss = { homeViewModel.setLogoutDialog(false) },
                         onConfirmClick = {
                             homeViewModel.clearToken()
                             moveToLogin(this)
@@ -220,10 +219,8 @@ fun NavControllerComposable(
                     topBar = TopBar.PROFILE,
                 )
             )
-            ProfileScreen(
-                onBackClick = { navController.popBackStack() },
-                moveToEditProfile = { navController.navigate(Route.PROFILE_EDIT_SCREEN) }
-            )
+            ProfileScreen(onBackClick = { navController.popBackStack() },
+                moveToEditProfile = { navController.navigate(Route.PROFILE_EDIT_SCREEN) })
         }
         composable(route = Route.PROFILE_EDIT_SCREEN) {
             homeViewModel.setTopBar(
@@ -245,8 +242,7 @@ fun NavControllerComposable(
             BackHandler {
                 homeViewModel.setScreen(false)
             }
-            TeamsScreen(
-                teamViewModel,
+            TeamsScreen(teamViewModel,
                 showDialog = showDialog,
                 setupTeamViewModelUpdated = setupTeamViewModelUpdated,
                 dismissDialog = { homeViewModel.setDialog(it) },
@@ -259,8 +255,7 @@ fun NavControllerComposable(
                         setupTeamViewModelUpdated.onEvent(
                             TeamSetupUIEventUpdated.OnColorSelected(
                                 (it?.colorCode ?: "").replace(
-                                    "#",
-                                    ""
+                                    "#", ""
                                 )
                             )
                         )
@@ -268,8 +263,7 @@ fun NavControllerComposable(
                 },
                 onBackPress = {
                     navController.popBackStack()
-                }
-            )
+                })
         }
         composable(route = Route.EVENTS_SCREEN) {
             homeViewModel.setTopBar(
@@ -277,24 +271,19 @@ fun NavControllerComposable(
                     topBar = TopBar.MY_EVENT,
                 )
             )
-            EventsScreen(eventViewModel,
-                moveToDetail = {
-                    navController.navigate(Route.LEAGUE_DETAIL_SCREEN)
-                }, moveToPracticeDetail = {
-                    eventTitle = it
-                    navController.navigate(Route.EVENTS_DETAIL_SCREEN)
-                },
-                moveToGameDetail = {
-                    eventTitle = it
-                    navController.navigate(Route.GAME_DETAIL_SCREEN)
-                },
-                moveToLeague = {
+            EventsScreen(eventViewModel, moveToDetail = {
+                navController.navigate(Route.LEAGUE_DETAIL_SCREEN)
+            }, moveToPracticeDetail = {
+                eventTitle = it
+                navController.navigate(Route.EVENTS_DETAIL_SCREEN)
+            }, moveToGameDetail = {
+                eventTitle = it
+                navController.navigate(Route.GAME_DETAIL_SCREEN)
+            }, moveToLeague = {
 
-                } ,
-                moveToOppDetails = {
-                    navController.navigate(Route.OPP_DETAIL_SCREEN)
-                }
-            )
+            }, moveToOppDetails = {
+                navController.navigate(Route.OPP_DETAIL_SCREEN)
+            })
         }
         composable(route = Route.GAME_DETAIL_SCREEN) {
             homeViewModel.setTopBar(
@@ -335,7 +324,14 @@ fun NavControllerComposable(
                 eventTitle = it
                 navController.navigate(Route.OPEN_VENUE)
 
+            }, moveToOpenDivisions = {
+                eventTitle = it
+                navController.navigate(Route.DIVISION_TAB)
+            }, moveToOpenTeams = {
+                eventTitle = it
+                navController.navigate(Route.TEAM_TAB)
             })
+
 
         }
         composable(route = Route.EVENTS_FILTER_SCREEN) {
@@ -349,8 +345,7 @@ fun NavControllerComposable(
         composable(route = Route.EVENTS_DETAIL_SCREEN) {
             homeViewModel.setTopBar(
                 TopBarData(
-                    topBar = TopBar.EVENT_DETAILS,
-                    label = eventTitle
+                    topBar = TopBar.EVENT_DETAILS, label = eventTitle
                 )
             )
             EventDetailsScreen(eventViewModel)
@@ -358,8 +353,7 @@ fun NavControllerComposable(
         composable(route = Route.GAME_RULES_SCREENS) {
             homeViewModel.setTopBar(
                 TopBarData(
-                    topBar = TopBar.GAME_RULES,
-                    label = eventTitle
+                    topBar = TopBar.GAME_RULES, label = eventTitle
                 )
             )
             GameRuleScreen(eventViewModel)
@@ -398,8 +392,7 @@ fun NavControllerComposable(
                 navController.popBackStack()
 
             }
-            AddPlayersScreenUpdated(
-                vm = setupTeamViewModelUpdated,
+            AddPlayersScreenUpdated(vm = setupTeamViewModelUpdated,
                 onBackClick = { navController.popBackStack() },
                 onNextClick = {
                     navController.navigate(Route.TEAMS_SCREEN) {
@@ -408,16 +401,15 @@ fun NavControllerComposable(
                         }
                     }
                     homeViewModel.setScreen(false)
-                }, onInvitationSuccess = {
-                })
+                },
+                onInvitationSuccess = {})
         }
 
         composable(
             route = Route.ADD_PLAYER_SCREEN + "/{teamId}",
-            arguments = listOf(
-                navArgument("teamId") {
-                    type = NavType.StringType
-                }),
+            arguments = listOf(navArgument("teamId") {
+                type = NavType.StringType
+            }),
         ) {
             homeViewModel.setTopAppBar(true)
             homeViewModel.showBottomAppBar(false)
@@ -426,18 +418,14 @@ fun NavControllerComposable(
                 moveBackFromAddPlayer(homeViewModel, navController)
             }
             val teamId = it.arguments?.getString("teamId")
-            AddPlayersScreenUpdated(
-                teamId,
-                vm = setupTeamViewModelUpdated,
-                onBackClick = {
-                    moveBackFromAddPlayer(homeViewModel, navController)
-                },
-                onNextClick = {
-                    moveBackFromAddPlayer(homeViewModel, navController)
-                    //navController.navigate(TEAMS_SCREEN)
-                }, onInvitationSuccess = {
-                    moveBackFromAddPlayer(homeViewModel, navController)
-                })
+            AddPlayersScreenUpdated(teamId, vm = setupTeamViewModelUpdated, onBackClick = {
+                moveBackFromAddPlayer(homeViewModel, navController)
+            }, onNextClick = {
+                moveBackFromAddPlayer(homeViewModel, navController)
+                //navController.navigate(TEAMS_SCREEN)
+            }, onInvitationSuccess = {
+                moveBackFromAddPlayer(homeViewModel, navController)
+            })
         }
 
         composable(route = Route.INVITATION_SCREEN) {
@@ -469,19 +457,16 @@ fun NavControllerComposable(
                     teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
                 )
             }
-            TeamSetupScreenUpdated(
-                vm = setupTeamViewModelUpdated,
-                onBackClick = {
-                    setColorToOriginalOnBack(
-                        navController,
-                        setupTeamViewModelUpdated,
-                        homeViewModel,
-                        teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
-                    )
-                },
-                onNextClick = {
-                    navController.navigate(Route.ADD_PLAYER_SCREEN)
-                })
+            TeamSetupScreenUpdated(vm = setupTeamViewModelUpdated, onBackClick = {
+                setColorToOriginalOnBack(
+                    navController,
+                    setupTeamViewModelUpdated,
+                    homeViewModel,
+                    teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
+                )
+            }, onNextClick = {
+                navController.navigate(Route.ADD_PLAYER_SCREEN)
+            })
 
 
         }
@@ -507,6 +492,25 @@ fun NavControllerComposable(
             OpenVenueTopTabs()
         }
 
+        composable(route = Route.DIVISION_TAB) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = eventTitle,
+                    topBar = TopBar.DIVISION_TAB,
+                )
+            )
+            DivisionScreenTab()
+        }
+
+        composable(route = Route.TEAM_TAB) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = eventTitle,
+                    topBar = TopBar.TEAM_TAB,
+                )
+            )
+            EventTeamTabs()
+        }
         /*composable(route = Route.MY_LEAGUE) {
             homeViewModel.setTopBar(
                 TopBarData(
@@ -530,8 +534,7 @@ fun setColorToOriginalOnBack(
         setupTeamViewModelUpdated.onEvent(
             TeamSetupUIEventUpdated.OnColorSelected(
                 colorCode.replace(
-                    "#",
-                    ""
+                    "#", ""
                 )
             )
         )
@@ -545,8 +548,7 @@ fun setColorUpdate(
         setupTeamViewModelUpdated.onEvent(
             TeamSetupUIEventUpdated.OnColorSelected(
                 colorCode.replace(
-                    "#",
-                    ""
+                    "#", ""
                 )
             )
         )

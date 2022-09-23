@@ -58,6 +58,8 @@ object Route {
     const val NEW_EVENT = "newEvent"
     const val MY_LEAGUE = "myLeague"
     const val OPEN_VENUE = "openVenue"
+    const val DIVISION_TAB = "divisionTab"
+    const val TEAM_TAB = "teamTab"
 }
 
 object ApiConstants {

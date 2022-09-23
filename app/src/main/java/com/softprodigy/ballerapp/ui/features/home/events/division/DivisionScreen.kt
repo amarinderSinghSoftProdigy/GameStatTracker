@@ -2,6 +2,7 @@ package com.softprodigy.ballerapp.ui.features.home.events.division
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,7 +43,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun DivisionScreen(vm: DivisionViewModel = hiltViewModel()) {
+fun DivisionScreen(moveToOpenDivisions: (String) -> Unit, vm: DivisionViewModel = hiltViewModel()) {
 
     val state = vm.divisionUiState.value
     Box(modifier = Modifier.fillMaxSize()) {
@@ -67,7 +68,9 @@ fun DivisionScreen(vm: DivisionViewModel = hiltViewModel()) {
                     )
             ) {
                 itemsIndexed(state.divisionData) { index, item ->
-                    DivisionItems(item)
+                    DivisionItems(item) {
+                        moveToOpenDivisions(item.divisionName)
+                    }
                 }
             }
         }
@@ -75,12 +78,13 @@ fun DivisionScreen(vm: DivisionViewModel = hiltViewModel()) {
 }
 
 @Composable
-fun DivisionItems(item: DivisionData) {
+fun DivisionItems(item: DivisionData, onDivisionClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(color = Color.Transparent)
-            .height(dimensionResource(id = R.dimen.size_56dp)),
+            .height(dimensionResource(id = R.dimen.size_56dp))
+            .clickable { onDivisionClick() },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {

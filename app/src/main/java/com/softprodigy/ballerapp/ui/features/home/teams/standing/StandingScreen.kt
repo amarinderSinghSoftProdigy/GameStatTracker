@@ -60,7 +60,9 @@ fun StandingScreen(
     val onStandingSelectionChange = { standing: Standing ->
         vm.onEvent(StandingUIEvent.OnStandingSelected(standing))
     }
-    Box {
+
+    Box(modifier = Modifier.background(color = MaterialTheme.appColors.material.primary)) {
+
         if (state.isLoading) {
             CommonProgressBar()
         } else {
@@ -166,7 +168,8 @@ fun StandingListItem(
                     src = BuildConfig.IMAGE_SERVER + standing.logo,
                     modifier = Modifier
                         .size(dimensionResource(id = R.dimen.size_32dp))
-                        .clip(CircleShape).background(
+                        .clip(CircleShape)
+                        .background(
                             color = MaterialTheme.appColors.material.onSurface,
                             CircleShape
                         ),

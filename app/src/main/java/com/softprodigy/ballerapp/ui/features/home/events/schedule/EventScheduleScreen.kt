@@ -52,7 +52,10 @@ fun EventScheduleScreen(vm: EventScheduleViewModel = hiltViewModel()) {
         false
     }
 
-    Column(Modifier.fillMaxSize()) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.appColors.material.primary)) {
         LazyColumn(Modifier.fillMaxWidth()) {
             items(state.leagueSchedules) { item: LeagueScheduleModel ->
                 FoldableItem(
