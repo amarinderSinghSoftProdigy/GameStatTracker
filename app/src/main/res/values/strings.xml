@@ -258,12 +258,13 @@
     <string name="format">Format</string>
     <string name="distance">Distance</string>
     <string name="max_dis">Max Distance</string>
-    <string name="events_info">Events Info</string>
+    <string name="events_info">Event Info</string>
     <string name="duration">Duration</string>
     <string name="navigate">Navigate</string>
     <string name="rsvp">RSVP</string>
     <string name="jersey_color">Jersey Color</string>
     <string name="pre_practive_head">Pre-practice prep and agenda</string>
+    <string name="pre_game_head">Pre-game prep and agenda</string>
     <string name="post_practive_head">Post-practice notes</string>
     <string name="game_details">Game Details</string>
     <string name="summary">Summary</string>
@@ -338,5 +339,5 @@
     <string name="parent">Parent</string>
     <string name="call">Call</string>
     <string name="message">Message</string>
-
+    <string name="read_the_note">Read the note</string>
 </resources>

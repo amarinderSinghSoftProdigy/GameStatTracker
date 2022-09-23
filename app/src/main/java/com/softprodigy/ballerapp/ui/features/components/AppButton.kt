@@ -36,6 +36,7 @@ import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.ui.theme.ButtonColor
 import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayMedium
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -366,18 +367,20 @@ fun TransparentButtonButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     shape: Shape = RoundedCornerShape(8.dp),
-    border: BorderStroke? = null,
-    colors: ButtonColor = MaterialTheme.appColors.buttonColor,// = ButtonDefaults.buttonColors(ColorBWBlack),
+    border: BorderStroke? = BorderStroke(
+        width = dimensionResource(id = R.dimen.size_1dp),
+        color = MaterialTheme.appColors.buttonColor.textDisabled.copy(
+            alpha = 0.4f
+        )
+    ),
     contentPadding: PaddingValues = PaddingValues(
         vertical = dimensionResource(id = R.dimen.size_10dp),
         horizontal = dimensionResource(id = R.dimen.size_10dp),
     ),
     text: String? = null,
     icon: Painter? = null,
-    singleButton: Boolean = false,
-    isForceEnableNeeded: Boolean = false,
-    themed: Boolean = false,
-) {
+
+    ) {
 //    val contentColor = if (enabled) colors.textEnabled else colors.textDisabled
 
     Surface(
@@ -385,11 +388,7 @@ fun TransparentButtonButton(
         modifier = modifier,
         enabled = enabled,
         shape = shape,
-        color = if (icon == null && !isForceEnableNeeded)
-            colors.bckgroundDisabled
-        else
-            colors.bckgroundDisabled,
-        contentColor = colors.textDisabled.copy(alpha = 1f),
+        color = Color.Transparent,
         border = border,
         elevation = if (enabled && icon != null) {
             dimensionResource(id = R.dimen.size_10dp)
@@ -409,14 +408,15 @@ fun TransparentButtonButton(
                     modifier = Modifier
                         .size(dimensionResource(R.dimen.size_10dp)),
                     contentDescription = null,
-                    tint = if (enabled) Color.White else colors.textDisabled.copy(
+                    tint = MaterialTheme.appColors.buttonColor.textDisabled.copy(
                         alpha = 0.8f
                     )
                 )
                 AppText(
                     textAlign = TextAlign.Center,
                     text = text!!,
-                    color = ColorBWBlack,
+                    color = ColorBWGrayMedium,
+                    style = MaterialTheme.typography.h6,
                     modifier = Modifier
                         .padding(
                             start = dimensionResource(id = R.dimen.size_10dp),
@@ -424,7 +424,10 @@ fun TransparentButtonButton(
                         )
                 )
             } else {
-                ButtonView(text = text ?: "", color = colors.textDisabled)
+                ButtonView(
+                    text = text ?: "",
+                    color = MaterialTheme.appColors.buttonColor.textDisabled
+                )
             }
         }
     }
