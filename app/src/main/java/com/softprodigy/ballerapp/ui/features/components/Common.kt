@@ -115,7 +115,7 @@ fun BoxScope.CommonTabView(
         Box(modifier = Modifier
             .align(Alignment.CenterStart)
             .clickable {
-
+                backClick()
             }) {
             Icon(
                 modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp)),

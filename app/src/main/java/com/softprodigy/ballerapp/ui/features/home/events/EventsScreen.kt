@@ -45,11 +45,13 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.pagerTabIndicatorOffset
-import com.google.accompanist.pager.rememberPagerState
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.ui.features.components.DeclineEventDialog
 import com.softprodigy.ballerapp.ui.features.components.SwitchTeamDialog
+import com.softprodigy.ballerapp.ui.features.components.TopBar
+import com.softprodigy.ballerapp.ui.features.components.TopBarData
+import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
 import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
@@ -61,14 +63,46 @@ import kotlinx.coroutines.launch
 @Composable
 fun EventsScreen(
     vm: EventViewModel = hiltViewModel(),
+    showDialog: Boolean,
+    dismissDialog: (Boolean) -> Unit,
     moveToDetail: () -> Unit,
     moveToPracticeDetail: (String) -> Unit, moveToGameDetail: (String) -> Unit,
     moveToLeague: () -> Unit,
-    moveToOppDetails: () -> Unit
+    moveToOppDetails: () -> Unit,
+    updateTopBar: (TopBarData) -> Unit
 ) {
     val state = vm.eventState.value
     Box(Modifier.fillMaxSize()) {
-        TabLayout(moveToDetail, state, vm, moveToPracticeDetail, moveToGameDetail, moveToLeague,moveToOppDetails)
+        TabLayout(
+            moveToDetail,
+            state,
+            vm,
+            moveToPracticeDetail,
+            moveToGameDetail,
+            moveToLeague,
+            moveToOppDetails,
+            updateTopBar
+        )
+
+
+        Box(Modifier.fillMaxSize()) {
+            if (showDialog) {
+                val teams: ArrayList<Team> = arrayListOf(
+                    Team(name = "Springfield Bucks"),
+                    Team(name = "Springfield Sprouts"),
+                )
+                SwitchTeamDialog(
+                    teams = teams,
+                    title = stringResource(id = R.string.switch_teams),
+                    onDismiss = {
+                        dismissDialog(false)
+                    },
+                    onConfirmClick = {
+                        dismissDialog(false)
+                    }
+                )
+            }
+        }
     }
 }
 
@@ -83,15 +117,19 @@ fun TabLayout(
     moveToPracticeDetail: (String) -> Unit,
     moveToGameDetail: (String) -> Unit,
     moveToLeague: () -> Unit,
-    moveToOppDetails: () -> Unit
+    moveToOppDetails: () -> Unit,
+    updateTopBar: (TopBarData) -> Unit
 ) {
     // on below line we are creating variable for pager state.
-    val pagerState = rememberPagerState(pageCount = 3) // Add the count for number of pages
+    val pagerState = rememberPagerState(
+        pageCount = 3,
+        initialOffScreenLimit = 1,
+    ) // Add the count for number of pages
     Column(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Tabs(pagerState = pagerState)
+        Tabs(pagerState = pagerState, updateTopBar)
         TabsContent(
             pagerState = pagerState,
             state,
@@ -100,7 +138,8 @@ fun TabLayout(
             moveToPracticeDetail,
             moveToGameDetail,
             moveToLeague,
-            moveToOppDetails
+            moveToOppDetails,
+            updateTopBar
         )
     }
 }
@@ -109,7 +148,7 @@ fun TabLayout(
 // creating a function for tabs
 @ExperimentalPagerApi
 @Composable
-fun Tabs(pagerState: PagerState) {
+fun Tabs(pagerState: PagerState, updateTopBar: (TopBarData) -> Unit) {
     val list = listOf(
         TabItems.Events,
         TabItems.Leagues,
@@ -149,6 +188,14 @@ fun Tabs(pagerState: PagerState) {
                 onClick = {
                     scope.launch {
                         pagerState.animateScrollToPage(index)
+                        /*if (!pagerState.isScrollInProgress) {
+                            updateTopBar(
+                                TopBarData(
+                                    label,
+                                    TopBar.SINGLE_LABEL
+                                )
+                            )
+                        }*/
                     }
                 }
             )
@@ -167,8 +214,10 @@ fun TabsContent(
     moveToDetail: () -> Unit,
     moveToPracticeDetail: (String) -> Unit, moveToGameDetail: (String) -> Unit,
     moveToLeague: () -> Unit,
-    moveToOppDetails: () -> Unit
+    moveToOppDetails: () -> Unit,
+    updateTopBar: (TopBarData) -> Unit
 ) {
+
     HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
         when (page) {
             0 -> {
@@ -180,6 +229,24 @@ fun TabsContent(
             2 -> {
                 OpportunitieScreen(state, vm, moveToOppDetails)
             }
+        }
+        SetTopBar(pagerState, page, updateTopBar)
+    }
+}
+
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+fun SetTopBar(pagerState: PagerState, page: Int, updateTopBar: (TopBarData) -> Unit) {
+    val label = stringResource(id = R.string.events_label)
+    if (!pagerState.isScrollInProgress) {
+        if (pagerState.currentPage == page) {
+            val top = when (page) {
+                0 -> TopBar.MY_EVENT
+                1 -> TopBar.SINGLE_LABEL
+                2 -> TopBar.EVENT_OPPORTUNITIES
+                else -> TopBar.SINGLE_LABEL
+            }
+            updateTopBar(TopBarData(label, top))
         }
     }
 }
@@ -269,21 +336,9 @@ fun BoxScope.MyEvents(
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
             }
 
-            if (state.showGoingDialog) {
-                val teams: ArrayList<Team> = arrayListOf(
-                    Team(name = "Springfield Bucks"),
-                    Team(name = "Springfield Sprouts"),
-                )
-                SwitchTeamDialog(
-                    teams = teams,
-                    title = stringResource(id = R.string.switch_teams),
-                    onDismiss = {
-                        vm.onEvent(EvEvents.onCancel(false))
-                    },
-                    onConfirmClick = {
-                    }
-                )
-            }
+            /*if (state.showGoingDialog) {
+
+            }*/
             if (state.showDeclineDialog) {
                 DeclineEventDialog(
                     title = stringResource(id = R.string.decline_head),
