@@ -41,7 +41,6 @@ import com.softprodigy.ballerapp.ui.theme.md_theme_light_outline
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun EventDetailsScreen(vm: EventViewModel) {
-    val state = vm.eventState.value
     val images = arrayListOf<String>("", "", "", "", "", "", "")
     Column(
         Modifier

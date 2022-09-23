@@ -101,7 +101,9 @@ fun LeagueItem(league: Leagues, state: EventState, onClick: () -> Unit, OnNextCl
         Row(
             Modifier
                 .fillMaxWidth()
-                .clickable { onClick() }
+                .clickable {
+                    onClick()
+                }
                 .background(
                     color = MaterialTheme.appColors.material.surface, shape = RoundedCornerShape(
                         topStart = dimensionResource(
