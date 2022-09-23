@@ -119,4 +119,7 @@ open interface APIService {
     @GET(ApiConstants.GET_HOME_PAGE_DETAILS)
     suspend fun getHomePageDetails():BaseResponse<HomePageCoachModel>
 
+    @GET(ApiConstants.GET_USER_FULL_DETAILS)
+    suspend fun getUserFullDetails():BaseResponse<User>
+
 }

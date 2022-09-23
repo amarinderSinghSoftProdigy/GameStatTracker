@@ -64,4 +64,10 @@ class UserRepository @Inject constructor(
         }
     }
 
+    override suspend fun getFullUserFullDetails(): ResultWrapper<BaseResponse<User>> {
+        return safeApiCall(dispatcher = dispatcher) {
+            service.getUserFullDetails()
+        }
+    }
+
 }
