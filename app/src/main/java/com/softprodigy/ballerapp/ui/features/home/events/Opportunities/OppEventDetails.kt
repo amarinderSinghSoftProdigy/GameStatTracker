@@ -148,16 +148,16 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
                     onClick = {},
                     icon = painterResource(id = R.drawable.ic_nav),
                     enabled = false,
-                    themed = false,
                 )
             }
             Text(
                 text = "8502 Preston Rd. Inglewood, Maine",
                 color = ColorBWGrayLight,
                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-
                 )
+
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+
             Box(
                 modifier = Modifier
                     .background(color = heading3Color)
@@ -233,11 +233,11 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
                 fontWeight = FontWeight.Bold,
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-            PlayerRequirements("Birth Certificate","Grade Verification");
+            PlayerRequirements("Birth Certificate", "Grade Verification");
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
-            PlayerRequirements("Permission Slips","Organization Waiver");
+            PlayerRequirements("Permission Slips", "Organization Waiver");
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
-            PlayerRequirements("AAU Card",null);
+            PlayerRequirements("AAU Card", null);
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             AppButton(
                 enabled = true,
@@ -293,13 +293,7 @@ fun DetailsItem(key1: String, key2: String, value1: String, value2: String) {
 @Composable
 fun DaysPlay() {
     var days = arrayListOf<String>(
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-        "Sunday"
+        "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
     )
     var values = arrayListOf<String>(
         "6:00 PM - 10:00 PM",
@@ -313,8 +307,7 @@ fun DaysPlay() {
     days.forEachIndexed { index, it ->
         Row(
             modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.size_8dp))
-        )
-        {
+        ) {
             Text(
                 text = it,
                 color = ColorBWGrayLight,
@@ -332,8 +325,8 @@ fun DaysPlay() {
 }
 
 @Composable
-fun PlayerRequirements(req1:String,req2:String?) {
-    Row(modifier = Modifier.fillMaxWidth()){
+fun PlayerRequirements(req1: String, req2: String?) {
+    Row(modifier = Modifier.fillMaxWidth()) {
         Row(modifier = Modifier.weight(1f)) {
             Image(
                 painter = painterResource(id = R.drawable.ic_checkbox),
@@ -349,7 +342,7 @@ fun PlayerRequirements(req1:String,req2:String?) {
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             )
         }
-        if(req2!=null) {
+        if (req2 != null) {
             Row(modifier = Modifier.weight(1f)) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_checkbox),
