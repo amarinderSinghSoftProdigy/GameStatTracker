@@ -53,8 +53,11 @@ import com.softprodigy.ballerapp.ui.features.home.events.FilterScreen
 import com.softprodigy.ballerapp.ui.features.home.events.MyLeagueDetailScreen
 import com.softprodigy.ballerapp.ui.features.home.events.NewEventScreen
 import com.softprodigy.ballerapp.ui.features.home.events.OppEventDetails
+import com.softprodigy.ballerapp.ui.features.home.events.*
+import com.softprodigy.ballerapp.ui.features.home.events.division.divisionTab.DivisionScreenTab
 import com.softprodigy.ballerapp.ui.features.home.events.game.GameDetailsScreen
 import com.softprodigy.ballerapp.ui.features.home.events.game.GameRuleScreen
+import com.softprodigy.ballerapp.ui.features.home.events.team.team_tabs.EventTeamTabs
 import com.softprodigy.ballerapp.ui.features.home.events.venues.openVenue.OpenVenueTopTabs
 import com.softprodigy.ballerapp.ui.features.home.home_screen.HomeScreen
 import com.softprodigy.ballerapp.ui.features.home.invitation.InvitationScreen
@@ -273,8 +276,7 @@ fun NavControllerComposable(
                         setupTeamViewModelUpdated.onEvent(
                             TeamSetupUIEventUpdated.OnColorSelected(
                                 (it?.colorCode ?: "").replace(
-                                    "#",
-                                    ""
+                                    "#", ""
                                 )
                             )
                         )
@@ -282,8 +284,7 @@ fun NavControllerComposable(
                 },
                 onBackPress = {
                     navController.popBackStack()
-                }
-            )
+                })
         }
         composable(route = Route.EVENTS_SCREEN) {
             homeViewModel.setTopBar(
@@ -355,7 +356,14 @@ fun NavControllerComposable(
                 eventTitle = it
                 navController.navigate(Route.OPEN_VENUE)
 
+            }, moveToOpenDivisions = {
+                eventTitle = it
+                navController.navigate(Route.DIVISION_TAB)
+            }, moveToOpenTeams = {
+                eventTitle = it
+                navController.navigate(Route.TEAM_TAB)
             })
+
 
         }
         composable(route = Route.EVENTS_FILTER_SCREEN) {
@@ -369,8 +377,7 @@ fun NavControllerComposable(
         composable(route = Route.EVENTS_DETAIL_SCREEN) {
             homeViewModel.setTopBar(
                 TopBarData(
-                    topBar = TopBar.EVENT_DETAILS,
-                    label = eventTitle
+                    topBar = TopBar.EVENT_DETAILS, label = eventTitle
                 )
             )
             EventDetailsScreen(eventViewModel)
@@ -378,8 +385,7 @@ fun NavControllerComposable(
         composable(route = Route.GAME_RULES_SCREENS) {
             homeViewModel.setTopBar(
                 TopBarData(
-                    topBar = TopBar.GAME_RULES,
-                    label = eventTitle
+                    topBar = TopBar.GAME_RULES, label = eventTitle
                 )
             )
             GameRuleScreen(eventViewModel)
@@ -527,6 +533,25 @@ fun NavControllerComposable(
             OpenVenueTopTabs()
         }
 
+        composable(route = Route.DIVISION_TAB) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = eventTitle,
+                    topBar = TopBar.DIVISION_TAB,
+                )
+            )
+            DivisionScreenTab()
+        }
+
+        composable(route = Route.TEAM_TAB) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = eventTitle,
+                    topBar = TopBar.TEAM_TAB,
+                )
+            )
+            EventTeamTabs()
+        }
         /*composable(route = Route.MY_LEAGUE) {
             homeViewModel.setTopBar(
                 TopBarData(
@@ -550,8 +575,7 @@ fun setColorToOriginalOnBack(
         setupTeamViewModelUpdated.onEvent(
             TeamSetupUIEventUpdated.OnColorSelected(
                 colorCode.replace(
-                    "#",
-                    ""
+                    "#", ""
                 )
             )
         )
@@ -565,8 +589,7 @@ fun setColorUpdate(
         setupTeamViewModelUpdated.onEvent(
             TeamSetupUIEventUpdated.OnColorSelected(
                 colorCode.replace(
-                    "#",
-                    ""
+                    "#", ""
                 )
             )
         )
