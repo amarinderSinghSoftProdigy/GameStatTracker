@@ -63,11 +63,12 @@ fun EventsScreen(
     vm: EventViewModel = hiltViewModel(),
     moveToDetail: () -> Unit,
     moveToPracticeDetail: (String) -> Unit, moveToGameDetail: (String) -> Unit,
-    moveToLeague: () -> Unit
+    moveToLeague: () -> Unit,
+    moveToOppDetails: () -> Unit
 ) {
     val state = vm.eventState.value
     Box(Modifier.fillMaxSize()) {
-        TabLayout(moveToDetail, state, vm, moveToPracticeDetail, moveToGameDetail, moveToLeague)
+        TabLayout(moveToDetail, state, vm, moveToPracticeDetail, moveToGameDetail, moveToLeague,moveToOppDetails)
     }
 }
 
@@ -81,7 +82,8 @@ fun TabLayout(
     vm: EventViewModel,
     moveToPracticeDetail: (String) -> Unit,
     moveToGameDetail: (String) -> Unit,
-    moveToLeague: () -> Unit
+    moveToLeague: () -> Unit,
+    moveToOppDetails: () -> Unit
 ) {
     // on below line we are creating variable for pager state.
     val pagerState = rememberPagerState(pageCount = 3) // Add the count for number of pages
@@ -97,7 +99,8 @@ fun TabLayout(
             moveToDetail,
             moveToPracticeDetail,
             moveToGameDetail,
-            moveToLeague
+            moveToLeague,
+            moveToOppDetails
         )
     }
 }
@@ -163,7 +166,8 @@ fun TabsContent(
     vm: EventViewModel,
     moveToDetail: () -> Unit,
     moveToPracticeDetail: (String) -> Unit, moveToGameDetail: (String) -> Unit,
-    moveToLeague: () -> Unit
+    moveToLeague: () -> Unit,
+    moveToOppDetails: () -> Unit
 ) {
     HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
         when (page) {
@@ -174,7 +178,7 @@ fun TabsContent(
                 MyLeagueScreen(state, vm, moveToDetail, moveToLeague)
             }
             2 -> {
-                OpportunitieScreen(state, vm, moveToDetail)
+                OpportunitieScreen(state, vm, moveToOppDetails)
             }
         }
     }

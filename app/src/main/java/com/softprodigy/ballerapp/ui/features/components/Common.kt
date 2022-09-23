@@ -338,6 +338,7 @@ enum class TopBar(val stringId: String, val back: Boolean) {
     FILTER_EVENT(stringId = "filter_events", back = true),
     GAME_DETAILS(stringId = "game_details", back = true),
     EVENT_LEAGUES(stringId = "events_label", back = false),
+    REGISTRATION_FORM(stringId = "registration_form", back = true),
     TEAMS(stringId = "teams_label", back = false),
     EVENT_OPPORTUNITIES(stringId = "events_label", back = false),
     MANAGE_TEAM(stringId = "", back = true),

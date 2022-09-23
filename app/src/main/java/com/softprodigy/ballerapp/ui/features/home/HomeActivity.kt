@@ -45,12 +45,7 @@ import com.softprodigy.ballerapp.ui.features.components.TabBar
 import com.softprodigy.ballerapp.ui.features.components.TopBar
 import com.softprodigy.ballerapp.ui.features.components.TopBarData
 import com.softprodigy.ballerapp.ui.features.components.fromHex
-import com.softprodigy.ballerapp.ui.features.home.events.EventDetailsScreen
-import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
-import com.softprodigy.ballerapp.ui.features.home.events.EventsScreen
-import com.softprodigy.ballerapp.ui.features.home.events.FilterScreen
-import com.softprodigy.ballerapp.ui.features.home.events.MyLeagueDetailScreen
-import com.softprodigy.ballerapp.ui.features.home.events.NewEventScreen
+import com.softprodigy.ballerapp.ui.features.home.events.*
 import com.softprodigy.ballerapp.ui.features.home.events.game.GameDetailsScreen
 import com.softprodigy.ballerapp.ui.features.home.events.game.GameRuleScreen
 import com.softprodigy.ballerapp.ui.features.home.home_screen.HomeScreen
@@ -294,6 +289,9 @@ fun NavControllerComposable(
                 },
                 moveToLeague = {
 
+                } ,
+                moveToOppDetails = {
+                    navController.navigate(Route.OPP_DETAIL_SCREEN)
                 }
             )
         }
@@ -306,6 +304,24 @@ fun NavControllerComposable(
             GameDetailsScreen(eventViewModel, moveToGameRules = {
                 navController.navigate(Route.GAME_RULES_SCREENS)
             })
+        }
+        composable(route = Route.OPP_DETAIL_SCREEN) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    topBar = TopBar.EVENT_DETAILS,
+                )
+            )
+            OppEventDetails(eventViewModel, moveToRegistration = {
+                navController.navigate(Route.EVENT_REGISTRATION)
+            })
+        }
+        composable(route = Route.EVENT_REGISTRATION) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    topBar = TopBar.REGISTRATION_FORM,
+                )
+            )
+            EventRegistraionDetails(eventViewModel)
         }
         composable(route = Route.LEAGUE_DETAIL_SCREEN) {
             homeViewModel.setTopBar(

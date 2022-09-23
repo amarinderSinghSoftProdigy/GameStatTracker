@@ -293,6 +293,7 @@
     <string name="vs">vs</string>
     <string name="schedule">Schedule</string>
     <string name="divisions">Divisions</string>
+    <string name="division">Division</string>
     <string name="teams">Teams</string>
     <string name="venues">Venues</string>
     <string name="full_court">Full Court Press</string>
@@ -338,5 +339,30 @@
     <string name="parent">Parent</string>
     <string name="call">Call</string>
     <string name="message">Message</string>
+    <string name="start_date">Start Date</string>
+    <string name="end_Date">End Date</string>
+    <string name="event_Type">Event Type</string>
+    <string name="participation">Participation</string>
+    <string name="regsitration_deadliine">Regsitration deadline</string>
+    <string name="price">Price</string>
+    <string name="skill_level">Skill Level</string>
+    <string name="event_desc">Event description</string>
+    <string name="contact_With_questions">Contact with questions</string>
+    <string name="days_play">Days of play</string>
+    <string name="register">Register</string>
+    <string name="registration_form">Registration Form</string>
+    <string name="age_group">Age group</string>
+    <string name="players">Players</string>
+    <string name="payment_options">Payment Options</string>
+    <string name="venmo">Venmo</string>
+    <string name="venmo_hanle">Venmo handle</string>
+    <string name="choose_division">Choose Division</string>
+    <string name="send_push">Send push notification Division</string>
+    <string name="i_agree">I agree to </string>
+    <string name="terms_cond">Terms and Conditions</string>
+    <string name="privacy">Privacy</string>
+    <string name="back_to_events">Back to Events</string>
+    <string name="registered">Registered</string>
+    <string name="player_requirements">Player Requirements</string>
 
 </resources>

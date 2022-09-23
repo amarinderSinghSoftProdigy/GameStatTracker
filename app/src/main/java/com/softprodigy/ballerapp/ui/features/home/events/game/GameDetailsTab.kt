@@ -35,14 +35,7 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppDivider
 import com.softprodigy.ballerapp.ui.features.components.TransparentButtonButton
 import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
-import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
-import com.softprodigy.ballerapp.ui.theme.ColorButtonRed
-import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
-import com.softprodigy.ballerapp.ui.theme.ColorMainPrimary
-import com.softprodigy.ballerapp.ui.theme.GreenColor
-import com.softprodigy.ballerapp.ui.theme.appColors
-import com.softprodigy.ballerapp.ui.theme.md_theme_light_outline
-import com.softprodigy.ballerapp.ui.theme.md_theme_light_primary
+import com.softprodigy.ballerapp.ui.theme.*
 
 @Composable
 fun GameDetailsTab(vm: EventViewModel,moveToGameRules:()->Unit) {
@@ -158,7 +151,7 @@ fun GameDetailsTab(vm: EventViewModel,moveToGameRules:()->Unit) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
             Box(
                 modifier = Modifier
-                    .background(color = md_theme_light_outline)
+                    .background(color = heading3Color)
                     .height(dimensionResource(id = R.dimen.size_100dp))
                     .fillMaxWidth()
             ) {

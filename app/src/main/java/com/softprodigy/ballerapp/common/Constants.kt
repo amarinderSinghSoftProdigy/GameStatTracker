@@ -40,6 +40,8 @@ object Route {
     const val EVENTS_DETAIL_SCREEN = "events_detail_screen"
     const val GAME_RULES_SCREENS = "game_rules_screen"
     const val GAME_DETAIL_SCREEN = "game_detail_screen"
+    const val OPP_DETAIL_SCREEN = "opp_detail_screen"
+    const val EVENT_REGISTRATION = "event_registration"
     const val TEAMS_SCREEN = "teamsScreen"
     const val SPLASH_SCREEN = "splashScreen"
     const val SELECT_USER_TYPE = "selectUserTypeScreen"
