@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -28,9 +29,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.ui.features.components.AppButton
-import com.softprodigy.ballerapp.ui.features.components.AppDivider
-import com.softprodigy.ballerapp.ui.features.components.TransparentButtonButton
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.theme.*
 
 @OptIn(ExperimentalPagerApi::class)
@@ -50,19 +49,23 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
                 .verticalScroll(rememberScrollState()),
         ) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-            Box(
+            CoilImage(
+                src = "https://image.shutterstock.com/image-photo/word-demo-appearing-behind-torn-260nw-1782295403.jpg",
                 modifier = Modifier
-                    .background(color = heading3Color)
-                    .height(dimensionResource(id = R.dimen.size_120dp))
-                    .fillMaxWidth()
-            ) {
-                Text(
-                    text = "League Banner",
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                    fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
-                    fontWeight = FontWeight.Bold,
-                )
-            }
+                    .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                    .background(
+                        color = Color.White,
+                        RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+                    )
+                    .height(dimensionResource(id = R.dimen.size_200dp))
+                    .fillMaxWidth(),
+                onError = {
+                    Placeholder(R.drawable.ic_team_placeholder)
+                },
+                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                isCrossFadeEnabled = false,
+                contentScale = ContentScale.Crop
+            )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             Text(
                 text = stringResource(id = R.string.events_info),
@@ -158,19 +161,23 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
 
-            Box(
+            CoilImage(
+                src = R.drawable.rectangle,
                 modifier = Modifier
-                    .background(color = heading3Color)
-                    .height(dimensionResource(id = R.dimen.size_120dp))
-                    .fillMaxWidth()
-            ) {
-                Text(
-                    text = "Google Map",
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                    fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
-                    fontWeight = FontWeight.Bold,
-                )
-            }
+                    .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                    .background(
+                        color = Color.White,
+                        RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+                    )
+                    .height(dimensionResource(id = R.dimen.size_160dp))
+                    .fillMaxWidth(),
+                onError = {
+                    Placeholder(R.drawable.ic_team_placeholder)
+                },
+                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                isCrossFadeEnabled = false,
+                contentScale = ContentScale.Crop
+            )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             Text(
                 text = stringResource(id = R.string.event_desc),

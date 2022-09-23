@@ -86,6 +86,7 @@ class HomeActivity : ComponentActivity() {
             AppConstants.SELECTED_COLOR = fromHex(color.value.ifEmpty { "0177C1" })
             homeViewModel.setColor(AppConstants.SELECTED_COLOR)
             homeViewModel.showBottomAppBar(true)
+            var tabIndex by rememberSaveable { mutableStateOf(0) }
             BallerAppMainTheme(customColor = state.color ?: Color.White) {
                 val navController = rememberNavController()
                 if (state.screen) {
@@ -97,7 +98,10 @@ class HomeActivity : ComponentActivity() {
                             teamViewModel,
                             eventViewModel,
                             navController = navController,
-                            fromSplash = fromSplash
+                            fromSplash = fromSplash,
+                            setIndex = {
+                                tabIndex = it
+                            }
                         )
                     }
                 } else {
@@ -118,7 +122,11 @@ class HomeActivity : ComponentActivity() {
                                         iconClick = {
                                             when (state.topBar.topBar) {
                                                 TopBar.MY_EVENT -> {
-                                                    navController.navigate(Route.NEW_EVENT)
+                                                    if (tabIndex == 2) {
+                                                        navController.navigate(Route.EVENTS_FILTER_SCREEN)
+                                                    } else {
+                                                        navController.navigate(Route.NEW_EVENT)
+                                                    }
                                                 }
                                                 TopBar.TEAMS -> {
                                                     navController.navigate(Route.MANAGED_TEAM_SCREEN)
@@ -132,7 +140,8 @@ class HomeActivity : ComponentActivity() {
                                                 else -> {}
                                                 //Add events cases for tool bar icon clicks
                                             }
-                                        }
+                                        },
+                                        tabIndex = tabIndex
                                     )
                                 }
                             }
@@ -151,7 +160,10 @@ class HomeActivity : ComponentActivity() {
                                     eventViewModel,
                                     navController = navController,
                                     showDialog = state.showDialog,
-                                    fromSplash = fromSplash
+                                    fromSplash = fromSplash,
+                                    setIndex = {
+                                        tabIndex = it
+                                    }
                                 )
                             }
                         },
@@ -193,7 +205,8 @@ fun NavControllerComposable(
     eventViewModel: EventViewModel,
     showDialog: Boolean = false,
     navController: NavHostController = rememberNavController(),
-    fromSplash: Boolean = false
+    fromSplash: Boolean = false,
+    setIndex: (index: Int) -> Unit
 ) {
     val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = hiltViewModel()
     var eventTitle by rememberSaveable { mutableStateOf("") }
@@ -290,9 +303,12 @@ fun NavControllerComposable(
                 },
                 moveToLeague = {
 
-                } ,
+                },
                 moveToOppDetails = {
                     navController.navigate(Route.OPP_DETAIL_SCREEN)
+                },
+                setIndex = {
+                    setIndex(it)
                 }
             )
         }

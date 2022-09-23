@@ -64,11 +64,12 @@ fun EventsScreen(
     moveToDetail: () -> Unit,
     moveToPracticeDetail: (String) -> Unit, moveToGameDetail: (String) -> Unit,
     moveToLeague: () -> Unit,
-    moveToOppDetails: () -> Unit
+    moveToOppDetails: () -> Unit,
+    setIndex: (index:Int) -> Unit
 ) {
     val state = vm.eventState.value
     Box(Modifier.fillMaxSize()) {
-        TabLayout(moveToDetail, state, vm, moveToPracticeDetail, moveToGameDetail, moveToLeague,moveToOppDetails)
+        TabLayout(moveToDetail, state, vm, moveToPracticeDetail, moveToGameDetail, moveToLeague,moveToOppDetails,setIndex)
     }
 }
 
@@ -83,7 +84,8 @@ fun TabLayout(
     moveToPracticeDetail: (String) -> Unit,
     moveToGameDetail: (String) -> Unit,
     moveToLeague: () -> Unit,
-    moveToOppDetails: () -> Unit
+    moveToOppDetails: () -> Unit,
+    setIndex: (index:Int) -> Unit
 ) {
     // on below line we are creating variable for pager state.
     val pagerState = rememberPagerState(pageCount = 3) // Add the count for number of pages
@@ -91,7 +93,7 @@ fun TabLayout(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Tabs(pagerState = pagerState)
+        Tabs(pagerState = pagerState,setIndex)
         TabsContent(
             pagerState = pagerState,
             state,
@@ -109,7 +111,7 @@ fun TabLayout(
 // creating a function for tabs
 @ExperimentalPagerApi
 @Composable
-fun Tabs(pagerState: PagerState) {
+fun Tabs(pagerState: PagerState,setIndex: (index:Int) -> Unit) {
     val list = listOf(
         TabItems.Events,
         TabItems.Leagues,
@@ -148,6 +150,7 @@ fun Tabs(pagerState: PagerState) {
                 selected = pagerState.currentPage == index,
                 onClick = {
                     scope.launch {
+                        setIndex(index)
                         pagerState.animateScrollToPage(index)
                     }
                 }
