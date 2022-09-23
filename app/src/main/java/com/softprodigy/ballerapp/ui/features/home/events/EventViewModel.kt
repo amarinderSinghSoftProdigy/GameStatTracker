@@ -111,9 +111,7 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
                         ),
                     )
                 )
-
         }
-
     }
 
     fun onEvent(event: EvEvents) {

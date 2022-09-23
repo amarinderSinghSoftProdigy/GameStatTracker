@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -13,6 +14,7 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppScrollableTabRow
 import com.softprodigy.ballerapp.ui.features.components.AppTabLikeViewPager
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
+import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
 import com.softprodigy.ballerapp.ui.features.home.events.division.DivisionScreen
 import com.softprodigy.ballerapp.ui.features.home.events.schedule.EventScheduleScreen
 import com.softprodigy.ballerapp.ui.features.home.events.team.EventTeamsScreen
@@ -69,8 +71,8 @@ fun OpenVenueContents(pagerState: PagerState) {
     ) { index ->
         when (index) {
             0 -> OpenVenuesDetailsScreen()
-            1 -> DivisionScreen()
-            2 -> EventTeamsScreen()
+            1 -> EmptyScreen(singleText = true, heading = stringResource(id = R.string.coming_soon))
+            2 -> EmptyScreen(singleText = true, heading = stringResource(id = R.string.coming_soon))
         }
     }
 }

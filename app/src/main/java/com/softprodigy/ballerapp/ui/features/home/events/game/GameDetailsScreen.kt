@@ -1,8 +1,10 @@
 package com.softprodigy.ballerapp.ui.features.home.events.game
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -15,8 +17,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -31,12 +35,17 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun GameDetailsScreen(vm: EventViewModel,moveToGameRules:()->Unit) {
-        val pagerState = rememberPagerState(pageCount = 3)
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Tabs(pagerState = pagerState)
-            TabsContent(pagerState = pagerState,vm,moveToGameRules)
-        }
+fun GameDetailsScreen(vm: EventViewModel, moveToGameRules: () -> Unit) {
+    val pagerState = rememberPagerState(pageCount = 3)
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White),
+    ) {
+        Tabs(pagerState = pagerState)
+        TabsContent(pagerState = pagerState, vm, moveToGameRules)
+    }
 }
 
 @ExperimentalPagerApi
@@ -48,10 +57,15 @@ fun Tabs(pagerState: PagerState) {
         GameTabItems.Summary,
     )
     val scope = rememberCoroutineScope()
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+    val width = screenWidth.minus(dimensionResource(id = R.dimen.size_20dp).times(3))
+
     TabRow(
         selectedTabIndex = pagerState.currentPage,
         backgroundColor = Color.White,
         contentColor = Color.White,
+        modifier = Modifier.width(width),
         indicator = { tabPositions ->
             TabRowDefaults.Indicator(
                 Modifier.pagerTabIndicatorOffset(pagerState, tabPositions),
@@ -88,20 +102,20 @@ fun Tabs(pagerState: PagerState) {
     }
 }
 
-    @ExperimentalPagerApi
-    @Composable
-    fun TabsContent(pagerState: PagerState,vm: EventViewModel,moveToGameRules:()->Unit) {
-        HorizontalPager(state = pagerState) { page ->
-            when (page) {
-                0 -> GameDetailsTab(vm,moveToGameRules)
-                1 -> GameStatsTab()
-                2 -> GameSumTab()
-            }
+@ExperimentalPagerApi
+@Composable
+fun TabsContent(pagerState: PagerState, vm: EventViewModel, moveToGameRules: () -> Unit) {
+    HorizontalPager(state = pagerState) { page ->
+        when (page) {
+            0 -> GameDetailsTab(vm, moveToGameRules)
+            1 -> GameStatsTab()
+            2 -> GameSumTab()
         }
     }
+}
 
 enum class GameTabItems(val icon: Int, val stringId: String) {
     Details(R.drawable.ic_details, stringId = "details"),
-    Stats(R.drawable.ic_stats, stringId = "stats"),
-    Summary(R.drawable.ic_summary, stringId = "summary"),
+    Stats(R.drawable.ic_summary, stringId = "stats"),
+    Summary(R.drawable.ic_stats, stringId = "summary"),
 }

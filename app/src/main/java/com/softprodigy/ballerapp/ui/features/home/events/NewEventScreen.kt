@@ -127,7 +127,6 @@ fun EventTabs(pagerState: PagerState) {
             )
         }
     }
-
 }
 
 enum class EventTabItems(val stringId: String) {

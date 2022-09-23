@@ -97,7 +97,7 @@ fun OpenVenuesDetailsScreen() {
                             onClick = {},
                             icon = painterResource(id = R.drawable.ic_nav),
                             enabled = false,
-                            themed = false,
+
                         )
 
                     }

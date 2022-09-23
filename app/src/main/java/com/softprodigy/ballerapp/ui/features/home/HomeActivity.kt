@@ -48,6 +48,7 @@ import com.softprodigy.ballerapp.ui.features.components.fromHex
 import com.softprodigy.ballerapp.ui.features.home.events.*
 import com.softprodigy.ballerapp.ui.features.home.events.game.GameDetailsScreen
 import com.softprodigy.ballerapp.ui.features.home.events.game.GameRuleScreen
+import com.softprodigy.ballerapp.ui.features.home.events.venues.openVenue.OpenVenueTopTabs
 import com.softprodigy.ballerapp.ui.features.home.home_screen.HomeScreen
 import com.softprodigy.ballerapp.ui.features.home.invitation.InvitationScreen
 import com.softprodigy.ballerapp.ui.features.home.manage_team.MainManageTeamScreen
@@ -493,6 +494,17 @@ fun NavControllerComposable(
                 )
             )
             NewEventScreen()
+        }
+
+
+        composable(route = Route.OPEN_VENUE) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = eventTitle,
+                    topBar = TopBar.OPEN_VENUE,
+                )
+            )
+            OpenVenueTopTabs()
         }
 
         /*composable(route = Route.MY_LEAGUE) {
