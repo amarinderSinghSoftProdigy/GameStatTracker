@@ -188,14 +188,6 @@ fun Tabs(pagerState: PagerState, updateTopBar: (TopBarData) -> Unit) {
                 onClick = {
                     scope.launch {
                         pagerState.animateScrollToPage(index)
-                        /*if (!pagerState.isScrollInProgress) {
-                            updateTopBar(
-                                TopBarData(
-                                    label,
-                                    TopBar.SINGLE_LABEL
-                                )
-                            )
-                        }*/
                     }
                 }
             )
