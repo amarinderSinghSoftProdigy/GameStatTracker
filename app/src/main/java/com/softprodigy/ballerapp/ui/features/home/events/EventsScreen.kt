@@ -72,18 +72,30 @@ fun EventsScreen(
     updateTopBar: (TopBarData) -> Unit
 ) {
     val state = vm.eventState.value
-    Box(Modifier.fillMaxSize()) {
-        TabLayout(
-            moveToDetail,
-            state,
-            vm,
-            moveToPracticeDetail,
-            moveToGameDetail,
-            moveToLeague,
-            moveToOppDetails,
-            updateTopBar
-        )
+    // on below line we are creating variable for pager state.
+    val pagerState = rememberPagerState(
+        pageCount = 3,
+        initialOffScreenLimit = 1,
+    ) // Add the count for number of pages
 
+    Box(Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            Tabs(pagerState = pagerState)
+            TabsContent(
+                pagerState = pagerState,
+                state,
+                vm,
+                moveToDetail,
+                moveToPracticeDetail,
+                moveToGameDetail,
+                moveToLeague,
+                moveToOppDetails,
+                updateTopBar
+            )
+        }
 
         Box(Modifier.fillMaxSize()) {
             if (showDialog) {
@@ -106,49 +118,11 @@ fun EventsScreen(
     }
 }
 
-// on below line we are creating a
-// composable function for our tab layout
-@ExperimentalPagerApi
-@Composable
-fun TabLayout(
-    moveToDetail: () -> Unit,
-    state: EventState,
-    vm: EventViewModel,
-    moveToPracticeDetail: (String) -> Unit,
-    moveToGameDetail: (String) -> Unit,
-    moveToLeague: () -> Unit,
-    moveToOppDetails: () -> Unit,
-    updateTopBar: (TopBarData) -> Unit
-) {
-    // on below line we are creating variable for pager state.
-    val pagerState = rememberPagerState(
-        pageCount = 3,
-        initialOffScreenLimit = 1,
-    ) // Add the count for number of pages
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        Tabs(pagerState = pagerState, updateTopBar)
-        TabsContent(
-            pagerState = pagerState,
-            state,
-            vm,
-            moveToDetail,
-            moveToPracticeDetail,
-            moveToGameDetail,
-            moveToLeague,
-            moveToOppDetails,
-            updateTopBar
-        )
-    }
-}
-
 // on below line we are
 // creating a function for tabs
 @ExperimentalPagerApi
 @Composable
-fun Tabs(pagerState: PagerState, updateTopBar: (TopBarData) -> Unit) {
+fun Tabs(pagerState: PagerState) {
     val list = listOf(
         TabItems.Events,
         TabItems.Leagues,

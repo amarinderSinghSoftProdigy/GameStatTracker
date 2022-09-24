@@ -94,7 +94,6 @@ fun BoxScope.CommonTabView(
     backClick: () -> Unit = {},
     iconClick: (() -> Unit)? = null,
     labelClick: (() -> Unit)? = null,
-    tabIndex:Int=0
 ) {
     if (topBarData.topBar == TopBar.EMPTY) {
         return
@@ -175,7 +174,10 @@ fun BoxScope.CommonTabView(
             icon = painterResource(id = R.drawable.ic_edit)
         }
         TopBar.MY_EVENT -> {
-            icon = painterResource(id = if(tabIndex===2) R.drawable.ic_filter else R.drawable.ic_add_circle)
+            icon = painterResource(id = R.drawable.ic_add_circle)
+        }
+        TopBar.EVENT_OPPORTUNITIES -> {
+            icon = painterResource(id = R.drawable.ic_filter)
         }
         else -> {}
     }
@@ -445,6 +447,9 @@ fun CustomCheckBox(selected: Boolean, onClick: () -> Unit) {
             } else MaterialTheme.appColors.buttonColor.bckgroundDisabled
         )) {
         Icon(
+            tint = if (!selected) {
+                Color.Transparent
+            } else Color.White,
             imageVector = Icons.Default.Check,
             contentDescription = null,
         )

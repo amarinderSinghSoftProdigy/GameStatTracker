@@ -52,11 +52,11 @@ import com.softprodigy.ballerapp.ui.features.home.events.EventsScreen
 import com.softprodigy.ballerapp.ui.features.home.events.FilterScreen
 import com.softprodigy.ballerapp.ui.features.home.events.MyLeagueDetailScreen
 import com.softprodigy.ballerapp.ui.features.home.events.NewEventScreen
-import com.softprodigy.ballerapp.ui.features.home.events.OppEventDetails
-import com.softprodigy.ballerapp.ui.features.home.events.*
 import com.softprodigy.ballerapp.ui.features.home.events.division.divisionTab.DivisionScreenTab
 import com.softprodigy.ballerapp.ui.features.home.events.game.GameDetailsScreen
 import com.softprodigy.ballerapp.ui.features.home.events.game.GameRuleScreen
+import com.softprodigy.ballerapp.ui.features.home.events.opportunities.EventRegisterSuccessScreen
+import com.softprodigy.ballerapp.ui.features.home.events.opportunities.OppEventDetails
 import com.softprodigy.ballerapp.ui.features.home.events.team.team_tabs.EventTeamTabs
 import com.softprodigy.ballerapp.ui.features.home.events.venues.openVenue.OpenVenueTopTabs
 import com.softprodigy.ballerapp.ui.features.home.home_screen.HomeScreen
@@ -340,10 +340,27 @@ fun NavControllerComposable(
         composable(route = Route.EVENT_REGISTRATION) {
             homeViewModel.setTopBar(
                 TopBarData(
-                    topBar = TopBar.REGISTRATION_FORM,
+                    label = stringResource(id = R.string.registration_form),
+                    topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
-            EventRegistraionDetails(eventViewModel)
+            EventRegistraionDetails(eventViewModel) {
+                navController.navigate(Route.EVENT_REGISTRATION_SUCCESS)
+            }
+        }
+
+        composable(route = Route.EVENT_REGISTRATION_SUCCESS) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = stringResource(id = R.string.registration_form),
+                    topBar = TopBar.SINGLE_LABEL,
+                )
+            )
+            EventRegisterSuccessScreen {
+                navController.navigate(Route.EVENTS_SCREEN) {
+                    popUpTo(Route.EVENT_REGISTRATION)
+                }
+            }
         }
         composable(route = Route.LEAGUE_DETAIL_SCREEN) {
             homeViewModel.setTopBar(
@@ -372,7 +389,9 @@ fun NavControllerComposable(
                     topBar = TopBar.FILTER_EVENT,
                 )
             )
-            FilterScreen(eventViewModel)
+            FilterScreen(eventViewModel) {
+                navController.popBackStack()
+            }
         }
         composable(route = Route.EVENTS_DETAIL_SCREEN) {
             homeViewModel.setTopBar(
