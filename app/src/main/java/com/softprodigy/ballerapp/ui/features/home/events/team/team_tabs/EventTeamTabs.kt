@@ -13,6 +13,7 @@ import androidx.compose.material.TabRow
 import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +23,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -29,8 +31,8 @@ import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
-import com.softprodigy.ballerapp.ui.features.home.events.division.divisionTab.DivisionTeamScreen
-import com.softprodigy.ballerapp.ui.features.home.events.schedule.EventScheduleScreen
+import com.softprodigy.ballerapp.ui.features.home.events.schedule.EventScheduleChildScreen
+import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.features.home.teams.roaster.RoasterScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.standing.StandingScreen
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -38,8 +40,14 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun EventTeamTabs() {
+fun EventTeamTabs(vm: TeamViewModel = hiltViewModel()) {
 
+    val scope = rememberCoroutineScope()
+    remember {
+        scope.launch {
+            vm.getTeams()
+        }
+    }
     val list = listOf(
         TeamTabs.Standings,
         TeamTabs.Schedule,
@@ -55,7 +63,7 @@ fun EventTeamTabs() {
             .background(Color.White),
     ) {
         TeamTabs(pagerState = pagerState, list = list)
-        TeamTabsContent(pagerState = pagerState)
+        TeamTabsContent(pagerState = pagerState, vm)
     }
 }
 
@@ -111,12 +119,12 @@ fun TeamTabs(pagerState: PagerState, list: List<TeamTabs>) {
 
 @ExperimentalPagerApi
 @Composable
-fun TeamTabsContent(pagerState: PagerState) {
+fun TeamTabsContent(pagerState: PagerState, vm: TeamViewModel) {
     HorizontalPager(state = pagerState) { page ->
         when (page) {
             0 -> StandingScreen()
-            1 -> StandingScreen()
-            2 -> RoasterScreen()
+            1 -> EventScheduleChildScreen(moveToOpenDetails = {})
+            2 -> RoasterScreen(vm)
         }
     }
 }

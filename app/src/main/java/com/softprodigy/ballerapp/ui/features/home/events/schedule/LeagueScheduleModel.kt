@@ -13,5 +13,5 @@ data class Match(
     val teamB: Team = Team(),
     val location: String = "",
     val divisions: String = "",
-    val time: String = "",
+    var time: String = "",
 )

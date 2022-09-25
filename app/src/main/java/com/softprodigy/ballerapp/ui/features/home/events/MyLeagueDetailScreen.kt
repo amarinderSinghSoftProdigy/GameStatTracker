@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MyLeagueDetailScreen(
+    moveToOpenDetails: (String) -> Unit,
     moveToOpenVenues: (String) -> Unit,
     moveToOpenDivisions: (String) -> Unit,
     moveToOpenTeams: (String) -> Unit
@@ -38,7 +39,13 @@ fun MyLeagueDetailScreen(
 
     Column {
         MyLeagueTopTabs(pagerState = pagerState, tabData = tabData)
-        MyLeagueContent(pagerState = pagerState, moveToOpenVenues, moveToOpenDivisions, moveToOpenTeams)
+        MyLeagueContent(
+            pagerState = pagerState,
+            moveToOpenDetails,
+            moveToOpenVenues,
+            moveToOpenDivisions,
+            moveToOpenTeams
+        )
     }
 
 }
@@ -68,6 +75,7 @@ fun MyLeagueTopTabs(pagerState: PagerState, tabData: List<MyLeagueTabItems>) {
 @Composable
 fun MyLeagueContent(
     pagerState: PagerState,
+    moveToOpenDetails: (String) -> Unit,
     moveToOpenVenues: (String) -> Unit,
     moveToOpenDivisions: (String) -> Unit,
     moveToOpenTeams: (String) -> Unit
@@ -77,7 +85,7 @@ fun MyLeagueContent(
         modifier = Modifier.fillMaxSize()
     ) { index ->
         when (index) {
-            0 -> EventScheduleScreen()
+            0 -> EventScheduleScreen(moveToOpenDetails = moveToOpenDetails)
             1 -> DivisionScreen(moveToOpenDivisions)
             2 -> EventTeamsScreen(moveToOpenTeams)
             3 -> VenuesScreen(moveToOpenVenues)

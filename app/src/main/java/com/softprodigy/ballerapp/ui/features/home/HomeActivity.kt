@@ -306,9 +306,6 @@ fun NavControllerComposable(
                     eventTitle = it
                     navController.navigate(Route.GAME_DETAIL_SCREEN)
                 },
-                moveToLeague = {
-
-                },
                 moveToOppDetails = {
                     navController.navigate(Route.OPP_DETAIL_SCREEN)
                 },
@@ -369,19 +366,22 @@ fun NavControllerComposable(
                     topBar = TopBar.MY_LEAGUE
                 )
             )
-            MyLeagueDetailScreen(moveToOpenVenues = {
-                eventTitle = it
-                navController.navigate(Route.OPEN_VENUE)
+            MyLeagueDetailScreen(
+                moveToOpenDetails = {
+                    eventTitle = it
+                    navController.navigate(Route.GAME_DETAIL_SCREEN)
 
-            }, moveToOpenDivisions = {
-                eventTitle = it
-                navController.navigate(Route.DIVISION_TAB)
-            }, moveToOpenTeams = {
-                eventTitle = it
-                navController.navigate(Route.TEAM_TAB)
-            })
+                }, moveToOpenVenues = {
+                    eventTitle = it
+                    navController.navigate(Route.OPEN_VENUE)
 
-
+                }, moveToOpenDivisions = {
+                    eventTitle = it
+                    navController.navigate(Route.DIVISION_TAB)
+                }, moveToOpenTeams = {
+                    eventTitle = it
+                    navController.navigate(Route.TEAM_TAB)
+                })
         }
         composable(route = Route.EVENTS_FILTER_SCREEN) {
             homeViewModel.setTopBar(
@@ -569,7 +569,7 @@ fun NavControllerComposable(
                     topBar = TopBar.TEAM_TAB,
                 )
             )
-            EventTeamTabs()
+            EventTeamTabs(vm = teamViewModel)
         }
         /*composable(route = Route.MY_LEAGUE) {
             homeViewModel.setTopBar(

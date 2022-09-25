@@ -114,13 +114,13 @@ fun DivisionTabsContent(pagerState: PagerState) {
         when (page) {
             0 -> DivisionTeamScreen()
             1 -> StandingScreen()
-            2 -> EventScheduleScreen()
+            2 -> EventScheduleScreen(moveToOpenDetails = {})
         }
     }
 }
 
 enum class DivisionTabs(val icon: Int, val stringId: String) {
-    Teams(R.drawable.ic_team, stringId = "teams"),
+    Teams(R.drawable.ic_users, stringId = "teams"),
     Standings(R.drawable.ic_standing, stringId = "standings"),
     Schedule(R.drawable.ic_schedule, stringId = "schedule"),
 }

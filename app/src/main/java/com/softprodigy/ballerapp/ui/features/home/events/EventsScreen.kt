@@ -67,7 +67,6 @@ fun EventsScreen(
     dismissDialog: (Boolean) -> Unit,
     moveToDetail: () -> Unit,
     moveToPracticeDetail: (String) -> Unit, moveToGameDetail: (String) -> Unit,
-    moveToLeague: () -> Unit,
     moveToOppDetails: () -> Unit,
     updateTopBar: (TopBarData) -> Unit
 ) {
@@ -91,7 +90,6 @@ fun EventsScreen(
                 moveToDetail,
                 moveToPracticeDetail,
                 moveToGameDetail,
-                moveToLeague,
                 moveToOppDetails,
                 updateTopBar
             )
@@ -178,8 +176,8 @@ fun TabsContent(
     state: EventState,
     vm: EventViewModel,
     moveToDetail: () -> Unit,
-    moveToPracticeDetail: (String) -> Unit, moveToGameDetail: (String) -> Unit,
-    moveToLeague: () -> Unit,
+    moveToPracticeDetail: (String) -> Unit,
+    moveToGameDetail: (String) -> Unit,
     moveToOppDetails: () -> Unit,
     updateTopBar: (TopBarData) -> Unit
 ) {
@@ -190,7 +188,7 @@ fun TabsContent(
                 MyEvents(state, vm, moveToPracticeDetail, moveToGameDetail)
             }
             1 -> {
-                MyLeagueScreen(state, vm, moveToDetail, moveToLeague)
+                MyLeagueScreen(state, vm, moveToDetail)
             }
             2 -> {
                 OpportunitieScreen(state, vm, moveToOppDetails)

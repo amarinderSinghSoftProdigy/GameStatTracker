@@ -3,6 +3,7 @@ package com.softprodigy.ballerapp.ui.features.home.events
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,12 +12,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -29,24 +32,20 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import com.google.accompanist.pager.ExperimentalPagerApi
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppDivider
 import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.ButtonWithLeadingIcon
 import com.softprodigy.ballerapp.ui.features.components.CoilImage
 import com.softprodigy.ballerapp.ui.features.components.Placeholder
 import com.softprodigy.ballerapp.ui.features.components.TransparentButtonButton
 import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
 import com.softprodigy.ballerapp.ui.theme.appColors
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun EventDetailsScreen(vm: EventViewModel) {
-    val images = arrayListOf<String>("", "", "", "", "", "", "")
+    val images = arrayListOf("", "", "", "", "", "", "")
     Column(
         Modifier
             .fillMaxSize()
@@ -117,28 +116,35 @@ fun EventDetailsScreen(vm: EventViewModel) {
                 color = MaterialTheme.appColors.textField.label,
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Springville HS Gym A",
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                    style = MaterialTheme.typography.h5,
-                )
+            Box(modifier = Modifier.fillMaxWidth()) {
+                Column {
+                    AppText(
+                        text = stringResource(id = R.string.location),
+                        style = MaterialTheme.typography.h6,
+                        color = MaterialTheme.appColors.textField.label,
+                    )
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                    Text(
+                        text = "Springville HS Gym A",
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        style = MaterialTheme.typography.h5,
+                    )
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                    Text(
+                        text = "8502 Preston Rd. Inglewood, Maine",
+                        color = MaterialTheme.appColors.textField.label,
+                        style = MaterialTheme.typography.h4
+                    )
+                }
                 TransparentButtonButton(
+                    modifier = Modifier.align(Alignment.CenterEnd),
                     text = stringResource(id = R.string.navigate),
                     onClick = {},
                     icon = painterResource(id = R.drawable.ic_nav),
                     enabled = false,
                 )
             }
-            Text(
-                text = "8502 Preston Rd. Inglewood, Maine",
-                color = MaterialTheme.appColors.textField.label,
-                style = MaterialTheme.typography.h4
-            )
+
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
             CoilImage(
@@ -163,8 +169,10 @@ fun EventDetailsScreen(vm: EventViewModel) {
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
         ) {
+            item {
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+            }
             itemsIndexed(images) { index, item ->
                 Image(
                     painter = rememberAsyncImagePainter("https://picsum.photos/200"),
@@ -198,10 +206,10 @@ fun EventDetailsScreen(vm: EventViewModel) {
             )
         }
 
-        LazyRow(modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))) {
+        LazyRow {
             itemsIndexed(images) { index, item ->
                 Column(
-                    modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.size_10dp)),
+                    modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.size_16dp)),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_14dp)))
@@ -264,7 +272,7 @@ fun EventDetailsScreen(vm: EventViewModel) {
                     text = "N/A",
                     color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                     style = MaterialTheme.typography.h5,
-                    fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
+                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                 )
             }
 
@@ -307,8 +315,8 @@ fun EventDetailsScreen(vm: EventViewModel) {
                         painter = painterResource(id = R.drawable.user_demo),
                         contentDescription = null,
                         modifier = Modifier
-                            .size(60.dp)
-                            .padding(end = dimensionResource(id = R.dimen.txt_size_16))
+                            .size(dimensionResource(id = R.dimen.size_60dp))
+                            .padding(end = dimensionResource(id = R.dimen.txt_size_14))
                     )
                     AppText(
                         text = "Coach Sam",
@@ -317,24 +325,36 @@ fun EventDetailsScreen(vm: EventViewModel) {
                     )
                 }
 
-                ButtonWithLeadingIcon(
-                    text = stringResource(id = R.string.read_the_note),
-                    onClick = {},
-                    painter = painterResource(id = R.drawable.ic_check),
-                    isTransParent = false,
-                    iconSize = dimensionResource(id = R.dimen.size_20dp)
-                )
-
+                Row(
+                    modifier = Modifier
+                        .height(dimensionResource(id = R.dimen.size_32dp))
+                        .background(
+                            color = MaterialTheme.appColors.material.primaryVariant,
+                            shape = RoundedCornerShape(
+                                dimensionResource(id = R.dimen.size_8dp)
+                            )
+                        ),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_12dp)))
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_check),
+                        contentDescription = "",
+                        tint = Color.White,
+                        modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp))
+                    )
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_12dp)))
+                    AppText(
+                        text = stringResource(id = R.string.read_the_note),
+                        color = Color.White,
+                        style = MaterialTheme.typography.button
+                    )
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_12dp)))
+                }
             }
-
-
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
-
         }
-
         AppDivider(color = MaterialTheme.appColors.material.primary)
-
-
         Column(
             Modifier
                 .padding(
@@ -364,8 +384,8 @@ fun EventDetailsScreen(vm: EventViewModel) {
                     painter = painterResource(id = R.drawable.user_demo),
                     contentDescription = null,
                     modifier = Modifier
-                        .size(60.dp)
-                        .padding(end = dimensionResource(id = R.dimen.txt_size_16))
+                        .size(dimensionResource(id = R.dimen.size_60dp))
+                        .padding(end = dimensionResource(id = R.dimen.txt_size_14))
                 )
                 AppText(
                     text = "Coach Sam",
