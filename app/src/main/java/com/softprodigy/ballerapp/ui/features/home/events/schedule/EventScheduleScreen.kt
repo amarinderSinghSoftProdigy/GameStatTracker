@@ -2,6 +2,7 @@ package com.softprodigy.ballerapp.ui.features.home.events.schedule
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -45,7 +46,10 @@ import com.softprodigy.ballerapp.ui.theme.appColors
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun EventScheduleScreen(vm: EventScheduleViewModel = hiltViewModel()) {
+fun EventScheduleScreen(
+    vm: EventScheduleViewModel = hiltViewModel(),
+    moveToOpenDetails: (String) -> Unit,
+) {
 
     val state = vm.eventScheduleState.value
     val expand = remember {
@@ -55,7 +59,8 @@ fun EventScheduleScreen(vm: EventScheduleViewModel = hiltViewModel()) {
     Column(
         Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.appColors.material.primary)) {
+            .background(color = MaterialTheme.appColors.material.primary)
+    ) {
         LazyColumn(Modifier.fillMaxWidth()) {
             items(state.leagueSchedules) { item: LeagueScheduleModel ->
                 FoldableItem(
@@ -76,7 +81,9 @@ fun EventScheduleScreen(vm: EventScheduleViewModel = hiltViewModel()) {
                     itemHorizontalPadding = 0.dp,
                     itemsBackground = MaterialTheme.appColors.material.primary,
                     item = { match, index ->
-                        EventScheduleSubItem(match, index)
+                        EventScheduleSubItem(match, index) {
+                            moveToOpenDetails(match.divisions)
+                        }
                     }
                 )
             }
@@ -149,7 +156,7 @@ fun EventScheduleHeaderItem(date: String, gamesCount: String, isExpanded: Boolea
 }
 
 @Composable
-fun EventScheduleSubItem(match: Match, index: Int) {
+fun EventScheduleSubItem(match: Match, index: Int, moveToOpenDetails: () -> Unit) {
     if (index == 0) {
         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.size_8dp)))
     }
@@ -172,6 +179,7 @@ fun EventScheduleSubItem(match: Match, index: Int) {
         Column(
             Modifier
                 .fillMaxWidth()
+                .clickable { moveToOpenDetails() }
                 .background(
                     color = MaterialTheme.appColors.material.surface.copy(0.9f),
                     shape = RoundedCornerShape(

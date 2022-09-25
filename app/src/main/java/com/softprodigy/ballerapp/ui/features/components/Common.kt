@@ -116,7 +116,7 @@ fun BoxScope.CommonTabView(
         Box(modifier = Modifier
             .align(Alignment.CenterStart)
             .clickable {
-
+                backClick()
             }) {
             Icon(
                 modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp)),
@@ -447,6 +447,9 @@ fun CustomCheckBox(selected: Boolean, onClick: () -> Unit) {
             } else MaterialTheme.appColors.buttonColor.bckgroundDisabled
         )) {
         Icon(
+            tint = if (!selected) {
+                Color.Transparent
+            } else Color.White,
             imageVector = Icons.Default.Check,
             contentDescription = null,
         )
