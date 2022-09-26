@@ -198,4 +198,37 @@
     <string name="no_data_found">No data found!!</string>
     <string name="try_something_else">Please try again later.</string>
     <string name="all_players">All Players</string>
+
+    <!--Game zone-->
+    <string name="exit">Exit</string>
+    <string name="settings">Settings</string>
+    <string name="box_score">Box Score</string>
+    <string name="timeouts">Timeouts</string>
+    <string name="pts">pts</string>
+    <string name="my_team">My Team</string>
+    <string name="other_team">Other Team</string>
+    <string name="asst">Asst</string>
+    <string name="blk">Blk</string>
+    <string name="off_reb">Off Reb</string>
+    <string name="def_reb">Def Reb</string>
+    <string name="stl">STL</string>
+    <string name="to">TO</string>
+    <string name="foul">Foul</string>
+    <string name="sub">Sub</string>
+
+    <string-array name="game_settings">
+        <item>@string/exit</item>
+        <item>@string/settings</item>
+        <item>@string/box_score</item>
+        <item>@string/timeouts</item>
+    </string-array>
+
+    <string-array name="game_points">
+        <item>3 pts</item>
+        <item>3 pts</item>
+        <item>2 pts</item>
+        <item>2 pts</item>
+        <item>1 pts</item>
+        <item>1 pts</item>
+    </string-array>
 </resources>

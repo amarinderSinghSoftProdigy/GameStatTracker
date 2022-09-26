@@ -35,6 +35,7 @@ import com.softprodigy.ballerapp.common.IntentData
 import com.softprodigy.ballerapp.common.Route.ADD_PLAYER_SCREEN
 import com.softprodigy.ballerapp.common.Route.FORGOT_PASSWORD_SCREEN
 import com.softprodigy.ballerapp.common.Route.LOGIN_SCREEN
+import com.softprodigy.ballerapp.common.Route.OVERVIEW_SCREEN
 import com.softprodigy.ballerapp.common.Route.PROFILE_SETUP_SCREEN
 import com.softprodigy.ballerapp.common.Route.SELECT_PROFILE
 import com.softprodigy.ballerapp.common.Route.SELECT_USER_TYPE
@@ -49,6 +50,8 @@ import com.softprodigy.ballerapp.data.request.SignUpData
 import com.softprodigy.ballerapp.twitter_login.TwitterConstants
 import com.softprodigy.ballerapp.ui.features.components.UserType
 import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordScreen
+import com.softprodigy.ballerapp.ui.features.game_zone.GameZoneActivity
+import com.softprodigy.ballerapp.ui.features.game_zone.OverviewScreen
 import com.softprodigy.ballerapp.ui.features.home.HomeActivity
 import com.softprodigy.ballerapp.ui.features.login.LoginScreen
 import com.softprodigy.ballerapp.ui.features.select_profile.SelectProfileScreen
@@ -270,7 +273,8 @@ fun NavControllerComposable(activity: MainActivity) {
                         )
                     } else if (color.value.isNotEmpty()) {
                         navController.popBackStack()
-                        navController.navigate(LOGIN_SCREEN)
+                        //navController.navigate(LOGIN_SCREEN)
+                        moveToGameZone(activity)
                     } else {
                         navController.popBackStack()
                         navController.navigate(WELCOME_SCREEN)
@@ -433,12 +437,26 @@ fun NavControllerComposable(activity: MainActivity) {
             SelectProfileScreen(onNextClick = { moveToHome(activity) })
         }
 
+        composable(route = OVERVIEW_SCREEN) {
+
+            OverviewScreen(
+            )
+        }
     }
 }
 
 
 private fun moveToHome(activity: MainActivity, fromSplash: Boolean = false) {
     val intent = Intent(activity, HomeActivity::class.java)
+    if (fromSplash) {
+        intent.putExtra(IntentData.FROM_SPLASH, fromSplash)
+    }
+    activity.startActivity(intent)
+    activity.finish()
+}
+
+private fun moveToGameZone(activity: MainActivity, fromSplash: Boolean = false) {
+    val intent = Intent(activity, GameZoneActivity::class.java)
     if (fromSplash) {
         intent.putExtra(IntentData.FROM_SPLASH, fromSplash)
     }
