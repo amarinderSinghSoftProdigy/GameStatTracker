@@ -68,7 +68,7 @@ fun DocumentTab(vm: ProfileViewModel) {
                 itemsIndexed(state.userDocTypes) { index, item ->
                     DocumentItem(item, {
                         vm.onEvent(ProfileEvent.SetUploadKey(it))
-                        launcher.launch("image/*")
+                        launcher.launch("*/*")
                     }) {
                         vm.onEvent(ProfileEvent.SetDeleteDocument(item))
                         vm.onEvent(ProfileEvent.ShowDeleteDialog(true))
