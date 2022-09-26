@@ -43,14 +43,18 @@ import com.softprodigy.ballerapp.common.apiToUIDateFormat
 import com.softprodigy.ballerapp.ui.features.components.CoilImage
 import com.softprodigy.ballerapp.ui.features.components.DeleteDialog
 import com.softprodigy.ballerapp.ui.features.components.Placeholder
+import com.softprodigy.ballerapp.ui.features.components.SelectGuardianRoleDialog
 import com.softprodigy.ballerapp.ui.features.components.SelectInvitationRoleDialog
+import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
+import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayStatus
 import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
 import com.softprodigy.ballerapp.ui.theme.ColorButtonRed
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun InvitationScreen(vm: InvitationViewModel = hiltViewModel()) {
+fun InvitationScreen() {
+    val vm: InvitationViewModel = hiltViewModel()
     val state = vm.invitationState.value
     val context = LocalContext.current
 
@@ -97,8 +101,14 @@ fun InvitationScreen(vm: InvitationViewModel = hiltViewModel()) {
     }
     if (state.showRoleDialog) {
         SelectInvitationRoleDialog(
-            onDismiss = { vm.onEvent(InvitationEvent.OnRoleDialogClick(false)) },
-            onConfirmClick = { vm.onEvent(InvitationEvent.OnRoleConfirmClick) },
+            onDismiss = {
+                vm.onEvent(InvitationEvent.OnRoleDialogClick(false))
+                vm.onEvent(InvitationEvent.OnClearValues)
+            },
+            onConfirmClick = { /*vm.onEvent(InvitationEvent.OnRoleConfirmClick)*/
+                vm.onEvent(InvitationEvent.OnRoleConfirmClick)
+                vm.onEvent(InvitationEvent.OnGuardianDialogClick(true))
+            },
             onSelectionChange = { vm.onEvent(InvitationEvent.OnRoleClick(role = it)) },
             title = stringResource(id = R.string.what_is_your_role),
             selected = state.selectedRole,
@@ -106,6 +116,34 @@ fun InvitationScreen(vm: InvitationViewModel = hiltViewModel()) {
             roleList = state.roles
         )
     }
+
+    if (state.showGuardianDialog) {
+        SelectGuardianRoleDialog(onBack = {
+            vm.onEvent(InvitationEvent.OnRoleDialogClick(true))
+            vm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
+        },
+            onConfirmClick = {
+                vm.onEvent(InvitationEvent.OnInvitationConfirm)
+                vm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
+            },
+            onSelectionChange = { vm.onEvent(InvitationEvent.OnGuardianClick(guardian = it)) },
+            title = stringResource(
+                R.string.select_the_players_guardian
+            ),
+            selected = state.selectedGuardian,
+            showLoading = state.showLoading,
+            guardianList = state.playerDetails,
+            onValueSelected = {
+                vm.onEvent(InvitationEvent.OnValuesSelected(it))
+            },
+            onDismiss = {
+                vm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
+                vm.onEvent(InvitationEvent.OnClearGuardianValues)
+            }
+        )
+    }
+
+
     if (state.showDeclineDialog) {
         DeleteDialog(
             item = state.selectedInvitation,
@@ -163,7 +201,7 @@ fun InvitationItem(
                     ),
                 isCrossFadeEnabled = false,
                 onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
-                onError = {Placeholder(R.drawable.ic_team_placeholder)}
+                onError = { Placeholder(R.drawable.ic_team_placeholder) }
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
 
@@ -265,7 +303,8 @@ fun InvitationItem(
 
             }
         } else if (invitation.status.equals(InvitationStatus.ACCEPT.status, ignoreCase = true) ||
-            invitation.status.equals(InvitationStatus.ACCEPTED.status, ignoreCase = true)) {
+            invitation.status.equals(InvitationStatus.ACCEPTED.status, ignoreCase = true)
+        ) {
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -300,7 +339,8 @@ fun InvitationItem(
                 )
             }
         } else if (invitation.status.equals(InvitationStatus.REJECT.status, ignoreCase = true)
-            || invitation.status.equals(InvitationStatus.DECLINED.status, ignoreCase = true)) {
+            || invitation.status.equals(InvitationStatus.DECLINED.status, ignoreCase = true)
+        ) {
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -335,7 +375,5 @@ fun InvitationItem(
                 )
             }
         }
-
-
     }
 }
