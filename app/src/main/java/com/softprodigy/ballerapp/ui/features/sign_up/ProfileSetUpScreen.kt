@@ -95,7 +95,6 @@ import com.togitech.ccp.data.utils.getLibCountries
 import kotlinx.coroutines.launch
 import java.util.*
 
-
 @SuppressLint("RememberReturnType")
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Composable

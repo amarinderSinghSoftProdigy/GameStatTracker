@@ -20,7 +20,12 @@ import com.softprodigy.ballerapp.ui.features.home.events.venues.VenuesScreen
 import kotlinx.coroutines.launch
 
 @Composable
-fun MyLeagueDetailScreen(moveToOpenVenues: (String) -> Unit) {
+fun MyLeagueDetailScreen(
+    moveToOpenDetails: (String) -> Unit,
+    moveToOpenVenues: (String) -> Unit,
+    moveToOpenDivisions: (String) -> Unit,
+    moveToOpenTeams: (String) -> Unit
+) {
     val tabData = listOf(
         MyLeagueTabItems.Schedule,
         MyLeagueTabItems.Divisions,
@@ -34,7 +39,13 @@ fun MyLeagueDetailScreen(moveToOpenVenues: (String) -> Unit) {
 
     Column {
         MyLeagueTopTabs(pagerState = pagerState, tabData = tabData)
-        MyLeagueContent(pagerState = pagerState,moveToOpenVenues)
+        MyLeagueContent(
+            pagerState = pagerState,
+            moveToOpenDetails,
+            moveToOpenVenues,
+            moveToOpenDivisions,
+            moveToOpenTeams
+        )
     }
 
 }
@@ -62,15 +73,21 @@ fun MyLeagueTopTabs(pagerState: PagerState, tabData: List<MyLeagueTabItems>) {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun MyLeagueContent(pagerState: PagerState, moveToOpenVenues: (String) -> Unit) {
+fun MyLeagueContent(
+    pagerState: PagerState,
+    moveToOpenDetails: (String) -> Unit,
+    moveToOpenVenues: (String) -> Unit,
+    moveToOpenDivisions: (String) -> Unit,
+    moveToOpenTeams: (String) -> Unit
+) {
     HorizontalPager(
         state = pagerState,
         modifier = Modifier.fillMaxSize()
     ) { index ->
         when (index) {
-            0 -> EventScheduleScreen()
-            1 -> DivisionScreen()
-            2 -> EventTeamsScreen()
+            0 -> EventScheduleScreen(moveToOpenDetails = moveToOpenDetails)
+            1 -> DivisionScreen(moveToOpenDivisions)
+            2 -> EventTeamsScreen(moveToOpenTeams)
             3 -> VenuesScreen(moveToOpenVenues)
         }
     }

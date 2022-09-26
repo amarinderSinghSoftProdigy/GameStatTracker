@@ -1,10 +1,10 @@
-package com.softprodigy.ballerapp.ui.features.home.events.game
+package com.softprodigy.ballerapp.ui.features.home.events.team.team_tabs
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -13,6 +13,7 @@ import androidx.compose.material.TabRow
 import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +23,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -29,33 +31,46 @@ import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
-import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
+import com.softprodigy.ballerapp.ui.features.home.events.schedule.EventScheduleChildScreen
+import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
+import com.softprodigy.ballerapp.ui.features.home.teams.roaster.RoasterScreen
+import com.softprodigy.ballerapp.ui.features.home.teams.standing.StandingScreen
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun GameDetailsScreen(vm: EventViewModel, moveToGameRules: () -> Unit) {
-    val pagerState = rememberPagerState(pageCount = 3)
+fun EventTeamTabs(vm: TeamViewModel = hiltViewModel()) {
+
+    val scope = rememberCoroutineScope()
+    remember {
+        scope.launch {
+            vm.getTeams()
+        }
+    }
+    val list = listOf(
+        TeamTabs.Standings,
+        TeamTabs.Schedule,
+        TeamTabs.Roaster,
+    )
+
+    val pagerState = rememberPagerState(pageCount = list.size)
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .background(Color.White),
     ) {
-        Tabs(pagerState = pagerState)
-        TabsContent(pagerState = pagerState, vm, moveToGameRules)
+        TeamTabs(pagerState = pagerState, list = list)
+        TeamTabsContent(pagerState = pagerState, vm)
     }
 }
 
 @ExperimentalPagerApi
 @Composable
-fun Tabs(pagerState: PagerState) {
-    val list = listOf(
-        GameTabItems.Details,
-        GameTabItems.Stats,
-        GameTabItems.Summary,
-    )
+fun TeamTabs(pagerState: PagerState, list: List<TeamTabs>) {
+
     val scope = rememberCoroutineScope()
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
@@ -104,18 +119,18 @@ fun Tabs(pagerState: PagerState) {
 
 @ExperimentalPagerApi
 @Composable
-fun TabsContent(pagerState: PagerState, vm: EventViewModel, moveToGameRules: () -> Unit) {
+fun TeamTabsContent(pagerState: PagerState, vm: TeamViewModel) {
     HorizontalPager(state = pagerState) { page ->
         when (page) {
-            0 -> GameDetailsTab(vm, moveToGameRules)
-            1 -> GameStatsTab()
-            2 -> GameSumTab()
+            0 -> StandingScreen()
+            1 -> EventScheduleChildScreen(moveToOpenDetails = {})
+            2 -> RoasterScreen(vm)
         }
     }
 }
 
-enum class GameTabItems(val icon: Int, val stringId: String) {
-    Details(R.drawable.ic_details, stringId = "details"),
-    Stats(R.drawable.ic_summary, stringId = "stats"),
-    Summary(R.drawable.ic_stats, stringId = "summary"),
+enum class TeamTabs(val icon: Int, val stringId: String) {
+    Standings(R.drawable.ic_standing, stringId = "standings"),
+    Schedule(R.drawable.ic_schedule, stringId = "schedule"),
+    Roaster(R.drawable.ic_roaster, stringId = "roaster"),
 }

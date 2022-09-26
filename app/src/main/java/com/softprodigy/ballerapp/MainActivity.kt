@@ -21,7 +21,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -60,15 +59,14 @@ import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordScree
 import com.softprodigy.ballerapp.ui.features.home.HomeActivity
 import com.softprodigy.ballerapp.ui.features.login.LoginScreen
 import com.softprodigy.ballerapp.ui.features.select_profile.SelectProfileScreen
-import com.softprodigy.ballerapp.ui.features.sign_up.ProfileSetUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpViewModel
+import com.softprodigy.ballerapp.ui.features.sign_up.ProfileSetUpScreen
 import com.softprodigy.ballerapp.ui.features.splash.SplashScreen
 import com.softprodigy.ballerapp.ui.features.user_type.UserTypeScreen
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.AddPlayersScreenUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupScreenUpdated
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
 import com.softprodigy.ballerapp.ui.features.welcome.WelcomeScreen
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
 import com.softprodigy.ballerapp.ui.theme.ColorPrimaryOrange
@@ -134,7 +132,7 @@ class MainActivity : ComponentActivity() {
                                         topBarData = state.topBar,
                                         userRole = "",
                                         backClick = {
-                                            mainViewModel.onEvent(MainEvent.OnShowTopBar(showAppBar =false))
+                                            mainViewModel.onEvent(MainEvent.OnShowTopBar(showAppBar = false))
                                             navController.popBackStack()
                                         },
                                         labelClick = {
@@ -412,7 +410,7 @@ fun NavControllerComposable(
                                 firstName = it?.user?.firstName ?: "",
                                 lastName = it?.user?.lastName ?: "",
                             )
-                        signUpViewModel.signUpUiState.value.isSocialUser =true
+                        signUpViewModel.signUpUiState.value.isSocialUser = true
                     }
                     val check =
                         it?.user?.role.equals(AppConstants.USER_TYPE_USER, ignoreCase = true)
@@ -458,7 +456,6 @@ fun NavControllerComposable(
         }
 
         composable(route = PROFILE_SETUP_SCREEN) {
-
             ProfileSetUpScreen(
                 signUpViewModel = signUpViewModel,
                 onNext = {
@@ -476,7 +473,7 @@ fun NavControllerComposable(
         }
 
         composable(route = SELECT_USER_TYPE) {
-            mainViewModel.onEvent(MainEvent.OnShowTopBar(showAppBar =false))
+            mainViewModel.onEvent(MainEvent.OnShowTopBar(showAppBar = false))
 
             BackHandler {}
 
@@ -507,15 +504,16 @@ fun NavControllerComposable(
             mainViewModel.onEvent(MainEvent.OnColorChanges(ColorPrimaryOrange))
 
             BackHandler {
-                mainViewModel.onEvent(MainEvent.OnShowTopBar(showAppBar =false))
+                mainViewModel.onEvent(MainEvent.OnShowTopBar(showAppBar = false))
                 navController.popBackStack()
             }
 
             TeamSetupScreenUpdated(
                 vm = setupTeamViewModelUpdated,
                 onBackClick = {
-                    mainViewModel.onEvent(MainEvent.OnShowTopBar(showAppBar =false))
-                    navController.popBackStack() },
+                    mainViewModel.onEvent(MainEvent.OnShowTopBar(showAppBar = false))
+                    navController.popBackStack()
+                },
                 onNextClick = {
                     navController.navigate(ADD_PLAYER_SCREEN)
                 })

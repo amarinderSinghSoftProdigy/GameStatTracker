@@ -1,10 +1,9 @@
 package com.softprodigy.ballerapp.ui.features.home.events.venues.openVenue
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,6 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -74,38 +74,35 @@ fun OpenVenuesDetailsScreen() {
 
                     Space(dp = dimensionResource(id = R.dimen.size_14dp))
 
-                    AppText(
-                        text = stringResource(id = R.string.location),
-                        style = MaterialTheme.typography.h6,
-                        color = MaterialTheme.appColors.buttonColor.textDisabled
-                    )
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-
-                        AppText(
-                            text = "Springvillie HS Gym A",
-                            style = MaterialTheme.typography.h5,
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
-                        )
-
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Column {
+                            AppText(
+                                text = stringResource(id = R.string.location),
+                                style = MaterialTheme.typography.h6,
+                                color = MaterialTheme.appColors.textField.label,
+                            )
+                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                            Text(
+                                text = "Springville HS Gym A",
+                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                style = MaterialTheme.typography.h5,
+                            )
+                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                            Text(
+                                text = "8502 Preston Rd. Inglewood, Maine",
+                                color = MaterialTheme.appColors.textField.label,
+                                style = MaterialTheme.typography.h4
+                            )
+                        }
                         TransparentButtonButton(
+                            modifier = Modifier.align(Alignment.CenterEnd),
                             text = stringResource(id = R.string.navigate),
                             onClick = {},
                             icon = painterResource(id = R.drawable.ic_nav),
                             enabled = false,
-
                         )
-
                     }
-                    AppText(
-                        text = "8502 Preston Rd. Inglewood, Maine",
-                        style = MaterialTheme.typography.h5,
-                        color = MaterialTheme.appColors.buttonColor.textDisabled
-                    )
+
 
                     Space(dp = dimensionResource(id = R.dimen.size_12dp))
 

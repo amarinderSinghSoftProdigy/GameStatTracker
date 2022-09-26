@@ -37,9 +37,9 @@ fun OpportunitieScreen(state: EventState, vm: EventViewModel, moveToOppDetails: 
             ) {
                 LazyColumn(Modifier.fillMaxWidth()) {
                     items(state.leagues) { leag ->
-                        LeagueItem(leag, state,{
+                        LeagueItem(leag, state) {
                             moveToOppDetails()
-                        },{})
+                        }
                     }
                 }
             }

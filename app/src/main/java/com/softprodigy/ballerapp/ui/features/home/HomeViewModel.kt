@@ -16,6 +16,7 @@ import com.softprodigy.ballerapp.domain.repository.IUserRepository
 import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
 import com.softprodigy.ballerapp.ui.features.components.TopBarData
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -26,6 +27,7 @@ class HomeViewModel @Inject constructor(
     val dataStoreManager: DataStoreManager,
     val userRepo: IUserRepository, application: Application,
 ) : AndroidViewModel(application) {
+    var searchJob: Job? = null
 
     private val _state = mutableStateOf(HomeState())
     val state: State<HomeState> = _state
@@ -80,7 +82,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun setBottomNav(color: BottomNavKey) {
-        _state.value = _state.value.copy(bottomBar = color)
+        _state.value = _state.value.copy(bottomBar = color, showDialog = false)
     }
 
     fun setDialog(show: Boolean) {
@@ -100,7 +102,10 @@ class HomeViewModel @Inject constructor(
     }
 
     fun setTopBar(topBar: TopBarData) {
-        _state.value = _state.value.copy(topBar = topBar, showTopAppBar = true)
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            _state.value = _state.value.copy(topBar = topBar, showTopAppBar = true)
+        }
     }
 
     fun setScreen(screen: Boolean) {

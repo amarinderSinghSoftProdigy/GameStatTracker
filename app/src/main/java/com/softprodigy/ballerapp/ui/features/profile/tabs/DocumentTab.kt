@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -33,7 +34,7 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
-import com.softprodigy.ballerapp.ui.theme.md_theme_light_primary
+import com.softprodigy.ballerapp.ui.theme.appColors
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -47,7 +48,7 @@ fun DocumentTab(
     ) {
         Column {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-            DocumentItem("birth_certificate", "http://testing.url.com")
+            DocumentItem("birth_certificate", "https://picsum.photos/200")
             DocumentItem("grade_verification", "")
             DocumentItem("permission_slip", "")
             DocumentItem("aau_card", "")
@@ -86,21 +87,33 @@ fun DocumentItem(stringId: String, imageUrl: String) {
                     modifier = Modifier
                         .size(dimensionResource(id = R.dimen.size_64dp))
                         .background(
-                            color = md_theme_light_primary,
+                            color = MaterialTheme.appColors.material.primary,
                             shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                         )
-                        .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                 ) {
-                    Image(
-                        painter = if (imageUrl.isNotEmpty()) rememberAsyncImagePainter(imageUrl) else painterResource(
-                            id = R.drawable.ic_add
-                        ),
-                        contentDescription = "",
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .clickable {
-                            },
-                    )
+                    if (imageUrl.isEmpty()) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_add_round),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .clickable {
+                                },
+                        )
+                    } else {
+                        Image(
+                            painter = rememberAsyncImagePainter(imageUrl),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .size(dimensionResource(id = R.dimen.size_64dp))
+                                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                                .background(
+                                    color = MaterialTheme.appColors.material.primary,
+                                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+                                ),
+                        )
+                    }
                 }
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_20dp)))
                 AppText(

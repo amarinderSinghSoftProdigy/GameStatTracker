@@ -40,7 +40,6 @@ fun MyLeagueScreen(
     state: EventState,
     vm: EventViewModel,
     moveToDetail: () -> Unit,
-    moveToLeague: () -> Unit
 ) {
     if (state.leagues.size > 0) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -51,11 +50,9 @@ fun MyLeagueScreen(
             ) {
                 LazyColumn(Modifier.fillMaxWidth()) {
                     items(state.leagues) { leag ->
-                        LeagueItem(leag, state, {
+                        LeagueItem(leag, state) {
                             moveToDetail()
-                        }, {
-                            moveToLeague()
-                        })
+                        }
                     }
                 }
             }
@@ -88,7 +85,7 @@ fun MyLeagueScreen(
 }
 
 @Composable
-fun LeagueItem(league: Leagues, state: EventState, onClick: () -> Unit, OnNextClick: () -> Unit) {
+fun LeagueItem(league: Leagues, state: EventState, OnNextClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -101,9 +98,6 @@ fun LeagueItem(league: Leagues, state: EventState, onClick: () -> Unit, OnNextCl
         Row(
             Modifier
                 .fillMaxWidth()
-                .clickable {
-                    onClick()
-                }
                 .background(
                     color = MaterialTheme.appColors.material.surface, shape = RoundedCornerShape(
                         topStart = dimensionResource(
