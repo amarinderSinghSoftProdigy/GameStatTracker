@@ -1,14 +1,7 @@
 package com.softprodigy.ballerapp.network
 
 import com.softprodigy.ballerapp.common.ApiConstants
-import com.softprodigy.ballerapp.data.request.ConfirmPhoneRequest
-import com.softprodigy.ballerapp.data.request.CreateTeamRequest
-import com.softprodigy.ballerapp.data.request.ForgotPasswordRequest
-import com.softprodigy.ballerapp.data.request.LoginRequest
-import com.softprodigy.ballerapp.data.request.SignUpData
-import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
-import com.softprodigy.ballerapp.data.request.UpdateTeamRequest
-import com.softprodigy.ballerapp.data.request.VerifyPhoneRequest
+import com.softprodigy.ballerapp.data.request.*
 import com.softprodigy.ballerapp.data.response.CreateTeamResponse
 import com.softprodigy.ballerapp.data.response.ImageUpload
 import com.softprodigy.ballerapp.data.response.StandingData
@@ -121,5 +114,8 @@ open interface APIService {
 
     @GET(ApiConstants.GET_USER_FULL_DETAILS)
     suspend fun getUserFullDetails():BaseResponse<User>
+
+    @PUT(ApiConstants.UPDATE_USER_FULL_DETAILS)
+    suspend fun updateUserFullDetails(@Body userDetailsReq: UpdateUserDetailsReq):BaseResponse<Any>
 
 }

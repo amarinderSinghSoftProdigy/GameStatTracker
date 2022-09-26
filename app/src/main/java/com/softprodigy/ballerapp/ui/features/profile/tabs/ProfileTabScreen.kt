@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.apiToUIDateFormat2
 import com.softprodigy.ballerapp.data.response.TeamDetails
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.profile.ProfileChannel
@@ -160,7 +161,7 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
         }
 
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-        ProfileItem(stringResource(id = R.string.birthday), state.user.birthdate)
+        ProfileItem(stringResource(id = R.string.birthday), apiToUIDateFormat2(state.user.birthdate))
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
         ProfileItem(stringResource(id = R.string.classof), state.user.userDetails.classOf)
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
@@ -201,7 +202,7 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
                     stringResource(id = R.string.shirt_size),
                     if (state.user.userDetails.jerseyPerferences.isNotEmpty())
                         state.user.userDetails.jerseyPerferences[0].shirtSize
-                    else "=",
+                    else "-",
                     stringResource(id = R.string.waist_size),
                     if (state.user.userDetails.jerseyPerferences.isNotEmpty())
                         state.user.userDetails.jerseyPerferences[0].waistSize
@@ -359,10 +360,6 @@ fun RowScope.DetailItem(stringId: String, value: String) {
 
 @Composable
 fun TeamList(teams: SnapshotStateList<TeamDetails>) {
-    /* var teams: Array<Team> = arrayOf(
-         Team(name = "Springfield Bucks", role = "Player"),
-         Team(name = "Springfield Sprouts", role = "Program Manger")
-     )*/
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(5.dp))
@@ -382,12 +379,14 @@ fun TeamList(teams: SnapshotStateList<TeamDetails>) {
                 Column(
                 ) {
                     Row() {
-                        Image(
-                            painter = painterResource(id = R.drawable.user_demo),
-                            contentDescription = "",
+                        CoilImage(
+                            src = BuildConfig.IMAGE_SERVER + team.teamId.logo,
                             modifier = Modifier
                                 .size(dimensionResource(id = R.dimen.size_40dp))
-                                .clip(CircleShape)
+                                .clip(CircleShape),
+                            isCrossFadeEnabled = false,
+                            onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                            onError = { Placeholder(R.drawable.ic_team_placeholder) }
                         )
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
                         Column(
@@ -411,7 +410,6 @@ fun TeamList(teams: SnapshotStateList<TeamDetails>) {
                 }
             }
         }
-//
     }
 }
 

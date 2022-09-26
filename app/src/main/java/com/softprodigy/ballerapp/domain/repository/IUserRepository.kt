@@ -3,6 +3,7 @@ package com.softprodigy.ballerapp.domain.repository
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.data.request.LoginRequest
 import com.softprodigy.ballerapp.data.request.SignUpData
+import com.softprodigy.ballerapp.data.request.UpdateUserDetailsReq
 import com.softprodigy.ballerapp.data.response.User
 import com.softprodigy.ballerapp.data.response.UserInfo
 import com.softprodigy.ballerapp.domain.BaseResponse
@@ -28,4 +29,8 @@ interface IUserRepository {
     suspend fun getUserProfile(): ResultWrapper<BaseResponse<User>>
 
     suspend fun getFullUserFullDetails(): ResultWrapper<BaseResponse<User>>
+
+    suspend fun updateUserFullDetails(userDetailsReq: UpdateUserDetailsReq): ResultWrapper<BaseResponse<Any>>
+
+
 }

@@ -11,15 +11,14 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -30,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.apiToUIDateFormat2
 import com.softprodigy.ballerapp.data.response.CheckBoxData
 import com.softprodigy.ballerapp.data.response.TeamDetails
 import com.softprodigy.ballerapp.ui.features.components.*
@@ -44,22 +44,6 @@ fun ProfileEditScreen(
 ) {
     val state = vm.state.value
 
-/*    var firstName by rememberSaveable { mutableStateOf("George") }
-    var lastName by rememberSaveable { mutableStateOf("Will") }
-    var email by rememberSaveable { mutableStateOf("email@example.com") }
-    var phoneNo by rememberSaveable { mutableStateOf("(704) 555-0127") }
-    var birthday by rememberSaveable { mutableStateOf("May 15, 1999") }
-    var classOf by rememberSaveable { mutableStateOf("Class of") }
-
- */
-//    var jerseyNo by rememberSaveable { mutableStateOf("23, 16, 18") }
-//    var gender by rememberSaveable { mutableStateOf("Male") }
-    var waistSize by rememberSaveable { mutableStateOf("32") }
-    var shirtSize by rememberSaveable { mutableStateOf("Adult, L") }
-    val favColgTeam by rememberSaveable { mutableStateOf("Team Name") }
-    var favNbaTeam by rememberSaveable { mutableStateOf("Team Name") }
-    var favActivePlayer by rememberSaveable { mutableStateOf("Team Name") }
-    var favAllTIme by rememberSaveable { mutableStateOf("Team Name") }
 
     val listOfCheckbox = listOf(
         CheckBoxData(stringResource(id = R.string.pg)),
@@ -85,13 +69,16 @@ fun ProfileEditScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_32dp)))
-                    Image(
-                        painter = painterResource(id = R.drawable.user_demo),
-                        contentDescription = "",
+
+                    CoilImage(
+                        src = BuildConfig.IMAGE_SERVER + state.user.profileImage,
                         modifier = Modifier
                             .size(dimensionResource(id = R.dimen.size_200dp))
                             .padding(bottom = dimensionResource(id = R.dimen.size_16dp))
-                            .clip(CircleShape)
+                            .clip(CircleShape),
+                        isCrossFadeEnabled = false,
+                        onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
+                        onError = { Placeholder(R.drawable.ic_user_profile_icon) }
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_48dp)))
                     DividerCommon()
@@ -133,6 +120,7 @@ fun ProfileEditScreen(
                             imeAction = ImeAction.Next,
                             capitalization = KeyboardCapitalization.Sentences
                         ),
+                        readOnly = true
                     )
                     DividerCommon()
                     EditProfileFields(
@@ -150,12 +138,13 @@ fun ProfileEditScreen(
                     )
                     DividerCommon()
                     EditProfileFields(
-                        state.user.birthdate,
+                        data = apiToUIDateFormat2(state.user.birthdate),
                         onValueChange = {
                             vm.onEvent(ProfileEvent.OnBirthdayChange(it))
 
                         },
-                        stringResource(id = R.string.birthday),
+                        readOnly = true,
+                        head = stringResource(id = R.string.birthday),
                         errorMessage = stringResource(id = R.string.valid_last_name),
                         keyboardOptions = KeyboardOptions(
                             imeAction = ImeAction.Next,
@@ -235,20 +224,9 @@ fun ProfileEditScreen(
             UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
                 EditProfileFields(
                     data =
-                   /* if (state.user.userDetails.jerseyPerferences.isNotEmpty()) {
-                        *//*It will convert array of string to comma sep String*//*
-                        state.user.userDetails.jerseyPerferences[0].jerseyNumberPerferences.joinToString { number -> number }
-                    } else
-                        ""*/
-
-                    state.jerseyPerferences[0].jerseyNumberPerferences.joinToString { number -> number }
-                    ,
+                    state.jerseyNumerPerferences,
                     onValueChange = {
-                        /*It will convert comma sep String to array*/
-//                        jerseyNo = it
-                        val commaSepJersey = it.split(",").toMutableStateList()
-
-                      vm.onEvent(ProfileEvent.OnPrefJerseyNoChange(commaSepJersey))
+                        vm.onEvent(ProfileEvent.OnPrefJerseyNoChange(it))
                     },
                     stringResource(id = R.string.jersey_number),
                     errorMessage = stringResource(id = R.string.valid_first_name),
@@ -275,9 +253,8 @@ fun ProfileEditScreen(
                 DividerCommon()
 
                 EditProfileFields(
-                    state.jerseyPerferences[0].shirtSize,
+                    state.shirtSize,
                     onValueChange = {
-//                        shirtSize = it
                         vm.onEvent(ProfileEvent.OnShirtChange(it))
 
                     },
@@ -291,9 +268,10 @@ fun ProfileEditScreen(
                 DividerCommon()
 
                 EditProfileFields(
-                    waistSize,
+                    state.waistSize,
                     onValueChange = {
-                        waistSize = it
+                        vm.onEvent(ProfileEvent.OnWaistChange(it))
+
                     },
                     stringResource(id = R.string.waist_size),
                     errorMessage = stringResource(id = R.string.valid_first_name),
@@ -315,9 +293,9 @@ fun ProfileEditScreen(
 
 
                 EditProfileFields(
-                    favColgTeam,
+                    state.favCollegeTeam,
                     onValueChange = {
-                        favNbaTeam = it
+                        vm.onEvent(ProfileEvent.OnCollegeTeamChange(it))
                     },
                     stringResource(id = R.string.favorite_college_team),
                     errorMessage = stringResource(id = R.string.valid_first_name),
@@ -329,9 +307,9 @@ fun ProfileEditScreen(
                 DividerCommon()
 
                 EditProfileFields(
-                    favNbaTeam,
+                    state.favProfessionalTeam,
                     onValueChange = {
-                        favNbaTeam = it
+                        vm.onEvent(ProfileEvent.OnNbaTeamChange(it))
                     },
                     stringResource(id = R.string.favorite_nba_team),
                     errorMessage = stringResource(id = R.string.valid_first_name),
@@ -343,9 +321,10 @@ fun ProfileEditScreen(
                 DividerCommon()
 
                 EditProfileFields(
-                    favActivePlayer,
+                    state.favActivePlayer,
                     onValueChange = {
-                        favActivePlayer = it
+                        vm.onEvent(ProfileEvent.OnActivePlayerChange(it))
+
                     },
                     stringResource(id = R.string.favorite_active_player),
                     errorMessage = stringResource(id = R.string.valid_first_name),
@@ -357,9 +336,10 @@ fun ProfileEditScreen(
                 DividerCommon()
 
                 EditProfileFields(
-                    favAllTIme,
+                    state.favAllTimePlayer,
                     onValueChange = {
-                        favAllTIme = it
+                        vm.onEvent(ProfileEvent.OnAllTimeFavChange(it))
+
                     },
                     stringResource(id = R.string.favoritea_all_time_tlayer),
                     errorMessage = stringResource(id = R.string.valid_first_name),
@@ -374,7 +354,9 @@ fun ProfileEditScreen(
                 enabled = true,
                 icon = null,
                 themed = true,
-                onClick = { },
+                onClick = {
+                    vm.onEvent(ProfileEvent.OnSaveUserDetailsClick)
+                },
                 text = stringResource(id = R.string.save),
                 isForceEnableNeeded = true
             )
@@ -389,6 +371,7 @@ fun ProfileEditScreen(
 }
 
 
+
 @Composable
 fun Teams(
     teams: SnapshotStateList<TeamDetails>,
@@ -397,14 +380,6 @@ fun Teams(
     onRoleChange: (Int, String) -> Unit,
     onJerseyNumberChange: (Int, String) -> Unit,
 ) {
-//    var role by rememberSaveable { mutableStateOf("Player") }
-//    var position by rememberSaveable { mutableStateOf("PG") }
-//    var jerseyNo by rememberSaveable { mutableStateOf("17") }
-
-    /*  val teams: List<Team> = listOf<Team>(
-          Team(name = "Springfield Bucks", role = "Player"),
-      )*/
-
 
     teams.forEachIndexed { index, teamDetails ->
         Column(
@@ -425,16 +400,8 @@ fun Teams(
                         modifier = Modifier.weight(1f),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        /*  Image(
-                              painter = painterResource(id = R.drawable.user_demo),
-                              contentDescription = "",
-                              modifier = Modifier
-                                  .size(dimensionResource(id = R.dimen.size_24dp))
-                                  .clip(CircleShape)
-                          )*/
                         CoilImage(
-                            src = BuildConfig.IMAGE_SERVER + teamDetails.teamId,
-//                        contentDescription = "",
+                            src = BuildConfig.IMAGE_SERVER + teamDetails.teamId.logo,
                             modifier = Modifier
                                 .size(dimensionResource(id = R.dimen.size_24dp))
                                 .clip(CircleShape),
@@ -545,13 +512,13 @@ fun CheckBoxItem(item: CheckBoxData) {
                 )
         ) {
             Icon(
-                imageVector = Icons.Default.Check,
+                imageVector = if (item.isChecked) Icons.Default.Check else Icons.Default.Close,
                 contentDescription = null,
             )
         }
         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
         AppText(
-            text = stringResource(id = R.string.pg),
+            text = item.label,
             style = MaterialTheme.typography.body1,
             color = ColorBWBlack,
         )

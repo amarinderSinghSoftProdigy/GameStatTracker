@@ -3,11 +3,7 @@ package com.softprodigy.ballerapp.data.repository
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.safeApiCall
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.data.request.ConfirmPhoneRequest
-import com.softprodigy.ballerapp.data.request.ForgotPasswordRequest
-import com.softprodigy.ballerapp.data.request.LoginRequest
-import com.softprodigy.ballerapp.data.request.SignUpData
-import com.softprodigy.ballerapp.data.request.VerifyPhoneRequest
+import com.softprodigy.ballerapp.data.request.*
 import com.softprodigy.ballerapp.data.response.User
 import com.softprodigy.ballerapp.data.response.UserInfo
 import com.softprodigy.ballerapp.domain.BaseResponse
@@ -67,6 +63,12 @@ class UserRepository @Inject constructor(
     override suspend fun getFullUserFullDetails(): ResultWrapper<BaseResponse<User>> {
         return safeApiCall(dispatcher = dispatcher) {
             service.getUserFullDetails()
+        }
+    }
+
+    override suspend fun updateUserFullDetails(userDetailsReq: UpdateUserDetailsReq): ResultWrapper<BaseResponse<Any>> {
+        return safeApiCall(dispatcher = dispatcher) {
+            service.updateUserFullDetails(userDetailsReq = userDetailsReq)
         }
     }
 

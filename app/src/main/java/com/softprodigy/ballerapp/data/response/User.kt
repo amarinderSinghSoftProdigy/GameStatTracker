@@ -85,9 +85,13 @@ data class JerseyPerferences(
 
 )
 
-data class TeamId (
+data class TeamId(
 
-    @SerializedName("_id"  ) val Id   : String = "",
-    @SerializedName("name" ) val name : String = ""
+    @SerializedName("_id") val Id: String = "",
+    @SerializedName("name") val name: String = "",
+    @SerializedName("logo") val logo: String = ""
+
 
 )
+
+

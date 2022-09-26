@@ -1,7 +1,5 @@
 package com.softprodigy.ballerapp.ui.features.profile
 
-import androidx.compose.runtime.snapshots.SnapshotStateList
-
 sealed class ProfileEvent() {
     data class OnParentDialogChange(val showDialog: Boolean) : ProfileEvent()
 
@@ -17,7 +15,7 @@ sealed class ProfileEvent() {
     data class OnPositionChange(val index: Int,val position: String) : ProfileEvent()
     data class OnJerseyChange(val index: Int,val jerseyNumber: String) : ProfileEvent()
 
-    data class OnPrefJerseyNoChange(val prefJerseyNumber: SnapshotStateList<String>) : ProfileEvent()
+    data class OnPrefJerseyNoChange(val prefJerseyNumber: String) : ProfileEvent()
     data class OnGenderChange(val gender: String) : ProfileEvent()
     data class OnWaistChange(val waist: String) : ProfileEvent()
     data class OnShirtChange(val shirt: String) : ProfileEvent()
@@ -26,4 +24,6 @@ sealed class ProfileEvent() {
     data class OnNbaTeamChange(val nbaTeam: String) : ProfileEvent()
     data class OnActivePlayerChange(val activePlayer: String) : ProfileEvent()
     data class OnAllTimeFavChange(val allTimeFav: String) : ProfileEvent()
+
+    object OnSaveUserDetailsClick : ProfileEvent()
 }
