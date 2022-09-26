@@ -49,6 +49,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
@@ -61,16 +62,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.window.DialogProperties
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.argbToHexString
+import com.softprodigy.ballerapp.common.validTeamName
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.response.PlayerDetails
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.ui.features.profile.tabs.DetailItem
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
@@ -480,6 +484,56 @@ fun TeamListItem(team: Team, selected: Boolean, onClick: (Team) -> Unit) {
     }
 }
 
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun PlayerListItem(player: Player, selected: Boolean, onClick: (Player) -> Unit) {
+    Surface(
+        onClick = { onClick(player) },
+        shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_10dp)),
+        elevation = if (selected) dimensionResource(id = R.dimen.size_10dp) else 0.dp,
+        color = if (selected) AppConstants.SELECTED_COLOR else Color.Transparent,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    PaddingValues(
+                        dimensionResource(id = R.dimen.size_12dp),
+                        dimensionResource(id = R.dimen.size_12dp)
+                    )
+                ), verticalAlignment = Alignment.CenterVertically
+        ) {
+            CoilImage(
+                src = BuildConfig.IMAGE_SERVER + player.profileImage,
+                modifier = Modifier
+                    .size(dimensionResource(id = R.dimen.size_32dp))
+                    .clip(CircleShape)
+                    .border(
+                        dimensionResource(id = R.dimen.size_2dp),
+                        MaterialTheme.colors.surface,
+                        CircleShape,
+                    ),
+                isCrossFadeEnabled = false,
+                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                onError = { Placeholder(R.drawable.ic_team_placeholder) }
+            )
+            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+            Text(
+                text = player.name,
+                fontWeight = FontWeight.W500,
+                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                modifier = Modifier.weight(1f),
+                color = if (selected) {
+                    MaterialTheme.appColors.buttonColor.textEnabled
+                } else {
+                    MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                }
+            )
+        }
+    }
+}
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -1365,6 +1419,322 @@ fun DeclineEventDialog(
                             modifier = Modifier
                                 .weight(1f),
                             border = ButtonDefaults.outlinedBorder,
+                            onlyBorder = false,
+                        )
+                    }
+                }
+            },
+        )
+    }
+}
+
+@Composable
+fun SwapPlayer(
+    onDismiss: () -> Unit,
+    onConfirmClick: (String) -> Unit,
+    onSelectionChange: (Player) -> Unit,
+    selected: Player?,
+    showLoading: Boolean,
+    players: ArrayList<Player>,
+    onCreatePlayerClick: () -> Unit,
+    showCreatePlayerButton: Boolean = false,
+) {
+    val playerId = remember {
+        mutableStateOf(UserStorage.playerId)
+    }
+    BallerAppMainTheme {
+        AlertDialog(
+            modifier = Modifier
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+            onDismissRequest = onDismiss,
+            buttons = {
+                Column(
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(
+                            all = dimensionResource(
+                                id = R.dimen.size_16dp
+                            )
+                        ),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = stringResource(id = R.string.swap_profiles),
+                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                            fontWeight = FontWeight.Bold,
+                        )
+
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_cross_1),
+                            contentDescription = "",
+                            tint = MaterialTheme.appColors.buttonColor.textDisabled,
+                            modifier = Modifier
+                                .size(dimensionResource(id = R.dimen.size_12dp))
+                                .align(Alignment.TopEnd)
+                                .clickable {
+                                    onDismiss()
+                                }
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
+
+                    LazyColumn(
+                        modifier = Modifier
+                            .height(dimensionResource(id = R.dimen.size_150dp))
+                            .padding(
+                                bottom = dimensionResource(
+                                    id = R.dimen.size_10dp
+                                )
+                            ),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        item {
+                            if (showLoading) {
+                                CircularProgressIndicator(
+                                    color = AppConstants.SELECTED_COLOR
+                                )
+                            }
+                        }
+                        item {
+                            players.forEach {
+                                PlayerListItem(player = it, selected = selected == it) { player ->
+                                    onSelectionChange.invoke(player)
+                                    playerId.value = player._id
+                                }
+                            }
+                        }
+                    }
+                    //  Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+
+                    if (showCreatePlayerButton) {
+                        ButtonWithLeadingIcon(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.add_new_profile),
+                            onClick = { onCreatePlayerClick.invoke() },
+                            painter = painterResource(id = R.drawable.ic_add_button),
+                            isTransParent = true
+
+                        )
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(color = Color.White)
+                            .padding(
+                                vertical = dimensionResource(id = R.dimen.size_16dp)
+                            ),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        DialogButton(
+                            text = stringResource(R.string.dialog_button_cancel),
+                            onClick = onDismiss,
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = dimensionResource(id = R.dimen.size_10dp)),
+                            border = ButtonDefaults.outlinedBorder,
+                            onlyBorder = true,
+                            enabled = false
+                        )
+                        DialogButton(
+                            text = stringResource(R.string.dialog_button_confirm),
+                            onClick = {
+                                onConfirmClick.invoke(playerId.value)
+                                onDismiss.invoke()
+                            },
+                            modifier = Modifier
+                                .weight(1f),
+                            border = ButtonDefaults.outlinedBorder,
+                            enabled = (selected?.name ?: "").isNotEmpty(),
+                            onlyBorder = false,
+                        )
+                    }
+                }
+            },
+        )
+    }
+}
+
+@Composable
+fun AddPlayer(
+    onDismiss: () -> Unit,
+    onConfirmClick: (String) -> Unit
+) {
+    val playerId = remember {
+        mutableStateOf(UserStorage.playerId)
+    }
+    BallerAppMainTheme {
+        AlertDialog(
+            modifier = Modifier
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+            onDismissRequest = onDismiss,
+            buttons = {
+                Column(
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(
+                            all = dimensionResource(
+                                id = R.dimen.size_16dp
+                            )
+                        ),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = stringResource(id = R.string.invite),
+                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                            fontWeight = FontWeight.Bold,
+                        )
+
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_cross_1),
+                            contentDescription = "",
+                            tint = MaterialTheme.appColors.buttonColor.textDisabled,
+                            modifier = Modifier
+                                .size(dimensionResource(id = R.dimen.size_12dp))
+                                .align(Alignment.TopEnd)
+                                .clickable {
+                                    onDismiss()
+                                }
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
+
+                    LazyColumn(
+                        modifier = Modifier
+                            .height(dimensionResource(id = R.dimen.size_150dp))
+                            .padding(
+                                bottom = dimensionResource(
+                                    id = R.dimen.size_10dp
+                                )
+                            ),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        item {
+                            AppOutlineTextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                value = "",
+                                onValueChange = {
+
+                                },
+                                placeholder = {
+                                    AppText(
+                                        text = stringResource(id = R.string.name),
+                                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
+                                    )
+                                },
+                                colors = TextFieldDefaults.outlinedTextFieldColors(
+                                    unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
+                                    cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+
+                                ),
+                                errorMessage = stringResource(id = R.string.valid_team_name)
+                            )
+
+                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+                            AppOutlineTextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                value = "",
+                                onValueChange = {
+
+                                },
+                                placeholder = {
+                                    AppText(
+                                        text = stringResource(id = R.string.email),
+                                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
+                                    )
+                                },
+                                colors = TextFieldDefaults.outlinedTextFieldColors(
+                                    unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
+                                    cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+
+                                ),
+                                errorMessage = stringResource(id = R.string.valid_team_name)
+                            )
+
+                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(dimensionResource(id = R.dimen.size_56dp))
+                                    .clickable {
+                                    }
+                                    .onGloballyPositioned {
+                                    },
+                                border = BorderStroke(
+                                    1.dp,
+                                    MaterialTheme.appColors.editField.borderUnFocused
+                                ),
+                                backgroundColor = MaterialTheme.appColors.material.background,
+                                shape = RoundedCornerShape(MaterialTheme.spacing.small),
+                                elevation = 0.dp
+                            ) {
+                                Row(
+                                    modifier = Modifier
+//                                            .fillMaxSize()
+                                        .padding(
+                                            start = dimensionResource(id = R.dimen.size_12dp),
+                                            end = dimensionResource(id = R.dimen.size_12dp)
+                                        ),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.user_type),
+                                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                        color = MaterialTheme.appColors.textField.label,
+                                    )
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_arrow_bottom_event),
+                                        contentDescription = "",
+                                        modifier = Modifier
+                                            .size(
+                                                height = dimensionResource(id = R.dimen.size_8dp),
+                                                width = dimensionResource(id = R.dimen.size_10dp)
+                                            ),
+                                        tint = MaterialTheme.appColors.buttonColor.textDisabled
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+
+                        }
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(color = Color.White)
+                            .padding(
+                                vertical = dimensionResource(id = R.dimen.size_16dp)
+                            ),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        DialogButton(
+                            text = stringResource(R.string.dialog_button_cancel),
+                            onClick = onDismiss,
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = dimensionResource(id = R.dimen.size_10dp)),
+                            border = ButtonDefaults.outlinedBorder,
+                            onlyBorder = true,
+                            enabled = false
+                        )
+                        DialogButton(
+                            text = stringResource(R.string.invite),
+                            onClick = {
+                                onConfirmClick.invoke(playerId.value)
+                                onDismiss.invoke()
+                            },
+                            modifier = Modifier
+                                .weight(1f),
+                            border = ButtonDefaults.outlinedBorder,
+                            enabled = true,
                             onlyBorder = false,
                         )
                     }
