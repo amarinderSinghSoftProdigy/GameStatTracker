@@ -1,16 +1,19 @@
 package com.softprodigy.ballerapp.ui.features.home.invitation
 
-
-
-
+import com.softprodigy.ballerapp.data.response.PlayerDetails
 
 data class InvitationState(
     val invitations: ArrayList<Invitation> = arrayListOf(),
-    val roles: ArrayList<String> = arrayListOf("Project Manager", "Coach", "Assistance Coach", "Player", "Guardian"),
+    val roles: ArrayList<String> = arrayListOf(),
     val showRoleDialog: Boolean = false,
     val showDeclineDialog: Boolean = false,
     val showLoading: Boolean = false,
-    val selectedRole:String="",
-    val selectedInvitation:Invitation=Invitation(),
-
-    )
+    val selectedRole: String = "",
+    val selectedInvitation: Invitation = Invitation(),
+    val showGuardianDialog: Boolean = false,
+    val selectedGuardian: String = "",
+    val teamId: String = "",
+    val playerDetails: ArrayList<PlayerDetails> = arrayListOf(),
+    val selectedPlayerId: String = "",
+    val selectedGender: String = ""
+)

@@ -32,7 +32,8 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
             is InvitationEvent.OnAcceptCLick -> {
                 invitationState.value = invitationState.value.copy(
                     showRoleDialog = true,
-                    selectedInvitation = event.invitation
+                    selectedInvitation = event.invitation,
+                    teamId = event.invitation.team._id
                 )
             }
             is InvitationEvent.OnDeclineCLick -> {
@@ -67,13 +68,47 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
             }
             is InvitationEvent.OnRoleConfirmClick -> {
                 viewModelScope.launch {
+
+
+                    getPlayerById()
+                }
+            }
+
+            is InvitationEvent.OnGuardianClick -> {
+                invitationState.value =
+                    invitationState.value.copy(selectedGuardian = event.guardian)
+            }
+
+            is InvitationEvent.OnGuardianDialogClick -> {
+                invitationState.value =
+                    invitationState.value.copy(showGuardianDialog = event.showGuardianDialog)
+            }
+
+            InvitationEvent.OnClearGuardianValues -> {
+                invitationState.value =
+                    invitationState.value.copy(selectedGuardian = "")
+            }
+
+            InvitationEvent.OnClearValues -> {
+            }
+
+            is InvitationEvent.OnValuesSelected -> {
+                invitationState.value = invitationState.value.copy(
+                    selectedPlayerId = event.playerDetails.memberDetails!!.id,
+                    selectedGender = event.playerDetails.memberDetails.gender
+                )
+            }
+
+            is InvitationEvent.OnInvitationConfirm -> {
+                viewModelScope.launch {
                     acceptTeamInvitation(
                         invitationId = invitationState.value.selectedInvitation.id,
-                        role = invitationState.value.selectedRole
+                        role = invitationState.value.selectedRole,
+                        playerGender = invitationState.value.selectedGender,
+                        playerId = invitationState.value.selectedPlayerId
                     )
+                    invitationState.value = invitationState.value.copy(selectedRole = "")
                 }
-                invitationState.value =
-                    invitationState.value.copy(selectedRole = "")
             }
         }
     }
@@ -111,6 +146,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                             invitationState.value.copy(
                                 invitations = response.data
                             )
+                        getUserRoles()
                     } else {
                         _invitationChannel.send(
                             InvitationChannel.ShowToast(
@@ -125,12 +161,22 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
         }
     }
 
-    private suspend fun acceptTeamInvitation(invitationId: String, role: String) {
+    private suspend fun acceptTeamInvitation(
+        invitationId: String,
+        role: String,
+        playerId: String,
+        playerGender: String
+    ) {
         Timber.i("acceptTeamInvitation-- id--$invitationId role--$role")
         invitationState.value =
             invitationState.value.copy(showLoading = true)
         val acceptInviteResponse =
-            teamRepo.acceptTeamInvitation(invitationId = invitationId, role = role)
+            teamRepo.acceptTeamInvitation(
+                invitationId = invitationId,
+                role = role,
+                playerId = playerId,
+                playerGender = playerGender
+            )
         invitationState.value =
             invitationState.value.copy(showLoading = false)
 
@@ -205,6 +251,114 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                             )
                         )
                     )
+                }
+            }
+        }
+    }
+
+    private suspend fun getUserRoles() {
+        invitationState.value = invitationState.value.copy(showLoading = true)
+
+        when (val userRoles = teamRepo.getUserRoles()) {
+            is ResultWrapper.GenericError -> {
+                invitationState.value = invitationState.value.copy(showLoading = false)
+
+                _invitationChannel.send(
+                    InvitationChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${userRoles.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                invitationState.value = invitationState.value.copy(showLoading = false)
+
+                _invitationChannel.send(
+                    InvitationChannel.ShowToast(
+                        UiText.DynamicString(
+                            userRoles.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                userRoles.value.let { response ->
+                    if (response.status) {
+                        invitationState.value =
+                            invitationState.value.copy(
+                                showLoading = false,
+                                roles = response.data
+                            )
+                    } else {
+
+                        invitationState.value =
+                            invitationState.value.copy(
+                                showLoading = false,
+                            )
+
+                        _invitationChannel.send(
+                            InvitationChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun getPlayerById() {
+        invitationState.value = invitationState.value.copy(showLoading = true)
+
+        when (val userRoles = teamRepo.getPlayerById(invitationState.value.teamId)) {
+            is ResultWrapper.GenericError -> {
+                invitationState.value = invitationState.value.copy(showLoading = false)
+
+                _invitationChannel.send(
+                    InvitationChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${userRoles.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                invitationState.value = invitationState.value.copy(showLoading = false)
+
+                _invitationChannel.send(
+                    InvitationChannel.ShowToast(
+                        UiText.DynamicString(
+                            userRoles.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                userRoles.value.let { response ->
+                    if (response.status) {
+                        invitationState.value =
+                            invitationState.value.copy(
+                                showLoading = false,
+                                playerDetails = response.data
+                            )
+                    } else {
+
+                        invitationState.value =
+                            invitationState.value.copy(
+                                showLoading = false,
+                            )
+
+                        _invitationChannel.send(
+                            InvitationChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
                 }
             }
         }
