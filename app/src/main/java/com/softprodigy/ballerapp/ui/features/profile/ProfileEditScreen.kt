@@ -1,41 +1,59 @@
 package com.softprodigy.ballerapp.ui.features.profile
 
 
+import android.app.DatePickerDialog
+import android.widget.DatePicker
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.runtime.Composable
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.apiToUIDateFormat2
+import com.softprodigy.ballerapp.common.isValidEmail
+import com.softprodigy.ballerapp.common.validName
+import com.softprodigy.ballerapp.common.validPhoneNumber
 import com.softprodigy.ballerapp.data.response.CheckBoxData
 import com.softprodigy.ballerapp.data.response.TeamDetails
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.appColors
 import com.softprodigy.ballerapp.ui.theme.error
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 @Composable
 fun ProfileEditScreen(
@@ -43,15 +61,53 @@ fun ProfileEditScreen(
     onBackClick: () -> Unit
 ) {
     val state = vm.state.value
+    val maxChar = 30
+    val maxEmailChar = 45
+    val maxPhoneNumber = 13
 
 
-    val listOfCheckbox = listOf(
-        CheckBoxData(stringResource(id = R.string.pg)),
-        CheckBoxData(stringResource(id = R.string.sg)),
-        CheckBoxData(stringResource(id = R.string.sf)),
-        CheckBoxData(stringResource(id = R.string.pf)),
-        CheckBoxData(stringResource(id = R.string.c))
+    val genderList =
+        listOf(stringResource(id = R.string.male), stringResource(id = R.string.female))
+    var expanded by remember { mutableStateOf(false) }
+    var textFieldSize by remember { mutableStateOf(Size.Zero) }
+
+    val icon = if (expanded)
+        Icons.Filled.KeyboardArrowUp
+    else
+        Icons.Filled.KeyboardArrowDown
+
+
+    val context = LocalContext.current
+    val focusRequester = FocusRequester()
+
+
+    // Declaring integer values
+    // for year, month and day
+    val mYear: Int
+    val mMonth: Int
+    val mDay: Int
+
+    // Initializing a Calendar
+    val mCalendar = Calendar.getInstance()
+
+    // Fetching current year, month and day
+    mYear = mCalendar.get(Calendar.YEAR)
+    mMonth = mCalendar.get(Calendar.MONTH)
+    mDay = mCalendar.get(Calendar.DAY_OF_MONTH)
+    mCalendar.time = Date()
+
+
+    val mDatePickerDialog = DatePickerDialog(
+        context,
+        { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+            val calendar = Calendar.getInstance()
+            calendar[year, month] = dayOfMonth
+            val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+            val dateString: String = format.format(calendar.time)
+            vm.onEvent(ProfileEvent.OnBirthdayChange(dateString))
+        }, mYear, mMonth, mDay
     )
+    mDatePickerDialog.datePicker.maxDate = System.currentTimeMillis()
 
     Box(Modifier.fillMaxSize()) {
         Column(
@@ -85,7 +141,8 @@ fun ProfileEditScreen(
                     EditProfileFields(
                         state.user.firstName,
                         onValueChange = {
-                            vm.onEvent(ProfileEvent.OnFirstNameChange(it))
+                            if (it.length <= maxChar)
+                                vm.onEvent(ProfileEvent.OnFirstNameChange(it))
                         },
                         stringResource(id = R.string.first_name),
                         errorMessage = stringResource(id = R.string.valid_first_name),
@@ -93,32 +150,40 @@ fun ProfileEditScreen(
                             imeAction = ImeAction.Next,
                             capitalization = KeyboardCapitalization.Sentences
                         ),
-                    )
+                        isError = !validName(state.user.firstName) && state.user.firstName.isNotEmpty() || state.user.firstName.length > 30,
+
+                        )
                     DividerCommon()
                     EditProfileFields(
                         state.user.lastName,
                         onValueChange = {
-                            vm.onEvent(ProfileEvent.OnLastNameChange(it))
+                            if (it.length <= maxChar)
+                                vm.onEvent(ProfileEvent.OnLastNameChange(it))
                         },
                         stringResource(id = R.string.last_name),
                         errorMessage = stringResource(id = R.string.valid_last_name),
                         keyboardOptions = KeyboardOptions(
                             imeAction = ImeAction.Next,
-                            capitalization = KeyboardCapitalization.Sentences
+                            capitalization = KeyboardCapitalization.Sentences,
+                            keyboardType = KeyboardType.Email
+
                         ),
+                        isError = !validName(state.user.lastName) && state.user.lastName.isNotEmpty() || state.user.lastName.length > 30,
                     )
                     DividerCommon()
                     EditProfileFields(
                         state.user.email,
                         onValueChange = {
-                            vm.onEvent(ProfileEvent.OnEmailChange(it))
+                            if (it.length <= maxEmailChar)
+                                vm.onEvent(ProfileEvent.OnEmailChange(it))
 
                         },
                         stringResource(id = R.string.email),
-                        errorMessage = stringResource(id = R.string.valid_last_name),
+                        isError = (!state.user.email.isValidEmail() && state.user.email.isNotEmpty()),
+                        errorMessage = stringResource(id = R.string.enter_valid_email),
                         keyboardOptions = KeyboardOptions(
                             imeAction = ImeAction.Next,
-                            capitalization = KeyboardCapitalization.Sentences
+                            keyboardType = KeyboardType.Email
                         ),
                         readOnly = true
                     )
@@ -126,14 +191,17 @@ fun ProfileEditScreen(
                     EditProfileFields(
                         state.user.phone,
                         onValueChange = {
-                            vm.onEvent(ProfileEvent.OnPhoneChange(it))
+                            if (it.length <= maxPhoneNumber)
+                                vm.onEvent(ProfileEvent.OnPhoneChange(it))
 
                         },
                         stringResource(id = R.string.phone_num),
-                        errorMessage = stringResource(id = R.string.valid_last_name),
+                        isError = validPhoneNumber(state.user.phone),
+                        errorMessage = stringResource(id = R.string.valid_phone_number),
                         keyboardOptions = KeyboardOptions(
                             imeAction = ImeAction.Next,
-                            capitalization = KeyboardCapitalization.Sentences
+                            capitalization = KeyboardCapitalization.Sentences,
+                            keyboardType = KeyboardType.Number
                         ),
                     )
                     DividerCommon()
@@ -149,14 +217,18 @@ fun ProfileEditScreen(
                         keyboardOptions = KeyboardOptions(
                             imeAction = ImeAction.Next,
                             capitalization = KeyboardCapitalization.Sentences
-                        ),
+                        ), enabled = false,
+                        modifier = Modifier.clickable {
+                            mDatePickerDialog.show()
+                        }
                     )
                     DividerCommon()
 
                     EditProfileFields(
                         state.user.userDetails.classOf,
                         onValueChange = {
-                            vm.onEvent(ProfileEvent.OnClassChange(it))
+                            if (it.length <= maxChar)
+                                vm.onEvent(ProfileEvent.OnClassChange(it))
 
                         },
                         stringResource(id = R.string.classof),
@@ -181,8 +253,10 @@ fun ProfileEditScreen(
 
             UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
                 Row(modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp))) {
-                    listOfCheckbox.forEachIndexed { index, item ->
-                        CheckBoxItem(item = item)
+                    state.positionPlayed.forEachIndexed { index, item ->
+                        CheckBoxItem(item = item, onCheckedChange = {
+                            vm.onEvent(ProfileEvent.OnPositionPlayedChanges(index, it))
+                        })
                     }
                 }
             }
@@ -198,8 +272,8 @@ fun ProfileEditScreen(
             UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
                 Teams(
                     teams = state.user.teamDetails,
-                    onLeaveTeamClick = { index ->
-                        vm.onEvent(ProfileEvent.OnLeaveTeamCLick(index))
+                    onLeaveTeamClick = { index, teamId ->
+                        vm.onEvent(ProfileEvent.OnLeaveTeamCLick(index, teamId))
                     },
                     onPositionChange = { index, position ->
                         vm.onEvent(ProfileEvent.OnPositionChange(index, position))
@@ -226,36 +300,68 @@ fun ProfileEditScreen(
                     data =
                     state.jerseyNumerPerferences,
                     onValueChange = {
-                        vm.onEvent(ProfileEvent.OnPrefJerseyNoChange(it))
+                        if (it.length <= maxChar)
+                            vm.onEvent(ProfileEvent.OnPrefJerseyNoChange(it))
                     },
                     stringResource(id = R.string.jersey_number),
                     errorMessage = stringResource(id = R.string.valid_first_name),
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Next,
-                        capitalization = KeyboardCapitalization.Sentences
+                        capitalization = KeyboardCapitalization.Sentences,
+                        keyboardType = KeyboardType.Number
                     ),
                 )
                 DividerCommon()
 
-                EditProfileFields(
-                    state.user.gender,
-                    onValueChange = {
-                        vm.onEvent(ProfileEvent.OnGenderChange(it))
+                Column {
+                    EditProfileFields(
+                        state.user.gender,
+                        onValueChange = {
+                            vm.onEvent(ProfileEvent.OnGenderChange(it))
 
-                    },
-                    stringResource(id = R.string.gender),
-                    errorMessage = stringResource(id = R.string.valid_first_name),
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                        capitalization = KeyboardCapitalization.Sentences
-                    ),
-                )
+                        },
+                        stringResource(id = R.string.gender),
+                        errorMessage = stringResource(id = R.string.valid_first_name),
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                            capitalization = KeyboardCapitalization.Sentences
+                        ),
+                        modifier = Modifier
+                            .onGloballyPositioned {
+                                textFieldSize = it.size.toSize()
+                            }
+                            .clickable { expanded = !expanded },
+                        readOnly = true,
+                        enabled = false,
+                    )
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false },
+                        modifier = Modifier
+                            .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+                            .background(MaterialTheme.colors.background)
+                    ) {
+                        genderList.forEach { label ->
+                            DropdownMenuItem(onClick = {
+                                vm.onEvent(ProfileEvent.OnGenderChange(label))
+
+                                expanded = false
+                            }) {
+                                androidx.compose.material.Text(
+                                    text = label,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        }
+                    }
+                }
                 DividerCommon()
 
                 EditProfileFields(
                     state.shirtSize,
                     onValueChange = {
-                        vm.onEvent(ProfileEvent.OnShirtChange(it))
+                        if (it.length <= maxChar)
+                            vm.onEvent(ProfileEvent.OnShirtChange(it))
 
                     },
                     stringResource(id = R.string.shirt_size),
@@ -270,14 +376,16 @@ fun ProfileEditScreen(
                 EditProfileFields(
                     state.waistSize,
                     onValueChange = {
-                        vm.onEvent(ProfileEvent.OnWaistChange(it))
+                        if (it.length <= maxChar)
+                            vm.onEvent(ProfileEvent.OnWaistChange(it))
 
                     },
                     stringResource(id = R.string.waist_size),
                     errorMessage = stringResource(id = R.string.valid_first_name),
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Next,
-                        capitalization = KeyboardCapitalization.Sentences
+                        capitalization = KeyboardCapitalization.Sentences,
+                        keyboardType = KeyboardType.Number
                     ),
                 )
             }
@@ -295,7 +403,8 @@ fun ProfileEditScreen(
                 EditProfileFields(
                     state.favCollegeTeam,
                     onValueChange = {
-                        vm.onEvent(ProfileEvent.OnCollegeTeamChange(it))
+                        if (it.length <= maxChar)
+                            vm.onEvent(ProfileEvent.OnCollegeTeamChange(it))
                     },
                     stringResource(id = R.string.favorite_college_team),
                     errorMessage = stringResource(id = R.string.valid_first_name),
@@ -309,7 +418,8 @@ fun ProfileEditScreen(
                 EditProfileFields(
                     state.favProfessionalTeam,
                     onValueChange = {
-                        vm.onEvent(ProfileEvent.OnNbaTeamChange(it))
+                        if (it.length <= maxChar)
+                            vm.onEvent(ProfileEvent.OnNbaTeamChange(it))
                     },
                     stringResource(id = R.string.favorite_nba_team),
                     errorMessage = stringResource(id = R.string.valid_first_name),
@@ -323,7 +433,8 @@ fun ProfileEditScreen(
                 EditProfileFields(
                     state.favActivePlayer,
                     onValueChange = {
-                        vm.onEvent(ProfileEvent.OnActivePlayerChange(it))
+                        if (it.length <= maxChar)
+                            vm.onEvent(ProfileEvent.OnActivePlayerChange(it))
 
                     },
                     stringResource(id = R.string.favorite_active_player),
@@ -338,7 +449,8 @@ fun ProfileEditScreen(
                 EditProfileFields(
                     state.favAllTimePlayer,
                     onValueChange = {
-                        vm.onEvent(ProfileEvent.OnAllTimeFavChange(it))
+                        if (it.length <= maxChar)
+                            vm.onEvent(ProfileEvent.OnAllTimeFavChange(it))
 
                     },
                     stringResource(id = R.string.favoritea_all_time_tlayer),
@@ -351,7 +463,19 @@ fun ProfileEditScreen(
             }
 
             AppButton(
-                enabled = true,
+                enabled = validName(state.user.firstName)
+                        && validName(state.user.lastName)
+                        && state.user.email.isValidEmail()
+                        && state.user.phone.isNotEmpty()
+                        && state.user.userDetails.classOf.isNotEmpty()
+                        && state.jerseyNumerPerferences.isNotEmpty()
+                        && state.user.gender.isNotEmpty()
+                        && state.shirtSize.isNotEmpty()
+                        && state.waistSize.isNotEmpty()
+                        && state.favCollegeTeam.isNotEmpty()
+                        && state.favProfessionalTeam.isNotEmpty()
+                        && state.favActivePlayer.isNotEmpty()
+                        && state.favAllTimePlayer.isNotEmpty(),
                 icon = null,
                 themed = true,
                 onClick = {
@@ -366,6 +490,21 @@ fun ProfileEditScreen(
         if (state.isLoading) {
             CommonProgressBar()
         }
+
+        if (state.showRemoveFromTeamDialog) {
+            DeleteDialog(
+                item = state.selectedTeamId,
+                message = stringResource(id = R.string.alert_remove_from_team),
+                onDismiss = {
+                    vm.onEvent(ProfileEvent.OnLeaveDialogClick(false))
+                },
+                onDelete = {
+                    if (state.selectedTeamId.isNotEmpty()) {
+                        vm.onEvent(ProfileEvent.OnLeaveConfirmClick(state.selectedTeamId))
+                    }
+                }
+            )
+        }
     }
 
 }
@@ -375,7 +514,7 @@ fun ProfileEditScreen(
 @Composable
 fun Teams(
     teams: SnapshotStateList<TeamDetails>,
-    onLeaveTeamClick: (Int) -> Unit,
+    onLeaveTeamClick: (Int, String) -> Unit,
     onPositionChange: (Int, String) -> Unit,
     onRoleChange: (Int, String) -> Unit,
     onJerseyNumberChange: (Int, String) -> Unit,
@@ -420,7 +559,7 @@ fun Teams(
                         style = TextStyle(color = error),
                         text = AnnotatedString(stringResource(id = R.string.leave_team)),
                         onClick = {
-
+                            onLeaveTeamClick.invoke(index, teamDetails.teamId.Id)
                         })
                 }
                 DividerCommon()
@@ -437,6 +576,7 @@ fun Teams(
                         imeAction = ImeAction.Next,
                         capitalization = KeyboardCapitalization.Sentences
                     ),
+                    readOnly = true
                 )
                 DividerCommon()
 
@@ -451,6 +591,8 @@ fun Teams(
                         imeAction = ImeAction.Next,
                         capitalization = KeyboardCapitalization.Sentences
                     ),
+                    readOnly = true
+
                 )
                 DividerCommon()
 
@@ -467,6 +609,8 @@ fun Teams(
                         capitalization = KeyboardCapitalization.Sentences,
                         keyboardType = KeyboardType.Number,
                     ),
+                    readOnly = true
+
                 )
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
@@ -477,7 +621,7 @@ fun Teams(
 }
 
 @Composable
-fun CheckBoxItem(item: CheckBoxData) {
+fun CheckBoxItem(item: CheckBoxData, onCheckedChange: (Boolean) -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(
             end = dimensionResource(id = R.dimen.size_12dp),
@@ -487,7 +631,7 @@ fun CheckBoxItem(item: CheckBoxData) {
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .clickable {
-                    item.isChecked = !item.isChecked
+                    onCheckedChange.invoke(!item.isChecked)
                 }
                 .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)))
                 .size(
@@ -511,10 +655,12 @@ fun CheckBoxItem(item: CheckBoxData) {
                         MaterialTheme.appColors.buttonColor.bckgroundDisabled
                 )
         ) {
-            Icon(
-                imageVector = if (item.isChecked) Icons.Default.Check else Icons.Default.Close,
-                contentDescription = null,
-            )
+            if (item.isChecked)
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_check),
+                    contentDescription = null,
+                    tint = MaterialTheme.appColors.buttonColor.textEnabled
+                )
         }
         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
         AppText(

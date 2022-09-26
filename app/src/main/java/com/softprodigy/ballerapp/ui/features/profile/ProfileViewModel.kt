@@ -7,11 +7,13 @@ import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.*
+import com.softprodigy.ballerapp.data.response.User
 import com.softprodigy.ballerapp.domain.repository.IUserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -66,7 +68,12 @@ class ProfileViewModel @Inject constructor(
                     state.value.copy(user = state.value.user.copy(lastName = event.lastName))
             }
             is ProfileEvent.OnLeaveTeamCLick -> {
-
+                state.value =
+                    state.value.copy(
+                        showRemoveFromTeamDialog = true,
+                        selectedTeamId = event.teamId,
+                        selectedTeamIndex = event.index
+                    )
             }
             is ProfileEvent.OnPhoneChange -> {
                 state.value =
@@ -117,7 +124,71 @@ class ProfileViewModel @Inject constructor(
                     updateUserFullDetails()
                 }
             }
+            is ProfileEvent.OnPositionPlayedChanges -> {
+                state.value.positionPlayed[event.index] =
+                    state.value.positionPlayed[event.index].copy(isChecked = event.isChecked)
+            }
+            is ProfileEvent.OnLeaveConfirmClick -> {
+                state.value =
+                    state.value.copy(showRemoveFromTeamDialog = false)
+                viewModelScope.launch {
+                    removeFromTeam()
+                }
+            }
+            is ProfileEvent.OnLeaveDialogClick -> {
+                state.value =
+                    state.value.copy(showRemoveFromTeamDialog = event.showDialog)
+            }
         }
+    }
+
+    private suspend fun removeFromTeam() {
+        Timber.i("selectedTeamId--${state.value.selectedTeamId}")
+        state.value = state.value.copy(isLoading = true)
+        val leaveTeamResponse = userRepository.leaveTeam(state.value.selectedTeamId)
+        state.value = state.value.copy(isLoading = false)
+
+        when (leaveTeamResponse) {
+            is ResultWrapper.GenericError -> {
+                _channel.send(
+                    ProfileChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${leaveTeamResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _channel.send(
+                    ProfileChannel.ShowToast(
+                        UiText.DynamicString(
+                            leaveTeamResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                leaveTeamResponse.value.let { response ->
+                    if (response.status) {
+                        state.value.selectedTeamIndex?.let {
+                            state.value.user.teamDetails.toMutableList().removeAt(index = it)
+                        }
+
+
+                    } else {
+                        _channel.send(
+                            ProfileChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+
+                    }
+                }
+            }
+        }
+
     }
 
     private suspend fun getUserDetails() {
@@ -147,10 +218,7 @@ class ProfileViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
                     if (response.status) {
-                        state.value =
-                            state.value.copy(
-                                user = response.data
-                            )
+                        saveResponseToState(response.data)
                     } else {
                         _channel.send(
                             ProfileChannel.ShowToast(
@@ -159,6 +227,7 @@ class ProfileViewModel @Inject constructor(
                                 )
                             )
                         )
+
                     }
                 }
             }
@@ -166,54 +235,13 @@ class ProfileViewModel @Inject constructor(
     }
 
     private suspend fun updateUserFullDetails() {
-        val teamDetailsReq = state.value.user.teamDetails.map {
-            TeamDetailsReq(
-                teamId = it.teamId.Id,
-                role = it.role,
-                position = it.position,
-                jersey = it.jersey
-            )
-        }
-        val userDetailReq = UserDetailsReq(
-            positionPlayed = state.value.user.userDetails.positionPlayed,
-            jerseyPerferences = arrayListOf(
-                JerseyPerferencesReq(
-                    jerseyNumberPerferences = state.value.jerseyNumerPerferences.split(
-                        ","
-                    ).toList()
-                )
-            ),
-            funFacts = arrayListOf(
-                FunFactsReq(
-                    favCollegeTeam = state.value.favCollegeTeam,
-                    favProfessionalTeam = state.value.favProfessionalTeam,
-                    favAllTimePlayer = state.value.favAllTimePlayer,
-                    favActivePlayer = state.value.favActivePlayer
-                )
-            ),
-            classOf = state.value.user.userDetails.classOf,
-            birthCertificate = state.value.user.userDetails.birthCertificate,
-            gradeVerfication = state.value.user.userDetails.gradeVerfication,
-            permissionSlip = state.value.user.userDetails.permissionSlip,
-            auuCard = state.value.user.userDetails.auuCard,
-            waiver = state.value.user.userDetails.waiver,
-            vaccineCard = state.value.user.userDetails.vaccineCard,
-        )
-
-
-        val request = UpdateUserDetailsReq(
-            firstName = state.value.user.firstName,
-            lastName = state.value.user.lastName,
-            birthdate = state.value.user.birthdate,
-            phone = state.value.user.phone,
-            gender = state.value.user.gender,
-            grade = state.value.user.userDetails.grade,
-            teamDetailsReq = teamDetailsReq,
-            userDetailsReq = userDetailReq
-        )
 
         state.value = state.value.copy(isLoading = true)
+
+        val request = generateUpdateRequest()
+
         val userResponse = userRepository.updateUserFullDetails(request)
+
         state.value = state.value.copy(isLoading = false)
 
 
@@ -258,6 +286,105 @@ class ProfileViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun generateUpdateRequest(): UpdateUserDetailsReq {
+        val teamDetailsReq = state.value.user.teamDetails.map {
+            TeamDetailsReq(
+                teamId = it.teamId.Id,
+                role = it.role,
+                position = it.position,
+                jersey = it.jersey
+            )
+        }
+        val userDetailReq = UserDetailsReq(
+            positionPlayed = state.value.positionPlayed.toList().map {
+                if (it.isChecked)
+                    it.label
+                else ""
+            },
+            jerseyPerferences = arrayListOf(
+                JerseyPerferencesReq(
+                    jerseyNumberPerferences = state.value.jerseyNumerPerferences.split(
+                        ","
+                    ).toList(),
+                    shirtSize = state.value.shirtSize, waistSize = state.value.waistSize,
+
+                    )
+            ),
+            funFacts = arrayListOf(
+                FunFactsReq(
+                    favCollegeTeam = state.value.favCollegeTeam,
+                    favProfessionalTeam = state.value.favProfessionalTeam,
+                    favAllTimePlayer = state.value.favAllTimePlayer,
+                    favActivePlayer = state.value.favActivePlayer
+                )
+            ),
+            classOf = state.value.user.userDetails.classOf,
+            birthCertificate = state.value.user.userDetails.birthCertificate,
+            gradeVerfication = state.value.user.userDetails.gradeVerfication,
+            permissionSlip = state.value.user.userDetails.permissionSlip,
+            auuCard = state.value.user.userDetails.auuCard,
+            waiver = state.value.user.userDetails.waiver,
+            vaccineCard = state.value.user.userDetails.vaccineCard,
+
+            )
+
+
+        return UpdateUserDetailsReq(
+            firstName = state.value.user.firstName,
+            lastName = state.value.user.lastName,
+            birthdate = state.value.user.birthdate,
+            phone = state.value.user.phone,
+            gender = state.value.user.gender,
+            grade = state.value.user.userDetails.grade,
+//            teamDetailsReq = teamDetailsReq,
+            userDetailsReq = userDetailReq
+        )
+    }
+
+    private fun saveResponseToState(user: User) {
+        state.value =
+            state.value.copy(
+                user = user,
+            )
+        if (user.userDetails.jerseyPerferences.isNotEmpty()) {
+            state.value = state.value.copy(
+                jerseyNumerPerferences = user.userDetails.jerseyPerferences[0]
+                    .jerseyNumberPerferences.joinToString { jerseyPerferences ->
+                        jerseyPerferences
+                    },
+                shirtSize = user.userDetails.jerseyPerferences[0].shirtSize,
+                waistSize = user.userDetails.jerseyPerferences[0].waistSize
+            )
+        }
+        if (user.userDetails.funFacts.isNotEmpty()) {
+            state.value =
+                state.value.copy(
+                    favCollegeTeam = user.userDetails.funFacts[0].favCollegeTeam,
+                    favActivePlayer = user.userDetails.funFacts[0].favActivePlayer,
+                    favAllTimePlayer = user.userDetails.funFacts[0].favAllTimePlayer,
+                    favProfessionalTeam = user.userDetails.funFacts[0].favProfessionalTeam
+                )
+        }
+        if (user.userDetails.positionPlayed.isNotEmpty()) {
+
+            /*user.userDetails.positionPlayed.forEachIndexed { index1, positionSTring ->
+                state.value.positionPlayed.forEachIndexed { index2, checkBoxData ->
+                    if (positionSTring.equals(
+                            checkBoxData.label,
+                            ignoreCase = true
+                        )
+                    ) {
+                        state.value.positionPlayed[index2] =
+                            state.value.positionPlayed[index2].copy(isChecked = true)
+                    }
+                }
+            }*/
+
+        }
+
+
     }
 }
 

@@ -22,7 +22,7 @@ data class TeamDetailsReq(
 
 data class UserDetailsReq(
 
-    @SerializedName("positionPlayed") val positionPlayed: ArrayList<String> = arrayListOf(),
+    @SerializedName("positionPlayed") val positionPlayed: List<String> = arrayListOf(),
     @SerializedName("jerseyPerferences") val jerseyPerferences: ArrayList<JerseyPerferencesReq> = arrayListOf(),
     @SerializedName("funFacts") val funFacts: ArrayList<FunFactsReq> = arrayListOf(),
     @SerializedName("classOf") val classOf: String = "",

@@ -32,5 +32,6 @@ interface IUserRepository {
 
     suspend fun updateUserFullDetails(userDetailsReq: UpdateUserDetailsReq): ResultWrapper<BaseResponse<Any>>
 
+    suspend fun leaveTeam(teamId:String):ResultWrapper<BaseResponse<Any>>
 
 }

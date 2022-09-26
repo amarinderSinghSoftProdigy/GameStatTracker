@@ -257,8 +257,10 @@ fun EditProfileFields(
     readOnly: Boolean = false,
     modifier: Modifier = Modifier,
     trailingIcon: @Composable (() -> Unit)? = null,
-    placeholder: @Composable (() -> Unit)?=null
-) {
+    placeholder: @Composable (() -> Unit)?=null,
+    enabled: Boolean = true,
+
+    ) {
     val customTextSelectionColors = TextSelectionColors(
         handleColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
         backgroundColor = Color.Transparent
@@ -289,6 +291,7 @@ fun EditProfileFields(
                         focusedBorderColor = Color.Transparent,
                         unfocusedBorderColor = Color.Transparent,
                         cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        disabledBorderColor = Color.Transparent
                     ),
                     textStyle = TextStyle(textAlign = TextAlign.End,color = ColorBWBlack),
                     singleLine = true,
@@ -296,7 +299,8 @@ fun EditProfileFields(
                     keyboardOptions = keyboardOptions,
                     readOnly = readOnly,
                     trailingIcon = trailingIcon ,
-                    placeholder=placeholder
+                    placeholder=placeholder,
+                    enabled = enabled,
                 )
             }
         }

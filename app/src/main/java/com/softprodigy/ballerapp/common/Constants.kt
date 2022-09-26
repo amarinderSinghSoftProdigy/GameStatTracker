@@ -87,6 +87,8 @@ object ApiConstants {
     const val GET_USER_FULL_DETAILS="v1/userDetails"
     const val UPDATE_USER_FULL_DETAILS="v1/userDetails"
 
+    const val LEAVE_TEAM="v1/userDetails/leaveTeam"
+
     const val GET_HOME_PAGE_DETAILS="v1/coach/event/getHomePageDetails"
     const val first_name = "first_name"
     const val last_name = "lastName"

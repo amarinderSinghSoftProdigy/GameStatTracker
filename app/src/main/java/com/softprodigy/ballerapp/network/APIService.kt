@@ -118,4 +118,7 @@ open interface APIService {
     @PUT(ApiConstants.UPDATE_USER_FULL_DETAILS)
     suspend fun updateUserFullDetails(@Body userDetailsReq: UpdateUserDetailsReq):BaseResponse<Any>
 
+    @PUT(ApiConstants.LEAVE_TEAM)
+    suspend fun leaveTeam(@Body request: RequestBody):BaseResponse<Any>
+
 }

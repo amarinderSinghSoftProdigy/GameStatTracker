@@ -10,7 +10,7 @@ sealed class ProfileEvent() {
     data class OnBirthdayChange(val birthday: String) : ProfileEvent()
     data class OnClassChange(val classOf: String) : ProfileEvent()
 
-    data class OnLeaveTeamCLick(val index: Int) : ProfileEvent()
+    data class OnLeaveTeamCLick(val index:Int,val teamId: String) : ProfileEvent()
     data class OnRoleChange(val index: Int,val role: String) : ProfileEvent()
     data class OnPositionChange(val index: Int,val position: String) : ProfileEvent()
     data class OnJerseyChange(val index: Int,val jerseyNumber: String) : ProfileEvent()
@@ -26,4 +26,7 @@ sealed class ProfileEvent() {
     data class OnAllTimeFavChange(val allTimeFav: String) : ProfileEvent()
 
     object OnSaveUserDetailsClick : ProfileEvent()
+    data class OnPositionPlayedChanges(val index: Int, val isChecked: Boolean) : ProfileEvent()
+    data class OnLeaveDialogClick(val showDialog: Boolean) : ProfileEvent()
+    data class OnLeaveConfirmClick(val teamId: String) : ProfileEvent()
 }
