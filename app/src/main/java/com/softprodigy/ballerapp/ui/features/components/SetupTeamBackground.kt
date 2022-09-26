@@ -168,6 +168,13 @@ fun CoachFlowBackground(
                                 }
                                 Divider(thickness = dimensionResource(id = R.dimen.divider))
                                 OptionItem(
+                                    stringResource(id = R.string.swap_profiles),
+                                    R.drawable.ic_swap
+                                ) {
+                                    click(Options.SWAP_PROFILES)
+                                }
+                                Divider(thickness = dimensionResource(id = R.dimen.divider))
+                                OptionItem(
                                     stringResource(id = R.string.logout),
                                     R.drawable.ic_logout
                                 ) {
@@ -278,6 +285,7 @@ fun BottomButtons(
 
 enum class Options {
     PROFILE,
-    LOGOUT
+    SWAP_PROFILES,
+    LOGOUT,
     //Add options on the Profile dropwodn.
 }
