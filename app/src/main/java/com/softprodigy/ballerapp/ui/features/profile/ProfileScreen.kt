@@ -82,7 +82,7 @@ fun TabsContent(pagerState: PagerState,vm:ProfileViewModel) {
     HorizontalPager(state = pagerState) { page ->
         when (page) {
             0 -> ProfileTabScreen(vm)
-            1 -> DocumentTab()
+            1 -> DocumentTab(vm)
         }
     }
 }
