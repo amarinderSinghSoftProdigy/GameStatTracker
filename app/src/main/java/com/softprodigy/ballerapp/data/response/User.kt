@@ -94,4 +94,10 @@ data class TeamId(
 
 )
 
+data class UserDocType(
+    @SerializedName("name") val name: String = "",
+    @SerializedName("key") val key: String = "",
+    var url: String = ""
+)
+
 
