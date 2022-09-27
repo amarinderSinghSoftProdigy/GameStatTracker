@@ -2,8 +2,12 @@ package com.softprodigy.ballerapp.ui.features.profile.tabs
 
 
 import android.widget.Toast
-import androidx.compose.foundation.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
@@ -16,11 +20,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.apiToUIDateFormat2
@@ -69,7 +71,7 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
                 start = dimensionResource(id = R.dimen.size_16dp),
                 end = dimensionResource(id = R.dimen.size_16dp)
             )
-            .verticalScroll(rememberScrollState()),
+        /*.verticalScroll(rememberScrollState())*/,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -113,9 +115,9 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
                 Row(
                     modifier = Modifier
                 ) {
-                    DetailItem("email", state.user.email)
+                    DetailItem(stringResource(id = R.string.email), state.user.email)
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                    DetailItem("number", state.user.phone)
+                    DetailItem(stringResource(id = R.string.number), state.user.phone)
                 }
             }
         }
@@ -135,26 +137,28 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
                     color = ColorBWBlack,
                     fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp
                 )
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
-                Row(
-                    modifier = Modifier.fillMaxWidth()
+                LazyVerticalGrid(
+                    GridCells.Fixed(2),
+                    contentPadding = PaddingValues(10.dp)
                 ) {
-                    ParentItem(
-                        stringResource(id = R.string.mother),
-                        "-",
-                        ""
-                    ) { /*showParentDialog.value = true */
-                        vm.onEvent(ProfileEvent.OnParentDialogChange(true))
-                    }
-                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_5dp)))
-                    ParentItem(
-                        stringResource(id = R.string.father),
-                        "-",
-                        ""
-                    ) {
-                        vm.onEvent(
-                            ProfileEvent.OnParentDialogChange(true)
-                        )
+                    items(state.user.parentDetails) { parentDetails ->
+
+                        Row(
+                            modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.size_5dp)),
+                        ) {
+                            ParentItem(
+                                parentDetails.parentType,
+                                "${parentDetails.parent.firstName} ${parentDetails.parent.lastName}",
+                                parentDetails.parent.profileImage
+                            ) {
+                                vm.onEvent(
+                                    ProfileEvent.OnParentDialogChange(true)
+                                )
+                                vm.onEvent(
+                                    ProfileEvent.OnParentClick(parentDetails)
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -268,7 +272,9 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
                 vm.onEvent(
                     ProfileEvent.OnParentDialogChange(false)
                 )
-            })
+            },
+            parentDetails = state.selectedParentDetails
+        )
     }
 }
 
@@ -300,34 +306,37 @@ fun ProfileItem(type: String, value: String) {
 }
 
 @Composable
-fun RowScope.ParentItem(
+fun ParentItem(
     relation: String,
     value: String,
     imageUrl: String,
     click: () -> Unit
 ) {
     Row(modifier = Modifier
-        .weight(1F)
+//        .weight(1F)
         .clickable {
             click()
         }) {
-        Image(
-            painter = painterResource(id = R.drawable.user_demo),
-            contentDescription = "",
+
+        CoilImage(
+            src = BuildConfig.IMAGE_SERVER + imageUrl,
             modifier = Modifier
                 .size(dimensionResource(id = R.dimen.size_44dp))
-                .clip(CircleShape)
+                .clip(CircleShape),
+            isCrossFadeEnabled = false,
+            onLoading = { PlaceholderRect(R.drawable.ic_user_profile_icon) },
+            onError = { PlaceholderRect(R.drawable.ic_user_profile_icon) }
         )
         Column(
             modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_10dp)),
         ) {
             AppText(
-                text = relation,
+                text = value,
                 style = MaterialTheme.typography.h6,
                 color = ColorBWBlack
             )
             AppText(
-                text = value,
+                text = relation,
                 style = MaterialTheme.typography.h5,
                 color = ColorBWGrayLight
             )
@@ -337,7 +346,7 @@ fun RowScope.ParentItem(
 }
 
 @Composable
-fun RowScope.DetailItem(stringId: String, value: String) {
+fun RowScope.DetailItem(heading: String, value: String) {
     Column(
         modifier = Modifier
             .padding(all = dimensionResource(id = R.dimen.size_8dp))
@@ -345,7 +354,7 @@ fun RowScope.DetailItem(stringId: String, value: String) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AppText(
-            text = stringResourceByName(stringId),
+            text = heading,
             style = MaterialTheme.typography.h4,
             color = ColorBWGrayLight
         )

@@ -53,6 +53,9 @@ class ProfileViewModel @Inject constructor(
             is ProfileEvent.OnParentDialogChange -> {
                 _state.value = _state.value.copy(showParentDialog = event.showDialog)
             }
+            is ProfileEvent.OnParentClick -> {
+                _state.value = _state.value.copy(selectedParentDetails = event.selectedParentDetails)
+            }
             is ProfileEvent.OnBirthdayChange -> {
                 _state.value =
                     _state.value.copy(user = _state.value.user.copy(birthdate = event.birthday))

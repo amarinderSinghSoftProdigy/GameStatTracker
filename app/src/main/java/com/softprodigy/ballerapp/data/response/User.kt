@@ -17,13 +17,11 @@ data class User(
     @SerializedName("birthdate") val birthdate: String = "",
     @SerializedName("id") val id: String = "",
     @SerializedName("profileImage") val profileImage: String = "",
-
     @SerializedName("phone") val phone: String = "",
     @SerializedName("teamDetails") val teamDetails: SnapshotStateList<TeamDetails> = mutableStateListOf(),
     @SerializedName("userDetails") val userDetails: UserDetails = UserDetails(),
+    @SerializedName("parentDetails") var parentDetails: ArrayList<ParentDetails> = arrayListOf(),
     @SerializedName("age") val age: String = "",
-
-
     )
 
 data class TeamDetails(
@@ -100,4 +98,23 @@ data class UserDocType(
     var url: String = ""
 )
 
+data class ParentDetails(
 
+    @SerializedName("_id") val Id: String = "",
+    @SerializedName("parent") val parent: Parent = Parent(),
+    @SerializedName("parentType") val parentType: String = ""
+
+)
+
+data class Parent(
+
+    @SerializedName("_id") val _id: String = "",
+    @SerializedName("firstName") val firstName: String = "",
+    @SerializedName("lastName") val lastName: String = "",
+    @SerializedName("profileImage") val profileImage: String = "",
+    @SerializedName("email") val email: String = "",
+    @SerializedName("phone") val phone: String = "",
+    @SerializedName("name") val name: String = "",
+    @SerializedName("id") val id: String = ""
+
+)

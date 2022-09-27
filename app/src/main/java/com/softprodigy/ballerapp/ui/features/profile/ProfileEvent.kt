@@ -1,9 +1,11 @@
 package com.softprodigy.ballerapp.ui.features.profile
 
+import com.softprodigy.ballerapp.data.response.ParentDetails
 import com.softprodigy.ballerapp.data.response.UserDocType
 
 sealed class ProfileEvent {
     data class OnParentDialogChange(val showDialog: Boolean) : ProfileEvent()
+    data class OnParentClick(val selectedParentDetails: ParentDetails) : ProfileEvent()
 
     data class OnFirstNameChange(val firstName: String) : ProfileEvent()
     data class OnLastNameChange(val lastName: String) : ProfileEvent()
