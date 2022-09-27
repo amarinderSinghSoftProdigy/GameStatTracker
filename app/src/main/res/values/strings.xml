@@ -216,6 +216,10 @@
     <string name="foul">Foul</string>
     <string name="sub">Sub</string>
 
+    <string name="point_1">1 pt</string>
+    <string name="point_2">2 pts</string>
+    <string name="point_3">3 pts</string>
+
     <string-array name="game_settings">
         <item>@string/exit</item>
         <item>@string/settings</item>

@@ -12,11 +12,11 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.ImageTextButton
 
 @Composable
-fun OverviewScreen (
-
-) {
+fun OverviewScreen () {
     Box(
-        modifier =  Modifier.fillMaxSize().background(Color.Black)
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
     ) {
         Row(
             Modifier
@@ -32,45 +32,13 @@ fun OverviewScreen (
                     .padding(horizontal = dimensionResource(id = R.dimen.size_20dp)),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
-                GamePointController();
-
-                /*ImageTextButton(
-                    title = stringResource(id = R.string.app_name),
-                    drawableResourceId = R.drawable.ic_facebook,
-                    spacerBetween = R.dimen.size_12dp,
-                ) {
-                }*/
-
-                /*AppText(
-                    text = stringResource(id = R.string.no_players_in_team),
-                    color = ColorBWBlack,
-                    style = MaterialTheme.typography.h3
-                )
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-                AppText(
-                    text = stringResource(id = R.string.please_add_players),
-                    color = ColorBWBlack,
-                    style = MaterialTheme.typography.h5
-                )*/
+                GamePointController()
+            }
+            Column(
+                Modifier.fillMaxWidth(),
+            ) {
+                TeamNavigationController()
             }
         }
-
-
-            /*AppText(
-                text = stringResource(id = com.softprodigy.ballerapp.R.string.app_name),
-                style = MaterialTheme.typography.h6,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = dimensionResource(id = R.dimen.size_3dp)),
-                textAlign = TextAlign.Start
-            )*/
-
-
-            /*Column(modifier = Modifier.align(Alignment.Center)) {
-
-            }*/
-
     }
 }
