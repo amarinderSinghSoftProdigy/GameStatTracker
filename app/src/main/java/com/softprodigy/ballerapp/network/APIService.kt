@@ -12,6 +12,7 @@ import com.softprodigy.ballerapp.data.request.UpdateUserDetailsReq
 import com.softprodigy.ballerapp.data.request.VerifyPhoneRequest
 import com.softprodigy.ballerapp.data.response.CreateTeamResponse
 import com.softprodigy.ballerapp.data.response.ImageUpload
+import com.softprodigy.ballerapp.data.response.PlayerDetails
 import com.softprodigy.ballerapp.data.response.StandingData
 import com.softprodigy.ballerapp.data.response.User
 import com.softprodigy.ballerapp.data.response.UserDocType
@@ -122,6 +123,11 @@ open interface APIService {
     @GET(ApiConstants.GET_HOME_PAGE_DETAILS)
     suspend fun getHomePageDetails(): BaseResponse<HomePageCoachModel>
 
+    @GET(ApiConstants.GET_USER_ROLE)
+    suspend fun getUserRoles(): BaseResponse<ArrayList<String>>
+
+    @GET(ApiConstants.GET_TEAM_PLAYER_BY_ID)
+    suspend fun getTeamPlayerById(@Query("teamId") id: String): BaseResponse<ArrayList<PlayerDetails>>
     @GET(ApiConstants.GET_USER_FULL_DETAILS)
     suspend fun getUserFullDetails(): BaseResponse<User>
 

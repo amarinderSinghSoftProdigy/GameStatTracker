@@ -41,6 +41,7 @@ fun LeadingIconAppButton(
     ),
     text: String? = null,
     icon: Painter? = null,
+    iconBorder: Boolean = true,
 ) {
     val contentColor = if (enabled) Color.White else ColorBWGrayLight
 
@@ -71,7 +72,7 @@ fun LeadingIconAppButton(
                             shape = CircleShape,
                             border = BorderStroke(
                                 dimensionResource(id = R.dimen.size_3dp),
-                                color = Color.White
+                                color = if (iconBorder) Color.White else Color.Transparent
                             ), color = Color.Transparent
                         ) {
                             Icon(

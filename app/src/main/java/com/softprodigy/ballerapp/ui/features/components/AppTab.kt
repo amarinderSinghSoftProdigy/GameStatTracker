@@ -86,6 +86,7 @@ fun AppStaticTabRow(
     tabs: @Composable @UiComposable () -> Unit
 ) {
     TabRow(
+        divider = {},
         modifier = modifier,
         selectedTabIndex = pagerState.currentPage,
         indicator = { tabPositions ->

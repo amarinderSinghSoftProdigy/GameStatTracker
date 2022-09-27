@@ -28,6 +28,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.team.Coach
@@ -42,7 +43,7 @@ import com.softprodigy.ballerapp.ui.theme.appColors
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun RoasterScreen(vm: TeamViewModel) {
+fun RoasterScreen(vm: TeamViewModel = hiltViewModel()) {
 
     val state = vm.teamUiState.value
 

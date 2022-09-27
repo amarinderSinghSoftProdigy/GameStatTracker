@@ -44,7 +44,7 @@ import com.softprodigy.ballerapp.ui.features.components.Placeholder
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun EventTeamsScreen(vm: EventTeamViewModel = hiltViewModel()) {
+fun EventTeamsScreen(moveToOpenTeams: (String) -> Unit, vm: EventTeamViewModel = hiltViewModel()) {
     val state = vm.eventTeamState.value
     val expand = remember {
         true
@@ -91,7 +91,9 @@ fun EventTeamsScreen(vm: EventTeamViewModel = hiltViewModel()) {
                                     )
                                 )
                         ) {
-                            EventTeamSubItem(team)
+                            EventTeamSubItem(team) {
+                                moveToOpenTeams(team.name)
+                            }
                         }
                         if (index == item.teams.size - 1) {
                             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
@@ -140,11 +142,11 @@ fun EventTeamHeader(divisionName: String, isExpanded: Boolean = false) {
 }
 
 @Composable
-fun EventTeamSubItem(team: Team) {
+fun EventTeamSubItem(team: Team, onClick: () -> Unit) {
     Row(
         Modifier
             .fillMaxWidth()
-            .clickable { }
+            .clickable { onClick() }
             .padding(
                 horizontal = dimensionResource(id = R.dimen.size_16dp),
                 vertical = dimensionResource(id = R.dimen.size_12dp)

@@ -41,6 +41,9 @@ object Route {
     const val EVENTS_DETAIL_SCREEN = "events_detail_screen"
     const val GAME_RULES_SCREENS = "game_rules_screen"
     const val GAME_DETAIL_SCREEN = "game_detail_screen"
+    const val OPP_DETAIL_SCREEN = "opp_detail_screen"
+    const val EVENT_REGISTRATION = "event_registration"
+    const val EVENT_REGISTRATION_SUCCESS = "eventRegistrationSuccess"
     const val TEAMS_SCREEN = "teamsScreen"
     const val SPLASH_SCREEN = "splashScreen"
     const val SELECT_USER_TYPE = "selectUserTypeScreen"
@@ -57,6 +60,8 @@ object Route {
     const val NEW_EVENT = "newEvent"
     const val MY_LEAGUE = "myLeague"
     const val OPEN_VENUE = "openVenue"
+    const val DIVISION_TAB = "divisionTab"
+    const val TEAM_TAB = "teamTab"
 }
 
 object ApiConstants {
@@ -74,6 +79,8 @@ object ApiConstants {
     const val GET_ALL_INVITATION = "v1/team/getAllTeamsInvitations"
     const val ACCEPT_TEAM_INVITATION = "v1/team/acceptTeamInvitation"
     const val REJECT_TEAM_INVITATION = "v1/team/rejectTeamInvitation"
+    const val GET_USER_ROLE = "v1/team/getUserRoles"
+    const val GET_TEAM_PLAYER_BY_ID = "v1/team/getTeamPlayersById"
 
     const val SOCIAL_LOGIN = "/social_login"
     const val SIGNUP = "v1/auth/register"
@@ -84,6 +91,8 @@ object ApiConstants {
     const val RESET_PASS = "/reset/password/"
     const val RESEND_OTP = "/resendOtp"
     const val UPDATE_TEAM = "v1/team/update"
+    const val GET_USER_DETAILS = "v1/auth/getUserProfile"
+    const val GET_HOME_PAGE_DETAILS = "v1/coach/event/getHomePageDetails"
     const val GET_USER_DETAILS = "v1/auth/getUserProfile"
     const val GET_USER_FULL_DETAILS = "v1/userDetails"
     const val UPDATE_USER_FULL_DETAILS = "v1/userDetails"

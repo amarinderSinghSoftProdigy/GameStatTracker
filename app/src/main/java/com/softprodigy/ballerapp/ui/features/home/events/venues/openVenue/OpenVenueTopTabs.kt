@@ -1,21 +1,26 @@
 package com.softprodigy.ballerapp.ui.features.home.events.venues.openVenue
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.ui.features.components.AppScrollableTabRow
+import com.softprodigy.ballerapp.ui.features.components.AppStaticTabRow
 import com.softprodigy.ballerapp.ui.features.components.AppTabLikeViewPager
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
-import com.softprodigy.ballerapp.ui.features.home.events.division.DivisionScreen
-import com.softprodigy.ballerapp.ui.features.home.events.schedule.EventScheduleScreen
-import com.softprodigy.ballerapp.ui.features.home.events.team.EventTeamsScreen
+import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
@@ -43,21 +48,31 @@ fun OpenVenueTopTabs() {
 @Composable
 fun OpenVenueTabs(pagerState: PagerState, tabData: List<OpenVenueTabItems>) {
     val coroutineScope = rememberCoroutineScope()
-    AppScrollableTabRow(
-        pagerState = pagerState, tabs = {
-            tabData.forEachIndexed { index, item ->
-                AppTabLikeViewPager(
-                    title = item.stringId,
-                    painter = painterResource(id = item.icon),
-                    selected = pagerState.currentPage == index,
-                    onClick = {
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(index)
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = Color.White)
+            .padding(
+                start = dimensionResource(id = R.dimen.size_40dp),
+                end = dimensionResource(id = R.dimen.size_40dp)
+            )
+    ) {
+        AppStaticTabRow(
+            pagerState = pagerState, tabs = {
+                tabData.forEachIndexed { index, item ->
+                    AppTabLikeViewPager(
+                        title = item.stringId,
+                        painter = painterResource(id = item.icon),
+                        selected = pagerState.currentPage == index,
+                        onClick = {
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(index)
+                            }
                         }
-                    }
-                )
-            }
-        })
+                    )
+                }
+            })
+    }
 }
 
 @OptIn(ExperimentalPagerApi::class)
@@ -69,8 +84,8 @@ fun OpenVenueContents(pagerState: PagerState) {
     ) { index ->
         when (index) {
             0 -> OpenVenuesDetailsScreen()
-            1 -> DivisionScreen()
-            2 -> EventTeamsScreen()
+            1 -> EmptyScreen(singleText = true, heading = stringResource(id = R.string.coming_soon))
+            2 -> EmptyScreen(singleText = true, heading = stringResource(id = R.string.coming_soon))
         }
     }
 }

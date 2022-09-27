@@ -2,6 +2,7 @@ package com.softprodigy.ballerapp.ui.features.home.events
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,6 +23,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -34,34 +36,32 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.flowlayout.FlowRow
-import com.google.accompanist.pager.ExperimentalPagerApi
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppDivider
 import com.softprodigy.ballerapp.ui.theme.appColors
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
-fun FilterScreen(vm: EventViewModel) {
+fun FilterScreen(vm: EventViewModel, onSuccess: () -> Unit) {
     val state = vm.eventState.value
     var selectedGender by rememberSaveable { mutableStateOf("") }
     var selectedEvent by rememberSaveable { mutableStateOf("") }
     var selectedFormat by rememberSaveable { mutableStateOf("") }
     var selectedLevel by rememberSaveable { mutableStateOf("") }
-    var genderList = arrayListOf<String>(
+    val genderList = arrayListOf<String>(
         stringResource(id = R.string.male),
         stringResource(id = R.string.female)
     )
-    var eventType = arrayListOf<String>(
+    val eventType = arrayListOf<String>(
         stringResource(id = R.string.league),
         stringResource(id = R.string.clinic),
         stringResource(id = R.string.camp)
     )
-    var format = arrayListOf<String>(
+    val format = arrayListOf<String>(
         stringResource(id = R.string.individual),
         stringResource(id = R.string.team)
     )
-    var level = arrayListOf<String>(
+    val level = arrayListOf<String>(
         stringResource(id = R.string.elite),
         stringResource(id = R.string.competitive),
         stringResource(id = R.string.developmental),
@@ -75,36 +75,39 @@ fun FilterScreen(vm: EventViewModel) {
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-            fiterItem(stringResource(id = R.string.gender), genderList, setSelected = {
+            FilterItem(stringResource(id = R.string.gender), genderList, setSelected = {
                 selectedGender = it
             }, selectedGender)
-            distanceItem()
-            fiterItem(stringResource(id = R.string.event_type), eventType, setSelected = {
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+            DistanceItem()
+            FilterItem(stringResource(id = R.string.event_type), eventType, setSelected = {
                 selectedEvent = it
             }, selectedEvent)
-            fiterItem(stringResource(id = R.string.format), format, setSelected = {
+            FilterItem(stringResource(id = R.string.format), format, setSelected = {
                 selectedFormat = it
             }, selectedFormat)
-            fiterItem(stringResource(id = R.string.level), level, setSelected = {
+            FilterItem(stringResource(id = R.string.level), level, setSelected = {
                 selectedLevel = it
             }, selectedLevel)
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             AppButton(
                 enabled = true,
                 icon = null,
                 themed = true,
-                onClick = { },
+                onClick = { onSuccess() },
                 text = stringResource(id = R.string.save),
                 isForceEnableNeeded = true
             )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
-
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
         }
     }
 }
 
 @Composable
-fun distanceItem() {
+fun DistanceItem() {
+    val distance = remember {
+        mutableStateOf(0)
+    }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -115,19 +118,22 @@ fun distanceItem() {
             fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
             fontWeight = FontWeight.Bold,
         )
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = dimensionResource(id = R.dimen.size_16dp))
                 .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
                 .background(color = Color.White)
-                .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                .padding(
+                    horizontal = dimensionResource(id = R.dimen.size_16dp),
+                    vertical = dimensionResource(id = R.dimen.size_12dp)
+                ),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = stringResource(id = R.string.max_dis),
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.weight(1f)
             )
@@ -135,21 +141,23 @@ fun distanceItem() {
                 painter = painterResource(id = R.drawable.ic_sub),
                 contentDescription = "",
                 modifier = Modifier
+                    .clickable { distance.value = distance.value - 1 }
                     .size(dimensionResource(id = R.dimen.size_25dp))
                     .clip(CircleShape)
             )
             Text(
-                text = "5mi",
+                text = distance.value.toString() + "mi",
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
-                    .padding(horizontal = dimensionResource(id = R.dimen.size_8dp))
+                    .padding(horizontal = dimensionResource(id = R.dimen.size_12dp))
             )
             Image(
                 painter = painterResource(id = R.drawable.ic_add),
                 contentDescription = "",
                 modifier = Modifier
+                    .clickable { distance.value = distance.value + 1 }
                     .size(dimensionResource(id = R.dimen.size_25dp))
                     .clip(CircleShape)
             )
@@ -159,7 +167,7 @@ fun distanceItem() {
 
 
 @Composable
-fun fiterItem(
+fun FilterItem(
     heading: String,
     list: ArrayList<String>,
     setSelected: (value: String) -> Unit,
@@ -169,37 +177,43 @@ fun fiterItem(
         modifier = Modifier
             .fillMaxWidth()
     ) {
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
         Text(
             text = heading,
             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
             fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
             fontWeight = FontWeight.Bold,
         )
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = dimensionResource(id = R.dimen.size_16dp))
-                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-                .background(color = Color.White)
-                .padding(horizontal = dimensionResource(id = R.dimen.size_10dp)),
-
-            ) {
+                .background(
+                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
+                    color = Color.White
+                )
+        ) {
             FlowRow(Modifier.fillMaxWidth()) {
-                list.forEach() { value ->
-                    Column() {
+                list.forEachIndexed { index, value ->
+                    Column {
                         Row(
                             modifier = Modifier
-                                .fillMaxWidth(),
+                                .fillMaxWidth()
+                                .padding(
+                                    horizontal = dimensionResource(id = R.dimen.size_12dp),
+                                    vertical = dimensionResource(id = R.dimen.size_16dp)
+                                ),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
                                 text = value,
                                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.weight(1f)
                             )
                             Switch(
+                                modifier = Modifier.height(dimensionResource(id = R.dimen.size_25dp)),
                                 checked = value == selectedValue,
                                 onCheckedChange = { setSelected(value) },
                                 colors = SwitchDefaults.colors(
@@ -207,7 +221,8 @@ fun fiterItem(
                                 )
                             )
                         }
-                        AppDivider()
+                        if (index != list.size - 1)
+                            AppDivider()
                     }
                 }
             }

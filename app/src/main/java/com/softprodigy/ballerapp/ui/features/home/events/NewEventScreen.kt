@@ -91,7 +91,7 @@ fun EventTabs(pagerState: PagerState) {
     val screenWidth = configuration.screenWidthDp.dp
     val width = screenWidth.minus(dimensionResource(id = R.dimen.size_16dp).times(4))
 
-    val list = listOf(EventTabItems.Practice, EventTabItems.Game, EventTabItems.Activity)
+    val list = listOf(EventTabItems.Practice, /*EventTabItems.Game,*/ EventTabItems.Activity)
     val scope = rememberCoroutineScope()
     TabRow(selectedTabIndex = pagerState.currentPage,
         backgroundColor = MaterialTheme.colors.primary,
@@ -127,7 +127,6 @@ fun EventTabs(pagerState: PagerState) {
             )
         }
     }
-
 }
 
 enum class EventTabItems(val stringId: String) {

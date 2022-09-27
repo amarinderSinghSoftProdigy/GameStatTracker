@@ -27,7 +27,7 @@ import com.softprodigy.ballerapp.ui.theme.appColors
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun OpportunitieScreen(state: EventState, vm: EventViewModel, moveToDetail: () -> Unit) {
+fun OpportunitieScreen(state: EventState, vm: EventViewModel, moveToOppDetails: () -> Unit) {
     if (state.leagues.size > 0) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
@@ -37,8 +37,8 @@ fun OpportunitieScreen(state: EventState, vm: EventViewModel, moveToDetail: () -
             ) {
                 LazyColumn(Modifier.fillMaxWidth()) {
                     items(state.leagues) { leag ->
-                        LeagueItem(leag, state,{}) {
-                            moveToDetail()
+                        LeagueItem(leag, state) {
+                            moveToOppDetails()
                         }
                     }
                 }

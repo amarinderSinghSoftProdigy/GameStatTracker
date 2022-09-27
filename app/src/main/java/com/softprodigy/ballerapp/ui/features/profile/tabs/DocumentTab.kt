@@ -27,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -42,7 +43,7 @@ import com.softprodigy.ballerapp.ui.features.components.DeleteDialog
 import com.softprodigy.ballerapp.ui.features.profile.ProfileEvent
 import com.softprodigy.ballerapp.ui.features.profile.ProfileViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
-import com.softprodigy.ballerapp.ui.theme.md_theme_light_primary
+import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
 fun DocumentTab(vm: ProfileViewModel) {
@@ -127,11 +128,33 @@ fun DocumentItem(item: UserDocType, onImageClick: (String) -> Unit, onDeleteClic
                     modifier = Modifier
                         .size(dimensionResource(id = R.dimen.size_64dp))
                         .background(
-                            color = md_theme_light_primary,
+                            color = MaterialTheme.appColors.material.primary,
                             shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                         )
-                        .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                 ) {
+                    if (imageUrl.isEmpty()) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_add_round),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .clickable {
+                                },
+                        )
+                    } else {
+                        Image(
+                            painter = rememberAsyncImagePainter(imageUrl),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .size(dimensionResource(id = R.dimen.size_64dp))
+                                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                                .background(
+                                    color = MaterialTheme.appColors.material.primary,
+                                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+                                ),
+                        )
+                    }
                     Image(
                         painter = if (item.url.isNotEmpty()) rememberAsyncImagePainter(BuildConfig.IMAGE_SERVER + item.url) else painterResource(
                             id = R.drawable.ic_add
