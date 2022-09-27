@@ -566,10 +566,10 @@ class ProfileViewModel @Inject constructor(
             it.isChecked
         }
         val userDetailReq = UserDetailsReq(
-            positionPlayed = _state.value.positionPlayed.toList().map {
+            /*positionPlayed = _state.value.positionPlayed.toList().map {
                 if (it.isChecked)
                     it.label
-                else ""
+                else ""*/
             positionPlayed = checkedData.toList().map {
                 it.label
             },
