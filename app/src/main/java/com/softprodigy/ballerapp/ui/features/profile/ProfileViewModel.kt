@@ -170,10 +170,14 @@ class ProfileViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 leaveTeamResponse.value.let { response ->
                     if (response.status) {
-                        state.value.selectedTeamIndex?.let {
-                            state.value.user.teamDetails.toMutableList().removeAt(index = it)
-                        }
-
+                        _channel.send(
+                            ProfileChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                        getUserDetails()
 
                     } else {
                         _channel.send(
@@ -268,10 +272,8 @@ class ProfileViewModel @Inject constructor(
                 userResponse.value.let { response ->
                     if (response.status) {
                         _channel.send(
-                            ProfileChannel.ShowToast(
-                                UiText.DynamicString(
-                                    response.statusMessage
-                                )
+                            ProfileChannel.OnUpdateSuccess(
+                                response.statusMessage
                             )
                         )
                     } else {
@@ -297,11 +299,13 @@ class ProfileViewModel @Inject constructor(
                 jersey = it.jersey
             )
         }
+
+        val checkedData = state.value.positionPlayed.toList().filter {
+            it.isChecked
+        }
         val userDetailReq = UserDetailsReq(
-            positionPlayed = state.value.positionPlayed.toList().map {
-                if (it.isChecked)
-                    it.label
-                else ""
+            positionPlayed = checkedData.toList().map {
+                it.label
             },
             jerseyPerferences = arrayListOf(
                 JerseyPerferencesReq(
@@ -390,4 +394,5 @@ class ProfileViewModel @Inject constructor(
 
 sealed class ProfileChannel {
     data class ShowToast(val message: UiText) : ProfileChannel()
+    data class OnUpdateSuccess(val message: String) : ProfileChannel()
 }

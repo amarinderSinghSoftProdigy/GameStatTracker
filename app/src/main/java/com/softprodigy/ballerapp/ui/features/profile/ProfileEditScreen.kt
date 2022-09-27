@@ -3,6 +3,7 @@ package com.softprodigy.ballerapp.ui.features.profile
 
 import android.app.DatePickerDialog
 import android.widget.DatePicker
+import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -58,7 +59,8 @@ import java.util.*
 @Composable
 fun ProfileEditScreen(
     vm: ProfileViewModel = hiltViewModel(),
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onUpdateSuccess: () -> Unit
 ) {
     val state = vm.state.value
     val maxChar = 30
@@ -108,6 +110,30 @@ fun ProfileEditScreen(
         }, mYear, mMonth, mDay
     )
     mDatePickerDialog.datePicker.maxDate = System.currentTimeMillis()
+
+
+    LaunchedEffect(key1 = Unit) {
+        vm.channel.collect {
+            when (it) {
+                is ProfileChannel.OnUpdateSuccess -> {
+                    Toast.makeText(
+                        context,
+                        it.message,
+                        Toast.LENGTH_LONG
+                    ).show()
+                    onUpdateSuccess.invoke()
+                }
+                is ProfileChannel.ShowToast -> {
+                    Toast.makeText(
+                        context,
+                        it.message.asString(context),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+
+        }
+    }
 
     Box(Modifier.fillMaxSize()) {
         Column(
