@@ -13,6 +13,7 @@ import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.domain.BaseResponse
 import com.softprodigy.ballerapp.ui.features.home.invitation.Invitation
+import com.softprodigy.ballerapp.ui.features.venue.Venue
 import javax.inject.Singleton
 
 @Singleton
@@ -66,4 +67,9 @@ interface ITeamRepository {
     suspend fun getUserRoles(): ResultWrapper<BaseResponse<ArrayList<String>>>
 
     suspend fun getPlayerById(id: String): ResultWrapper<BaseResponse<ArrayList<PlayerDetails>>>
+
+    suspend fun getAllVenue(
+        page: Int = 1,
+        limit: Int = 20
+    ): ResultWrapper<BaseResponse<ArrayList<Venue>>>
 }

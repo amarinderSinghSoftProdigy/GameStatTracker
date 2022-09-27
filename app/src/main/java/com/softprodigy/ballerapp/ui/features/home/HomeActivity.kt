@@ -74,6 +74,7 @@ import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.AddPla
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupScreenUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
+import com.softprodigy.ballerapp.ui.features.venue.VenueListScreen
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
 import com.softprodigy.ballerapp.ui.theme.appColors
 import dagger.hilt.android.AndroidEntryPoint
@@ -540,7 +541,12 @@ fun NavControllerComposable(
             }
             InvitationScreen()
         }
-        composable(route = Route.TEAM_SETUP_SCREEN) {
+        composable(route = Route.TEAM_SETUP_SCREEN) {backStackEntry ->
+
+            // get data passed back from next stack
+            val venue: String = backStackEntry
+                .savedStateHandle.get<String>("venue") ?: ""
+
             homeViewModel.setTopAppBar(true)
             homeViewModel.showBottomAppBar(false)
             homeViewModel.setTopBar(
@@ -557,6 +563,7 @@ fun NavControllerComposable(
                 )
             }
             TeamSetupScreenUpdated(
+                venue=venue,
                 vm = setupTeamViewModelUpdated,
                 onBackClick = {
                     setColorToOriginalOnBack(
@@ -568,6 +575,9 @@ fun NavControllerComposable(
                 },
                 onNextClick = {
                     navController.navigate(Route.ADD_PLAYER_SCREEN)
+                }, onVenueClick = {
+                    navController.navigate(Route.SELECT_VENUE)
+
                 })
 
 
@@ -622,6 +632,14 @@ fun NavControllerComposable(
             )
             MyLeagueDetailScreen()
         }*/
+        composable(route = Route.SELECT_VENUE) {
+            VenueListScreen(onVenueClick = {
+                navController.previousBackStackEntry
+                    ?.savedStateHandle
+                    ?.set("venue", it)
+                navController.popBackStack()
+            })
+        }
     }
 }
 

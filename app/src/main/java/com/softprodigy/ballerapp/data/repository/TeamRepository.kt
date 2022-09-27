@@ -17,6 +17,7 @@ import com.softprodigy.ballerapp.domain.BaseResponse
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import com.softprodigy.ballerapp.network.APIService
 import com.softprodigy.ballerapp.ui.features.home.invitation.Invitation
+import com.softprodigy.ballerapp.ui.features.venue.Venue
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import okhttp3.FormBody
@@ -131,6 +132,15 @@ class TeamRepository @Inject constructor(
     override suspend fun getPlayerById(id: String): ResultWrapper<BaseResponse<ArrayList<PlayerDetails>>> {
         return safeApiCall(dispatcher) {
             service.getTeamPlayerById(id)
+        }
+    }
+
+    override suspend fun getAllVenue(
+        page: Int,
+        limit: Int
+    ): ResultWrapper<BaseResponse<ArrayList<Venue>>> {
+        return safeApiCall(dispatcher) {
+            service.getAllVenue(page = page, limit = limit)
         }
     }
 
