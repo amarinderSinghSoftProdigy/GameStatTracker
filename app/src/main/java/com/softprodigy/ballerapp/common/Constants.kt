@@ -55,7 +55,7 @@ object Route {
     const val LEAGUE_DETAIL_SCREEN = "leagueDetailScreen"
     const val PROFILE_SCREEN = "profileScreen"
     const val PROFILE_EDIT_SCREEN = "profileeditscreen"
-    const val INVITATION_SCREEN="invitationScreen"
+    const val INVITATION_SCREEN = "invitationScreen"
     const val NEW_EVENT = "newEvent"
     const val MY_LEAGUE = "myLeague"
     const val OPEN_VENUE = "openVenue"
@@ -79,6 +79,8 @@ object ApiConstants {
     const val GET_ALL_EVENTS = "v1/coach/event/getAllEvents"
     const val ACCEPT_TEAM_INVITATION = "v1/team/acceptTeamInvitation"
     const val REJECT_TEAM_INVITATION = "v1/team/rejectTeamInvitation"
+    const val GET_USER_ROLE = "v1/team/getUserRoles"
+    const val GET_TEAM_PLAYER_BY_ID = "v1/team/getTeamPlayersById"
 
     const val SOCIAL_LOGIN = "/social_login"
     const val SIGNUP = "v1/auth/register"
@@ -89,8 +91,8 @@ object ApiConstants {
     const val RESET_PASS = "/reset/password/"
     const val RESEND_OTP = "/resendOtp"
     const val UPDATE_TEAM = "v1/team/update"
-    const val GET_USER_DETAILS="v1/auth/getUserProfile"
-    const val GET_HOME_PAGE_DETAILS="v1/coach/event/getHomePageDetails"
+    const val GET_USER_DETAILS = "v1/auth/getUserProfile"
+    const val GET_HOME_PAGE_DETAILS = "v1/coach/event/getHomePageDetails"
     const val first_name = "first_name"
     const val last_name = "lastName"
     const val mobile = "mobile"
@@ -106,6 +108,7 @@ object RequestCode {
     const val GOOGLE_ACCESS = 100
 
 }
-object IntentData{
+
+object IntentData {
     const val FROM_SPLASH = "fromSplash"
 }

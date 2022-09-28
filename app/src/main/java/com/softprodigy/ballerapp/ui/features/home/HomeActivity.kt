@@ -37,6 +37,9 @@ import com.softprodigy.ballerapp.common.IntentData
 import com.softprodigy.ballerapp.common.Route
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
+import com.softprodigy.ballerapp.data.response.team.Team
+import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.home.events.*
 import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
 import com.softprodigy.ballerapp.ui.features.components.BottomNavigationBar
 import com.softprodigy.ballerapp.ui.features.components.CommonTabView
@@ -82,6 +85,7 @@ class HomeActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, true)
+
         setContent {
             val fromSplash = intent.getBooleanExtra(IntentData.FROM_SPLASH, false)
             val homeViewModel: HomeViewModel = hiltViewModel()
@@ -198,6 +202,35 @@ class HomeActivity : ComponentActivity() {
                             moveToLogin(this)
                         })
                 }
+                if (state.showSwapProfile) {
+                    SwapPlayer(
+                        players = state.players,
+                        onDismiss = { homeViewModel.setSwapProfile(false) },
+                        onConfirmClick = {
+                            if (UserStorage.playerId != it) {
+
+                            }
+                        },
+                        onSelectionChange = {},
+                        selected = state.selectedPlayer!!,
+                        showLoading = state.isLoading,
+                        onCreatePlayerClick = {
+                            homeViewModel.setSwapProfile(false)
+                            homeViewModel.setAddProfile(true)
+                        },
+                        showCreatePlayerButton = role.value.equals(
+                            UserType.COACH.key,
+                            ignoreCase = true
+                        )
+                    )
+                }
+                if (state.showAddProfile) {
+                    AddPlayer(
+                        onDismiss = { homeViewModel.setAddProfile(false) },
+                        onConfirmClick = {
+                        },
+                    )
+                }
             }
         }
     }
@@ -220,11 +253,17 @@ fun NavControllerComposable(
             //if (fromSplash)
             HomeScreen(name = "", onInvitationCLick = {
                 navController.navigate(Route.INVITATION_SCREEN)
-            }, logoClick = {
-                homeViewModel.setLogoutDialog(true)
-            }, vm = homeViewModel, gotToProfile = {
-                navController.navigate(Route.PROFILE_SCREEN)
-            })
+            },
+                logoClick = {
+                    homeViewModel.setLogoutDialog(true)
+                },
+                swap_profile = {
+                    homeViewModel.setSwapProfile(true)
+                },
+                vm = homeViewModel, gotToProfile = {
+                    navController.navigate(Route.PROFILE_SCREEN)
+                }
+            )
             /* else {
                  HomeFirstTimeLoginScreen(onCreateTeamClick = {
                      navController.navigate(Route.TEAM_SETUP_SCREEN)

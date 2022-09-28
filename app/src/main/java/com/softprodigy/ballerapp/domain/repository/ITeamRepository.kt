@@ -5,6 +5,7 @@ import com.softprodigy.ballerapp.data.request.CreateTeamRequest
 import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
 import com.softprodigy.ballerapp.data.request.UpdateTeamRequest
 import com.softprodigy.ballerapp.data.response.CreateTeamResponse
+import com.softprodigy.ballerapp.data.response.PlayerDetails
 import com.softprodigy.ballerapp.data.response.StandingData
 import com.softprodigy.ballerapp.data.response.homepage.HomePageCoachModel
 import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
@@ -35,7 +36,10 @@ interface ITeamRepository {
 
     suspend fun getLeaderBoard(teamId: String): ResultWrapper<BaseResponse<Team>>
 
-    suspend fun getTeamsStanding(page: Int = 1, limit: Int = 10): ResultWrapper<BaseResponse<StandingData>>
+    suspend fun getTeamsStanding(
+        page: Int = 1,
+        limit: Int = 10
+    ): ResultWrapper<BaseResponse<StandingData>>
 
     suspend fun getTeamCoachPlayerByID(id: String): ResultWrapper<BaseResponse<RoasterResponse>>
 
@@ -55,11 +59,19 @@ interface ITeamRepository {
         sort: String = ""
     ): ResultWrapper<BaseResponse<EventsResponse>>
 
-    suspend fun acceptTeamInvitation(invitationId: String, role: String): ResultWrapper<BaseResponse<Any>>
+    suspend fun acceptTeamInvitation(
+        invitationId: String,
+        role: String,
+        playerId: String,
+        playerGender: String,
+    ): ResultWrapper<BaseResponse<Any>>
+
 
     suspend fun rejectTeamInvitation(invitationId: String): ResultWrapper<BaseResponse<Any>>
 
-    suspend fun getHomePageDetails():ResultWrapper<BaseResponse<HomePageCoachModel>>
+    suspend fun getHomePageDetails(): ResultWrapper<BaseResponse<HomePageCoachModel>>
 
+    suspend fun getUserRoles(): ResultWrapper<BaseResponse<ArrayList<String>>>
 
+    suspend fun getPlayerById(id: String): ResultWrapper<BaseResponse<ArrayList<PlayerDetails>>>
 }

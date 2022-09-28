@@ -27,7 +27,7 @@
     <string name="going">Going</string>
     <string name="accept">Accept</string>
     <string name="your_password">Enter password</string>
-    <string name="ur_password">Your password</string>
+    <string name="ur_password">Your Password</string>
     <string name="confirm_your_password">Enter Confirm password</string>
     <string name="generic_error">Generic Error</string>
     <string name="email_error">Enter a valid Email</string>
@@ -366,8 +366,12 @@
     <string name="back_to_events">Back to Events</string>
     <string name="registered">Registered</string>
     <string name="player_requirements">Player Requirements</string>
-
+    <string name="swap_profiles">Swap Profiles</string>
+    <string name="add_new_profile">Add New Profile</string>
+    <string name="user_type">User Type</string>
     <string name="procced">Proceed</string>
     <string name="read_the_note">Read the note</string>
     <string name="wait_for_response">Wait for lorem ipsum to dolor sit amet.</string>
+    <string name="child_not_listed">Child not listed</string>
+    <string name="select_the_players_guardian">Select the player/s you\'re guardian of</string>
 </resources>

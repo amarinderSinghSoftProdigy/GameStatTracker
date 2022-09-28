@@ -7,6 +7,7 @@ import com.softprodigy.ballerapp.data.request.CreateTeamRequest
 import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
 import com.softprodigy.ballerapp.data.request.UpdateTeamRequest
 import com.softprodigy.ballerapp.data.response.CreateTeamResponse
+import com.softprodigy.ballerapp.data.response.PlayerDetails
 import com.softprodigy.ballerapp.data.response.StandingData
 import com.softprodigy.ballerapp.data.response.homepage.HomePageCoachModel
 import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
@@ -53,9 +54,9 @@ class TeamRepository @Inject constructor(
 
     override suspend fun getTeamsByTeamID(teamId: String): ResultWrapper<BaseResponse<Team>> {
         return safeApiCall(dispatcher) { service.getTeamsByTeamId(teamId) }
-
     }
-  override suspend fun getLeaderBoard(teamId: String): ResultWrapper<BaseResponse<Team>> {
+
+    override suspend fun getLeaderBoard(teamId: String): ResultWrapper<BaseResponse<Team>> {
         return safeApiCall(dispatcher) { service.getLeaderBoard(teamId) }
 
     }
@@ -101,11 +102,15 @@ class TeamRepository @Inject constructor(
 
     override suspend fun acceptTeamInvitation(
         invitationId: String,
-        role: String
+        role: String,
+        playerId: String,
+        playerGender: String
     ): ResultWrapper<BaseResponse<Any>> {
         val request: RequestBody = FormBody.Builder()
             .add("invitationId", invitationId)
             .add("role", role)
+            .add("kidId", playerId)
+            .add("guardianGender", playerGender)
             .build()
         return safeApiCall(dispatcher) {
             service.acceptTeamInvitation(request)
@@ -124,6 +129,18 @@ class TeamRepository @Inject constructor(
     override suspend fun getHomePageDetails(): ResultWrapper<BaseResponse<HomePageCoachModel>> {
         return safeApiCall(dispatcher) {
             service.getHomePageDetails()
+        }
+    }
+
+    override suspend fun getUserRoles(): ResultWrapper<BaseResponse<ArrayList<String>>> {
+        return safeApiCall(dispatcher) {
+            service.getUserRoles()
+        }
+    }
+
+    override suspend fun getPlayerById(id: String): ResultWrapper<BaseResponse<ArrayList<PlayerDetails>>> {
+        return safeApiCall(dispatcher) {
+            service.getTeamPlayerById(id)
         }
     }
 
