@@ -20,6 +20,7 @@
     <dimen name="size_5dp">3.75dp</dimen>
     <dimen name="size_6dp">4dp</dimen>
     <dimen name="size_8dp">6dp</dimen>
+    <dimen name="size_9dp">6.75dp</dimen>
     <dimen name="size_10dp">7.5dp</dimen>
     <dimen name="size_12dp">9dp</dimen>
     <dimen name="size_14dp">10.5dp</dimen>

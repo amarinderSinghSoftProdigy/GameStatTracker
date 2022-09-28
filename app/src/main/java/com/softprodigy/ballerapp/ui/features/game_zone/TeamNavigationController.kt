@@ -1,6 +1,9 @@
 package com.softprodigy.ballerapp.ui.features.game_zone
 
+import android.graphics.drawable.ShapeDrawable
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -9,6 +12,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,11 +20,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.*
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.theme.Shapes
 
 @Composable
 fun TeamNavigationController (
@@ -66,7 +73,10 @@ fun TeamNavigationController (
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     teamLogo();
-                    teamTitle("My team");
+                    teamScore("50", startPadding = dimensionResource(id = R.dimen.size_9dp))
+                    teamScore(":", dimensionResource(id = R.dimen.size_8dp), dimensionResource(id = R.dimen.size_8dp))
+                    teamScore("100", endPadding = dimensionResource(id = R.dimen.size_9dp))
+                    teamLogo();
                 }
             }
 
@@ -130,17 +140,59 @@ inline fun teamTitle(title: String = "") {
 }
 
 @Composable
-inline fun navigationHandler() {
-    AppButton(
-        singleButton = true,
-        enabled = true,
-        onClick = {
-
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(dimensionResource(id = R.dimen.size_56dp)),
-        text = stringResource(id = R.string.verify),
-        icon = painterResource(id = R.drawable.ic_circle_next)
+inline fun teamScore(score: String = "", startPadding: Dp = 0.dp, endPadding: Dp = 0.dp) {
+    AppText(
+        text = score,
+        //color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
+        color = Color.White,
+        fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
+        style = MaterialTheme.typography.body1,
+        maxLines = 1,
+        textAlign = TextAlign.Center,
+        modifier = Modifier.padding(startPadding,  0.dp, endPadding,  0.dp)
     )
+}
+
+@Composable
+inline fun navigationHandler(enabled: Boolean = false) {
+    Surface(
+        //onClick = onClick,
+        modifier = Modifier
+            .width(dimensionResource(id = R.dimen.size_32dp))
+            .background(Color.Yellow)
+            .border(dimensionResource(id = R.dimen.divider), Color.Red)
+            .clip(RoundedCornerShape(100)),
+        //enabled = enabled,
+        shape = CircleShape,
+
+        contentColor = colorResource(id = R.color.grey).copy(alpha = 1f),
+        border = BorderStroke(dimensionResource(id = R.dimen.size_1dp), Color.Red),
+        elevation = if (enabled /*&& icon != null*/) {
+            dimensionResource(id = R.dimen.size_5dp)
+        } else {
+            0.dp
+        }
+    ) {
+
+    }
+    /*Row(
+        modifier = Modifier.width(dimensionResource(id = R.dimen.size_32dp))
+            .background(Color.Yellow)
+            .border(dimensionResource(id = R.dimen.divider), Color.Red).clip(RoundedCornerShape(100)),
+
+        ) {
+
+
+        AppButton(
+            singleButton = true,
+            enabled = true,
+            onClick = {
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(dimensionResource(id = R.dimen.size_56dp)),
+            text = stringResource(id = R.string.verify),
+            icon = painterResource(id = R.drawable.ic_circle_next)
+        )
+    }*/
 }

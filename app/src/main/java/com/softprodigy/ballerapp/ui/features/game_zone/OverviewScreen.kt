@@ -35,9 +35,17 @@ fun OverviewScreen () {
                 GamePointController()
             }
             Column(
-                Modifier.fillMaxWidth(),
+                Modifier.weight(1f),
             ) {
                 TeamNavigationController()
+            }
+            Column(
+                Modifier
+                    .width(dimensionResource(id = R.dimen.size_180dp))
+                    .padding(horizontal = dimensionResource(id = R.dimen.size_20dp)),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                GameSettingsController()
             }
         }
     }

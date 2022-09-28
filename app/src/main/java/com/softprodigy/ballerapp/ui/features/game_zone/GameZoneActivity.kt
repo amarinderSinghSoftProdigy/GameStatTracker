@@ -92,7 +92,6 @@ class GameZoneActivity : ComponentActivity() {
 
 @Composable
 fun NavControllerComposable(
-
     showDialog: Boolean = false,
     navController: NavHostController = rememberNavController(),
     fromSplash: Boolean = false
@@ -103,12 +102,4 @@ fun NavControllerComposable(
             OverviewScreen()
         }
     }
-}
-
-
-
-private fun moveToLogin(activity: GameZoneActivity) {
-    val intent = Intent(activity, GameZoneActivity::class.java)
-    activity.startActivity(intent)
-    activity.finish()
 }

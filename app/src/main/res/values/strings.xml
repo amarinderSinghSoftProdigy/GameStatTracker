@@ -227,12 +227,18 @@
         <item>@string/timeouts</item>
     </string-array>
 
-    <string-array name="game_points">
-        <item>3 pts</item>
-        <item>3 pts</item>
-        <item>2 pts</item>
-        <item>2 pts</item>
-        <item>1 pts</item>
-        <item>1 pts</item>
+    <string-array name="game_periods">
+        <item>1Q</item>
+        <item>2Q</item>
+        <item>3Q</item>
+        <item>4Q</item>
+        <item>5Q</item>
+        <item>OT</item>
+        <item>1Q</item>
+        <item>2Q</item>
+        <item>3Q</item>
+        <item>4Q</item>
+        <item>5Q</item>
+        <item>OT</item>
     </string-array>
 </resources>
