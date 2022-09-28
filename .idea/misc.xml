@@ -6,7 +6,10 @@
         <entry key="../../../../layout/compose-model-1660742464153.xml" value="0.6637931034482759" />
         <entry key="../../../../layout/compose-model-1660911269847.xml" value="0.6450617283950617" />
         <entry key="../../../../layout/compose-model-1661253814152.xml" value="0.5" />
+<<<<<<< HEAD
+=======
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_add.xml" value="0.2175" />
+>>>>>>> 8619b4716e6ab59ed7898be5565a72e68d0986ce
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_add_circle.xml" value="0.2425" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_add_circle_filled.xml" value="0.2425" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_add_cirlce_filled.xml" value="0.2425" />
@@ -17,7 +20,10 @@
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_cross_1.xml" value="0.226" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_events.xml" value="0.2265" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_events_large.xml" value="0.2425" />
+<<<<<<< HEAD
+=======
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_filter.xml" value="0.2175" />
+>>>>>>> 8619b4716e6ab59ed7898be5565a72e68d0986ce
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_home.xml" value="0.2425" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_leagues.xml" value="0.226" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_logo.xml" value="0.2265" />
@@ -75,11 +81,19 @@
         <entry key="app/src/main/res/drawable/ic_facebook.xml" value="0.136" />
         <entry key="app/src/main/res/drawable/ic_hike_green.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_logo.xml" value="0.136" />
+<<<<<<< HEAD
+        <entry key="app/src/main/res/drawable/ic_logout.xml" value="0.1" />
+=======
+>>>>>>> 8619b4716e6ab59ed7898be5565a72e68d0986ce
         <entry key="app/src/main/res/drawable/ic_remove.xml" value="0.104" />
         <entry key="app/src/main/res/drawable/ic_scanner.xml" value="0.131" />
         <entry key="app/src/main/res/drawable/ic_settings.xml" value="0.139" />
         <entry key="app/src/main/res/drawable/ic_standing.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_sub.xml" value="0.1" />
+<<<<<<< HEAD
+        <entry key="app/src/main/res/drawable/ic_swap.xml" value="0.1" />
+=======
+>>>>>>> 8619b4716e6ab59ed7898be5565a72e68d0986ce
         <entry key="app/src/main/res/drawable/ic_twitter.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_upload.xml" value="0.131" />
         <entry key="app/src/main/res/layout/activity_details.xml" value="0.25" />

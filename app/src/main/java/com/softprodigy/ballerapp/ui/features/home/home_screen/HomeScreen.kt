@@ -64,7 +64,8 @@ fun HomeScreen(
     vm: HomeViewModel,
     logoClick: () -> Unit,
     onInvitationCLick: () -> Unit,
-    gotToProfile: () -> Unit
+    gotToProfile: () -> Unit,
+    swap_profile: () -> Unit,
 ) {
     val dataStoreManager = DataStoreManager(LocalContext.current)
     val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
@@ -88,6 +89,9 @@ fun HomeScreen(
                 }
                 Options.LOGOUT -> {
                     logoClick()
+                }
+                Options.SWAP_PROFILES -> {
+                    swap_profile()
                 }
             }
         }) {

@@ -112,39 +112,42 @@ fun CoachFlowBackground(
                         .padding(end = dimensionResource(id = R.dimen.size_16dp)),
                     horizontalAlignment = Alignment.End
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .background(color = Color.Transparent)
-                            .padding(
-                                top = dimensionResource(id = R.dimen.size_50dp),
-                                bottom = dimensionResource(id = R.dimen.size_16dp)
-                            ),
-                        contentAlignment = Alignment.CenterEnd
-                    ) {
-                        teamLogo?.let {
-                            CoilImage(
-                                src = it,
-                                modifier = Modifier
-                                    .size(dimensionResource(id = R.dimen.size_65dp))
-                                    .clip(CircleShape)
-                                    .clickable {
-                                        showOptions.value = !showOptions.value
-                                    }
-                                    .background(
-                                        color = MaterialTheme.appColors.material.onSurface,
-                                        CircleShape
-                                    )
-                                    .border(
-                                        dimensionResource(id = R.dimen.size_3dp),
-                                        MaterialTheme.colors.surface,
-                                        CircleShape
-                                    ),
-                                isCrossFadeEnabled = false,
-                                onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
-                                onError = { Placeholder(R.drawable.ic_user_profile_icon) }
-                            )
+                    if (teamLogo!!.isNotEmpty()) {
+                        Box(
+                            modifier = Modifier
+                                .background(color = Color.Transparent)
+                                .padding(
+                                    top = dimensionResource(id = R.dimen.size_50dp),
+                                    bottom = dimensionResource(id = R.dimen.size_16dp)
+                                ),
+                            contentAlignment = Alignment.CenterEnd
+                        ) {
+                            teamLogo.let {
+                                CoilImage(
+                                    src = it,
+                                    modifier = Modifier
+                                        .size(dimensionResource(id = R.dimen.size_65dp))
+                                        .clip(CircleShape)
+                                        .clickable {
+                                            showOptions.value = !showOptions.value
+                                        }
+                                        .background(
+                                            color = MaterialTheme.appColors.material.onSurface,
+                                            CircleShape
+                                        )
+                                        .border(
+                                            dimensionResource(id = R.dimen.size_3dp),
+                                            MaterialTheme.colors.surface,
+                                            CircleShape
+                                        ),
+                                    isCrossFadeEnabled = false,
+                                    onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
+                                    onError = { Placeholder(R.drawable.ic_user_profile_icon) }
+                                )
+                            }
                         }
                     }
+
                     if (showOptions.value) {
                         Surface(
                             modifier = Modifier
@@ -165,6 +168,13 @@ fun CoachFlowBackground(
                                     R.drawable.ic_profile
                                 ) {
                                     click(Options.PROFILE)
+                                }
+                                Divider(thickness = dimensionResource(id = R.dimen.divider))
+                                OptionItem(
+                                    stringResource(id = R.string.swap_profiles),
+                                    R.drawable.ic_swap
+                                ) {
+                                    click(Options.SWAP_PROFILES)
                                 }
                                 Divider(thickness = dimensionResource(id = R.dimen.divider))
                                 OptionItem(
@@ -278,6 +288,7 @@ fun BottomButtons(
 
 enum class Options {
     PROFILE,
-    LOGOUT
+    SWAP_PROFILES,
+    LOGOUT,
     //Add options on the Profile dropwodn.
 }
