@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 fun apiToUIDateFormat(apiDate: String): String {
+    if(apiDate.isNotEmpty()){
     val originalFormat: DateFormat =
         SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH)
     val targetFormat: DateFormat = SimpleDateFormat("EEE, MMM dd") //Tue, Sep 22
@@ -13,4 +14,19 @@ fun apiToUIDateFormat(apiDate: String): String {
     val formattedDate: String = targetFormat.format(date)
     Log.i("apiToUIDateFormat", "apiToUIDateFormat: $formattedDate")
     return formattedDate
+    }
+    else return apiDate
+}
+
+fun apiToUIDateFormat2(apiDate: String): String {
+    if(apiDate.isNotEmpty()){
+        val originalFormat: DateFormat =
+            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH)
+        val targetFormat: DateFormat = SimpleDateFormat("MMM dd, yyyy") //May 15, 1999
+        val date: Date = originalFormat.parse(apiDate)
+        val formattedDate: String = targetFormat.format(date)
+        Log.i("apiToUIDateFormat2", "apiToUIDateFormat: $formattedDate")
+        return formattedDate
+    }
+    else return apiDate
 }

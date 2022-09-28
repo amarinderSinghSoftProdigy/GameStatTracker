@@ -6,6 +6,7 @@ object AppConstants {
     const val ROLE = "role"
     const val TEAM_LOGO: String = "teamLogo"
     const val PROFILE_IMAGE: String = "profileImage"
+    const val DOCUMENT: String = "document"
     const val PICKER_DEFAULT_COLOR = "FFFFFFFF"
     const val ANDROID = "android"
     const val GOOGLE = "google"
@@ -92,6 +93,14 @@ object ApiConstants {
     const val UPDATE_TEAM = "v1/team/update"
     const val GET_USER_DETAILS = "v1/auth/getUserProfile"
     const val GET_HOME_PAGE_DETAILS = "v1/coach/event/getHomePageDetails"
+    const val GET_USER_FULL_DETAILS = "v1/userDetails"
+    const val UPDATE_USER_FULL_DETAILS = "v1/userDetails"
+
+    const val LEAVE_TEAM = "v1/userDetails/leaveTeam"
+    const val DOC_TYPES = "v1/userDetails/getUserDocuments"
+    const val DELETE_DOC = "v1/userDetails/deleteDocument"
+    const val UPDATE_DOC = "v1/userDetails/updateDocument"
+
     const val first_name = "first_name"
     const val last_name = "lastName"
     const val mobile = "mobile"

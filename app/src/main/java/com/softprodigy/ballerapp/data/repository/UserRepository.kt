@@ -7,14 +7,18 @@ import com.softprodigy.ballerapp.data.request.ConfirmPhoneRequest
 import com.softprodigy.ballerapp.data.request.ForgotPasswordRequest
 import com.softprodigy.ballerapp.data.request.LoginRequest
 import com.softprodigy.ballerapp.data.request.SignUpData
+import com.softprodigy.ballerapp.data.request.UpdateUserDetailsReq
 import com.softprodigy.ballerapp.data.request.VerifyPhoneRequest
 import com.softprodigy.ballerapp.data.response.User
+import com.softprodigy.ballerapp.data.response.UserDocType
 import com.softprodigy.ballerapp.data.response.UserInfo
 import com.softprodigy.ballerapp.domain.BaseResponse
 import com.softprodigy.ballerapp.domain.repository.IUserRepository
 import com.softprodigy.ballerapp.network.APIService
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import okhttp3.FormBody
+import okhttp3.RequestBody
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -61,6 +65,52 @@ class UserRepository @Inject constructor(
     override suspend fun getUserProfile(): ResultWrapper<BaseResponse<User>> {
         return safeApiCall(dispatcher = dispatcher) {
             service.getUserDetails()
+        }
+    }
+
+    override suspend fun getFullUserFullDetails(): ResultWrapper<BaseResponse<User>> {
+        return safeApiCall(dispatcher = dispatcher) {
+            service.getUserFullDetails()
+        }
+    }
+
+    override suspend fun updateUserFullDetails(userDetailsReq: UpdateUserDetailsReq): ResultWrapper<BaseResponse<Any>> {
+        return safeApiCall(dispatcher = dispatcher) {
+            service.updateUserFullDetails(userDetailsReq = userDetailsReq)
+        }
+    }
+
+    override suspend fun leaveTeam(teamId: String): ResultWrapper<BaseResponse<Any>> {
+        return safeApiCall(dispatcher = dispatcher) {
+            val request: RequestBody = FormBody.Builder()
+                .add("teamId", teamId)
+                .build()
+            service.leaveTeam(request = request)
+        }
+    }
+
+    override suspend fun getDocTypes(teamId: String): ResultWrapper<BaseResponse<List<UserDocType>>> {
+        return safeApiCall(dispatcher = dispatcher) {
+            service.getDocTypes()
+        }
+    }
+
+    override suspend fun deleteUserDoc(key: String): ResultWrapper<BaseResponse<Any>> {
+        return safeApiCall(dispatcher = dispatcher) {
+            val request: RequestBody = FormBody.Builder()
+                .add("documentType", key)
+                .build()
+            service.deleteDoc(request = request)
+        }
+    }
+
+    override suspend fun updateUserDoc(key: String, url: String): ResultWrapper<BaseResponse<Any>> {
+        return safeApiCall(dispatcher = dispatcher) {
+            val request: RequestBody = FormBody.Builder()
+                .add("documentType", key)
+                .add("documentValue", url)
+                .build()
+            service.updateUserDoc(request = request)
         }
     }
 

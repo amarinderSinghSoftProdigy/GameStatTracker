@@ -3,7 +3,9 @@ package com.softprodigy.ballerapp.domain.repository
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.data.request.LoginRequest
 import com.softprodigy.ballerapp.data.request.SignUpData
+import com.softprodigy.ballerapp.data.request.UpdateUserDetailsReq
 import com.softprodigy.ballerapp.data.response.User
+import com.softprodigy.ballerapp.data.response.UserDocType
 import com.softprodigy.ballerapp.data.response.UserInfo
 import com.softprodigy.ballerapp.domain.BaseResponse
 import javax.inject.Singleton
@@ -26,4 +28,17 @@ interface IUserRepository {
     suspend fun updateUserProfile(userProfile: SignUpData): ResultWrapper<BaseResponse<UserInfo>>
 
     suspend fun getUserProfile(): ResultWrapper<BaseResponse<User>>
+
+    suspend fun getFullUserFullDetails(): ResultWrapper<BaseResponse<User>>
+
+    suspend fun updateUserFullDetails(userDetailsReq: UpdateUserDetailsReq): ResultWrapper<BaseResponse<Any>>
+
+    suspend fun leaveTeam(teamId: String): ResultWrapper<BaseResponse<Any>>
+
+    suspend fun getDocTypes(teamId: String): ResultWrapper<BaseResponse<List<UserDocType>>>
+
+    suspend fun deleteUserDoc(key: String): ResultWrapper<BaseResponse<Any>>
+
+    suspend fun updateUserDoc(key: String, url: String): ResultWrapper<BaseResponse<Any>>
+
 }

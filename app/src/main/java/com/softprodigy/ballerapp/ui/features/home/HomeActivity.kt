@@ -289,6 +289,9 @@ fun NavControllerComposable(
             )
             ProfileEditScreen(
                 onBackClick = { navController.popBackStack() },
+                onUpdateSuccess = {
+                    navController.popBackStack()
+                }
             )
         }
         composable(route = Route.TEAMS_SCREEN) {
