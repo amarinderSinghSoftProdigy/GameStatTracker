@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
-import com.softprodigy.ballerapp.ui.features.home.invitation.InvitationChannel
 import com.softprodigy.ballerapp.ui.theme.GreenColor
 import com.softprodigy.ballerapp.ui.theme.Yellow700
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +28,7 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
             eventState.value =
                 eventState.value.copy(
                     currentEvents = arrayListOf(
-                        EventsModel(
+                        Events(
                             "1",
                             "Practice Title",
                             "Venue Name",
@@ -37,7 +36,7 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
                             EventStatus.PENDING.status,
                             EventType.PRACTICE
                         ),
-                        EventsModel(
+                        Events(
                             "2",
                             "Game Title",
                             "Venue Name1",
@@ -47,7 +46,7 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
                         ),
                     ),
                     pastEvents = arrayListOf(
-                        EventsModel(
+                        Events(
                             "1",
                             "Practice Title",
                             "Venue Name",
@@ -55,7 +54,7 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
                             EventStatus.PAST.status,
                             EventType.PRACTICE,
                         ),
-                        EventsModel(
+                        Events(
                             "2",
                             "Practice Title1",
                             "Venue Name1",
@@ -63,7 +62,7 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
                             EventStatus.PAST.status,
                             EventType.ACTIVITY
                         ),
-                        EventsModel(
+                        Events(
                             "3",
                             "Practice Title2",
                             "Venue Name2",
@@ -164,6 +163,54 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
                 }
             }
         }
+
+    suspend fun getEventDetails(id :String){
+        eventState.value =
+            eventState.value.copy(showLoading = true)
+        val eventResponse = teamRepo.getAllevents()
+        eventState.value =
+            eventState.value.copy(showLoading = false)
+
+        when (eventResponse) {
+            is ResultWrapper.GenericError -> {
+                _eventChannel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${eventResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _eventChannel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            eventResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                eventResponse.value.let { response ->
+                    if (response.status) {
+                        eventState.value =
+                            eventState.value.copy(
+                                currentEvents = response.data.upcommingEvents,
+                                pastEvents = response.data.pastEvents
+                            )
+                    } else {
+                        _eventChannel.send(
+                            EventChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
 
     fun onEvent(event: EvEvents) {
         when (event) {

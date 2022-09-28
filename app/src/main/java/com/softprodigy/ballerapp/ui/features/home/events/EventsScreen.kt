@@ -359,9 +359,9 @@ fun BoxScope.MyEvents(
 @Composable
 fun EventItem(
     modifier: Modifier = Modifier,
-    events: EventsModel,
-    onAcceptCLick: (EventsModel) -> Unit,
-    onDeclineCLick: (EventsModel) -> Unit,
+    events: Events,
+    onAcceptCLick: (Events) -> Unit,
+    onDeclineCLick: (Events) -> Unit,
     moveToPracticeDetail: (String) -> Unit,
     moveToGameDetail: (String) -> Unit,
     isPast: Boolean

@@ -11,7 +11,7 @@ import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.domain.BaseResponse
-import com.softprodigy.ballerapp.ui.features.home.events.Events
+import com.softprodigy.ballerapp.ui.features.home.events.EventsResponse
 import com.softprodigy.ballerapp.ui.features.home.invitation.Invitation
 import javax.inject.Singleton
 
@@ -53,7 +53,7 @@ interface ITeamRepository {
         page: Int = 1,
         limit: Int = 50,
         sort: String = ""
-    ): ResultWrapper<BaseResponse<Events>>
+    ): ResultWrapper<BaseResponse<EventsResponse>>
 
     suspend fun acceptTeamInvitation(invitationId: String, role: String): ResultWrapper<BaseResponse<Any>>
 
