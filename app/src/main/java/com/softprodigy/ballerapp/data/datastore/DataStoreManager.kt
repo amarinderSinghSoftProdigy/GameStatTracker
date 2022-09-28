@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.softprodigy.ballerapp.data.UserStorage
+import com.softprodigy.ballerapp.data.response.TeamId
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -107,6 +108,14 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
     val getId: Flow<String> = settingsDataStore.data.map { preferences ->
         preferences[ID] ?: ""
     }
+    suspend fun setTeamName(id: String) {
+        settingsDataStore.edit { settings ->
+            settings[TEAM_NAME] = id
+        }
+    }
+    val getTeamName: Flow<String> = settingsDataStore.data.map { preferences ->
+        preferences[TEAM_NAME] ?: ""
+    }
 
     companion object {
         val USER_TOKEN = stringPreferencesKey("USER_TOKEN")
@@ -118,5 +127,6 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
         val SKIP_WALKTHROUGH = stringPreferencesKey("SKIP_WALKTHROUGH")
         val EMAIL = stringPreferencesKey("EMAIL")
         val ID = stringPreferencesKey("ID")
+        val TEAM_NAME = stringPreferencesKey("TEAM_NAME")
     }
 }

@@ -94,6 +94,8 @@
     <string name="valid_search">Invalid Keyword</string>
     <string name="alert_remove_player">Are you sure you want to remove the player?</string>
     <string name="alert_decline_invitation">Are you sure you decline this team request?</string>
+    <string name="alert_delete_document">Are you sure you delete this document?</string>
+    <string name="alert_remove_from_team">Are you sure you want to leave this team?</string>
     <string name="enter_valid_full_name">Please enter a valid name</string>
     <string name="enter_full_name">Enter Full Name</string>
     <string name="verify_number">Verify Phone Number</string>
@@ -374,6 +376,7 @@
     <string name="wait_for_response">Wait for lorem ipsum to dolor sit amet.</string>
     <string name="child_not_listed">Child not listed</string>
     <string name="select_the_players_guardian">Select the player/s you\'re guardian of</string>
+    <string name="search_venue_by_name">Search venue by name</string>
     <string name="event_name">Event Name</string>
     <string name="enter_event_name">Enter Event Name</string>
 </resources>
