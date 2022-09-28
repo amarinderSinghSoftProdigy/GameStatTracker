@@ -67,6 +67,7 @@ import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
+import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
@@ -955,10 +956,10 @@ fun SwitchTeamDialog(
     onConfirmClick: (teams: ArrayList<Team>) -> Unit,
     title: String,
     teams: ArrayList<Team>,
+    onSelection: (String) -> Unit,
+    isSelected: String
 ) {
-    val selectedTeams = remember {
-        mutableStateOf(false)
-    }
+
     BallerAppMainTheme {
         AlertDialog(
             modifier = Modifier
@@ -983,18 +984,21 @@ fun SwitchTeamDialog(
                     Box(modifier = Modifier.fillMaxWidth()) {
                         Text(
                             text = title,
-                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                            fontWeight = FontWeight.W600,
+                            style = MaterialTheme.typography.h5,
+                            fontWeight = FontWeight.W500,
+                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
                         )
                         Icon(
                             painter = painterResource(id = R.drawable.ic_close_color_picker),
                             contentDescription = "",
                             modifier = Modifier
-                                .size(dimensionResource(id = R.dimen.size_12dp))
+                                .size(dimensionResource(id = R.dimen.size_16dp))
                                 .align(Alignment.TopEnd)
                                 .clickable {
                                     onDismiss()
-                                }
+                                },
+                            tint = ColorGreyLighter
+
                         )
                     }
                     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
@@ -1002,13 +1006,14 @@ fun SwitchTeamDialog(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+
                         items(teams) { team ->
 
                             Column(
                                 modifier = Modifier
                                     .padding(bottom = dimensionResource(id = R.dimen.size_8dp))
                                     .background(
-                                        color = if (selectedTeams.value) MaterialTheme.appColors.material.primary else Color.White,
+                                        color = if (isSelected == team._id) MaterialTheme.appColors.material.primary else Color.White,
                                         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
                                     )
                             ) {
@@ -1030,9 +1035,12 @@ fun SwitchTeamDialog(
                                         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                                         fontWeight = FontWeight.W500,
                                     )
-                                    CustomCheckBox(
-                                        selectedTeams.value
-                                    ) { selectedTeams.value = !selectedTeams.value }
+                                    CustomTeamCheckBox(
+                                        id = team._id,
+                                        selected = isSelected == team._id
+                                    ) {
+                                        onSelection(it)
+                                    }
                                 }
                             }
                         }
@@ -1059,14 +1067,16 @@ fun SwitchTeamDialog(
                         DialogButton(
                             text = stringResource(R.string.dialog_button_confirm),
                             onClick = {
-                                //TODO add list to be sent back in callback
-                                onConfirmClick.invoke(ArrayList())
-                                onDismiss.invoke()
+                                if (isSelected.isNotEmpty()) {
+                                    onConfirmClick.invoke(ArrayList())
+                                    onDismiss.invoke()
+                                }
+
                             },
                             modifier = Modifier
                                 .weight(1f),
                             border = ButtonDefaults.outlinedBorder,
-                            onlyBorder = false,
+                            onlyBorder = false
                         )
                     }
                 }
@@ -1085,6 +1095,8 @@ fun DeclineEventDialog(
     reason: String,
     onReasonChange: (String) -> Unit,
 ) {
+
+    val maxChar = 100
 
     val keyboardController = LocalSoftwareKeyboardController.current
     BallerAppMainTheme {
@@ -1105,36 +1117,44 @@ fun DeclineEventDialog(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Box(modifier = Modifier.fillMaxWidth()) {
+
                         Text(
                             text = title,
-                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                            fontWeight = FontWeight.W600,
+                            style = MaterialTheme.typography.h5,
+                            fontWeight = FontWeight.W500,
+                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
                         )
 
                         Icon(
                             painter = painterResource(id = R.drawable.ic_close_color_picker),
                             contentDescription = "",
                             modifier = Modifier
-                                .size(dimensionResource(id = R.dimen.size_12dp))
+                                .size(dimensionResource(id = R.dimen.size_16dp))
                                 .align(Alignment.TopEnd)
                                 .clickable {
                                     onDismiss()
-                                }
+                                },
+                            tint = ColorGreyLighter
                         )
+
                     }
                     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
                     AppOutlineTextField(
                         value = reason,
                         modifier = Modifier
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            .height(dimensionResource(id = R.dimen.size_100dp)),
                         onValueChange = {
-                            onReasonChange(it)
+                            if (it.length <= maxChar)
+                                onReasonChange(it)
                         },
                         placeholder = {
                             Text(
-                                text = stringResource(id = R.string.reason_not_going)+"\n\n\n",
-                                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                                textAlign = TextAlign.Center
+                                text = stringResource(id = R.string.reason_not_going),
+                                modifier = Modifier.fillMaxSize(),
+                                textAlign = TextAlign.Start,
+                                style = MaterialTheme.typography.h4,
+                                color = MaterialTheme.appColors.textField.label
                             )
                         },
                         keyboardOptions = KeyboardOptions(
@@ -1148,11 +1168,12 @@ fun DeclineEventDialog(
                             textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                             placeholderColor = MaterialTheme.appColors.textField.label,
                             cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
-
                         ),
                         keyboardActions = KeyboardActions(onDone = {
                             keyboardController?.hide()
                         }),
+                        maxLines = 5,
+                        singleLine = false
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
                     Row(
@@ -1174,8 +1195,11 @@ fun DeclineEventDialog(
                         DialogButton(
                             text = stringResource(R.string.dialog_button_confirm),
                             onClick = {
-                                onConfirmClick.invoke()
-                                onDismiss.invoke()
+                                if (reason.isNotEmpty()) {
+                                    onConfirmClick.invoke()
+                                    onDismiss.invoke()
+                                }
+
                             },
                             modifier = Modifier
                                 .weight(1f),

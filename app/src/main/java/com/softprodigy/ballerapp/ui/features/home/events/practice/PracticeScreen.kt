@@ -36,10 +36,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.get24HoursTimeWithAMPM
 import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.CustomSwitch
 import com.softprodigy.ballerapp.ui.theme.appColors
 import java.text.SimpleDateFormat
 import java.util.*
@@ -207,7 +209,9 @@ fun PracticeItem(
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
             )
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
+                OnClick()
+            }) {
                 if (!onlyIcon) {
 
                     if (selectedValue.isEmpty()) {
@@ -221,8 +225,9 @@ fun PracticeItem(
                     } else {
                         AppText(
                             text = selectedValue,
-                            style = MaterialTheme.typography.h6,
+                            style = MaterialTheme.typography.h5,
                             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            fontWeight = FontWeight.W500
                         )
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_14dp)))
 
@@ -234,19 +239,23 @@ fun PracticeItem(
                                 .size(
                                     dimensionResource(id = R.dimen.size_14dp)
                                 )
-                                .clickable { OnClick() },
+                                .clickable { },
                             colorFilter = ColorFilter.tint(color = color)
                         )
                     }
                 } else {
-                    Switch(
+                    /*Switch(
                         checked = notification,
                         onCheckedChange = {
                             notification = it
                         }, colors = SwitchDefaults.colors(
                             checkedThumbColor = MaterialTheme.appColors.material.primaryVariant
                         )
-                    )
+                    )*/
+
+                    CustomSwitch(isSelected = notification, onClick = {
+                        notification = !notification
+                    })
                 }
             }
         }

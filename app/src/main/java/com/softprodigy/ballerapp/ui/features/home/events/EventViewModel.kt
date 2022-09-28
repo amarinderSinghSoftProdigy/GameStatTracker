@@ -30,7 +30,7 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
                             "1",
                             "Practice Title",
                             "Venue Name",
-                            "6:00 PM - 7:00 PM",
+                            "Fri, May 20 6:00 PM - 7:00 PM",
                             EventStatus.PENDING.status,
                             EventType.PRACTICE
                         ),
@@ -38,7 +38,7 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
                             "2",
                             "Game Title",
                             "Venue Name1",
-                            "6:00 PM - 7:00 PM",
+                            "Fri, May 20 6:00 PM - 7:00 PM",
                             EventStatus.ACCEPT.status,
                             EventType.GAME,
                         ),
@@ -48,7 +48,7 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
                             "1",
                             "Practice Title",
                             "Venue Name",
-                            "6:00 PM - 7:00 PM",
+                            "Fri, May 20 6:00 PM - 7:00 PM",
                             EventStatus.PAST.status,
                             EventType.PRACTICE,
                         ),
@@ -56,7 +56,7 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
                             "2",
                             "Practice Title1",
                             "Venue Name1",
-                            "6:00 PM - 7:00 PM",
+                            "Fri, May 20 6:00 PM - 7:00 PM",
                             EventStatus.PAST.status,
                             EventType.ACTIVITY
                         ),
@@ -64,7 +64,7 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
                             "3",
                             "Practice Title2",
                             "Venue Name2",
-                            "6:00 PM - 7:00 PM",
+                            "Fri, May 20 6:00 PM - 7:00 PM",
                             EventStatus.PAST.status,
                             EventType.SCRIMMAGE
                         ),
@@ -75,7 +75,7 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
                             "League Title",
                             "1389 Aviator Ave, Eagle Mountain",
                             "",
-                            "Sep 1 - Dec 15, 2022",
+                            "Fri, May 20 Sep 1 - Dec 15, 2022",
                             "League",
                             Yellow700
 
@@ -85,7 +85,7 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
                             "Tournament Title",
                             "1389 Aviator Ave, Eagle Mountain",
                             "",
-                            "Sep 1 - Dec 15, 2022",
+                            "Fri, May 20 Sep 1 - Dec 15, 2022",
                             "Tournament",
                             GreenColor
                         ),
@@ -96,7 +96,7 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
                             "League Title",
                             "1389 Aviator Ave, Eagle Mountain",
                             "",
-                            "Sep 1 - Dec 15, 2022",
+                            "Fri, May 20 Sep 1 - Dec 15, 2022",
                             "League",
                             Yellow700
                         ),
@@ -105,7 +105,7 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
                             "Tournament Title",
                             "1389 Aviator Ave, Eagle Mountain",
                             "",
-                            "Sep 1 - Dec 15, 2022",
+                            "Fri, May 20 Sep 1 - Dec 15, 2022",
                             "Tournament",
                             GreenColor
                         ),
@@ -135,11 +135,18 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
             }
             is EvEvents.onCancelDeclineDialog -> {
                 eventState.value = eventState.value.copy(
-                    showDeclineDialog = false,
+                    showDeclineDialog = false, reasonTeam = ""
                 )
             }
-        }
 
+            is EvEvents.OnSelection -> {
+                eventState.value = eventState.value.copy(selectionTeam = event.selected)
+            }
+
+            is EvEvents.OnReasonSelection -> {
+                eventState.value = eventState.value.copy(reasonTeam = event.text)
+            }
+        }
     }
 
 }

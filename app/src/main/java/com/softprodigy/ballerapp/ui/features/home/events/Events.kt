@@ -2,6 +2,7 @@ package com.softprodigy.ballerapp.ui.features.home.events
 
 import androidx.compose.ui.graphics.Color
 import com.google.gson.annotations.SerializedName
+import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
 import com.softprodigy.ballerapp.ui.theme.ColorButtonRed
 import com.softprodigy.ballerapp.ui.theme.ColorMainPrimary
 import com.softprodigy.ballerapp.ui.theme.GreenColor
@@ -25,7 +26,7 @@ enum class EventStatus(val status: String) {
 }
 
 enum class EventType(val type: String, val color: Color) {
-    PRACTICE("Practice", GreenColor),
+    PRACTICE("Practice", ColorButtonGreen),
     GAME("Game", ColorMainPrimary),
     ACTIVITY("Activity", Yellow700),
     SCRIMMAGE("Scrimmage", ColorButtonRed),

@@ -151,7 +151,9 @@ fun GameDetailsTab(vm: EventViewModel, moveToGameRules: () -> Unit) {
                             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                             style = MaterialTheme.typography.h5,
                         )
+
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+
                         Text(
                             text = "8502 Preston Rd. Inglewood, Maine",
                             color = MaterialTheme.appColors.textField.label,

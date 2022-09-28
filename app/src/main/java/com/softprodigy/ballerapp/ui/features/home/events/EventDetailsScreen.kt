@@ -109,13 +109,8 @@ fun EventDetailsScreen(vm: EventViewModel) {
                     modifier = Modifier.weight(1.8f)
                 )
             }
+
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-            AppText(
-                text = stringResource(id = R.string.location),
-                style = MaterialTheme.typography.h6,
-                color = MaterialTheme.appColors.textField.label,
-            )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
             Box(modifier = Modifier.fillMaxWidth()) {
                 Column {
                     AppText(
