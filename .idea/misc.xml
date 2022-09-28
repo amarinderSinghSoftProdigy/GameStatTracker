@@ -82,6 +82,7 @@
         <entry key="app/src/main/res/drawable/ic_upload.xml" value="0.131" />
         <entry key="app/src/main/res/drawable/ic_user_profile_icon.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_details.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_place_picker.xml" value="0.2140625" />
         <entry key="app/src/main/res/layout/twitter_login.xml" value="0.25" />
       </map>
     </option>

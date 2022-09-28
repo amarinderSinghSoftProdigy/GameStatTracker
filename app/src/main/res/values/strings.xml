@@ -376,4 +376,5 @@
     <string name="wait_for_response">Wait for lorem ipsum to dolor sit amet.</string>
     <string name="child_not_listed">Child not listed</string>
     <string name="select_the_players_guardian">Select the player/s you\'re guardian of</string>
+    <string name="search_venue_by_name">Search venue by name</string>
 </resources>

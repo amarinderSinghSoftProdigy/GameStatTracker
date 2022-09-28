@@ -53,6 +53,7 @@ object Route {
     const val ROASTER_SCREEN = "roasterScreen"
     const val MANAGED_TEAM_SCREEN = "managedTeamScreen"
     const val SELECT_PROFILE = "selectProfile"
+    const val SELECT_VENUE = "selectVenue"
     const val LEAGUE_DETAIL_SCREEN = "leagueDetailScreen"
     const val PROFILE_SCREEN = "profileScreen"
     const val PROFILE_EDIT_SCREEN = "profileeditscreen"
@@ -100,6 +101,8 @@ object ApiConstants {
     const val DOC_TYPES = "v1/userDetails/getUserDocuments"
     const val DELETE_DOC = "v1/userDetails/deleteDocument"
     const val UPDATE_DOC = "v1/userDetails/updateDocument"
+
+    const val GET_ALL_VENUE = "v1/venue/getAllVenues"
 
     const val first_name = "first_name"
     const val last_name = "lastName"

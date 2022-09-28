@@ -41,7 +41,7 @@ fun TeamsScreen(
     showDialog: Boolean,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
     dismissDialog: (Boolean) -> Unit,
-    OnTeamDetailsSuccess: (String) -> Unit,
+    OnTeamDetailsSuccess: (String,String) -> Unit,
     onCreateTeamClick: (Team?) -> Unit,
     onBackPress: () -> Unit
 ) {
@@ -87,7 +87,7 @@ fun TeamsScreen(
                     ).show()
                 }
                 is TeamChannel.OnTeamDetailsSuccess -> {
-                    OnTeamDetailsSuccess.invoke(uiEvent.teamId)
+                    OnTeamDetailsSuccess.invoke(uiEvent.teamId,uiEvent.teamName)
                 }
             }
         }
@@ -115,10 +115,10 @@ fun TeamsScreen(
             SelectTeamDialog(
                 teams = vm.teamUiState.value.teams,
                 onDismiss = { dismissDialog.invoke(false) },
-                onConfirmClick = {
-                    if (UserStorage.teamId != it) {
+                onConfirmClick = {teamId,teamName ->
+                    if (UserStorage.teamId != teamId) {
                         onTeamSelectionConfirmed(state.selectedTeam)
-                        vm.onEvent(TeamUIEvent.OnConfirmTeamClick(it))
+                        vm.onEvent(TeamUIEvent.OnConfirmTeamClick(teamId,teamName))
                     }
                 },
                 onSelectionChange = onTeamSelectionChange,

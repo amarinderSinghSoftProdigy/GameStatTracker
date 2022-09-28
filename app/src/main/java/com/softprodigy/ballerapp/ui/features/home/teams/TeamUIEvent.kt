@@ -6,7 +6,7 @@ import com.softprodigy.ballerapp.data.response.team.Team
 
 sealed class TeamUIEvent {
     data class OnTeamSelected(val team: Team) : TeamUIEvent()
-    data class OnConfirmTeamClick(val teamId: String) : TeamUIEvent()
+    data class OnConfirmTeamClick(val teamId: String,val teamName:String) : TeamUIEvent()
     object OnDismissClick : TeamUIEvent()
     data class ShowToast(val message: String) : TeamUIEvent()
     data class OnColorSelected(val selectedColor: String) : TeamUIEvent()
