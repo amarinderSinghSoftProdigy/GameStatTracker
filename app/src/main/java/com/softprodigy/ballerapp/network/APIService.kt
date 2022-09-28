@@ -125,4 +125,7 @@ open interface APIService {
 
     @GET(ApiConstants.GET_TEAM_PLAYER_BY_ID)
     suspend fun getTeamPlayerById(@Query("teamId") id: String): BaseResponse<ArrayList<PlayerDetails>>
+
+    @GET(ApiConstants.CREATE_NEW_EVENT)
+    suspend fun createNewEvent(@Body createTeamRequest: CreateTeamRequest):BaseResponse<Any>
 }

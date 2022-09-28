@@ -81,6 +81,9 @@ object ApiConstants {
     const val GET_USER_ROLE = "v1/team/getUserRoles"
     const val GET_TEAM_PLAYER_BY_ID = "v1/team/getTeamPlayersById"
 
+    //Events
+    const val CREATE_NEW_EVENT = "v1/team/getTeamPlayersById"
+
     const val SOCIAL_LOGIN = "/social_login"
     const val SIGNUP = "v1/auth/register"
     const val FORGOT_PASSWORD = "v1/auth/forgotPassword"
