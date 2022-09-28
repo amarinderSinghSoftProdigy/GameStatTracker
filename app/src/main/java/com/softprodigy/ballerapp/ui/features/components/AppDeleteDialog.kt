@@ -124,7 +124,7 @@ fun <T> DeleteDialog(
 @Composable
 fun SelectTeamDialog(
     onDismiss: () -> Unit,
-    onConfirmClick: (String) -> Unit,
+    onConfirmClick: (String,String) -> Unit,
     onSelectionChange: (Team) -> Unit,
     selected: Team?,
     showLoading: Boolean,
@@ -134,6 +134,9 @@ fun SelectTeamDialog(
 ) {
     val teamId = remember {
         mutableStateOf(UserStorage.teamId)
+    }
+    val teamName = remember {
+        mutableStateOf(UserStorage.teamName)
     }
     BallerAppMainTheme {
         AlertDialog(
@@ -196,6 +199,7 @@ fun SelectTeamDialog(
                                 TeamListItem(team = it, selected = selected == it) { team ->
                                     onSelectionChange.invoke(team)
                                     teamId.value = team._id
+                                    teamName.value = team.name
                                 }
                             }
                         }
@@ -234,7 +238,7 @@ fun SelectTeamDialog(
                         DialogButton(
                             text = stringResource(R.string.dialog_button_confirm),
                             onClick = {
-                                onConfirmClick.invoke(teamId.value)
+                                onConfirmClick.invoke(teamId.value,teamName.value)
                                 onDismiss.invoke()
                             },
                             modifier = Modifier

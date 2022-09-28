@@ -101,6 +101,10 @@ class TeamViewModel @Inject constructor(
                 viewModelScope.launch {
                     dataStoreManager.setId(event.teamId)
                     UserStorage.teamId = event.teamId
+
+                    dataStoreManager.setTeamName(event.teamName)
+                    UserStorage.teamName = event.teamName
+
                     getTeamByTeamId(event.teamId)
                 }
             }
@@ -287,7 +291,8 @@ class TeamViewModel @Inject constructor(
                                 UiText.DynamicString(
                                     response.statusMessage
                                 ),
-                                response.data._id
+                                response.data._id,
+                                response.data.name
                             )
                         )
                         viewModelScope.launch {
@@ -409,7 +414,7 @@ class TeamViewModel @Inject constructor(
                             all = CommonUtils.getSelectedList(response.data.teamLeaderBoard)
                         )
                         _teamChannel.send(
-                            TeamChannel.OnTeamDetailsSuccess(response.data._id)
+                            TeamChannel.OnTeamDetailsSuccess(response.data._id,response.data.name)
                         )
                     } else {
                         _teamUiState.value =
@@ -430,6 +435,6 @@ class TeamViewModel @Inject constructor(
 
 sealed class TeamChannel {
     data class ShowToast(val message: UiText) : TeamChannel()
-    data class OnTeamsUpdate(val message: UiText, val teamId: String) : TeamChannel()
-    data class OnTeamDetailsSuccess(val teamId: String) : TeamChannel()
+    data class OnTeamsUpdate(val message: UiText, val teamId: String,val teamName:String) : TeamChannel()
+    data class OnTeamDetailsSuccess(val teamId: String,val teamName:String) : TeamChannel()
 }
