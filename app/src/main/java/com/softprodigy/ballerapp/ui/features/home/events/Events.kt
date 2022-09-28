@@ -8,6 +8,10 @@ import com.softprodigy.ballerapp.ui.theme.GreenColor
 import com.softprodigy.ballerapp.ui.theme.Yellow700
 
 data class Events(
+    @SerializedName("upcommingEvents") val upcommingEvents: ArrayList<EventsModel> = arrayListOf(),
+    @SerializedName("pastEvents") val pastEvents: ArrayList<EventsModel> = arrayListOf(),
+)
+data class EventsModel(
     @SerializedName("_id") val id: String = "",
     @SerializedName("title") val title: String = "",
     @SerializedName("venue") val venue: String = "",

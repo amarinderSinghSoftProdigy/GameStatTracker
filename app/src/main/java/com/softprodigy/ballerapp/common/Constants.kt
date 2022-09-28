@@ -76,6 +76,7 @@ object ApiConstants {
     const val GET_TEAM_STANDING = "v1/team/standings"
     const val SEND_INVITATION = "v1/team/inviteTeamMembers"
     const val GET_ALL_INVITATION = "v1/team/getAllTeamsInvitations"
+    const val GET_ALL_EVENTS = "v1/coach/event/getAllEvents"
     const val ACCEPT_TEAM_INVITATION = "v1/team/acceptTeamInvitation"
     const val REJECT_TEAM_INVITATION = "v1/team/rejectTeamInvitation"
 
