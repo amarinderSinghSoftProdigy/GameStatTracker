@@ -10,7 +10,6 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
-import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 
 class PlacePickerActivity : AppCompatActivity() {
@@ -21,7 +20,10 @@ class PlacePickerActivity : AppCompatActivity() {
         // Initializing the Places API
         // with the help of our API_KEY
         if (!Places.isInitialized()) {
-            Places.initialize(applicationContext, BuildConfig.MAPS_API_KEY)
+            Places.initialize(
+                applicationContext,
+                this.getString(R.string.map_key)
+            )//BuildConfig.MAPS_API_KEY)
         }
 
         // Initialize Autocomplete Fragments

@@ -10,4 +10,10 @@ sealed class EvEvents {
     object OnRoleConfirmClick : EvEvents()
     data class OnDeclineConfirmClick(val invitation: Events) : EvEvents()
 
+    //Opportunities
+    object GetFilters : EvEvents()
+    object GetOpportunities : EvEvents()
+    object GetOpportunityDetail : EvEvents()
+    data class SetEventId(val id: String) : EvEvents()
+
 }

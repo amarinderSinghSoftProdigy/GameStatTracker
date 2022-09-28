@@ -19,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BallerApp"
         android:usesCleartextTraffic="true"
-        tools:targetApi="31">
+        tools:replace="android:allowBackup">
         <provider
             android:name=".common.ComposeFileProvider"
             android:authorities="${applicationId}.provider"
@@ -59,11 +59,13 @@
             android:name=".ui.features.home.HomeActivity"
             android:exported="true"
             android:theme="@style/Theme.BallerApp"
-            android:windowSoftInputMode="adjustPan"> <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.DEFAULT" />
-        </intent-filter></activity>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true">
@@ -79,19 +81,19 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="${MAPS_API_KEY}" />
+            android:value="@string/map_key" />
 
-    <!--    <activity android:name=".ui.features.place_picker.PlacePickerActivity"
-            android:exported="true"
-            android:theme="@style/Theme.AppCompat.Light"
-            android:windowSoftInputMode="adjustPan">
+        <!--    <activity android:name=".ui.features.place_picker.PlacePickerActivity"
+                android:exported="true"
+                android:theme="@style/Theme.AppCompat.Light"
+                android:windowSoftInputMode="adjustPan">
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <intent-filter>
+                    <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>-->
+                    <category android:name="android.intent.category.LAUNCHER" />
+                </intent-filter>
+            </activity>-->
 
 
     </application>

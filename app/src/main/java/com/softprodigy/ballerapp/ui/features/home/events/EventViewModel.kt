@@ -1,12 +1,13 @@
 package com.softprodigy.ballerapp.ui.features.home.events
 
+import android.app.Application
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
-import com.softprodigy.ballerapp.domain.repository.ITeamRepository
-import com.softprodigy.ballerapp.ui.theme.GreenColor
-import com.softprodigy.ballerapp.ui.theme.Yellow700
+import com.softprodigy.ballerapp.data.datastore.DataStoreManager
+import com.softprodigy.ballerapp.domain.repository.IEventsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -14,132 +15,196 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewModel() {
-    var eventState = mutableStateOf(EventState())
+class EventViewModel @Inject constructor(
+    val dataStoreManager: DataStoreManager,
+    val userRepository: IEventsRepository,
+    application: Application
+) : AndroidViewModel(application) {
+
+
+    private val _state = mutableStateOf(EventState())
+    var eventState = _state
         private set
 
-    private val _eventChannel = Channel<EventChannel>()
-    val eventChannel = _eventChannel.receiveAsFlow()
+    private val _channel = Channel<EventChannel>()
+    val eventChannel = _channel.receiveAsFlow()
 
-    init {
-        viewModelScope.launch {
-            eventState.value =
-                eventState.value.copy(
-                    currentEvents = arrayListOf(
-                        Events(
-                            "1",
-                            "Practice Title",
-                            "Venue Name",
-                            "6:00 PM - 7:00 PM",
-                            EventStatus.PENDING.status,
-                            EventType.PRACTICE
-                        ),
-                        Events(
-                            "2",
-                            "Game Title",
-                            "Venue Name1",
-                            "6:00 PM - 7:00 PM",
-                            EventStatus.ACCEPT.status,
-                            EventType.GAME,
-                        ),
-                    ),
-                    pastEvents = arrayListOf(
-                        Events(
-                            "1",
-                            "Practice Title",
-                            "Venue Name",
-                            "6:00 PM - 7:00 PM",
-                            EventStatus.PAST.status,
-                            EventType.PRACTICE,
-                        ),
-                        Events(
-                            "2",
-                            "Practice Title1",
-                            "Venue Name1",
-                            "6:00 PM - 7:00 PM",
-                            EventStatus.PAST.status,
-                            EventType.ACTIVITY
-                        ),
-                        Events(
-                            "3",
-                            "Practice Title2",
-                            "Venue Name2",
-                            "6:00 PM - 7:00 PM",
-                            EventStatus.PAST.status,
-                            EventType.SCRIMMAGE
-                        ),
-                    ),
-                    leagues = arrayListOf(
-                        Leagues(
-                            "1",
-                            "League Title",
-                            "1389 Aviator Ave, Eagle Mountain",
-                            "",
-                            "Sep 1 - Dec 15, 2022",
-                            "League",
-                            Yellow700
-
-                        ),
-                        Leagues(
-                            "2",
-                            "Tournament Title",
-                            "1389 Aviator Ave, Eagle Mountain",
-                            "",
-                            "Sep 1 - Dec 15, 2022",
-                            "Tournament",
-                            GreenColor
-                        ),
-                    ),
-                    oppotuntities = arrayListOf(
-                        Leagues(
-                            "1",
-                            "League Title",
-                            "1389 Aviator Ave, Eagle Mountain",
-                            "",
-                            "Sep 1 - Dec 15, 2022",
-                            "League",
-                            Yellow700
-                        ),
-                        Leagues(
-                            "2",
-                            "Tournament Title",
-                            "1389 Aviator Ave, Eagle Mountain",
-                            "",
-                            "Sep 1 - Dec 15, 2022",
-                            "Tournament",
-                            GreenColor
-                        ),
-                    )
-                )
-        }
-    }
 
     fun onEvent(event: EvEvents) {
         when (event) {
+            is EvEvents.SetEventId -> {
+                _state.value = _state.value.copy(selectedEventId = event.id)
+            }
+            is EvEvents.GetOpportunityDetail -> {
+                viewModelScope.launch {
+                    getOpportunityDetail(_state.value.selectedEventId)
+                }
+            }
+            is EvEvents.GetOpportunities -> {
+                viewModelScope.launch {
+                    getOpportunities()
+                }
+            }
+            is EvEvents.GetFilters -> {
+                viewModelScope.launch {
+                    getFilters()
+                }
+            }
             is EvEvents.OnGoingCLick -> {
-                eventState.value = eventState.value.copy(
+                _state.value = _state.value.copy(
                     showGoingDialog = true,
                     selectedEvent = event.event
                 )
             }
             is EvEvents.OnDeclineCLick -> {
-                eventState.value = eventState.value.copy(
+                _state.value = _state.value.copy(
                     showDeclineDialog = true,
                     selectedEvent = event.event
                 )
             }
             is EvEvents.onCancel -> {
-                eventState.value = eventState.value.copy(
+                _state.value = _state.value.copy(
                     showGoingDialog = false,
                 )
             }
             is EvEvents.onCancelDeclineDialog -> {
-                eventState.value = eventState.value.copy(
+                _state.value = _state.value.copy(
                     showDeclineDialog = false,
                 )
             }
         }
 
+    }
+
+
+    suspend fun getFilters() {
+        _state.value = _state.value.copy(isLoading = true)
+        val userResponse = userRepository.getFilters()
+        _state.value = _state.value.copy(isLoading = false)
+
+        when (userResponse) {
+            is ResultWrapper.GenericError -> {
+                _channel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${userResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _channel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            userResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                userResponse.value.let { response ->
+                    if (response.status) {
+                        _state.value =
+                            _state.value.copy(filterPreference = response.data.filterPreferences)
+                    } else {
+                        _channel.send(
+                            EventChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+
+                    }
+                }
+            }
+        }
+    }
+
+    suspend fun getOpportunityDetail(eventId: String) {
+        _state.value = _state.value.copy(isLoading = true)
+        val userResponse = userRepository.getEventOpportunityDetails(eventId)
+        _state.value = _state.value.copy(isLoading = false)
+
+        when (userResponse) {
+            is ResultWrapper.GenericError -> {
+                _channel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${userResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _channel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            userResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                userResponse.value.let { response ->
+                    if (response.status) {
+                        _state.value = _state.value.copy(opportunitiesDetail = response.data)
+                    } else {
+                        _channel.send(
+                            EventChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+
+                    }
+                }
+            }
+        }
+    }
+
+    suspend fun getOpportunities() {
+        _state.value = _state.value.copy(isLoading = true)
+        val userResponse = userRepository.getEventOpportunities()
+        _state.value = _state.value.copy(isLoading = false)
+
+        when (userResponse) {
+            is ResultWrapper.GenericError -> {
+                _channel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${userResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _channel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            userResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                userResponse.value.let { response ->
+                    if (response.status) {
+                        _state.value = _state.value.copy(opportunitiesList = response.data)
+                    } else {
+                        _channel.send(
+                            EventChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+
+                    }
+                }
+            }
+        }
     }
 
 }

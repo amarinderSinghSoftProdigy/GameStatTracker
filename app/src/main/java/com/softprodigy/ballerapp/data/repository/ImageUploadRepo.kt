@@ -36,4 +36,18 @@ class ImageUploadRepo @Inject constructor(
 
         return safeApiCall(dispatcher) { service.uploadSingleImage(typeReqBody, body) }
     }
+
+    override suspend fun uploadSingleFile(
+        mime: String,
+        type: String,
+        file: File?
+    ): ResultWrapper<BaseResponse<ImageUpload>> {
+        val typeReqBody = type.toRequestBody()
+        val fileRequestBody = file?.asRequestBody("$mime/*".toMediaType())
+        val body: MultipartBody.Part? = if (fileRequestBody != null) {
+            MultipartBody.Part.createFormData("file", file.name, fileRequestBody)
+        } else null
+
+        return safeApiCall(dispatcher) { service.uploadSingleImage(typeReqBody, body) }
+    }
 }

@@ -30,3 +30,75 @@ enum class EventType(val type: String, val color: Color) {
     ACTIVITY("Activity", Yellow700),
     SCRIMMAGE("Scrimmage", ColorButtonRed),
 }
+
+data class FilterResponse(
+    @SerializedName("_id") val id: String = "",
+    @SerializedName("userId") val userId: String = "",
+    @SerializedName("filterPreferences") val filterPreferences: List<FilterPreference> = mutableListOf(),
+)
+
+data class FilterPreference(
+    @SerializedName("name") val name: String = "",
+    @SerializedName("status") val status: String = "",
+)
+
+data class OpportunitiesItem(
+    @SerializedName("_id") val id: String = "",
+    @SerializedName("name") val name: String = "",
+    @SerializedName("logo") val logo: String = "",
+    @SerializedName("eventType") val eventType: String = "",
+    @SerializedName("startDate") val startDate: String = "",
+    @SerializedName("endDate") val endDate: String = "",
+    @SerializedName("standardPrice") val standardPrice: String = "",
+    @SerializedName("locationDesc") val locationDesc: String = "",
+    @SerializedName("eventShortDescription") val eventShortDescription: String = "",
+)
+
+data class OpportunitiesDetail(
+    @SerializedName("_id") val id: String = "",
+    @SerializedName("name") val name: String = "",
+    @SerializedName("logo") val logo: String = "",
+    @SerializedName("eventType") val eventType: String = "",
+    @SerializedName("startDate") val startDate: String = "",
+    @SerializedName("endDate") val endDate: String = "",
+    @SerializedName("standardPrice") val standardPrice: String = "",
+    @SerializedName("locationDesc") val locationDesc: String = "",
+    @SerializedName("eventShortDescription") val eventShortDescription: String = "",
+    @SerializedName("registrationDeadline") val registrationDeadline: String = "",
+    @SerializedName("address") val address: String = "",
+    @SerializedName("city") val city: String = "",
+    @SerializedName("state") val state: String = "",
+    @SerializedName("eventGeneralInfo") val eventGeneralInfo: String = "",
+    @SerializedName("userId") val userId: UserData = UserData(),
+    @SerializedName("potentialDaysOfPlay") val potentialDaysOfPlay: List<DaysOfPlay> = mutableListOf(),
+    @SerializedName("skillLevel") val skillLevel: List<String> = mutableListOf(),
+    @SerializedName("participation") val participation: Participation = Participation(),
+    @SerializedName("location") val location: LocationData = LocationData(),
+)
+
+data class DaysOfPlay(
+    @SerializedName("day") val day: String = "",
+    @SerializedName("earliestStartTime") val earliestStartTime: String = "",
+    @SerializedName("latestStartTime") val latestStartTime: String = "",
+    @SerializedName("_id") val _id: String = "",
+)
+
+data class UserData(
+    @SerializedName("_id") val _id: String = "",
+    @SerializedName("name") val name: String = "",
+    @SerializedName("email") val email: String = "",
+    @SerializedName("phone") val phone: String = "",
+)
+
+data class Participation(
+    @SerializedName("type") val type: String = "",
+    @SerializedName("boysMin") val boysMin: String = "",
+    @SerializedName("boysMax") val boysMax: String = "",
+    @SerializedName("girlsMin") val girlsMin: String = "",
+    @SerializedName("girlsMax") val girlsMax: String = "",
+)
+
+data class LocationData(
+    @SerializedName("type") val type: String = "",
+    //@SerializedName("coordinates") val coordinates: Any,
+)

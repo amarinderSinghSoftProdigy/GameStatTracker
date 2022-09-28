@@ -1,4 +1,4 @@
-package com.softprodigy.ballerapp.ui.features.home.events
+package com.softprodigy.ballerapp.ui.features.home.events.opportunities
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -21,30 +22,42 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.google.accompanist.pager.ExperimentalPagerApi
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
+import com.softprodigy.ballerapp.ui.features.home.events.EvEvents
+import com.softprodigy.ballerapp.ui.features.home.events.EventState
+import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
+import com.softprodigy.ballerapp.ui.features.home.events.LeagueItem
 import com.softprodigy.ballerapp.ui.theme.appColors
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun OpportunitieScreen(state: EventState, vm: EventViewModel, moveToOppDetails: () -> Unit) {
-    if (state.leagues.size > 0) {
+
+    remember {
+        vm.onEvent(EvEvents.GetOpportunities)
+    }
+
+    if (state.opportunitiesList.isNotEmpty()) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 Modifier
                     .fillMaxSize()
-                    .padding(all = dimensionResource(id = R.dimen.size_16dp))
+                    .padding(
+                        top = dimensionResource(id = R.dimen.size_16dp),
+                        start = dimensionResource(id = R.dimen.size_16dp),
+                        end = dimensionResource(id = R.dimen.size_16dp)
+                    )
             ) {
                 LazyColumn(Modifier.fillMaxWidth()) {
-                    items(state.leagues) { leag ->
-                        LeagueItem(leag, state) {
+                    items(state.opportunitiesList) { leag ->
+                        LeagueItem(leag, true) {
+                            vm.onEvent(EvEvents.SetEventId(leag.id))
                             moveToOppDetails()
                         }
                     }
                 }
             }
         }
-
     } else {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
@@ -56,7 +69,7 @@ fun OpportunitieScreen(state: EventState, vm: EventViewModel, moveToOppDetails: 
             ) {
                 Image(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
-                    painter = painterResource(id = R.drawable.ic_star),
+                    painter = painterResource(id = R.drawable.ic_events_large),
                     contentDescription = null,
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_30dp)))
@@ -68,5 +81,8 @@ fun OpportunitieScreen(state: EventState, vm: EventViewModel, moveToOppDetails: 
                 )
             }
         }
+    }
+    if (state.isLoading) {
+        CommonProgressBar()
     }
 }

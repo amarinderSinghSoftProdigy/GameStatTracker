@@ -104,6 +104,10 @@ object ApiConstants {
 
     const val GET_ALL_VENUE = "v1/venue/getAllVenues"
 
+    const val GET_ALL_OPPORTUNITIES = "v1/event/getOpportunitiesEvents"
+    const val GET_OPPORTUNITY_ID = "v1/event/getEventRegisterById"
+    const val GET_FILTERS = "v1/event/getFilterPreferences"
+
     const val first_name = "first_name"
     const val last_name = "lastName"
     const val mobile = "mobile"

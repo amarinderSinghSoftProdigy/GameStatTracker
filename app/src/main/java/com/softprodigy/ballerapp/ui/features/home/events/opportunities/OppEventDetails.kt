@@ -21,6 +21,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,22 +32,27 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.google.accompanist.pager.ExperimentalPagerApi
+import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppDivider
 import com.softprodigy.ballerapp.ui.features.components.CoilImage
 import com.softprodigy.ballerapp.ui.features.components.Placeholder
+import com.softprodigy.ballerapp.ui.features.components.PlaceholderRect
 import com.softprodigy.ballerapp.ui.features.components.TransparentButtonButton
+import com.softprodigy.ballerapp.ui.features.home.events.DaysOfPlay
+import com.softprodigy.ballerapp.ui.features.home.events.EvEvents
 import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
 import com.softprodigy.ballerapp.ui.theme.appColors
+import com.softprodigy.ballerapp.ui.utils.CommonUtils
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
     val state = vm.eventState.value
-    var skills = arrayListOf<String>("Elite", "Competitive", "Developmental", "Learning")
+    remember {
+        vm.onEvent(EvEvents.GetOpportunityDetail)
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -54,7 +60,7 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
             .verticalScroll(rememberScrollState()),
     ) {
         CoilImage(
-            src = "https://image.shutterstock.com/image-photo/word-demo-appearing-behind-torn-260nw-1782295403.jpg",
+            src = BuildConfig.IMAGE_SERVER + state.opportunitiesDetail.logo,
             modifier = Modifier
                 .background(color = Color.White)
                 .height(dimensionResource(id = R.dimen.size_200dp))
@@ -80,27 +86,27 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
             Text(
-                text = "Risus enim egestas placerat adipiscing accumsan velit nam varius. Vulputate habitant vitae at laoreet. Arcu, vitae mi enim, aenean. Egestas cras venenatis dis augue felis.",
+                text = state.opportunitiesDetail.eventGeneralInfo,
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             )
             DetailsItem(
                 stringResource(id = (R.string.start_date)),
                 stringResource(id = (R.string.end_Date)),
-                "Sep 1, 2022",
-                "Dec 15, 2022"
+                CommonUtils.formatDateSingle(state.opportunitiesDetail.startDate),
+                CommonUtils.formatDateSingle(state.opportunitiesDetail.endDate)
             )
             DetailsItem(
                 stringResource(id = (R.string.event_type)),
                 stringResource(id = (R.string.participation)),
-                "League",
+                state.opportunitiesDetail.eventType,
                 "All, Ages 10-16"
             )
             DetailsItem(
                 stringResource(id = (R.string.regsitration_deadliine)),
                 stringResource(id = (R.string.price)),
-                "Sep 1, 2022",
-                "\$1,250.00"
+                CommonUtils.formatDateSingle(state.opportunitiesDetail.registrationDeadline),
+                "$ " + state.opportunitiesDetail.standardPrice
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             Text(
@@ -112,7 +118,7 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
         }
         LazyRow(Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))) {
-            itemsIndexed(skills) { index, item ->
+            itemsIndexed(state.opportunitiesDetail.skillLevel) { index, item ->
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
@@ -177,9 +183,9 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
                     .height(dimensionResource(id = R.dimen.size_160dp))
                     .fillMaxWidth(),
                 onError = {
-                    Placeholder(R.drawable.ic_team_placeholder)
+                    PlaceholderRect(R.drawable.ic_team_placeholder)
                 },
-                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                onLoading = { PlaceholderRect(R.drawable.ic_team_placeholder) },
                 isCrossFadeEnabled = false,
                 contentScale = ContentScale.Crop
             )
@@ -200,7 +206,7 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             Text(
-                text = "Orci mattis purus egestas amet. Venenatis non eget euismod leo et vitae ac sit tempor. Sit parturient vestibulum turpis euismod enim elit. Rhoncus sit pharetra aliquam non. Pellentesque mi eget penatibus egestas enim, tincidunt amet nec. Imperdiet mauris et scelerisque faucibus nisl.",
+                text = state.opportunitiesDetail.eventShortDescription,
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             )
@@ -221,19 +227,19 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             Text(
-                text = "George Will",
+                text = state.opportunitiesDetail.userId.name,
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
             Text(
-                text = "email@example.com",
+                text = state.opportunitiesDetail.userId.email,
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
             Text(
-                text = "(704) 555-0127",
+                text = state.opportunitiesDetail.userId.phone,
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             )
@@ -253,7 +259,7 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
                 fontWeight = FontWeight.Bold,
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-            DaysPlay()
+            DaysPlay(state.opportunitiesDetail.potentialDaysOfPlay)
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
         }
         AppDivider()
@@ -330,32 +336,20 @@ fun DetailsItem(key1: String, key2: String, value1: String, value2: String) {
 }
 
 @Composable
-fun DaysPlay() {
-    val days = arrayListOf(
-        "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
-    )
-    val values = arrayListOf(
-        "6:00 PM - 10:00 PM",
-        "6:00 PM - 10:00 PM",
-        "6:00 PM - 10:00 PM",
-        "6:00 PM - 10:00 PM",
-        "6:00 PM - 10:00 PM",
-        "6:00 PM - 10:00 PM",
-        "_"
-    )
-    days.forEachIndexed { index, it ->
+fun DaysPlay(potentialDaysOfPlay: List<DaysOfPlay>) {
+    potentialDaysOfPlay.forEachIndexed { index, item ->
         Row(
             modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.size_12dp))
         ) {
             Text(
-                text = it,
+                text = item.day,
                 color = ColorBWGrayLight,
                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.weight(0.4f)
             )
             Text(
-                text = values[index],
+                text = item.earliestStartTime + " - " + item.latestStartTime,
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                 modifier = Modifier.weight(0.6f)

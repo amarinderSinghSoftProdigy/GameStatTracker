@@ -23,6 +23,29 @@ fun getRealPathFromURI(context: Context, uri: Uri): String? {
 }
 
 @Throws(IOException::class)
+suspend fun getFileFromUriWithoutCompress(context: Context, uri: Uri): File? {
+    val destinationFilename =
+        File(context.filesDir.path + File.separatorChar.toString() + queryName(context, uri))
+    try {
+        context.contentResolver.openInputStream(uri).use { ins ->
+            if (ins != null) {
+                createFileFromStream(
+                    ins,
+                    destinationFilename
+                )
+            }
+        }
+    } catch (ex: Exception) {
+        Timber.e("Save File", ex.message.toString())
+        ex.printStackTrace()
+    }
+
+    val size = Integer.parseInt((destinationFilename.length()/1024).toString())
+    Timber.i("Filesize not compressed--> $size")
+
+    return destinationFilename
+}
+@Throws(IOException::class)
 suspend fun getFileFromUri(context: Context, uri: Uri): File? {
     val destinationFilename =
         File(context.filesDir.path + File.separatorChar.toString() + queryName(context, uri))

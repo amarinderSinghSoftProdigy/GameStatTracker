@@ -44,6 +44,11 @@ import com.softprodigy.ballerapp.ui.theme.appColors
 @Composable
 fun FilterScreen(vm: EventViewModel, onSuccess: () -> Unit) {
     val state = vm.eventState.value
+
+    remember {
+        vm.onEvent(EvEvents.GetFilters)
+    }
+
     var selectedGender by rememberSaveable { mutableStateOf("") }
     var selectedEvent by rememberSaveable { mutableStateOf("") }
     var selectedFormat by rememberSaveable { mutableStateOf("") }
