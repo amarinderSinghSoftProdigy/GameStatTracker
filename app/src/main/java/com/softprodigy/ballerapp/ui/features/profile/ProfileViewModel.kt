@@ -223,13 +223,7 @@ class ProfileViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 leaveTeamResponse.value.let { response ->
                     if (response.status) {
-                        _state.value = _state.value.copy(
-                            userUploadedDocs = setImageUrl(
-                                _state.value.userDocTypes.toMutableList(),
-                                userDocType,
-                                url
-                            )
-                        )
+                        getDocumentTypes()
                     } else {
                         _channel.send(
                             ProfileChannel.ShowToast(
@@ -277,13 +271,7 @@ class ProfileViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 leaveTeamResponse.value.let { response ->
                     if (response.status) {
-                        _state.value = _state.value.copy(
-                            userUploadedDocs = setImageUrl(
-                                _state.value.userDocTypes.toMutableList(),
-                                userDocType.key,
-                                ""
-                            )
-                        )
+                        getDocumentTypes()
                     } else {
                         _channel.send(
                             ProfileChannel.ShowToast(
@@ -640,60 +628,6 @@ class ProfileViewModel @Inject constructor(
                     favProfessionalTeam = user.userDetails.funFacts[0].favProfessionalTeam
                 )
         }
-        if (user.userDetails.birthCertificate.isNotEmpty()) {
-            _state.value = _state.value.copy(
-                userUploadedDocs = setImageUrl(
-                    _state.value.userDocTypes.toMutableList(),
-                    "birthCertificate",
-                    user.userDetails.birthCertificate
-                )
-            )
-        }
-        if (user.userDetails.gradeVerfication.isNotEmpty()) {
-            _state.value = _state.value.copy(
-                userUploadedDocs = setImageUrl(
-                    _state.value.userDocTypes.toMutableList(),
-                    "gradeVerfication",
-                    user.userDetails.gradeVerfication
-                )
-            )
-        }
-        if (user.userDetails.permissionSlip.isNotEmpty()) {
-            _state.value = _state.value.copy(
-                userUploadedDocs = setImageUrl(
-                    _state.value.userDocTypes.toMutableList(),
-                    "permissionSlip",
-                    user.userDetails.permissionSlip
-                )
-            )
-        }
-        if (user.userDetails.auuCard.isNotEmpty()) {
-            _state.value = _state.value.copy(
-                userUploadedDocs = setImageUrl(
-                    _state.value.userDocTypes.toMutableList(),
-                    "auuCard",
-                    user.userDetails.auuCard
-                )
-            )
-        }
-        if (user.userDetails.waiver.isNotEmpty()) {
-            _state.value = _state.value.copy(
-                userUploadedDocs = setImageUrl(
-                    _state.value.userDocTypes.toMutableList(),
-                    "waiver",
-                    user.userDetails.waiver
-                )
-            )
-        }
-        if (user.userDetails.vaccineCard.isNotEmpty()) {
-            _state.value = _state.value.copy(
-                userUploadedDocs = setImageUrl(
-                    _state.value.userDocTypes.toMutableList(),
-                    "vaccineCard",
-                    user.userDetails.vaccineCard
-                )
-            )
-        }
         if (user.userDetails.positionPlayed.isNotEmpty()) {
 
             /*user.userDetails.positionPlayed.forEachIndexed { index1, positionSTring ->
@@ -714,17 +648,6 @@ class ProfileViewModel @Inject constructor(
 
     }
 
-}
-
-fun setImageUrl(list: List<UserDocType>, name: String, url: String): List<UserDocType> {
-    val result: List<UserDocType> = mutableListOf()
-    for (item in list) {
-        if (item.key == name) {
-            item.url = url
-            result.toMutableList().add(item)
-        }
-    }
-    return list
 }
 
 sealed class ProfileChannel {
