@@ -2,34 +2,14 @@ package com.softprodigy.ballerapp.ui.features.home.events.opportunities
 
 import android.widget.Toast
 import androidx.compose.foundation.border
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,31 +27,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.ui.features.components.AppButton
-import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
-import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.CoilImage
-import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
-import com.softprodigy.ballerapp.ui.features.components.CustomCheckBox
-import com.softprodigy.ballerapp.ui.features.components.CustomSwitch
-import com.softprodigy.ballerapp.ui.features.components.DividerCommon
-import com.softprodigy.ballerapp.ui.features.components.Placeholder
-import com.softprodigy.ballerapp.ui.features.components.SelectDivisionDialog
-import com.softprodigy.ballerapp.ui.features.components.SwitchPlayerDialog
-import com.softprodigy.ballerapp.ui.features.components.SwitchTeamDialog
-import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.events.EvEvents
 import com.softprodigy.ballerapp.ui.features.home.events.EventChannel
 import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
-import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
-import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
-import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
-import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
-import com.softprodigy.ballerapp.ui.theme.ColorMainPrimary
-import com.softprodigy.ballerapp.ui.theme.appColors
-import com.softprodigy.ballerapp.ui.theme.md_theme_light_onSurface
+import com.softprodigy.ballerapp.ui.theme.*
 
 @Composable
 fun EventRegistraionDetails(vm: EventViewModel, teamVm: TeamViewModel, onSuccess: () -> Unit) {
@@ -363,7 +325,7 @@ fun EventRegistraionDetails(vm: EventViewModel, teamVm: TeamViewModel, onSuccess
         SwitchTeamDialog(
             teamSelect = state.team,
             teams = teamVm.teamUiState.value.teams,
-            title = stringResource(id = R.string.switch_teams),
+            title = stringResource(id = R.string.select_team),
             onDismiss = {
                 showDialog.value = false
             },
@@ -378,7 +340,7 @@ fun EventRegistraionDetails(vm: EventViewModel, teamVm: TeamViewModel, onSuccess
         SwitchPlayerDialog(
             player = state.registerRequest.players,
             teams = teamVm.teamUiState.value.playersList,
-            title = stringResource(id = R.string.switch_teams),
+            title = stringResource(id = R.string.select_player),
             onDismiss = {
                 showPlayerDialog.value = false
             },
@@ -393,7 +355,7 @@ fun EventRegistraionDetails(vm: EventViewModel, teamVm: TeamViewModel, onSuccess
         SelectDivisionDialog(
             division = state.divisionData,
             teams = state.eventDivision,
-            title = stringResource(id = R.string.switch_teams),
+            title = stringResource(id = R.string.select_division),
             onDismiss = {
                 showDivisionDialog.value = false
             },

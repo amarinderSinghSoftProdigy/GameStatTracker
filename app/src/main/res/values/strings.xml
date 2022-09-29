@@ -384,4 +384,7 @@
     <string name="choose_team">Choose Team</string>
     <string name="please_select_division">Please select division.</string>
     <string name="please_select_player">Please select players.</string>
+    <string name="select_team">Select Team</string>
+    <string name="select_player">Select Players</string>
+    <string name="select_division">Select Division</string>
 </resources>

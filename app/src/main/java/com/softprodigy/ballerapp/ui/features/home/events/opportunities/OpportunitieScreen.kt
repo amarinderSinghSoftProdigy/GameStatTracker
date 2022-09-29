@@ -1,14 +1,7 @@
 package com.softprodigy.ballerapp.ui.features.home.events.opportunities
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
@@ -23,9 +16,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.ui.features.home.events.EventState
-import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
-import com.softprodigy.ballerapp.ui.features.home.events.LeagueItem
 import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
 import com.softprodigy.ballerapp.ui.features.home.events.EvEvents
 import com.softprodigy.ballerapp.ui.features.home.events.EventState
@@ -34,7 +24,7 @@ import com.softprodigy.ballerapp.ui.features.home.events.LeagueItem
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun OpportunitieScreen(state: EventState, vm: EventViewModel, moveToOppDetails: () -> Unit) {
+fun OpportunitieScreen(state: EventState, vm: EventViewModel, moveToOppDetails: (String) -> Unit) {
 
     remember {
         vm.onEvent(EvEvents.GetOpportunities)
@@ -55,7 +45,7 @@ fun OpportunitieScreen(state: EventState, vm: EventViewModel, moveToOppDetails: 
                     items(state.opportunitiesList) { leag ->
                         LeagueItem(leag, true) {
                             vm.onEvent(EvEvents.SetEventId(leag.id))
-                            moveToOppDetails()
+                            moveToOppDetails(leag.name)
                         }
                     }
                 }
