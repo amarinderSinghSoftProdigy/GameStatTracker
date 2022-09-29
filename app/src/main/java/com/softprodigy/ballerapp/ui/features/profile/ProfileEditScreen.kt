@@ -49,6 +49,13 @@ import com.softprodigy.ballerapp.common.validPhoneNumber
 import com.softprodigy.ballerapp.data.response.CheckBoxData
 import com.softprodigy.ballerapp.data.response.TeamDetails
 import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.data.response.Team
+import com.softprodigy.ballerapp.ui.features.components.AppButton
+import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.CustomCheckBox
+import com.softprodigy.ballerapp.ui.features.components.DividerCommon
+import com.softprodigy.ballerapp.ui.features.components.EditProfileFields
+import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.appColors
 import com.softprodigy.ballerapp.ui.theme.error
@@ -447,7 +454,7 @@ fun ProfileEditScreen(
                         if (it.length <= maxChar)
                             vm.onEvent(ProfileEvent.OnNbaTeamChange(it))
                     },
-                    stringResource(id = R.string.favorite_nba_team),
+                    stringResource(id = R.string.favorite_proff_team),
                     errorMessage = stringResource(id = R.string.valid_first_name),
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Next,
@@ -583,7 +590,7 @@ fun Teams(
                     }
                     ClickableText(
                         style = TextStyle(color = error),
-                        text = AnnotatedString(stringResource(id = R.string.leave_team)),
+                        text = AnnotatedString(stringResource(id = R.string.remove_team)),
                         onClick = {
                             onLeaveTeamClick.invoke(index, teamDetails.teamId.Id)
                         })

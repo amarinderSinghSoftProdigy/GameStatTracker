@@ -111,8 +111,8 @@ fun EventDetailsScreen(vm: EventViewModel) {
             }
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-            Box(modifier = Modifier.fillMaxWidth()) {
-                Column {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.weight(2F)) {
                     AppText(
                         text = stringResource(id = R.string.location),
                         style = MaterialTheme.typography.h6,
@@ -132,7 +132,7 @@ fun EventDetailsScreen(vm: EventViewModel) {
                     )
                 }
                 TransparentButtonButton(
-                    modifier = Modifier.align(Alignment.CenterEnd),
+                    modifier = Modifier.weight(1F),
                     text = stringResource(id = R.string.navigate),
                     onClick = {},
                     icon = painterResource(id = R.drawable.ic_nav),
@@ -161,26 +161,26 @@ fun EventDetailsScreen(vm: EventViewModel) {
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
         }
-        LazyRow(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            item {
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
-            }
-            itemsIndexed(images) { index, item ->
-                Image(
-                    painter = rememberAsyncImagePainter("https://picsum.photos/200"),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .padding(end = dimensionResource(id = R.dimen.size_10dp))
-                        .clip(RoundedCornerShape(dimensionResource(R.dimen.size_10dp)))
-                        .size(dimensionResource(id = R.dimen.size_70dp))
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+        /* LazyRow(
+             modifier = Modifier
+                 .fillMaxWidth()
+         ) {
+             item {
+                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+             }
+             itemsIndexed(images) { index, item ->
+                 Image(
+                     painter = rememberAsyncImagePainter("https://picsum.photos/200"),
+                     contentDescription = null,
+                     modifier = Modifier
+                         .padding(end = dimensionResource(id = R.dimen.size_10dp))
+                         .clip(RoundedCornerShape(dimensionResource(R.dimen.size_10dp)))
+                         .size(dimensionResource(id = R.dimen.size_70dp))
+                 )
+             }
+         }
+ 
+         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))*/
 
         AppDivider(color = MaterialTheme.appColors.material.primary)
 
@@ -215,7 +215,7 @@ fun EventDetailsScreen(vm: EventViewModel) {
                             .background(
                                 color = Color.White, CircleShape
                             )
-                            .size(dimensionResource(id = R.dimen.size_50dp)),
+                            .size(dimensionResource(id = R.dimen.size_60dp)),
                         onError = {
                             Placeholder(R.drawable.ic_team_placeholder)
                         },
@@ -333,10 +333,10 @@ fun EventDetailsScreen(vm: EventViewModel) {
                 ) {
                     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_12dp)))
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_check),
+                        painter = painterResource(id = R.drawable.ic_tick),
                         contentDescription = "",
                         tint = Color.White,
-                        modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp))
+                        modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp))
                     )
                     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_12dp)))
                     AppText(

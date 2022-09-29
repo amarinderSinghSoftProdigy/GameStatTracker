@@ -70,7 +70,6 @@ fun GameDetailsTab(vm: EventViewModel, moveToGameRules: () -> Unit) {
                     .fillMaxWidth()
             ) {
 
-
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
                 AppText(
                     text = stringResource(id = R.string.events_info),
@@ -138,8 +137,8 @@ fun GameDetailsTab(vm: EventViewModel, moveToGameRules: () -> Unit) {
                 }
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    Column {
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    Column(modifier = Modifier.weight(2F)) {
                         AppText(
                             text = stringResource(id = R.string.location),
                             style = MaterialTheme.typography.h6,
@@ -161,7 +160,7 @@ fun GameDetailsTab(vm: EventViewModel, moveToGameRules: () -> Unit) {
                         )
                     }
                     TransparentButtonButton(
-                        modifier = Modifier.align(Alignment.CenterEnd),
+                        modifier = Modifier.weight(1F),
                         text = stringResource(id = R.string.navigate),
                         onClick = {},
                         icon = painterResource(id = R.drawable.ic_nav),
@@ -188,7 +187,7 @@ fun GameDetailsTab(vm: EventViewModel, moveToGameRules: () -> Unit) {
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             }
-            LazyRow {
+            /*LazyRow {
                 item {
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
                 }
@@ -203,7 +202,7 @@ fun GameDetailsTab(vm: EventViewModel, moveToGameRules: () -> Unit) {
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))*/
             AppDivider(color = MaterialTheme.appColors.material.primary)
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
             Text(
@@ -231,7 +230,7 @@ fun GameDetailsTab(vm: EventViewModel, moveToGameRules: () -> Unit) {
                                 .background(
                                     color = Color.White, CircleShape
                                 )
-                                .size(dimensionResource(id = R.dimen.size_50dp)),
+                                .size(dimensionResource(id = R.dimen.size_60dp)),
                             onError = {
                                 Placeholder(R.drawable.ic_team_placeholder)
                             },

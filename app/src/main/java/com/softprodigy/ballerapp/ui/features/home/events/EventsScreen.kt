@@ -53,6 +53,7 @@ import com.softprodigy.ballerapp.ui.features.components.TopBar
 import com.softprodigy.ballerapp.ui.features.components.TopBarData
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
 import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
+import com.softprodigy.ballerapp.ui.features.home.events.opportunities.OpportunitieScreen
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
 import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
@@ -69,7 +70,7 @@ fun EventsScreen(
     dismissDialog: (Boolean) -> Unit,
     moveToDetail: () -> Unit,
     moveToPracticeDetail: (String) -> Unit, moveToGameDetail: (String) -> Unit,
-    moveToOppDetails: () -> Unit,
+    moveToOppDetails: (String) -> Unit,
     updateTopBar: (TopBarData) -> Unit
 ) {
     val state = vm.eventState.value
@@ -184,7 +185,7 @@ fun TabsContent(
     moveToDetail: () -> Unit,
     moveToPracticeDetail: (String) -> Unit,
     moveToGameDetail: (String) -> Unit,
-    moveToOppDetails: () -> Unit,
+    moveToOppDetails: (String) -> Unit,
     updateTopBar: (TopBarData) -> Unit
 ) {
 

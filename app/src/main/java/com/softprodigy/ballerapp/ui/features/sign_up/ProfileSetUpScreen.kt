@@ -260,14 +260,11 @@ fun ProfileSetUpScreen(
             Box(
                 Modifier
                     .fillMaxWidth()
-
             ) {
-
 
                 Column(
                     Modifier
-                        .fillMaxWidth()
-                        .verticalScroll(rememberScrollState()),
+                        .fillMaxWidth(),
                     verticalArrangement = Arrangement.Center
                 ) {
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_64dp)))

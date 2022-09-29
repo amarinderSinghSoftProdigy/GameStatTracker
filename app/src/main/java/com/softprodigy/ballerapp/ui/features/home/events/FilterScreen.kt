@@ -39,6 +39,7 @@ import com.google.accompanist.flowlayout.FlowRow
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppDivider
+import com.softprodigy.ballerapp.ui.features.components.CustomSwitch
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
@@ -133,15 +134,15 @@ fun DistanceItem() {
             Text(
                 text = stringResource(id = R.string.max_dis),
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.h5,
+                fontWeight = FontWeight.W500,
                 modifier = Modifier.weight(1f)
             )
             Image(
                 painter = painterResource(id = R.drawable.ic_sub),
                 contentDescription = "",
                 modifier = Modifier
-                    .clickable { distance.value = distance.value - 1 }
+                    .clickable { if (distance.value != 0) distance.value = distance.value - 1 }
                     .size(dimensionResource(id = R.dimen.size_25dp))
                     .clip(CircleShape)
             )
@@ -208,18 +209,22 @@ fun FilterItem(
                             Text(
                                 text = value,
                                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.h5,
+                                fontWeight = FontWeight.W500,
                                 modifier = Modifier.weight(1f)
                             )
-                            Switch(
-                                modifier = Modifier.height(dimensionResource(id = R.dimen.size_25dp)),
-                                checked = value == selectedValue,
-                                onCheckedChange = { setSelected(value) },
-                                colors = SwitchDefaults.colors(
-                                    checkedThumbColor = MaterialTheme.appColors.material.primaryVariant
-                                )
-                            )
+                            /*  Switch(
+                                  modifier = Modifier.height(dimensionResource(id = R.dimen.size_25dp)),
+                                  checked =,
+                                  onCheckedChange = { },
+                                  colors = SwitchDefaults.colors(
+                                      checkedThumbColor = MaterialTheme.appColors.material.primaryVariant
+                                  )
+                              )*/
+
+                            CustomSwitch(
+                                isSelected = value == selectedValue,
+                                onClick = { setSelected(value) })
                         }
                         if (index != list.size - 1)
                             AppDivider()

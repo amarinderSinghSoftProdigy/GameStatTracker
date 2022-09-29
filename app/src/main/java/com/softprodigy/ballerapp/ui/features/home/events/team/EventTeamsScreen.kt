@@ -130,8 +130,8 @@ fun EventTeamHeader(divisionName: String, isExpanded: Boolean = false) {
             contentDescription = "",
             modifier = Modifier
                 .size(
-                    height = dimensionResource(id = R.dimen.size_6dp),
-                    width = dimensionResource(id = R.dimen.size_8dp)
+                    height = dimensionResource(id = R.dimen.size_12dp),
+                    width = dimensionResource(id = R.dimen.size_12dp)
                 )
                 .then(
                     if (!isExpanded) Modifier.rotate(180f) else Modifier
@@ -191,8 +191,8 @@ fun EventTeamSubItem(team: Team, onClick: () -> Unit) {
                 contentDescription = "",
                 modifier = Modifier
                     .size(
-                        height = dimensionResource(id = R.dimen.size_6dp),
-                        width = dimensionResource(id = R.dimen.size_8dp)
+                        height = dimensionResource(id = R.dimen.size_12dp),
+                        width = dimensionResource(id = R.dimen.size_12dp)
                     )
                     .rotate(270f),
                 tint = MaterialTheme.appColors.buttonColor.textDisabled

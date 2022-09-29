@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
+import com.softprodigy.ballerapp.ui.theme.ColorPrimaryOrange
 import com.softprodigy.ballerapp.ui.theme.GreenColor
 import com.softprodigy.ballerapp.ui.theme.Yellow700
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -77,7 +78,7 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
                             "",
                             "Fri, May 20 Sep 1 - Dec 15, 2022",
                             "League",
-                            Yellow700
+                            ColorPrimaryOrange
 
                         ),
                         Leagues(

@@ -53,8 +53,8 @@ fun OpenVenueTabs(pagerState: PagerState, tabData: List<OpenVenueTabItems>) {
             .fillMaxWidth()
             .background(color = Color.White)
             .padding(
-                start = dimensionResource(id = R.dimen.size_40dp),
-                end = dimensionResource(id = R.dimen.size_40dp)
+                start = dimensionResource(id = R.dimen.size_20dp),
+                end = dimensionResource(id = R.dimen.size_20dp)
             )
     ) {
         AppStaticTabRow(

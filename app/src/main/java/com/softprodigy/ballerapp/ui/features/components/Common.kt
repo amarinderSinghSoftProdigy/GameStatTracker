@@ -184,10 +184,13 @@ fun BoxScope.CommonTabView(
             icon = painterResource(id = R.drawable.ic_edit)
         }
         TopBar.MY_EVENT -> {
-            icon = painterResource(id = R.drawable.add_circle_filled)
+            icon = painterResource(id = R.drawable.ic_add_circle_filled)
         }
         TopBar.EVENT_OPPORTUNITIES -> {
             icon = painterResource(id = R.drawable.ic_filter)
+        }
+        TopBar.GAME_DETAILS -> {
+            icon = painterResource(id = R.drawable.ic_dots)
         }
         else -> {}
     }
@@ -347,7 +350,7 @@ enum class TopBar(val stringId: String, val back: Boolean) {
         back = true
     ),
     FILTER_EVENT(stringId = "filter_events", back = true), GAME_DETAILS(
-        stringId = "game_details",
+        stringId = "",
         back = true
     ),
     EVENT_LEAGUES(

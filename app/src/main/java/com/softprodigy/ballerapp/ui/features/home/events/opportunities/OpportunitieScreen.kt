@@ -1,4 +1,4 @@
-package com.softprodigy.ballerapp.ui.features.home.events
+package com.softprodigy.ballerapp.ui.features.home.events.opportunities
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -23,11 +23,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.ui.features.home.events.EventState
+import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
+import com.softprodigy.ballerapp.ui.features.home.events.LeagueItem
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun OpportunitieScreen(state: EventState, vm: EventViewModel, moveToOppDetails: () -> Unit) {
+fun OpportunitieScreen(state: EventState, vm: EventViewModel, moveToOppDetails: (String) -> Unit) {
     if (state.leagues.size > 0) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
@@ -38,7 +41,7 @@ fun OpportunitieScreen(state: EventState, vm: EventViewModel, moveToOppDetails: 
                 LazyColumn(Modifier.fillMaxWidth()) {
                     items(state.leagues) { leag ->
                         LeagueItem(leag, state) {
-                            moveToOppDetails()
+                            moveToOppDetails(leag.title)
                         }
                     }
                 }
