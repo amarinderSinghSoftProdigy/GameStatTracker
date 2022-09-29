@@ -21,11 +21,8 @@ import androidx.compose.material.Switch
 import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,6 +36,7 @@ import com.google.accompanist.flowlayout.FlowRow
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppDivider
+import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
@@ -48,30 +46,6 @@ fun FilterScreen(vm: EventViewModel, onSuccess: () -> Unit) {
     remember {
         vm.onEvent(EvEvents.GetFilters)
     }
-
-    var selectedGender by rememberSaveable { mutableStateOf("") }
-    var selectedEvent by rememberSaveable { mutableStateOf("") }
-    var selectedFormat by rememberSaveable { mutableStateOf("") }
-    var selectedLevel by rememberSaveable { mutableStateOf("") }
-    val genderList = arrayListOf<String>(
-        stringResource(id = R.string.male),
-        stringResource(id = R.string.female)
-    )
-    val eventType = arrayListOf<String>(
-        stringResource(id = R.string.league),
-        stringResource(id = R.string.clinic),
-        stringResource(id = R.string.camp)
-    )
-    val format = arrayListOf<String>(
-        stringResource(id = R.string.individual),
-        stringResource(id = R.string.team)
-    )
-    val level = arrayListOf<String>(
-        stringResource(id = R.string.elite),
-        stringResource(id = R.string.competitive),
-        stringResource(id = R.string.developmental),
-        stringResource(id = R.string.learning)
-    )
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             Modifier
@@ -80,31 +54,36 @@ fun FilterScreen(vm: EventViewModel, onSuccess: () -> Unit) {
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            FilterItem(stringResource(id = R.string.gender), genderList, setSelected = {
-                selectedGender = it
-            }, selectedGender)
+            FlowRow {
+                state.filters.forEach { item ->
+                    FilterItem(
+                        heading = item.key,
+                        list = item.value,
+                        setSelected = {
+
+                        }
+                    )
+                }
+            }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-            DistanceItem()
-            FilterItem(stringResource(id = R.string.event_type), eventType, setSelected = {
-                selectedEvent = it
-            }, selectedEvent)
-            FilterItem(stringResource(id = R.string.format), format, setSelected = {
-                selectedFormat = it
-            }, selectedFormat)
-            FilterItem(stringResource(id = R.string.level), level, setSelected = {
-                selectedLevel = it
-            }, selectedLevel)
+            /*DistanceItem()
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+            */
             AppButton(
                 enabled = true,
                 icon = null,
                 themed = true,
-                onClick = { onSuccess() },
+                onClick = {
+                    onSuccess()
+                },
                 text = stringResource(id = R.string.save),
                 isForceEnableNeeded = true
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
         }
+    }
+    if (state.isLoading) {
+        CommonProgressBar()
     }
 }
 
@@ -174,9 +153,8 @@ fun DistanceItem() {
 @Composable
 fun FilterItem(
     heading: String,
-    list: ArrayList<String>,
-    setSelected: (value: String) -> Unit,
-    selectedValue: String
+    list: ArrayList<FilterPreference>,
+    setSelected: (String) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -184,7 +162,7 @@ fun FilterItem(
     ) {
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
         Text(
-            text = heading,
+            text = heading.capitalize(),
             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
             fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
             fontWeight = FontWeight.Bold,
@@ -200,6 +178,9 @@ fun FilterItem(
         ) {
             FlowRow(Modifier.fillMaxWidth()) {
                 list.forEachIndexed { index, value ->
+                    val status = remember {
+                        mutableStateOf(value.status)
+                    }
                     Column {
                         Row(
                             modifier = Modifier
@@ -211,7 +192,7 @@ fun FilterItem(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = value,
+                                text = value.name.capitalize(),
                                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                 fontWeight = FontWeight.Bold,
@@ -219,8 +200,12 @@ fun FilterItem(
                             )
                             Switch(
                                 modifier = Modifier.height(dimensionResource(id = R.dimen.size_25dp)),
-                                checked = value == selectedValue,
-                                onCheckedChange = { setSelected(value) },
+                                checked = status.value,
+                                onCheckedChange = {
+                                    value.status = !value.status
+                                    status.value = value.status
+                                    setSelected(heading)
+                                },
                                 colors = SwitchDefaults.colors(
                                     checkedThumbColor = MaterialTheme.appColors.material.primaryVariant
                                 )

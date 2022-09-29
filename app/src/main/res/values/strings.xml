@@ -378,4 +378,10 @@
     <string name="child_not_listed">Child not listed</string>
     <string name="select_the_players_guardian">Select the player/s you\'re guardian of</string>
     <string name="search_venue_by_name">Search venue by name</string>
+    <string name="cash">Cash</string>
+    <string name="cash_message">Please enter cash value</string>
+    <string name="dollar">$</string>
+    <string name="choose_team">Choose Team</string>
+    <string name="please_select_division">Please select division.</string>
+    <string name="please_select_player">Please select players.</string>
 </resources>

@@ -103,6 +103,7 @@ fun EventsScreen(
                     Team(name = "Springfield Sprouts"),
                 )
                 SwitchTeamDialog(
+                    teamSelect = teams[0],
                     teams = teams,
                     title = stringResource(id = R.string.switch_teams),
                     onDismiss = {

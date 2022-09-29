@@ -21,7 +21,6 @@ import coil.request.ImageRequest
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun CoilImage(
     src: Any,

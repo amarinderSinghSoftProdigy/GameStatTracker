@@ -42,6 +42,7 @@ class TeamViewModel @Inject constructor(
 
     private val _teamUiState = mutableStateOf(TeamUIState())
     val teamUiState: State<TeamUIState> = _teamUiState
+
     fun isDragEnabled(pos: ItemPosition) = true
 
     fun isRoasterDragEnabled(pos: ItemPosition) =
@@ -97,6 +98,11 @@ class TeamViewModel @Inject constructor(
 
     fun onEvent(event: TeamUIEvent) {
         when (event) {
+            is TeamUIEvent.OnTeamIdSelected -> {
+                viewModelScope.launch {
+                    getPlayerById(event.teamId)
+                }
+            }
             is TeamUIEvent.OnConfirmTeamClick -> {
                 viewModelScope.launch {
                     dataStoreManager.setId(event.teamId)
@@ -246,7 +252,7 @@ class TeamViewModel @Inject constructor(
             name = _teamUiState.value.teamName,
             logo = _teamUiState.value.logo ?: "",
             colorCode = _teamUiState.value.teamColor,
-            primaryTeamColor =_teamUiState.value.teamColor,
+            primaryTeamColor = _teamUiState.value.teamColor,
 
             )
         _teamUiState.value = _teamUiState.value.copy(updatedTeam = request)
@@ -414,7 +420,7 @@ class TeamViewModel @Inject constructor(
                             all = CommonUtils.getSelectedList(response.data.teamLeaderBoard)
                         )
                         _teamChannel.send(
-                            TeamChannel.OnTeamDetailsSuccess(response.data._id,response.data.name)
+                            TeamChannel.OnTeamDetailsSuccess(response.data._id, response.data.name)
                         )
                     } else {
                         _teamUiState.value =
@@ -431,10 +437,65 @@ class TeamViewModel @Inject constructor(
             }
         }
     }
+
+    private suspend fun getPlayerById(teamId: String) {
+        _teamUiState.value = _teamUiState.value.copy(isLoading = true)
+
+        when (val userRoles = teamRepo.getPlayerById(teamId)) {
+            is ResultWrapper.GenericError -> {
+                _teamUiState.value = _teamUiState.value.copy(isLoading = false)
+
+                _teamChannel.send(
+                    TeamChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${userRoles.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _teamUiState.value = _teamUiState.value.copy(isLoading = false)
+
+                _teamChannel.send(
+                    TeamChannel.ShowToast(
+                        UiText.DynamicString(
+                            userRoles.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                userRoles.value.let { response ->
+                    if (response.status) {
+                        _teamUiState.value =
+                            _teamUiState.value.copy(
+                                isLoading = false,
+                                playersList = response.data
+                            )
+                    } else {
+
+                        _teamUiState.value =
+                            _teamUiState.value.copy(
+                                isLoading = false,
+                            )
+                        _teamChannel.send(
+                            TeamChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
 
 sealed class TeamChannel {
     data class ShowToast(val message: UiText) : TeamChannel()
-    data class OnTeamsUpdate(val message: UiText, val teamId: String,val teamName:String) : TeamChannel()
-    data class OnTeamDetailsSuccess(val teamId: String,val teamName:String) : TeamChannel()
+    data class OnTeamsUpdate(val message: UiText, val teamId: String, val teamName: String) :
+        TeamChannel()
+
+    data class OnTeamDetailsSuccess(val teamId: String, val teamName: String) : TeamChannel()
 }

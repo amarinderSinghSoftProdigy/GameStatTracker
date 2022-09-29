@@ -39,7 +39,8 @@ data class FilterResponse(
 
 data class FilterPreference(
     @SerializedName("name") val name: String = "",
-    @SerializedName("status") val status: String = "",
+    @SerializedName("status") var status: Boolean = false,
+    @SerializedName("key") val key: String = "",
 )
 
 data class OpportunitiesItem(
@@ -101,4 +102,22 @@ data class Participation(
 data class LocationData(
     @SerializedName("type") val type: String = "",
     //@SerializedName("coordinates") val coordinates: Any,
+)
+
+data class DivisionData(
+    @SerializedName("_id") val _id: String = "",
+    @SerializedName("eventId") val eventId: String = "",
+    @SerializedName("divisionName") val divisionName: String = "",
+)
+
+data class RegisterRequest(
+    val team: String = "",
+    val event: String = "",
+    val players: ArrayList<String> = ArrayList(),
+    val paymentOption: String = "cash",
+    val payment: String = "",
+    val division: String = "",
+    val sendPushNotification: Boolean = false,
+    val termsAndCondition: Boolean = false,
+    val privacy: Boolean = false,
 )

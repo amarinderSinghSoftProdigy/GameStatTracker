@@ -22,9 +22,11 @@ import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.domain.BaseResponse
+import com.softprodigy.ballerapp.ui.features.home.events.DivisionData
 import com.softprodigy.ballerapp.ui.features.home.events.FilterResponse
 import com.softprodigy.ballerapp.ui.features.home.events.OpportunitiesDetail
 import com.softprodigy.ballerapp.ui.features.home.events.OpportunitiesItem
+import com.softprodigy.ballerapp.ui.features.home.events.RegisterRequest
 import com.softprodigy.ballerapp.ui.features.home.invitation.Invitation
 import com.softprodigy.ballerapp.ui.features.venue.Venue
 import okhttp3.MultipartBody
@@ -165,5 +167,11 @@ open interface APIService {
 
     @GET(ApiConstants.GET_FILTERS)
     suspend fun getFilters(): BaseResponse<FilterResponse>
+
+    @GET("${ApiConstants.EVENT_GET_DIVISIONS}/{id}")
+    suspend fun getEventDivision(@Path("id") id: String): BaseResponse<List<DivisionData>>
+
+    @POST(ApiConstants.EVENT_TEAM_REGISTRATION)
+    suspend fun registerEvent(@Body request: RegisterRequest): BaseResponse<Any>
 
 }

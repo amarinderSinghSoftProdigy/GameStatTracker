@@ -1,10 +1,13 @@
-package com.softprodigy.ballerapp.ui.features.home.events
+package com.softprodigy.ballerapp.ui.features.home.events.opportunities
 
-import androidx.compose.foundation.Image
+import android.widget.Toast
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -21,24 +25,40 @@ import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.sp
-import com.google.accompanist.pager.ExperimentalPagerApi
+import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.CoilImage
+import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
 import com.softprodigy.ballerapp.ui.features.components.CustomCheckBox
 import com.softprodigy.ballerapp.ui.features.components.DividerCommon
+import com.softprodigy.ballerapp.ui.features.components.Placeholder
+import com.softprodigy.ballerapp.ui.features.components.SelectDivisionDialog
+import com.softprodigy.ballerapp.ui.features.components.SwitchPlayerDialog
+import com.softprodigy.ballerapp.ui.features.components.SwitchTeamDialog
 import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
+import com.softprodigy.ballerapp.ui.features.home.events.EvEvents
+import com.softprodigy.ballerapp.ui.features.home.events.EventChannel
+import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
+import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
+import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
 import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
@@ -46,10 +66,46 @@ import com.softprodigy.ballerapp.ui.theme.ColorMainPrimary
 import com.softprodigy.ballerapp.ui.theme.appColors
 import com.softprodigy.ballerapp.ui.theme.md_theme_light_onSurface
 
-@OptIn(ExperimentalPagerApi::class, ExperimentalComposeUiApi::class)
 @Composable
-fun EventRegistraionDetails(vm: EventViewModel, onSuccess: () -> Unit) {
+fun EventRegistraionDetails(vm: EventViewModel, teamVm: TeamViewModel, onSuccess: () -> Unit) {
+    val context = LocalContext.current
     val state = vm.eventState.value
+    remember {
+        vm.onEvent(EvEvents.GetDivisions(state.selectedEventId))
+    }
+    val showDialog = remember {
+        mutableStateOf(false)
+    }
+    val showPlayerDialog = remember {
+        mutableStateOf(false)
+    }
+    val showDivisionDialog = remember {
+        mutableStateOf(false)
+    }
+
+    LaunchedEffect(key1 = Unit) {
+        vm.eventChannel.collect { uiEvent ->
+            when (uiEvent) {
+                is EventChannel.ShowToast -> {
+                    Toast.makeText(
+                        context,
+                        uiEvent.message.asString(context),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                is EventChannel.OnSuccess -> {
+                    Toast.makeText(
+                        context,
+                        uiEvent.message.asString(context),
+                        Toast.LENGTH_LONG
+                    ).show()
+                    onSuccess()
+                }
+            }
+        }
+    }
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -76,43 +132,96 @@ fun EventRegistraionDetails(vm: EventViewModel, onSuccess: () -> Unit) {
                         modifier = Modifier
                             .weight(1f)
                     )
-                    Image(
-                        painter = painterResource(id = R.drawable.user_demo),
-                        contentDescription = "",
-                        modifier = Modifier
-                            .size(dimensionResource(id = R.dimen.size_32dp))
-                            .clip(CircleShape)
-                    )
-                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
-                    Text(
-                        text = "Springfield Bucks",
-                        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                        fontWeight = FontWeight.W500,
-                    )
+                    Row(
+                        modifier = Modifier.clickable { showDialog.value = true },
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (state.registerRequest.team.isNotEmpty()) {
+                            CoilImage(
+                                src = BuildConfig.IMAGE_SERVER + state.team.logo,
+                                modifier = Modifier
+                                    .size(dimensionResource(id = R.dimen.size_32dp))
+                                    .clip(CircleShape)
+                                    .border(
+                                        dimensionResource(id = R.dimen.size_2dp),
+                                        MaterialTheme.colors.surface,
+                                        CircleShape,
+                                    ),
+                                isCrossFadeEnabled = false,
+                                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                                onError = { Placeholder(R.drawable.ic_team_placeholder) }
+                            )
+                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
+                            Text(
+                                text = state.team.name,
+                                style = MaterialTheme.typography.h6,
+                                color = ColorBWBlack,
+                                fontSize = dimensionResource(R.dimen.txt_size_14).value.sp,
+                            )
+                        } else {
+                            Text(
+                                text = stringResource(id = R.string.choose_team),
+                                style = MaterialTheme.typography.h6,
+                                color = MaterialTheme.appColors.textField.label,
+                            )
+                        }
+                    }
 
                 }
                 DividerCommon()
-                RegisterItem(stringResource(id = R.string.age_group), "10 - 12")
+                RegisterItem(
+                    stringResource(id = R.string.division),
+                    if (state.registerRequest.division.isNotEmpty()) state.divisionData.divisionName
+                    else stringResource(id = R.string.choose_division),
+                    updated = state.registerRequest.division.isNotEmpty()
+                ) {
+                    showDivisionDialog.value = true
+                }
                 DividerCommon()
                 RegisterItem(
                     stringResource(id = R.string.players),
-                    stringResource(id = R.string.all)
-                )
+                    if (state.registerRequest.players.isNotEmpty()) state.registerRequest.players.size.toString() else stringResource(
+                        id = R.string.choose_playerr
+                    ),
+                    updated = state.registerRequest.players.isNotEmpty()
+                ) {
+                    if (state.registerRequest.team.isEmpty()) {
+                        vm.onEvent(EvEvents.ShowToast(context.getString(R.string.no_team_selected)))
+                    } else {
+                        showPlayerDialog.value = true
+                    }
+                }
                 DividerCommon()
                 RegisterItem(
                     stringResource(id = R.string.payment_options),
-                    stringResource(id = R.string.venmo)
-                )
+                    stringResource(id = R.string.cash),
+                    showIcon = false,
+                    updated = true
+                ) {
+
+                }
                 AppOutlineTextField(
-                    value = "",
+                    isError = state.registerRequest.payment.isEmpty() || state.registerRequest.payment == "0",
+                    leadingIcon = {
+                        AppText(
+                            text = stringResource(id = R.string.dollar),
+                            fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
+                        )
+                    },
+                    value = state.registerRequest.payment,
                     onValueChange = {
+                        vm.onEvent(EvEvents.RegisterCash(it))
                     },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = dimensionResource(id = R.dimen.size_16dp)),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next,
+                        keyboardType = KeyboardType.Number
+                    ),
                     placeholder = {
                         AppText(
-                            text = stringResource(id = R.string.venmo_hanle),
+                            text = stringResource(id = R.string.cash),
                             fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
                         )
                     },
@@ -120,22 +229,22 @@ fun EventRegistraionDetails(vm: EventViewModel, onSuccess: () -> Unit) {
                         unfocusedBorderColor = ColorBWGrayBorder,
                         cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
                     ),
-                    errorMessage = stringResource(id = R.string.valid_team_name)
+                    errorMessage = stringResource(id = R.string.cash_message)
                 )
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-        }
-        Heading(stringResource(id = R.string.division))
-        UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
+            /*}
+            Heading(stringResource(id = R.string.division))
+            UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {*/
             Column(
                 modifier = Modifier
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                RegisterItem(
-                    stringResource(id = R.string.division),
-                    "Division 1"
-                )
+                /* RegisterItem(
+                     stringResource(id = R.string.division),
+                     "Division 1"
+                 )*/
                 DividerCommon()
                 Row(
                     modifier = Modifier
@@ -151,8 +260,10 @@ fun EventRegistraionDetails(vm: EventViewModel, onSuccess: () -> Unit) {
                             .weight(1f)
                     )
                     Switch(
-                        checked = true,
-                        onCheckedChange = { },
+                        checked = state.registerRequest.sendPushNotification,
+                        onCheckedChange = {
+                            vm.onEvent(EvEvents.RegisterNotification(it))
+                        },
                         colors = SwitchDefaults.colors(
                             checkedThumbColor = MaterialTheme.appColors.material.primaryVariant
                         )
@@ -168,8 +279,10 @@ fun EventRegistraionDetails(vm: EventViewModel, onSuccess: () -> Unit) {
                     .padding(all = dimensionResource(id = R.dimen.size_16dp)),
             ) {
                 CustomCheckBox(
-                    true
-                ) { }
+                    state.registerRequest.termsAndCondition
+                ) {
+                    vm.onEvent(EvEvents.RegisterTerms(!state.registerRequest.termsAndCondition))
+                }
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_20dp)))
                 AppText(
                     text = stringResource(id = R.string.i_agree) + " ",
@@ -189,8 +302,10 @@ fun EventRegistraionDetails(vm: EventViewModel, onSuccess: () -> Unit) {
                     .padding(all = dimensionResource(id = R.dimen.size_16dp)),
             ) {
                 CustomCheckBox(
-                    true
-                ) { }
+                    state.registerRequest.privacy
+                ) {
+                    vm.onEvent(EvEvents.RegisterPrivacy(!state.registerRequest.privacy))
+                }
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_20dp)))
                 AppText(
                     text = stringResource(id = R.string.privacy),
@@ -205,14 +320,85 @@ fun EventRegistraionDetails(vm: EventViewModel, onSuccess: () -> Unit) {
             enabled = true,
             icon = null,
             themed = true,
-            onClick = { onSuccess() },
-            text = stringResource(id = R.string.procced),
+            onClick = {
+                var message = ""
+                if (state.registerRequest.team.isEmpty()) {
+                    message = context.getString(R.string.no_team_selected)
+                }
+                if (state.registerRequest.division.isEmpty()) {
+                    message = context.getString(R.string.please_select_division)
+                }
+                if (state.registerRequest.players.isEmpty()) {
+                    message = context.getString(R.string.please_select_player)
+                }
+                if (state.registerRequest.payment.isEmpty() || state.registerRequest.payment == "0") {
+                    message = context.getString(R.string.cash_message)
+                }
+                if (!state.registerRequest.termsAndCondition || !state.registerRequest.privacy) {
+                    message = context.getString(R.string.please_accept_tems)
+                }
+                if (message.isNotEmpty()) {
+                    vm.onEvent(EvEvents.ShowToast(message))
+                } else {
+                    vm.onEvent(EvEvents.RegisterForEvent)
+                }
+            },
+            text = stringResource(id = R.string.register),
             isForceEnableNeeded = true,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
+    }
+
+    if (showDialog.value) {
+        SwitchTeamDialog(
+            teamSelect = state.team,
+            teams = teamVm.teamUiState.value.teams,
+            title = stringResource(id = R.string.switch_teams),
+            onDismiss = {
+                showDialog.value = false
+            },
+            onConfirmClick = {
+                vm.onEvent(EvEvents.RegisterTeam(it))
+                teamVm.onEvent(TeamUIEvent.OnTeamIdSelected(it._id))
+                showDialog.value = false
+            }
+        )
+    }
+    if (showPlayerDialog.value) {
+        SwitchPlayerDialog(
+            player = state.registerRequest.players,
+            teams = teamVm.teamUiState.value.playersList,
+            title = stringResource(id = R.string.switch_teams),
+            onDismiss = {
+                showPlayerDialog.value = false
+            },
+            onConfirmClick = {
+                vm.onEvent(EvEvents.RegisterPlayer(it))
+                showPlayerDialog.value = false
+            }
+        )
+    }
+
+    if (showDivisionDialog.value) {
+        SelectDivisionDialog(
+            division = state.divisionData,
+            teams = state.eventDivision,
+            title = stringResource(id = R.string.switch_teams),
+            onDismiss = {
+                showDivisionDialog.value = false
+            },
+            onConfirmClick = {
+                vm.onEvent(EvEvents.RegisterDivision(it))
+                showDivisionDialog.value = false
+            }
+        )
+    }
+
+    if (state.isLoading) {
+        CommonProgressBar()
     }
 }
 
@@ -229,7 +415,13 @@ fun Heading(title: String) {
 }
 
 @Composable
-fun RegisterItem(title: String, value: String) {
+fun RegisterItem(
+    title: String,
+    value: String,
+    showIcon: Boolean = true,
+    updated: Boolean = true,
+    onClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .height(dimensionResource(id = R.dimen.size_56dp))
@@ -243,19 +435,30 @@ fun RegisterItem(title: String, value: String) {
             modifier = Modifier
                 .weight(1f)
         )
-        AppText(
-            text = value,
-            style = MaterialTheme.typography.h6,
-            color = ColorBWBlack,
-            fontSize = dimensionResource(R.dimen.txt_size_14).value.sp,
-        )
-        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
-        Icon(
+        Row(
             modifier = Modifier
+                .fillMaxHeight()
+                .weight(1F)
                 .clickable {
+                    onClick()
                 },
-            painter = painterResource(id = R.drawable.ic_forward),
-            contentDescription = "", tint = ColorGreyLighter
-        )
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.End
+        ) {
+            AppText(
+                text = value,
+                style = if (!updated) MaterialTheme.typography.h6 else MaterialTheme.typography.h2,
+                color = if (!updated) MaterialTheme.appColors.textField.label else ColorBWBlack,
+            )
+            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+            if (showIcon)
+                Icon(
+                    modifier = Modifier
+                        .clickable {
+                        },
+                    painter = painterResource(id = R.drawable.ic_forward),
+                    contentDescription = "", tint = ColorGreyLighter
+                )
+        }
     }
 }

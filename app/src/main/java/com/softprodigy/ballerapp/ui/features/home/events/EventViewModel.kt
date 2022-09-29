@@ -8,6 +8,7 @@ import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.domain.repository.IEventsRepository
+import com.softprodigy.ballerapp.ui.utils.CommonUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -32,8 +33,66 @@ class EventViewModel @Inject constructor(
 
     fun onEvent(event: EvEvents) {
         when (event) {
+            is EvEvents.RegisterPrivacy -> {
+                _state.value =
+                    _state.value.copy(registerRequest = _state.value.registerRequest.copy(privacy = event.request))
+            }
+            is EvEvents.RegisterTerms -> {
+                _state.value =
+                    _state.value.copy(
+                        registerRequest = _state.value.registerRequest.copy(
+                            termsAndCondition = event.request
+                        )
+                    )
+            }
+            is EvEvents.RegisterCash -> {
+                _state.value =
+                    _state.value.copy(registerRequest = _state.value.registerRequest.copy(payment = event.request))
+            }
+            is EvEvents.RegisterPlayer -> {
+                _state.value =
+                    _state.value.copy(registerRequest = _state.value.registerRequest.copy(players = event.request))
+            }
+            is EvEvents.RegisterDivision -> {
+                _state.value =
+                    _state.value.copy(
+                        divisionData = event.request,
+                        registerRequest = _state.value.registerRequest.copy(division = event.request._id)
+                    )
+            }
+            is EvEvents.RegisterNotification -> {
+                _state.value =
+                    _state.value.copy(
+                        registerRequest = _state.value.registerRequest.copy(
+                            sendPushNotification = event.request
+                        )
+                    )
+            }
+            is EvEvents.RegisterTeam -> {
+                _state.value =
+                    _state.value.copy(
+                        team = event.request,
+                        registerRequest = _state.value.registerRequest.copy(team = event.request._id)
+                    )
+            }
+            is EvEvents.UpdateFilters -> {
+                _state.value = _state.value.copy(filters = _state.value.filters)
+            }
+            is EvEvents.RegisterForEvent -> {
+                viewModelScope.launch {
+                    registerForEvent()
+                }
+            }
+            is EvEvents.GetDivisions -> {
+                viewModelScope.launch {
+                    getEventDivisions(event.id)
+                }
+            }
             is EvEvents.SetEventId -> {
-                _state.value = _state.value.copy(selectedEventId = event.id)
+                _state.value = _state.value.copy(
+                    selectedEventId = event.id,
+                    registerRequest = _state.value.registerRequest.copy(event = event.id)
+                )
             }
             is EvEvents.GetOpportunityDetail -> {
                 viewModelScope.launch {
@@ -72,6 +131,18 @@ class EventViewModel @Inject constructor(
                     showDeclineDialog = false,
                 )
             }
+            is EvEvents.ShowToast -> {
+                viewModelScope.launch {
+                    _channel.send(
+                        EventChannel.ShowToast(
+                            UiText.DynamicString(
+                                event.message
+
+                            )
+                        )
+                    )
+                }
+            }
         }
 
     }
@@ -105,7 +176,10 @@ class EventViewModel @Inject constructor(
                 userResponse.value.let { response ->
                     if (response.status) {
                         _state.value =
-                            _state.value.copy(filterPreference = response.data.filterPreferences)
+                            _state.value.copy(
+                                filterPreference = response.data.filterPreferences,
+                                filters = CommonUtils.getFilterMap(response.data.filterPreferences)
+                            )
                     } else {
                         _channel.send(
                             EventChannel.ShowToast(
@@ -120,6 +194,98 @@ class EventViewModel @Inject constructor(
             }
         }
     }
+
+    suspend fun getEventDivisions(eventId: String) {
+        _state.value = _state.value.copy(isLoading = true)
+        val userResponse = userRepository.getEventDivisions(eventId)
+        _state.value = _state.value.copy(isLoading = false)
+
+        when (userResponse) {
+            is ResultWrapper.GenericError -> {
+                _channel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${userResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _channel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            userResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                userResponse.value.let { response ->
+                    if (response.status) {
+                        _state.value = _state.value.copy(eventDivision = response.data)
+                    } else {
+                        _channel.send(
+                            EventChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+
+                    }
+                }
+            }
+        }
+    }
+
+    suspend fun registerForEvent() {
+        _state.value = _state.value.copy(isLoading = true)
+        val userResponse = userRepository.registerForEvent(_state.value.registerRequest)
+        _state.value = _state.value.copy(isLoading = false)
+
+        when (userResponse) {
+            is ResultWrapper.GenericError -> {
+                _channel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${userResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _channel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            userResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                userResponse.value.let { response ->
+                    if (response.status) {
+                        _channel.send(
+                            EventChannel.OnSuccess(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    } else {
+                        _channel.send(
+                            EventChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
 
     suspend fun getOpportunityDetail(eventId: String) {
         _state.value = _state.value.copy(isLoading = true)
@@ -211,4 +377,5 @@ class EventViewModel @Inject constructor(
 
 sealed class EventChannel {
     data class ShowToast(val message: UiText) : EventChannel()
+    data class OnSuccess(val message: UiText) : EventChannel()
 }

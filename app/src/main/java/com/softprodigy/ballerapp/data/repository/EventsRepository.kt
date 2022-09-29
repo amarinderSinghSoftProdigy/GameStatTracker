@@ -6,9 +6,11 @@ import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.domain.BaseResponse
 import com.softprodigy.ballerapp.domain.repository.IEventsRepository
 import com.softprodigy.ballerapp.network.APIService
+import com.softprodigy.ballerapp.ui.features.home.events.DivisionData
 import com.softprodigy.ballerapp.ui.features.home.events.FilterResponse
 import com.softprodigy.ballerapp.ui.features.home.events.OpportunitiesDetail
 import com.softprodigy.ballerapp.ui.features.home.events.OpportunitiesItem
+import com.softprodigy.ballerapp.ui.features.home.events.RegisterRequest
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
@@ -35,6 +37,18 @@ class EventsRepository @Inject constructor(
     override suspend fun getEventOpportunityDetails(id: String): ResultWrapper<BaseResponse<OpportunitiesDetail>> {
         return safeApiCall(dispatcher) {
             service.getOpportunityDetail(id)
+        }
+    }
+
+    override suspend fun getEventDivisions(id: String): ResultWrapper<BaseResponse<List<DivisionData>>> {
+        return safeApiCall(dispatcher) {
+            service.getEventDivision(id)
+        }
+    }
+
+    override suspend fun registerForEvent(request: RegisterRequest): ResultWrapper<BaseResponse<Any>> {
+        return safeApiCall(dispatcher) {
+            service.registerEvent(request)
         }
     }
 

@@ -3,6 +3,7 @@ package com.softprodigy.ballerapp.ui.utils
 import android.annotation.SuppressLint
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.TeamLeaderBoard
+import com.softprodigy.ballerapp.ui.features.home.events.FilterPreference
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -26,6 +27,24 @@ class CommonUtils {
                 }
             }
             return count == teamLeaderBoard.size
+        }
+
+        fun getFilterMap(teamLeaderBoard: List<FilterPreference>): HashMap<String, ArrayList<FilterPreference>> {
+            val result: HashMap<String, ArrayList<FilterPreference>> = HashMap()
+            val keys: ArrayList<String> = ArrayList()
+            for (item in teamLeaderBoard) {
+                if (!keys.contains(item.key))
+                    keys.add(item.key)
+            }
+            for (item in keys) {
+                val data: ArrayList<FilterPreference> = ArrayList()
+                for (it in teamLeaderBoard)
+                    if (item == it.key) {
+                        data.add(it)
+                    }
+                result.put(item, data)
+            }
+            return result
         }
 
         @SuppressLint("SimpleDateFormat")
@@ -81,7 +100,7 @@ class CommonUtils {
                 firstDate = inputFormat.parse(startTime)
                 str = endFormat.format(firstDate)
             } catch (e: ParseException) {
-                e.printStackTrace()
+
             }
             return str
         }
