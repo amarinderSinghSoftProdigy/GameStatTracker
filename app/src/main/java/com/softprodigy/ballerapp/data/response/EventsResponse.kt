@@ -7,6 +7,10 @@ import com.softprodigy.ballerapp.ui.theme.ColorMainPrimary
 import com.softprodigy.ballerapp.ui.theme.GreenColor
 import com.softprodigy.ballerapp.ui.theme.Yellow700
 
+data class EventsResponse(
+    @SerializedName("upcommingEvents") val upcommingEvents: ArrayList<Events> = arrayListOf(),
+    @SerializedName("pastEvents") val pastEvents: ArrayList<Events> = arrayListOf(),
+)
 data class Events(
     @SerializedName("_id") val id: String = "",
     @SerializedName("title") val title: String = "",
@@ -14,7 +18,6 @@ data class Events(
     @SerializedName("date") val date: String = "",
     @SerializedName("status") val status: String = "",
     @SerializedName("type") val type: EventType? = null,
-//    @SerializedName("backgroundColor") val backgroundColor: String = "",
 )
 
 enum class EventStatus(val status: String) {

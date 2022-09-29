@@ -16,6 +16,7 @@ import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.domain.BaseResponse
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import com.softprodigy.ballerapp.network.APIService
+import com.softprodigy.ballerapp.ui.features.home.events.EventsResponse
 import com.softprodigy.ballerapp.ui.features.home.invitation.Invitation
 import com.softprodigy.ballerapp.ui.features.venue.Venue
 import kotlinx.coroutines.CoroutineDispatcher
@@ -88,6 +89,15 @@ class TeamRepository @Inject constructor(
     ): ResultWrapper<BaseResponse<ArrayList<Invitation>>> {
         return safeApiCall(dispatcher) {
             service.getAllInvitation(page, limit, sort)
+        }
+    }
+    override suspend fun getAllevents(
+        page: Int,
+        limit: Int,
+        sort: String
+    ): ResultWrapper<BaseResponse<EventsResponse>> {
+        return safeApiCall(dispatcher) {
+            service.getAllevents(page, limit, sort)
         }
     }
 
