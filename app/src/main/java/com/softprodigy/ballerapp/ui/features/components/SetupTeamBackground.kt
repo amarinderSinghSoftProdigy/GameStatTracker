@@ -104,11 +104,8 @@ fun CoachFlowBackground(
                 }
             }
 
-            Column(modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())) {
+
                 Box(modifier = Modifier.fillMaxSize()) {
-                    content()
                     Column(
                         modifier = Modifier
                             .align(Alignment.TopEnd)
@@ -190,9 +187,8 @@ fun CoachFlowBackground(
                             }
                         }
                     }
+                    content()
                 }
-            }
-
         }
     }
 }

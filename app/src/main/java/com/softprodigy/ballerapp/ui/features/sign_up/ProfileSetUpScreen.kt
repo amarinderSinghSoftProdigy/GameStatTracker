@@ -264,7 +264,8 @@ fun ProfileSetUpScreen(
 
                 Column(
                     Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.Center
                 ) {
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_64dp)))

@@ -104,7 +104,8 @@ fun TeamSetupScreenUpdated(
 
                 Column(
                     Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.Center
                 ) {
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_64dp)))

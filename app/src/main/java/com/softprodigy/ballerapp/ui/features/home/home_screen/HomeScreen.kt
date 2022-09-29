@@ -147,7 +147,8 @@ fun HomeScreen(
                         top = dimensionResource(id = R.dimen.size_16dp),
                         end = dimensionResource(id = R.dimen.size_16dp),
                         start = dimensionResource(id = R.dimen.size_16dp)
-                    ),
+                    )
+                    .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.Center
             ) {
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))
