@@ -6,6 +6,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
+import com.softprodigy.ballerapp.domain.repository.ITeamRepository
+import com.softprodigy.ballerapp.ui.theme.ColorPrimaryOrange
+import com.softprodigy.ballerapp.ui.theme.GreenColor
+import com.softprodigy.ballerapp.ui.theme.Yellow700
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.domain.repository.IEventsRepository
 import com.softprodigy.ballerapp.ui.utils.CommonUtils
@@ -18,6 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class EventViewModel @Inject constructor(
     val dataStoreManager: DataStoreManager,
+    val teamRepo: ITeamRepository
     val userRepository: IEventsRepository,
     application: Application
 ) : AndroidViewModel(application) {
@@ -30,6 +35,105 @@ class EventViewModel @Inject constructor(
     private val _channel = Channel<EventChannel>()
     val eventChannel = _channel.receiveAsFlow()
 
+    init {
+        viewModelScope.launch {  getEventList()}
+    }
+
+        suspend fun getEventList() {
+            eventState.value =
+                eventState.value.copy(showLoading = true)
+            val eventResponse = teamRepo.getAllevents()
+            eventState.value =
+                eventState.value.copy(showLoading = false)
+
+            when (eventResponse) {
+                is ResultWrapper.GenericError -> {
+                    _eventChannel.send(
+                        EventChannel.ShowToast(
+                            UiText.DynamicString(
+                                "${eventResponse.message}"
+                            )
+                        )
+                    )
+                }
+                is ResultWrapper.NetworkError -> {
+                    _eventChannel.send(
+                        EventChannel.ShowToast(
+                            UiText.DynamicString(
+                                eventResponse.message
+                            )
+                        )
+                    )
+                }
+                is ResultWrapper.Success -> {
+                    eventResponse.value.let { response ->
+                        if (response.status) {
+                            eventState.value =
+                                eventState.value.copy(
+                                    currentEvents = response.data.upcommingEvents,
+                                    pastEvents = response.data.pastEvents
+                                )
+                        } else {
+                            _eventChannel.send(
+                                EventChannel.ShowToast(
+                                    UiText.DynamicString(
+                                        response.statusMessage
+                                    )
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+    suspend fun getEventDetails(id :String){
+        eventState.value =
+            eventState.value.copy(showLoading = true)
+        val eventResponse = teamRepo.getAllevents()
+        eventState.value =
+            eventState.value.copy(showLoading = false)
+
+        when (eventResponse) {
+            is ResultWrapper.GenericError -> {
+                _eventChannel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${eventResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _eventChannel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            eventResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                eventResponse.value.let { response ->
+                    if (response.status) {
+                        eventState.value =
+                            eventState.value.copy(
+                                currentEvents = response.data.upcommingEvents,
+                                pastEvents = response.data.pastEvents
+                            )
+                    } else {
+                        _eventChannel.send(
+                            EventChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
 
     fun onEvent(event: EvEvents) {
         when (event) {
@@ -128,8 +232,15 @@ class EventViewModel @Inject constructor(
             }
             is EvEvents.onCancelDeclineDialog -> {
                 _state.value = _state.value.copy(
-                    showDeclineDialog = false,
+                    showDeclineDialog = false, reasonTeam = ""
                 )
+            }
+            is EvEvents.OnSelection -> {
+                eventState.value = eventState.value.copy(selectionTeam = event.selected)
+            }
+
+            is EvEvents.OnReasonSelection -> {
+                eventState.value = eventState.value.copy(reasonTeam = event.text)
             }
             is EvEvents.ShowToast -> {
                 viewModelScope.launch {

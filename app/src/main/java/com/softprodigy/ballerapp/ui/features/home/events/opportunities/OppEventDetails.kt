@@ -142,8 +142,8 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
                 .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
         ) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-            Box(modifier = Modifier.fillMaxWidth()) {
-                Column {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.weight(2F)) {
                     Text(
                         text = stringResource(id = R.string.location),
                         color = ColorBWGrayLight,
@@ -164,7 +164,7 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
                     )
                 }
                 TransparentButtonButton(
-                    modifier = Modifier.align(Alignment.CenterEnd),
+                    modifier = Modifier.weight(1F),
                     text = stringResource(id = R.string.navigate),
                     onClick = {},
                     icon = painterResource(id = R.drawable.ic_nav),

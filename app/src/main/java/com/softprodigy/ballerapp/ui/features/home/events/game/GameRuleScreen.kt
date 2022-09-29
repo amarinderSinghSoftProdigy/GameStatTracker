@@ -68,11 +68,26 @@ fun GameRuleScreen(vm: EventViewModel) {
                 "15 min", "24s", "7",
                 "Ut augue sapien porta leo adipiscing bibendum dui."
             )
-            OtherItem(stringResource(id = R.string.full_court), "Eleifend enim sit posuere placerat sit quis.",)
-            OtherItem(stringResource(id = R.string.technical_fouls), "Eleifend enim sit posuere placerat sit quis.",)
-            OtherItem(stringResource(id = R.string.coach_rules), "Eleifend enim sit posuere placerat sit quis.",)
-            OtherItem(stringResource(id = R.string.forfeit), "Eleifend enim sit posuere placerat sit quis.",)
-            OtherItem(stringResource(id = R.string.other_rules), "Eleifend enim sit posuere placerat sit quis.",)
+            OtherItem(
+                stringResource(id = R.string.full_court),
+                "Eleifend enim sit posuere placerat sit quis.",
+            )
+            OtherItem(
+                stringResource(id = R.string.technical_fouls),
+                "Eleifend enim sit posuere placerat sit quis.",
+            )
+            OtherItem(
+                stringResource(id = R.string.coach_rules),
+                "Eleifend enim sit posuere placerat sit quis.",
+            )
+            OtherItem(
+                stringResource(id = R.string.forfeit),
+                "Eleifend enim sit posuere placerat sit quis.",
+            )
+            OtherItem(
+                stringResource(id = R.string.other_rules),
+                "Eleifend enim sit posuere placerat sit quis.",
+            )
 
         }
     }
@@ -94,58 +109,55 @@ fun GameRuleItem(
         Text(
             text = key1,
             color = ColorBWGrayLight,
-            fontSize = dimensionResource(id = R.dimen.txt_size_13).value.sp,
+            style = MaterialTheme.typography.h6,
             modifier = Modifier.weight(1f)
-
         )
         Text(
             text = key2,
             color = ColorBWGrayLight,
-            fontSize = dimensionResource(id = R.dimen.txt_size_13).value.sp,
+            style = MaterialTheme.typography.h6,
             modifier = Modifier.weight(1f)
         )
         Text(
             text = key3,
             color = ColorBWGrayLight,
-            fontSize = dimensionResource(id = R.dimen.txt_size_13).value.sp,
+            style = MaterialTheme.typography.h6,
             modifier = Modifier.weight(1f)
         )
     }
-    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
     Row() {
         Text(
             text = value1,
             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+            style = MaterialTheme.typography.h5,
             modifier = Modifier.weight(1f),
         )
         Text(
             text = value2,
             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+            style = MaterialTheme.typography.h5,
             modifier = Modifier.weight(1f),
-
-
-        )
+            )
         Text(
             text = value3,
             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+            style = MaterialTheme.typography.h5,
             modifier = Modifier.weight(1f),
         )
     }
-    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
     Text(
         text = key4,
         color = ColorBWGrayLight,
-        fontSize = dimensionResource(id = R.dimen.txt_size_13).value.sp,
+        style = MaterialTheme.typography.h6,
     )
-    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
     Text(
         text = value4,
         color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+        style = MaterialTheme.typography.h5
     )
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
     AppDivider()
@@ -153,19 +165,19 @@ fun GameRuleItem(
 }
 
 @Composable
-fun OtherItem(key:String,value:String){
+fun OtherItem(key: String, value: String) {
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
 
     Text(
-        text =key,
+        text = key,
         color = ColorBWGrayLight,
-        fontSize = dimensionResource(id = R.dimen.txt_size_13).value.sp,
-    )
-    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+        style = MaterialTheme.typography.h6,
+        )
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
     Text(
         text = value,
         color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+        style = MaterialTheme.typography.h5
     )
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
 }

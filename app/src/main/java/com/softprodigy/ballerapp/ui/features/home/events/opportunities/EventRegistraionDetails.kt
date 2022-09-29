@@ -2,6 +2,8 @@ package com.softprodigy.ballerapp.ui.features.home.events.opportunities
 
 import android.widget.Toast
 import androidx.compose.foundation.border
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,14 +19,17 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Switch
-import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,6 +53,7 @@ import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.CoilImage
 import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
 import com.softprodigy.ballerapp.ui.features.components.CustomCheckBox
+import com.softprodigy.ballerapp.ui.features.components.CustomSwitch
 import com.softprodigy.ballerapp.ui.features.components.DividerCommon
 import com.softprodigy.ballerapp.ui.features.components.Placeholder
 import com.softprodigy.ballerapp.ui.features.components.SelectDivisionDialog
@@ -59,6 +65,7 @@ import com.softprodigy.ballerapp.ui.features.home.events.EventChannel
 import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
+import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
 import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
@@ -127,7 +134,7 @@ fun EventRegistraionDetails(vm: EventViewModel, teamVm: TeamViewModel, onSuccess
                 ) {
                     AppText(
                         text = stringResource(id = R.string.team),
-                        style = MaterialTheme.typography.h6,
+                        style = MaterialTheme.typography.caption,
                         color = ColorBWBlack,
                         modifier = Modifier
                             .weight(1f)
@@ -254,7 +261,7 @@ fun EventRegistraionDetails(vm: EventViewModel, teamVm: TeamViewModel, onSuccess
                 ) {
                     AppText(
                         text = stringResource(id = R.string.send_push_notification),
-                        style = MaterialTheme.typography.h6,
+                        style = MaterialTheme.typography.caption,
                         color = ColorBWBlack,
                         modifier = Modifier
                             .weight(1f)
@@ -269,7 +276,6 @@ fun EventRegistraionDetails(vm: EventViewModel, teamVm: TeamViewModel, onSuccess
                         )
                     )
                 }
-
             }
         }
         UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
@@ -313,6 +319,7 @@ fun EventRegistraionDetails(vm: EventViewModel, teamVm: TeamViewModel, onSuccess
                     color = ColorMainPrimary,
                 )
             }
+
         }
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
 
@@ -430,7 +437,7 @@ fun RegisterItem(
     ) {
         AppText(
             text = title,
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.caption,
             color = ColorBWBlack,
             modifier = Modifier
                 .weight(1f)

@@ -16,8 +16,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
@@ -103,91 +105,90 @@ fun CoachFlowBackground(
             }
 
 
-
-            Box(modifier = Modifier.fillMaxSize()) {
-                content()
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(end = dimensionResource(id = R.dimen.size_16dp)),
-                    horizontalAlignment = Alignment.End
-                ) {
-                    if (teamLogo!!.isNotEmpty()) {
-                        Box(
-                            modifier = Modifier
-                                .background(color = Color.Transparent)
-                                .padding(
-                                    top = dimensionResource(id = R.dimen.size_50dp),
-                                    bottom = dimensionResource(id = R.dimen.size_16dp)
-                                ),
-                            contentAlignment = Alignment.CenterEnd
-                        ) {
-                            teamLogo.let {
-                                CoilImage(
-                                    src = it,
-                                    modifier = Modifier
-                                        .size(dimensionResource(id = R.dimen.size_65dp))
-                                        .clip(CircleShape)
-                                        .clickable {
-                                            showOptions.value = !showOptions.value
-                                        }
-                                        .background(
-                                            color = MaterialTheme.appColors.material.onSurface,
-                                            CircleShape
-                                        )
-                                        .border(
-                                            dimensionResource(id = R.dimen.size_3dp),
-                                            MaterialTheme.colors.surface,
-                                            CircleShape
-                                        ),
-                                    isCrossFadeEnabled = false,
-                                    onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
-                                    onError = { Placeholder(R.drawable.ic_user_profile_icon) }
-                                )
-                            }
-                        }
-                    }
-
-                    if (showOptions.value) {
-                        Surface(
-                            modifier = Modifier
-                                .align(Alignment.End),
-                            elevation = dimensionResource(id = R.dimen.size_10dp),
-                            color = Color.Transparent
-                        ) {
-                            Column(
-                                Modifier
-                                    .width(dimensionResource(id = R.dimen.size_150dp))
-                                    .background(
-                                        color = Color.White,
-                                        RoundedCornerShape(dimensionResource(id = R.dimen.size_10dp))
-                                    )
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(end = dimensionResource(id = R.dimen.size_16dp)),
+                        horizontalAlignment = Alignment.End
+                    ) {
+                        if (teamLogo!!.isNotEmpty()) {
+                            Box(
+                                modifier = Modifier
+                                    .background(color = Color.Transparent)
+                                    .padding(
+                                        top = dimensionResource(id = R.dimen.size_50dp),
+                                        bottom = dimensionResource(id = R.dimen.size_16dp)
+                                    ),
+                                contentAlignment = Alignment.CenterEnd
                             ) {
-                                OptionItem(
-                                    stringResource(id = R.string.my_profile),
-                                    R.drawable.ic_profile
-                                ) {
-                                    click(Options.PROFILE)
+                                teamLogo.let {
+                                    CoilImage(
+                                        src = it,
+                                        modifier = Modifier
+                                            .size(dimensionResource(id = R.dimen.size_65dp))
+                                            .clip(CircleShape)
+                                            .clickable {
+                                                showOptions.value = !showOptions.value
+                                            }
+                                            .background(
+                                                color = MaterialTheme.appColors.material.onSurface,
+                                                CircleShape
+                                            )
+                                            .border(
+                                                dimensionResource(id = R.dimen.size_3dp),
+                                                MaterialTheme.colors.surface,
+                                                CircleShape
+                                            ),
+                                        isCrossFadeEnabled = false,
+                                        onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
+                                        onError = { Placeholder(R.drawable.ic_user_profile_icon) }
+                                    )
                                 }
-                                Divider(thickness = dimensionResource(id = R.dimen.divider))
-                                OptionItem(
-                                    stringResource(id = R.string.swap_profiles),
-                                    R.drawable.ic_swap
+                            }
+                        }
+
+                        if (showOptions.value) {
+                            Surface(
+                                modifier = Modifier
+                                    .align(Alignment.End),
+                                elevation = dimensionResource(id = R.dimen.size_10dp),
+                                color = Color.Transparent
+                            ) {
+                                Column(
+                                    Modifier
+                                        .width(dimensionResource(id = R.dimen.size_150dp))
+                                        .background(
+                                            color = Color.White,
+                                            RoundedCornerShape(dimensionResource(id = R.dimen.size_10dp))
+                                        )
                                 ) {
-                                    click(Options.SWAP_PROFILES)
-                                }
-                                Divider(thickness = dimensionResource(id = R.dimen.divider))
-                                OptionItem(
-                                    stringResource(id = R.string.logout),
-                                    R.drawable.ic_logout
-                                ) {
-                                    click(Options.LOGOUT)
+                                    OptionItem(
+                                        stringResource(id = R.string.my_profile),
+                                        R.drawable.ic_profile
+                                    ) {
+                                        click(Options.PROFILE)
+                                    }
+                                    Divider(thickness = dimensionResource(id = R.dimen.divider))
+                                    OptionItem(
+                                        stringResource(id = R.string.swap_profiles),
+                                        R.drawable.ic_swap
+                                    ) {
+                                        click(Options.SWAP_PROFILES)
+                                    }
+                                    Divider(thickness = dimensionResource(id = R.dimen.divider))
+                                    OptionItem(
+                                        stringResource(id = R.string.logout),
+                                        R.drawable.ic_logout
+                                    ) {
+                                        click(Options.LOGOUT)
+                                    }
                                 }
                             }
                         }
                     }
+                    content()
                 }
-            }
         }
     }
 }

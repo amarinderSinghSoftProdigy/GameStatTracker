@@ -247,30 +247,30 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
 
-                    PreferenceItem(
-                        stringResource(id = R.string.favorite_college_team),
-                        if (state.user.userDetails.funFacts.isNotEmpty()) {
-                            state.user.userDetails.funFacts[0].favCollegeTeam
-                        } else "",
-                        stringResource(id = R.string.favorite_nba_team),
-                        if (state.user.userDetails.funFacts.isNotEmpty()) {
-                            state.user.userDetails.funFacts[0].favProfessionalTeam
-                        } else "",
-                    )
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+                PreferenceItem(
+                    stringResource(id = R.string.favorite_college_team),
+                    if (state.user.userDetails.funFacts.isNotEmpty()) {
+                        state.user.userDetails.funFacts[0].favCollegeTeam
+                    } else "",
+                    stringResource(id = R.string.favorite_proff_team),
+                    if (state.user.userDetails.funFacts.isNotEmpty()) {
+                        state.user.userDetails.funFacts[0].favProfessionalTeam
+                    } else "",
+                )
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
 
-                    PreferenceItem(
-                        stringResource(id = R.string.favorite_active_player),
-                        if (state.user.userDetails.funFacts.isNotEmpty()) {
-                            state.user.userDetails.funFacts[0].favActivePlayer
-                        } else "",
-                        stringResource(id = R.string.favoritea_all_time_tlayer),
-                        if (state.user.userDetails.funFacts.isNotEmpty()) {
-                            state.user.userDetails.funFacts[0].favAllTimePlayer
-                        } else "",
-                    )
-                }
+                PreferenceItem(
+                    stringResource(id = R.string.favorite_active_player),
+                    if (state.user.userDetails.funFacts.isNotEmpty()) {
+                        state.user.userDetails.funFacts[0].favActivePlayer
+                    } else "",
+                    stringResource(id = R.string.favoritea_all_time_tlayer),
+                    if (state.user.userDetails.funFacts.isNotEmpty()) {
+                        state.user.userDetails.funFacts[0].favAllTimePlayer
+                    } else "",
+                )
             }
+        }
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_80dp)))
         }
@@ -434,6 +434,7 @@ fun TeamList(teams: SnapshotStateList<TeamDetails>) {
                 }
             }
         }
+//
     }
 }
 

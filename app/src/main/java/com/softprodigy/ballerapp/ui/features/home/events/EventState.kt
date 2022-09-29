@@ -13,6 +13,8 @@ data class EventState(
     val showDeclineDialog: Boolean = false,
     val showLoading: Boolean = false,
     val selectedEvent: Events = Events(),
+    val selectionTeam: String = "",
+    val reasonTeam: String = "",
     val selectedEventId: String = "",
     val filterPreference: List<FilterPreference> = mutableListOf(),
     val filters: HashMap<String, ArrayList<FilterPreference>> = HashMap(),

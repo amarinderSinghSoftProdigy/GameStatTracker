@@ -30,5 +30,6 @@ sealed class EvEvents {
     data class RegisterCash(val request: String) : EvEvents()
 
     data class ShowToast(val message: String) : EvEvents()
-
+    data class OnSelection(val selected: String) : EvEvents()
+    data class OnReasonSelection(val text: String) : EvEvents()
 }
