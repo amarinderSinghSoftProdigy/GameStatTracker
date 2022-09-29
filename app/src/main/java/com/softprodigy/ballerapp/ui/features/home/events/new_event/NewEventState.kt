@@ -1,5 +1,7 @@
 package com.softprodigy.ballerapp.ui.features.home.events.new_event
 
+import com.softprodigy.ballerapp.data.request.Address
+
 data class NewEventState(
     val isLoading: Boolean = false,
     val showNotification: Boolean = false,
@@ -11,5 +13,5 @@ data class NewEventState(
     val selectedEndTime: String = "",
 //    val selectedLocation: String = "",
     val selectedVenueName: String = "",
-    val selectedAddress: String = ""
+    val selectedAddress: Address = Address()
 )

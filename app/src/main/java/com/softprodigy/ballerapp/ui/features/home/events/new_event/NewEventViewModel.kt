@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.UserStorage
-import com.softprodigy.ballerapp.data.request.Address
 import com.softprodigy.ballerapp.data.request.CreateEventReq
 import com.softprodigy.ballerapp.data.request.Location
 import com.softprodigy.ballerapp.domain.repository.IEventRepository
@@ -15,7 +14,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -59,7 +57,7 @@ class NewEventViewModel @Inject constructor(val eventRepository: IEventRepositor
 
             }
 
-            is NewEvEvent.OnVenueChange -> {
+            is NewEvEvent.OnLocationVenueChange -> {
                 _state.value =
                     _state.value.copy(selectedVenueName = event.venueName)
             }
@@ -84,11 +82,14 @@ class NewEventViewModel @Inject constructor(val eventRepository: IEventRepositor
         _state.value =
             _state.value.copy(isLoading = true)
 
-        // TODO: needed to replace location and address according to google place picker data
 
-        val location = Location(type = "Point", coordinates = arrayListOf(23.66, 67.44))
-        val address =
-            Address(street = "StreetName", state = "stateName", city = "cityName", zip = "587870")
+        val location = Location(
+            type = "Point",
+            coordinates = arrayListOf(
+                state.value.selectedAddress.lat,
+                state.value.selectedAddress.long
+            )
+        )
 
         val request = CreateEventReq(
             eventName = state.value.eventName,
@@ -100,7 +101,7 @@ class NewEventViewModel @Inject constructor(val eventRepository: IEventRepositor
             endTime = state.value.selectedEndTime,
             landmarkLocation = state.value.selectedVenueName,
             location = location,
-            address = address,
+            address = state.value.selectedAddress,
             pushNotification = state.value.showNotification
 
         )

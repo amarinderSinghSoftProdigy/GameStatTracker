@@ -1,10 +1,14 @@
 package com.softprodigy.ballerapp.ui.features.home.events.new_event
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.location.Geocoder
 import android.widget.DatePicker
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,17 +36,24 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.apiToUIDateFormat2
 import com.softprodigy.ballerapp.common.get24HoursTimeWithAMPM
+import com.softprodigy.ballerapp.data.request.Address
 import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.profile.ProfileEvent
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -107,7 +118,11 @@ fun NewEventScreen(
                 })
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
-            PracticeScreen(venue, vm, onVenueClick = onVenueClick)
+            PracticeScreen(
+                venue,
+                vm,
+                onVenueClick = onVenueClick
+            )
         }
 
         AppButton(
@@ -121,13 +136,14 @@ fun NewEventScreen(
                         id = R.dimen.size_140dp
                     )
                 ),
-//            border = ButtonDefaults.outlinedBorder,
             enabled = state.eventName.isNotEmpty()
                     && state.selectedDate.isNotEmpty()
                     && state.selectedArrivalTime.isNotEmpty()
                     && state.selectedStartTime.isNotEmpty()
                     && state.selectedEndTime.isNotEmpty()
-                    && state.selectedVenueName.isNotEmpty(),
+                    && state.selectedVenueName.isNotEmpty()
+                    && state.selectedAddress.street.isNotEmpty(),
+
             singleButton = true,
             themed = true,
             isForceEnableNeeded = true
@@ -191,7 +207,11 @@ enum class EventTabItems(val stringId: String) {
 
 @SuppressLint("SimpleDateFormat")
 @Composable
-fun PracticeScreen(venue: String, vm: NewEventViewModel, onVenueClick: () -> Unit) {
+fun PracticeScreen(
+    venue: String,
+    vm: NewEventViewModel,
+    onVenueClick: () -> Unit
+) {
 
     val state = vm.state.value
 
@@ -237,9 +257,54 @@ fun PracticeScreen(venue: String, vm: NewEventViewModel, onVenueClick: () -> Uni
         }, mHour, mMinute, false
     )
     LaunchedEffect(key1 = venue, block = {
-        vm.onEvent(NewEvEvent.OnVenueChange(venue))
+        vm.onEvent(NewEvEvent.OnLocationVenueChange(venue))
     })
 
+    val placePicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+        onResult = { activityResult ->
+            val addressReq = Address()
+
+            if (activityResult.resultCode == Activity.RESULT_OK) {
+                activityResult.data?.let {
+                    val place = activityResult.data?.let { data ->
+                        Autocomplete.getPlaceFromIntent(
+                            data
+                        )
+                    }
+                    val address = place?.address ?: ""
+                    val latLng = place?.latLng
+                    val lat = latLng?.latitude ?: 0.0
+                    val long = latLng?.longitude ?: 0.0
+
+                    addressReq.street = address
+                    addressReq.lat = lat
+                    addressReq.long = long
+
+                    val geocoder = Geocoder(context, Locale.getDefault())
+                    try {
+                        val addresses = geocoder.getFromLocation(lat, long, 1)
+                        val stateName: String = addresses?.get(0)?.adminArea ?: ""
+                        val cityName: String = addresses?.get(0)?.locality ?: ""
+                        val countryName: String = addresses?.get(0)?.countryName ?: ""
+                        val zip: String = addresses?.get(0)?.postalCode ?: ""
+
+                        addressReq.state = stateName
+                        addressReq.city = cityName
+                        addressReq.country = countryName
+                        addressReq.zip = zip
+
+
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+            if (addressReq.street.isNotEmpty()) {
+                vm.onEvent(NewEvEvent.OnAddressChanged(addressReq))
+            }
+        }
+    )
 
 
     Box {
@@ -322,7 +387,7 @@ fun PracticeScreen(venue: String, vm: NewEventViewModel, onVenueClick: () -> Uni
 //                selectedValue = state.selectedLocation,
                 selectedValue = venue,
                 onSelectedValueChange = {
-                    vm.onEvent(NewEvEvent.OnVenueChange(venue))
+                    vm.onEvent(NewEvEvent.OnLocationVenueChange(venue))
                 }, OnClick = {
                     onVenueClick.invoke()
                 }, onNotificationChange = {})
@@ -334,10 +399,23 @@ fun PracticeScreen(venue: String, vm: NewEventViewModel, onVenueClick: () -> Uni
                 label = stringResource(R.string.send_address),
                 icon = painterResource(id = R.drawable.ic_next),
                 color = MaterialTheme.appColors.buttonColor.bckgroundDisabled,
-                selectedValue = state.selectedAddress,
+                selectedValue = state.selectedAddress.street,
                 onSelectedValueChange = {
 
-                }, OnClick = {}, onNotificationChange = {})
+                }, OnClick = {
+                    if (!Places.isInitialized()) {
+                        Places.initialize(context.applicationContext, BuildConfig.MAPS_API_KEY)
+                    }
+                    val fields = listOf(
+                        Place.Field.NAME,
+                        Place.Field.ADDRESS,
+                        Place.Field.LAT_LNG
+                    )
+                    placePicker.launch(
+                        Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
+                            .build(context)
+                    )
+                }, onNotificationChange = {})
 
             Divider(color = MaterialTheme.appColors.material.primary)
 
@@ -387,10 +465,11 @@ fun PracticeItem(
             .height(dimensionResource(id = R.dimen.size_56dp))
             .fillMaxWidth()
             .background(color = Color.White),
+        contentAlignment = Alignment.Center
     ) {
         Row(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .padding(
                     start = dimensionResource(id = R.dimen.size_16dp), end = dimensionResource(
                         id = R.dimen.size_14dp
@@ -404,17 +483,20 @@ fun PracticeItem(
                 style = MaterialTheme.typography.h6,
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
             )
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier.weight(1f).padding(start = dimensionResource(id = R.dimen.size_16dp)).clickable { OnClick() }
+            ) {
                 if (!onlyIcon) {
-                    if(!isEditableField){
-                    if (selectedValue.isEmpty()) {
-                        AppText(
-                            text = label,
-                            style = MaterialTheme.typography.h4,
-                            color = MaterialTheme.appColors.textField.label,
-                        )
-                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_14dp)))
+                    if (!isEditableField) {
+                        if (selectedValue.isEmpty()) {
+                            AppText(
+                                text = label,
+                                style = MaterialTheme.typography.h4,
+                                color = MaterialTheme.appColors.textField.label,
+                            )
+                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_14dp)))
 
                     } else {
                         AppText(
@@ -469,7 +551,7 @@ fun PracticeItem(
                                 .size(
                                     dimensionResource(id = R.dimen.size_14dp)
                                 )
-                                .clickable { OnClick() },
+                                ,
                             colorFilter = ColorFilter.tint(color = color)
                         )
                     }
