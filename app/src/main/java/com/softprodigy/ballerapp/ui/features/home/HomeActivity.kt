@@ -587,14 +587,24 @@ fun NavControllerComposable(
 
         }
 
-        composable(route = Route.NEW_EVENT) {
+        composable(route = Route.NEW_EVENT) { backStackEntry ->
+
+            // get data passed back from next stack
+            val venue: String = backStackEntry
+                .savedStateHandle.get<String>("venue") ?: ""
+
             homeViewModel.setTopBar(
                 TopBarData(
                     label = stringResource(id = R.string.new_event),
                     topBar = TopBar.NEW_EVENT,
                 )
             )
-            NewEventScreen()
+            NewEventScreen(venue=venue,onVenueClick = {
+                navController.navigate(Route.SELECT_VENUE)
+
+            }, onEventCreationSuccess = {
+                navController.popBackStack()
+            })
         }
 
 

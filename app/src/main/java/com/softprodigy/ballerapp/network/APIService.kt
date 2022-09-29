@@ -132,6 +132,6 @@ open interface APIService {
     ): BaseResponse<ArrayList<Venue>>
 
 
-    @GET(ApiConstants.CREATE_NEW_EVENT)
-    suspend fun createNewEvent(@Body createTeamRequest: CreateTeamRequest):BaseResponse<Any>
+    @POST(ApiConstants.CREATE_NEW_EVENT)
+    suspend fun createNewEvent(@Body createEventReq: CreateEventReq):BaseResponse<Any>
 }

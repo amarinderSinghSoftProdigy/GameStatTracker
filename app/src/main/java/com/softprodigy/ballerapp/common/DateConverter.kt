@@ -5,6 +5,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
+/* Convert type "2022-09-20T02:30:00.000Z" date to type "Tue, Sep 01"*/
 fun apiToUIDateFormat(apiDate: String): String {
     if(apiDate.isNotEmpty()){
     val originalFormat: DateFormat =
@@ -18,6 +19,7 @@ fun apiToUIDateFormat(apiDate: String): String {
     else return apiDate
 }
 
+/* Convert type "2022-09-20T02:30:00.000Z" date to type "May 15, 1999"*/
 fun apiToUIDateFormat2(apiDate: String): String {
     if(apiDate.isNotEmpty()){
         val originalFormat: DateFormat =

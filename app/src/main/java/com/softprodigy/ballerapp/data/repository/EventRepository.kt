@@ -3,6 +3,7 @@ package com.softprodigy.ballerapp.data.repository
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.safeApiCall
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
+import com.softprodigy.ballerapp.data.request.CreateEventReq
 import com.softprodigy.ballerapp.data.request.CreateTeamRequest
 import com.softprodigy.ballerapp.domain.BaseResponse
 import com.softprodigy.ballerapp.domain.repository.IEventRepository
@@ -18,9 +19,9 @@ class EventRepository @Inject constructor(
     private val service: APIService,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : IEventRepository {
-    override suspend fun createEvent(createTeamRequest: CreateTeamRequest): ResultWrapper<BaseResponse<Any>> {
+    override suspend fun createEvent(createEvent: CreateEventReq): ResultWrapper<BaseResponse<Any>> {
         return safeApiCall(dispatcher) {
-            service.createNewEvent(createTeamRequest)
+            service.createNewEvent(createEvent)
         }
     }
 }

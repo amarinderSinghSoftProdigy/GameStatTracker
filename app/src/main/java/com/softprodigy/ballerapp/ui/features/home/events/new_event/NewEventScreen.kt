@@ -3,8 +3,8 @@ package com.softprodigy.ballerapp.ui.features.home.events.new_event
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.util.Log
 import android.widget.DatePicker
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,9 +33,11 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.apiToUIDateFormat2
 import com.softprodigy.ballerapp.common.get24HoursTimeWithAMPM
+import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.ButtonWithLeadingIcon
+import com.softprodigy.ballerapp.ui.features.profile.ProfileEvent
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
@@ -44,7 +46,38 @@ import java.util.*
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun NewEventScreen(vm: NewEventViewModel = hiltViewModel()) {
+fun NewEventScreen(
+    venue: String = "",
+    vm: NewEventViewModel = hiltViewModel(),
+    onVenueClick: () -> Unit,
+    onEventCreationSuccess: () -> Unit,
+) {
+    val context = LocalContext.current
+    val state = vm.state.value
+
+    LaunchedEffect(key1 = Unit) {
+        vm.channel.collect { uiEvent ->
+            when (uiEvent) {
+                is NewEventChannel.OnEventCreationSuccess -> {
+                    Toast.makeText(
+                        context,
+                        uiEvent.message,
+                        Toast.LENGTH_LONG
+                    )
+                        .show()
+                    onEventCreationSuccess.invoke()
+                }
+                is NewEventChannel.ShowToast -> {
+                    Toast.makeText(
+                        context,
+                        uiEvent.message.asString(context),
+                        Toast.LENGTH_LONG
+                    )
+                        .show()
+                }
+            }
+        }
+    }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -74,22 +107,30 @@ fun NewEventScreen(vm: NewEventViewModel = hiltViewModel()) {
                 })
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
-            PracticeScreen(vm)
+            PracticeScreen(venue, vm, onVenueClick = onVenueClick)
         }
 
-        ButtonWithLeadingIcon(
+        AppButton(
+            text = stringResource(id = R.string.save),
+            onClick = {
+                vm.onEvent(NewEvEvent.OnSaveButtonClick)
+            },
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
                 .width(
                     dimensionResource(
                         id = R.dimen.size_140dp
                     )
                 ),
-            text = stringResource(id = R.string.save),
-            onClick = {
-
-            },
-            iconAllowed = false
+//            border = ButtonDefaults.outlinedBorder,
+            enabled = state.eventName.isNotEmpty()
+                    && state.selectedDate.isNotEmpty()
+                    && state.selectedArrivalTime.isNotEmpty()
+                    && state.selectedStartTime.isNotEmpty()
+                    && state.selectedEndTime.isNotEmpty()
+                    && state.selectedVenueName.isNotEmpty(),
+            singleButton = true,
+            themed = true,
+            isForceEnableNeeded = true
         )
     }
 }
@@ -150,7 +191,7 @@ enum class EventTabItems(val stringId: String) {
 
 @SuppressLint("SimpleDateFormat")
 @Composable
-fun PracticeScreen(vm: NewEventViewModel) {
+fun PracticeScreen(venue: String, vm: NewEventViewModel, onVenueClick: () -> Unit) {
 
     val state = vm.state.value
 
@@ -161,14 +202,15 @@ fun PracticeScreen(vm: NewEventViewModel) {
     val mDay: Int = mCalendar.get(Calendar.DAY_OF_MONTH)
     val mHour = mCalendar[Calendar.HOUR_OF_DAY]
     val mMinute = mCalendar[Calendar.MINUTE]
-    val month_date = SimpleDateFormat("MMM")
 
     val mDatePickerDialog = DatePickerDialog(
         context,
-        { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
-            mCalendar.set(Calendar.MONTH, mMonth)
-            val month_name = month_date.format(mCalendar.time)
-            vm.onEvent(NewEvEvent.OnDateChanged("$month_name $mDayOfMonth, $mYear"))
+        { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+            val calendar = Calendar.getInstance()
+            calendar[year, month] = dayOfMonth
+            val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+            val dateString: String = format.format(calendar.time)
+            vm.onEvent(NewEvEvent.OnDateChanged(dateString))
         }, mYear, mMonth, mDay
     )
 
@@ -194,6 +236,11 @@ fun PracticeScreen(vm: NewEventViewModel) {
             vm.onEvent(NewEvEvent.OnEndTimeChanged(get24HoursTimeWithAMPM("$mHour:$mMinute")))
         }, mHour, mMinute, false
     )
+    LaunchedEffect(key1 = venue, block = {
+        vm.onEvent(NewEvEvent.OnVenueChange(venue))
+    })
+
+
 
     Box {
         Column {
@@ -204,25 +251,26 @@ fun PracticeScreen(vm: NewEventViewModel) {
                 selectedValue = state.eventName,
                 isEditableField = true,
                 onSelectedValueChange = {
+                    if (it.length <= 30)
                     vm.onEvent(NewEvEvent.OnEventNameChange(it))
 
-                }
-            ) {
-                mDatePickerDialog.show()
-            }
+                },
+                OnClick = {
+                    mDatePickerDialog.show()
+                }, onNotificationChange = {})
 
             Divider(color = MaterialTheme.appColors.material.primary)
             PracticeItem(
                 title = stringResource(R.string.date),
                 icon = painterResource(id = R.drawable.ic_calender),
                 label = stringResource(id = R.string.select_date),
-                selectedValue = state.selectedDate,
+                selectedValue = apiToUIDateFormat2(state.selectedDate),
                 onSelectedValueChange = {
 
-                }
-            ) {
-                mDatePickerDialog.show()
-            }
+                }, OnClick = {
+                    mDatePickerDialog.show()
+                },
+                onNotificationChange = {})
 
             Divider(color = MaterialTheme.appColors.material.primary)
 
@@ -233,10 +281,9 @@ fun PracticeScreen(vm: NewEventViewModel) {
                 selectedValue = state.selectedArrivalTime,
                 onSelectedValueChange = {
 
-                }
-            ) {
-                mArrivalPickerDialog.show()
-            }
+                }, OnClick = {
+                    mArrivalPickerDialog.show()
+                }, onNotificationChange = {})
 
             Divider(color = MaterialTheme.appColors.material.primary)
 
@@ -247,10 +294,9 @@ fun PracticeScreen(vm: NewEventViewModel) {
                 selectedValue = state.selectedStartTime,
                 onSelectedValueChange = {
 
-                }
-            ) {
-                mStartTimePickerDialog.show()
-            }
+                }, OnClick = {
+                    mStartTimePickerDialog.show()
+                }, onNotificationChange = {})
 
             Divider(color = MaterialTheme.appColors.material.primary)
 
@@ -261,11 +307,10 @@ fun PracticeScreen(vm: NewEventViewModel) {
                 selectedValue = state.selectedEndTime,
                 onSelectedValueChange = {
 
-                }
-            ) {
-                mEndTimePickerDialog.show()
+                }, OnClick = {
+                    mEndTimePickerDialog.show()
 
-            }
+                }, onNotificationChange = {})
 
             Divider(color = MaterialTheme.appColors.material.primary)
 
@@ -274,11 +319,13 @@ fun PracticeScreen(vm: NewEventViewModel) {
                 label = stringResource(R.string.select_location),
                 icon = painterResource(id = R.drawable.ic_next),
                 color = MaterialTheme.appColors.buttonColor.bckgroundDisabled,
-                selectedValue = state.selectedLocation,
+//                selectedValue = state.selectedLocation,
+                selectedValue = venue,
                 onSelectedValueChange = {
-
-                }
-            ) {}
+                    vm.onEvent(NewEvEvent.OnVenueChange(venue))
+                }, OnClick = {
+                    onVenueClick.invoke()
+                }, onNotificationChange = {})
 
             Divider(color = MaterialTheme.appColors.material.primary)
 
@@ -290,8 +337,7 @@ fun PracticeScreen(vm: NewEventViewModel) {
                 selectedValue = state.selectedAddress,
                 onSelectedValueChange = {
 
-                }
-            ) {}
+                }, OnClick = {}, onNotificationChange = {})
 
             Divider(color = MaterialTheme.appColors.material.primary)
 
@@ -300,8 +346,12 @@ fun PracticeScreen(vm: NewEventViewModel) {
                 onlyIcon = true,
                 onSelectedValueChange = {
 
-                }
-            ) {}
+                }, OnClick = {
+                },
+                onNotificationChange = {
+                    vm.onEvent(NewEvEvent.OnNotificationChange(it))
+
+                })
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
         }
@@ -316,11 +366,12 @@ fun PracticeItem(
     icon: Painter? = null,
     onlyIcon: Boolean = false,
     color: Color = MaterialTheme.appColors.material.primaryVariant,
-    isEditableField:Boolean=false,
-    onSelectedValueChange:(String)->Unit,
+    isEditableField: Boolean = false,
+    onSelectedValueChange: (String) -> Unit,
     OnClick: () -> Unit,
+    onNotificationChange: (Boolean) -> Unit,
 
-) {
+    ) {
 
     val customTextSelectionColors = TextSelectionColors(
         handleColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
@@ -427,6 +478,7 @@ fun PracticeItem(
                         checked = notification,
                         onCheckedChange = {
                             notification = it
+                            onNotificationChange.invoke(it)
                         }, colors = SwitchDefaults.colors(
                             checkedThumbColor = MaterialTheme.appColors.material.primaryVariant
                         )

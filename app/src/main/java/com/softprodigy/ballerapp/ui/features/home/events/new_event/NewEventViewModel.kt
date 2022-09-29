@@ -3,16 +3,29 @@ package com.softprodigy.ballerapp.ui.features.home.events.new_event
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.softprodigy.ballerapp.common.ResultWrapper
+import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.UserStorage
+import com.softprodigy.ballerapp.data.request.Address
 import com.softprodigy.ballerapp.data.request.CreateEventReq
+import com.softprodigy.ballerapp.data.request.Location
 import com.softprodigy.ballerapp.domain.repository.IEventRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class NewEventViewModel @Inject constructor(val eventRepository: IEventRepository) : ViewModel() {
     private val _state = mutableStateOf(NewEventState())
     val state: State<NewEventState> = _state
+
+    private val _channel = Channel<NewEventChannel>()
+    val channel = _channel.receiveAsFlow()
+
 
     fun onEvent(event: NewEvEvent) {
         when (event) {
@@ -46,10 +59,9 @@ class NewEventViewModel @Inject constructor(val eventRepository: IEventRepositor
 
             }
 
-            is NewEvEvent.OnLocationChanged -> {
+            is NewEvEvent.OnVenueChange -> {
                 _state.value =
-                    _state.value.copy(selectedLocation = event.location)
-
+                    _state.value.copy(selectedVenueName = event.venueName)
             }
 
             is NewEvEvent.OnAddressChanged -> {
@@ -57,7 +69,13 @@ class NewEventViewModel @Inject constructor(val eventRepository: IEventRepositor
                     _state.value.copy(selectedAddress = event.address)
             }
             NewEvEvent.OnSaveButtonClick -> {
-
+                viewModelScope.launch {
+                    createEvent()
+                }
+            }
+            is NewEvEvent.OnNotificationChange -> {
+                _state.value =
+                    _state.value.copy(showNotification = event.showNotification)
             }
         }
     }
@@ -66,6 +84,12 @@ class NewEventViewModel @Inject constructor(val eventRepository: IEventRepositor
         _state.value =
             _state.value.copy(isLoading = true)
 
+        // TODO: needed to replace location and address according to google place picker data
+
+        val location = Location(type = "Point", coordinates = arrayListOf(23.66, 67.44))
+        val address =
+            Address(street = "StreetName", state = "stateName", city = "cityName", zip = "587870")
+
         val request = CreateEventReq(
             eventName = state.value.eventName,
             eventType = state.value.eventType,
@@ -73,8 +97,62 @@ class NewEventViewModel @Inject constructor(val eventRepository: IEventRepositor
             date = state.value.selectedDate,
             arrivalTime = state.value.selectedArrivalTime,
             startTime = state.value.selectedStartTime,
+            endTime = state.value.selectedEndTime,
+            landmarkLocation = state.value.selectedVenueName,
+            location = location,
+            address = address,
+            pushNotification = state.value.showNotification
 
         )
-//        eventRepository.createEvent()
+        val eventResponse = eventRepository.createEvent(request)
+        _state.value =
+            _state.value.copy(isLoading = false)
+
+        when (eventResponse) {
+            is ResultWrapper.GenericError -> {
+                _channel.send(
+                    NewEventChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${eventResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _channel.send(
+                    NewEventChannel.ShowToast(
+                        UiText.DynamicString(
+                            eventResponse.message
+                        )
+                    )
+                )
+
+            }
+            is ResultWrapper.Success -> {
+                eventResponse.value.let { response ->
+                    if (response.status) {
+                        _channel.send(
+                            NewEventChannel.OnEventCreationSuccess(
+                                response.statusMessage
+                            )
+                        )
+                    } else {
+                        _channel.send(
+                            NewEventChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
     }
+}
+
+sealed class NewEventChannel() {
+    data class ShowToast(val message: UiText) : NewEventChannel()
+    data class OnEventCreationSuccess(val message: String) : NewEventChannel()
+
 }
