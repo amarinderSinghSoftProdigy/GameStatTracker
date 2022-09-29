@@ -120,19 +120,14 @@ fun EventScheduleHeaderItem(date: String, gamesCount: String, isExpanded: Boolea
                 Text(
                     text = date,
                     color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = dimensionResource(
-                        id = R.dimen.txt_size_12
-                    ).value.sp
+                    style = MaterialTheme.typography.h5,
+                    fontWeight = FontWeight.W500
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                 Text(
                     text = "(${gamesCount} ${stringResource(id = R.string.games)})",
                     color = MaterialTheme.appColors.textField.labelDark,
-                    fontWeight = FontWeight.W400,
-                    fontSize = dimensionResource(
-                        id = R.dimen.txt_size_12
-                    ).value.sp
+                    style = MaterialTheme.typography.h5
                 )
 
             }

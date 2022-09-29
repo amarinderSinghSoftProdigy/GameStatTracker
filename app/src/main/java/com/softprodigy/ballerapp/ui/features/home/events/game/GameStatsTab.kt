@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.data.response.AverageStatsResponse
 import com.softprodigy.ballerapp.data.response.GameStatsResponse
 import com.softprodigy.ballerapp.ui.features.components.AppDivider
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
@@ -104,8 +105,8 @@ fun GameStatsTab() {
                 Text(
                     text = stringResource(id = R.string.game_champions),
                     color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                    fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
-                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.h5,
+                    fontWeight = FontWeight.W500
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_14dp)))
                 Row {
@@ -130,9 +131,8 @@ fun GameStatsTab() {
                             Text(
                                 text = stringResource(id = R.string.offensive),
                                 color = ColorBWGrayLight,
-                                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-
-                                )
+                                style = MaterialTheme.typography.h6,
+                            )
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Image(
                                     painter = painterResource(id = R.drawable.user_demo),
@@ -149,7 +149,7 @@ fun GameStatsTab() {
                                 )
                             }
                             Text(
-                                text = stringResource(id = R.string.bonus_points) + "7",
+                                text = stringResource(id = R.string.bonus_points) + " 7",
                                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                 fontWeight = FontWeight.Bold,
@@ -181,9 +181,8 @@ fun GameStatsTab() {
                             Text(
                                 text = stringResource(id = R.string.defensive),
                                 color = ColorBWGrayLight,
-                                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-
-                                )
+                                style = MaterialTheme.typography.h6,
+                            )
                             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_30dp)))
 
                             Text(
@@ -193,7 +192,6 @@ fun GameStatsTab() {
                                 fontWeight = FontWeight.Bold,
                             )
                         }
-
                     }
                 }
 
@@ -311,7 +309,34 @@ fun Stats() {
                 "1",
                 "1"
             ),
+            GameStatsResponse(
+                "1",
+                "11 Alex",
+                "10",
+                "1",
+                "0",
+                "0",
+                "4",
+                "0",
+                "1",
+                "1"
+            ),
+
+            )
+    val average = arrayListOf<AverageStatsResponse>(
+        AverageStatsResponse(
+            "1",
+            "Average",
+            "",
+            "",
+            "30%",
+            "30%",
+            "30%",
+            "",
+            "",
+            ""
         )
+    )
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -333,18 +358,18 @@ fun Stats() {
                     fontSize = dimensionResource(id = R.dimen.txt_size_10).value.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
-                        .weight(if (index == 0) 1f else 0.8f)
-                        .padding(horizontal = dimensionResource(id = R.dimen.size_2dp))
+                        .weight(if (index == 0) 1f else 0.6f)
+                        .padding(horizontal = dimensionResource(id = R.dimen.size_5dp)),
+                    textAlign = TextAlign.Center
                 )
             }
-
         }
         Column() {
             data.forEachIndexed { index, col ->
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(color = if (index / 2 == 0) md_theme_light_primary else Color.White)
+                        .background(color = if (index % 2 == 0) md_theme_light_primary else Color.White)
                         .padding(
                             horizontal = dimensionResource(id = R.dimen.size_5dp),
                             vertical = dimensionResource(id = R.dimen.size_10dp)
@@ -354,12 +379,13 @@ fun Stats() {
                     col.iterator().forEachIndexed { i, v ->
                         Text(
                             text = v,
-                            color = ColorBWBlack,
-                            fontSize = dimensionResource(id = R.dimen.txt_size_10).value.sp,
-                            fontWeight = FontWeight.Bold,
+                            color = if (v == "0") ColorBWGrayLight else ColorBWBlack,
+                            style = MaterialTheme.typography.body2,
+                            fontWeight = FontWeight.W400,
                             modifier = Modifier
-                                .weight(if (i == 0) 1f else 0.8f)
-                                .padding(horizontal = dimensionResource(id = R.dimen.size_2dp))
+                                .weight(if (i == 0) 1f else 0.6f)
+                                .padding(horizontal = dimensionResource(id = R.dimen.size_5dp)),
+                            textAlign = TextAlign.Center
                         )
                     }
                 }
@@ -382,11 +408,11 @@ fun Stats() {
                 Text(
                     text = it,
                     color = ColorBWBlack,
-                    fontSize = dimensionResource(id = if (index == 0) R.dimen.txt_size_12 else R.dimen.txt_size_10).value.sp,
-                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.h6,
                     modifier = Modifier
-                        .weight(if (index == 0) 1f else 0.8f)
-                        .padding(horizontal = dimensionResource(id = R.dimen.size_2dp))
+                        .weight(if (index == 0) 1f else 0.6f)
+                        .padding(horizontal = dimensionResource(id = R.dimen.size_5dp)),
+                    textAlign = TextAlign.Center
                 )
             }
 
@@ -394,25 +420,33 @@ fun Stats() {
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_5dp)))
         AppDivider()
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_5dp)))
-        Row(modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_8dp))) {
-            Text(
-                text = stringResource(id = R.string.average),
-                color = ColorBWBlack,
-                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .padding(horizontal = dimensionResource(id = R.dimen.size_2dp))
-            )
-            Text(
-                text = "45% 40% 40%",
-                color = ColorBWBlack,
-                fontSize = dimensionResource(id = R.dimen.txt_size_10).value.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = dimensionResource(id = R.dimen.size_2dp))
-            )
+        Column {
+            average.forEachIndexed { index, col ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = Color.White)
+                        .padding(
+                            horizontal = dimensionResource(id = R.dimen.size_5dp),
+                            vertical = dimensionResource(id = R.dimen.size_10dp)
+                        ),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    col.iterator().forEachIndexed { i, v ->
+                        Text(
+                            text = v,
+                            color = ColorBWBlack,
+                            modifier = Modifier
+                                .weight(if (i == 0) 1f else 0.6f)
+                                .padding(horizontal = dimensionResource(id = R.dimen.size_5dp)),
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.h6
+                        )
+                    }
+                }
+            }
         }
+        AppDivider()
+
     }
 }

@@ -173,7 +173,7 @@
     <string name="waist_size">Waist Size</string>
     <string name="fun_facts">Fun Facts</string>
     <string name="favorite_college_team">Favorite College Team</string>
-    <string name="favorite_nba_team">Favorite NBA Team</string>
+    <string name="favorite_proff_team">Favorite professional Team</string>
     <string name="favorite_active_player">Favorite Active Player</string>
     <string name="favoritea_all_time_tlayer">Favorite All-Time Player</string>
     <string name="pg">PG</string>
@@ -266,8 +266,8 @@
     <string name="navigate">Navigate</string>
     <string name="rsvp">RSVP</string>
     <string name="jersey_color">Jersey Color</string>
-    <string name="pre_practive_head">Pre-practice prep and agenda</string>
-    <string name="pre_game_head">Pre-game prep and agenda</string>
+    <string name="pre_practive_head">Pre-practice prep &amp; agenda</string>
+    <string name="pre_game_head">Pre-game prep &amp; agenda</string>
     <string name="post_practive_head">Post-practice notes</string>
     <string name="game_details">Game Details</string>
     <string name="summary">Summary</string>
@@ -305,7 +305,7 @@
     <string name="coach_rules">Coach Rules</string>
     <string name="forfeit">Forfeit Rules</string>
     <string name="other_rules">Other Rules</string>
-    <string name="all">ALl</string>
+    <string name="all">All</string>
     <string name="one_q">1Q</string>
     <string name="two_q">2Q</string>
     <string name="three_q">3Q</string>
@@ -333,7 +333,7 @@
     <string name="your_role">Your Role</string>
     <string name="head_coach">Head Coach</string>
     <string name="role">Role</string>
-    <string name="leave_team">Leave Team</string>
+    <string name="remove_team">Remove</string>
     <string name="position">Position</string>
     <string name="my_profile">My Profile</string>
     <string name="logout">Logout</string>

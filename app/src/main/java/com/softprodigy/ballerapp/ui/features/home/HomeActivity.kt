@@ -35,6 +35,21 @@ import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.events.*
+import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
+import com.softprodigy.ballerapp.ui.features.components.BottomNavigationBar
+import com.softprodigy.ballerapp.ui.features.components.CommonTabView
+import com.softprodigy.ballerapp.ui.features.components.LogoutDialog
+import com.softprodigy.ballerapp.ui.features.components.TabBar
+import com.softprodigy.ballerapp.ui.features.components.TopBar
+import com.softprodigy.ballerapp.ui.features.components.TopBarData
+import com.softprodigy.ballerapp.ui.features.components.fromHex
+import com.softprodigy.ballerapp.ui.features.home.events.EventDetailsScreen
+import com.softprodigy.ballerapp.ui.features.home.events.opportunities.EventRegistraionDetails
+import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
+import com.softprodigy.ballerapp.ui.features.home.events.EventsScreen
+import com.softprodigy.ballerapp.ui.features.home.events.FilterScreen
+import com.softprodigy.ballerapp.ui.features.home.events.MyLeagueDetailScreen
+import com.softprodigy.ballerapp.ui.features.home.events.NewEventScreen
 import com.softprodigy.ballerapp.ui.features.home.events.division.divisionTab.DivisionScreenTab
 import com.softprodigy.ballerapp.ui.features.home.events.game.GameDetailsScreen
 import com.softprodigy.ballerapp.ui.features.home.events.game.GameRuleScreen
@@ -353,6 +368,7 @@ fun NavControllerComposable(
                     navController.navigate(Route.GAME_DETAIL_SCREEN)
                 },
                 moveToOppDetails = {
+                    eventTitle = it
                     navController.navigate(Route.OPP_DETAIL_SCREEN)
                 },
                 updateTopBar = {
@@ -364,6 +380,7 @@ fun NavControllerComposable(
             homeViewModel.setTopBar(
                 TopBarData(
                     topBar = TopBar.GAME_DETAILS,
+                    label = eventTitle
                 )
             )
             GameDetailsScreen(eventViewModel, moveToGameRules = {
@@ -374,6 +391,7 @@ fun NavControllerComposable(
             homeViewModel.setTopBar(
                 TopBarData(
                     topBar = TopBar.EVENT_DETAILS,
+                    label = eventTitle
                 )
             )
             OppEventDetails(eventViewModel, moveToRegistration = {

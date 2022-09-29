@@ -237,7 +237,7 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
                     if (state.user.userDetails.funFacts.isNotEmpty()) {
                         state.user.userDetails.funFacts[0].favCollegeTeam
                     } else "",
-                    stringResource(id = R.string.favorite_nba_team),
+                    stringResource(id = R.string.favorite_proff_team),
                     if (state.user.userDetails.funFacts.isNotEmpty()) {
                         state.user.userDetails.funFacts[0].favProfessionalTeam
                     } else "",
@@ -250,9 +250,7 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
                         state.user.userDetails.funFacts[0].favActivePlayer
                     } else "",
                     stringResource(id = R.string.favoritea_all_time_tlayer),
-                    if (state.user.userDetails.funFacts.isNotEmpty()) {
-                        state.user.userDetails.funFacts[0].favAllTimePlayer
-                    } else "",
+                    "Player Name"
                 )
             }
         }
@@ -419,6 +417,7 @@ fun TeamList(teams: SnapshotStateList<TeamDetails>) {
                 }
             }
         }
+//
     }
 }
 

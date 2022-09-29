@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -103,7 +104,8 @@ fun BottomNavigationBar(
                                 textAlign = TextAlign.Center,
                                 text = stringResourceByName(item.key.resId),
                                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                                color = if (selected.value == item.key) selectionColor else ColorGreyLighter
+                                color = if (selected.value == item.key) selectionColor else ColorGreyLighter,
+                                fontWeight = FontWeight.W700
                             )
                         }
                     }

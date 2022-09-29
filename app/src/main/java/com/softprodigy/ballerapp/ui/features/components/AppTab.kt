@@ -37,7 +37,7 @@ fun AppTab(modifier: Modifier = Modifier, title: String, selected: Boolean, onCl
             .background(
                 color = if (selected) MaterialTheme.appColors.material.primaryVariant else Color.Transparent,
                 shape = RoundedCornerShape(
-                    dimensionResource(id = R.dimen.size_16dp)
+                    dimensionResource(id = R.dimen.size_18dp)
                 )
             )
             .clickable { onClick.invoke() }
@@ -49,12 +49,12 @@ fun AppTab(modifier: Modifier = Modifier, title: String, selected: Boolean, onCl
             modifier = Modifier
                 .align(Alignment.Center)
                 .padding(
-                    vertical = dimensionResource(id = R.dimen.size_8dp),
+                    vertical = dimensionResource(id = R.dimen.size_10dp),
                     horizontal = dimensionResource(
                         id = R.dimen.size_12dp
                     )
                 ),
-            color = if (selected) MaterialTheme.appColors.buttonColor.textEnabled else MaterialTheme.appColors.textField.label,
+            color = if (selected) MaterialTheme.appColors.buttonColor.textEnabled else MaterialTheme.appColors.buttonColor.textDisabled,
         )
     }
 }
