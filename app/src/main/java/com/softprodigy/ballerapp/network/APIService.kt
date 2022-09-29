@@ -8,6 +8,7 @@ import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.domain.BaseResponse
+import com.softprodigy.ballerapp.ui.features.home.events.EventsResponse
 import com.softprodigy.ballerapp.ui.features.home.invitation.Invitation
 import com.softprodigy.ballerapp.ui.features.venue.Venue
 import okhttp3.MultipartBody
@@ -86,6 +87,13 @@ open interface APIService {
         @Query("limit") limit: Int,
         @Query("sort") sort: String
     ): BaseResponse<ArrayList<Invitation>>
+
+ @GET(ApiConstants.GET_ALL_EVENTS)
+    suspend fun getAllevents(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int,
+        @Query("sort") sort: String
+    ): BaseResponse<EventsResponse>
 
     @PUT(ApiConstants.ACCEPT_TEAM_INVITATION)
     suspend fun acceptTeamInvitation(@Body request: RequestBody): BaseResponse<Any>

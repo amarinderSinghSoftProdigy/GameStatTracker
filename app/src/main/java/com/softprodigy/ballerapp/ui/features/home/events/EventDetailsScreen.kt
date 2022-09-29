@@ -45,7 +45,6 @@ import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
 fun EventDetailsScreen(vm: EventViewModel) {
-    val images = arrayListOf("", "", "", "", "", "", "")
     Column(
         Modifier
             .fillMaxSize()

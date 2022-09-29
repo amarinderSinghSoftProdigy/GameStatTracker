@@ -3,6 +3,7 @@ package com.softprodigy.ballerapp.ui.features.home.events
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import com.softprodigy.ballerapp.ui.theme.ColorPrimaryOrange
@@ -24,6 +25,7 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
 
     init {
         viewModelScope.launch {
+            getEventList()
             eventState.value =
                 eventState.value.copy(
                     currentEvents = arrayListOf(
@@ -112,6 +114,102 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
                         ),
                     )
                 )
+        }
+    }
+
+        suspend fun getEventList() {
+            eventState.value =
+                eventState.value.copy(showLoading = true)
+            val eventResponse = teamRepo.getAllevents()
+            eventState.value =
+                eventState.value.copy(showLoading = false)
+
+            when (eventResponse) {
+                is ResultWrapper.GenericError -> {
+                    _eventChannel.send(
+                        EventChannel.ShowToast(
+                            UiText.DynamicString(
+                                "${eventResponse.message}"
+                            )
+                        )
+                    )
+                }
+                is ResultWrapper.NetworkError -> {
+                    _eventChannel.send(
+                        EventChannel.ShowToast(
+                            UiText.DynamicString(
+                                eventResponse.message
+                            )
+                        )
+                    )
+                }
+                is ResultWrapper.Success -> {
+                    eventResponse.value.let { response ->
+                        if (response.status) {
+                            eventState.value =
+                                eventState.value.copy(
+                                    currentEvents = response.data.upcommingEvents,
+                                    pastEvents = response.data.pastEvents
+                                )
+                        } else {
+                            _eventChannel.send(
+                                EventChannel.ShowToast(
+                                    UiText.DynamicString(
+                                        response.statusMessage
+                                    )
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+    suspend fun getEventDetails(id :String){
+        eventState.value =
+            eventState.value.copy(showLoading = true)
+        val eventResponse = teamRepo.getAllevents()
+        eventState.value =
+            eventState.value.copy(showLoading = false)
+
+        when (eventResponse) {
+            is ResultWrapper.GenericError -> {
+                _eventChannel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${eventResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _eventChannel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            eventResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                eventResponse.value.let { response ->
+                    if (response.status) {
+                        eventState.value =
+                            eventState.value.copy(
+                                currentEvents = response.data.upcommingEvents,
+                                pastEvents = response.data.pastEvents
+                            )
+                    } else {
+                        _eventChannel.send(
+                            EventChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
         }
     }
 

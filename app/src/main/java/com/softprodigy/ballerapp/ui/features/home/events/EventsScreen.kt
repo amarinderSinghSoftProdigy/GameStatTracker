@@ -54,6 +54,7 @@ import com.softprodigy.ballerapp.ui.features.components.TopBarData
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
 import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
 import com.softprodigy.ballerapp.ui.features.home.events.opportunities.OpportunitieScreen
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
 import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
@@ -234,7 +235,11 @@ fun BoxScope.MyEvents(
 ) {
     if (state.currentEvents.size > 0) {
         Box(modifier = Modifier.fillMaxSize()) {
-            Column(
+            if (state.showLoading) {
+                CommonProgressBar()
+            }
+            else{
+                Column(
                 Modifier
                     .fillMaxSize()
                     .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
@@ -306,6 +311,7 @@ fun BoxScope.MyEvents(
                 }
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
             }
+        }
 
             /*if (state.showGoingDialog) {
 
