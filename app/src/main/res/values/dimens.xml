@@ -2,6 +2,7 @@
 <resources>
 
     <dimen name="txt_size_10">5sp</dimen>
+    <dimen name="txt_size_11">5.5sp</dimen>
     <dimen name="txt_size_12">6sp</dimen>
     <dimen name="txt_size_13">6.5sp</dimen>
     <dimen name="txt_size_14">7sp</dimen>
@@ -20,6 +21,7 @@
     <dimen name="size_4dp">2dp</dimen>
     <dimen name="size_5dp">2.5dp</dimen>
     <dimen name="size_6dp">3dp</dimen>
+    <dimen name="size_7dp">3.5dp</dimen>
     <dimen name="size_8dp">4dp</dimen>
     <dimen name="size_9dp">4.5dp</dimen>
     <dimen name="size_10dp">5dp</dimen>
@@ -42,6 +44,7 @@
     <dimen name="size_42dp">21dp</dimen>
     <dimen name="size_44dp">22dp</dimen>
     <dimen name="size_45dp">22.5dp</dimen>
+    <dimen name="size_46dp">23dp</dimen>
     <dimen name="size_50dp">25dp</dimen>
     <dimen name="size_56dp">27dp</dimen>
     <dimen name="size_64dp">32dp</dimen>
@@ -49,7 +52,9 @@
     <dimen name="size_70dp">35dp</dimen>
     <dimen name="size_72dp">36dp</dimen>
     <dimen name="size_80dp">40dp</dimen>
+    <dimen name="size_82dp">41dp</dimen>
     <dimen name="size_90dp">45dp</dimen>
+    <dimen name="size_94dp">47dp</dimen>
     <dimen name="size_120dp">60dp</dimen>
     <dimen name="size_130dp">65dp</dimen>
     <dimen name="size_140dp">70dp</dimen>

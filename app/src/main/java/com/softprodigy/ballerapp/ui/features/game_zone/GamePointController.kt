@@ -45,10 +45,10 @@ fun GamePointController (
 
                 // Game setting grid view
                 var settingsList = ArrayList<GameSettingsState>();
-                settingsList.add(GameSettingsState(stringResource(id = R.string.exit), R.drawable.ic_facebook))
-                settingsList.add(GameSettingsState(stringResource(id = R.string.settings), R.drawable.ic_facebook))
-                settingsList.add(GameSettingsState(stringResource(id = R.string.box_score), R.drawable.ic_facebook))
-                settingsList.add(GameSettingsState(stringResource(id = R.string.timeouts), R.drawable.ic_facebook))
+                settingsList.add(GameSettingsState(stringResource(id = R.string.exit), R.drawable.ic_exit_back))
+                settingsList.add(GameSettingsState(stringResource(id = R.string.settings), R.drawable.ic_game_settings))
+                settingsList.add(GameSettingsState(stringResource(id = R.string.box_score), R.drawable.ic_box_score))
+                settingsList.add(GameSettingsState(stringResource(id = R.string.timeouts), R.drawable.ic_timeouts))
 
                 LazyVerticalGrid(columns = GridCells.Fixed(2), modifier = Modifier.height(
                     dimensionResource(id = R.dimen.size_90dp)) ) {
@@ -56,7 +56,7 @@ fun GamePointController (
 
                         Column(
                             Modifier
-                                .height(dimensionResource(id = R.dimen.size_45dp))
+                                .height(dimensionResource(id = R.dimen.size_46dp))
                                 .weight(1f)
                                 .border(dimensionResource(id = R.dimen.size_1dp), colorResource(id = R.color.gray_border)),
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -65,7 +65,8 @@ fun GamePointController (
                             ImageTextButton(
                                 title = setting.title!!,
                                 drawableResourceId = setting.icon!!,
-                                spacerBetween = R.dimen.size_5dp,
+                                titleFontSize = R.dimen.txt_size_10,
+                                spacerBetween = R.dimen.size_4dp,
                             ) {}
                         }
 
@@ -105,18 +106,18 @@ fun GamePointController (
 
                 // Game point grid view
                 var pointList = ArrayList<GameSettingsState>();
-                pointList.add(GameSettingsState(stringResource(id = R.string.point_3), R.drawable.ic_facebook))
-                pointList.add(GameSettingsState(stringResource(id = R.string.point_3), R.drawable.ic_facebook))
-                pointList.add(GameSettingsState(stringResource(id = R.string.point_2), R.drawable.ic_facebook))
-                pointList.add(GameSettingsState(stringResource(id = R.string.point_2), R.drawable.ic_facebook))
-                pointList.add(GameSettingsState(stringResource(id = R.string.point_1), R.drawable.ic_facebook))
-                pointList.add(GameSettingsState(stringResource(id = R.string.point_1), R.drawable.ic_facebook))
+                pointList.add(GameSettingsState(stringResource(id = R.string.point_3), R.drawable.ic_wrong))
+                pointList.add(GameSettingsState(stringResource(id = R.string.point_3), R.drawable.ic_correct))
+                pointList.add(GameSettingsState(stringResource(id = R.string.point_2), R.drawable.ic_wrong))
+                pointList.add(GameSettingsState(stringResource(id = R.string.point_2), R.drawable.ic_correct))
+                pointList.add(GameSettingsState(stringResource(id = R.string.point_1), R.drawable.ic_wrong))
+                pointList.add(GameSettingsState(stringResource(id = R.string.point_1), R.drawable.ic_correct))
                 LazyVerticalGrid(columns = GridCells.Fixed(2), ) {
                     itemsIndexed(pointList) { index, point ->
 
                         Column(
                             Modifier
-                                .height(dimensionResource(id = R.dimen.size_80dp))
+                                .height(dimensionResource(id = R.dimen.size_94dp))
                                 .weight(1f)
                                 .border(dimensionResource(id = R.dimen.size_1dp),colorResource(id = R.color.gray_border)),
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -125,7 +126,8 @@ fun GamePointController (
                             ImageTextButton(
                                 title = point.title!!,
                                 drawableResourceId = point.icon!!,
-                                spacerBetween = R.dimen.size_5dp,
+                                titleFontSize = R.dimen.txt_size_12,
+                                spacerBetween = R.dimen.size_12dp,
                             ) {}
                         }
                         /*Row(Modifier.height(dimensionResource(id = R.dimen.size_80dp))) {

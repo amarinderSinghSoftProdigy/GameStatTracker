@@ -39,10 +39,10 @@ fun TeamNavigationController (
         Row(
             Modifier
                 .fillMaxWidth()
-                .height(dimensionResource(id = R.dimen.size_48dp))
+                .height(dimensionResource(id = R.dimen.size_46dp))
                 .padding(
                     horizontal = dimensionResource(id = R.dimen.size_12dp),
-                    vertical = dimensionResource(id = R.dimen.size_6dp)
+                    vertical = dimensionResource(id = R.dimen.size_7dp)
                 ),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -56,7 +56,7 @@ fun TeamNavigationController (
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     teamLogo();
-                    teamTitle("My Team");
+                    teamTitle("My Team", endPadding = dimensionResource(id = R.dimen.size_8dp));
                 }
             }
 
@@ -89,7 +89,7 @@ fun TeamNavigationController (
                     Modifier.fillMaxHeight(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    teamTitle("Other Team");
+                    teamTitle("Other Team", startPadding = dimensionResource(id = R.dimen.size_8dp));
                     teamLogo(logoColor = Color.Blue);
                 }
             }
@@ -126,16 +126,16 @@ inline fun teamLogo(logoSource :String = "", logoColor: Color = Color.Red) {
 }
 
 @Composable
-inline fun teamTitle(title: String = "") {
+inline fun teamTitle(title: String = "", startPadding: Dp = 0.dp, endPadding: Dp = 0.dp) {
     AppText(
         text = title,
         //color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
         color = Color.White,
-        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
         style = MaterialTheme.typography.body1,
         maxLines = 1,
         textAlign = TextAlign.Center,
-
+        modifier = Modifier.padding(start = startPadding, top= 0.dp, end = endPadding, bottom = 0.dp)
     )
 }
 

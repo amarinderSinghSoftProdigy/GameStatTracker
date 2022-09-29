@@ -31,6 +31,7 @@ import com.softprodigy.ballerapp.ui.theme.appColors
 fun ImageTextButton(
     title: String,
     drawableResourceId: Int,
+    titleFontSize: Int,
     spacerBetween: Int? = 0,
     paddingTop: Dp? = 0.dp,
     paddingBottom: Dp? = 0.dp,
@@ -59,19 +60,6 @@ fun ImageTextButton(
             verticalArrangement = Arrangement.Center
         ) {
 
-            AppText(
-                text = title,
-                //color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                color = Color.White,
-                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                style = MaterialTheme.typography.body1,
-
-                maxLines = 1,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(dimensionResource(id = spacerBetween!!)))
             Image(
                 painter = painterResource(id = drawableResourceId),
                 /*modifier = Modifier
@@ -82,6 +70,17 @@ fun ImageTextButton(
                 contentDescription = "",
                 //contentScale = ContentScale.Fit
                 //tint = Color.Unspecified,
+            )
+            Spacer(modifier = Modifier.height(dimensionResource(id = spacerBetween!!)))
+
+            AppText(
+                text = title,
+                color = Color.White,
+                fontSize = dimensionResource(id = titleFontSize).value.sp,
+                style = MaterialTheme.typography.body1,
+                maxLines = 1,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }

@@ -48,7 +48,14 @@ fun GameSettingsController (
 @Composable
 inline fun periodSelection() {
     var periods = stringArrayResource(id = R.array.game_periods)
-    Column(Modifier.height(dimensionResource(id = R.dimen.size_45dp)),
+    Column(
+        Modifier
+            .height(dimensionResource(id = R.dimen.size_46dp))
+            .padding(
+                horizontal = dimensionResource(
+                    id = R.dimen.size_8dp
+                )
+            ),
     verticalArrangement = Arrangement.Center) {
         LazyRow {
             itemsIndexed(periods) { index, period ->
@@ -66,14 +73,16 @@ fun periodListItem(index: Int, periodItem: String = "", selectedIndex: Int = 1) 
             .width(dimensionResource(id = R.dimen.size_24dp))
             .height(dimensionResource(id = R.dimen.size_24dp))
             .clip(CircleShape)
+
             .background(color = if (index == selectedIndex) Color.Blue else Color.Black)
             .padding(dimensionResource(id = R.dimen.size_4dp)),
+            contentAlignment = Alignment.Center
     ) {
         AppText(
             text = periodItem,
             textAlign = TextAlign.Center,
             color = Color.White,
-            fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+            fontSize = dimensionResource(id = R.dimen.txt_size_11).value.sp,
             fontWeight = if (index == selectedIndex) FontWeight.Bold else FontWeight.Normal,
         )
     }
@@ -143,7 +152,7 @@ inline fun gameSettings() {
 
                     Column(
                         Modifier
-                            .height(dimensionResource(id = R.dimen.size_80dp))
+                            .height(dimensionResource(id = R.dimen.size_82dp))
                             .weight(1f)
                             .border(
                                 dimensionResource(id = R.dimen.size_1dp),
@@ -155,7 +164,8 @@ inline fun gameSettings() {
                         ImageTextButton(
                             title = point.title!!,
                             drawableResourceId = point.icon!!,
-                            spacerBetween = R.dimen.size_5dp,
+                            titleFontSize = R.dimen.txt_size_12,
+                            spacerBetween = R.dimen.size_12dp,
                         ) {}
                     }
                     /*Row(Modifier.height(dimensionResource(id = R.dimen.size_80dp))) {
