@@ -47,12 +47,7 @@ import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.team.Team
-import com.softprodigy.ballerapp.ui.features.components.DeclineEventDialog
-import com.softprodigy.ballerapp.ui.features.components.SwitchTeamDialog
-import com.softprodigy.ballerapp.ui.features.components.TopBar
-import com.softprodigy.ballerapp.ui.features.components.TopBarData
-import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
-import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
 import com.softprodigy.ballerapp.ui.theme.ColorButtonRed
@@ -227,7 +222,11 @@ fun BoxScope.MyEvents(
 ) {
     if (state.currentEvents.size > 0) {
         Box(modifier = Modifier.fillMaxSize()) {
-            Column(
+            if (state.showLoading) {
+                CommonProgressBar()
+            }
+            else{
+                Column(
                 Modifier
                     .fillMaxSize()
                     .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
@@ -299,6 +298,7 @@ fun BoxScope.MyEvents(
                 }
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
             }
+        }
 
             /*if (state.showGoingDialog) {
 
