@@ -1,10 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.components
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,15 +23,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
@@ -70,17 +58,13 @@ import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.argbToHexString
 import com.softprodigy.ballerapp.common.validTeamName
 import com.softprodigy.ballerapp.data.UserStorage
+import com.softprodigy.ballerapp.data.response.ParentDetails
 import com.softprodigy.ballerapp.data.response.PlayerDetails
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.ui.features.profile.tabs.DetailItem
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
-import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
-import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
-import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
-import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
-import com.softprodigy.ballerapp.ui.theme.ColorBWGrayMedium
-import com.softprodigy.ballerapp.ui.theme.appColors
+import com.softprodigy.ballerapp.ui.theme.*
 
 @Composable
 fun <T> DeleteDialog(
@@ -140,7 +124,7 @@ fun <T> DeleteDialog(
 @Composable
 fun SelectTeamDialog(
     onDismiss: () -> Unit,
-    onConfirmClick: (String) -> Unit,
+    onConfirmClick: (String,String) -> Unit,
     onSelectionChange: (Team) -> Unit,
     selected: Team?,
     showLoading: Boolean,
@@ -150,6 +134,9 @@ fun SelectTeamDialog(
 ) {
     val teamId = remember {
         mutableStateOf(UserStorage.teamId)
+    }
+    val teamName = remember {
+        mutableStateOf(UserStorage.teamName)
     }
     BallerAppMainTheme {
         AlertDialog(
@@ -212,6 +199,7 @@ fun SelectTeamDialog(
                                 TeamListItem(team = it, selected = selected == it) { team ->
                                     onSelectionChange.invoke(team)
                                     teamId.value = team._id
+                                    teamName.value = team.name
                                 }
                             }
                         }
@@ -250,7 +238,7 @@ fun SelectTeamDialog(
                         DialogButton(
                             text = stringResource(R.string.dialog_button_confirm),
                             onClick = {
-                                onConfirmClick.invoke(teamId.value)
+                                onConfirmClick.invoke(teamId.value,teamName.value)
                                 onDismiss.invoke()
                             },
                             modifier = Modifier
@@ -268,7 +256,7 @@ fun SelectTeamDialog(
 
 @Composable
 fun ShowParentDialog(
-
+    parentDetails:ParentDetails,
     onDismiss: () -> Unit,
     onConfirmClick: () -> Unit,
 ) {
@@ -316,22 +304,25 @@ fun ShowParentDialog(
                             .padding(dimensionResource(id = R.dimen.size_16dp))
                             .background(color = Color.White)
                     ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.user_demo),
-                            contentDescription = "",
+
+                        CoilImage(
+                            src = BuildConfig.IMAGE_SERVER + parentDetails.parent.profileImage,
                             modifier = Modifier
                                 .size(dimensionResource(id = R.dimen.size_200dp))
-                                .clip(CircleShape)
+                                .clip(CircleShape),
+                            isCrossFadeEnabled = false,
+                            onLoading = { Placeholder(R.drawable.ic_profile_placeholder) },
+                            onError = { Placeholder(R.drawable.ic_profile_placeholder) }
                         )
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
                         AppText(
-                            text = "George Will",
+                            text = "${parentDetails.parent.firstName} ${parentDetails.parent.lastName}",
                             style = MaterialTheme.typography.h6,
                             color = ColorBWBlack,
                             fontSize = dimensionResource(id = R.dimen.txt_size_20).value.sp
                         )
                         AppText(
-                            text = "Mother",
+                            text = parentDetails.parentType,
                             style = MaterialTheme.typography.h4,
                             color = ColorBWGrayLight
                         )
@@ -339,9 +330,9 @@ fun ShowParentDialog(
                         Row(
                             modifier = Modifier
                         ) {
-                            DetailItem("email", "joe@gmail.com")
+                            DetailItem(stringResource(id = R.string.email), parentDetails.parent.email)
                             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                            DetailItem("number", "9888834352")
+                            DetailItem(stringResource(id = R.string.number), parentDetails.parent.phone)
                         }
 
                     }

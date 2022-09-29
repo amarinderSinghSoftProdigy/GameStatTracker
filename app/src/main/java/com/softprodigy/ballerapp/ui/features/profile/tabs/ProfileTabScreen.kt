@@ -1,53 +1,69 @@
 package com.softprodigy.ballerapp.ui.features.profile.tabs
 
 
-import androidx.compose.foundation.Image
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.data.response.Team
-import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.ShowParentDialog
-import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
+import com.softprodigy.ballerapp.common.apiToUIDateFormat2
+import com.softprodigy.ballerapp.data.response.TeamDetails
+import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.profile.ProfileChannel
+import com.softprodigy.ballerapp.ui.features.profile.ProfileEvent
+import com.softprodigy.ballerapp.ui.features.profile.ProfileViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
 import com.softprodigy.ballerapp.ui.theme.ColorMainPrimary
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun ProfileTab() {
-    val showParentDialog = remember {
-        mutableStateOf(false)
+fun ProfileTabScreen(vm: ProfileViewModel) {
+    /* val showParentDialog = remember {
+         mutableStateOf(false)
+     }*/
+    val state = vm.state.value
+    val context = LocalContext.current
+
+
+    LaunchedEffect(key1 = Unit) {
+        vm.channel.collect { uiEvent ->
+            when (uiEvent) {
+                is ProfileChannel.ShowToast -> {
+                    Toast.makeText(
+                        context,
+                        uiEvent.message.asString(context),
+                        Toast.LENGTH_LONG
+                    )
+                        .show()
+                }
+            }
+        }
     }
+    Box(Modifier.fillMaxSize()) {
+        if (state.isLoading) {
+            CommonProgressBar()
+        }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -55,7 +71,7 @@ fun ProfileTab() {
                 start = dimensionResource(id = R.dimen.size_16dp),
                 end = dimensionResource(id = R.dimen.size_16dp)
             )
-            .verticalScroll(rememberScrollState()),
+        /*.verticalScroll(rememberScrollState())*/,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -73,16 +89,25 @@ fun ProfileTab() {
                     .padding(dimensionResource(id = R.dimen.size_16dp))
                     .background(color = Color.White)
             ) {
-                Image(
+                /*Image(
                     painter = painterResource(id = R.drawable.user_demo),
                     contentDescription = "",
                     modifier = Modifier
                         .size(dimensionResource(id = R.dimen.size_200dp))
                         .clip(CircleShape)
+                )*/
+                CoilImage(
+                    src = BuildConfig.IMAGE_SERVER + state.user.profileImage,
+                    modifier = Modifier
+                        .size(dimensionResource(id = R.dimen.size_200dp))
+                        .clip(CircleShape),
+                    isCrossFadeEnabled = false,
+                    onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
+                    onError = { Placeholder(R.drawable.ic_user_profile_icon) }
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
                 AppText(
-                    text = "George Will",
+                    text = "${state.user.firstName} ${state.user.lastName}",
                     style = MaterialTheme.typography.h6,
                     color = ColorBWBlack,
                     fontSize = dimensionResource(id = R.dimen.txt_size_20).value.sp
@@ -90,9 +115,9 @@ fun ProfileTab() {
                 Row(
                     modifier = Modifier
                 ) {
-                    DetailItem("email", "joe@gmail.com")
+                    DetailItem(stringResource(id = R.string.email), state.user.email)
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                    DetailItem("number", "9888834352")
+                    DetailItem(stringResource(id = R.string.number), state.user.phone)
                 }
             }
         }
@@ -112,33 +137,43 @@ fun ProfileTab() {
                     color = ColorBWBlack,
                     fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp
                 )
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
-                Row(
-                    modifier = Modifier.fillMaxWidth()
+                LazyVerticalGrid(
+                    GridCells.Fixed(2),
+                    contentPadding = PaddingValues(10.dp)
                 ) {
-                    ParentItem(
-                        stringResource(id = R.string.mother),
-                        "Alena Culhane",
-                        ""
-                    ) { showParentDialog.value = true }
-                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_5dp)))
-                    ParentItem(
-                        stringResource(id = R.string.father),
-                        "Brandon Culhan",
-                        ""
-                    ) { showParentDialog.value = true }
+                    items(state.user.parentDetails) { parentDetails ->
+
+                        Row(
+                            modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.size_5dp)),
+                        ) {
+                            ParentItem(
+                                parentDetails.parentType,
+                                "${parentDetails.parent.firstName} ${parentDetails.parent.lastName}",
+                                parentDetails.parent.profileImage
+                            ) {
+                                vm.onEvent(
+                                    ProfileEvent.OnParentDialogChange(true)
+                                )
+                                vm.onEvent(
+                                    ProfileEvent.OnParentClick(parentDetails)
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
 
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-        ProfileItem(stringResource(id = R.string.birthday), "May 15, 1999")
+        ProfileItem(stringResource(id = R.string.birthday), apiToUIDateFormat2(state.user.birthdate))
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-        ProfileItem(stringResource(id = R.string.classof), "2025")
+        ProfileItem(stringResource(id = R.string.classof), state.user.userDetails.classOf)
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-        ProfileItem(stringResource(id = R.string.positons), "PG,SG")
+        ProfileItem(
+            stringResource(id = R.string.positons),
+            state.user.userDetails.positionPlayed.joinToString { position -> position })
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-        TeamList()
+        TeamList(state.user.teamDetails)
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
         Box(
@@ -159,17 +194,23 @@ fun ProfileTab() {
 
                 PreferenceItem(
                     stringResource(id = R.string.jersey_number),
-                    "23, 16, 18",
+                    if (state.user.userDetails.jerseyPerferences.isNotEmpty())
+                        state.user.userDetails.jerseyPerferences[0].jerseyNumberPerferences.joinToString { number -> number }
+                    else "",
                     stringResource(id = R.string.gender),
-                    "Male"
+                    state.user.gender
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
 
                 PreferenceItem(
                     stringResource(id = R.string.shirt_size),
-                    "Adult, L",
+                    if (state.user.userDetails.jerseyPerferences.isNotEmpty())
+                        state.user.userDetails.jerseyPerferences[0].shirtSize
+                    else "-",
                     stringResource(id = R.string.waist_size),
-                    "32"
+                    if (state.user.userDetails.jerseyPerferences.isNotEmpty())
+                        state.user.userDetails.jerseyPerferences[0].waistSize
+                    else "-"
                 )
             }
         }
@@ -193,28 +234,47 @@ fun ProfileTab() {
 
                 PreferenceItem(
                     stringResource(id = R.string.favorite_college_team),
-                    "Favorite College Team",
+                    if (state.user.userDetails.funFacts.isNotEmpty()) {
+                        state.user.userDetails.funFacts[0].favCollegeTeam
+                    } else "",
                     stringResource(id = R.string.favorite_nba_team),
-                    "Team Name"
+                    if (state.user.userDetails.funFacts.isNotEmpty()) {
+                        state.user.userDetails.funFacts[0].favProfessionalTeam
+                    } else "",
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
 
                 PreferenceItem(
                     stringResource(id = R.string.favorite_active_player),
-                    "Player Name",
+                    if (state.user.userDetails.funFacts.isNotEmpty()) {
+                        state.user.userDetails.funFacts[0].favActivePlayer
+                    } else "",
                     stringResource(id = R.string.favoritea_all_time_tlayer),
-                    "Player Name"
+                    if (state.user.userDetails.funFacts.isNotEmpty()) {
+                        state.user.userDetails.funFacts[0].favAllTimePlayer
+                    } else "",
                 )
             }
         }
 
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_80dp)))
     }
+    }
 
-    if (showParentDialog.value) {
-        ShowParentDialog(onDismiss = { showParentDialog.value = false }, onConfirmClick = {
-            showParentDialog.value = false
-        })
+    if (state.showParentDialog) {
+        ShowParentDialog(
+            onDismiss = {
+                vm.onEvent(
+                    ProfileEvent.OnParentDialogChange(false)
+                )
+            },
+            onConfirmClick = {
+                vm.onEvent(
+                    ProfileEvent.OnParentDialogChange(false)
+                )
+            },
+            parentDetails = state.selectedParentDetails
+        )
     }
 }
 
@@ -246,34 +306,37 @@ fun ProfileItem(type: String, value: String) {
 }
 
 @Composable
-fun RowScope.ParentItem(
+fun ParentItem(
     relation: String,
     value: String,
     imageUrl: String,
     click: () -> Unit
 ) {
     Row(modifier = Modifier
-        .weight(1F)
+//        .weight(1F)
         .clickable {
             click()
         }) {
-        Image(
-            painter = painterResource(id = R.drawable.user_demo),
-            contentDescription = "",
+
+        CoilImage(
+            src = BuildConfig.IMAGE_SERVER + imageUrl,
             modifier = Modifier
                 .size(dimensionResource(id = R.dimen.size_44dp))
-                .clip(CircleShape)
+                .clip(CircleShape),
+            isCrossFadeEnabled = false,
+            onLoading = { PlaceholderRect(R.drawable.ic_user_profile_icon) },
+            onError = { PlaceholderRect(R.drawable.ic_user_profile_icon) }
         )
         Column(
             modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_10dp)),
         ) {
             AppText(
-                text = relation,
+                text = value,
                 style = MaterialTheme.typography.h6,
                 color = ColorBWBlack
             )
             AppText(
-                text = value,
+                text = relation,
                 style = MaterialTheme.typography.h5,
                 color = ColorBWGrayLight
             )
@@ -283,7 +346,7 @@ fun RowScope.ParentItem(
 }
 
 @Composable
-fun RowScope.DetailItem(stringId: String, value: String) {
+fun RowScope.DetailItem(heading: String, value: String) {
     Column(
         modifier = Modifier
             .padding(all = dimensionResource(id = R.dimen.size_8dp))
@@ -291,7 +354,7 @@ fun RowScope.DetailItem(stringId: String, value: String) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AppText(
-            text = stringResourceByName(stringId),
+            text = heading,
             style = MaterialTheme.typography.h4,
             color = ColorBWGrayLight
         )
@@ -305,11 +368,7 @@ fun RowScope.DetailItem(stringId: String, value: String) {
 }
 
 @Composable
-fun TeamList() {
-    var teams: Array<Team> = arrayOf(
-        Team(name = "Springfield Bucks", role = "Player"),
-        Team(name = "Springfield Sprouts", role = "Program Manger")
-    )
+fun TeamList(teams: SnapshotStateList<TeamDetails>) {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(5.dp))
@@ -329,19 +388,21 @@ fun TeamList() {
                 Column(
                 ) {
                     Row() {
-                        Image(
-                            painter = painterResource(id = R.drawable.user_demo),
-                            contentDescription = "",
+                        CoilImage(
+                            src = BuildConfig.IMAGE_SERVER + team.teamId.logo,
                             modifier = Modifier
                                 .size(dimensionResource(id = R.dimen.size_40dp))
-                                .clip(CircleShape)
+                                .clip(CircleShape),
+                            isCrossFadeEnabled = false,
+                            onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                            onError = { Placeholder(R.drawable.ic_team_placeholder) }
                         )
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
                         Column(
                             modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_10dp)),
                         ) {
                             AppText(
-                                text = team.name,
+                                text = team.teamId.name,
                                 style = MaterialTheme.typography.h5,
                                 color = ColorBWBlack
                             )
@@ -358,7 +419,6 @@ fun TeamList() {
                 }
             }
         }
-//
     }
 }
 

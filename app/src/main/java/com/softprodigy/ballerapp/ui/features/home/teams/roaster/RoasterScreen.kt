@@ -143,9 +143,9 @@ fun CoachListItem(
                 )
                 .size(dimensionResource(id = R.dimen.size_80dp))
                 .clip(CircleShape),
-            isCrossFadeEnabled = false,
-            onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
-            onError = { Placeholder(R.drawable.ic_user_profile_icon) }
+                isCrossFadeEnabled = false,
+                onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
+                onError = { Placeholder(R.drawable.ic_user_profile_icon) }
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 

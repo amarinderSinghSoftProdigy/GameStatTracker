@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -255,11 +254,13 @@ fun EditProfileFields(
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     isError: Boolean = false,
     errorMessage: String = "",
-    enabled: Boolean = false,
+    readOnly: Boolean = false,
     modifier: Modifier = Modifier,
     trailingIcon: @Composable (() -> Unit)? = null,
-    placeholder: @Composable (() -> Unit)?=null
-) {
+    placeholder: @Composable (() -> Unit)?=null,
+    enabled: Boolean = true,
+
+    ) {
     val customTextSelectionColors = TextSelectionColors(
         handleColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
         backgroundColor = Color.Transparent
@@ -290,14 +291,16 @@ fun EditProfileFields(
                         focusedBorderColor = Color.Transparent,
                         unfocusedBorderColor = Color.Transparent,
                         cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        disabledBorderColor = Color.Transparent
                     ),
                     textStyle = TextStyle(textAlign = TextAlign.End,color = ColorBWBlack),
                     singleLine = true,
                     keyboardActions = keyboardActions,
                     keyboardOptions = keyboardOptions,
-                    readOnly = enabled,
+                    readOnly = readOnly,
                     trailingIcon = trailingIcon ,
-                    placeholder=placeholder
+                    placeholder=placeholder,
+                    enabled = enabled,
                 )
             }
         }

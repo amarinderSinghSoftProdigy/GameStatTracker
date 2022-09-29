@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -21,19 +22,20 @@ import com.softprodigy.ballerapp.ui.features.components.AppStaticTabRow
 import com.softprodigy.ballerapp.ui.features.components.AppTabLikeViewPager
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
 import com.softprodigy.ballerapp.ui.features.profile.tabs.DocumentTab
-import com.softprodigy.ballerapp.ui.features.profile.tabs.ProfileTab
+import com.softprodigy.ballerapp.ui.features.profile.tabs.ProfileTabScreen
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun ProfileScreen(
+    vm: ProfileViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
     moveToEditProfile: () -> Unit
 ) {
     val pagerState = rememberPagerState(pageCount = 2)
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Tabs(pagerState = pagerState)
-        TabsContent(pagerState = pagerState)
+        TabsContent(pagerState = pagerState,vm)
     }
 }
 
@@ -76,11 +78,11 @@ fun Tabs(pagerState: PagerState) {
 
 @ExperimentalPagerApi
 @Composable
-fun TabsContent(pagerState: PagerState) {
+fun TabsContent(pagerState: PagerState,vm:ProfileViewModel) {
     HorizontalPager(state = pagerState) { page ->
         when (page) {
-            0 -> ProfileTab()
-            1 -> DocumentTab()
+            0 -> ProfileTabScreen(vm)
+            1 -> DocumentTab(vm)
         }
     }
 }

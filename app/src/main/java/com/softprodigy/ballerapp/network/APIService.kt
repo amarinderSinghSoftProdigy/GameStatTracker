@@ -1,36 +1,18 @@
 package com.softprodigy.ballerapp.network
 
 import com.softprodigy.ballerapp.common.ApiConstants
-import com.softprodigy.ballerapp.data.request.ConfirmPhoneRequest
-import com.softprodigy.ballerapp.data.request.CreateTeamRequest
-import com.softprodigy.ballerapp.data.request.ForgotPasswordRequest
-import com.softprodigy.ballerapp.data.request.LoginRequest
-import com.softprodigy.ballerapp.data.request.SignUpData
-import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
-import com.softprodigy.ballerapp.data.request.UpdateTeamRequest
-import com.softprodigy.ballerapp.data.request.VerifyPhoneRequest
-import com.softprodigy.ballerapp.data.response.CreateTeamResponse
-import com.softprodigy.ballerapp.data.response.ImageUpload
-import com.softprodigy.ballerapp.data.response.PlayerDetails
-import com.softprodigy.ballerapp.data.response.StandingData
-import com.softprodigy.ballerapp.data.response.User
-import com.softprodigy.ballerapp.data.response.UserInfo
+import com.softprodigy.ballerapp.data.request.*
+import com.softprodigy.ballerapp.data.response.*
 import com.softprodigy.ballerapp.data.response.homepage.HomePageCoachModel
 import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.domain.BaseResponse
 import com.softprodigy.ballerapp.ui.features.home.invitation.Invitation
+import com.softprodigy.ballerapp.ui.features.venue.Venue
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Multipart
-import retrofit2.http.POST
-import retrofit2.http.PUT
-import retrofit2.http.Part
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 open interface APIService {
 
@@ -125,4 +107,28 @@ open interface APIService {
 
     @GET(ApiConstants.GET_TEAM_PLAYER_BY_ID)
     suspend fun getTeamPlayerById(@Query("teamId") id: String): BaseResponse<ArrayList<PlayerDetails>>
+    @GET(ApiConstants.GET_USER_FULL_DETAILS)
+    suspend fun getUserFullDetails(): BaseResponse<User>
+
+    @PUT(ApiConstants.UPDATE_USER_FULL_DETAILS)
+    suspend fun updateUserFullDetails(@Body userDetailsReq: UpdateUserDetailsReq): BaseResponse<Any>
+
+    @PUT(ApiConstants.LEAVE_TEAM)
+    suspend fun leaveTeam(@Body request: RequestBody): BaseResponse<Any>
+
+    @GET(ApiConstants.DOC_TYPES)
+    suspend fun getDocTypes(): BaseResponse<List<UserDocType>>
+
+    @HTTP(method = "DELETE", path = ApiConstants.DELETE_DOC, hasBody = true)
+    suspend fun deleteDoc(@Body request: RequestBody): BaseResponse<Any>
+
+    @PUT(ApiConstants.UPDATE_DOC)
+    suspend fun updateUserDoc(@Body request: RequestBody): BaseResponse<Any>
+
+    @GET(ApiConstants.GET_ALL_VENUE)
+    suspend fun getAllVenue(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int,
+    ): BaseResponse<ArrayList<Venue>>
+
 }
