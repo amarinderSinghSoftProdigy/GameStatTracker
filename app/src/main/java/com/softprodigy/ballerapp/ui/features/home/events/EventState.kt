@@ -10,4 +10,5 @@ data class EventState(
     val showDeclineDialog: Boolean = false,
     val showLoading: Boolean = false,
     val selectedEvent: Events = Events(),
+    val declineReason: String = "",
 )

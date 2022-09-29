@@ -5,9 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
-import com.softprodigy.ballerapp.domain.repository.ITeamRepository
-import com.softprodigy.ballerapp.ui.theme.GreenColor
-import com.softprodigy.ballerapp.ui.theme.Yellow700
+import com.softprodigy.ballerapp.domain.repository.IEventRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -15,7 +13,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewModel() {
+class EventViewModel @Inject constructor(val eventRepo: IEventRepository) : ViewModel() {
     var eventState = mutableStateOf(EventState())
         private set
 
@@ -24,129 +22,129 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
 
     init {
         viewModelScope.launch {
-            getEventList()
-            eventState.value =
-                eventState.value.copy(
-                    currentEvents = arrayListOf(
-                        Events(
-                            "1",
-                            "Practice Title",
-                            "Venue Name",
-                            "6:00 PM - 7:00 PM",
-                            EventStatus.PENDING.status,
-                            EventType.PRACTICE
-                        ),
-                        Events(
-                            "2",
-                            "Game Title",
-                            "Venue Name1",
-                            "6:00 PM - 7:00 PM",
-                            EventStatus.ACCEPT.status,
-                            EventType.GAME,
-                        ),
-                    ),
-                    pastEvents = arrayListOf(
-                        Events(
-                            "1",
-                            "Practice Title",
-                            "Venue Name",
-                            "6:00 PM - 7:00 PM",
-                            EventStatus.PAST.status,
-                            EventType.PRACTICE,
-                        ),
-                        Events(
-                            "2",
-                            "Practice Title1",
-                            "Venue Name1",
-                            "6:00 PM - 7:00 PM",
-                            EventStatus.PAST.status,
-                            EventType.ACTIVITY
-                        ),
-                        Events(
-                            "3",
-                            "Practice Title2",
-                            "Venue Name2",
-                            "6:00 PM - 7:00 PM",
-                            EventStatus.PAST.status,
-                            EventType.SCRIMMAGE
-                        ),
-                    ),
-                    leagues = arrayListOf(
-                        Leagues(
-                            "1",
-                            "League Title",
-                            "1389 Aviator Ave, Eagle Mountain",
-                            "",
-                            "Sep 1 - Dec 15, 2022",
-                            "League",
-                            Yellow700
+//            getEventList()
+            /* eventState.value =
+                 eventState.value.copy(
+                     currentEvents = arrayListOf(
+                         Events(
+                             "1",
+                             "Practice Title",
+                             "Venue Name",
+                             "6:00 PM - 7:00 PM",
+                             EventStatus.PENDING.status,
+                             EventType.PRACTICE
+                         ),
+                         Events(
+                             "2",
+                             "Game Title",
+                             "Venue Name1",
+                             "6:00 PM - 7:00 PM",
+                             EventStatus.ACCEPT.status,
+                             EventType.GAME,
+                         ),
+                     ),
+                     pastEvents = arrayListOf(
+                         Events(
+                             "1",
+                             "Practice Title",
+                             "Venue Name",
+                             "6:00 PM - 7:00 PM",
+                             EventStatus.PAST.status,
+                             EventType.PRACTICE,
+                         ),
+                         Events(
+                             "2",
+                             "Practice Title1",
+                             "Venue Name1",
+                             "6:00 PM - 7:00 PM",
+                             EventStatus.PAST.status,
+                             EventType.ACTIVITY
+                         ),
+                         Events(
+                             "3",
+                             "Practice Title2",
+                             "Venue Name2",
+                             "6:00 PM - 7:00 PM",
+                             EventStatus.PAST.status,
+                             EventType.SCRIMMAGE
+                         ),
+                     ),
+                     leagues = arrayListOf(
+                         Leagues(
+                             "1",
+                             "League Title",
+                             "1389 Aviator Ave, Eagle Mountain",
+                             "",
+                             "Sep 1 - Dec 15, 2022",
+                             "League",
+                             Yellow700
 
-                        ),
-                        Leagues(
-                            "2",
-                            "Tournament Title",
-                            "1389 Aviator Ave, Eagle Mountain",
-                            "",
-                            "Sep 1 - Dec 15, 2022",
-                            "Tournament",
-                            GreenColor
-                        ),
-                    ),
-                    oppotuntities = arrayListOf(
-                        Leagues(
-                            "1",
-                            "League Title",
-                            "1389 Aviator Ave, Eagle Mountain",
-                            "",
-                            "Sep 1 - Dec 15, 2022",
-                            "League",
-                            Yellow700
-                        ),
-                        Leagues(
-                            "2",
-                            "Tournament Title",
-                            "1389 Aviator Ave, Eagle Mountain",
-                            "",
-                            "Sep 1 - Dec 15, 2022",
-                            "Tournament",
-                            GreenColor
-                        ),
-                    )
-                )
+                         ),
+                         Leagues(
+                             "2",
+                             "Tournament Title",
+                             "1389 Aviator Ave, Eagle Mountain",
+                             "",
+                             "Sep 1 - Dec 15, 2022",
+                             "Tournament",
+                             GreenColor
+                         ),
+                     ),
+                     oppotuntities = arrayListOf(
+                         Leagues(
+                             "1",
+                             "League Title",
+                             "1389 Aviator Ave, Eagle Mountain",
+                             "",
+                             "Sep 1 - Dec 15, 2022",
+                             "League",
+                             Yellow700
+                         ),
+                         Leagues(
+                             "2",
+                             "Tournament Title",
+                             "1389 Aviator Ave, Eagle Mountain",
+                             "",
+                             "Sep 1 - Dec 15, 2022",
+                             "Tournament",
+                             GreenColor
+                         ),
+                     )
+                 )*/
         }
     }
 
-        suspend fun getEventList() {
-            eventState.value =
-                eventState.value.copy(showLoading = true)
-            val eventResponse = teamRepo.getAllevents()
-            eventState.value =
-                eventState.value.copy(showLoading = false)
+    private suspend fun getEventList() {
+        eventState.value =
+            eventState.value.copy(showLoading = true)
+        val eventResponse = eventRepo.getAllevents()
+        eventState.value =
+            eventState.value.copy(showLoading = false)
 
-            when (eventResponse) {
-                is ResultWrapper.GenericError -> {
-                    _eventChannel.send(
-                        EventChannel.ShowToast(
-                            UiText.DynamicString(
-                                "${eventResponse.message}"
-                            )
+        when (eventResponse) {
+            is ResultWrapper.GenericError -> {
+                _eventChannel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${eventResponse.message}"
                         )
                     )
-                }
-                is ResultWrapper.NetworkError -> {
-                    _eventChannel.send(
-                        EventChannel.ShowToast(
-                            UiText.DynamicString(
-                                eventResponse.message
-                            )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _eventChannel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            eventResponse.message
                         )
                     )
-                }
-                is ResultWrapper.Success -> {
-                    eventResponse.value.let { response ->
-                        if (response.status) {
-                            eventState.value =
-                                eventState.value.copy(
+                )
+            }
+            is ResultWrapper.Success -> {
+                eventResponse.value.let { response ->
+                    if (response.status) {
+                        eventState.value =
+                            eventState.value.copy(
                                     currentEvents = response.data.upcommingEvents,
                                     pastEvents = response.data.pastEvents
                                 )
@@ -167,7 +165,7 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
     suspend fun getEventDetails(id :String){
         eventState.value =
             eventState.value.copy(showLoading = true)
-        val eventResponse = teamRepo.getAllevents()
+        val eventResponse = eventRepo.getAllevents()
         eventState.value =
             eventState.value.copy(showLoading = false)
 
@@ -219,6 +217,9 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
                     showGoingDialog = true,
                     selectedEvent = event.event
                 )
+                viewModelScope.launch {
+                    acceptEventInvite()
+                }
             }
             is EvEvents.OnDeclineCLick -> {
                 eventState.value = eventState.value.copy(
@@ -236,11 +237,62 @@ class EventViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewMo
                     showDeclineDialog = false,
                 )
             }
+            EvEvents.RefreshEventScreen -> {
+                viewModelScope.launch { getEventList() }
+            }
         }
 
     }
 
+    private suspend fun acceptEventInvite() {
+        eventState.value =
+            eventState.value.copy(showLoading = true)
+
+        val acceptResponse = eventRepo.acceptEventInvite(eventState.value.selectedEvent.id)
+
+        eventState.value =
+            eventState.value.copy(showLoading = false)
+
+        when (acceptResponse) {
+            is ResultWrapper.GenericError -> {
+                _eventChannel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${acceptResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _eventChannel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            acceptResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                acceptResponse.value.let { response ->
+
+                    if (response.status) {
+                        getEventList()
+                    } else {
+                        _eventChannel.send(
+                            EventChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
 }
+
 
 sealed class EventChannel {
     data class ShowToast(val message: UiText) : EventChannel()

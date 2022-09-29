@@ -9,5 +9,6 @@ sealed class EvEvents {
     data class onCancelDeclineDialog(val showDeclineDialog: Boolean) : EvEvents()
     object OnRoleConfirmClick : EvEvents()
     data class OnDeclineConfirmClick(val invitation: EventsResponse) : EvEvents()
+    object RefreshEventScreen : EvEvents()
 
 }

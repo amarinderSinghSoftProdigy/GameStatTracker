@@ -172,7 +172,7 @@ fun EventDetailsScreen(vm: EventViewModel) {
             item {
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
             }
-            itemsIndexed(images) { index, item ->
+            /*itemsIndexed(images) { index, item ->
                 Image(
                     painter = rememberAsyncImagePainter("https://picsum.photos/200"),
                     contentDescription = null,
@@ -181,7 +181,7 @@ fun EventDetailsScreen(vm: EventViewModel) {
                         .clip(RoundedCornerShape(dimensionResource(R.dimen.size_10dp)))
                         .size(dimensionResource(id = R.dimen.size_70dp))
                 )
-            }
+            }*/
         }
 
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
@@ -206,7 +206,7 @@ fun EventDetailsScreen(vm: EventViewModel) {
         }
 
         LazyRow {
-            itemsIndexed(images) { index, item ->
+            /*itemsIndexed(images) { index, item ->
                 Column(
                     modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.size_16dp)),
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -242,7 +242,7 @@ fun EventDetailsScreen(vm: EventViewModel) {
                         style = MaterialTheme.typography.h6
                     )
                 }
-            }
+            }*/
         }
 
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))

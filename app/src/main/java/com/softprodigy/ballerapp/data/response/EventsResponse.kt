@@ -13,17 +13,17 @@ data class EventsResponse(
 )
 data class Events(
     @SerializedName("_id") val id: String = "",
-    @SerializedName("title") val title: String = "",
-    @SerializedName("venue") val venue: String = "",
+    @SerializedName("eventName") val eventName: String = "",
+    @SerializedName("landmarkLocation") val landmarkLocation: String = "",
     @SerializedName("date") val date: String = "",
-    @SerializedName("status") val status: String = "",
-    @SerializedName("type") val type: EventType? = null,
+    @SerializedName("invitationStatus") val invitationStatus: String = "",
+    @SerializedName("eventType") val eventType: String = "",
 )
 
 enum class EventStatus(val status: String) {
     ACCEPT("Going"),
     REJECT("Reject"),
-    PENDING("Pending"),
+    PENDING("Maybe"),
     PAST("Past"),
 }
 

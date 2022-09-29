@@ -13,7 +13,6 @@ fun apiToUIDateFormat(apiDate: String): String {
     val targetFormat: DateFormat = SimpleDateFormat("EEE, MMM dd") //Tue, Sep 22
     val date: Date = originalFormat.parse(apiDate)
     val formattedDate: String = targetFormat.format(date)
-    Log.i("apiToUIDateFormat", "apiToUIDateFormat: $formattedDate")
     return formattedDate
     }
     else return apiDate
@@ -27,7 +26,6 @@ fun apiToUIDateFormat2(apiDate: String): String {
         val targetFormat: DateFormat = SimpleDateFormat("MMM dd, yyyy") //May 15, 1999
         val date: Date = originalFormat.parse(apiDate)
         val formattedDate: String = targetFormat.format(date)
-        Log.i("apiToUIDateFormat2", "apiToUIDateFormat: $formattedDate")
         return formattedDate
     }
     else return apiDate
