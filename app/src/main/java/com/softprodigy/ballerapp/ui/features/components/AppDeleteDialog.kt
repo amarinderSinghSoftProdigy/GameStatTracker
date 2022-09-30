@@ -2,18 +2,7 @@ package com.softprodigy.ballerapp.ui.features.components
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -50,20 +39,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.window.DialogProperties
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.argbToHexString
-import com.softprodigy.ballerapp.common.validTeamName
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.response.ParentDetails
 import com.softprodigy.ballerapp.data.response.PlayerDetails
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.ui.features.profile.tabs.DetailItem
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
 import com.softprodigy.ballerapp.ui.theme.*
 
 @Composable
@@ -105,7 +91,10 @@ fun <T> DeleteDialog(
                     )
                     AppButton(
                         text = stringResource(R.string.dialog_button_confirm),
-                        onClick = { onDelete(item) },
+                        onClick = {
+                            onDelete(item)
+                            onDismiss.invoke()
+                        },
                         modifier = Modifier
                             .weight(1f),
                         border = ButtonDefaults.outlinedBorder,
@@ -1360,11 +1349,13 @@ fun DeclineEventDialog(
                         onValueChange = {
                             onReasonChange(it)
                         },
+                        maxLines = 1,
+                        singleLine = true,
                         placeholder = {
                             Text(
-                                text = stringResource(id = R.string.reason_not_going) + "\n\n\n",
+                                text = stringResource(id = R.string.reason_not_going),
                                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                                textAlign = TextAlign.Center
+                                textAlign = TextAlign.Start
                             )
                         },
                         keyboardOptions = KeyboardOptions(

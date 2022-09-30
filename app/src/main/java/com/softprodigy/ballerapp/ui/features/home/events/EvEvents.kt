@@ -10,5 +10,8 @@ sealed class EvEvents {
     object OnRoleConfirmClick : EvEvents()
     data class OnDeclineConfirmClick(val invitation: EventsResponse) : EvEvents()
     object RefreshEventScreen : EvEvents()
+    object OnConfirmGoing : EvEvents()
+    data class OnDeclineReasonChange(val reason: String) : EvEvents()
+    data class OnGoingDialogClick(val showGoingDialog: Boolean) : EvEvents()
 
 }

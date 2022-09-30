@@ -217,9 +217,7 @@ class EventViewModel @Inject constructor(val eventRepo: IEventRepository) : View
                     showGoingDialog = true,
                     selectedEvent = event.event
                 )
-                viewModelScope.launch {
-                    acceptEventInvite()
-                }
+
             }
             is EvEvents.OnDeclineCLick -> {
                 eventState.value = eventState.value.copy(
@@ -239,6 +237,17 @@ class EventViewModel @Inject constructor(val eventRepo: IEventRepository) : View
             }
             EvEvents.RefreshEventScreen -> {
                 viewModelScope.launch { getEventList() }
+            }
+
+            EvEvents.OnConfirmGoing -> {
+                viewModelScope.launch { acceptEventInvite() }
+            }
+
+           is EvEvents.OnGoingDialogClick -> {
+               eventState.value=eventState.value.copy(showGoingDialog = event.showGoingDialog)
+            }
+            is EvEvents.OnDeclineReasonChange -> {
+                eventState.value=eventState.value.copy(declineReason = event.reason)
             }
         }
 

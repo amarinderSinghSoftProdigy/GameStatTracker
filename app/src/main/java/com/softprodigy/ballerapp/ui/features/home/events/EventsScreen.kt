@@ -276,13 +276,24 @@ fun BoxScope.MyEvents(
                     }
 
                 }
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+                }
+
+
+            if (state.showGoingDialog) {
+                DeleteDialog(
+                    item = state.selectedEvent,
+                    message = stringResource(id = R.string.alert_going_event_confirm),
+                    onDismiss = {
+                        vm.onEvent(EvEvents.OnGoingDialogClick(false))
+                    },
+                    onDelete = {event->
+                        if (event.id.isNotEmpty()) {
+                            vm.onEvent(EvEvents.OnConfirmGoing)
+                        }
+                    }
+                )
             }
-
-
-            /*if (state.showGoingDialog) {
-
-            }*/
             if (state.showDeclineDialog) {
                 DeclineEventDialog(
                     title = stringResource(id = R.string.decline_head),
@@ -293,9 +304,9 @@ fun BoxScope.MyEvents(
 
                     },
                     onReasonChange = {
-
+                        vm.onEvent(EvEvents.OnDeclineReasonChange(it))
                     },
-                    reason = ""
+                    reason = state.declineReason
                 )
             }
 
