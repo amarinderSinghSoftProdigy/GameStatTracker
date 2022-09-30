@@ -135,6 +135,10 @@ class EventViewModel @Inject constructor(
 
     fun onEvent(event: EvEvents) {
         when (event) {
+            is EvEvents.ClearRegister -> {
+                _state.value =
+                    _state.value.copy(registerRequest = RegisterRequest())
+            }
             is EvEvents.RegisterPrivacy -> {
                 _state.value =
                     _state.value.copy(registerRequest = _state.value.registerRequest.copy(privacy = event.request))
