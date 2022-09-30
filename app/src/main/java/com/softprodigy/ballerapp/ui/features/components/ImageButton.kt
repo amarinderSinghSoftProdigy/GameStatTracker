@@ -2,9 +2,7 @@ package com.softprodigy.ballerapp.ui.features.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Surface
@@ -35,18 +33,18 @@ fun ImageButton(
         enabled = enabled,
         shape = shape,
         color =
-            if (enabled) {
-                colors
-            } else {
-                colors
-            }
+        if (enabled) {
+            colors
+        } else {
+            colors
+        }
     ) {
-        if(icon != null)
+        if (icon != null)
             Image(
-            painter = icon!!,
-            modifier = Modifier.size(dimensionResource(R.dimen.size_20dp)),
-            contentDescription = null,
-        )
+                painter = icon!!,
+                modifier = Modifier.size(dimensionResource(R.dimen.size_20dp)),
+                contentDescription = null,
+            )
     }
 }
 

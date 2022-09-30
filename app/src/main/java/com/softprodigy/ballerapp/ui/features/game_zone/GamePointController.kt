@@ -24,15 +24,10 @@ fun GamePointController (
         Row(
             Modifier
                 .fillMaxWidth()
-                /*.padding(
-                    horizontal = dimensionResource(id = R.dimen.size_12dp),
-                    vertical = dimensionResource(id = R.dimen.size_2dp)
-                )*/
         ) {
             Column(
                 Modifier.
                         fillMaxSize(),
-                    //.padding(horizontal = dimensionResource(id = R.dimen.size_20dp)),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
@@ -62,38 +57,6 @@ fun GamePointController (
                                 spacerBetween = R.dimen.size_4dp,
                             ) {}
                         }
-
-                        /*Row(Modifier.height(dimensionResource(id = R.dimen.size_45dp))) {
-                            Column() {
-                                Divider(
-                                    color = colorResource(id = R.color.gray_border),
-                                    modifier = Modifier
-                                        .fillMaxHeight()
-                                        .width(dimensionResource(id = R.dimen.size_1dp))
-                                )
-                            }
-                            Column(
-                                Modifier.weight(1f),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                ImageTextButton(
-                                    title = setting.title!!,
-                                    drawableResourceId = setting.icon!!,
-                                    spacerBetween = R.dimen.size_5dp,
-                                ) {}
-                                Divider(color = colorResource(id = R.color.gray_border), thickness = dimensionResource(id = R.dimen.size_1dp))
-                            }
-                            if ((index+1) % 2 == 0 ) {
-                                Column() {
-                                    Divider(
-                                        color = colorResource(id = R.color.gray_border),
-                                        modifier = Modifier
-                                            .fillMaxHeight()
-                                            .width(dimensionResource(id = R.dimen.size_1dp))
-                                    )
-                                }
-                            }
-                        }*/
                     }
                 }
 
@@ -123,37 +86,6 @@ fun GamePointController (
                                 spacerBetween = R.dimen.size_12dp,
                             ) {}
                         }
-                        /*Row(Modifier.height(dimensionResource(id = R.dimen.size_80dp))) {
-                            Column() {
-                                Divider(
-                                    color = colorResource(id = R.color.gray_border),
-                                    modifier = Modifier
-                                        .fillMaxHeight()
-                                        .width(dimensionResource(id = R.dimen.size_1dp))
-                                )
-                            }
-                            Column(
-                                Modifier.weight(1f),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                ImageTextButton(
-                                    title = point.title!!,
-                                    drawableResourceId = point.icon!!,
-                                    spacerBetween = R.dimen.size_5dp,
-                                ) {}
-                                Divider(color = colorResource(id = R.color.gray_border), thickness = dimensionResource(id = R.dimen.size_1dp))
-                            }
-                            if ((index+1) % 2 == 0 ) {
-                                Column() {
-                                    Divider(
-                                        color = colorResource(id = R.color.gray_border),
-                                        modifier = Modifier
-                                            .fillMaxHeight()
-                                            .width(dimensionResource(id = R.dimen.size_1dp))
-                                    )
-                                }
-                            }
-                        }*/
                     }
                 }
             }

@@ -84,116 +84,83 @@ fun periodListItem(index: Int, periodItem: String = "", selectedIndex: Int = 1) 
 
 @Composable
 inline fun gameSettings() {
+    Column(
+        Modifier.fillMaxSize(),
+        //.padding(horizontal = dimensionResource(id = R.dimen.size_20dp)),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
-        Column(
-            Modifier.fillMaxSize(),
-            //.padding(horizontal = dimensionResource(id = R.dimen.size_20dp)),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            // Game setting grid view
-            var pointList = ArrayList<GameSettingsState>();
-            pointList.add(
-                GameSettingsState(
-                    stringResource(id = R.string.asst),
-                    R.drawable.ic_plus
-                )
+        // Game setting grid view
+        var pointList = ArrayList<GameSettingsState>();
+        pointList.add(
+            GameSettingsState(
+                stringResource(id = R.string.asst),
+                R.drawable.ic_plus
             )
-            pointList.add(
-                GameSettingsState(
-                    stringResource(id = R.string.blk),
-                    R.drawable.ic_plus
-                )
+        )
+        pointList.add(
+            GameSettingsState(
+                stringResource(id = R.string.blk),
+                R.drawable.ic_plus
             )
-            pointList.add(
-                GameSettingsState(
-                    stringResource(id = R.string.off_reb),
-                    R.drawable.ic_plus
-                )
+        )
+        pointList.add(
+            GameSettingsState(
+                stringResource(id = R.string.off_reb),
+                R.drawable.ic_plus
             )
-            pointList.add(
-                GameSettingsState(
-                    stringResource(id = R.string.def_reb),
-                    R.drawable.ic_plus
-                )
+        )
+        pointList.add(
+            GameSettingsState(
+                stringResource(id = R.string.def_reb),
+                R.drawable.ic_plus
             )
-            pointList.add(
-                GameSettingsState(
-                    stringResource(id = R.string.stl),
-                    R.drawable.ic_plus
-                )
+        )
+        pointList.add(
+            GameSettingsState(
+                stringResource(id = R.string.stl),
+                R.drawable.ic_plus
             )
-            pointList.add(
-                GameSettingsState(
-                    stringResource(id = R.string.to),
-                    R.drawable.ic_plus
-                )
+        )
+        pointList.add(
+            GameSettingsState(
+                stringResource(id = R.string.to),
+                R.drawable.ic_plus
             )
-            pointList.add(
-                GameSettingsState(
-                    stringResource(id = R.string.foul),
-                    R.drawable.ic_plus
-                )
+        )
+        pointList.add(
+            GameSettingsState(
+                stringResource(id = R.string.foul),
+                R.drawable.ic_plus
             )
-            pointList.add(
-                GameSettingsState(
-                    stringResource(id = R.string.sub),
-                    R.drawable.ic_plus
-                )
+        )
+        pointList.add(
+            GameSettingsState(
+                stringResource(id = R.string.sub),
+                R.drawable.ic_plus
             )
-            LazyVerticalGrid(columns = GridCells.Fixed(2),) {
-                itemsIndexed(pointList) { index, point ->
-                    Column(
-                        Modifier
-                            .height(dimensionResource(id = R.dimen.size_82dp))
-                            .weight(1f)
-                            .border(
-                                dimensionResource(id = R.dimen.size_1dp),
-                                colorResource(id = R.color.gray_border)
-                            ),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center,
-                    ) {
-                        ImageTextButton(
-                            title = point.title!!,
-                            drawableResourceId = point.icon!!,
-                            titleFontSize = R.dimen.txt_size_12,
-                            spacerBetween = R.dimen.size_12dp,
-                        ) {}
-                    }
-                    /*Row(Modifier.height(dimensionResource(id = R.dimen.size_80dp))) {
-                    Column() {
-                        Divider(
-                            color = colorResource(id = R.color.gray_border),
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .width(dimensionResource(id = R.dimen.size_1dp))
-                        )
-                    }
-                    Column(
-                        Modifier.weight(1f),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        ImageTextButton(
-                            title = point.title!!,
-                            drawableResourceId = point.icon!!,
-                            spacerBetween = R.dimen.size_5dp,
-                        ) {}
-                        Divider(color = colorResource(id = R.color.gray_border), thickness = dimensionResource(id = R.dimen.size_1dp))
-                    }
-                    if ((index+1) % 2 == 0 ) {
-                        Column() {
-                            Divider(
-                                color = colorResource(id = R.color.gray_border),
-                                modifier = Modifier
-                                    .fillMaxHeight()
-                                    .width(dimensionResource(id = R.dimen.size_1dp))
-                            )
-                        }
-                    }
-                }*/
+        )
+        LazyVerticalGrid(columns = GridCells.Fixed(2),) {
+            itemsIndexed(pointList) { index, point ->
+                Column(
+                    Modifier
+                        .height(dimensionResource(id = R.dimen.size_82dp))
+                        .weight(1f)
+                        .border(
+                            dimensionResource(id = R.dimen.size_1dp),
+                            colorResource(id = R.color.gray_border)
+                        ),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                ) {
+                    ImageTextButton(
+                        title = point.title!!,
+                        drawableResourceId = point.icon!!,
+                        titleFontSize = R.dimen.txt_size_12,
+                        spacerBetween = R.dimen.size_12dp,
+                    ) {}
                 }
             }
         }
-
+    }
 }
