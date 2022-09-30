@@ -9,27 +9,21 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Divider
-import androidx.compose.material.Shapes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.ImageTextButton
-import com.softprodigy.ballerapp.ui.theme.Shapes
 
 @Composable
 fun GameSettingsController (
@@ -102,54 +96,53 @@ inline fun gameSettings() {
             pointList.add(
                 GameSettingsState(
                     stringResource(id = R.string.asst),
-                    R.drawable.ic_add_button
+                    R.drawable.ic_plus
                 )
             )
             pointList.add(
                 GameSettingsState(
                     stringResource(id = R.string.blk),
-                    R.drawable.ic_add_button
+                    R.drawable.ic_plus
                 )
             )
             pointList.add(
                 GameSettingsState(
                     stringResource(id = R.string.off_reb),
-                    R.drawable.ic_add_button
+                    R.drawable.ic_plus
                 )
             )
             pointList.add(
                 GameSettingsState(
                     stringResource(id = R.string.def_reb),
-                    R.drawable.ic_add_button
+                    R.drawable.ic_plus
                 )
             )
             pointList.add(
                 GameSettingsState(
                     stringResource(id = R.string.stl),
-                    R.drawable.ic_add_button
+                    R.drawable.ic_plus
                 )
             )
             pointList.add(
                 GameSettingsState(
                     stringResource(id = R.string.to),
-                    R.drawable.ic_add_button
+                    R.drawable.ic_plus
                 )
             )
             pointList.add(
                 GameSettingsState(
                     stringResource(id = R.string.foul),
-                    R.drawable.ic_add_button
+                    R.drawable.ic_plus
                 )
             )
             pointList.add(
                 GameSettingsState(
                     stringResource(id = R.string.sub),
-                    R.drawable.ic_add_button
+                    R.drawable.ic_plus
                 )
             )
             LazyVerticalGrid(columns = GridCells.Fixed(2),) {
                 itemsIndexed(pointList) { index, point ->
-
                     Column(
                         Modifier
                             .height(dimensionResource(id = R.dimen.size_82dp))

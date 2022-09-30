@@ -1,16 +1,11 @@
 package com.softprodigy.ballerapp.ui.features.game_zone
 
-import android.graphics.drawable.ShapeDrawable
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
@@ -18,16 +13,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.*
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.common.AppConstants
-import com.softprodigy.ballerapp.ui.features.components.*
-import com.softprodigy.ballerapp.ui.theme.Shapes
+import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.CoilImage
+import com.softprodigy.ballerapp.ui.features.components.ImageButton
+import com.softprodigy.ballerapp.ui.features.components.PlaceholderRect
 
 @Composable
 fun TeamNavigationController (
@@ -36,63 +33,88 @@ fun TeamNavigationController (
     Box(
         modifier =  Modifier.fillMaxSize()
     ) {
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .height(dimensionResource(id = R.dimen.size_46dp))
-                .padding(
-                    horizontal = dimensionResource(id = R.dimen.size_12dp),
-                    vertical = dimensionResource(id = R.dimen.size_7dp)
-                ),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // My team
-            Column(
-                Modifier.fillMaxHeight(),
-                verticalArrangement = Arrangement.Center
-            ) {
-                Row(
-                    Modifier.fillMaxHeight(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    teamLogo();
-                    teamTitle("My Team", endPadding = dimensionResource(id = R.dimen.size_8dp));
-                }
-            }
-
-            // team handling
-            Column(
+        Column(modifier = Modifier
+            .fillMaxHeight()
+            .fillMaxWidth()) {
+            Row(
                 Modifier
-                    .fillMaxHeight()
-                    .weight(1f),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
+                    .fillMaxWidth()
+                    .height(dimensionResource(id = R.dimen.size_46dp))
+                    .padding(
+                        horizontal = dimensionResource(id = R.dimen.size_12dp),
+                        vertical = dimensionResource(id = R.dimen.size_7dp)
+                    ),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
+                // My team
+                Column(
                     Modifier.fillMaxHeight(),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    teamLogo();
-                    teamScore("50", startPadding = dimensionResource(id = R.dimen.size_9dp))
-                    teamScore(":", dimensionResource(id = R.dimen.size_8dp), dimensionResource(id = R.dimen.size_8dp))
-                    teamScore("100", endPadding = dimensionResource(id = R.dimen.size_9dp))
-                    teamLogo();
+                    Row(
+                        Modifier.fillMaxHeight(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        teamLogo();
+                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+                        teamTitle("My Team", endPadding = dimensionResource(id = R.dimen.size_8dp));
+                    }
+                }
+
+                // team handling
+                Column(
+                    Modifier
+                        .fillMaxHeight()
+                        .weight(1f),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Row(
+                        Modifier.fillMaxHeight(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        ImageButton(
+                            icon = painterResource(id = R.drawable.ic_possesion_next_arrow_selected),
+                            modifier = Modifier.width(dimensionResource(id = R.dimen.size_32dp)).height(dimensionResource(id = R.dimen.size_32dp)),
+                            onClick = { /*TODO*/ }
+                        )
+                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+                        teamScore("50")
+                        teamScore(
+                            ":",
+                            dimensionResource(id = R.dimen.size_8dp),
+                            dimensionResource(id = R.dimen.size_8dp)
+                        )
+                        teamScore("100")
+                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+                        ImageButton(
+                            icon = painterResource(id = R.drawable.ic_possesion_next_arrow_selected),
+                            modifier = Modifier.width(dimensionResource(id = R.dimen.size_32dp)).height(dimensionResource(id = R.dimen.size_32dp)),
+                            onClick = { /*TODO*/ }
+                        )
+                    }
+                }
+
+                // Other team
+                Column(
+                    Modifier.fillMaxHeight(),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Row(
+                        Modifier.fillMaxHeight(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        teamTitle(
+                            "Other Team",
+                            startPadding = dimensionResource(id = R.dimen.size_8dp)
+                        );
+                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+                        teamLogo(logoColor = Color.Blue);
+                    }
                 }
             }
 
-            // Other team
-            Column(
-                Modifier.fillMaxHeight(),
-                verticalArrangement = Arrangement.Center
-            ) {
-                Row(
-                    Modifier.fillMaxHeight(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    teamTitle("Other Team", startPadding = dimensionResource(id = R.dimen.size_8dp));
-                    teamLogo(logoColor = Color.Blue);
-                }
-            }
+            PointList()
         }
     }
 }
@@ -129,13 +151,12 @@ inline fun teamLogo(logoSource :String = "", logoColor: Color = Color.Red) {
 inline fun teamTitle(title: String = "", startPadding: Dp = 0.dp, endPadding: Dp = 0.dp) {
     AppText(
         text = title,
-        //color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
         color = Color.White,
         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
         style = MaterialTheme.typography.body1,
         maxLines = 1,
         textAlign = TextAlign.Center,
-        modifier = Modifier.padding(start = startPadding, top= 0.dp, end = endPadding, bottom = 0.dp)
+        modifier = Modifier.padding(start = startPadding, top = 0.dp, end = endPadding, bottom = 0.dp)
     )
 }
 
@@ -143,7 +164,6 @@ inline fun teamTitle(title: String = "", startPadding: Dp = 0.dp, endPadding: Dp
 inline fun teamScore(score: String = "", startPadding: Dp = 0.dp, endPadding: Dp = 0.dp) {
     AppText(
         text = score,
-        //color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
         color = Color.White,
         fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
         style = MaterialTheme.typography.body1,
@@ -175,24 +195,4 @@ inline fun navigationHandler(enabled: Boolean = false) {
     ) {
 
     }
-    /*Row(
-        modifier = Modifier.width(dimensionResource(id = R.dimen.size_32dp))
-            .background(Color.Yellow)
-            .border(dimensionResource(id = R.dimen.divider), Color.Red).clip(RoundedCornerShape(100)),
-
-        ) {
-
-
-        AppButton(
-            singleButton = true,
-            enabled = true,
-            onClick = {
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(dimensionResource(id = R.dimen.size_56dp)),
-            text = stringResource(id = R.string.verify),
-            icon = painterResource(id = R.drawable.ic_circle_next)
-        )
-    }*/
 }

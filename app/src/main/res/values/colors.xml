@@ -12,5 +12,7 @@
     <color name="gray_border">#D7D7D7</color>
     <color name="ball_color">#FF923D</color>
     <color name="background_color">#F1F6FA</color>
+    
+    <color name="point_text_color">#BFFFFFFF</color>
 
 </resources>
