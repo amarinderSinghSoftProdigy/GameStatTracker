@@ -8,7 +8,7 @@ import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.domain.BaseResponse
-import com.softprodigy.ballerapp.ui.features.home.events.EventsResponse
+import com.softprodigy.ballerapp.ui.features.home.events.*
 import com.softprodigy.ballerapp.ui.features.home.invitation.Invitation
 import com.softprodigy.ballerapp.ui.features.venue.Venue
 import okhttp3.MultipartBody
@@ -86,7 +86,7 @@ open interface APIService {
         @Query("sort") sort: String
     ): BaseResponse<ArrayList<Invitation>>
 
- @GET(ApiConstants.GET_ALL_EVENTS)
+    @GET(ApiConstants.GET_ALL_EVENTS)
     suspend fun getAllevents(
         @Query("page") page: Int,
         @Query("limit") limit: Int,
@@ -113,6 +113,7 @@ open interface APIService {
 
     @GET(ApiConstants.GET_TEAM_PLAYER_BY_ID)
     suspend fun getTeamPlayerById(@Query("teamId") id: String): BaseResponse<ArrayList<PlayerDetails>>
+
     @GET(ApiConstants.GET_USER_FULL_DETAILS)
     suspend fun getUserFullDetails(): BaseResponse<User>
 
@@ -136,6 +137,24 @@ open interface APIService {
         @Query("page") page: Int,
         @Query("limit") limit: Int,
     ): BaseResponse<ArrayList<Venue>>
+
+    @GET(ApiConstants.GET_ALL_OPPORTUNITIES)
+    suspend fun getAllOpportunities(): BaseResponse<List<OpportunitiesItem>>
+
+    @GET(ApiConstants.GET_OPPORTUNITY_ID)
+    suspend fun getOpportunityDetail(@Query("eventId") id: String): BaseResponse<OpportunitiesDetail>
+
+    @GET(ApiConstants.GET_FILTERS)
+    suspend fun getFilters(): BaseResponse<FilterResponse>
+
+    @GET("${ApiConstants.EVENT_GET_DIVISIONS}/{id}")
+    suspend fun getEventDivision(@Path("id") id: String): BaseResponse<List<DivisionData>>
+
+    @POST(ApiConstants.EVENT_TEAM_REGISTRATION)
+    suspend fun registerEvent(@Body request: RegisterRequest): BaseResponse<Any>
+
+    @PUT(ApiConstants.EVENT_UPDATE_FILTERS)
+    suspend fun updateFilters(@Body request: FilterUpdateRequest): BaseResponse<Any>
 
 
     @POST(ApiConstants.CREATE_NEW_EVENT)

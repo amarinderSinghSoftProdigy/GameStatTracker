@@ -102,6 +102,9 @@ object ApiConstants {
     const val GET_HOME_PAGE_DETAILS = "v1/coach/event/getHomePageDetails"
     const val GET_USER_FULL_DETAILS = "v1/userDetails"
     const val UPDATE_USER_FULL_DETAILS = "v1/userDetails"
+    const val EVENT_GET_DIVISIONS = "v1/event/getAllDivisions"
+    const val EVENT_TEAM_REGISTRATION = "v1/event/team/registration"
+    const val EVENT_UPDATE_FILTERS = "v1/event/updateFilterPreferences"
 
     const val LEAVE_TEAM = "v1/userDetails/leaveTeam"
     const val DOC_TYPES = "v1/userDetails/getUserDocuments"
@@ -109,6 +112,10 @@ object ApiConstants {
     const val UPDATE_DOC = "v1/userDetails/updateDocument"
 
     const val GET_ALL_VENUE = "v1/venue/getAllVenues"
+
+    const val GET_ALL_OPPORTUNITIES = "v1/event/getOpportunitiesEvents"
+    const val GET_OPPORTUNITY_ID = "v1/event/getEventRegisterById"
+    const val GET_FILTERS = "v1/event/getFilterPreferences"
 
     const val first_name = "first_name"
     const val last_name = "lastName"

@@ -30,6 +30,14 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.apiToUIDateFormat2
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.response.team.Team
+import com.softprodigy.ballerapp.ui.features.components.DeclineEventDialog
+import com.softprodigy.ballerapp.ui.features.components.SwitchTeamDialog
+import com.softprodigy.ballerapp.ui.features.components.TopBar
+import com.softprodigy.ballerapp.ui.features.components.TopBarData
+import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
+import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
+import com.softprodigy.ballerapp.ui.features.home.events.opportunities.OpportunitieScreen
+import com.softprodigy.ballerapp.ui.features.home.events.opportunities.OpportunitieScreen
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.events.opportunities.OpportunitieScreen
 import com.softprodigy.ballerapp.ui.theme.*
@@ -78,12 +86,9 @@ fun EventsScreen(
                     Team(_id = "2", name = "Springfield Sprouts"),
                 )
                 SwitchTeamDialog(
+                    teamSelect = teams[0],
                     teams = teams,
                     title = stringResource(id = R.string.switch_teams),
-                    onSelection = {
-                        vm.onEvent(EvEvents.OnSelection(it))
-                    },
-                    isSelected = state.selectionTeam,
                     onDismiss = {
                         dismissDialog(false)
                     },

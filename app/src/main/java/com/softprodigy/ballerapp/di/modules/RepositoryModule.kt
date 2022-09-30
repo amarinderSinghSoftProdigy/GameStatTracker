@@ -1,9 +1,11 @@
 package com.softprodigy.ballerapp.di.modules
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
+import com.softprodigy.ballerapp.data.repository.EventsRepository
 import com.softprodigy.ballerapp.data.repository.EventRepository
 import com.softprodigy.ballerapp.data.repository.ImageUploadRepo
 import com.softprodigy.ballerapp.data.repository.TeamRepository
 import com.softprodigy.ballerapp.data.repository.UserRepository
+import com.softprodigy.ballerapp.domain.repository.IEventsRepository
 import com.softprodigy.ballerapp.domain.repository.IEventRepository
 import com.softprodigy.ballerapp.domain.repository.IImageUploadRepo
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
@@ -35,6 +37,15 @@ object RepositoryModule {
         dataStoreManager: DataStoreManager,
     ): ITeamRepository {
         return TeamRepository(service = apiService, dataStoreManager = dataStoreManager)
+    }
+
+    @Provides
+    @Singleton
+    fun provideEventsRepo(
+        apiService: APIService,
+        dataStoreManager: DataStoreManager,
+    ): IEventsRepository {
+        return EventsRepository(service = apiService, dataStoreManager = dataStoreManager)
     }
     @Provides
     @Singleton

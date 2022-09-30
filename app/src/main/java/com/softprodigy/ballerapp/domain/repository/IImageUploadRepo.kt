@@ -6,5 +6,14 @@ import com.softprodigy.ballerapp.domain.BaseResponse
 import java.io.File
 
 interface IImageUploadRepo {
-    suspend fun uploadSingleImage(type: String, file: File?):ResultWrapper<BaseResponse<ImageUpload>>
+    suspend fun uploadSingleImage(
+        type: String,
+        file: File?
+    ): ResultWrapper<BaseResponse<ImageUpload>>
+
+    suspend fun uploadSingleFile(
+        mime: String,
+        type: String,
+        file: File?
+    ): ResultWrapper<BaseResponse<ImageUpload>>
 }

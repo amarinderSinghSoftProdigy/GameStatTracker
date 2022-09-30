@@ -4,7 +4,8 @@ import com.google.gson.annotations.SerializedName
 
 data class PlayerDetails(
     @SerializedName("_id") val id: String = "",
-    @SerializedName("memberId") val memberDetails: MemberDetails? = null
+    @SerializedName("memberId") val memberDetails: MemberDetails = MemberDetails(),
+    var checked: Boolean = false
 )
 
 data class MemberDetails(

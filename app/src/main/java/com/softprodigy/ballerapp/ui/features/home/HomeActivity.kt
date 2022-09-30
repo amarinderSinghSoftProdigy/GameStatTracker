@@ -12,8 +12,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -55,6 +59,7 @@ import com.softprodigy.ballerapp.ui.features.home.events.game.GameDetailsScreen
 import com.softprodigy.ballerapp.ui.features.home.events.game.GameRuleScreen
 import com.softprodigy.ballerapp.ui.features.home.events.new_event.NewEventScreen
 import com.softprodigy.ballerapp.ui.features.home.events.opportunities.EventRegisterSuccessScreen
+import com.softprodigy.ballerapp.ui.features.home.events.opportunities.EventRegistraionDetails
 import com.softprodigy.ballerapp.ui.features.home.events.opportunities.OppEventDetails
 import com.softprodigy.ballerapp.ui.features.home.events.team.team_tabs.EventTeamTabs
 import com.softprodigy.ballerapp.ui.features.home.events.venues.openVenue.OpenVenueTopTabs
@@ -256,7 +261,7 @@ fun NavControllerComposable(
                 logoClick = {
                     homeViewModel.setLogoutDialog(true)
                 },
-                onTeamNameClick = {homeViewModel.setDialog(true)},
+                onTeamNameClick = { homeViewModel.setDialog(true) },
                 swap_profile = {
                     homeViewModel.setSwapProfile(true)
                 },
@@ -264,7 +269,7 @@ fun NavControllerComposable(
                     navController.navigate(Route.PROFILE_SCREEN)
                 },
                 teamVm = teamViewModel,
-                OnTeamDetailsSuccess = { teamId,teamName ->
+                OnTeamDetailsSuccess = { teamId, teamName ->
                     UserStorage.teamId = teamId
                     UserStorage.teamName = teamName
                 }, showDialog = showDialog,
@@ -328,7 +333,7 @@ fun NavControllerComposable(
                 showDialog = showDialog,
                 setupTeamViewModelUpdated = setupTeamViewModelUpdated,
                 dismissDialog = { homeViewModel.setDialog(it) },
-                OnTeamDetailsSuccess = { teamId,teamName ->
+                OnTeamDetailsSuccess = { teamId, teamName ->
                     UserStorage.teamId = teamId
                     UserStorage.teamName = teamName
                 },
@@ -406,7 +411,7 @@ fun NavControllerComposable(
                     topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
-            EventRegistraionDetails(eventViewModel) {
+            EventRegistraionDetails(eventViewModel, teamViewModel) {
                 navController.navigate(Route.EVENT_REGISTRATION_SUCCESS)
             }
         }
@@ -563,7 +568,7 @@ fun NavControllerComposable(
             }
             InvitationScreen()
         }
-        composable(route = Route.TEAM_SETUP_SCREEN) {backStackEntry ->
+        composable(route = Route.TEAM_SETUP_SCREEN) { backStackEntry ->
 
             // get data passed back from next stack
             val venue: String = backStackEntry
@@ -585,7 +590,7 @@ fun NavControllerComposable(
                 )
             }
             TeamSetupScreenUpdated(
-                venue=venue,
+                venue = venue,
                 vm = setupTeamViewModelUpdated,
                 onBackClick = {
                     setColorToOriginalOnBack(
