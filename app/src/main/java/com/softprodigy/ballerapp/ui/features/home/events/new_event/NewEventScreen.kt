@@ -40,6 +40,7 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.apiToUIDateFormat2
 import com.softprodigy.ballerapp.common.get24HoursTimeWithAMPM
@@ -403,10 +404,8 @@ fun PracticeScreen(
 
                 }, OnClick = {
                     if (!Places.isInitialized()) {
-                        Places.initialize(
-                            context.applicationContext,
-                            context.getString(R.string.map_key)
-                        )
+
+                        Places.initialize(context.applicationContext, BuildConfig.MAPS_API_KEY)
                     }
                     val fields = listOf(
                         Place.Field.NAME,

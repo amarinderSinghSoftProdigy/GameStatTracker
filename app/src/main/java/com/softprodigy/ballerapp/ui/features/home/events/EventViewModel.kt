@@ -269,10 +269,13 @@ class EventViewModel @Inject constructor(
                     )
                 }
             }
+            is EvEvents.GetMyLeagues -> {
+                viewModelScope.launch {
+                    getMyLeagues()
+                }
+            }
         }
-
     }
-
 
     private suspend fun getFilters() {
         _state.value = _state.value.copy(isLoading = true)
@@ -461,7 +464,6 @@ class EventViewModel @Inject constructor(
         }
     }
 
-
     private suspend fun getOpportunityDetail(eventId: String) {
         _state.value = _state.value.copy(isLoading = true)
         val userResponse = userRepository.getEventOpportunityDetails(eventId)
@@ -644,6 +646,51 @@ class EventViewModel @Inject constructor(
         }
     }
 
+    private suspend fun getMyLeagues() {
+
+        _state.value = _state.value.copy(isLoading = true)
+        val userResponse = teamRepo.getMyLeagues()
+        /* _state.value = _state.value.copy(isLoading = false)*/
+
+        when (userResponse) {
+            is ResultWrapper.GenericError -> {
+                _state.value = _state.value.copy(isLoading = false)
+                _channel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${userResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _state.value = _state.value.copy(isLoading = false)
+                _channel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            userResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                _state.value = _state.value.copy(isLoading = false)
+                userResponse.value.let { response ->
+                    if (response.status) {
+                        _state.value = _state.value.copy(myLeaguesList = response.data)
+                    } else {
+                        _channel.send(
+                            EventChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
 }
 
 

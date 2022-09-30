@@ -7,6 +7,7 @@ import com.softprodigy.ballerapp.data.request.CreateTeamRequest
 import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
 import com.softprodigy.ballerapp.data.request.UpdateTeamRequest
 import com.softprodigy.ballerapp.data.response.CreateTeamResponse
+import com.softprodigy.ballerapp.data.response.MyLeagueResponse
 import com.softprodigy.ballerapp.data.response.PlayerDetails
 import com.softprodigy.ballerapp.data.response.StandingData
 import com.softprodigy.ballerapp.data.response.homepage.HomePageCoachModel
@@ -48,7 +49,7 @@ class TeamRepository @Inject constructor(
     override suspend fun getTeams(
         coachId: String
     ): ResultWrapper<BaseResponse<ArrayList<Team>>> {
-        return safeApiCall(dispatcher) { service.getTeams(coachId =coachId) }
+        return safeApiCall(dispatcher) { service.getTeams(coachId = coachId) }
     }
 
     override suspend fun getTeamsByTeamID(teamId: String): ResultWrapper<BaseResponse<Team>> {
@@ -140,6 +141,16 @@ class TeamRepository @Inject constructor(
     ): ResultWrapper<BaseResponse<ArrayList<Venue>>> {
         return safeApiCall(dispatcher) {
             service.getAllVenue(page = page, limit = limit)
+        }
+    }
+
+    override suspend fun getMyLeagues(
+        page: Int,
+        limit: Int,
+        sort: String
+    ): ResultWrapper<BaseResponse<ArrayList<MyLeagueResponse>>> {
+        return safeApiCall(dispatcher) {
+            service.getMyLeagues(page = page, limit = limit, sort = sort)
         }
     }
 

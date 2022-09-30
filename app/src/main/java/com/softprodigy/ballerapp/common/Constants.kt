@@ -88,6 +88,7 @@ object ApiConstants {
     const val CREATE_NEW_EVENT = "v1/coach/event/addEvent"
     const val ACCEPT_COACH_EVENT = "v1/coach/event/acceptCoachEvent"
     const val DECLINE_COACH_EVENT = "v1/coach/event/rejectCoachEvent"
+    const val GET_MY_LEAGUE = "v1/event/getMyLeagues"
 
     const val SOCIAL_LOGIN = "/social_login"
     const val SIGNUP = "v1/auth/register"
