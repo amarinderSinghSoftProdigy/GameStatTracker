@@ -200,7 +200,7 @@ fun EventDetailsScreen(vm: EventViewModel) {
             )
         }
 
-        LazyRow {
+        /*LazyRow {
             itemsIndexed(images) { index, item ->
                 Column(
                     modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.size_16dp)),
@@ -238,7 +238,7 @@ fun EventDetailsScreen(vm: EventViewModel) {
                     )
                 }
             }
-        }
+        }*/
 
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
 

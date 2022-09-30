@@ -29,21 +29,9 @@ import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.apiToUIDateFormat2
 import com.softprodigy.ballerapp.data.response.team.Team
-import com.softprodigy.ballerapp.ui.features.components.DeclineEventDialog
-import com.softprodigy.ballerapp.ui.features.components.SwitchTeamDialog
-import com.softprodigy.ballerapp.ui.features.components.TopBar
-import com.softprodigy.ballerapp.ui.features.components.TopBarData
-import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
-import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
-import com.softprodigy.ballerapp.ui.features.home.events.opportunities.OpportunitieScreen
 import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.home.events.opportunities.OpportunitieScreen
 import com.softprodigy.ballerapp.ui.theme.*
-import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
-import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
-import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
-import com.softprodigy.ballerapp.ui.theme.ColorButtonRed
-import com.softprodigy.ballerapp.ui.theme.ColorPrimaryTransparent
-import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
@@ -318,7 +306,7 @@ fun BoxScope.MyEvents(
                         vm.onEvent(EvEvents.onCancelDeclineDialog(false))
                     },
                     onConfirmClick = {
-
+                        vm.onEvent(EvEvents.OnConfirmDeclineClick)
                     },
                     onReasonChange = {
                         vm.onEvent(EvEvents.OnDeclineReasonChange(it))
@@ -381,7 +369,9 @@ fun EventItem(
     Box(
         modifier = modifier
             .clickable {
-                if (events.eventType.equals(EventType.PRACTICE.type, ignoreCase = true))
+                if (events.eventType.equals(EventType.PRACTICE.type, ignoreCase = true) ||
+                    events.eventType.equals(EventType.ACTIVITY.type, ignoreCase = true)
+                )
                     moveToPracticeDetail(events.eventName)
                 else if (events.eventType.equals(EventType.GAME.type, ignoreCase = true)) {
                     moveToGameDetail(events.eventName)
@@ -463,52 +453,93 @@ fun EventItem(
 
                 }
             }
-            if (events.invitationStatus.equals(EventStatus.PENDING.status, ignoreCase = true)) {
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .background(
-                            color = ColorPrimaryTransparent,
-                            shape = RoundedCornerShape(
-                                bottomStart = dimensionResource(
-                                    id = R.dimen.size_8dp
-                                ),
-                                bottomEnd = dimensionResource(id = R.dimen.size_8dp)
+            if (!isPast) {
+                if (events.invitationStatus.equals(EventStatus.PENDING.status, ignoreCase = true)) {
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .background(
+                                color = ColorPrimaryTransparent,
+                                shape = RoundedCornerShape(
+                                    bottomStart = dimensionResource(
+                                        id = R.dimen.size_8dp
+                                    ),
+                                    bottomEnd = dimensionResource(id = R.dimen.size_8dp)
+                                )
+                            ),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(
+                            Modifier
+                                .weight(1f)
+                                .clickable {
+                                    onDeclineCLick.invoke(events)
+                                }
+                                .padding(dimensionResource(id = R.dimen.size_14dp)),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_cross_2),
+                                contentDescription = "",
+                                modifier = Modifier.size(dimensionResource(id = R.dimen.size_6dp)),
+                                tint = MaterialTheme.appColors.material.primaryVariant
                             )
-                        ),
-                    verticalAlignment = Alignment.CenterVertically
+                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
+                            Text(
+                                text = stringResource(id = R.string.decline),
+                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                fontWeight = FontWeight.W500,
+
+                                )
+                        }
+
+                        Row(
+                            Modifier
+                                .weight(1f)
+                                .clickable {
+                                    onAcceptCLick.invoke(events)
+                                }
+                                .padding(dimensionResource(id = R.dimen.size_14dp)),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_check),
+                                contentDescription = "",
+                                modifier = Modifier.size(dimensionResource(id = R.dimen.size_6dp)),
+                                tint = MaterialTheme.appColors.material.primaryVariant
+                            )
+                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
+                            Text(
+                                text = stringResource(id = R.string.accept),
+                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                fontWeight = FontWeight.W500,
+                            )
+                        }
+
+                    }
+                } else if (events.invitationStatus.equals(
+                        EventStatus.ACCEPT.status,
+                        ignoreCase = true
+                    )
                 ) {
                     Row(
                         Modifier
-                            .weight(1f)
-                            .clickable {
-                                onDeclineCLick.invoke(events)
-                            }
-                            .padding(dimensionResource(id = R.dimen.size_14dp)),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_cross_2),
-                            contentDescription = "",
-                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_6dp)),
-                            tint = MaterialTheme.appColors.material.primaryVariant
-                        )
-                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
-                        Text(
-                            text = stringResource(id = R.string.decline),
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                            fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                            fontWeight = FontWeight.W500,
-
+                            .fillMaxWidth()
+                            .background(
+                                color = ColorButtonGreen,
+                                shape = RoundedCornerShape(
+                                    bottomStart = dimensionResource(
+                                        id = R.dimen.size_8dp
+                                    ),
+                                    bottomEnd = dimensionResource(id = R.dimen.size_8dp)
+                                )
                             )
-                    }
-
-                    Row(
-                        Modifier
-                            .weight(1f)
                             .clickable {
-                                onAcceptCLick.invoke(events)
+
                             }
                             .padding(dimensionResource(id = R.dimen.size_14dp)),
                         horizontalArrangement = Arrangement.Center,
@@ -518,88 +549,72 @@ fun EventItem(
                             painter = painterResource(id = R.drawable.ic_check),
                             contentDescription = "",
                             modifier = Modifier.size(dimensionResource(id = R.dimen.size_6dp)),
-                            tint = MaterialTheme.appColors.material.primaryVariant
+                            tint = MaterialTheme.appColors.buttonColor.textEnabled,
                         )
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                         Text(
-                            text = stringResource(id = R.string.accept),
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            text = stringResource(id = R.string.going),
+                            color = MaterialTheme.appColors.buttonColor.textEnabled,
                             fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                             fontWeight = FontWeight.W500,
                         )
                     }
-
-                }
-            } else if (events.invitationStatus.equals(EventStatus.ACCEPT.status, ignoreCase = true)) {
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .background(
-                            color = ColorButtonGreen,
-                            shape = RoundedCornerShape(
-                                bottomStart = dimensionResource(
-                                    id = R.dimen.size_8dp
-                                ),
-                                bottomEnd = dimensionResource(id = R.dimen.size_8dp)
+                } else if (events.invitationStatus.equals(
+                        EventStatus.REJECT.status,
+                        ignoreCase = true
+                    )
+                ) {
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .background(
+                                color = ColorButtonRed,
+                                shape = RoundedCornerShape(
+                                    bottomStart = dimensionResource(
+                                        id = R.dimen.size_8dp
+                                    ),
+                                    bottomEnd = dimensionResource(id = R.dimen.size_8dp)
+                                )
                             )
+                            .clickable {
+
+                            }
+                            .padding(dimensionResource(id = R.dimen.size_14dp)),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+
+                        Row( horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_cross_2),
+                            contentDescription = "",
+                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_6dp)),
+                            tint = MaterialTheme.appColors.buttonColor.textEnabled,
                         )
-                        .clickable {
+                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
+                        Text(
+                            text = stringResource(id = R.string.not_going),
+                            color = MaterialTheme.appColors.buttonColor.textEnabled,
+                            fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                            fontWeight = FontWeight.W500,
+                            fontFamily = rubikFamily
+                        )
+                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
 
                         }
-                        .padding(dimensionResource(id = R.dimen.size_14dp)),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_check),
-                        contentDescription = "",
-                        modifier = Modifier.size(dimensionResource(id = R.dimen.size_6dp)),
-                        tint = MaterialTheme.appColors.buttonColor.textEnabled,
-                    )
-                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
-                    Text(
-                        text = stringResource(id = R.string.going),
-                        color = MaterialTheme.appColors.buttonColor.textEnabled,
-                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                        fontWeight = FontWeight.W500,
-                    )
-                }
-            } else if (events.invitationStatus.equals(EventStatus.REJECT.status, ignoreCase = true)) {
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .background(
-                            color = ColorButtonRed,
-                            shape = RoundedCornerShape(
-                                bottomStart = dimensionResource(
-                                    id = R.dimen.size_8dp
-                                ),
-                                bottomEnd = dimensionResource(id = R.dimen.size_8dp)
+                        Row(modifier=Modifier.weight(1f), horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically){
+                            Text(
+                                text = events.reason,
+                                color = MaterialTheme.appColors.buttonColor.textEnabled,
+                                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                fontWeight = FontWeight.W500,
                             )
-                        )
-                        .clickable {
-
                         }
-                        .padding(dimensionResource(id = R.dimen.size_14dp)),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_cross_2),
-                        contentDescription = "",
-                        modifier = Modifier.size(dimensionResource(id = R.dimen.size_6dp)),
-                        tint = MaterialTheme.appColors.buttonColor.textEnabled,
-                    )
-                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
-                    Text(
-                        text = stringResource(id = R.string.not_going),
-                        color = MaterialTheme.appColors.buttonColor.textEnabled,
-                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                        fontWeight = FontWeight.W500,
-                    )
+                    }
                 }
             }
-
         }
         /* if (isPast)
              Box(

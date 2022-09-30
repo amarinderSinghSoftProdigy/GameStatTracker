@@ -44,4 +44,18 @@ class EventRepository @Inject constructor(
             service.acceptEventInvite(request)
         }
     }
+
+    override suspend fun rejectEventInvite(
+        eventId: String,
+        reason: String
+    ): ResultWrapper<BaseResponse<Any>> {
+        val request: RequestBody = FormBody.Builder()
+            .add("eventId", eventId)
+            .add("reason", reason)
+            .build()
+        return safeApiCall(dispatcher) {
+            service.rejectEventInvite(request)
+        }
+    }
+
 }

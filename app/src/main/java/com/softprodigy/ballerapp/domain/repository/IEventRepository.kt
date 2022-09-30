@@ -19,4 +19,6 @@ interface IEventRepository {
 
     suspend fun acceptEventInvite(eventId:String):ResultWrapper<BaseResponse<Any>>
 
+    suspend fun rejectEventInvite(eventId:String,reason:String):ResultWrapper<BaseResponse<Any>>
+
 }

@@ -143,4 +143,7 @@ open interface APIService {
 
     @PUT(ApiConstants.ACCEPT_COACH_EVENT)
     suspend fun acceptEventInvite(@Body request: RequestBody): BaseResponse<Any>
+
+    @PUT(ApiConstants.DECLINE_COACH_EVENT)
+    suspend fun rejectEventInvite(@Body request: RequestBody): BaseResponse<Any>
 }

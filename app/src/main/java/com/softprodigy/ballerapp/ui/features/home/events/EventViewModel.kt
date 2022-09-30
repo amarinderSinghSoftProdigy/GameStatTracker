@@ -5,10 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
-import com.softprodigy.ballerapp.domain.repository.ITeamRepository
-import com.softprodigy.ballerapp.ui.theme.ColorPrimaryOrange
-import com.softprodigy.ballerapp.ui.theme.GreenColor
-import com.softprodigy.ballerapp.ui.theme.Yellow700
 import com.softprodigy.ballerapp.domain.repository.IEventRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -25,7 +21,7 @@ class EventViewModel @Inject constructor(val eventRepo: IEventRepository) : View
     val eventChannel = _eventChannel.receiveAsFlow()
 
     init {
-        viewModelScope.launch {
+     /*   viewModelScope.launch {
             getEventList()
             eventState.value =
                 eventState.value.copy(
@@ -36,7 +32,7 @@ class EventViewModel @Inject constructor(val eventRepo: IEventRepository) : View
                             "Venue Name",
                             "Fri, May 20 6:00 PM - 7:00 PM",
                             EventStatus.PENDING.status,
-                            EventType.PRACTICE
+                            "practice"
                         ),
                         Events(
                             "2",
@@ -44,7 +40,7 @@ class EventViewModel @Inject constructor(val eventRepo: IEventRepository) : View
                             "Venue Name1",
                             "Fri, May 20 6:00 PM - 7:00 PM",
                             EventStatus.ACCEPT.status,
-                            EventType.GAME,
+                            "game",
                         ),
                     ),
                     pastEvents = arrayListOf(
@@ -54,7 +50,7 @@ class EventViewModel @Inject constructor(val eventRepo: IEventRepository) : View
                             "Venue Name",
                             "Fri, May 20 6:00 PM - 7:00 PM",
                             EventStatus.PAST.status,
-                            EventType.PRACTICE,
+                            "practice",
                         ),
                         Events(
                             "2",
@@ -62,7 +58,7 @@ class EventViewModel @Inject constructor(val eventRepo: IEventRepository) : View
                             "Venue Name1",
                             "Fri, May 20 6:00 PM - 7:00 PM",
                             EventStatus.PAST.status,
-                            EventType.ACTIVITY
+                            "activity"
                         ),
                         Events(
                             "3",
@@ -70,7 +66,7 @@ class EventViewModel @Inject constructor(val eventRepo: IEventRepository) : View
                             "Venue Name2",
                             "Fri, May 20 6:00 PM - 7:00 PM",
                             EventStatus.PAST.status,
-                            EventType.SCRIMMAGE
+                            "Scrimmage"
                         ),
                     ),
                     leagues = arrayListOf(
@@ -115,7 +111,7 @@ class EventViewModel @Inject constructor(val eventRepo: IEventRepository) : View
                         ),
                     )
                 )
-        }
+        }*/
     }
 
     private suspend fun getEventList() {
@@ -236,7 +232,7 @@ class EventViewModel @Inject constructor(val eventRepo: IEventRepository) : View
             }
             is EvEvents.onCancelDeclineDialog -> {
                 eventState.value = eventState.value.copy(
-                    showDeclineDialog = false, reasonTeam = ""
+                    showDeclineDialog = false, declineReason = ""
                 )
             }
 
@@ -257,11 +253,15 @@ class EventViewModel @Inject constructor(val eventRepo: IEventRepository) : View
             is EvEvents.OnDeclineReasonChange -> {
                 eventState.value=eventState.value.copy(declineReason = event.reason)
             }
-        }
 
-            is EvEvents.OnReasonSelection -> {
-                eventState.value = eventState.value.copy(reasonTeam = event.text)
+            EvEvents.OnConfirmDeclineClick ->{
+                viewModelScope.launch { declineEventInvitation() }
             }
+//        }
+
+            /* is EvEvents.OnReasonSelection -> {
+                 eventState.value = eventState.value.copy(reasonTeam = event.text)
+             }*/
         }
     }
 
@@ -295,6 +295,56 @@ class EventViewModel @Inject constructor(val eventRepo: IEventRepository) : View
             }
             is ResultWrapper.Success -> {
                 acceptResponse.value.let { response ->
+
+                    if (response.status) {
+                        getEventList()
+                    } else {
+                        _eventChannel.send(
+                            EventChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun declineEventInvitation() {
+        eventState.value =
+            eventState.value.copy(showLoading = true)
+
+        val rejectResponse = eventRepo.rejectEventInvite(
+            eventState.value.selectedEvent.id,
+            eventState.value.declineReason
+        )
+
+        eventState.value =
+            eventState.value.copy(showLoading = false)
+
+        when(rejectResponse){
+            is ResultWrapper.GenericError -> {
+                _eventChannel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${rejectResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _eventChannel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            rejectResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                rejectResponse.value.let { response ->
 
                     if (response.status) {
                         getEventList()
