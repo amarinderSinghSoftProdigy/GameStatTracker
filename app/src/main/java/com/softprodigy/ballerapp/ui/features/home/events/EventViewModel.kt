@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.domain.repository.IEventRepository
 import com.softprodigy.ballerapp.domain.repository.IEventsRepository
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import com.softprodigy.ballerapp.ui.utils.CommonUtils
@@ -22,7 +21,6 @@ import javax.inject.Inject
 class EventViewModel @Inject constructor(
     val dataStoreManager: DataStoreManager,
     val teamRepo: ITeamRepository,
-    val eventRepo: IEventRepository,
     private val userRepository: IEventsRepository,
     application: Application
 ) : AndroidViewModel(application) {
@@ -42,7 +40,7 @@ class EventViewModel @Inject constructor(
     private suspend fun getEventList() {
         eventState.value =
             eventState.value.copy(showLoading = true)
-        val eventResponse = teamRepo.getAllevents()
+        val eventResponse = userRepository.getAllevents()
         eventState.value =
             eventState.value.copy(showLoading = false)
 
@@ -90,7 +88,7 @@ class EventViewModel @Inject constructor(
     suspend fun getEventDetails(id: String) {
         eventState.value =
             eventState.value.copy(showLoading = true)
-        val eventResponse = eventRepo.getAllevents()
+        val eventResponse = userRepository.getAllevents()
         eventState.value =
             eventState.value.copy(showLoading = false)
 
@@ -554,14 +552,14 @@ class EventViewModel @Inject constructor(
         eventState.value =
             eventState.value.copy(showLoading = true)
 
-        val acceptResponse = eventRepo.acceptEventInvite(eventState.value.selectedEvent.id)
+        val acceptResponse = userRepository.acceptEventInvite(eventState.value.selectedEvent.id)
 
         eventState.value =
             eventState.value.copy(showLoading = false)
 
         when (acceptResponse) {
             is ResultWrapper.GenericError -> {
-                _eventChannel.send(
+                _channel.send(
                     EventChannel.ShowToast(
                         UiText.DynamicString(
                             "${acceptResponse.message}"
@@ -570,7 +568,7 @@ class EventViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _eventChannel.send(
+                _channel.send(
                     EventChannel.ShowToast(
                         UiText.DynamicString(
                             acceptResponse.message
@@ -584,7 +582,7 @@ class EventViewModel @Inject constructor(
                     if (response.status) {
                         getEventList()
                     } else {
-                        _eventChannel.send(
+                        _channel.send(
                             EventChannel.ShowToast(
                                 UiText.DynamicString(
                                     response.statusMessage
@@ -601,7 +599,7 @@ class EventViewModel @Inject constructor(
         eventState.value =
             eventState.value.copy(showLoading = true)
 
-        val rejectResponse = eventRepo.rejectEventInvite(
+        val rejectResponse = userRepository.rejectEventInvite(
             eventState.value.selectedEvent.id,
             eventState.value.declineReason
         )
@@ -611,7 +609,7 @@ class EventViewModel @Inject constructor(
 
         when (rejectResponse) {
             is ResultWrapper.GenericError -> {
-                _eventChannel.send(
+                _channel.send(
                     EventChannel.ShowToast(
                         UiText.DynamicString(
                             "${rejectResponse.message}"
@@ -620,7 +618,7 @@ class EventViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _eventChannel.send(
+                _channel.send(
                     EventChannel.ShowToast(
                         UiText.DynamicString(
                             rejectResponse.message
@@ -630,11 +628,10 @@ class EventViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 rejectResponse.value.let { response ->
-
                     if (response.status) {
                         getEventList()
                     } else {
-                        _eventChannel.send(
+                        _channel.send(
                             EventChannel.ShowToast(
                                 UiText.DynamicString(
                                     response.statusMessage

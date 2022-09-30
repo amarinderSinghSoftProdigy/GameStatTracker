@@ -1,12 +1,18 @@
 package com.softprodigy.ballerapp.domain.repository
 
 import com.softprodigy.ballerapp.common.ResultWrapper
+import com.softprodigy.ballerapp.data.request.CreateEventReq
 import com.softprodigy.ballerapp.domain.BaseResponse
 import com.softprodigy.ballerapp.ui.features.home.events.*
 import javax.inject.Singleton
 
 @Singleton
 interface IEventsRepository {
+    suspend fun createEvent(createEvent: CreateEventReq): ResultWrapper<BaseResponse<Any>>
+    suspend fun getAllevents(page: Int = 1, limit: Int = 50, sort: String = ""): ResultWrapper<BaseResponse<EventsResponse>>
+    suspend fun acceptEventInvite(eventId:String):ResultWrapper<BaseResponse<Any>>
+
+    suspend fun rejectEventInvite(eventId:String,reason:String):ResultWrapper<BaseResponse<Any>>
     suspend fun getFilters(): ResultWrapper<BaseResponse<FilterResponse>>
     suspend fun getEventOpportunities(): ResultWrapper<BaseResponse<List<OpportunitiesItem>>>
     suspend fun getEventOpportunityDetails(id: String): ResultWrapper<BaseResponse<OpportunitiesDetail>>

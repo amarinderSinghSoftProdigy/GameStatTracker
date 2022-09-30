@@ -40,7 +40,6 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
-import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.apiToUIDateFormat2
 import com.softprodigy.ballerapp.common.get24HoursTimeWithAMPM
@@ -153,7 +152,7 @@ fun NewEventScreen(
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun EventTabs(pagerState: PagerState,onSelectionChange:(String)->Unit) {
+fun EventTabs(pagerState: PagerState, onSelectionChange: (String) -> Unit) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val width = screenWidth.minus(dimensionResource(id = R.dimen.size_16dp).times(4))
@@ -317,7 +316,7 @@ fun PracticeScreen(
                 isEditableField = true,
                 onSelectedValueChange = {
                     if (it.length <= 30)
-                    vm.onEvent(NewEvEvent.OnEventNameChange(it))
+                        vm.onEvent(NewEvEvent.OnEventNameChange(it))
 
                 },
                 OnClick = {
@@ -404,7 +403,10 @@ fun PracticeScreen(
 
                 }, OnClick = {
                     if (!Places.isInitialized()) {
-                        Places.initialize(context.applicationContext, BuildConfig.MAPS_API_KEY)
+                        Places.initialize(
+                            context.applicationContext,
+                            context.getString(R.string.map_key)
+                        )
                     }
                     val fields = listOf(
                         Place.Field.NAME,
@@ -486,7 +488,10 @@ fun PracticeItem(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End,
-                modifier = Modifier.weight(1f).padding(start = dimensionResource(id = R.dimen.size_16dp)).clickable { OnClick() }
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = dimensionResource(id = R.dimen.size_16dp))
+                    .clickable { OnClick() }
             ) {
                 if (!onlyIcon) {
                     if (!isEditableField) {
@@ -498,18 +503,17 @@ fun PracticeItem(
                             )
                             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_14dp)))
 
+                        } else {
+                            AppText(
+                                text = selectedValue,
+                                style = MaterialTheme.typography.h6,
+                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            )
+                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_14dp)))
+
+                        }
+
                     } else {
-                        AppText(
-                            text = selectedValue,
-                            style = MaterialTheme.typography.h6,
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                        )
-                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_14dp)))
-
-                    }
-
-                    }
-                    else{
                         Box(Modifier.fillMaxSize()) {
 
 
@@ -531,7 +535,7 @@ fun PracticeItem(
 
                             }
                             AppText(
-                                text = if(selectedValue.isEmpty()) label else "",
+                                text = if (selectedValue.isEmpty()) label else "",
                                 style = MaterialTheme.typography.h4,
                                 color = MaterialTheme.appColors.textField.label,
                                 modifier = Modifier
@@ -550,8 +554,7 @@ fun PracticeItem(
                             painter = icon, contentDescription = "", modifier = Modifier
                                 .size(
                                     dimensionResource(id = R.dimen.size_14dp)
-                                )
-                                ,
+                                ),
                             colorFilter = ColorFilter.tint(color = color)
                         )
                     }
