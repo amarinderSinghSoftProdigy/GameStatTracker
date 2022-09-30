@@ -46,11 +46,9 @@ class TeamRepository @Inject constructor(
     }
 
     override suspend fun getTeams(
-        page: Int,
-        limit: Int,
-        sort: String
+        coachId: String
     ): ResultWrapper<BaseResponse<ArrayList<Team>>> {
-        return safeApiCall(dispatcher) { service.getTeams(page, limit, sort) }
+        return safeApiCall(dispatcher) { service.getTeams(coachId =coachId) }
     }
 
     override suspend fun getTeamsByTeamID(teamId: String): ResultWrapper<BaseResponse<Team>> {
@@ -89,15 +87,6 @@ class TeamRepository @Inject constructor(
     ): ResultWrapper<BaseResponse<ArrayList<Invitation>>> {
         return safeApiCall(dispatcher) {
             service.getAllInvitation(page, limit, sort)
-        }
-    }
-    override suspend fun getAllevents(
-        page: Int,
-        limit: Int,
-        sort: String
-    ): ResultWrapper<BaseResponse<EventsResponse>> {
-        return safeApiCall(dispatcher) {
-            service.getAllevents(page, limit, sort)
         }
     }
 

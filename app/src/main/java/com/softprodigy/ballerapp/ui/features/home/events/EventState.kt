@@ -11,5 +11,6 @@ data class EventState(
     val showLoading: Boolean = false,
     val selectedEvent: Events = Events(),
     val selectionTeam: String = "",
-    val reasonTeam: String = ""
+//    val reasonTeam: String = "",
+    val declineReason: String = "",
 )
