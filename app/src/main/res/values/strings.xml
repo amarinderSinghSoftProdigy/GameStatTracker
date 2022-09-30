@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Baller</string>
+    <string name="map_key">486006362864421</string>
     <string name="facebook_app_id">486006362864421</string>
     <string name="fb_login_protocol_scheme">fb486006362864421</string>
     <string name="facebook_client_token">d8ec9dfd5e83b29b3e3d14ebf82736cb</string>
@@ -27,7 +28,7 @@
     <string name="going">Going</string>
     <string name="accept">Accept</string>
     <string name="your_password">Enter password</string>
-    <string name="ur_password">Your password</string>
+    <string name="ur_password">Your Password</string>
     <string name="confirm_your_password">Enter Confirm password</string>
     <string name="generic_error">Generic Error</string>
     <string name="email_error">Enter a valid Email</string>
@@ -94,6 +95,9 @@
     <string name="valid_search">Invalid Keyword</string>
     <string name="alert_remove_player">Are you sure you want to remove the player?</string>
     <string name="alert_decline_invitation">Are you sure you decline this team request?</string>
+    <string name="alert_going_event_confirm">Are you sure that you are going to this event?</string>
+    <string name="alert_delete_document">Are you sure you delete this document?</string>
+    <string name="alert_remove_from_team">Are you sure you want to leave this team?</string>
     <string name="enter_valid_full_name">Please enter a valid name</string>
     <string name="enter_full_name">Enter Full Name</string>
     <string name="verify_number">Verify Phone Number</string>
@@ -171,7 +175,7 @@
     <string name="waist_size">Waist Size</string>
     <string name="fun_facts">Fun Facts</string>
     <string name="favorite_college_team">Favorite College Team</string>
-    <string name="favorite_nba_team">Favorite NBA Team</string>
+    <string name="favorite_proff_team">Favorite professional Team</string>
     <string name="favorite_active_player">Favorite Active Player</string>
     <string name="favoritea_all_time_tlayer">Favorite All-Time Player</string>
     <string name="pg">PG</string>
@@ -264,8 +268,8 @@
     <string name="navigate">Navigate</string>
     <string name="rsvp">RSVP</string>
     <string name="jersey_color">Jersey Color</string>
-    <string name="pre_practive_head">Pre-practice prep and agenda</string>
-    <string name="pre_game_head">Pre-game prep and agenda</string>
+    <string name="pre_practive_head">Pre-practice prep &amp; agenda</string>
+    <string name="pre_game_head">Pre-game prep &amp; agenda</string>
     <string name="post_practive_head">Post-practice notes</string>
     <string name="game_details">Game Details</string>
     <string name="summary">Summary</string>
@@ -303,7 +307,7 @@
     <string name="coach_rules">Coach Rules</string>
     <string name="forfeit">Forfeit Rules</string>
     <string name="other_rules">Other Rules</string>
-    <string name="all">ALl</string>
+    <string name="all">All</string>
     <string name="one_q">1Q</string>
     <string name="two_q">2Q</string>
     <string name="three_q">3Q</string>
@@ -331,7 +335,7 @@
     <string name="your_role">Your Role</string>
     <string name="head_coach">Head Coach</string>
     <string name="role">Role</string>
-    <string name="leave_team">Leave Team</string>
+    <string name="remove_team">Remove</string>
     <string name="position">Position</string>
     <string name="my_profile">My Profile</string>
     <string name="logout">Logout</string>
@@ -366,8 +370,24 @@
     <string name="back_to_events">Back to Events</string>
     <string name="registered">Registered</string>
     <string name="player_requirements">Player Requirements</string>
-
+    <string name="swap_profiles">Swap Profiles</string>
+    <string name="add_new_profile">Add New Profile</string>
+    <string name="user_type">User Type</string>
     <string name="procced">Proceed</string>
     <string name="read_the_note">Read the note</string>
     <string name="wait_for_response">Wait for lorem ipsum to dolor sit amet.</string>
+    <string name="child_not_listed">Child not listed</string>
+    <string name="select_the_players_guardian">Select the player/s you\'re guardian of</string>
+    <string name="search_venue_by_name">Search venue by name</string>
+    <string name="cash">Cash</string>
+    <string name="cash_message">Please enter cash value</string>
+    <string name="dollar">$</string>
+    <string name="choose_team">Choose Team</string>
+    <string name="please_select_division">Please select division.</string>
+    <string name="please_select_player">Please select players.</string>
+    <string name="select_team">Select Team</string>
+    <string name="select_player">Select Players</string>
+    <string name="select_division">Select Division</string>
+    <string name="event_name">Event Name</string>
+    <string name="enter_event_name">Enter Event Name</string>
 </resources>

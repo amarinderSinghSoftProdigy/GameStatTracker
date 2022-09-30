@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -74,7 +75,7 @@ fun TeamTabs(pagerState: PagerState, list: List<TeamTabs>) {
     val scope = rememberCoroutineScope()
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
-    val width = screenWidth.minus(dimensionResource(id = R.dimen.size_20dp).times(3))
+    val width = screenWidth.minus(dimensionResource(id = R.dimen.size_10dp).times(3))
 
     TabRow(
         selectedTabIndex = pagerState.currentPage,
@@ -96,6 +97,7 @@ fun TeamTabs(pagerState: PagerState, list: List<TeamTabs>) {
                         Icon(
                             painter = painterResource(id = item.icon),
                             contentDescription = null,
+                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)),
                             tint = if (pagerState.currentPage == index) MaterialTheme.appColors.material.primaryVariant else MaterialTheme.appColors.textField.label
                         )
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_5dp)))

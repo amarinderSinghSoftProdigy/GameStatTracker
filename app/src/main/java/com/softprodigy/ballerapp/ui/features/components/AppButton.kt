@@ -135,6 +135,7 @@ fun RowScope.ButtonView(text: String, color: Color) {
             )
             .align(Alignment.CenterVertically),
         contentAlignment = Alignment.Center,
+
     ) {
         AppText(
             textAlign = TextAlign.Center,

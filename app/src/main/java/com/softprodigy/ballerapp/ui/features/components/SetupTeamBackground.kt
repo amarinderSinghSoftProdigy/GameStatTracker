@@ -4,25 +4,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.absoluteOffset
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -103,7 +88,6 @@ fun CoachFlowBackground(
             }
 
 
-
             Box(modifier = Modifier.fillMaxSize()) {
                 content()
                 Column(
@@ -112,37 +96,39 @@ fun CoachFlowBackground(
                         .padding(end = dimensionResource(id = R.dimen.size_16dp)),
                     horizontalAlignment = Alignment.End
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .background(color = Color.Transparent)
-                            .padding(
-                                top = dimensionResource(id = R.dimen.size_50dp),
-                                bottom = dimensionResource(id = R.dimen.size_16dp)
-                            ),
-                        contentAlignment = Alignment.CenterEnd
-                    ) {
-                        teamLogo?.let {
-                            CoilImage(
-                                src = it,
-                                modifier = Modifier
-                                    .size(dimensionResource(id = R.dimen.size_65dp))
-                                    .clip(CircleShape)
-                                    .clickable {
-                                        showOptions.value = !showOptions.value
-                                    }
-                                    .background(
-                                        color = MaterialTheme.appColors.material.onSurface,
-                                        CircleShape
-                                    )
-                                    .border(
-                                        dimensionResource(id = R.dimen.size_3dp),
-                                        MaterialTheme.colors.surface,
-                                        CircleShape
-                                    ),
-                                isCrossFadeEnabled = false,
-                                onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
-                                onError = { Placeholder(R.drawable.ic_user_profile_icon) }
-                            )
+                    if (teamLogo!!.isNotEmpty()) {
+                        Box(
+                            modifier = Modifier
+                                .background(color = Color.Transparent)
+                                .padding(
+                                    top = dimensionResource(id = R.dimen.size_50dp),
+                                    bottom = dimensionResource(id = R.dimen.size_16dp)
+                                ),
+                            contentAlignment = Alignment.CenterEnd
+                        ) {
+                            teamLogo.let {
+                                CoilImage(
+                                    src = it,
+                                    modifier = Modifier
+                                        .size(dimensionResource(id = R.dimen.size_65dp))
+                                        .clip(CircleShape)
+                                        .clickable {
+                                            showOptions.value = !showOptions.value
+                                        }
+                                        .background(
+                                            color = MaterialTheme.appColors.material.onSurface,
+                                            CircleShape
+                                        )
+                                        .border(
+                                            dimensionResource(id = R.dimen.size_3dp),
+                                            MaterialTheme.colors.surface,
+                                            CircleShape
+                                        ),
+                                    isCrossFadeEnabled = false,
+                                    onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
+                                    onError = { Placeholder(R.drawable.ic_user_profile_icon) }
+                                )
+                            }
                         }
                     }
                     if (showOptions.value) {
@@ -165,6 +151,13 @@ fun CoachFlowBackground(
                                     R.drawable.ic_profile
                                 ) {
                                     click(Options.PROFILE)
+                                }
+                                Divider(thickness = dimensionResource(id = R.dimen.divider))
+                                OptionItem(
+                                    stringResource(id = R.string.swap_profiles),
+                                    R.drawable.ic_swap
+                                ) {
+                                    click(Options.SWAP_PROFILES)
                                 }
                                 Divider(thickness = dimensionResource(id = R.dimen.divider))
                                 OptionItem(
@@ -278,6 +271,7 @@ fun BottomButtons(
 
 enum class Options {
     PROFILE,
-    LOGOUT
+    SWAP_PROFILES,
+    LOGOUT,
     //Add options on the Profile dropwodn.
 }

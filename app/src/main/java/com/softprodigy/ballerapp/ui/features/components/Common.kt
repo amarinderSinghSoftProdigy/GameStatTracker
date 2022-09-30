@@ -4,10 +4,12 @@ import androidx.annotation.FloatRange
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -36,10 +38,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.State
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -113,11 +120,14 @@ fun BoxScope.CommonTabView(
             )
         }
     } else if (topBarData.topBar == TopBar.MY_EVENT) {
-        Box(modifier = Modifier
+        Row(modifier = Modifier
             .align(Alignment.CenterStart)
             .clickable {
                 backClick()
             }) {
+
+            Space(dp = dimensionResource(id = R.dimen.size_10dp))
+
             Icon(
                 modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp)),
                 painter = painterResource(id = R.drawable.ic_dots),
@@ -174,15 +184,19 @@ fun BoxScope.CommonTabView(
             icon = painterResource(id = R.drawable.ic_edit)
         }
         TopBar.MY_EVENT -> {
-            icon = painterResource(id = R.drawable.ic_add_circle)
+            icon = painterResource(id = R.drawable.ic_add_circle_filled)
         }
         TopBar.EVENT_OPPORTUNITIES -> {
             icon = painterResource(id = R.drawable.ic_filter)
         }
+        TopBar.GAME_DETAILS -> {
+            icon = painterResource(id = R.drawable.ic_dots)
+        }
         else -> {}
     }
     icon?.let {
-        Icon(painter = icon,
+        Icon(
+            painter = icon,
             contentDescription = "",
             modifier = Modifier
                 .align(Alignment.CenterEnd)
@@ -192,7 +206,8 @@ fun BoxScope.CommonTabView(
                     }
                 }
                 .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-            tint = Color.White)
+            tint = Color.White
+        )
     }
 
     if (TopBar.MANAGE_TEAM == topBarData.topBar) {
@@ -331,11 +346,11 @@ enum class TopBar(val stringId: String, val back: Boolean) {
         back = true
     ),
     MY_EVENT(stringId = "events_label", back = false), EVENT_DETAILS(
-        stringId = "events_detail",
+        stringId = "",
         back = true
     ),
     FILTER_EVENT(stringId = "filter_events", back = true), GAME_DETAILS(
-        stringId = "game_details",
+        stringId = "",
         back = true
     ),
     EVENT_LEAGUES(
@@ -355,7 +370,7 @@ enum class TopBar(val stringId: String, val back: Boolean) {
         back = false
     ),
     NEW_EVENT(stringId = "", back = true), MY_LEAGUE(stringId = "", back = true), GAME_RULES(
-        stringId = "games_rules",
+        stringId = "",
         back = true
     ),
     CREATE_TEAM(
@@ -454,4 +469,124 @@ fun CustomCheckBox(selected: Boolean, onClick: () -> Unit) {
             contentDescription = null,
         )
     }
+}
+
+@Composable
+fun CustomTeamCheckBox(id: String, selected: Boolean, onClick: (String) -> Unit) {
+    Box(contentAlignment = Alignment.Center, modifier = Modifier
+        .clickable {
+            onClick(id)
+        }
+        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)))
+        .size(
+            dimensionResource(id = R.dimen.size_16dp)
+        )
+        .background(
+            color = if (selected) {
+                MaterialTheme.appColors.material.primaryVariant
+            } else Color.White
+        )
+        .border(
+            width = if (selected) {
+                0.dp
+            } else dimensionResource(id = R.dimen.size_1dp),
+            shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)),
+            color = if (selected) {
+                Color.Transparent
+            } else MaterialTheme.appColors.buttonColor.bckgroundDisabled
+        )) {
+        Icon(
+            tint = if (!selected) {
+                Color.Transparent
+            } else Color.White,
+            imageVector = Icons.Default.Check,
+            contentDescription = null,
+        )
+    }
+}
+
+@Composable
+fun CustomSwitch(
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    width: Dp = dimensionResource(id = R.dimen.size_50dp),
+    height: Dp = dimensionResource(id = R.dimen.size_32dp),
+    checkedTrackColor: Color = MaterialTheme.appColors.material.primaryVariant,
+    uncheckedTrackColor: Color = MaterialTheme.appColors.buttonColor.bckgroundDisabled,
+    gapBetweenThumbAndTrackEdge: Dp = dimensionResource(id = R.dimen.size_4dp),
+    cornerSize: Dp = dimensionResource(id = R.dimen.size_16dp),
+    iconInnerPadding: Dp = dimensionResource(id = R.dimen.size_4dp),
+    thumbSize: Dp = dimensionResource(id = R.dimen.size_24dp),
+) {
+
+    // this is to disable the ripple effect
+    val interactionSource = remember {
+        MutableInteractionSource()
+    }
+
+    // for moving the thumb
+    val alignment by animateAlignmentAsState(if (isSelected) 1f else -1f)
+
+    // outer rectangle with border
+    Box(
+        modifier = Modifier
+            .size(width = width, height = height)
+            .background(
+                color = if (isSelected) checkedTrackColor else uncheckedTrackColor,
+                shape = RoundedCornerShape(cornerSize)
+            )
+            .clickable(
+                indication = null,
+                interactionSource = interactionSource
+            ) {
+                onClick()
+            },
+        contentAlignment = Alignment.Center
+    ) {
+
+        // this is to add padding at the each horizontal side
+        Box(
+            modifier = Modifier
+                .padding(
+                    start = gapBetweenThumbAndTrackEdge,
+                    end = gapBetweenThumbAndTrackEdge
+                )
+                .fillMaxSize(),
+            contentAlignment = alignment
+        ) {
+
+            /*// thumb with icon
+            Icon(
+                imageVector = if (switchOn) Icons.Filled.Done else Icons.Filled.Close,
+                contentDescription = if (switchOn) "Enabled" else "Disabled",
+                modifier = Modifier
+                    .size(size = thumbSize)
+                    .background(
+                        color = if (switchOn) checkedTrackColor else uncheckedTrackColor,
+                        shape = CircleShape
+                    )
+                    .padding(all = iconInnerPadding),
+                tint = Color.White
+            )*/
+
+            Box(
+                modifier = Modifier
+                    .size(size = thumbSize)
+                    .background(
+                        color = if (isSelected) Color.White else Color.White,
+                        shape = CircleShape
+                    )
+                    .padding(all = iconInnerPadding),
+
+                )
+        }
+    }
+}
+
+@Composable
+private fun animateAlignmentAsState(
+    targetBiasValue: Float
+): State<BiasAlignment> {
+    val bias by animateFloatAsState(targetBiasValue)
+    return derivedStateOf { BiasAlignment(horizontalBias = bias, verticalBias = 0f) }
 }

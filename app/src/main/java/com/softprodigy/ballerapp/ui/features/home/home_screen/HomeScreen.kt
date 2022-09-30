@@ -1,5 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.home.home_screen
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,10 +24,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,16 +41,16 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.ButtonWithLeadingIcon
-import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
-import com.softprodigy.ballerapp.ui.features.components.Options
-import com.softprodigy.ballerapp.ui.features.components.PagerIndicator
-import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
-import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
-import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
+import com.softprodigy.ballerapp.data.response.team.Team
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.HomeViewModel
+import com.softprodigy.ballerapp.ui.features.home.teams.TeamChannel
+import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
+import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -62,20 +60,67 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     name: String?,
     vm: HomeViewModel,
+    teamVm:TeamViewModel,
     logoClick: () -> Unit,
     onInvitationCLick: () -> Unit,
-    gotToProfile: () -> Unit
-) {
+    gotToProfile: () -> Unit,
+    swap_profile: () -> Unit,
+    OnTeamDetailsSuccess: (String,String) -> Unit,
+    showDialog: Boolean,
+    dismissDialog: (Boolean) -> Unit,
+    onCreateTeamClick: (Team?) -> Unit,
+    onTeamNameClick:()->Unit,
+    setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
+    ) {
     val dataStoreManager = DataStoreManager(LocalContext.current)
     val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
+    val role = dataStoreManager.getRole.collectAsState(initial = "")
+    val teamName = dataStoreManager.getTeamName.collectAsState(initial = "")
     val homeScreenViewModel: HomeScreenViewModel = hiltViewModel()
     val homeState = vm.state.value
     val homeScreenState = homeScreenViewModel.homeScreenState.value
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    val teamState = teamVm.teamUiState.value
+    val onTeamSelectionChange = { team: Team ->
+        teamVm.onEvent(TeamUIEvent.OnTeamSelected(team))
+    }
 
     remember {
         coroutineScope.launch {
             homeScreenViewModel.getHomePageDetails()
+            teamVm.getTeams()
+
+        }
+    }
+    val onTeamSelectionConfirmed = { team: Team? ->
+        setupTeamViewModelUpdated.onEvent(
+            TeamSetupUIEventUpdated.OnColorSelected(
+                (team?.colorCode ?: "").replace(
+                    "#",
+                    ""
+                )
+            )
+        )
+    }
+
+    LaunchedEffect(key1 = Unit) {
+
+
+        teamVm.teamChannel.collect { uiEvent ->
+            when (uiEvent) {
+                is TeamChannel.ShowToast -> {
+                    Toast.makeText(
+                        context,
+                        uiEvent.message.asString(context),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                is TeamChannel.OnTeamDetailsSuccess -> {
+                    OnTeamDetailsSuccess.invoke(uiEvent.teamId,uiEvent.teamName)
+                }
+            }
         }
     }
 
@@ -88,6 +133,9 @@ fun HomeScreen(
                 }
                 Options.LOGOUT -> {
                     logoClick()
+                }
+                Options.SWAP_PROFILES -> {
+                    swap_profile()
                 }
             }
         }) {
@@ -128,7 +176,9 @@ fun HomeScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { logoClick() }
+                            .clickable { /*logoClick()*/
+                                onTeamNameClick.invoke()
+                            }
                             .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                         contentAlignment = Alignment.CenterStart
                     ) {
@@ -148,7 +198,7 @@ fun HomeScreen(
                             )
                             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
                             Text(
-                                text = stringResource(id = R.string.team_total_hoop),
+                                text = teamState.teamName.ifEmpty { teamName.value },
                                 style = MaterialTheme.typography.h3,
                                 fontWeight = FontWeight.W700,
                                 modifier = Modifier.weight(1f)
@@ -319,6 +369,23 @@ fun HomeScreen(
                     color = MaterialTheme.appColors.material.primaryVariant
                 )
             }
+        }
+        if (showDialog) {
+            SelectTeamDialog(
+                teams = teamVm.teamUiState.value.teams,
+                onDismiss = { dismissDialog.invoke(false) },
+                onConfirmClick = { teamId,teamName ->
+                    if (UserStorage.teamId != teamId) {
+                        onTeamSelectionConfirmed(teamState.selectedTeam)
+                        teamVm.onEvent(TeamUIEvent.OnConfirmTeamClick(teamId,teamName))
+                    }
+                },
+                onSelectionChange = onTeamSelectionChange,
+                selected = teamState.selectedTeam,
+                showLoading = teamState.isLoading,
+                onCreateTeamClick = { onCreateTeamClick(teamState.selectedTeam) },
+                showCreateTeamButton = role.value.equals(UserType.COACH.key, ignoreCase = true)
+            )
         }
     }
 }

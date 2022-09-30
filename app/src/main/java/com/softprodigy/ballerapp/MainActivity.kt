@@ -19,12 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
@@ -45,6 +40,7 @@ import com.softprodigy.ballerapp.common.Route.LOGIN_SCREEN
 import com.softprodigy.ballerapp.common.Route.PROFILE_SETUP_SCREEN
 import com.softprodigy.ballerapp.common.Route.SELECT_PROFILE
 import com.softprodigy.ballerapp.common.Route.SELECT_USER_TYPE
+import com.softprodigy.ballerapp.common.Route.SELECT_VENUE
 import com.softprodigy.ballerapp.common.Route.SIGN_UP_SCREEN
 import com.softprodigy.ballerapp.common.Route.SPLASH_SCREEN
 import com.softprodigy.ballerapp.common.Route.TEAM_SETUP_SCREEN
@@ -59,14 +55,15 @@ import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordScree
 import com.softprodigy.ballerapp.ui.features.home.HomeActivity
 import com.softprodigy.ballerapp.ui.features.login.LoginScreen
 import com.softprodigy.ballerapp.ui.features.select_profile.SelectProfileScreen
+import com.softprodigy.ballerapp.ui.features.sign_up.ProfileSetUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpViewModel
-import com.softprodigy.ballerapp.ui.features.sign_up.ProfileSetUpScreen
 import com.softprodigy.ballerapp.ui.features.splash.SplashScreen
 import com.softprodigy.ballerapp.ui.features.user_type.UserTypeScreen
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.AddPlayersScreenUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupScreenUpdated
+import com.softprodigy.ballerapp.ui.features.venue.VenueListScreen
 import com.softprodigy.ballerapp.ui.features.welcome.WelcomeScreen
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
 import com.softprodigy.ballerapp.ui.theme.ColorPrimaryOrange
@@ -493,7 +490,12 @@ fun NavControllerComposable(
             )
         }
 
-        composable(route = TEAM_SETUP_SCREEN) {
+        composable(route = TEAM_SETUP_SCREEN) { backStackEntry ->
+
+            // get data passed back from next stack
+            val venue: String = backStackEntry
+                .savedStateHandle.get<String>("venue") ?: ""
+
             mainViewModel.onEvent(
                 MainEvent.OnTopBarChanges(
                     showAppBar = true, TopBarData(
@@ -509,6 +511,7 @@ fun NavControllerComposable(
             }
 
             TeamSetupScreenUpdated(
+                venue=venue,
                 vm = setupTeamViewModelUpdated,
                 onBackClick = {
                     mainViewModel.onEvent(MainEvent.OnShowTopBar(showAppBar = false))
@@ -516,6 +519,9 @@ fun NavControllerComposable(
                 },
                 onNextClick = {
                     navController.navigate(ADD_PLAYER_SCREEN)
+                }, onVenueClick = {
+                    navController.navigate(SELECT_VENUE)
+
                 })
         }
 
@@ -540,6 +546,15 @@ fun NavControllerComposable(
         }
         composable(route = SELECT_PROFILE) {
             SelectProfileScreen(onNextClick = { moveToHome(activity) })
+        }
+
+        composable(route = SELECT_VENUE) {
+            VenueListScreen(onVenueClick = {
+                navController.previousBackStackEntry
+                    ?.savedStateHandle
+                    ?.set("venue", it)
+                navController.popBackStack()
+            })
         }
 
     }

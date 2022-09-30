@@ -41,23 +41,79 @@ import org.json.JSONObject
 @Composable
 fun GameSumTab() {
 
-        val summary= arrayListOf<GameSummaryResponse>(
-            GameSummaryResponse("1",time="1:59", playerDp = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",playerName = "Cooper",  desc = "scores 2 points",value="4 : 0"),
-            GameSummaryResponse("1",time="1:56", playerDp = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",playerName = "Sam",  desc = "misses 3 point jumper",value="2 : 0"),
-            GameSummaryResponse("1",time="0:59", playerDp = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",playerName = "George",  desc = "defensive rebound",value="2 : 0"),
-            GameSummaryResponse("1",time="1:59", playerDp = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",playerName = "Cooper",  desc = "scores 2 points",value="0 : 0"),
-            GameSummaryResponse("1",time="1:35", playerDp = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",playerName = "James",  desc = "scores 2 points",value="4 : 0"),
-            GameSummaryResponse("1",time="1:59", playerDp = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",playerName = "Cooper",  desc = "scores 2 points",value="2 : 0"),
-            GameSummaryResponse("1",time="1:59", playerDp = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",playerName = "Cooper",  desc = "scores 2 points",value="4 : 0"),
-            GameSummaryResponse("1",time="1:59", playerDp = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",playerName = "Cooper",  desc = "scores 2 points",value="4 : 0"),
-            )
+    val summary = arrayListOf<GameSummaryResponse>(
+        GameSummaryResponse(
+            "1",
+            time = "1:59",
+            playerDp = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",
+            playerName = "Cooper",
+            desc = "scores 2 points",
+            value = "4 : 0"
+        ),
+        GameSummaryResponse(
+            "1",
+            time = "1:56",
+            playerDp = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",
+            playerName = "Sam",
+            desc = "misses 3 point jumper",
+            value = "2 : 0"
+        ),
+        GameSummaryResponse(
+            "1",
+            time = "0:59",
+            playerDp = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",
+            playerName = "George",
+            desc = "defensive rebound",
+            value = "2 : 0"
+        ),
+        GameSummaryResponse(
+            "1",
+            time = "1:59",
+            playerDp = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",
+            playerName = "Cooper",
+            desc = "scores 2 points",
+            value = "0 : 0"
+        ),
+        GameSummaryResponse(
+            "1",
+            time = "1:35",
+            playerDp = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",
+            playerName = "James",
+            desc = "scores 2 points",
+            value = "4 : 0"
+        ),
+        GameSummaryResponse(
+            "1",
+            time = "1:59",
+            playerDp = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",
+            playerName = "Cooper",
+            desc = "scores 2 points",
+            value = "2 : 0"
+        ),
+        GameSummaryResponse(
+            "1",
+            time = "1:59",
+            playerDp = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",
+            playerName = "Cooper",
+            desc = "scores 2 points",
+            value = "4 : 0"
+        ),
+        GameSummaryResponse(
+            "1",
+            time = "1:59",
+            playerDp = "profileImage/1662458857474-selected_image_4465069980681186921.jpg",
+            playerName = "Cooper",
+            desc = "scores 2 points",
+            value = "4 : 0"
+        ),
+    )
 //    stringResourceByName(SummaryTabItems.All.name)
-    val categories= arrayListOf<String>(
-      stringResource(id = R.string.all),
-      stringResource(id = R.string.one_q),
-      stringResource(id = R.string.two_q),
-      stringResource(id = R.string.three_q),
-      stringResource(id = R.string.four_q),
+    val categories = arrayListOf<String>(
+        stringResource(id = R.string.all),
+        stringResource(id = R.string.one_q),
+        stringResource(id = R.string.two_q),
+        stringResource(id = R.string.three_q),
+        stringResource(id = R.string.four_q),
     )
 
     val pagerState = rememberPagerState(
@@ -67,7 +123,7 @@ fun GameSumTab() {
     Box(Modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
             Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
-            SummaryTopTabs(pagerState,categories)
+            SummaryTopTabs(pagerState, categories)
             Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
             LazyColumn(
                 modifier = Modifier
@@ -100,7 +156,7 @@ enum class SummaryTabItems(val stringId: String, val key: String) {
 @Composable
 fun SummaryTopTabs(pagerState: PagerState, tabData: List<String>) {
     val coroutineScope = rememberCoroutineScope()
-    LazyRow {
+    LazyRow(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
         itemsIndexed(tabData) { index, item ->
             Row {
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
@@ -129,7 +185,7 @@ fun SummaryTabItem(
         Modifier
             .fillMaxWidth()
             .padding(
-                horizontal = dimensionResource(id = R.dimen.size_12dp),
+                horizontal = dimensionResource(id = R.dimen.size_8dp),
                 vertical = dimensionResource(id = R.dimen.size_2dp)
             )
     ) {
@@ -145,18 +201,12 @@ fun SummaryTabItem(
                 modifier = Modifier
                     .height(IntrinsicSize.Min)
                     .padding(
-                        PaddingValues(
-                            dimensionResource(id = R.dimen.size_12dp),
-                            dimensionResource(id = R.dimen.size_12dp)
-                        )
+                        dimensionResource(id = R.dimen.size_12dp)
                     ), verticalAlignment = Alignment.CenterVertically
             ) {
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
                 AppText(
                     text = summary.time,
-                    color =
-                        MaterialTheme.appColors.buttonColor.textDisabled,
-
+                    color = MaterialTheme.appColors.buttonColor.textDisabled,
                     fontSize = dimensionResource(
                         id = R.dimen.txt_size_12
                     ).value.sp,
@@ -190,7 +240,7 @@ fun SummaryTabItem(
                         ColorBWBlack
                     )
                     Text(
-                        text = " "+summary.desc,
+                        text = " " + summary.desc,
                         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                         color =
                         MaterialTheme.appColors.buttonColor.bckgroundEnabled
@@ -204,14 +254,11 @@ fun SummaryTabItem(
             ) {
                 Text(
                     text = summary.value,
-                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                    color =
-                        MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                    style = MaterialTheme.typography.h6,
+                    color = MaterialTheme.appColors.buttonColor.textDisabled
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
-
             }
-
         }
     }
 }

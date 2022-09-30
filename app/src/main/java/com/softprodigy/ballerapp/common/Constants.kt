@@ -6,6 +6,7 @@ object AppConstants {
     const val ROLE = "role"
     const val TEAM_LOGO: String = "teamLogo"
     const val PROFILE_IMAGE: String = "profileImage"
+    const val DOCUMENT: String = "document"
     const val PICKER_DEFAULT_COLOR = "FFFFFFFF"
     const val ANDROID = "android"
     const val GOOGLE = "google"
@@ -52,10 +53,11 @@ object Route {
     const val ROASTER_SCREEN = "roasterScreen"
     const val MANAGED_TEAM_SCREEN = "managedTeamScreen"
     const val SELECT_PROFILE = "selectProfile"
+    const val SELECT_VENUE = "selectVenue"
     const val LEAGUE_DETAIL_SCREEN = "leagueDetailScreen"
     const val PROFILE_SCREEN = "profileScreen"
     const val PROFILE_EDIT_SCREEN = "profileeditscreen"
-    const val INVITATION_SCREEN="invitationScreen"
+    const val INVITATION_SCREEN = "invitationScreen"
     const val NEW_EVENT = "newEvent"
     const val MY_LEAGUE = "myLeague"
     const val OPEN_VENUE = "openVenue"
@@ -69,15 +71,23 @@ object ApiConstants {
     const val GET_ALL_PLAYERS = "v1/player/getAllPlayers"
     const val UPLOAD_SINGLE_IMAGE = "v1/upload/single"
     const val CREATE_TEAM = "v1/team"
-    const val GET_TEAMS = "v1/team"
+    const val GET_TEAMS_BY_COACH_ID = "v1/team/coach"
     const val GET_TEAM_BY_ID = "v1/team/getTeamById"
     const val GET_LEADER_BOARD = "v1/team/getTeamLeaderBoard"
     const val COACH_PLAYER = "v1/team/coachPlayers"
     const val GET_TEAM_STANDING = "v1/team/standings"
     const val SEND_INVITATION = "v1/team/inviteTeamMembers"
     const val GET_ALL_INVITATION = "v1/team/getAllTeamsInvitations"
+    const val GET_ALL_EVENTS = "v1/coach/event/getAllEvents"
     const val ACCEPT_TEAM_INVITATION = "v1/team/acceptTeamInvitation"
     const val REJECT_TEAM_INVITATION = "v1/team/rejectTeamInvitation"
+    const val GET_USER_ROLE = "v1/team/getUserRoles"
+    const val GET_TEAM_PLAYER_BY_ID = "v1/team/getTeamPlayersById"
+
+    //Events
+    const val CREATE_NEW_EVENT = "v1/coach/event/addEvent"
+    const val ACCEPT_COACH_EVENT = "v1/coach/event/acceptCoachEvent"
+    const val DECLINE_COACH_EVENT = "v1/coach/event/rejectCoachEvent"
 
     const val SOCIAL_LOGIN = "/social_login"
     const val SIGNUP = "v1/auth/register"
@@ -88,8 +98,25 @@ object ApiConstants {
     const val RESET_PASS = "/reset/password/"
     const val RESEND_OTP = "/resendOtp"
     const val UPDATE_TEAM = "v1/team/update"
-    const val GET_USER_DETAILS="v1/auth/getUserProfile"
-    const val GET_HOME_PAGE_DETAILS="v1/coach/event/getHomePageDetails"
+    const val GET_USER_DETAILS = "v1/auth/getUserProfile"
+    const val GET_HOME_PAGE_DETAILS = "v1/coach/event/getHomePageDetails"
+    const val GET_USER_FULL_DETAILS = "v1/userDetails"
+    const val UPDATE_USER_FULL_DETAILS = "v1/userDetails"
+    const val EVENT_GET_DIVISIONS = "v1/event/getAllDivisions"
+    const val EVENT_TEAM_REGISTRATION = "v1/event/team/registration"
+    const val EVENT_UPDATE_FILTERS = "v1/event/updateFilterPreferences"
+
+    const val LEAVE_TEAM = "v1/userDetails/leaveTeam"
+    const val DOC_TYPES = "v1/userDetails/getUserDocuments"
+    const val DELETE_DOC = "v1/userDetails/deleteDocument"
+    const val UPDATE_DOC = "v1/userDetails/updateDocument"
+
+    const val GET_ALL_VENUE = "v1/venue/getAllVenues"
+
+    const val GET_ALL_OPPORTUNITIES = "v1/event/getOpportunitiesEvents"
+    const val GET_OPPORTUNITY_ID = "v1/event/getEventRegisterById"
+    const val GET_FILTERS = "v1/event/getFilterPreferences"
+
     const val first_name = "first_name"
     const val last_name = "lastName"
     const val mobile = "mobile"
@@ -105,6 +132,7 @@ object RequestCode {
     const val GOOGLE_ACCESS = 100
 
 }
-object IntentData{
+
+object IntentData {
     const val FROM_SPLASH = "fromSplash"
 }

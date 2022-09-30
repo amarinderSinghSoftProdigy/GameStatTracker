@@ -2,17 +2,7 @@ package com.softprodigy.ballerapp.ui.features.home.events
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
@@ -33,13 +23,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberAsyncImagePainter
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.ui.features.components.AppDivider
-import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.CoilImage
-import com.softprodigy.ballerapp.ui.features.components.Placeholder
-import com.softprodigy.ballerapp.ui.features.components.TransparentButtonButton
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
 import com.softprodigy.ballerapp.ui.theme.appColors
 
@@ -109,15 +94,10 @@ fun EventDetailsScreen(vm: EventViewModel) {
                     modifier = Modifier.weight(1.8f)
                 )
             }
+
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-            AppText(
-                text = stringResource(id = R.string.location),
-                style = MaterialTheme.typography.h6,
-                color = MaterialTheme.appColors.textField.label,
-            )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-            Box(modifier = Modifier.fillMaxWidth()) {
-                Column {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Column(modifier = Modifier.weight(2F)) {
                     AppText(
                         text = stringResource(id = R.string.location),
                         style = MaterialTheme.typography.h6,
@@ -137,7 +117,7 @@ fun EventDetailsScreen(vm: EventViewModel) {
                     )
                 }
                 TransparentButtonButton(
-                    modifier = Modifier.align(Alignment.CenterEnd),
+                    modifier = Modifier.weight(1F),
                     text = stringResource(id = R.string.navigate),
                     onClick = {},
                     icon = painterResource(id = R.drawable.ic_nav),
@@ -166,26 +146,26 @@ fun EventDetailsScreen(vm: EventViewModel) {
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
         }
-        LazyRow(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            item {
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
-            }
-            itemsIndexed(images) { index, item ->
-                Image(
-                    painter = rememberAsyncImagePainter("https://picsum.photos/200"),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .padding(end = dimensionResource(id = R.dimen.size_10dp))
-                        .clip(RoundedCornerShape(dimensionResource(R.dimen.size_10dp)))
-                        .size(dimensionResource(id = R.dimen.size_70dp))
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+        /* LazyRow(
+             modifier = Modifier
+                 .fillMaxWidth()
+         ) {
+             item {
+                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+             }
+             itemsIndexed(images) { index, item ->
+                 Image(
+                     painter = rememberAsyncImagePainter("https://picsum.photos/200"),
+                     contentDescription = null,
+                     modifier = Modifier
+                         .padding(end = dimensionResource(id = R.dimen.size_10dp))
+                         .clip(RoundedCornerShape(dimensionResource(R.dimen.size_10dp)))
+                         .size(dimensionResource(id = R.dimen.size_70dp))
+                 )
+             }
+         }
+ 
+         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))*/
 
         AppDivider(color = MaterialTheme.appColors.material.primary)
 
@@ -206,7 +186,7 @@ fun EventDetailsScreen(vm: EventViewModel) {
             )
         }
 
-        LazyRow {
+        /*LazyRow {
             itemsIndexed(images) { index, item ->
                 Column(
                     modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.size_16dp)),
@@ -220,7 +200,7 @@ fun EventDetailsScreen(vm: EventViewModel) {
                             .background(
                                 color = Color.White, CircleShape
                             )
-                            .size(dimensionResource(id = R.dimen.size_50dp)),
+                            .size(dimensionResource(id = R.dimen.size_60dp)),
                         onError = {
                             Placeholder(R.drawable.ic_team_placeholder)
                         },
@@ -244,7 +224,7 @@ fun EventDetailsScreen(vm: EventViewModel) {
                     )
                 }
             }
-        }
+        }*/
 
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
 
@@ -338,10 +318,10 @@ fun EventDetailsScreen(vm: EventViewModel) {
                 ) {
                     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_12dp)))
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_check),
+                        painter = painterResource(id = R.drawable.ic_tick),
                         contentDescription = "",
                         tint = Color.White,
-                        modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp))
+                        modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp))
                     )
                     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_12dp)))
                     AppText(
