@@ -69,8 +69,8 @@ open interface APIService {
 
     @GET(ApiConstants.GET_TEAM_STANDING)
     suspend fun getTeamStandings(
-        @Query("page") page: Int,
-        @Query("limit") limit: Int
+        @Query("page") page: Int = 1,
+        @Query("limit") limit: Int = 20,
     ): BaseResponse<StandingData>
 
     @GET("${ApiConstants.COACH_PLAYER}/{id}")
@@ -147,8 +147,12 @@ open interface APIService {
     @GET(ApiConstants.GET_FILTERS)
     suspend fun getFilters(): BaseResponse<FilterResponse>
 
-    @GET("${ApiConstants.EVENT_GET_DIVISIONS}/{id}")
-    suspend fun getEventDivision(@Path("id") id: String): BaseResponse<List<DivisionData>>
+    @GET(ApiConstants.EVENT_GET_DIVISIONS)
+    suspend fun getEventDivision(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int,
+        @Query("eventId") id: String
+    ): BaseResponse<List<DivisionData>>
 
     @POST(ApiConstants.EVENT_TEAM_REGISTRATION)
     suspend fun registerEvent(@Body request: RegisterRequest): BaseResponse<Any>

@@ -27,6 +27,7 @@ sealed class EvEvents {
     data class RegisterNotification(val request: Boolean) : EvEvents()
     data class RegisterPrivacy(val request: Boolean) : EvEvents()
     data class RegisterCash(val request: String) : EvEvents()
+    object ClearRegister : EvEvents()
 
     data class ShowToast(val message: String) : EvEvents()
     data class OnDeclineConfirmClick(val invitation: EventsResponse) : EvEvents()

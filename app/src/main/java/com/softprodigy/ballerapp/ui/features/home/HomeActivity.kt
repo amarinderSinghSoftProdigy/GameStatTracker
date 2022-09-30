@@ -1,5 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.home
 
+//import com.softprodigy.ballerapp.ui.features.home.events.NewEventScreen
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
@@ -12,12 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -39,21 +36,6 @@ import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.events.*
-import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
-import com.softprodigy.ballerapp.ui.features.components.BottomNavigationBar
-import com.softprodigy.ballerapp.ui.features.components.CommonTabView
-import com.softprodigy.ballerapp.ui.features.components.LogoutDialog
-import com.softprodigy.ballerapp.ui.features.components.TabBar
-import com.softprodigy.ballerapp.ui.features.components.TopBar
-import com.softprodigy.ballerapp.ui.features.components.TopBarData
-import com.softprodigy.ballerapp.ui.features.components.fromHex
-import com.softprodigy.ballerapp.ui.features.home.events.EventDetailsScreen
-import com.softprodigy.ballerapp.ui.features.home.events.opportunities.EventRegistraionDetails
-import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
-import com.softprodigy.ballerapp.ui.features.home.events.EventsScreen
-import com.softprodigy.ballerapp.ui.features.home.events.FilterScreen
-import com.softprodigy.ballerapp.ui.features.home.events.MyLeagueDetailScreen
-//import com.softprodigy.ballerapp.ui.features.home.events.NewEventScreen
 import com.softprodigy.ballerapp.ui.features.home.events.division.divisionTab.DivisionScreenTab
 import com.softprodigy.ballerapp.ui.features.home.events.game.GameDetailsScreen
 import com.softprodigy.ballerapp.ui.features.home.events.game.GameRuleScreen
@@ -401,6 +383,7 @@ fun NavControllerComposable(
                 )
             )
             OppEventDetails(eventViewModel, moveToRegistration = {
+                eventViewModel.onEvent(EvEvents.ClearRegister)
                 navController.navigate(Route.EVENT_REGISTRATION)
             })
         }
@@ -511,7 +494,6 @@ fun NavControllerComposable(
             BackHandler {
                 homeViewModel.setScreen(false)
                 navController.popBackStack()
-
             }
             AddPlayersScreenUpdated(
                 vm = setupTeamViewModelUpdated,
