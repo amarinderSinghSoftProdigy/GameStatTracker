@@ -7,7 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.common.ResultWrapper
-import com.softprodigy.ballerapp.common.getFileFromUri
+import com.softprodigy.ballerapp.common.getFileFromUriWithoutCompress
 import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.FunFactsReq
@@ -54,7 +54,8 @@ class ProfileViewModel @Inject constructor(
                 _state.value = _state.value.copy(showParentDialog = event.showDialog)
             }
             is ProfileEvent.OnParentClick -> {
-                _state.value = _state.value.copy(selectedParentDetails = event.selectedParentDetails)
+                _state.value =
+                    _state.value.copy(selectedParentDetails = event.selectedParentDetails)
             }
             is ProfileEvent.OnBirthdayChange -> {
                 _state.value =
@@ -491,13 +492,14 @@ class ProfileViewModel @Inject constructor(
         _state.value = _state.value.copy(isLoading = true)
         val uri = Uri.parse(_state.value.imageUri)
 
-        val file = getFileFromUri(getApplication<Application>().applicationContext, uri)
+        val file = getFileFromUriWithoutCompress(getApplication<Application>().applicationContext, uri)
 
         file?.let {
             val size = Integer.parseInt((it.length() / 1024).toString())
             Timber.i("Filesize after compressiod--> $size")
         }
-        val userResponse = imageUploadRepo.uploadSingleImage(
+        val userResponse = imageUploadRepo.uploadSingleFile(
+            mime = file?.extension ?: "image",
             type = userDocType,
             file
         )

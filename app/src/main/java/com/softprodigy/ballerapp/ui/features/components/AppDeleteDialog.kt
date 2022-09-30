@@ -49,6 +49,7 @@ import com.softprodigy.ballerapp.data.response.ParentDetails
 import com.softprodigy.ballerapp.data.response.PlayerDetails
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
+import com.softprodigy.ballerapp.ui.features.home.events.DivisionData
 import com.softprodigy.ballerapp.ui.features.profile.tabs.DetailItem
 import com.softprodigy.ballerapp.ui.theme.*
 
@@ -113,7 +114,7 @@ fun <T> DeleteDialog(
 @Composable
 fun SelectTeamDialog(
     onDismiss: () -> Unit,
-    onConfirmClick: (String,String) -> Unit,
+    onConfirmClick: (String, String) -> Unit,
     onSelectionChange: (Team) -> Unit,
     selected: Team?,
     showLoading: Boolean,
@@ -227,7 +228,7 @@ fun SelectTeamDialog(
                         DialogButton(
                             text = stringResource(R.string.dialog_button_confirm),
                             onClick = {
-                                onConfirmClick.invoke(teamId.value,teamName.value)
+                                onConfirmClick.invoke(teamId.value, teamName.value)
                                 onDismiss.invoke()
                             },
                             modifier = Modifier
@@ -245,7 +246,7 @@ fun SelectTeamDialog(
 
 @Composable
 fun ShowParentDialog(
-    parentDetails:ParentDetails,
+    parentDetails: ParentDetails,
     onDismiss: () -> Unit,
     onConfirmClick: () -> Unit,
 ) {
@@ -323,9 +324,15 @@ fun ShowParentDialog(
                         Row(
                             modifier = Modifier
                         ) {
-                            DetailItem(stringResource(id = R.string.email), parentDetails.parent.email)
+                            DetailItem(
+                                stringResource(id = R.string.email),
+                                parentDetails.parent.email
+                            )
                             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                            DetailItem(stringResource(id = R.string.number), parentDetails.parent.phone)
+                            DetailItem(
+                                stringResource(id = R.string.number),
+                                parentDetails.parent.phone
+                            )
                         }
 
                     }
@@ -1171,17 +1178,17 @@ fun SwitchTeamDialogg(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SwitchTeamDialog(
-    isSelected: String,
-    onSelection: (String) -> Unit,
     onDismiss: () -> Unit,
-    onConfirmClick: (teams: ArrayList<Team>) -> Unit,
+    onConfirmClick: (teams: Team) -> Unit,
     title: String,
     teams: ArrayList<Team>,
+    teamSelect: Team,
 ) {
-
+    val teamSelected = remember {
+        mutableStateOf(teamSelect)
+    }
     BallerAppMainTheme {
         AlertDialog(
             modifier = Modifier
@@ -1226,12 +1233,11 @@ fun SwitchTeamDialog(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         items(teams) { team ->
-
                             Column(
                                 modifier = Modifier
                                     .padding(bottom = dimensionResource(id = R.dimen.size_8dp))
                                     .background(
-                                        color = if (isSelected == team._id) MaterialTheme.appColors.material.primary else Color.White,
+                                        color = if (teamSelected.value._id == team._id) MaterialTheme.appColors.material.primary else Color.White,
                                         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
                                     )
                             ) {
@@ -1239,12 +1245,19 @@ fun SwitchTeamDialog(
                                     modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_8dp)),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Image(
-                                        painter = painterResource(id = R.drawable.user_demo),
-                                        contentDescription = "",
+                                    CoilImage(
+                                        src = BuildConfig.IMAGE_SERVER + team.logo,
                                         modifier = Modifier
                                             .size(dimensionResource(id = R.dimen.size_32dp))
                                             .clip(CircleShape)
+                                            .border(
+                                                dimensionResource(id = R.dimen.size_2dp),
+                                                MaterialTheme.colors.surface,
+                                                CircleShape,
+                                            ),
+                                        isCrossFadeEnabled = false,
+                                        onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                                        onError = { Placeholder(R.drawable.ic_team_placeholder) }
                                     )
                                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
                                     Text(
@@ -1253,11 +1266,8 @@ fun SwitchTeamDialog(
                                         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                                         fontWeight = FontWeight.W500,
                                     )
-                                    CustomTeamCheckBox(
-                                        id = team._id,
-                                        selected = isSelected == team._id
-                                    ) {
-                                        onSelection(team._id)
+                                    CustomCheckBox(team._id == teamSelected.value._id) {
+                                        teamSelected.value = team
                                     }
                                 }
                             }
@@ -1285,8 +1295,267 @@ fun SwitchTeamDialog(
                         DialogButton(
                             text = stringResource(R.string.dialog_button_confirm),
                             onClick = {
-                                //TODO add list to be sent back in callback
-                                onConfirmClick.invoke(ArrayList())
+                                onConfirmClick.invoke(teamSelected.value)
+                                onDismiss.invoke()
+                            },
+                            modifier = Modifier
+                                .weight(1f),
+                            border = ButtonDefaults.outlinedBorder,
+                            onlyBorder = false,
+                        )
+                    }
+                }
+            },
+        )
+    }
+}
+
+
+@Composable
+fun SwitchPlayerDialog(
+    onDismiss: () -> Unit,
+    onConfirmClick: (teams: ArrayList<String>) -> Unit,
+    title: String,
+    teams: ArrayList<PlayerDetails>,
+    player: ArrayList<String>,
+) {
+    val teamSelected = remember {
+        mutableStateOf(player)
+    }
+    BallerAppMainTheme {
+        AlertDialog(
+            modifier = Modifier
+                .background(
+                    Color.White,
+                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+                )
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+            onDismissRequest = onDismiss,
+            buttons = {
+                Column(
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(
+                            all = dimensionResource(
+                                id = R.dimen.size_16dp
+                            )
+                        ),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = title,
+                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                            fontWeight = FontWeight.W600,
+                        )
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_close_color_picker),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(dimensionResource(id = R.dimen.size_12dp))
+                                .align(Alignment.TopEnd)
+                                .clickable {
+                                    onDismiss()
+                                }
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
+                    val list = teamSelected.value
+                    LazyColumn(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        items(teams) { team ->
+                            val status = remember {
+                                mutableStateOf(list.contains(team.id))
+                            }
+                            Column(
+                                modifier = Modifier
+                                    .padding(bottom = dimensionResource(id = R.dimen.size_8dp))
+                                    .background(
+                                        color = if (list.contains(team.id)) MaterialTheme.appColors.material.primary else Color.White,
+                                        shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
+                                    )
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_12dp)),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    CoilImage(
+                                        src = BuildConfig.IMAGE_SERVER + team.memberDetails.profileImage,
+                                        modifier = Modifier
+                                            .size(dimensionResource(id = R.dimen.size_32dp))
+                                            .clip(CircleShape)
+                                            .border(
+                                                dimensionResource(id = R.dimen.size_2dp),
+                                                MaterialTheme.colors.surface,
+                                                CircleShape,
+                                            ),
+                                        isCrossFadeEnabled = false,
+                                        onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                                        onError = { Placeholder(R.drawable.ic_team_placeholder) }
+                                    )
+                                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
+                                    Text(
+                                        modifier = Modifier.weight(1f),
+                                        text = team.memberDetails.name,
+                                        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                                        fontWeight = FontWeight.W500,
+                                    )
+                                    CustomCheckBox(status.value) {
+                                        status.value = !status.value
+                                        if (list.contains(team.id)) {
+                                            list.remove(team.id)
+                                        } else {
+                                            list.add(team.id)
+                                        }
+                                        teamSelected.value = list
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                    AppDivider()
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(color = Color.White),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        DialogButton(
+                            text = stringResource(R.string.dialog_button_cancel),
+                            onClick = onDismiss,
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = dimensionResource(id = R.dimen.size_10dp)),
+                            border = ButtonDefaults.outlinedBorder,
+                            onlyBorder = true,
+                            enabled = false
+                        )
+                        DialogButton(
+                            text = stringResource(R.string.dialog_button_confirm),
+                            onClick = {
+                                onConfirmClick.invoke(teamSelected.value)
+                                onDismiss.invoke()
+                            },
+                            modifier = Modifier
+                                .weight(1f),
+                            border = ButtonDefaults.outlinedBorder,
+                            onlyBorder = false,
+                        )
+                    }
+                }
+            },
+        )
+    }
+}
+
+@Composable
+fun SelectDivisionDialog(
+    onDismiss: () -> Unit,
+    onConfirmClick: (teams: DivisionData) -> Unit,
+    title: String,
+    teams: List<DivisionData>,
+    division: DivisionData,
+) {
+    val divisionSelected = remember {
+        mutableStateOf(division)
+    }
+    BallerAppMainTheme {
+        AlertDialog(
+            modifier = Modifier
+                .background(
+                    Color.White,
+                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+                )
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+            onDismissRequest = onDismiss,
+            buttons = {
+                Column(
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(
+                            all = dimensionResource(
+                                id = R.dimen.size_16dp
+                            )
+                        ),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = title,
+                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                            fontWeight = FontWeight.W600,
+                        )
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_close_color_picker),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(dimensionResource(id = R.dimen.size_12dp))
+                                .align(Alignment.TopEnd)
+                                .clickable {
+                                    onDismiss()
+                                }
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
+                    LazyColumn(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        items(teams) { team ->
+                            Column(
+                                modifier = Modifier
+                                    .padding(bottom = dimensionResource(id = R.dimen.size_8dp))
+                                    .background(
+                                        color = if (divisionSelected.value._id == team._id) MaterialTheme.appColors.material.primary else Color.White,
+                                        shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
+                                    )
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_12dp)),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        modifier = Modifier.weight(1f),
+                                        text = team.divisionName,
+                                        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                                        fontWeight = FontWeight.W500,
+                                    )
+                                    CustomCheckBox(divisionSelected.value._id == team._id) {
+                                        divisionSelected.value = team
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                    AppDivider()
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(color = Color.White),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        DialogButton(
+                            text = stringResource(R.string.dialog_button_cancel),
+                            onClick = onDismiss,
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = dimensionResource(id = R.dimen.size_10dp)),
+                            border = ButtonDefaults.outlinedBorder,
+                            onlyBorder = true,
+                            enabled = false
+                        )
+                        DialogButton(
+                            text = stringResource(R.string.dialog_button_confirm),
+                            onClick = {
+                                onConfirmClick.invoke(divisionSelected.value)
                                 onDismiss.invoke()
                             },
                             modifier = Modifier
