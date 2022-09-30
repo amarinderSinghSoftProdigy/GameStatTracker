@@ -30,8 +30,7 @@ open interface APIService {
     @Multipart
     @POST(ApiConstants.UPLOAD_SINGLE_IMAGE)
     suspend fun uploadSingleImage(
-        @Part("type") type: RequestBody,
-        @Part file: MultipartBody.Part?
+        @Part("type") type: RequestBody, @Part file: MultipartBody.Part?
     ): BaseResponse<ImageUpload>
 
     @POST(ApiConstants.CREATE_TEAM)
@@ -81,16 +80,12 @@ open interface APIService {
 
     @GET(ApiConstants.GET_ALL_INVITATION)
     suspend fun getAllInvitation(
-        @Query("page") page: Int,
-        @Query("limit") limit: Int,
-        @Query("sort") sort: String
+        @Query("page") page: Int, @Query("limit") limit: Int, @Query("sort") sort: String
     ): BaseResponse<ArrayList<Invitation>>
 
     @GET(ApiConstants.GET_ALL_EVENTS)
     suspend fun getAllevents(
-        @Query("page") page: Int,
-        @Query("limit") limit: Int,
-        @Query("sort") sort: String
+        @Query("page") page: Int, @Query("limit") limit: Int, @Query("sort") sort: String
     ): BaseResponse<EventsResponse>
 
     @PUT(ApiConstants.ACCEPT_TEAM_INVITATION)
@@ -149,9 +144,7 @@ open interface APIService {
 
     @GET(ApiConstants.EVENT_GET_DIVISIONS)
     suspend fun getEventDivision(
-        @Query("page") page: Int,
-        @Query("limit") limit: Int,
-        @Query("eventId") id: String
+        @Query("page") page: Int, @Query("limit") limit: Int, @Query("eventId") id: String
     ): BaseResponse<List<DivisionData>>
 
     @POST(ApiConstants.EVENT_TEAM_REGISTRATION)
@@ -171,8 +164,23 @@ open interface APIService {
 
     @GET(ApiConstants.GET_MY_LEAGUE)
     suspend fun getMyLeagues(
+        @Query("page") page: Int, @Query("limit") limit: Int, @Query("sort") sort: String
+    ): BaseResponse<ArrayList<MyLeagueResponse>>
+
+    @GET(ApiConstants.GET_DIVISION)
+    suspend fun getDivisions(
         @Query("page") page: Int,
         @Query("limit") limit: Int,
-        @Query("sort") sort: String
-    ): BaseResponse<ArrayList<MyLeagueResponse>>
+        @Query("sort") sort: String,
+        @Query("leagueId") leagueId: String,
+        @Query("gender") gender: String,
+    ): BaseResponse<ArrayList<DivisionResponse>>
+
+    @GET(ApiConstants.GET_VENUES)
+    suspend fun getVenues(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int,
+        @Query("sort") sort: String,
+        @Query("leagueId") leagueId: String,
+    ): BaseResponse<VenuesResponse>
 }

@@ -24,7 +24,8 @@ fun MyLeagueDetailScreen(
     moveToOpenDetails: (String) -> Unit,
     moveToOpenVenues: (String) -> Unit,
     moveToOpenDivisions: (String) -> Unit,
-    moveToOpenTeams: (String) -> Unit
+    moveToOpenTeams: (String) -> Unit,
+    eventViewModel: EventViewModel
 ) {
     val tabData = listOf(
         MyLeagueTabItems.Schedule,
@@ -44,7 +45,8 @@ fun MyLeagueDetailScreen(
             moveToOpenDetails,
             moveToOpenVenues,
             moveToOpenDivisions,
-            moveToOpenTeams
+            moveToOpenTeams,
+            eventViewModel
         )
     }
 
@@ -78,7 +80,8 @@ fun MyLeagueContent(
     moveToOpenDetails: (String) -> Unit,
     moveToOpenVenues: (String) -> Unit,
     moveToOpenDivisions: (String) -> Unit,
-    moveToOpenTeams: (String) -> Unit
+    moveToOpenTeams: (String) -> Unit,
+    eventViewModel: EventViewModel
 ) {
     HorizontalPager(
         state = pagerState,
@@ -86,9 +89,9 @@ fun MyLeagueContent(
     ) { index ->
         when (index) {
             0 -> EventScheduleScreen(moveToOpenDetails = moveToOpenDetails)
-            1 -> DivisionScreen(moveToOpenDivisions)
+            1 -> DivisionScreen(moveToOpenDivisions, eventViewModel)
             2 -> EventTeamsScreen(moveToOpenTeams)
-            3 -> VenuesScreen(moveToOpenVenues)
+            3 -> VenuesScreen(moveToOpenVenues,eventViewModel)
         }
     }
 }

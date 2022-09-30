@@ -6,10 +6,7 @@ import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.CreateTeamRequest
 import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
 import com.softprodigy.ballerapp.data.request.UpdateTeamRequest
-import com.softprodigy.ballerapp.data.response.CreateTeamResponse
-import com.softprodigy.ballerapp.data.response.MyLeagueResponse
-import com.softprodigy.ballerapp.data.response.PlayerDetails
-import com.softprodigy.ballerapp.data.response.StandingData
+import com.softprodigy.ballerapp.data.response.*
 import com.softprodigy.ballerapp.data.response.homepage.HomePageCoachModel
 import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.data.response.team.Player
@@ -154,4 +151,37 @@ class TeamRepository @Inject constructor(
         }
     }
 
+    override suspend fun getDivisions(
+        page: Int,
+        limit: Int,
+        sort: String,
+        gender: String,
+        leagueId: String
+    ): ResultWrapper<BaseResponse<ArrayList<DivisionResponse>>> {
+        return safeApiCall(dispatcher) {
+            service.getDivisions(
+                page = page,
+                limit = limit,
+                sort = sort,
+                leagueId = leagueId,
+                gender = gender
+            )
+        }
+    }
+
+    override suspend fun getVenues(
+        page: Int,
+        limit: Int,
+        sort: String,
+        leagueId: String
+    ): ResultWrapper<BaseResponse<VenuesResponse>> {
+        return safeApiCall(dispatcher) {
+            service.getVenues(
+                page = page,
+                limit = limit,
+                sort = sort,
+                leagueId = leagueId,
+            )
+        }
+    }
 }

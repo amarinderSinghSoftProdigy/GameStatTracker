@@ -42,4 +42,9 @@ sealed class EvEvents {
 
     object GetMyLeagues : EvEvents()
 
+    object GetDivision : EvEvents()
+    data class GetLeagueId(val id: String) : EvEvents()
+    data class GetGender(val gender: String) : EvEvents()
+
+    object GetVenues : EvEvents()
 }

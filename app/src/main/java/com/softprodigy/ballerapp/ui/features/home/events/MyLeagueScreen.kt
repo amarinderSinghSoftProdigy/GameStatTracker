@@ -64,6 +64,7 @@ fun MyLeagueScreen(
                 LazyColumn(Modifier.fillMaxWidth()) {
                     items(state.myLeaguesList) { item ->
                         LeagueItem(item) {
+                            vm.onEvent(EvEvents.GetLeagueId(item._id))
                             moveToDetail()
                         }
                     }
