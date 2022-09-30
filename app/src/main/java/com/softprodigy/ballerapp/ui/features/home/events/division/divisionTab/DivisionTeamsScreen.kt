@@ -119,8 +119,8 @@ fun DivisionTeamItem(team: Team) {
                 contentDescription = "",
                 modifier = Modifier
                     .size(
-                        height = dimensionResource(id = R.dimen.size_6dp),
-                        width = dimensionResource(id = R.dimen.size_8dp)
+                        height = dimensionResource(id = R.dimen.size_12dp),
+                        width = dimensionResource(id = R.dimen.size_12dp)
                     )
                     .rotate(270f),
                 tint = MaterialTheme.appColors.buttonColor.textDisabled

@@ -19,11 +19,13 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.dimensionResource
@@ -98,14 +100,18 @@ fun DivisionItems(item: DivisionData, onDivisionClick: () -> Unit) {
         )
 
         Row {
-            Image(
-                painter = painterResource(id = R.drawable.ic_next),
-                contentDescription = null,
+            Icon(
+                painter = painterResource(id = R.drawable.ic_arrow_bottom_event),
+                contentDescription = "",
                 modifier = Modifier
                     .size(
-                        dimensionResource(id = R.dimen.size_12dp)
+                        height = dimensionResource(id = R.dimen.size_12dp),
+                        width = dimensionResource(id = R.dimen.size_12dp)
+                    )
+                    .then(
+                       Modifier.rotate(270f)
                     ),
-                colorFilter = ColorFilter.tint(color = MaterialTheme.appColors.buttonColor.bckgroundDisabled)
+                tint = MaterialTheme.appColors.buttonColor.textDisabled
             )
 
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))

@@ -77,6 +77,11 @@ val Typography = Typography(
     body2 = TextStyle(
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
+    ),
+    caption = TextStyle(
+        fontWeight =  FontWeight.W500,
+        fontSize = 13.sp,
+        fontFamily = rubikFamily
     )
 
 )

@@ -260,9 +260,7 @@ fun ProfileSetUpScreen(
             Box(
                 Modifier
                     .fillMaxWidth()
-
             ) {
-
 
                 Column(
                     Modifier

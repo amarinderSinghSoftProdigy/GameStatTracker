@@ -1,6 +1,12 @@
 package com.softprodigy.ballerapp.ui.features.components
 
 import androidx.compose.foundation.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,6 +19,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
@@ -49,8 +65,16 @@ import com.softprodigy.ballerapp.data.response.ParentDetails
 import com.softprodigy.ballerapp.data.response.PlayerDetails
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
+import com.softprodigy.ballerapp.ui.features.home.events.EvEvents
 import com.softprodigy.ballerapp.ui.features.profile.tabs.DetailItem
 import com.softprodigy.ballerapp.ui.theme.*
+import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
+import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayMedium
+import com.softprodigy.ballerapp.ui.theme.appColors
+import com.softprodigy.ballerapp.ui.theme.spacing
 
 @Composable
 fun <T> DeleteDialog(
@@ -267,10 +291,11 @@ fun ShowParentDialog(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Box(modifier = Modifier.fillMaxWidth()) {
-                        Text(
+                        AppText(
                             text = stringResource(id = R.string.parent),
-                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                            fontWeight = FontWeight.W600,
+                            style = MaterialTheme.typography.h5,
+                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            fontWeight = FontWeight.W500
                         )
 
                         Icon(
@@ -281,7 +306,8 @@ fun ShowParentDialog(
                                 .align(Alignment.TopEnd)
                                 .clickable {
                                     onDismiss()
-                                }
+                                },
+                            tint = MaterialTheme.appColors.buttonColor.textDisabled
                         )
                     }
                     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
@@ -310,9 +336,11 @@ fun ShowParentDialog(
                             color = ColorBWBlack,
                             fontSize = dimensionResource(id = R.dimen.txt_size_20).value.sp
                         )
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                         AppText(
                             text = parentDetails.parentType,
                             style = MaterialTheme.typography.h4,
+                            fontWeight = FontWeight.W500,
                             color = ColorBWGrayLight
                         )
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
@@ -1170,14 +1198,14 @@ fun SwitchTeamDialogg(
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SwitchTeamDialog(
+    isSelected: String,
+    onSelection: (String) -> Unit,
     onDismiss: () -> Unit,
     onConfirmClick: (teams: ArrayList<Team>) -> Unit,
     title: String,
     teams: ArrayList<Team>,
 ) {
-    val selectedTeams = remember {
-        mutableStateOf(false)
-    }
+
     BallerAppMainTheme {
         AlertDialog(
             modifier = Modifier
@@ -1227,7 +1255,7 @@ fun SwitchTeamDialog(
                                 modifier = Modifier
                                     .padding(bottom = dimensionResource(id = R.dimen.size_8dp))
                                     .background(
-                                        color = if (selectedTeams.value) MaterialTheme.appColors.material.primary else Color.White,
+                                        color = if (isSelected == team._id) MaterialTheme.appColors.material.primary else Color.White,
                                         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
                                     )
                             ) {
@@ -1249,9 +1277,12 @@ fun SwitchTeamDialog(
                                         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                                         fontWeight = FontWeight.W500,
                                     )
-                                    CustomCheckBox(
-                                        selectedTeams.value
-                                    ) { selectedTeams.value = !selectedTeams.value }
+                                    CustomTeamCheckBox(
+                                        id = team._id,
+                                        selected = isSelected == team._id
+                                    ) {
+                                        onSelection(team._id)
+                                    }
                                 }
                             }
                         }

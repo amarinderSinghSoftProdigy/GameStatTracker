@@ -1,6 +1,7 @@
-package com.softprodigy.ballerapp.ui.features.home.events
+package com.softprodigy.ballerapp.ui.features.home.events.opportunities
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,14 +14,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Switch
-import androidx.compose.material.SwitchDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -37,8 +41,10 @@ import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.CustomCheckBox
+import com.softprodigy.ballerapp.ui.features.components.CustomSwitch
 import com.softprodigy.ballerapp.ui.features.components.DividerCommon
 import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
+import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
 import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
@@ -50,6 +56,21 @@ import com.softprodigy.ballerapp.ui.theme.md_theme_light_onSurface
 @Composable
 fun EventRegistraionDetails(vm: EventViewModel, onSuccess: () -> Unit) {
     val state = vm.eventState.value
+    val sendPushNotification = remember {
+        mutableStateOf(false)
+    }
+
+    val termsAndConditions = remember {
+        mutableStateOf(false)
+    }
+
+    val privacy = remember {
+        mutableStateOf(false)
+    }
+
+    val desc = remember {
+        mutableStateOf("")
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -71,7 +92,7 @@ fun EventRegistraionDetails(vm: EventViewModel, onSuccess: () -> Unit) {
                 ) {
                     AppText(
                         text = stringResource(id = R.string.team),
-                        style = MaterialTheme.typography.h6,
+                        style = MaterialTheme.typography.caption,
                         color = ColorBWBlack,
                         modifier = Modifier
                             .weight(1f)
@@ -86,8 +107,8 @@ fun EventRegistraionDetails(vm: EventViewModel, onSuccess: () -> Unit) {
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
                     Text(
                         text = "Springfield Bucks",
-                        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                        fontWeight = FontWeight.W500,
+                        style = MaterialTheme.typography.h5,
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
                     )
 
                 }
@@ -104,8 +125,9 @@ fun EventRegistraionDetails(vm: EventViewModel, onSuccess: () -> Unit) {
                     stringResource(id = R.string.venmo)
                 )
                 AppOutlineTextField(
-                    value = "",
+                    value = desc.value,
                     onValueChange = {
+                        desc.value = it
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -145,59 +167,75 @@ fun EventRegistraionDetails(vm: EventViewModel, onSuccess: () -> Unit) {
                 ) {
                     AppText(
                         text = stringResource(id = R.string.send_push_notification),
-                        style = MaterialTheme.typography.h6,
+                        style = MaterialTheme.typography.caption,
                         color = ColorBWBlack,
                         modifier = Modifier
                             .weight(1f)
                     )
-                    Switch(
-                        checked = true,
-                        onCheckedChange = { },
-                        colors = SwitchDefaults.colors(
-                            checkedThumbColor = MaterialTheme.appColors.material.primaryVariant
-                        )
-                    )
+                    CustomSwitch(isSelected = sendPushNotification.value, onClick = {
+                        sendPushNotification.value = !sendPushNotification.value
+                    })
                 }
-
             }
         }
-        UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-            ) {
-                CustomCheckBox(
-                    true
-                ) { }
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_20dp)))
-                AppText(
-                    text = stringResource(id = R.string.i_agree) + " ",
-                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                    color = md_theme_light_onSurface,
-                )
-                AppText(
-                    text = stringResource(id = R.string.terms_cond),
-                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                    color = ColorMainPrimary,
-                )
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = dimensionResource(id = R.dimen.size_16dp)),
+            elevation = dimensionResource(id = R.dimen.size_20dp),
+            shape = RoundedCornerShape(
+                dimensionResource(id = R.dimen.size_8dp)
+            )
+        ) {
+            Column {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                ) {
+                    CustomCheckBox(
+                        termsAndConditions.value
+                    ) {
+                        termsAndConditions.value = !termsAndConditions.value
+                    }
+                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_20dp)))
+                    AppText(
+                        text = stringResource(id = R.string.i_agree) + " ",
+                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                        color = md_theme_light_onSurface,
+                    )
+                    AppText(
+                        text = stringResource(id = R.string.terms_cond),
+                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                        color = ColorMainPrimary,
+                    )
+                }
+                DividerCommon()
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = MaterialTheme.colors.primary)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                    ) {
+                        CustomCheckBox(
+                            privacy.value
+                        ) {
+                            privacy.value = !privacy.value
+                        }
+                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_20dp)))
+                        AppText(
+                            text = stringResource(id = R.string.privacy),
+                            fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                            color = ColorMainPrimary,
+                        )
+                    }
+                }
             }
-            DividerCommon()
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-            ) {
-                CustomCheckBox(
-                    true
-                ) { }
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_20dp)))
-                AppText(
-                    text = stringResource(id = R.string.privacy),
-                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                    color = ColorMainPrimary,
-                )
-            }
+
         }
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
 
@@ -238,7 +276,7 @@ fun RegisterItem(title: String, value: String) {
     ) {
         AppText(
             text = title,
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.caption,
             color = ColorBWBlack,
             modifier = Modifier
                 .weight(1f)

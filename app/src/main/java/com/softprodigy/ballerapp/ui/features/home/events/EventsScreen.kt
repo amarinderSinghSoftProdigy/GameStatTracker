@@ -29,8 +29,21 @@ import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.apiToUIDateFormat2
 import com.softprodigy.ballerapp.data.response.team.Team
+import com.softprodigy.ballerapp.ui.features.components.DeclineEventDialog
+import com.softprodigy.ballerapp.ui.features.components.SwitchTeamDialog
+import com.softprodigy.ballerapp.ui.features.components.TopBar
+import com.softprodigy.ballerapp.ui.features.components.TopBarData
+import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
+import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
+import com.softprodigy.ballerapp.ui.features.home.events.opportunities.OpportunitieScreen
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.theme.*
+import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
+import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
+import com.softprodigy.ballerapp.ui.theme.ColorButtonRed
+import com.softprodigy.ballerapp.ui.theme.ColorPrimaryTransparent
+import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
@@ -41,7 +54,7 @@ fun EventsScreen(
     dismissDialog: (Boolean) -> Unit,
     moveToDetail: () -> Unit,
     moveToPracticeDetail: (String) -> Unit, moveToGameDetail: (String) -> Unit,
-    moveToOppDetails: () -> Unit,
+    moveToOppDetails: (String) -> Unit,
     updateTopBar: (TopBarData) -> Unit
 ) {
     val state = vm.eventState.value
@@ -72,12 +85,16 @@ fun EventsScreen(
         Box(Modifier.fillMaxSize()) {
             if (showDialog) {
                 val teams: ArrayList<Team> = arrayListOf(
-                    Team(name = "Springfield Bucks"),
-                    Team(name = "Springfield Sprouts"),
+                    Team(_id = "1", name = "Springfield Bucks"),
+                    Team(_id = "2", name = "Springfield Sprouts"),
                 )
                 SwitchTeamDialog(
                     teams = teams,
                     title = stringResource(id = R.string.switch_teams),
+                    onSelection = {
+                        vm.onEvent(EvEvents.OnSelection(it))
+                    },
+                    isSelected = state.selectionTeam,
                     onDismiss = {
                         dismissDialog(false)
                     },
@@ -152,7 +169,7 @@ fun TabsContent(
     moveToDetail: () -> Unit,
     moveToPracticeDetail: (String) -> Unit,
     moveToGameDetail: (String) -> Unit,
-    moveToOppDetails: () -> Unit,
+    moveToOppDetails: (String) -> Unit,
     updateTopBar: (TopBarData) -> Unit
 ) {
 
@@ -425,6 +442,7 @@ fun EventItem(
                                 color = Color.White,
                                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                                 fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.size_5dp))
                             )
                         }
                     }
@@ -433,15 +451,13 @@ fun EventItem(
                         Text(
                             modifier = Modifier.weight(1f),
                             text = events.landmarkLocation,
-                            color = MaterialTheme.appColors.textField.label,
-                            fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                            fontWeight = FontWeight.W500,
+                            color = ColorBWGrayLight,
+                            style = MaterialTheme.typography.h4
                         )
                         Text(
                             text = apiToUIDateFormat2(events.date),
-                            color = MaterialTheme.appColors.textField.label,
-                            fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                            fontWeight = FontWeight.W500,
+                            color = ColorBWGrayLight,
+                            style = MaterialTheme.typography.h4
                         )
                     }
 
@@ -452,7 +468,7 @@ fun EventItem(
                     Modifier
                         .fillMaxWidth()
                         .background(
-                            color = MaterialTheme.appColors.buttonColor.bckgroundDisabled,
+                            color = ColorPrimaryTransparent,
                             shape = RoundedCornerShape(
                                 bottomStart = dimensionResource(
                                     id = R.dimen.size_8dp

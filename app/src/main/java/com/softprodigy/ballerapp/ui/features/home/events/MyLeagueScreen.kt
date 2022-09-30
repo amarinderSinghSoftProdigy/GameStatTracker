@@ -32,6 +32,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @OptIn(ExperimentalPagerApi::class)
@@ -119,52 +120,58 @@ fun LeagueItem(league: Leagues, state: EventState, OnNextClick: () -> Unit) {
                         color = MaterialTheme.appColors.material.surface,
                         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                     )
-                    .size(dimensionResource(id = R.dimen.size_64dp))
+                    .size(dimensionResource(id = R.dimen.size_70dp))
                     .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
 
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = league.title,
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                    fontWeight = FontWeight.Bold,
+            Column() {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
                 )
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+                {
+                    Text(
+                        text = league.title,
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.weight(1F)
+                    )
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.Top)
+                            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                            .background(league.color!!)
+                            .padding(dimensionResource(id = R.dimen.size_6dp)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = league.type,
+                            color = Color.White,
+                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_6dp)))
+                
                 Text(
                     text = league.desc,
                     color = Color.Black,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                     fontWeight = FontWeight.W400,
                 )
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_6dp)))
 
                 Text(
                     text = league.date,
-                    color = MaterialTheme.appColors.textField.label,
+                    color = ColorBWGrayLight,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                     fontWeight = FontWeight.W500,
-                )
-            }
-            Box(
-                modifier = Modifier
-                    .align(Alignment.Top)
-                    .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-                    .background(league.color!!)
-                    .padding(dimensionResource(id = R.dimen.size_6dp)),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = league.type,
-                    color = Color.White,
-                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                    fontWeight = FontWeight.Bold,
                 )
             }
         }

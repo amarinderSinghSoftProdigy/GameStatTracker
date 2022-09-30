@@ -14,4 +14,6 @@ sealed class EvEvents {
     data class OnDeclineReasonChange(val reason: String) : EvEvents()
     data class OnGoingDialogClick(val showGoingDialog: Boolean) : EvEvents()
 
+    data class OnSelection(val selected: String) : EvEvents()
+    data class OnReasonSelection(val text: String) : EvEvents()
 }
