@@ -13,11 +13,12 @@ data class EventsResponse(
 )
 data class Events(
     @SerializedName("_id") val id: String = "",
+    @SerializedName("createdBy") val createdBy: String = "",
     @SerializedName("eventName") val eventName: String = "",
     @SerializedName("landmarkLocation") val landmarkLocation: String = "",
     @SerializedName("date") val date: String = "",
     @SerializedName("invitationStatus") val invitationStatus: String = "",
-    @SerializedName("reason") val reason: String="",
+    @SerializedName("reason") val reason: String = "",
     @SerializedName("eventType") val eventType: String = "",
     @SerializedName("notGoing") var notGoing: ArrayList<NotGoing> = arrayListOf(),
     @SerializedName("going") var going: ArrayList<String> = arrayListOf(),
