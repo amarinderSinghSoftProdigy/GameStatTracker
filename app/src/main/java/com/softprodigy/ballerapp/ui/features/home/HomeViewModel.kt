@@ -9,12 +9,14 @@ import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
+import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.response.HomeItemResponse
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.domain.repository.IUserRepository
 import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
 import com.softprodigy.ballerapp.ui.features.components.TopBarData
+import com.softprodigy.ballerapp.ui.features.home.home_screen.HomeScreenEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -128,7 +130,22 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getUserInfo() {
+    fun onEvent(event: HomeScreenEvent) {
+        when (event) {
+            is HomeScreenEvent.OnSwapClick -> {
+                viewModelScope.launch {
+                    getSwapProfiles()
+                }
+            }
+            is HomeScreenEvent.OnSwapUpdate -> {
+                viewModelScope.launch {
+                    updateProfileToken(event.userId)
+                }
+            }
+        }
+    }
+
+    private suspend fun getUserInfo(showToast: Boolean = false) {
         _state.value = _state.value.copy(isDataLoading = true)
         val userResponse = userRepo.getUserProfile()
         _state.value = _state.value.copy(isDataLoading = false)
@@ -159,7 +176,17 @@ class HomeViewModel @Inject constructor(
                             _state.value.copy(
                                 user = response.data
                             )
-                        com.softprodigy.ballerapp.data.UserStorage.userId=response.data._Id
+                        UserStorage.userId = response.data._Id
+                        if (showToast) {
+                            setRole(response.data.role, response.data.email)
+                            _homeChannel.send(
+                                HomeChannel.ShowToast(
+                                    UiText.DynamicString(
+                                        response.statusMessage
+                                    )
+                                )
+                            )
+                        }
                     } else {
                         _homeChannel.send(
                             HomeChannel.ShowToast(
@@ -174,8 +201,116 @@ class HomeViewModel @Inject constructor(
         }
 
     }
+
+    private suspend fun getSwapProfiles() {
+        _state.value = _state.value.copy(isDataLoading = true)
+        val userResponse = userRepo.getSwapProfiles()
+        _state.value = _state.value.copy(isDataLoading = false)
+
+        when (userResponse) {
+            is ResultWrapper.GenericError -> {
+                _homeChannel.send(
+                    HomeChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${userResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _homeChannel.send(
+                    HomeChannel.ShowToast(
+                        UiText.DynamicString(
+                            userResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                userResponse.value.let { response ->
+                    if (response.status) {
+                        _state.value =
+                            _state.value.copy(
+                                swapUsers = response.data
+                            )
+                        _homeChannel.send(
+                            HomeChannel.OnSwapListSuccess
+                        )
+                    } else {
+                        _homeChannel.send(
+                            HomeChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+
+    }
+
+    private suspend fun updateProfileToken(userId: String) {
+        _state.value = _state.value.copy(isDataLoading = true)
+        val userResponse = userRepo.updateProfileToken(userId)
+        _state.value = _state.value.copy(isDataLoading = false)
+
+        when (userResponse) {
+            is ResultWrapper.GenericError -> {
+                _homeChannel.send(
+                    HomeChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${userResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _homeChannel.send(
+                    HomeChannel.ShowToast(
+                        UiText.DynamicString(
+                            userResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                userResponse.value.let { response ->
+                    if (response.status) {
+                        setToken(response.data)
+                        getUserInfo(true)
+                    } else {
+                        _homeChannel.send(
+                            HomeChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+
+    }
+
+    private fun setToken(token: String) {
+        viewModelScope.launch {
+            UserStorage.token = token
+            dataStoreManager.saveToken(token)
+        }
+    }
+
+    private fun setRole(role: String, email: String) {
+        viewModelScope.launch {
+            dataStoreManager.setRole(role)
+            dataStoreManager.setEmail(email)
+        }
+    }
 }
 
 sealed class HomeChannel {
     data class ShowToast(val message: UiText) : HomeChannel()
+    object OnSwapListSuccess : HomeChannel()
 }

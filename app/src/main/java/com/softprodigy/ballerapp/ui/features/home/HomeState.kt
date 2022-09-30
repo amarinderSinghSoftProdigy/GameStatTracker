@@ -2,6 +2,7 @@ package com.softprodigy.ballerapp.ui.features.home
 
 import androidx.compose.ui.graphics.Color
 import com.softprodigy.ballerapp.data.response.HomeItemResponse
+import com.softprodigy.ballerapp.data.response.SwapUser
 import com.softprodigy.ballerapp.data.response.User
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
@@ -26,8 +27,8 @@ data class HomeState(
     val showAddProfile: Boolean = false,
     val bottomBar: BottomNavKey = BottomNavKey.HOME,
     val homeItemList: List<HomeItemResponse> = arrayListOf(),
-    val isLoading: Boolean = false,
     val user: User = User(),
+    val swapUsers: List<SwapUser> = mutableListOf(),
     val selectedPlayer: Player? = null,
     val players: ArrayList<Player> = arrayListOf(),
 )

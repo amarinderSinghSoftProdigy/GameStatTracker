@@ -22,7 +22,16 @@ data class User(
     @SerializedName("userDetails") val userDetails: UserDetails = UserDetails(),
     @SerializedName("parentDetails") var parentDetails: ArrayList<ParentDetails> = arrayListOf(),
     @SerializedName("age") val age: String = "",
-    )
+)
+
+data class SwapUser(
+    @SerializedName("_id") val _Id: String = "",
+    @SerializedName("firstName") val firstName: String = "",
+    @SerializedName("lastName") val lastName: String = "",
+    @SerializedName("role") val role: String = "",
+    @SerializedName("profileImage") val profileImage: String = "",
+    @SerializedName("status") val status: String = "",
+)
 
 data class TeamDetails(
 

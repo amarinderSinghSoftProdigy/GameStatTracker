@@ -188,28 +188,6 @@ class HomeActivity : ComponentActivity() {
                             moveToLogin(this)
                         })
                 }
-                if (state.showSwapProfile) {
-                    SwapPlayer(
-                        players = state.players,
-                        onDismiss = { homeViewModel.setSwapProfile(false) },
-                        onConfirmClick = {
-                            if (UserStorage.playerId != it) {
-
-                            }
-                        },
-                        onSelectionChange = {},
-                        selected = state.selectedPlayer!!,
-                        showLoading = state.isLoading,
-                        onCreatePlayerClick = {
-                            homeViewModel.setSwapProfile(false)
-                            homeViewModel.setAddProfile(true)
-                        },
-                        showCreatePlayerButton = role.value.equals(
-                            UserType.COACH.key,
-                            ignoreCase = true
-                        )
-                    )
-                }
                 if (state.showAddProfile) {
                     AddPlayer(
                         onDismiss = { homeViewModel.setAddProfile(false) },
@@ -237,16 +215,14 @@ fun NavControllerComposable(
         composable(route = Route.HOME_SCREEN) {
             homeViewModel.setTopAppBar(false)
             //if (fromSplash)
-            HomeScreen(name = "", onInvitationCLick = {
-                navController.navigate(Route.INVITATION_SCREEN)
-            },
+            HomeScreen(
+                onInvitationCLick = {
+                    navController.navigate(Route.INVITATION_SCREEN)
+                },
                 logoClick = {
                     homeViewModel.setLogoutDialog(true)
                 },
                 onTeamNameClick = { homeViewModel.setDialog(true) },
-                swap_profile = {
-                    homeViewModel.setSwapProfile(true)
-                },
                 vm = homeViewModel, gotToProfile = {
                     navController.navigate(Route.PROFILE_SCREEN)
                 },
@@ -604,7 +580,7 @@ fun NavControllerComposable(
                     topBar = TopBar.NEW_EVENT,
                 )
             )
-            NewEventScreen(venue=venue,onVenueClick = {
+            NewEventScreen(venue = venue, onVenueClick = {
                 navController.navigate(Route.SELECT_VENUE)
 
             }, onEventCreationSuccess = {

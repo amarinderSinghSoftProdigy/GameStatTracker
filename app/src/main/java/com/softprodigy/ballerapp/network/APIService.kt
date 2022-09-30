@@ -169,4 +169,11 @@ open interface APIService {
 
     @PUT(ApiConstants.DECLINE_COACH_EVENT)
     suspend fun rejectEventInvite(@Body request: RequestBody): BaseResponse<Any>
+
+    @GET(ApiConstants.SWAP_PROFILE)
+    suspend fun getSwapProfiles(): BaseResponse<List<SwapUser>>
+
+    @GET(ApiConstants.SWAP_TOKEN)
+    suspend fun updateProfileToken(@Query("userId") userId: String): BaseResponse<String>
+
 }

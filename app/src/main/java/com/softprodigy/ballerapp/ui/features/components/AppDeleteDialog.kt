@@ -47,6 +47,7 @@ import com.softprodigy.ballerapp.common.argbToHexString
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.response.ParentDetails
 import com.softprodigy.ballerapp.data.response.PlayerDetails
+import com.softprodigy.ballerapp.data.response.SwapUser
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.ui.features.home.events.DivisionData
@@ -478,12 +479,16 @@ fun TeamListItem(team: Team, selected: Boolean, onClick: (Team) -> Unit) {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun PlayerListItem(player: Player, selected: Boolean, onClick: (Player) -> Unit) {
+fun UserListItem(user: SwapUser, onClick: () -> Unit) {
+    val selected = remember {
+        mutableStateOf(user._Id == UserStorage.userId)
+    }
+
     Surface(
-        onClick = { onClick(player) },
+        onClick = { onClick() },
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_10dp)),
-        elevation = if (selected) dimensionResource(id = R.dimen.size_10dp) else 0.dp,
-        color = if (selected) AppConstants.SELECTED_COLOR else Color.Transparent,
+        elevation = if (selected.value) dimensionResource(id = R.dimen.size_10dp) else 0.dp,
+        color = if (selected.value) MaterialTheme.appColors.material.primaryVariant else Color.Transparent,
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(
@@ -497,7 +502,7 @@ fun PlayerListItem(player: Player, selected: Boolean, onClick: (Player) -> Unit)
                 ), verticalAlignment = Alignment.CenterVertically
         ) {
             CoilImage(
-                src = BuildConfig.IMAGE_SERVER + player.profileImage,
+                src = BuildConfig.IMAGE_SERVER + user.profileImage,
                 modifier = Modifier
                     .size(dimensionResource(id = R.dimen.size_32dp))
                     .clip(CircleShape)
@@ -512,11 +517,11 @@ fun PlayerListItem(player: Player, selected: Boolean, onClick: (Player) -> Unit)
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
             Text(
-                text = player.name,
+                text = user.firstName + " " + user.lastName,
                 fontWeight = FontWeight.W500,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                 modifier = Modifier.weight(1f),
-                color = if (selected) {
+                color = if (selected.value) {
                     MaterialTheme.appColors.buttonColor.textEnabled
                 } else {
                     MaterialTheme.appColors.buttonColor.bckgroundEnabled
@@ -1688,18 +1693,17 @@ fun DeclineEventDialog(
 }
 
 @Composable
-fun SwapPlayer(
+fun SwapProfile(
     onDismiss: () -> Unit,
     onConfirmClick: (String) -> Unit,
-    onSelectionChange: (Player) -> Unit,
-    selected: Player?,
     showLoading: Boolean,
-    players: ArrayList<Player>,
+    users: List<SwapUser>,
     onCreatePlayerClick: () -> Unit,
     showCreatePlayerButton: Boolean = false,
 ) {
-    val playerId = remember {
-        mutableStateOf(UserStorage.playerId)
+
+    val selectedUser = remember {
+        mutableStateOf(SwapUser(_Id = UserStorage.userId))
     }
     BallerAppMainTheme {
         AlertDialog(
@@ -1752,16 +1756,15 @@ fun SwapPlayer(
                     ) {
                         item {
                             if (showLoading) {
-                                CircularProgressIndicator(
-                                    color = AppConstants.SELECTED_COLOR
-                                )
+                                CommonProgressBar()
                             }
                         }
                         item {
-                            players.forEach {
-                                PlayerListItem(player = it, selected = selected == it) { player ->
-                                    onSelectionChange.invoke(player)
-                                    playerId.value = player._id
+                            users.forEach {
+                                UserListItem(
+                                    user = it,
+                                ) {
+                                    selectedUser.value = it
                                 }
                             }
                         }
@@ -1800,13 +1803,13 @@ fun SwapPlayer(
                         DialogButton(
                             text = stringResource(R.string.dialog_button_confirm),
                             onClick = {
-                                onConfirmClick.invoke(playerId.value)
+                                onConfirmClick.invoke(selectedUser.value._Id)
                                 onDismiss.invoke()
                             },
                             modifier = Modifier
                                 .weight(1f),
                             border = ButtonDefaults.outlinedBorder,
-                            enabled = (selected?.name ?: "").isNotEmpty(),
+                            enabled = true,
                             onlyBorder = false,
                         )
                     }

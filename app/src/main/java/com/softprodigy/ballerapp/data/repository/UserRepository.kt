@@ -3,12 +3,8 @@ package com.softprodigy.ballerapp.data.repository
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.safeApiCall
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.data.request.ConfirmPhoneRequest
-import com.softprodigy.ballerapp.data.request.ForgotPasswordRequest
-import com.softprodigy.ballerapp.data.request.LoginRequest
-import com.softprodigy.ballerapp.data.request.SignUpData
-import com.softprodigy.ballerapp.data.request.UpdateUserDetailsReq
-import com.softprodigy.ballerapp.data.request.VerifyPhoneRequest
+import com.softprodigy.ballerapp.data.request.*
+import com.softprodigy.ballerapp.data.response.SwapUser
 import com.softprodigy.ballerapp.data.response.User
 import com.softprodigy.ballerapp.data.response.UserDocType
 import com.softprodigy.ballerapp.data.response.UserInfo
@@ -111,6 +107,18 @@ class UserRepository @Inject constructor(
                 .add("documentValue", url)
                 .build()
             service.updateUserDoc(request = request)
+        }
+    }
+
+    override suspend fun getSwapProfiles(): ResultWrapper<BaseResponse<List<SwapUser>>> {
+        return safeApiCall(dispatcher = dispatcher) {
+            service.getSwapProfiles()
+        }
+    }
+
+    override suspend fun updateProfileToken(userId: String): ResultWrapper<BaseResponse<String>> {
+        return safeApiCall(dispatcher = dispatcher) {
+            service.updateProfileToken(userId)
         }
     }
 

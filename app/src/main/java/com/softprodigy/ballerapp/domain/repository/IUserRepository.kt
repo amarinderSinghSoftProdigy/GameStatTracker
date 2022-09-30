@@ -4,6 +4,7 @@ import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.data.request.LoginRequest
 import com.softprodigy.ballerapp.data.request.SignUpData
 import com.softprodigy.ballerapp.data.request.UpdateUserDetailsReq
+import com.softprodigy.ballerapp.data.response.SwapUser
 import com.softprodigy.ballerapp.data.response.User
 import com.softprodigy.ballerapp.data.response.UserDocType
 import com.softprodigy.ballerapp.data.response.UserInfo
@@ -40,5 +41,9 @@ interface IUserRepository {
     suspend fun deleteUserDoc(key: String): ResultWrapper<BaseResponse<Any>>
 
     suspend fun updateUserDoc(key: String, url: String): ResultWrapper<BaseResponse<Any>>
+
+    suspend fun getSwapProfiles(): ResultWrapper<BaseResponse<List<SwapUser>>>
+
+    suspend fun updateProfileToken(userId: String): ResultWrapper<BaseResponse<String>>
 
 }
