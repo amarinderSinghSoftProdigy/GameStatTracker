@@ -92,7 +92,10 @@ fun <T> DeleteDialog(
                     )
                     AppButton(
                         text = stringResource(R.string.dialog_button_confirm),
-                        onClick = { onDelete(item) },
+                        onClick = {
+                            onDelete(item)
+                            onDismiss.invoke()
+                        },
                         modifier = Modifier
                             .weight(1f),
                         border = ButtonDefaults.outlinedBorder,
@@ -1000,7 +1003,7 @@ fun SelectGuardianRoleItem(
 
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun SelectGuardianRoleDialog(
     onBack: () -> Unit,
@@ -1622,11 +1625,13 @@ fun DeclineEventDialog(
                         onValueChange = {
                             onReasonChange(it)
                         },
+                        maxLines = 1,
+                        singleLine = true,
                         placeholder = {
                             Text(
-                                text = stringResource(id = R.string.reason_not_going) + "\n\n\n",
+                                text = stringResource(id = R.string.reason_not_going),
                                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                                textAlign = TextAlign.Center
+                                textAlign = TextAlign.Start
                             )
                         },
                         keyboardOptions = KeyboardOptions(
@@ -1673,6 +1678,7 @@ fun DeclineEventDialog(
                                 .weight(1f),
                             border = ButtonDefaults.outlinedBorder,
                             onlyBorder = false,
+                            enabled = reason.length > 4
                         )
                     }
                 }

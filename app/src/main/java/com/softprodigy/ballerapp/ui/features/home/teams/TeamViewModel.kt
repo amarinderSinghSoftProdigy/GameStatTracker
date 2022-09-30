@@ -164,7 +164,7 @@ class TeamViewModel @Inject constructor(
     }
 
     suspend fun getTeams() {
-        when (val teamResponse = teamRepo.getTeams()) {
+        when (val teamResponse = teamRepo.getTeams(UserStorage.userId)) {
             is ResultWrapper.GenericError -> {
                 _teamChannel.send(
                     TeamChannel.ShowToast(

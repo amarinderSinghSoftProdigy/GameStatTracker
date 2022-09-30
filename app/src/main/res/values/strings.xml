@@ -95,6 +95,7 @@
     <string name="valid_search">Invalid Keyword</string>
     <string name="alert_remove_player">Are you sure you want to remove the player?</string>
     <string name="alert_decline_invitation">Are you sure you decline this team request?</string>
+    <string name="alert_going_event_confirm">Are you sure that you are going to this event?</string>
     <string name="alert_delete_document">Are you sure you delete this document?</string>
     <string name="alert_remove_from_team">Are you sure you want to leave this team?</string>
     <string name="enter_valid_full_name">Please enter a valid name</string>
@@ -387,4 +388,6 @@
     <string name="select_team">Select Team</string>
     <string name="select_player">Select Players</string>
     <string name="select_division">Select Division</string>
+    <string name="event_name">Event Name</string>
+    <string name="enter_event_name">Enter Event Name</string>
 </resources>

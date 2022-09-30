@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
+import com.softprodigy.ballerapp.domain.repository.IEventRepository
 import com.softprodigy.ballerapp.domain.repository.IEventsRepository
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import com.softprodigy.ballerapp.ui.utils.CommonUtils
@@ -21,6 +22,7 @@ import javax.inject.Inject
 class EventViewModel @Inject constructor(
     val dataStoreManager: DataStoreManager,
     val teamRepo: ITeamRepository,
+    val eventRepo: IEventRepository,
     private val userRepository: IEventsRepository,
     application: Application
 ) : AndroidViewModel(application) {
@@ -88,7 +90,7 @@ class EventViewModel @Inject constructor(
     suspend fun getEventDetails(id: String) {
         eventState.value =
             eventState.value.copy(showLoading = true)
-        val eventResponse = teamRepo.getAllevents()
+        val eventResponse = eventRepo.getAllevents()
         eventState.value =
             eventState.value.copy(showLoading = false)
 
@@ -218,6 +220,7 @@ class EventViewModel @Inject constructor(
                     showGoingDialog = true,
                     selectedEvent = event.event
                 )
+
             }
             is EvEvents.OnDeclineCLick -> {
                 _state.value = _state.value.copy(
@@ -232,15 +235,29 @@ class EventViewModel @Inject constructor(
             }
             is EvEvents.onCancelDeclineDialog -> {
                 _state.value = _state.value.copy(
-                    showDeclineDialog = false, reasonTeam = ""
+                    showDeclineDialog = false, declineReason = ""
                 )
             }
             is EvEvents.OnSelection -> {
                 eventState.value = eventState.value.copy(selectionTeam = event.selected)
             }
+            EvEvents.RefreshEventScreen -> {
+                viewModelScope.launch { getEventList() }
+            }
 
-            is EvEvents.OnReasonSelection -> {
-                eventState.value = eventState.value.copy(reasonTeam = event.text)
+            EvEvents.OnConfirmGoing -> {
+                viewModelScope.launch { acceptEventInvite() }
+            }
+
+            is EvEvents.OnGoingDialogClick -> {
+                eventState.value = eventState.value.copy(showGoingDialog = event.showGoingDialog)
+            }
+            is EvEvents.OnDeclineReasonChange -> {
+                eventState.value = eventState.value.copy(declineReason = event.reason)
+            }
+
+            EvEvents.OnConfirmDeclineClick -> {
+                viewModelScope.launch { declineEventInvitation() }
             }
             is EvEvents.ShowToast -> {
                 viewModelScope.launch {
@@ -533,7 +550,105 @@ class EventViewModel @Inject constructor(
         }
     }
 
+    private suspend fun acceptEventInvite() {
+        eventState.value =
+            eventState.value.copy(showLoading = true)
+
+        val acceptResponse = eventRepo.acceptEventInvite(eventState.value.selectedEvent.id)
+
+        eventState.value =
+            eventState.value.copy(showLoading = false)
+
+        when (acceptResponse) {
+            is ResultWrapper.GenericError -> {
+                _eventChannel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${acceptResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _eventChannel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            acceptResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                acceptResponse.value.let { response ->
+
+                    if (response.status) {
+                        getEventList()
+                    } else {
+                        _eventChannel.send(
+                            EventChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun declineEventInvitation() {
+        eventState.value =
+            eventState.value.copy(showLoading = true)
+
+        val rejectResponse = eventRepo.rejectEventInvite(
+            eventState.value.selectedEvent.id,
+            eventState.value.declineReason
+        )
+
+        eventState.value =
+            eventState.value.copy(showLoading = false)
+
+        when (rejectResponse) {
+            is ResultWrapper.GenericError -> {
+                _eventChannel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${rejectResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _eventChannel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            rejectResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                rejectResponse.value.let { response ->
+
+                    if (response.status) {
+                        getEventList()
+                    } else {
+                        _eventChannel.send(
+                            EventChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
 }
+
 
 sealed class EventChannel {
     data class ShowToast(val message: UiText) : EventChannel()

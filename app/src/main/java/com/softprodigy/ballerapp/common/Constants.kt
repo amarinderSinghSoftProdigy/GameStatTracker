@@ -71,7 +71,7 @@ object ApiConstants {
     const val GET_ALL_PLAYERS = "v1/player/getAllPlayers"
     const val UPLOAD_SINGLE_IMAGE = "v1/upload/single"
     const val CREATE_TEAM = "v1/team"
-    const val GET_TEAMS = "v1/team"
+    const val GET_TEAMS_BY_COACH_ID = "v1/team/coach"
     const val GET_TEAM_BY_ID = "v1/team/getTeamById"
     const val GET_LEADER_BOARD = "v1/team/getTeamLeaderBoard"
     const val COACH_PLAYER = "v1/team/coachPlayers"
@@ -83,6 +83,11 @@ object ApiConstants {
     const val REJECT_TEAM_INVITATION = "v1/team/rejectTeamInvitation"
     const val GET_USER_ROLE = "v1/team/getUserRoles"
     const val GET_TEAM_PLAYER_BY_ID = "v1/team/getTeamPlayersById"
+
+    //Events
+    const val CREATE_NEW_EVENT = "v1/coach/event/addEvent"
+    const val ACCEPT_COACH_EVENT = "v1/coach/event/acceptCoachEvent"
+    const val DECLINE_COACH_EVENT = "v1/coach/event/rejectCoachEvent"
 
     const val SOCIAL_LOGIN = "/social_login"
     const val SIGNUP = "v1/auth/register"

@@ -53,10 +53,11 @@ import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
 import com.softprodigy.ballerapp.ui.features.home.events.EventsScreen
 import com.softprodigy.ballerapp.ui.features.home.events.FilterScreen
 import com.softprodigy.ballerapp.ui.features.home.events.MyLeagueDetailScreen
-import com.softprodigy.ballerapp.ui.features.home.events.NewEventScreen
+//import com.softprodigy.ballerapp.ui.features.home.events.NewEventScreen
 import com.softprodigy.ballerapp.ui.features.home.events.division.divisionTab.DivisionScreenTab
 import com.softprodigy.ballerapp.ui.features.home.events.game.GameDetailsScreen
 import com.softprodigy.ballerapp.ui.features.home.events.game.GameRuleScreen
+import com.softprodigy.ballerapp.ui.features.home.events.new_event.NewEventScreen
 import com.softprodigy.ballerapp.ui.features.home.events.opportunities.EventRegisterSuccessScreen
 import com.softprodigy.ballerapp.ui.features.home.events.opportunities.EventRegistraionDetails
 import com.softprodigy.ballerapp.ui.features.home.events.opportunities.OppEventDetails
@@ -609,14 +610,24 @@ fun NavControllerComposable(
 
         }
 
-        composable(route = Route.NEW_EVENT) {
+        composable(route = Route.NEW_EVENT) { backStackEntry ->
+
+            // get data passed back from next stack
+            val venue: String = backStackEntry
+                .savedStateHandle.get<String>("venue") ?: ""
+
             homeViewModel.setTopBar(
                 TopBarData(
                     label = stringResource(id = R.string.new_event),
                     topBar = TopBar.NEW_EVENT,
                 )
             )
-            NewEventScreen()
+            NewEventScreen(venue=venue,onVenueClick = {
+                navController.navigate(Route.SELECT_VENUE)
+
+            }, onEventCreationSuccess = {
+                navController.popBackStack()
+            })
         }
 
 

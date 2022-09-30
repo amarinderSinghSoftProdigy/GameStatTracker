@@ -37,11 +37,9 @@ open interface APIService {
     @POST(ApiConstants.CREATE_TEAM)
     suspend fun createTeam(@Body request: CreateTeamRequest): BaseResponse<CreateTeamResponse>
 
-    @GET(ApiConstants.GET_TEAMS)
+    @GET(ApiConstants.GET_TEAMS_BY_COACH_ID)
     suspend fun getTeams(
-        @Query("page") page: Int,
-        @Query("limit") limit: Int,
-        @Query("sort") sort: String
+        @Query("coachId") coachId: String,
     ): BaseResponse<ArrayList<Team>>
 
     @GET(ApiConstants.GET_TEAM_BY_ID)
@@ -158,4 +156,13 @@ open interface APIService {
     @PUT(ApiConstants.EVENT_UPDATE_FILTERS)
     suspend fun updateFilters(@Body request: FilterUpdateRequest): BaseResponse<Any>
 
+
+    @POST(ApiConstants.CREATE_NEW_EVENT)
+    suspend fun createNewEvent(@Body createEventReq: CreateEventReq): BaseResponse<Any>
+
+    @PUT(ApiConstants.ACCEPT_COACH_EVENT)
+    suspend fun acceptEventInvite(@Body request: RequestBody): BaseResponse<Any>
+
+    @PUT(ApiConstants.DECLINE_COACH_EVENT)
+    suspend fun rejectEventInvite(@Body request: RequestBody): BaseResponse<Any>
 }

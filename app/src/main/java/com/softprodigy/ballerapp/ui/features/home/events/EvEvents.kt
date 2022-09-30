@@ -10,7 +10,6 @@ sealed class EvEvents {
     data class onCancel(val showGoingDialog: Boolean) : EvEvents()
     data class onCancelDeclineDialog(val showDeclineDialog: Boolean) : EvEvents()
     object OnRoleConfirmClick : EvEvents()
-    data class OnDeclineConfirmClick(val invitation: Events) : EvEvents()
 
     //Opportunities
     object GetFilters : EvEvents()
@@ -30,6 +29,13 @@ sealed class EvEvents {
     data class RegisterCash(val request: String) : EvEvents()
 
     data class ShowToast(val message: String) : EvEvents()
+    data class OnDeclineConfirmClick(val invitation: EventsResponse) : EvEvents()
+    object RefreshEventScreen : EvEvents()
+    object OnConfirmGoing : EvEvents()
+    data class OnDeclineReasonChange(val reason: String) : EvEvents()
+    data class OnGoingDialogClick(val showGoingDialog: Boolean) : EvEvents()
+
     data class OnSelection(val selected: String) : EvEvents()
     data class OnReasonSelection(val text: String) : EvEvents()
+    object OnConfirmDeclineClick : EvEvents()
 }

@@ -159,6 +159,7 @@ class HomeViewModel @Inject constructor(
                             _state.value.copy(
                                 user = response.data
                             )
+                        com.softprodigy.ballerapp.data.UserStorage.userId=response.data._Id
                     } else {
                         _homeChannel.send(
                             HomeChannel.ShowToast(

@@ -24,4 +24,6 @@ data class EventState(
     val divisionData: DivisionData = DivisionData(),
     val team: Team = Team(),
     val registerRequest: RegisterRequest = RegisterRequest()
+//    val reasonTeam: String = "",
+    val declineReason: String = "",
 )
