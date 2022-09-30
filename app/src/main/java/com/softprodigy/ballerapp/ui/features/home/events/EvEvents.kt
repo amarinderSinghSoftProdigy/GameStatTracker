@@ -19,7 +19,7 @@ sealed class EvEvents {
     data class SetEventId(val id: String) : EvEvents()
     data class GetDivisions(val id: String) : EvEvents()
     object RegisterForEvent : EvEvents()
-    object UpdateFilters : EvEvents()
+    data class UpdateFilters(val request: FilterUpdateRequest) : EvEvents()
 
     data class RegisterTeam(val request: Team) : EvEvents()
     data class RegisterDivision(val request: DivisionData) : EvEvents()

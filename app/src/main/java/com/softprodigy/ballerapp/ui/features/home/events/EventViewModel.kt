@@ -14,13 +14,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class EventViewModel @Inject constructor(
     val dataStoreManager: DataStoreManager,
     val teamRepo: ITeamRepository,
-    val userRepository: IEventsRepository,
+    private val userRepository: IEventsRepository,
     application: Application
 ) : AndroidViewModel(application) {
 
@@ -36,7 +37,7 @@ class EventViewModel @Inject constructor(
         viewModelScope.launch { getEventList() }
     }
 
-    suspend fun getEventList() {
+    private suspend fun getEventList() {
         eventState.value =
             eventState.value.copy(showLoading = true)
         val eventResponse = teamRepo.getAllevents()
@@ -177,7 +178,9 @@ class EventViewModel @Inject constructor(
                     )
             }
             is EvEvents.UpdateFilters -> {
-                _state.value = _state.value.copy(filters = _state.value.filters)
+                viewModelScope.launch {
+                    updateFilters(event.request)
+                }
             }
             is EvEvents.RegisterForEvent -> {
                 viewModelScope.launch {
@@ -256,7 +259,7 @@ class EventViewModel @Inject constructor(
     }
 
 
-    suspend fun getFilters() {
+    private suspend fun getFilters() {
         _state.value = _state.value.copy(isLoading = true)
         val userResponse = userRepository.getFilters()
         _state.value = _state.value.copy(isLoading = false)
@@ -303,7 +306,7 @@ class EventViewModel @Inject constructor(
         }
     }
 
-    suspend fun getEventDivisions(eventId: String) {
+    private suspend fun getEventDivisions(eventId: String) {
         _state.value = _state.value.copy(isLoading = true)
         val userResponse = userRepository.getEventDivisions(eventId)
         _state.value = _state.value.copy(isLoading = false)
@@ -346,7 +349,56 @@ class EventViewModel @Inject constructor(
         }
     }
 
-    suspend fun registerForEvent() {
+    private suspend fun updateFilters(request: FilterUpdateRequest) {
+        _state.value = _state.value.copy(isLoading = true)
+        val userResponse = userRepository.updateFilters(request)
+        Timber.e("data " + request.filterPreferences)
+        _state.value = _state.value.copy(isLoading = false)
+
+        when (userResponse) {
+            is ResultWrapper.GenericError -> {
+                _channel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${userResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _channel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            userResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                userResponse.value.let { response ->
+                    if (response.status) {
+                        _channel.send(
+                            EventChannel.OnSuccess(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    } else {
+                        _channel.send(
+                            EventChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun registerForEvent() {
         _state.value = _state.value.copy(isLoading = true)
         val userResponse = userRepository.registerForEvent(_state.value.registerRequest)
         _state.value = _state.value.copy(isLoading = false)
@@ -395,7 +447,7 @@ class EventViewModel @Inject constructor(
     }
 
 
-    suspend fun getOpportunityDetail(eventId: String) {
+    private suspend fun getOpportunityDetail(eventId: String) {
         _state.value = _state.value.copy(isLoading = true)
         val userResponse = userRepository.getEventOpportunityDetails(eventId)
         _state.value = _state.value.copy(isLoading = false)
@@ -438,7 +490,7 @@ class EventViewModel @Inject constructor(
         }
     }
 
-    suspend fun getOpportunities() {
+    private suspend fun getOpportunities() {
         _state.value = _state.value.copy(isLoading = true)
         val userResponse = userRepository.getEventOpportunities()
         _state.value = _state.value.copy(isLoading = false)

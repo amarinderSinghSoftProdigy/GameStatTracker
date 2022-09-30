@@ -5,13 +5,13 @@ import com.google.gson.annotations.SerializedName
 import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
 import com.softprodigy.ballerapp.ui.theme.ColorButtonRed
 import com.softprodigy.ballerapp.ui.theme.ColorMainPrimary
-import com.softprodigy.ballerapp.ui.theme.GreenColor
 import com.softprodigy.ballerapp.ui.theme.Yellow700
 
 data class EventsResponse(
     @SerializedName("upcommingEvents") val upcommingEvents: ArrayList<Events> = arrayListOf(),
     @SerializedName("pastEvents") val pastEvents: ArrayList<Events> = arrayListOf(),
 )
+
 data class Events(
     @SerializedName("_id") val id: String = "",
     @SerializedName("title") val title: String = "",
@@ -39,6 +39,10 @@ data class FilterResponse(
     @SerializedName("_id") val id: String = "",
     @SerializedName("userId") val userId: String = "",
     @SerializedName("filterPreferences") val filterPreferences: List<FilterPreference> = mutableListOf(),
+)
+
+data class FilterUpdateRequest(
+    val filterPreferences: List<FilterPreference> = mutableListOf(),
 )
 
 data class FilterPreference(

@@ -99,6 +99,7 @@ object ApiConstants {
     const val UPDATE_USER_FULL_DETAILS = "v1/userDetails"
     const val EVENT_GET_DIVISIONS = "v1/event/getAllDivisions"
     const val EVENT_TEAM_REGISTRATION = "v1/event/team/registration"
+    const val EVENT_UPDATE_FILTERS = "v1/event/updateFilterPreferences"
 
     const val LEAVE_TEAM = "v1/userDetails/leaveTeam"
     const val DOC_TYPES = "v1/userDetails/getUserDocuments"

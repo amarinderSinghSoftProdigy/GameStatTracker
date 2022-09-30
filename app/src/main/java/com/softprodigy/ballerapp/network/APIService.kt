@@ -1,46 +1,19 @@
 package com.softprodigy.ballerapp.network
 
 import com.softprodigy.ballerapp.common.ApiConstants
-import com.softprodigy.ballerapp.data.request.ConfirmPhoneRequest
-import com.softprodigy.ballerapp.data.request.CreateTeamRequest
-import com.softprodigy.ballerapp.data.request.ForgotPasswordRequest
-import com.softprodigy.ballerapp.data.request.LoginRequest
-import com.softprodigy.ballerapp.data.request.SignUpData
-import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
-import com.softprodigy.ballerapp.data.request.UpdateTeamRequest
-import com.softprodigy.ballerapp.data.request.UpdateUserDetailsReq
-import com.softprodigy.ballerapp.data.request.VerifyPhoneRequest
-import com.softprodigy.ballerapp.data.response.CreateTeamResponse
-import com.softprodigy.ballerapp.data.response.ImageUpload
-import com.softprodigy.ballerapp.data.response.PlayerDetails
-import com.softprodigy.ballerapp.data.response.StandingData
-import com.softprodigy.ballerapp.data.response.User
-import com.softprodigy.ballerapp.data.response.UserDocType
-import com.softprodigy.ballerapp.data.response.UserInfo
+import com.softprodigy.ballerapp.data.request.*
+import com.softprodigy.ballerapp.data.response.*
 import com.softprodigy.ballerapp.data.response.homepage.HomePageCoachModel
 import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.domain.BaseResponse
-import com.softprodigy.ballerapp.ui.features.home.events.DivisionData
-import com.softprodigy.ballerapp.ui.features.home.events.FilterResponse
-import com.softprodigy.ballerapp.ui.features.home.events.OpportunitiesDetail
-import com.softprodigy.ballerapp.ui.features.home.events.OpportunitiesItem
-import com.softprodigy.ballerapp.ui.features.home.events.RegisterRequest
-import com.softprodigy.ballerapp.ui.features.home.events.EventsResponse
+import com.softprodigy.ballerapp.ui.features.home.events.*
 import com.softprodigy.ballerapp.ui.features.home.invitation.Invitation
 import com.softprodigy.ballerapp.ui.features.venue.Venue
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.HTTP
-import retrofit2.http.Multipart
-import retrofit2.http.POST
-import retrofit2.http.PUT
-import retrofit2.http.Part
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 open interface APIService {
 
@@ -115,7 +88,7 @@ open interface APIService {
         @Query("sort") sort: String
     ): BaseResponse<ArrayList<Invitation>>
 
- @GET(ApiConstants.GET_ALL_EVENTS)
+    @GET(ApiConstants.GET_ALL_EVENTS)
     suspend fun getAllevents(
         @Query("page") page: Int,
         @Query("limit") limit: Int,
@@ -181,5 +154,8 @@ open interface APIService {
 
     @POST(ApiConstants.EVENT_TEAM_REGISTRATION)
     suspend fun registerEvent(@Body request: RegisterRequest): BaseResponse<Any>
+
+    @PUT(ApiConstants.EVENT_UPDATE_FILTERS)
+    suspend fun updateFilters(@Body request: FilterUpdateRequest): BaseResponse<Any>
 
 }

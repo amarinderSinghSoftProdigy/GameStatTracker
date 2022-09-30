@@ -29,8 +29,9 @@ fun OpportunitieScreen(state: EventState, vm: EventViewModel, moveToOppDetails: 
     remember {
         vm.onEvent(EvEvents.GetOpportunities)
     }
-
-    if (state.opportunitiesList.isNotEmpty()) {
+    if (state.isLoading) {
+        CommonProgressBar()
+    } else if (state.opportunitiesList.isNotEmpty()) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 Modifier
@@ -75,7 +76,5 @@ fun OpportunitieScreen(state: EventState, vm: EventViewModel, moveToOppDetails: 
             }
         }
     }
-    if (state.isLoading) {
-        CommonProgressBar()
-    }
+
 }
