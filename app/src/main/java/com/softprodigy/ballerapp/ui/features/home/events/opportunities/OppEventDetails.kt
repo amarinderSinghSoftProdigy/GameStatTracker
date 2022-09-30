@@ -2,16 +2,7 @@ package com.softprodigy.ballerapp.ui.features.home.events.opportunities
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
@@ -27,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -34,12 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.ui.features.components.AppButton
-import com.softprodigy.ballerapp.ui.features.components.AppDivider
-import com.softprodigy.ballerapp.ui.features.components.CoilImage
-import com.softprodigy.ballerapp.ui.features.components.Placeholder
-import com.softprodigy.ballerapp.ui.features.components.PlaceholderRect
-import com.softprodigy.ballerapp.ui.features.components.TransparentButtonButton
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.events.DaysOfPlay
 import com.softprodigy.ballerapp.ui.features.home.events.EvEvents
 import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
@@ -49,6 +36,7 @@ import com.softprodigy.ballerapp.ui.utils.CommonUtils
 
 @Composable
 fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
+    val context = LocalContext.current
     val state = vm.eventState.value
     remember {
         vm.onEvent(EvEvents.GetOpportunityDetail)
@@ -62,13 +50,13 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
         CoilImage(
             src = BuildConfig.IMAGE_SERVER + state.opportunitiesDetail.logo,
             modifier = Modifier
-                .background(color = Color.White)
+                .background(color = ColorBWGrayLight)
                 .height(dimensionResource(id = R.dimen.size_200dp))
                 .fillMaxWidth(),
             onError = {
-                Placeholder(R.drawable.ic_team_placeholder)
+                PlaceholderRect(R.drawable.ic_team_placeholder)
             },
-            onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+            onLoading = { PlaceholderRect(R.drawable.ic_team_placeholder) },
             isCrossFadeEnabled = false,
             contentScale = ContentScale.Crop
         )
@@ -100,7 +88,10 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
                 stringResource(id = (R.string.event_type)),
                 stringResource(id = (R.string.participation)),
                 state.opportunitiesDetail.eventType,
-                "All, Ages 10-16"
+                CommonUtils.getParticipation(
+                    state.opportunitiesDetail.participation,
+                    context = context
+                )
             )
             DetailsItem(
                 stringResource(id = (R.string.regsitration_deadliine)),
@@ -227,7 +218,7 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             Text(
-                text = state.opportunitiesDetail.userId.name,
+                text = state.opportunitiesDetail.userId.name.capitalize(),
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             )
@@ -342,7 +333,7 @@ fun DaysPlay(potentialDaysOfPlay: List<DaysOfPlay>) {
             modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.size_12dp))
         ) {
             Text(
-                text = item.day,
+                text = item.day.capitalize(),
                 color = ColorBWGrayLight,
                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                 fontWeight = FontWeight.SemiBold,

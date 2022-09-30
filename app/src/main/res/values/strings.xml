@@ -390,4 +390,6 @@
     <string name="select_division">Select Division</string>
     <string name="event_name">Event Name</string>
     <string name="enter_event_name">Enter Event Name</string>
+    <string name="no_players_change_selection">No players in selected team, Please try with other team</string>
+
 </resources>

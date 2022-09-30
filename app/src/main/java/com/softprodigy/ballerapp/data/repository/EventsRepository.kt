@@ -1,5 +1,6 @@
 package com.softprodigy.ballerapp.data.repository
 
+import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.safeApiCall
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
@@ -78,7 +79,7 @@ class EventsRepository @Inject constructor(
 
     override suspend fun getEventDivisions(id: String): ResultWrapper<BaseResponse<List<DivisionData>>> {
         return safeApiCall(dispatcher) {
-            service.getEventDivision(id)
+            service.getEventDivision(AppConstants.PAGE, AppConstants.PAGE_LIMIT, id)
         }
     }
 
