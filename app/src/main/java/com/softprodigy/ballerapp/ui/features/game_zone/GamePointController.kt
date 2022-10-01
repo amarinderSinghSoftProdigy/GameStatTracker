@@ -11,8 +11,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.ImageTextButton
+import com.softprodigy.ballerapp.ui.theme.rubikFamily
 
 @Composable
 fun GamePointController (
@@ -46,7 +48,10 @@ fun GamePointController (
                             Modifier
                                 .height(dimensionResource(id = R.dimen.size_46dp))
                                 .weight(1f)
-                                .border(dimensionResource(id = R.dimen.size_1dp), colorResource(id = R.color.gray_border)),
+                                .border(
+                                    dimensionResource(id = R.dimen.size_1dp),
+                                    colorResource(id = R.color.gray_border)
+                                ),
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center,
                         ) {
@@ -55,6 +60,9 @@ fun GamePointController (
                                 drawableResourceId = setting.icon!!,
                                 titleFontSize = R.dimen.txt_size_10,
                                 spacerBetween = R.dimen.size_4dp,
+                                color = colorResource(id = R.color.game_grid_item_text_color),
+                                fontFamily = rubikFamily,
+                                fontWeight = FontWeight.W500,
                             ) {}
                         }
                     }
@@ -75,7 +83,10 @@ fun GamePointController (
                             Modifier
                                 .height(dimensionResource(id = R.dimen.size_94dp))
                                 .weight(1f)
-                                .border(dimensionResource(id = R.dimen.size_1dp),colorResource(id = R.color.gray_border)),
+                                .border(
+                                    dimensionResource(id = R.dimen.size_1dp),
+                                    colorResource(id = R.color.gray_border)
+                                ),
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center,
                         ) {
@@ -84,6 +95,8 @@ fun GamePointController (
                                 drawableResourceId = point.icon!!,
                                 titleFontSize = R.dimen.txt_size_12,
                                 spacerBetween = R.dimen.size_12dp,
+                                color = colorResource(id = R.color.game_grid_item_text_color),
+                                fontWeight = FontWeight.W500,
                             ) {}
                         }
                     }

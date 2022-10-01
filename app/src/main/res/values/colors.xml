@@ -12,7 +12,10 @@
     <color name="gray_border">#D7D7D7</color>
     <color name="ball_color">#FF923D</color>
     <color name="background_color">#F1F6FA</color>
-    
+
+    <color name="game_grid_item_text_color">#FFFFFF</color>
     <color name="point_text_color">#BFFFFFFF</color>
+    <color name="game_center_background_color">#3317191B</color>
+    <color name="point_list_item_name_text_color">#FFFFFF</color>
 
 </resources>

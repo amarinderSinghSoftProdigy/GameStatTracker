@@ -26,16 +26,21 @@ import com.softprodigy.ballerapp.ui.features.components.CoilImage
 import com.softprodigy.ballerapp.ui.features.components.ImageButton
 import com.softprodigy.ballerapp.ui.features.components.Placeholder
 import com.softprodigy.ballerapp.ui.theme.appColors
+import com.softprodigy.ballerapp.ui.theme.rubikFamily
 
 @Composable
 fun PointList (
 ) {
     Box(
-        modifier =  Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = colorResource(id = R.color.game_center_background_color))
     ) {
 
         Column(
-            Modifier.fillMaxHeight(),
+            Modifier
+                .fillMaxHeight()
+                .background(color = colorResource(id = R.color.game_center_background_color))
 
         ) {
             var items = stringArrayResource(id = R.array.game_periods);
@@ -63,7 +68,6 @@ fun pointListItem(
         modifier = Modifier
             .height(dimensionResource(id = R.dimen.size_46dp))
             .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-            .background(color = Color.Black)
             .clickable { },
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -83,6 +87,7 @@ fun pointListItem(
                 color = colorResource(id = R.color.point_text_color),
                 fontSize = dimensionResource(id = R.dimen.txt_size_11).value.sp,
                 fontWeight = FontWeight.W400,
+                fontFamily = rubikFamily,
                 modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp))
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
@@ -106,16 +111,18 @@ fun pointListItem(
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
             Text(
                 text = "Player Name",
-                fontWeight = FontWeight.Bold,
                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                color = Color.White
+                color = colorResource(id = R.color.point_list_item_name_text_color),
+                fontWeight = FontWeight.W500,
+                fontFamily = rubikFamily,
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_4dp)))
             Text(
                 text = "scores 2 points",
-                fontWeight = FontWeight.Bold,
                 fontSize = dimensionResource(id = R.dimen.txt_size_11).value.sp,
-                color = Color.White
+                color = colorResource(id = R.color.point_list_item_name_text_color),
+                fontWeight = FontWeight.W400,
+                fontFamily = rubikFamily,
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_4dp)))
         }
@@ -131,21 +138,24 @@ fun pointListItem(
                 text = "10",
                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                 color = colorResource(id = R.color.point_text_color),
-                //modifier = Modifier.background(Color.Blue)
+                fontWeight = FontWeight.W500,
+                fontFamily = rubikFamily,
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
             Text(
                 text = ":",
                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                 color = colorResource(id = R.color.point_text_color),
-                //modifier = Modifier.background(Color.Blue)
+                fontWeight = FontWeight.W500,
+                fontFamily = rubikFamily,
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
             Text(
                 text = "0",
                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                 color = colorResource(id = R.color.point_text_color),
-                //modifier = Modifier.background(Color.Blue)
+                fontWeight = FontWeight.W500,
+                fontFamily = rubikFamily,
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
             ImageButton(

@@ -23,7 +23,7 @@ fun ImageButton(
     enabled: Boolean = true,
     shape: Shape = RoundedCornerShape(90.dp),
     border: BorderStroke? = null,
-    colors: Color = Color.Red,// = ButtonDefaults.buttonColors(ColorBWBlack),
+    colors: Color = Color.Transparent,// = ButtonDefaults.buttonColors(ColorBWBlack),
 
     icon: Painter? = null,
 ) {

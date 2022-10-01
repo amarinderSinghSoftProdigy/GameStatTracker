@@ -10,10 +10,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.softprodigy.ballerapp.ui.theme.rubikFamily
 
 
 @Composable
@@ -21,9 +25,13 @@ fun ImageTextButton(
     title: String,
     drawableResourceId: Int,
     titleFontSize: Int,
+    fontWeight: FontWeight? = FontWeight.W500,
+    fontFamily: FontFamily? = rubikFamily,
+    color: Color? = Color.White,
     spacerBetween: Int? = 0,
     paddingTop: Dp? = 0.dp,
     paddingBottom: Dp? = 0.dp,
+    letterSpacing: TextUnit? = TextUnit.Unspecified,
     onClick: () -> Unit,
 ) {
 
@@ -58,12 +66,15 @@ fun ImageTextButton(
 
             AppText(
                 text = title,
-                color = Color.White,
+                color = color!!,
                 fontSize = dimensionResource(id = titleFontSize).value.sp,
                 style = MaterialTheme.typography.body1,
                 maxLines = 1,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                fontFamily = fontFamily,
+                fontWeight = fontWeight,
+                letterSpacing = letterSpacing!!,
             )
         }
     }

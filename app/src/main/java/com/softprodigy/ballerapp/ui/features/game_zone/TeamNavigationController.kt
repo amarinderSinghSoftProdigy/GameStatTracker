@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -25,96 +26,108 @@ import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.CoilImage
 import com.softprodigy.ballerapp.ui.features.components.ImageButton
 import com.softprodigy.ballerapp.ui.features.components.PlaceholderRect
+import com.softprodigy.ballerapp.ui.theme.rubikFamily
 
 @Composable
 fun TeamNavigationController (
 
 ) {
     Box(
-        modifier =  Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colorResource(id = R.color.game_center_background_color))
     ) {
         Column(modifier = Modifier
             .fillMaxHeight()
             .fillMaxWidth()) {
+
+            teamHandler()
+            PointList()
+        }
+    }
+}
+
+@Composable
+inline fun teamHandler() {
+    Row(
+        Modifier
+            .fillMaxWidth().background(Color.Black)
+            .height(dimensionResource(id = R.dimen.size_46dp))
+            .padding(
+                horizontal = dimensionResource(id = R.dimen.size_12dp),
+                vertical = dimensionResource(id = R.dimen.size_7dp)
+            ),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // My team
+        Column(
+            Modifier.fillMaxHeight(),
+            verticalArrangement = Arrangement.Center
+        ) {
             Row(
-                Modifier
-                    .fillMaxWidth()
-                    .height(dimensionResource(id = R.dimen.size_46dp))
-                    .padding(
-                        horizontal = dimensionResource(id = R.dimen.size_12dp),
-                        vertical = dimensionResource(id = R.dimen.size_7dp)
-                    ),
+                Modifier.fillMaxHeight(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // My team
-                Column(
-                    Modifier.fillMaxHeight(),
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Row(
-                        Modifier.fillMaxHeight(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        teamLogo();
-                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                        teamTitle("My Team", endPadding = dimensionResource(id = R.dimen.size_8dp));
-                    }
-                }
-
-                // team handling
-                Column(
-                    Modifier
-                        .fillMaxHeight()
-                        .weight(1f),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Row(
-                        Modifier.fillMaxHeight(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        ImageButton(
-                            icon = painterResource(id = R.drawable.ic_possesion_next_arrow_selected),
-                            modifier = Modifier.width(dimensionResource(id = R.dimen.size_32dp)).height(dimensionResource(id = R.dimen.size_32dp)),
-                            onClick = { /*TODO*/ }
-                        )
-                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                        teamScore("50")
-                        teamScore(
-                            ":",
-                            dimensionResource(id = R.dimen.size_8dp),
-                            dimensionResource(id = R.dimen.size_8dp)
-                        )
-                        teamScore("100")
-                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                        ImageButton(
-                            icon = painterResource(id = R.drawable.ic_possesion_next_arrow_selected),
-                            modifier = Modifier.width(dimensionResource(id = R.dimen.size_32dp)).height(dimensionResource(id = R.dimen.size_32dp)),
-                            onClick = { /*TODO*/ }
-                        )
-                    }
-                }
-
-                // Other team
-                Column(
-                    Modifier.fillMaxHeight(),
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Row(
-                        Modifier.fillMaxHeight(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        teamTitle(
-                            "Other Team",
-                            startPadding = dimensionResource(id = R.dimen.size_8dp)
-                        );
-                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                        teamLogo(logoColor = Color.Blue);
-                    }
-                }
+                teamLogo();
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+                teamTitle("My Team", endPadding = dimensionResource(id = R.dimen.size_8dp));
             }
+        }
 
-            PointList()
+        // team handling
+        Column(
+            Modifier
+                .fillMaxHeight()
+                .weight(1f),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Row(
+                Modifier.fillMaxHeight(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                ImageButton(
+                    icon = painterResource(id = R.drawable.ic_possesion_next_arrow_selected),
+                    modifier = Modifier
+                        .width(dimensionResource(id = R.dimen.size_32dp))
+                        .height(dimensionResource(id = R.dimen.size_32dp)),
+                    onClick = { /*TODO*/ }
+                )
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+                teamScore("50")
+                teamScore(
+                    ":",
+                    dimensionResource(id = R.dimen.size_8dp),
+                    dimensionResource(id = R.dimen.size_8dp)
+                )
+                teamScore("100")
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+                ImageButton(
+                    icon = painterResource(id = R.drawable.ic_possesion_next_arrow_selected),
+                    modifier = Modifier
+                        .width(dimensionResource(id = R.dimen.size_32dp))
+                        .height(dimensionResource(id = R.dimen.size_32dp)),
+                    onClick = { /*TODO*/ }
+                )
+            }
+        }
+
+        // Other team
+        Column(
+            Modifier.fillMaxHeight(),
+            verticalArrangement = Arrangement.Center
+        ) {
+            Row(
+                Modifier.fillMaxHeight(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                teamTitle(
+                    "Other Team",
+                    startPadding = dimensionResource(id = R.dimen.size_8dp)
+                );
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+                teamLogo(logoColor = Color.Blue);
+            }
         }
     }
 }
@@ -151,12 +164,14 @@ inline fun teamLogo(logoSource :String = "", logoColor: Color = Color.Red) {
 inline fun teamTitle(title: String = "", startPadding: Dp = 0.dp, endPadding: Dp = 0.dp) {
     AppText(
         text = title,
-        color = Color.White,
+        color = colorResource(id = R.color.game_grid_item_text_color),
         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-        style = MaterialTheme.typography.body1,
         maxLines = 1,
         textAlign = TextAlign.Center,
-        modifier = Modifier.padding(start = startPadding, top = 0.dp, end = endPadding, bottom = 0.dp)
+        modifier = Modifier.padding(start = startPadding, top = 0.dp, end = endPadding, bottom = 0.dp),
+        fontFamily = rubikFamily,
+        fontWeight = FontWeight.W500,
+        style = MaterialTheme.typography.h6,
     )
 }
 
@@ -164,12 +179,14 @@ inline fun teamTitle(title: String = "", startPadding: Dp = 0.dp, endPadding: Dp
 inline fun teamScore(score: String = "", startPadding: Dp = 0.dp, endPadding: Dp = 0.dp) {
     AppText(
         text = score,
-        color = Color.White,
+        color = colorResource(id = R.color.game_grid_item_text_color),
         fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
-        style = MaterialTheme.typography.body1,
+        style = MaterialTheme.typography.h4,
         maxLines = 1,
         textAlign = TextAlign.Center,
-        modifier = Modifier.padding(startPadding,  0.dp, endPadding,  0.dp)
+        modifier = Modifier.padding(startPadding,  0.dp, endPadding,  0.dp),
+        fontFamily = rubikFamily,
+        fontWeight = FontWeight.W600,
     )
 }
 

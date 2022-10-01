@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.ImageTextButton
+import com.softprodigy.ballerapp.ui.theme.rubikFamily
 
 @Composable
 fun GameSettingsController (
@@ -75,9 +76,10 @@ fun periodListItem(index: Int, periodItem: String = "", selectedIndex: Int = 1) 
         AppText(
             text = periodItem,
             textAlign = TextAlign.Center,
-            color = Color.White,
+            color = colorResource(id = R.color.game_grid_item_text_color),
             fontSize = dimensionResource(id = R.dimen.txt_size_11).value.sp,
-            fontWeight = if (index == selectedIndex) FontWeight.Bold else FontWeight.Normal,
+            fontFamily = rubikFamily,
+            fontWeight = if (index == selectedIndex) FontWeight.W700 else FontWeight.W400,
         )
     }
 }
@@ -158,6 +160,9 @@ inline fun gameSettings() {
                         drawableResourceId = point.icon!!,
                         titleFontSize = R.dimen.txt_size_12,
                         spacerBetween = R.dimen.size_12dp,
+                        color = colorResource(id = R.color.game_grid_item_text_color),
+                        fontFamily = rubikFamily,
+                        fontWeight = FontWeight.W500,
                     ) {}
                 }
             }
