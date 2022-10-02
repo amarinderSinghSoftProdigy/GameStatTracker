@@ -32,13 +32,22 @@ sealed class EvEvents {
     data class ShowToast(val message: String) : EvEvents()
     data class OnDeclineConfirmClick(val invitation: EventsResponse) : EvEvents()
     object RefreshEventScreen : EvEvents()
+    data class RefreshEventDetailsScreen(val eventId: String) : EvEvents()
     object OnConfirmGoing : EvEvents()
     data class OnDeclineReasonChange(val reason: String) : EvEvents()
     data class OnGoingDialogClick(val showGoingDialog: Boolean) : EvEvents()
-
     data class OnSelection(val selected: String) : EvEvents()
     data class OnReasonSelection(val text: String) : EvEvents()
     object OnConfirmDeclineClick : EvEvents()
+    data class PreNoteTimeSpan(val showPreNoteButton: Boolean) : EvEvents()
+    data class PostNoteTimeSpan(val showPostNoteButton: Boolean) : EvEvents()
+    data class ShowPrePostPracticeAddNoteDialog(
+        val showPostNoteDialog: Boolean,
+        val noteType: NoteType
+    ) : EvEvents()
+
+    data class OnNoteChange(val note: String) : EvEvents()
+    data class OnAddNoteConfirmClick(val noteType: NoteType,val note:String,val eventId:String) : EvEvents()
 
     object GetMyLeagues : EvEvents()
 
@@ -47,4 +56,9 @@ sealed class EvEvents {
     data class GetGender(val gender: String) : EvEvents()
 
     object GetVenues : EvEvents()
+}
+
+enum class NoteType(val type: String) {
+    PRE("pre"),
+    POST("post")
 }

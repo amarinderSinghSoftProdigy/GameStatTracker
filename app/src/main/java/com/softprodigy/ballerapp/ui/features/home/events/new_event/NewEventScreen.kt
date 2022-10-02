@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.location.Geocoder
+import android.util.Log
 import android.widget.DatePicker
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -39,6 +40,7 @@ import com.google.accompanist.pager.rememberPagerState
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.AutocompleteActivity.RESULT_ERROR
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
@@ -50,6 +52,7 @@ import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -303,6 +306,14 @@ fun PracticeScreen(
             if (addressReq.street.isNotEmpty()) {
                 vm.onEvent(NewEvEvent.OnAddressChanged(addressReq))
             }
+            if (activityResult.resultCode == RESULT_ERROR) {
+                activityResult.let {
+                    val status = it.data?.let { it1 -> Autocomplete.getStatusFromIntent(it1) }
+                    Log.i("statusMessage--", status?.statusMessage ?: "and ${status}")
+                    Timber.i("RESULT_ERROR", status?.statusMessage ?: "and ${status}")
+                }
+            }
+
         }
     )
 
@@ -404,7 +415,6 @@ fun PracticeScreen(
 
                 }, OnClick = {
                     if (!Places.isInitialized()) {
-
                         Places.initialize(context.applicationContext, BuildConfig.MAPS_API_KEY)
                     }
                     val fields = listOf(

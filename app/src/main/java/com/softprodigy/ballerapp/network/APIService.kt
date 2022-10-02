@@ -153,6 +153,7 @@ open interface APIService {
     @PUT(ApiConstants.EVENT_UPDATE_FILTERS)
     suspend fun updateFilters(@Body request: FilterUpdateRequest): BaseResponse<Any>
 
+
     @POST(ApiConstants.CREATE_NEW_EVENT)
     suspend fun createNewEvent(@Body createEventReq: CreateEventReq): BaseResponse<Any>
 
@@ -183,4 +184,41 @@ open interface APIService {
         @Query("sort") sort: String,
         @Query("leagueId") leagueId: String,
     ): BaseResponse<VenuesResponse>
+
+    @GET(ApiConstants.GET_EVENT_DETAILS)
+    suspend fun getEventDetails(
+        @Query("id") eventId: String,
+    ): BaseResponse<EventDetails>
+
+
+    @PUT(ApiConstants.UPDATE_EVENT_NOTE)
+    suspend fun updateEventNote(@Body request: RequestBody): BaseResponse<Any>
+
+    @GET(ApiConstants.GET_ALL_TEAMS_BY_DIVISION_AND_LEAGUES)
+    suspend fun getTeamsByLeagueAndDivision(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int,
+        @Query("sort") sort: String,
+        @Query("leagueId") leagueId: String,
+        @Query("divisionId") divisionId: String,
+    ): BaseResponse<Any>
+
+    @GET(ApiConstants.GET_ALL_TEAMS_BY_LEAGUE_ID_All_DIVISIONS)
+    suspend fun getTeamsByLeagueIdAllDivision(
+        @Query("leagueId") leagueId: String,
+    ): BaseResponse<Any>
+
+    @GET(ApiConstants.GET_ALL_TEAMS_STANDING_BY_LEAGUE_AND_DIVISION)
+    suspend fun getAllTeamsStandingByLeaguedAndDivision(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int,
+        @Query("sort") sort: String,
+        @Query("leagueId") leagueId: String,
+        @Query("divisionId") divisionId: String,
+    ): BaseResponse<Any>
+
+    @GET(ApiConstants.GET_VENUE_DETAILS_BY_ID)
+    suspend fun getVenueDetailsById(
+        @Query("id") venueId: String,
+    ): BaseResponse<Any>
 }

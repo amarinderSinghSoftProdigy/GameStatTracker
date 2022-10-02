@@ -46,6 +46,31 @@ class EventsRepository @Inject constructor(
         }
     }
 
+    override suspend fun getEventDetails(eventId: String): ResultWrapper<BaseResponse<EventDetails>> {
+        return safeApiCall(dispatcher) {
+            service.getEventDetails(eventId)
+        }
+    }
+
+    override suspend fun addPrePostNote(
+        eventId: String,
+        note: String,
+        noteType: NoteType
+    ): ResultWrapper<BaseResponse<Any>> {
+        val request: RequestBody = if (noteType == NoteType.PRE) {
+            FormBody.Builder().add("eventId", eventId)
+                .add("prePractice", note)
+                .build()
+        } else {
+            FormBody.Builder().add("eventId", eventId)
+                .add("postPractice", note)
+                .build()
+        }
+        return safeApiCall(dispatcher) {
+            service.updateEventNote(request)
+        }
+    }
+
     override suspend fun rejectEventInvite(
         eventId: String,
         reason: String
@@ -94,6 +119,55 @@ class EventsRepository @Inject constructor(
             service.updateFilters(request)
         }
     }
+
+    override suspend fun getTeamsByLeagueAndDivision(
+        page: Int,
+        limit: Int,
+        sort: String,
+        leagueId: String,
+        divisionId: String
+    ): ResultWrapper<BaseResponse<Any>> {
+        return safeApiCall(dispatcher) {
+            service.getTeamsByLeagueAndDivision(
+                page = page,
+                limit = limit,
+                sort = sort,
+                leagueId = leagueId,
+                divisionId = divisionId
+            )
+        }
+    }
+
+    override suspend fun getTeamsByLeagueIdAllDivision(leagueId: String): ResultWrapper<BaseResponse<Any>> {
+        return safeApiCall(dispatcher) {
+            service.getTeamsByLeagueIdAllDivision(leagueId = leagueId)
+        }
+    }
+
+    override suspend fun getAllTeamsStandingByLeaguedAndDivision(
+        page: Int,
+        limit: Int,
+        sort: String,
+        leagueId: String,
+        divisionId: String
+    ): ResultWrapper<BaseResponse<Any>> {
+        return safeApiCall(dispatcher) {
+            service.getAllTeamsStandingByLeaguedAndDivision(
+                page = page,
+                limit = limit,
+                sort = sort,
+                leagueId = leagueId,
+                divisionId = divisionId
+            )
+        }
+    }
+
+    override suspend fun getVenueDetailsById(venueId: String): ResultWrapper<BaseResponse<Any>> {
+        return safeApiCall(dispatcher) {
+            service.getVenueDetailsById(venueId = venueId)
+        }
+    }
+
 
 
 }

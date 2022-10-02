@@ -9,7 +9,7 @@ import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.request.CreateEventReq
 import com.softprodigy.ballerapp.data.request.Location
-import com.softprodigy.ballerapp.domain.repository.IEventRepository
+import com.softprodigy.ballerapp.domain.repository.IEventsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NewEventViewModel @Inject constructor(val eventRepository: IEventRepository) : ViewModel() {
+class NewEventViewModel @Inject constructor(val eventsRepository: IEventsRepository) : ViewModel() {
     private val _state = mutableStateOf(NewEventState())
     val state: State<NewEventState> = _state
 
@@ -105,7 +105,7 @@ class NewEventViewModel @Inject constructor(val eventRepository: IEventRepositor
             pushNotification = state.value.showNotification
 
         )
-        val eventResponse = eventRepository.createEvent(request)
+        val eventResponse = eventsRepository.createEvent(request)
         _state.value =
             _state.value.copy(isLoading = false)
 

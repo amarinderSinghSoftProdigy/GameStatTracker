@@ -341,15 +341,16 @@ fun NavControllerComposable(
                     topBar = TopBar.MY_EVENT,
                 )
             )
-            EventsScreen(eventViewModel,
+            EventsScreen(
+                eventViewModel,
                 showDialog = showDialog,
                 dismissDialog = { homeViewModel.setDialog(it) },
                 moveToDetail = {
                     navController.navigate(Route.LEAGUE_DETAIL_SCREEN)
                 },
-                moveToPracticeDetail = {
-                    eventTitle = it
-                    navController.navigate(Route.EVENTS_DETAIL_SCREEN)
+                moveToPracticeDetail = { eventId, eventName ->
+                    eventTitle = eventName
+                    navController.navigate(Route.EVENTS_DETAIL_SCREEN + "/$eventId")
                 },
                 moveToGameDetail = {
                     eventTitle = it
@@ -448,13 +449,20 @@ fun NavControllerComposable(
                 navController.popBackStack()
             }
         }
-        composable(route = Route.EVENTS_DETAIL_SCREEN) {
+        composable(
+            route = Route.EVENTS_DETAIL_SCREEN + "/{eventId}",
+            arguments = listOf(
+                navArgument("eventId") {
+                    type = NavType.StringType
+                })
+        ) {
             homeViewModel.setTopBar(
                 TopBarData(
                     topBar = TopBar.EVENT_DETAILS, label = eventTitle
                 )
             )
-            EventDetailsScreen(eventViewModel)
+            val eventId = it.arguments?.getString("eventId")?:""
+            EventDetailsScreen(eventViewModel,eventId)
         }
         composable(route = Route.GAME_RULES_SCREENS) {
             homeViewModel.setTopBar(
