@@ -27,17 +27,10 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.apiToUIDateFormat
 import com.softprodigy.ballerapp.common.apiToUIDateFormat2
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.response.team.Team
-import com.softprodigy.ballerapp.ui.features.components.DeclineEventDialog
-import com.softprodigy.ballerapp.ui.features.components.SwitchTeamDialog
-import com.softprodigy.ballerapp.ui.features.components.TopBar
-import com.softprodigy.ballerapp.ui.features.components.TopBarData
-import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
-import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
-import com.softprodigy.ballerapp.ui.features.home.events.opportunities.OpportunitieScreen
-import com.softprodigy.ballerapp.ui.features.home.events.opportunities.OpportunitieScreen
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.events.opportunities.OpportunitieScreen
 import com.softprodigy.ballerapp.ui.theme.*
@@ -50,7 +43,7 @@ fun EventsScreen(
     showDialog: Boolean,
     dismissDialog: (Boolean) -> Unit,
     moveToDetail: () -> Unit,
-    moveToPracticeDetail: (String) -> Unit, moveToGameDetail: (String) -> Unit,
+    moveToPracticeDetail: (String, String) -> Unit, moveToGameDetail: (String) -> Unit,
     moveToOppDetails: (String) -> Unit,
     updateTopBar: (TopBarData) -> Unit
 ) {
@@ -161,7 +154,7 @@ fun TabsContent(
     state: EventState,
     vm: EventViewModel,
     moveToDetail: () -> Unit,
-    moveToPracticeDetail: (String) -> Unit,
+    moveToPracticeDetail: (String, String) -> Unit,
     moveToGameDetail: (String) -> Unit,
     moveToOppDetails: (String) -> Unit,
     updateTopBar: (TopBarData) -> Unit
@@ -207,14 +200,14 @@ fun SetTopBar(pagerState: PagerState, page: Int, updateTopBar: (TopBarData) -> U
 fun BoxScope.MyEvents(
     state: EventState,
     vm: EventViewModel,
-    moveToPracticeDetail: (String) -> Unit,
+    moveToPracticeDetail: (String, String) -> Unit,
     moveToGameDetail: (String) -> Unit
 ) {
 
     remember {
         vm.onEvent(EvEvents.RefreshEventScreen)
     }
-    if (state.currentEvents.size > 0) {
+    if (state.currentEvents.size > 0 || state.pastEvents.size > 0) {
         Box(modifier = Modifier.fillMaxSize()) {
 
                 Column(
@@ -369,7 +362,7 @@ fun EventItem(
     events: Events,
     onAcceptCLick: (Events) -> Unit,
     onDeclineCLick: (Events) -> Unit,
-    moveToPracticeDetail: (String) -> Unit,
+    moveToPracticeDetail: (String, String) -> Unit,
     moveToGameDetail: (String) -> Unit,
     isPast: Boolean,
     isSelfCreatedEvent: Boolean = false,
@@ -380,7 +373,7 @@ fun EventItem(
                 if (events.eventType.equals(EventType.PRACTICE.type, ignoreCase = true) ||
                     events.eventType.equals(EventType.ACTIVITY.type, ignoreCase = true)
                 )
-                    moveToPracticeDetail(events.eventName)
+                    moveToPracticeDetail(events.id, events.eventName)
                 else if (events.eventType.equals(EventType.GAME.type, ignoreCase = true)) {
                     moveToGameDetail(events.eventName)
                 }
@@ -453,7 +446,7 @@ fun EventItem(
                             style = MaterialTheme.typography.h4
                         )
                         Text(
-                            text = apiToUIDateFormat2(events.date),
+                            text = "${apiToUIDateFormat(events.date)} ${events.startTime} - ${events.endTime}",
                             color = ColorBWGrayLight,
                             style = MaterialTheme.typography.h4
                         )
@@ -647,7 +640,7 @@ fun EventItem(
                             Modifier
                                 .weight(1f)
                                 .clickable {
-//                                    onDeclineCLick.invoke(events)
+                                    moveToPracticeDetail.invoke(events.id, events.eventName)
                                 }
                                 .padding(dimensionResource(id = R.dimen.size_14dp)),
                             horizontalArrangement = Arrangement.Center,
@@ -682,7 +675,7 @@ fun EventItem(
                             Modifier
                                 .weight(1f)
                                 .clickable {
-//                                    onAcceptCLick.invoke(events)
+                                    moveToPracticeDetail.invoke(events.id, events.eventName)
                                 }
                                 .padding(dimensionResource(id = R.dimen.size_14dp)),
                             horizontalArrangement = Arrangement.Center,
@@ -717,12 +710,6 @@ fun EventItem(
                 }
             }
         }
-        /* if (isPast)
-             Box(
-                 modifier = Modifier
-                     .matchParentSize()
-                     .background(color = BackgroundColor)
-             )*/
     }
 
 }

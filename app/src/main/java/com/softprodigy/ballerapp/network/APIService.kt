@@ -165,4 +165,13 @@ open interface APIService {
 
     @PUT(ApiConstants.DECLINE_COACH_EVENT)
     suspend fun rejectEventInvite(@Body request: RequestBody): BaseResponse<Any>
+
+    @GET(ApiConstants.GET_EVENT_DETAILS)
+    suspend fun getEventDetails(
+        @Query("id") eventId: String,
+    ): BaseResponse<EventDetails>
+
+
+    @PUT(ApiConstants.UPDATE_EVENT_NOTE)
+    suspend fun updateEventNote(@Body request: RequestBody): BaseResponse<Any>
 }

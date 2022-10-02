@@ -21,7 +21,7 @@ import javax.inject.Inject
 class EventViewModel @Inject constructor(
     val dataStoreManager: DataStoreManager,
     val teamRepo: ITeamRepository,
-    private val userRepository: IEventsRepository,
+    private val eventsRepo: IEventsRepository,
     application: Application
 ) : AndroidViewModel(application) {
 
@@ -33,14 +33,10 @@ class EventViewModel @Inject constructor(
     private val _channel = Channel<EventChannel>()
     val eventChannel = _channel.receiveAsFlow()
 
-    init {
-        viewModelScope.launch { getEventList() }
-    }
-
     private suspend fun getEventList() {
         eventState.value =
             eventState.value.copy(showLoading = true)
-        val eventResponse = userRepository.getAllevents()
+        val eventResponse = eventsRepo.getAllevents()
         eventState.value =
             eventState.value.copy(showLoading = false)
 
@@ -85,10 +81,10 @@ class EventViewModel @Inject constructor(
         }
     }
 
-    suspend fun getEventDetails(id: String) {
+    suspend fun getEventDetails(eventId: String) {
         eventState.value =
             eventState.value.copy(showLoading = true)
-        val eventResponse = userRepository.getAllevents()
+        val eventResponse = eventsRepo.getEventDetails(eventId)
         eventState.value =
             eventState.value.copy(showLoading = false)
 
@@ -116,8 +112,7 @@ class EventViewModel @Inject constructor(
                     if (response.status) {
                         _state.value =
                             _state.value.copy(
-                                currentEvents = response.data.upcommingEvents,
-                                pastEvents = response.data.pastEvents
+                                event = response.data
                             )
                     } else {
                         _channel.send(
@@ -243,6 +238,10 @@ class EventViewModel @Inject constructor(
                 viewModelScope.launch { getEventList() }
             }
 
+            is EvEvents.RefreshEventDetailsScreen -> {
+                viewModelScope.launch { getEventDetails(event.eventId) }
+            }
+
             EvEvents.OnConfirmGoing -> {
                 viewModelScope.launch { acceptEventInvite() }
             }
@@ -269,14 +268,92 @@ class EventViewModel @Inject constructor(
                     )
                 }
             }
+            is EvEvents.PostNoteTimeSpan -> {
+                eventState.value =
+                    eventState.value.copy(isPostPracticeTimeSpan = event.showPostNoteButton)
+            }
+            is EvEvents.PreNoteTimeSpan -> {
+                eventState.value =
+                    eventState.value.copy(isPrePracticeTimeSpan = event.showPreNoteButton)
+
+            }
+
+            is EvEvents.ShowPrePostPracticeAddNoteDialog -> {
+                eventState.value = eventState.value.copy(
+                    showPrePostNoteDialog = event.showPostNoteDialog,
+                    noteType = event.noteType,
+                    note = ""
+                )
+
+            }
+            is EvEvents.OnNoteChange -> {
+                eventState.value = eventState.value.copy(note = event.note)
+            }
+            is EvEvents.OnAddNoteConfirmClick -> {
+                viewModelScope.launch {
+                    addNote(event.noteType, event.note, event.eventId)
+                }
+            }
         }
 
+    }
+
+    private suspend fun addNote(noteType: NoteType, note: String, eventId: String) {
+
+        eventState.value =
+            eventState.value.copy(showLoading = true)
+        val addNoteResponse =
+            eventsRepo.addPrePostNote(note = note, noteType = noteType, eventId = eventId)
+        eventState.value =
+            eventState.value.copy(showLoading = false)
+
+        when (addNoteResponse) {
+            is ResultWrapper.GenericError -> {
+                _channel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${addNoteResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _channel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            addNoteResponse.message
+                        )
+                    )
+                )
+
+            }
+            is ResultWrapper.Success -> {
+                addNoteResponse.value.let { response ->
+
+                    if (response.status) {
+                        _channel.send(
+                            EventChannel.OnUpdateNoteSuccess(
+                                response.statusMessage
+                            )
+                        )
+                    } else {
+                        _channel.send(
+                            EventChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
     }
 
 
     private suspend fun getFilters() {
         _state.value = _state.value.copy(isLoading = true)
-        val userResponse = userRepository.getFilters()
+        val userResponse = eventsRepo.getFilters()
         _state.value = _state.value.copy(isLoading = false)
 
         when (userResponse) {
@@ -323,7 +400,7 @@ class EventViewModel @Inject constructor(
 
     private suspend fun getEventDivisions(eventId: String) {
         _state.value = _state.value.copy(isLoading = true)
-        val userResponse = userRepository.getEventDivisions(eventId)
+        val userResponse = eventsRepo.getEventDivisions(eventId)
         _state.value = _state.value.copy(isLoading = false)
 
         when (userResponse) {
@@ -366,7 +443,7 @@ class EventViewModel @Inject constructor(
 
     private suspend fun updateFilters(request: FilterUpdateRequest) {
         _state.value = _state.value.copy(isLoading = true)
-        val userResponse = userRepository.updateFilters(request)
+        val userResponse = eventsRepo.updateFilters(request)
         Timber.e("data " + request.filterPreferences)
         _state.value = _state.value.copy(isLoading = false)
 
@@ -415,7 +492,7 @@ class EventViewModel @Inject constructor(
 
     private suspend fun registerForEvent() {
         _state.value = _state.value.copy(isLoading = true)
-        val userResponse = userRepository.registerForEvent(_state.value.registerRequest)
+        val userResponse = eventsRepo.registerForEvent(_state.value.registerRequest)
         _state.value = _state.value.copy(isLoading = false)
 
         when (userResponse) {
@@ -464,7 +541,7 @@ class EventViewModel @Inject constructor(
 
     private suspend fun getOpportunityDetail(eventId: String) {
         _state.value = _state.value.copy(isLoading = true)
-        val userResponse = userRepository.getEventOpportunityDetails(eventId)
+        val userResponse = eventsRepo.getEventOpportunityDetails(eventId)
         _state.value = _state.value.copy(isLoading = false)
 
         when (userResponse) {
@@ -507,7 +584,7 @@ class EventViewModel @Inject constructor(
 
     private suspend fun getOpportunities() {
         _state.value = _state.value.copy(isLoading = true)
-        val userResponse = userRepository.getEventOpportunities()
+        val userResponse = eventsRepo.getEventOpportunities()
         _state.value = _state.value.copy(isLoading = false)
 
         when (userResponse) {
@@ -552,7 +629,7 @@ class EventViewModel @Inject constructor(
         eventState.value =
             eventState.value.copy(showLoading = true)
 
-        val acceptResponse = userRepository.acceptEventInvite(eventState.value.selectedEvent.id)
+        val acceptResponse = eventsRepo.acceptEventInvite(eventState.value.selectedEvent.id)
 
         eventState.value =
             eventState.value.copy(showLoading = false)
@@ -599,7 +676,7 @@ class EventViewModel @Inject constructor(
         eventState.value =
             eventState.value.copy(showLoading = true)
 
-        val rejectResponse = userRepository.rejectEventInvite(
+        val rejectResponse = eventsRepo.rejectEventInvite(
             eventState.value.selectedEvent.id,
             eventState.value.declineReason
         )
@@ -649,5 +726,6 @@ class EventViewModel @Inject constructor(
 
 sealed class EventChannel {
     data class ShowToast(val message: UiText) : EventChannel()
+    data class OnUpdateNoteSuccess(val message: String) : EventChannel()
     data class OnSuccess(val message: UiText) : EventChannel()
 }

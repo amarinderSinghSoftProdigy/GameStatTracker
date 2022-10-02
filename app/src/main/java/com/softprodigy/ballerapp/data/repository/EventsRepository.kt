@@ -45,6 +45,31 @@ class EventsRepository @Inject constructor(
         }
     }
 
+    override suspend fun getEventDetails(eventId: String): ResultWrapper<BaseResponse<EventDetails>> {
+        return safeApiCall(dispatcher) {
+            service.getEventDetails(eventId)
+        }
+    }
+
+    override suspend fun addPrePostNote(
+        eventId: String,
+        note: String,
+        noteType: NoteType
+    ): ResultWrapper<BaseResponse<Any>> {
+        val request: RequestBody = if (noteType == NoteType.PRE) {
+            FormBody.Builder().add("eventId", eventId)
+                .add("prePractice", note)
+                .build()
+        } else {
+            FormBody.Builder().add("eventId", eventId)
+                .add("postPractice", note)
+                .build()
+        }
+        return safeApiCall(dispatcher) {
+            service.updateEventNote(request)
+        }
+    }
+
     override suspend fun rejectEventInvite(
         eventId: String,
         reason: String

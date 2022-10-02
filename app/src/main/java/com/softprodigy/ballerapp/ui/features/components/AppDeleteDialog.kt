@@ -50,6 +50,7 @@ import com.softprodigy.ballerapp.data.response.PlayerDetails
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.ui.features.home.events.DivisionData
+import com.softprodigy.ballerapp.ui.features.home.events.NoteType
 import com.softprodigy.ballerapp.ui.features.profile.tabs.DetailItem
 import com.softprodigy.ballerapp.ui.theme.*
 
@@ -1995,6 +1996,138 @@ fun AddPlayer(
                             border = ButtonDefaults.outlinedBorder,
                             enabled = true,
                             onlyBorder = false,
+                        )
+                    }
+                }
+            },
+        )
+    }
+}
+
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun AddNoteDialog(
+    onDismiss: (NoteType) -> Unit,
+    onConfirmClick: (NoteType,String) -> Unit,
+    note: String,
+    noteType: NoteType?,
+    onNoteChange: (String) -> Unit,
+) {
+
+    val keyboardController = LocalSoftwareKeyboardController.current
+    BallerAppMainTheme {
+        AlertDialog(
+            modifier = Modifier
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+            onDismissRequest = {
+                noteType?.let {
+                    onDismiss.invoke(it)
+                }
+            },
+            buttons = {
+                Column(
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(
+                            all = dimensionResource(
+                                id = R.dimen.size_16dp
+                            )
+                        ),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = if (noteType == NoteType.PRE) stringResource(id = R.string.add_pre_note)
+                            else if (noteType == NoteType.POST) stringResource(
+                                id = R.string.add_post_note
+                            ) else "",
+                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                            fontWeight = FontWeight.W600,
+                        )
+
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_close_color_picker),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(dimensionResource(id = R.dimen.size_12dp))
+                                .align(Alignment.TopEnd)
+                                .clickable {
+                                    noteType?.let {
+                                        onDismiss.invoke(it)
+                                    }
+                                }
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
+                    AppOutlineTextField(
+                        value = note,
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        onValueChange = {
+                            onNoteChange(it)
+                        },
+                        maxLines = 1,
+                        singleLine = true,
+                        placeholder = {
+                            Text(
+                                text = stringResource(id = R.string.reason_not_going),
+                                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                textAlign = TextAlign.Start
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                            keyboardType = KeyboardType.Text
+                        ),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
+                            unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
+                            backgroundColor = MaterialTheme.appColors.material.background,
+                            textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            placeholderColor = MaterialTheme.appColors.textField.label,
+                            cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+
+                        ),
+                        keyboardActions = KeyboardActions(onDone = {
+                            keyboardController?.hide()
+                        }),
+                    )
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(color = Color.White),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        DialogButton(
+                            text = stringResource(R.string.dialog_button_cancel),
+                            onClick = {
+                                noteType?.let {
+                                    onDismiss.invoke(it)
+                                }
+                            },
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = dimensionResource(id = R.dimen.size_10dp)),
+                            border = ButtonDefaults.outlinedBorder,
+                            onlyBorder = true,
+                            enabled = false
+                        )
+                        DialogButton(
+                            text = stringResource(R.string.dialog_button_confirm),
+                            onClick = {
+                                noteType?.let { noteType ->
+                                    onConfirmClick.invoke(noteType,note)
+                                    onDismiss.invoke(noteType)
+                                }
+                            },
+                            modifier = Modifier
+                                .weight(1f),
+                            border = ButtonDefaults.outlinedBorder,
+                            onlyBorder = false,
+                            enabled = note.length > 4
                         )
                     }
                 }

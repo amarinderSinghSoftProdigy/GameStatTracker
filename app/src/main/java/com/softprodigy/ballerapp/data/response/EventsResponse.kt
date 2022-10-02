@@ -2,6 +2,7 @@ package com.softprodigy.ballerapp.ui.features.home.events
 
 import androidx.compose.ui.graphics.Color
 import com.google.gson.annotations.SerializedName
+import com.softprodigy.ballerapp.data.request.Address
 import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
 import com.softprodigy.ballerapp.ui.theme.ColorButtonRed
 import com.softprodigy.ballerapp.ui.theme.ColorMainPrimary
@@ -21,11 +22,42 @@ data class Events(
     @SerializedName("invitationStatus") val invitationStatus: String = "",
     @SerializedName("reason") val reason: String = "",
     @SerializedName("eventType") val eventType: String = "",
-    @SerializedName("notGoing") var notGoing: ArrayList<NotGoing> = arrayListOf(),
-    @SerializedName("going") var going: ArrayList<String> = arrayListOf(),
-    @SerializedName("mayBe") var maybe: ArrayList<String> = arrayListOf(),
+    @SerializedName("arrivalTime") val arrivalTime: String = "",
+    @SerializedName("startTime") val startTime: String = "",
+    @SerializedName("endTime") val endTime: String = "",
+    @SerializedName("prePractice") val prePractice: String = "",
+    @SerializedName("postPractice") val postPractice: String = "",
+    @SerializedName("address") val address: Address = Address(),
+    @SerializedName("notGoing") val notGoing: ArrayList<NotGoing> = arrayListOf(),
+    @SerializedName("going") val going: ArrayList<String> = arrayListOf(),
+    @SerializedName("mayBe") val maybe: ArrayList<String> = arrayListOf(),
+    @SerializedName("invites") val invites: ArrayList<Invites> = arrayListOf(),
+)
 
+data class EventDetails(
+    @SerializedName("_id") val id: String = "",
+    @SerializedName("createdBy") val createdBy: String = "",
+    @SerializedName("eventName") val eventName: String = "",
+    @SerializedName("landmarkLocation") val landmarkLocation: String = "",
+    @SerializedName("date") val date: String = "",
+    @SerializedName("invitationStatus") val invitationStatus: String = "",
+    @SerializedName("reason") val reason: String = "",
+    @SerializedName("eventType") val eventType: String = "",
+    @SerializedName("arrivalTime") val arrivalTime: String = "",
+    @SerializedName("startTime") val startTime: String = "",
+    @SerializedName("endTime") val endTime: String = "",
+    @SerializedName("prePractice") val prePractice: String = "",
+    @SerializedName("postPractice") val postPractice: String = "",
+    @SerializedName("address") val address: Address = Address(),
+    @SerializedName("notGoing") val notGoing: ArrayList<NotGoing> = arrayListOf(),
+    @SerializedName("going") val going: ArrayList<String> = arrayListOf(),
+    @SerializedName("mayBe") val maybe: ArrayList<String> = arrayListOf(),
+    @SerializedName("invites") val invites: ArrayList<Invites> = arrayListOf(),
+    @SerializedName("coachId") val coachId: CoachId = CoachId(),
+    @SerializedName("jerseyColor") val jerseyColor: String = "",
+    @SerializedName("currentDate") val serverDate: String = "",
     )
+
 
 enum class EventStatus(val status: String) {
     ACCEPT("Going"),
@@ -140,4 +172,18 @@ data class RegisterRequest(
     val sendPushNotification: Boolean = false,
     val termsAndCondition: Boolean = false,
     val privacy: Boolean = false,
+)
+
+data class Invites(
+    @SerializedName("status") val status: String = "",
+    @SerializedName("name") val name: String = "",
+    @SerializedName("profileImage") val profileImage: String = "",
+    @SerializedName("reason") val reason: String = "",
+    @SerializedName("_id") val Id: String = ""
+)
+
+data class CoachId(
+    @SerializedName("_id") val Id: String = "",
+    @SerializedName("name") val name: String = "",
+    @SerializedName("profileImage") val profileImage: String = ""
 )

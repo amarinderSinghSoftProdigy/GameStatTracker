@@ -25,4 +25,10 @@ data class EventState(
     val team: Team = Team(),
     val registerRequest: RegisterRequest = RegisterRequest(),
     val declineReason: String = "",
+    val event: EventDetails = EventDetails(),
+    val isPrePracticeTimeSpan: Boolean = false,
+    val isPostPracticeTimeSpan: Boolean = false,
+    val showPrePostNoteDialog: Boolean = false,
+    val note: String = "",
+    val noteType: NoteType? =null,
 )
