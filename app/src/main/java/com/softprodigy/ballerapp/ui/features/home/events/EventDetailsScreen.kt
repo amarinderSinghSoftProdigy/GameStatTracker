@@ -36,6 +36,7 @@ import com.softprodigy.ballerapp.common.uiToAPiDate
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
+import com.softprodigy.ballerapp.ui.theme.ColorButtonRed
 import com.softprodigy.ballerapp.ui.theme.appColors
 import timber.log.Timber
 
@@ -303,7 +304,20 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
 
                     Text(
                         text = item.status,
-                        color = ColorButtonGreen,
+                        color = if (item.status.equals(
+                                EventStatus.GOING.status,
+                                ignoreCase = true
+                            )
+                        )
+                            ColorButtonGreen
+                        else if (item.status.equals(
+                                EventStatus.NOT_GOING.status,
+                                ignoreCase = true
+                            )
+                        )
+                            ColorButtonRed
+                        else
+                            MaterialTheme.appColors.textField.labelDark,
                         style = MaterialTheme.typography.h6
                     )
                 }

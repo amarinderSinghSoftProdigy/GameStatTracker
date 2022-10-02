@@ -98,8 +98,14 @@ fun InvitationScreen() {
                 vm.onEvent(InvitationEvent.OnClearValues)
             },
             onConfirmClick = { /*vm.onEvent(InvitationEvent.OnRoleConfirmClick)*/
-                vm.onEvent(InvitationEvent.OnRoleConfirmClick)
-                vm.onEvent(InvitationEvent.OnGuardianDialogClick(true))
+                if (state.selectedRole == "Guardian") {
+                    vm.onEvent(InvitationEvent.OnRoleConfirmClick)
+                    vm.onEvent(InvitationEvent.OnGuardianDialogClick(true))
+                }
+                else {
+                    vm.onEvent(InvitationEvent.OnInvitationConfirm)
+                    vm.onEvent(InvitationEvent.OnRoleDialogClick(false))
+                }
             },
             onSelectionChange = { vm.onEvent(InvitationEvent.OnRoleClick(role = it)) },
             title = stringResource(id = R.string.what_is_your_role),
@@ -116,6 +122,7 @@ fun InvitationScreen() {
         },
             onConfirmClick = {
                 vm.onEvent(InvitationEvent.OnInvitationConfirm)
+                vm.onEvent(InvitationEvent.OnRoleDialogClick(false))
                 vm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
             },
             onSelectionChange = { vm.onEvent(InvitationEvent.OnGuardianClick(guardian = it)) },

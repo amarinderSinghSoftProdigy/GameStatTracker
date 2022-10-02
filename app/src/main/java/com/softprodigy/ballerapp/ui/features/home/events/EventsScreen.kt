@@ -28,7 +28,6 @@ import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.apiToUIDateFormat
-import com.softprodigy.ballerapp.common.apiToUIDateFormat2
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.ui.features.components.*
@@ -457,7 +456,7 @@ fun EventItem(
             if (!isPast) {
                 if (!isSelfCreatedEvent) {
                     if (events.invitationStatus.equals(
-                            EventStatus.PENDING.status,
+                            EventStatus.MAY_BE.status,
                             ignoreCase = true
                         )
                     ) {
@@ -528,7 +527,7 @@ fun EventItem(
 
                         }
                     } else if (events.invitationStatus.equals(
-                            EventStatus.ACCEPT.status,
+                            EventStatus.GOING.status,
                             ignoreCase = true
                         )
                     ) {
@@ -566,7 +565,7 @@ fun EventItem(
                             )
                         }
                     } else if (events.invitationStatus.equals(
-                            EventStatus.REJECT.status,
+                            EventStatus.NOT_GOING.status,
                             ignoreCase = true
                         )
                     ) {

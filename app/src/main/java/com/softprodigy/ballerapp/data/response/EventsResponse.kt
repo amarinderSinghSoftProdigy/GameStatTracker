@@ -60,9 +60,9 @@ data class EventDetails(
 
 
 enum class EventStatus(val status: String) {
-    ACCEPT("Going"),
-    REJECT("Not Going"),
-    PENDING("Maybe"),
+    GOING("Going"),
+    NOT_GOING("Not Going"),
+    MAY_BE("Maybe"),
     PAST("Past"),
 }
 
