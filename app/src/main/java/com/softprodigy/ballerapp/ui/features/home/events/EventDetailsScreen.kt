@@ -101,7 +101,7 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
         LaunchedEffect(key1 = Unit) {
             vm.eventChannel.collect { uiEvent ->
                 when (uiEvent) {
-                    is EventChannel.ShowToast -> {
+                    is EventChannel.ShowEventDetailsToast -> {
                         Toast.makeText(
                             context,
                             uiEvent.message.asString(context),

@@ -32,7 +32,7 @@ data class EventState(
     val divisions: ArrayList<DivisionResponse> = arrayListOf(),
     val leagueId: String = "",
     val gender: String = "",
-    val venuesList: List<VenuesId> = listOf()
+    val venuesList: List<VenuesId> = listOf(),
     val event: EventDetails = EventDetails(),
     val isPrePracticeTimeSpan: Boolean = false,
     val isPostPracticeTimeSpan: Boolean = false,

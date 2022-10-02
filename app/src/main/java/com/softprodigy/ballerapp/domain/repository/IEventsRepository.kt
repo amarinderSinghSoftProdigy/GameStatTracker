@@ -18,7 +18,7 @@ interface IEventsRepository {
     suspend fun acceptEventInvite(eventId: String): ResultWrapper<BaseResponse<Any>>
     suspend fun getEventDetails(eventId: String): ResultWrapper<BaseResponse<EventDetails>>
     suspend fun addPrePostNote(
-        eventId: String,note: String,noteType: NoteType,
+        eventId: String, note: String, noteType: NoteType,
     ): ResultWrapper<BaseResponse<Any>>
 
     suspend fun rejectEventInvite(eventId: String, reason: String): ResultWrapper<BaseResponse<Any>>
@@ -28,4 +28,24 @@ interface IEventsRepository {
     suspend fun getEventDivisions(id: String): ResultWrapper<BaseResponse<List<DivisionData>>>
     suspend fun registerForEvent(request: RegisterRequest): ResultWrapper<BaseResponse<Any>>
     suspend fun updateFilters(request: FilterUpdateRequest): ResultWrapper<BaseResponse<Any>>
+
+    suspend fun getTeamsByLeagueAndDivision(
+        page: Int = 1,
+        limit: Int = 50,
+        sort: String = "",
+        leagueId: String,
+        divisionId: String
+    ): ResultWrapper<BaseResponse<Any>>
+
+    suspend fun getTeamsByLeagueIdAllDivision(leagueId: String): ResultWrapper<BaseResponse<Any>>
+
+    suspend fun getAllTeamsStandingByLeaguedAndDivision(
+        page: Int = 1,
+        limit: Int = 50,
+        sort: String = "",
+        leagueId: String,
+        divisionId: String
+    ): ResultWrapper<BaseResponse<Any>>
+
+    suspend fun getVenueDetailsById(venueId:String): ResultWrapper<BaseResponse<Any>>
 }

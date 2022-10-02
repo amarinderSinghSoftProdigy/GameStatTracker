@@ -120,5 +120,54 @@ class EventsRepository @Inject constructor(
         }
     }
 
+    override suspend fun getTeamsByLeagueAndDivision(
+        page: Int,
+        limit: Int,
+        sort: String,
+        leagueId: String,
+        divisionId: String
+    ): ResultWrapper<BaseResponse<Any>> {
+        return safeApiCall(dispatcher) {
+            service.getTeamsByLeagueAndDivision(
+                page = page,
+                limit = limit,
+                sort = sort,
+                leagueId = leagueId,
+                divisionId = divisionId
+            )
+        }
+    }
+
+    override suspend fun getTeamsByLeagueIdAllDivision(leagueId: String): ResultWrapper<BaseResponse<Any>> {
+        return safeApiCall(dispatcher) {
+            service.getTeamsByLeagueIdAllDivision(leagueId = leagueId)
+        }
+    }
+
+    override suspend fun getAllTeamsStandingByLeaguedAndDivision(
+        page: Int,
+        limit: Int,
+        sort: String,
+        leagueId: String,
+        divisionId: String
+    ): ResultWrapper<BaseResponse<Any>> {
+        return safeApiCall(dispatcher) {
+            service.getAllTeamsStandingByLeaguedAndDivision(
+                page = page,
+                limit = limit,
+                sort = sort,
+                leagueId = leagueId,
+                divisionId = divisionId
+            )
+        }
+    }
+
+    override suspend fun getVenueDetailsById(venueId: String): ResultWrapper<BaseResponse<Any>> {
+        return safeApiCall(dispatcher) {
+            service.getVenueDetailsById(venueId = venueId)
+        }
+    }
+
+
 
 }
