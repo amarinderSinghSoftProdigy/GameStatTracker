@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,7 +34,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.data.response.MyLeagueResponse
 import com.softprodigy.ballerapp.ui.features.components.CoilImage
+import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
 import com.softprodigy.ballerapp.ui.features.components.PlaceholderRect
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -45,7 +48,13 @@ fun MyLeagueScreen(
     vm: EventViewModel,
     moveToDetail: () -> Unit,
 ) {
-    if (state.oppotuntities.size > 0) {
+    remember {
+        vm.onEvent(EvEvents.GetMyLeagues)
+    }
+    if (state.isLoading) {
+        CommonProgressBar()
+    } else if (state.myLeaguesList.isNotEmpty()) {
+
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
                 Modifier
@@ -53,8 +62,9 @@ fun MyLeagueScreen(
                     .padding(all = dimensionResource(id = R.dimen.size_16dp))
             ) {
                 LazyColumn(Modifier.fillMaxWidth()) {
-                    items(state.opportunitiesList) { item ->
-                        LeagueItem(item, false) {
+                    items(state.myLeaguesList) { item ->
+                        LeagueItem(item) {
+                            vm.onEvent(EvEvents.GetLeagueId(item._id))
                             moveToDetail()
                         }
                     }
@@ -89,7 +99,7 @@ fun MyLeagueScreen(
 }
 
 @Composable
-fun LeagueItem(league: OpportunitiesItem, showLabel: Boolean, OnNextClick: () -> Unit) {
+fun LeagueItem(league: MyLeagueResponse, OnNextClick: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -110,7 +120,7 @@ fun LeagueItem(league: OpportunitiesItem, showLabel: Boolean, OnNextClick: () ->
                 ),
         ) {
             CoilImage(
-                src = BuildConfig.IMAGE_SERVER + league.logo,
+                src = BuildConfig.IMAGE_SERVER + league.eventDetail.logo,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .background(
@@ -132,19 +142,19 @@ fun LeagueItem(league: OpportunitiesItem, showLabel: Boolean, OnNextClick: () ->
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = league.name,
+                    text = league.eventDetail.name,
                     color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                     fontWeight = FontWeight.Bold,
                 )
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_6dp)))
                 Text(
-                    text = league.eventShortDescription,
+                    text = league.eventDetail.zip + " " + league.eventDetail.city + ", " + league.eventDetail.state,
                     color = Color.Black,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                     fontWeight = FontWeight.W400,
                 )
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_6dp)))
 
                 Row(
                     modifier = Modifier
@@ -152,20 +162,14 @@ fun LeagueItem(league: OpportunitiesItem, showLabel: Boolean, OnNextClick: () ->
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = CommonUtils.formatDate(league.startDate, league.endDate),
+                        text = CommonUtils.formatDate(
+                            league.eventDetail.startDate,
+                            league.eventDetail.startDate
+                        ),
                         color = MaterialTheme.appColors.textField.label,
                         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                         fontWeight = FontWeight.W500,
                     )
-
-                    if (showLabel)
-                        Text(
-                            text = "$ " + league.standardPrice,
-                            color = MaterialTheme.appColors.textField.label,
-                            fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                            fontWeight = FontWeight.W500,
-                            textAlign = TextAlign.End
-                        )
                 }
             }
         }
@@ -179,11 +183,16 @@ fun LeagueItem(league: OpportunitiesItem, showLabel: Boolean, OnNextClick: () ->
                 modifier = Modifier
                     .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
                     .background(MaterialTheme.appColors.material.primaryVariant)
-                    .padding(all = dimensionResource(id = R.dimen.size_6dp)),
+                    .padding(
+                        horizontal = dimensionResource(id = R.dimen.size_12dp),
+                        vertical = dimensionResource(
+                            id = R.dimen.size_6dp
+                        )
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = league.eventType,
+                    text = league.eventDetail.eventType,
                     color = Color.White,
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                     fontWeight = FontWeight.Bold,

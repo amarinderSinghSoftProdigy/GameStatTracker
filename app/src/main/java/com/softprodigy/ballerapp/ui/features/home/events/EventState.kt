@@ -1,5 +1,8 @@
 package com.softprodigy.ballerapp.ui.features.home.events
 
+import com.softprodigy.ballerapp.data.response.DivisionResponse
+import com.softprodigy.ballerapp.data.response.MyLeagueResponse
+import com.softprodigy.ballerapp.data.response.VenuesId
 import com.softprodigy.ballerapp.data.response.team.Team
 
 
@@ -25,4 +28,9 @@ data class EventState(
     val team: Team = Team(),
     val registerRequest: RegisterRequest = RegisterRequest(),
     val declineReason: String = "",
+    val myLeaguesList: ArrayList<MyLeagueResponse> = arrayListOf(),
+    val divisions: ArrayList<DivisionResponse> = arrayListOf(),
+    val leagueId: String = "",
+    val gender: String = "",
+    val venuesList: List<VenuesId> = listOf()
 )

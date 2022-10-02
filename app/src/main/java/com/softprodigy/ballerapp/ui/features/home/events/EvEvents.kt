@@ -39,4 +39,12 @@ sealed class EvEvents {
     data class OnSelection(val selected: String) : EvEvents()
     data class OnReasonSelection(val text: String) : EvEvents()
     object OnConfirmDeclineClick : EvEvents()
+
+    object GetMyLeagues : EvEvents()
+
+    object GetDivision : EvEvents()
+    data class GetLeagueId(val id: String) : EvEvents()
+    data class GetGender(val gender: String) : EvEvents()
+
+    object GetVenues : EvEvents()
 }

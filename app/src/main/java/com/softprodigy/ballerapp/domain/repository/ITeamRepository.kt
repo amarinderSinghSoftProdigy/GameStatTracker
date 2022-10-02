@@ -4,9 +4,7 @@ import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.data.request.CreateTeamRequest
 import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
 import com.softprodigy.ballerapp.data.request.UpdateTeamRequest
-import com.softprodigy.ballerapp.data.response.CreateTeamResponse
-import com.softprodigy.ballerapp.data.response.PlayerDetails
-import com.softprodigy.ballerapp.data.response.StandingData
+import com.softprodigy.ballerapp.data.response.*
 import com.softprodigy.ballerapp.data.response.homepage.HomePageCoachModel
 import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.data.response.team.Player
@@ -73,4 +71,24 @@ interface ITeamRepository {
         limit: Int = 20
     ): ResultWrapper<BaseResponse<ArrayList<Venue>>>
 
+    suspend fun getMyLeagues(
+        page: Int = 1,
+        limit: Int = 20,
+        sort: String = ""
+    ): ResultWrapper<BaseResponse<ArrayList<MyLeagueResponse>>>
+
+    suspend fun getDivisions(
+        page: Int = 1,
+        limit: Int = 20,
+        sort: String = "",
+        gender: String,
+        leagueId: String
+    ): ResultWrapper<BaseResponse<ArrayList<DivisionResponse>>>
+
+    suspend fun getVenues(
+        page: Int = 1,
+        limit: Int = 20,
+        sort: String = "",
+        leagueId: String
+    ): ResultWrapper<BaseResponse<VenuesResponse>>
 }

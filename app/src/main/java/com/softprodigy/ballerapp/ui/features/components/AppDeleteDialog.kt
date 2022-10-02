@@ -870,7 +870,7 @@ fun SelectInvitationRoleDialog(
                             text = stringResource(R.string.dialog_button_confirm),
                             onClick = {
                                 onConfirmClick.invoke()
-                                onDismiss.invoke()
+                                /*onDismiss.invoke()*/
                             },
                             modifier = Modifier
                                 .weight(1f),
@@ -1067,7 +1067,7 @@ fun SelectGuardianRoleDialog(
                                 }
                             })
                     }
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                   /* Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
                     DialogButton(
                         text = stringResource(R.string.child_not_listed),
@@ -1076,7 +1076,7 @@ fun SelectGuardianRoleDialog(
                         border = ButtonDefaults.outlinedBorder,
                         onlyBorder = true,
                         enabled = false
-                    )
+                    )*/
 
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 

@@ -21,6 +21,7 @@ import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,16 +32,27 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.data.response.VenuesId
 import com.softprodigy.ballerapp.data.response.division.VenuesData
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.CoilImage
 import com.softprodigy.ballerapp.ui.features.components.Placeholder
+import com.softprodigy.ballerapp.ui.features.home.events.EvEvents
+import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun VenuesScreen(moveToOpenVenues: (String) -> Unit, vm: VenuesViewModel = hiltViewModel()) {
-    val state = vm.venuesUiState.value
+fun VenuesScreen(moveToOpenVenues: (String) -> Unit, eventViewModel: EventViewModel) {
+    val state = eventViewModel.eventState.value
+
+    remember {
+        eventViewModel.onEvent(
+            EvEvents.GetVenues
+        )
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             LazyColumn(
@@ -53,9 +65,9 @@ fun VenuesScreen(moveToOpenVenues: (String) -> Unit, vm: VenuesViewModel = hiltV
                     )
 
             ) {
-                itemsIndexed(state.venuesData) { index, item ->
+                itemsIndexed(state.venuesList) { index, item ->
                     VenuesItem(item) {
-                        moveToOpenVenues(item.title)
+                        moveToOpenVenues(item.venueName)
                     }
                 }
             }
@@ -64,7 +76,7 @@ fun VenuesScreen(moveToOpenVenues: (String) -> Unit, vm: VenuesViewModel = hiltV
 }
 
 @Composable
-fun VenuesItem(item: VenuesData, moveToOpenVenues: () -> Unit) {
+fun VenuesItem(item: VenuesId, moveToOpenVenues: () -> Unit) {
 
     Row(
         modifier = Modifier
@@ -81,7 +93,7 @@ fun VenuesItem(item: VenuesData, moveToOpenVenues: () -> Unit) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
             CoilImage(
-                src = item.image,
+                src = BuildConfig.IMAGE_SERVER + item.logo,
                 modifier = Modifier
                     .size(dimensionResource(id = R.dimen.size_44dp))
                     .background(
@@ -98,7 +110,7 @@ fun VenuesItem(item: VenuesData, moveToOpenVenues: () -> Unit) {
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
             AppText(
-                text = item.title,
+                text = item.venueName,
                 style = MaterialTheme.typography.h5,
                 fontWeight = FontWeight.W500,
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
