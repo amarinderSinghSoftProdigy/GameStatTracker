@@ -69,7 +69,6 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
             is InvitationEvent.OnRoleConfirmClick -> {
                 viewModelScope.launch {
 
-
                     getPlayerById()
                 }
             }

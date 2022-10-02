@@ -48,6 +48,14 @@ sealed class EvEvents {
 
     data class OnNoteChange(val note: String) : EvEvents()
     data class OnAddNoteConfirmClick(val noteType: NoteType,val note:String,val eventId:String) : EvEvents()
+
+    object GetMyLeagues : EvEvents()
+
+    object GetDivision : EvEvents()
+    data class GetLeagueId(val id: String) : EvEvents()
+    data class GetGender(val gender: String) : EvEvents()
+
+    object GetVenues : EvEvents()
 }
 
 enum class NoteType(val type: String) {

@@ -142,7 +142,6 @@ fun InvitationScreen() {
         )
     }
 
-
     if (state.showDeclineDialog) {
         DeleteDialog(
             item = state.selectedInvitation,

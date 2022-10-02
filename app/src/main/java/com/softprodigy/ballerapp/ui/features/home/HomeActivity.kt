@@ -435,7 +435,9 @@ fun NavControllerComposable(
                 }, moveToOpenTeams = {
                     eventTitle = it
                     navController.navigate(Route.TEAM_TAB)
-                })
+                },
+                eventViewModel = eventViewModel
+            )
         }
         composable(route = Route.EVENTS_FILTER_SCREEN) {
             homeViewModel.setTopBar(
@@ -612,7 +614,7 @@ fun NavControllerComposable(
                     topBar = TopBar.NEW_EVENT,
                 )
             )
-            NewEventScreen(venue=venue,onVenueClick = {
+            NewEventScreen(venue = venue, onVenueClick = {
                 navController.navigate(Route.SELECT_VENUE)
 
             }, onEventCreationSuccess = {
