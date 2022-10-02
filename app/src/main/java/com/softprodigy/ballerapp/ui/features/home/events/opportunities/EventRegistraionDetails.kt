@@ -39,8 +39,12 @@ import com.softprodigy.ballerapp.ui.theme.*
 fun EventRegistraionDetails(vm: EventViewModel, teamVm: TeamViewModel, onSuccess: () -> Unit) {
     val context = LocalContext.current
     val state = vm.eventState.value
+    val teamState = teamVm.teamUiState.value
     remember {
         vm.onEvent(EvEvents.GetDivisions(state.selectedEventId))
+    }
+    val showError = remember {
+        mutableStateOf(false)
     }
     val showDialog = remember {
         mutableStateOf(false)
@@ -156,6 +160,8 @@ fun EventRegistraionDetails(vm: EventViewModel, teamVm: TeamViewModel, onSuccess
                 ) {
                     if (state.registerRequest.team.isEmpty()) {
                         vm.onEvent(EvEvents.ShowToast(context.getString(R.string.no_team_selected)))
+                    } else if (teamState.playersList.isEmpty()) {
+                        vm.onEvent(EvEvents.ShowToast(context.getString(R.string.no_players_change_selection)))
                     } else {
                         showPlayerDialog.value = true
                     }
@@ -170,7 +176,7 @@ fun EventRegistraionDetails(vm: EventViewModel, teamVm: TeamViewModel, onSuccess
 
                 }
                 AppOutlineTextField(
-                    isError = state.registerRequest.payment.isEmpty() || state.registerRequest.payment == "0",
+                    isError = showError.value,
                     leadingIcon = {
                         AppText(
                             text = stringResource(id = R.string.dollar),
@@ -179,6 +185,9 @@ fun EventRegistraionDetails(vm: EventViewModel, teamVm: TeamViewModel, onSuccess
                     },
                     value = state.registerRequest.payment,
                     onValueChange = {
+                        if (it.isNotEmpty() || it != "0") {
+                            showError.value = false
+                        }
                         vm.onEvent(EvEvents.RegisterCash(it))
                     },
                     modifier = Modifier
@@ -301,7 +310,7 @@ fun EventRegistraionDetails(vm: EventViewModel, teamVm: TeamViewModel, onSuccess
                     message = context.getString(R.string.please_select_player)
                 }
                 if (state.registerRequest.payment.isEmpty() || state.registerRequest.payment == "0") {
-                    message = context.getString(R.string.cash_message)
+                    showError.value = true
                 }
                 if (!state.registerRequest.termsAndCondition || !state.registerRequest.privacy) {
                     message = context.getString(R.string.please_accept_tems)
@@ -366,7 +375,7 @@ fun EventRegistraionDetails(vm: EventViewModel, teamVm: TeamViewModel, onSuccess
         )
     }
 
-    if (state.isLoading) {
+    if (state.isLoading || teamState.isLoading) {
         CommonProgressBar()
     }
 }

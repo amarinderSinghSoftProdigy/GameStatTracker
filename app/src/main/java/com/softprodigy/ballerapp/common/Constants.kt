@@ -24,6 +24,8 @@ object AppConstants {
     const val PUBLIC_PROFILE = "public_profile"
     const val EMAIL = "email"
     const val SKIP = "skip"
+    const val PAGE = 1
+    const val PAGE_LIMIT = 20
     var DEFAULT_COLOR: Color = Color(0xFF0177C1)
     var SELECTED_COLOR: Color = Color(0xFF0177C1)
 }
@@ -104,7 +106,7 @@ object ApiConstants {
     const val GET_HOME_PAGE_DETAILS = "v1/coach/event/getHomePageDetails"
     const val GET_USER_FULL_DETAILS = "v1/userDetails"
     const val UPDATE_USER_FULL_DETAILS = "v1/userDetails"
-    const val EVENT_GET_DIVISIONS = "v1/event/getAllDivisions"
+    const val EVENT_GET_DIVISIONS = "v1/division/getAllDivisions"
     const val EVENT_TEAM_REGISTRATION = "v1/event/team/registration"
     const val EVENT_UPDATE_FILTERS = "v1/event/updateFilterPreferences"
 

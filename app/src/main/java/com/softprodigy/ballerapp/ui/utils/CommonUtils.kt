@@ -1,9 +1,12 @@
 package com.softprodigy.ballerapp.ui.utils
 
 import android.annotation.SuppressLint
+import android.content.Context
+import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.TeamLeaderBoard
 import com.softprodigy.ballerapp.ui.features.home.events.FilterPreference
+import com.softprodigy.ballerapp.ui.features.home.events.Participation
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -103,6 +106,31 @@ class CommonUtils {
 
             }
             return str
+        }
+
+        fun getParticipation(data: Participation, context: Context): String {
+            val check = if (data.boysMax.isEmpty() && data.boysMin.isEmpty()) {
+                context.getString(R.string.male)
+            } else if (data.girlsMax.isEmpty() && data.girlsMin.isEmpty()) {
+                context.getString(R.string.female)
+            } else {
+                context.getString(R.string.all)
+            }
+            val result = "$check, " + when (check) {
+                "Male" -> {
+                    data.boysMin + " - " + data.boysMax
+                }
+                "Female" -> {
+                    data.girlsMin + " - " + data.girlsMax
+                }
+                "All" -> {
+                    data.boysMin + " - " + "M - " + data.boysMax + " , " + "F - " + data.girlsMin + " - " + data.girlsMax
+                }
+                else -> {
+                    ""
+                }
+            }
+            return result
         }
     }
 }

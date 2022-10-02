@@ -384,6 +384,7 @@ fun NavControllerComposable(
                 )
             )
             OppEventDetails(eventViewModel, moveToRegistration = {
+                eventViewModel.onEvent(EvEvents.ClearRegister)
                 navController.navigate(Route.EVENT_REGISTRATION)
             })
         }
@@ -501,7 +502,6 @@ fun NavControllerComposable(
             BackHandler {
                 homeViewModel.setScreen(false)
                 navController.popBackStack()
-
             }
             AddPlayersScreenUpdated(
                 vm = setupTeamViewModelUpdated,

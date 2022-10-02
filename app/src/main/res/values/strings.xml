@@ -394,4 +394,6 @@
     <string name="add_note">Add note</string>
     <string name="add_pre_note">Add Pre-practice prep &amp; agenda note</string>
     <string name="add_post_note">Add Post-practice note</string>
+    <string name="no_players_change_selection">No players in selected team, Please try with other team</string>
+
 </resources>
