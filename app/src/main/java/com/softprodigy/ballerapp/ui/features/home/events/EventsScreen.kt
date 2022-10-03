@@ -27,16 +27,9 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.common.apiToUIDateFormat2
+import com.softprodigy.ballerapp.common.apiToUIDateFormat
+import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.response.team.Team
-import com.softprodigy.ballerapp.ui.features.components.DeclineEventDialog
-import com.softprodigy.ballerapp.ui.features.components.SwitchTeamDialog
-import com.softprodigy.ballerapp.ui.features.components.TopBar
-import com.softprodigy.ballerapp.ui.features.components.TopBarData
-import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
-import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
-import com.softprodigy.ballerapp.ui.features.home.events.opportunities.OpportunitieScreen
-import com.softprodigy.ballerapp.ui.features.home.events.opportunities.OpportunitieScreen
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.events.opportunities.OpportunitieScreen
 import com.softprodigy.ballerapp.ui.theme.*
@@ -49,7 +42,7 @@ fun EventsScreen(
     showDialog: Boolean,
     dismissDialog: (Boolean) -> Unit,
     moveToDetail: () -> Unit,
-    moveToPracticeDetail: (String) -> Unit, moveToGameDetail: (String) -> Unit,
+    moveToPracticeDetail: (String, String) -> Unit, moveToGameDetail: (String) -> Unit,
     moveToOppDetails: (String) -> Unit,
     updateTopBar: (TopBarData) -> Unit
 ) {
@@ -160,7 +153,7 @@ fun TabsContent(
     state: EventState,
     vm: EventViewModel,
     moveToDetail: () -> Unit,
-    moveToPracticeDetail: (String) -> Unit,
+    moveToPracticeDetail: (String, String) -> Unit,
     moveToGameDetail: (String) -> Unit,
     moveToOppDetails: (String) -> Unit,
     updateTopBar: (TopBarData) -> Unit
@@ -206,14 +199,14 @@ fun SetTopBar(pagerState: PagerState, page: Int, updateTopBar: (TopBarData) -> U
 fun BoxScope.MyEvents(
     state: EventState,
     vm: EventViewModel,
-    moveToPracticeDetail: (String) -> Unit,
+    moveToPracticeDetail: (String, String) -> Unit,
     moveToGameDetail: (String) -> Unit
 ) {
 
     remember {
         vm.onEvent(EvEvents.RefreshEventScreen)
     }
-    if (state.currentEvents.size > 0) {
+    if (state.currentEvents.size > 0 || state.pastEvents.size > 0) {
         Box(modifier = Modifier.fillMaxSize()) {
 
                 Column(
@@ -249,7 +242,8 @@ fun BoxScope.MyEvents(
                             vm.onEvent(EvEvents.OnDeclineCLick(it))
                         }, moveToPracticeDetail = moveToPracticeDetail,
                             moveToGameDetail = moveToGameDetail,
-                            isPast = false
+                            isPast = false,
+                            isSelfCreatedEvent = it.createdBy == UserStorage.userId
                         )
                     }
                 }
@@ -367,9 +361,10 @@ fun EventItem(
     events: Events,
     onAcceptCLick: (Events) -> Unit,
     onDeclineCLick: (Events) -> Unit,
-    moveToPracticeDetail: (String) -> Unit,
+    moveToPracticeDetail: (String, String) -> Unit,
     moveToGameDetail: (String) -> Unit,
-    isPast: Boolean
+    isPast: Boolean,
+    isSelfCreatedEvent: Boolean = false,
 ) {
     Box(
         modifier = modifier
@@ -377,7 +372,7 @@ fun EventItem(
                 if (events.eventType.equals(EventType.PRACTICE.type, ignoreCase = true) ||
                     events.eventType.equals(EventType.ACTIVITY.type, ignoreCase = true)
                 )
-                    moveToPracticeDetail(events.eventName)
+                    moveToPracticeDetail(events.id, events.eventName)
                 else if (events.eventType.equals(EventType.GAME.type, ignoreCase = true)) {
                     moveToGameDetail(events.eventName)
                 }
@@ -433,7 +428,7 @@ fun EventItem(
                                 .padding(dimensionResource(id = R.dimen.size_4dp))
                         ) {
                             Text(
-                                text = events.eventType ?: "",
+                                text = events.eventType.capitalize(),
                                 color = Color.White,
                                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                                 fontWeight = FontWeight.Bold,
@@ -450,7 +445,7 @@ fun EventItem(
                             style = MaterialTheme.typography.h4
                         )
                         Text(
-                            text = apiToUIDateFormat2(events.date),
+                            text = "${apiToUIDateFormat(events.date)} ${events.startTime} - ${events.endTime}",
                             color = ColorBWGrayLight,
                             style = MaterialTheme.typography.h4
                         )
@@ -459,12 +454,178 @@ fun EventItem(
                 }
             }
             if (!isPast) {
-                if (events.invitationStatus.equals(EventStatus.PENDING.status, ignoreCase = true)) {
+                if (!isSelfCreatedEvent) {
+                    if (events.invitationStatus.equals(
+                            EventStatus.MAY_BE.status,
+                            ignoreCase = true
+                        )
+                    ) {
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .background(
+                                    color = ColorPrimaryTransparent,
+                                    shape = RoundedCornerShape(
+                                        bottomStart = dimensionResource(
+                                            id = R.dimen.size_8dp
+                                        ),
+                                        bottomEnd = dimensionResource(id = R.dimen.size_8dp)
+                                    )
+                                ),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Row(
+                                Modifier
+                                    .weight(1f)
+                                    .clickable {
+                                        onDeclineCLick.invoke(events)
+                                    }
+                                    .padding(dimensionResource(id = R.dimen.size_14dp)),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_cross_2),
+                                    contentDescription = "",
+                                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_6dp)),
+                                    tint = MaterialTheme.appColors.material.primaryVariant
+                                )
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
+                                Text(
+                                    text = stringResource(id = R.string.decline),
+                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                    fontWeight = FontWeight.W500,
+
+                                    )
+                            }
+
+                            Row(
+                                Modifier
+                                    .weight(1f)
+                                    .clickable {
+                                        onAcceptCLick.invoke(events)
+                                    }
+                                    .padding(dimensionResource(id = R.dimen.size_14dp)),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_check),
+                                    contentDescription = "",
+                                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_6dp)),
+                                    tint = MaterialTheme.appColors.material.primaryVariant
+                                )
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
+                                Text(
+                                    text = stringResource(id = R.string.accept),
+                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                    fontWeight = FontWeight.W500,
+                                )
+                            }
+
+                        }
+                    } else if (events.invitationStatus.equals(
+                            EventStatus.GOING.status,
+                            ignoreCase = true
+                        )
+                    ) {
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .background(
+                                    color = ColorButtonGreen,
+                                    shape = RoundedCornerShape(
+                                        bottomStart = dimensionResource(
+                                            id = R.dimen.size_8dp
+                                        ),
+                                        bottomEnd = dimensionResource(id = R.dimen.size_8dp)
+                                    )
+                                )
+                                .clickable {
+
+                                }
+                                .padding(dimensionResource(id = R.dimen.size_14dp)),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_check),
+                                contentDescription = "",
+                                modifier = Modifier.size(dimensionResource(id = R.dimen.size_6dp)),
+                                tint = MaterialTheme.appColors.buttonColor.textEnabled,
+                            )
+                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
+                            Text(
+                                text = stringResource(id = R.string.going),
+                                color = MaterialTheme.appColors.buttonColor.textEnabled,
+                                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                fontWeight = FontWeight.W500,
+                            )
+                        }
+                    } else if (events.invitationStatus.equals(
+                            EventStatus.NOT_GOING.status,
+                            ignoreCase = true
+                        )
+                    ) {
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .background(
+                                    color = ColorButtonRed,
+                                    shape = RoundedCornerShape(
+                                        bottomStart = dimensionResource(
+                                            id = R.dimen.size_8dp
+                                        ),
+                                        bottomEnd = dimensionResource(id = R.dimen.size_8dp)
+                                    )
+                                )
+                                .clickable {
+
+                                }
+                                .padding(dimensionResource(id = R.dimen.size_14dp)),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+
+                            Row( horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_cross_2),
+                                    contentDescription = "",
+                                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_6dp)),
+                                    tint = MaterialTheme.appColors.buttonColor.textEnabled,
+                                )
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
+                                Text(
+                                    text = stringResource(id = R.string.not_going),
+                                    color = MaterialTheme.appColors.buttonColor.textEnabled,
+                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                    fontWeight = FontWeight.W500,
+                                    fontFamily = rubikFamily
+                                )
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
+
+                            }
+                            Row(modifier=Modifier.weight(1f), horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = events.reason,
+                                    color = MaterialTheme.appColors.buttonColor.textEnabled,
+                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                    fontWeight = FontWeight.W500,
+                                )
+                            }
+                        }
+                    }
+                } else {
                     Row(
                         Modifier
                             .fillMaxWidth()
                             .background(
-                                color = ColorPrimaryTransparent,
+                                color = MaterialTheme.appColors.material.surface,
                                 shape = RoundedCornerShape(
                                     bottomStart = dimensionResource(
                                         id = R.dimen.size_8dp
@@ -478,7 +639,7 @@ fun EventItem(
                             Modifier
                                 .weight(1f)
                                 .clickable {
-                                    onDeclineCLick.invoke(events)
+                                    moveToPracticeDetail.invoke(events.id, events.eventName)
                                 }
                                 .padding(dimensionResource(id = R.dimen.size_14dp)),
                             horizontalArrangement = Arrangement.Center,
@@ -492,8 +653,17 @@ fun EventItem(
                             )
                             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                             Text(
-                                text = stringResource(id = R.string.decline),
+                                text = events.notGoing.size.toString(),
                                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                fontWeight = FontWeight.W500,
+
+                                )
+                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
+
+                            Text(
+                                text = stringResource(id = R.string.not_going),
+                                color = MaterialTheme.appColors.textField.labelDark,
                                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                 fontWeight = FontWeight.W500,
 
@@ -504,7 +674,7 @@ fun EventItem(
                             Modifier
                                 .weight(1f)
                                 .clickable {
-                                    onAcceptCLick.invoke(events)
+                                    moveToPracticeDetail.invoke(events.id, events.eventName)
                                 }
                                 .padding(dimensionResource(id = R.dimen.size_14dp)),
                             horizontalArrangement = Arrangement.Center,
@@ -518,115 +688,27 @@ fun EventItem(
                             )
                             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                             Text(
-                                text = stringResource(id = R.string.accept),
+                                text = events.going.size.toString(),
                                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                 fontWeight = FontWeight.W500,
-                            )
-                        }
 
-                    }
-                } else if (events.invitationStatus.equals(
-                        EventStatus.ACCEPT.status,
-                        ignoreCase = true
-                    )
-                ) {
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .background(
-                                color = ColorButtonGreen,
-                                shape = RoundedCornerShape(
-                                    bottomStart = dimensionResource(
-                                        id = R.dimen.size_8dp
-                                    ),
-                                    bottomEnd = dimensionResource(id = R.dimen.size_8dp)
                                 )
-                            )
-                            .clickable {
+                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
 
-                            }
-                            .padding(dimensionResource(id = R.dimen.size_14dp)),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_check),
-                            contentDescription = "",
-                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_6dp)),
-                            tint = MaterialTheme.appColors.buttonColor.textEnabled,
-                        )
-                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
-                        Text(
-                            text = stringResource(id = R.string.going),
-                            color = MaterialTheme.appColors.buttonColor.textEnabled,
-                            fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                            fontWeight = FontWeight.W500,
-                        )
-                    }
-                } else if (events.invitationStatus.equals(
-                        EventStatus.REJECT.status,
-                        ignoreCase = true
-                    )
-                ) {
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .background(
-                                color = ColorButtonRed,
-                                shape = RoundedCornerShape(
-                                    bottomStart = dimensionResource(
-                                        id = R.dimen.size_8dp
-                                    ),
-                                    bottomEnd = dimensionResource(id = R.dimen.size_8dp)
-                                )
-                            )
-                            .clickable {
-
-                            }
-                            .padding(dimensionResource(id = R.dimen.size_14dp)),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-
-                        Row( horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_cross_2),
-                            contentDescription = "",
-                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_6dp)),
-                            tint = MaterialTheme.appColors.buttonColor.textEnabled,
-                        )
-                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
-                        Text(
-                            text = stringResource(id = R.string.not_going),
-                            color = MaterialTheme.appColors.buttonColor.textEnabled,
-                            fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                            fontWeight = FontWeight.W500,
-                            fontFamily = rubikFamily
-                        )
-                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
-
-                        }
-                        Row(modifier=Modifier.weight(1f), horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically){
                             Text(
-                                text = events.reason,
-                                color = MaterialTheme.appColors.buttonColor.textEnabled,
+                                text = stringResource(id = R.string.going),
+                                color = MaterialTheme.appColors.textField.labelDark,
                                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                 fontWeight = FontWeight.W500,
-                            )
+
+                                )
                         }
+
                     }
                 }
             }
         }
-        /* if (isPast)
-             Box(
-                 modifier = Modifier
-                     .matchParentSize()
-                     .background(color = BackgroundColor)
-             )*/
     }
 
 }
