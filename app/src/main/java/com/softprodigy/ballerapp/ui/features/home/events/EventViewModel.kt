@@ -283,7 +283,7 @@ class EventViewModel @Inject constructor(
             is EvEvents.GetGender -> {
                 viewModelScope.launch {
                     _state.value = _state.value.copy(gender = event.gender)
-
+                    getDivisions()
                 }
             }
             is EvEvents.PostNoteTimeSpan -> {
@@ -322,9 +322,30 @@ class EventViewModel @Inject constructor(
                     getVenues()
                 }
             }
-        }
-        }
 
+            is EvEvents.RefreshTeamsByLeagueAndDivision -> {
+                viewModelScope.launch { getTeamsByLeagueAndDivision(divisionId = event.divisionId) }
+            }
+
+            is EvEvents.RefreshTeamsByDivision -> {
+                viewModelScope.launch { getTeamsByLeagueIdAllDivision(_state.value.leagueId) }
+            }
+            is EvEvents.RefreshVenueDetailsById -> {
+                viewModelScope.launch { getVenueDetailsById(event.venueId) }
+            }
+
+            is EvEvents.RefreshStandingByLeagueDivision -> {
+                viewModelScope.launch { getAllTeamsStandingByLeaguedAndDivision(leagueId = _state.value.leagueId, divisionId  =event.divisionId) }
+            }
+            is EvEvents.OnLeagueDivisionStandingSelected -> {
+                _state.value = _state.value.copy(
+                    standingUIState = _state.value.standingUIState.copy(
+                        selectedStanding = event.standing
+                    )
+                )
+            }
+        }
+    }
 
 
     private suspend fun addNote(noteType: NoteType, note: String, eventId: String) {
@@ -892,19 +913,19 @@ class EventViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getTeamsByLeagueAndDivision(leagueId: String, divisionId: String) {
+    private suspend fun getTeamsByLeagueAndDivision(divisionId: String) {
         _state.value = _state.value.copy(isLoading = true)
         val teamResponse =
             eventsRepo.getTeamsByLeagueAndDivision(
-                leagueId = leagueId,
-                divisionId=divisionId
+                leagueId = _state.value.leagueId,
+                divisionId = divisionId
             )
         _state.value = _state.value.copy(isLoading = false)
 
-        when(teamResponse){
+        when (teamResponse) {
             is ResultWrapper.GenericError -> {
                 _channel.send(
-                    EventChannel.ShowToast(
+                    EventChannel.ShowDivisionTeamToast(
                         UiText.DynamicString(
                             "${teamResponse.message}"
                         )
@@ -913,7 +934,7 @@ class EventViewModel @Inject constructor(
             }
             is ResultWrapper.NetworkError -> {
                 _channel.send(
-                    EventChannel.ShowToast(
+                    EventChannel.ShowDivisionTeamToast(
                         UiText.DynamicString(
                             teamResponse.message
                         )
@@ -923,16 +944,10 @@ class EventViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 teamResponse.value.let { response ->
                     if (response.status) {
-                        _channel.send(
-                            EventChannel.ShowToast(
-                                UiText.DynamicString(
-                                    response.statusMessage
-                                )
-                            )
-                        )
+                        _state.value = _state.value.copy(teamsByLeagueDivision = response.data)
                     } else {
                         _channel.send(
-                            EventChannel.ShowToast(
+                            EventChannel.ShowDivisionTeamToast(
                                 UiText.DynamicString(
                                     response.statusMessage
                                 )
@@ -948,10 +963,11 @@ class EventViewModel @Inject constructor(
         _state.value = _state.value.copy(isLoading = true)
         val teamResponse =
             eventsRepo.getTeamsByLeagueIdAllDivision(
-                leagueId = leagueId)
+                leagueId = leagueId
+            )
         _state.value = _state.value.copy(isLoading = false)
 
-        when(teamResponse){
+        when (teamResponse) {
             is ResultWrapper.GenericError -> {
                 _channel.send(
                     EventChannel.ShowToast(
@@ -973,13 +989,7 @@ class EventViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 teamResponse.value.let { response ->
                     if (response.status) {
-                        _channel.send(
-                            EventChannel.ShowToast(
-                                UiText.DynamicString(
-                                    response.statusMessage
-                                )
-                            )
-                        )
+                        _state.value = _state.value.copy(divisionWiseTeamResponse = response.data)
                     } else {
                         _channel.send(
                             EventChannel.ShowToast(
@@ -994,16 +1004,19 @@ class EventViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getAllTeamsStandingByLeaguedAndDivision(leagueId: String, divisionId: String) {
+    private suspend fun getAllTeamsStandingByLeaguedAndDivision(
+        leagueId: String,
+        divisionId: String
+    ) {
         _state.value = _state.value.copy(isLoading = true)
         val standingResponse =
             eventsRepo.getAllTeamsStandingByLeaguedAndDivision(
                 leagueId = leagueId,
-                divisionId=divisionId
+                divisionId = divisionId
             )
         _state.value = _state.value.copy(isLoading = false)
 
-        when(standingResponse){
+        when (standingResponse) {
             is ResultWrapper.GenericError -> {
                 _channel.send(
                     EventChannel.ShowToast(
@@ -1025,13 +1038,13 @@ class EventViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 standingResponse.value.let { response ->
                     if (response.status) {
-                        _channel.send(
-                            EventChannel.ShowToast(
-                                UiText.DynamicString(
-                                    response.statusMessage
-                                )
+                        _state.value = _state.value.copy(
+                            standingUIState = _state.value.standingUIState.copy(
+                                allTeam = response.data.allTeams,
+                                categories = response.data.categories
                             )
                         )
+
                     } else {
                         _channel.send(
                             EventChannel.ShowToast(
@@ -1050,10 +1063,11 @@ class EventViewModel @Inject constructor(
         _state.value = _state.value.copy(isLoading = true)
         val venueResponse =
             eventsRepo.getVenueDetailsById(
-                venueId = venueId)
+                venueId = venueId
+            )
         _state.value = _state.value.copy(isLoading = false)
 
-        when(venueResponse){
+        when (venueResponse) {
             is ResultWrapper.GenericError -> {
                 _channel.send(
                     EventChannel.ShowToast(
@@ -1075,13 +1089,7 @@ class EventViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 venueResponse.value.let { response ->
                     if (response.status) {
-                        _channel.send(
-                            EventChannel.ShowToast(
-                                UiText.DynamicString(
-                                    response.statusMessage
-                                )
-                            )
-                        )
+                        _state.value = _state.value.copy(venueDetails = response.data)
                     } else {
                         _channel.send(
                             EventChannel.ShowToast(
@@ -1102,6 +1110,7 @@ class EventViewModel @Inject constructor(
 
 sealed class EventChannel {
     data class ShowToast(val message: UiText) : EventChannel()
+    data class ShowDivisionTeamToast(val message: UiText) : EventChannel()
     data class ShowEventDetailsToast(val message: UiText) : EventChannel()
     data class OnUpdateNoteSuccess(val message: String) : EventChannel()
     data class OnSuccess(val message: UiText) : EventChannel()

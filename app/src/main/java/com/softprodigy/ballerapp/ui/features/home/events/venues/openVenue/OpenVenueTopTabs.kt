@@ -1,11 +1,7 @@
 package com.softprodigy.ballerapp.ui.features.home.events.venues.openVenue
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -21,18 +17,19 @@ import com.softprodigy.ballerapp.ui.features.components.AppStaticTabRow
 import com.softprodigy.ballerapp.ui.features.components.AppTabLikeViewPager
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
 import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
+import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun OpenVenueTopTabs() {
+fun OpenVenueTopTabs(venueId: String, eventViewModel: EventViewModel) {
 
     val tabData = listOf(
         OpenVenueTabItems.Details,
         OpenVenueTabItems.Courts,
         OpenVenueTabItems.Schedule,
-
         )
+
     val pagerState = rememberPagerState(
         pageCount = tabData.size,
         initialOffScreenLimit = 1,
@@ -40,7 +37,7 @@ fun OpenVenueTopTabs() {
 
     Column {
         OpenVenueTabs(pagerState = pagerState, tabData = tabData)
-        OpenVenueContents(pagerState = pagerState)
+        OpenVenueContents(pagerState = pagerState, venueId, eventViewModel)
     }
 }
 
@@ -77,13 +74,13 @@ fun OpenVenueTabs(pagerState: PagerState, tabData: List<OpenVenueTabItems>) {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun OpenVenueContents(pagerState: PagerState) {
+fun OpenVenueContents(pagerState: PagerState, venueId: String, eventViewModel: EventViewModel) {
     HorizontalPager(
         state = pagerState,
         modifier = Modifier.fillMaxSize()
     ) { index ->
         when (index) {
-            0 -> OpenVenuesDetailsScreen()
+            0 -> OpenVenuesDetailsScreen(venueId, eventViewModel)
             1 -> EmptyScreen(singleText = true, heading = stringResource(id = R.string.coming_soon))
             2 -> EmptyScreen(singleText = true, heading = stringResource(id = R.string.coming_soon))
         }

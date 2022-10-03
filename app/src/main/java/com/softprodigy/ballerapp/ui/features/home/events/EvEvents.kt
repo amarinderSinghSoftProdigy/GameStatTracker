@@ -1,5 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.home.events
 
+import com.softprodigy.ballerapp.data.response.Standing
 import com.softprodigy.ballerapp.data.response.team.Team
 
 sealed class EvEvents {
@@ -47,7 +48,11 @@ sealed class EvEvents {
     ) : EvEvents()
 
     data class OnNoteChange(val note: String) : EvEvents()
-    data class OnAddNoteConfirmClick(val noteType: NoteType,val note:String,val eventId:String) : EvEvents()
+    data class OnAddNoteConfirmClick(
+        val noteType: NoteType,
+        val note: String,
+        val eventId: String
+    ) : EvEvents()
 
     object GetMyLeagues : EvEvents()
 
@@ -56,6 +61,11 @@ sealed class EvEvents {
     data class GetGender(val gender: String) : EvEvents()
 
     object GetVenues : EvEvents()
+   data class RefreshTeamsByLeagueAndDivision(val divisionId: String) : EvEvents()
+   object RefreshTeamsByDivision : EvEvents()
+   data class RefreshVenueDetailsById(val venueId:String) : EvEvents()
+   data class OnLeagueDivisionStandingSelected(val standing:Standing) : EvEvents()
+   data class RefreshStandingByLeagueDivision(val divisionId: String):EvEvents()
 }
 
 enum class NoteType(val type: String) {

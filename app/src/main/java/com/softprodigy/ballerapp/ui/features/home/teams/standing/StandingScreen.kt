@@ -57,6 +57,7 @@ fun StandingScreen(
     vm: StandingViewModel = hiltViewModel()
 ) {
     val state = vm.standingUiState.value
+
     val onStandingSelectionChange = { standing: Standing ->
         vm.onEvent(StandingUIEvent.OnStandingSelected(standing))
     }
@@ -88,15 +89,12 @@ fun StandingScreen(
                         ) {
                             onStandingSelectionChange.invoke(standing)
                         }
-
                     }
                 }
                 Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_24dp)))
             }
         }
     }
-
-
 }
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -245,7 +243,7 @@ fun StandingTopTabs(pagerState: PagerState, tabData: List<Categories>) {
                     selected = pagerState.currentPage == index,
                     onClick = {
                         coroutineScope.launch {
-                            pagerState.animateScrollToPage(index)
+                            if (pagerState.pageCount != 0) pagerState.animateScrollToPage(index)
                         }
                     })
             }

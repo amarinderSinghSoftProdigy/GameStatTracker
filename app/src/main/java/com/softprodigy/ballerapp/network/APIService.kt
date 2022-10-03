@@ -5,12 +5,16 @@ import com.softprodigy.ballerapp.data.request.*
 import com.softprodigy.ballerapp.data.response.*
 import com.softprodigy.ballerapp.data.response.homepage.HomePageCoachModel
 import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
+import com.softprodigy.ballerapp.data.response.team.DivisionWiseTeamResponse
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
+import com.softprodigy.ballerapp.data.response.team.TeamsByLeagueDivisionResponse
 import com.softprodigy.ballerapp.domain.BaseResponse
 import com.softprodigy.ballerapp.ui.features.home.events.*
 import com.softprodigy.ballerapp.ui.features.home.invitation.Invitation
 import com.softprodigy.ballerapp.ui.features.venue.Venue
+import com.softprodigy.ballerapp.ui.features.venue.VenueAddress
+import com.softprodigy.ballerapp.ui.features.venue.VenueDetails
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.*
@@ -207,12 +211,12 @@ open interface APIService {
         @Query("sort") sort: String,
         @Query("leagueId") leagueId: String,
         @Query("divisionId") divisionId: String,
-    ): BaseResponse<Any>
+    ): BaseResponse<ArrayList<TeamsByLeagueDivisionResponse>>
 
     @GET(ApiConstants.GET_ALL_TEAMS_BY_LEAGUE_ID_All_DIVISIONS)
     suspend fun getTeamsByLeagueIdAllDivision(
         @Query("leagueId") leagueId: String,
-    ): BaseResponse<Any>
+    ): BaseResponse<ArrayList<DivisionWiseTeamResponse>>
 
     @GET(ApiConstants.GET_ALL_TEAMS_STANDING_BY_LEAGUE_AND_DIVISION)
     suspend fun getAllTeamsStandingByLeaguedAndDivision(
@@ -221,12 +225,12 @@ open interface APIService {
         @Query("sort") sort: String,
         @Query("leagueId") leagueId: String,
         @Query("divisionId") divisionId: String,
-    ): BaseResponse<Any>
+    ): BaseResponse<StandingByLeagueAndDivisionData>
 
     @GET(ApiConstants.GET_VENUE_DETAILS_BY_ID)
     suspend fun getVenueDetailsById(
         @Query("id") venueId: String,
-    ): BaseResponse<Any>
+    ): BaseResponse<VenueDetails>
 
     @GET(ApiConstants.SWAP_PROFILE)
     suspend fun getSwapProfiles(): BaseResponse<List<SwapUser>>

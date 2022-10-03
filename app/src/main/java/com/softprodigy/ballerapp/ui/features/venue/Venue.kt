@@ -41,3 +41,18 @@ data class CourtInfo(
     @SerializedName("__v") val _v: String = ""
 
 )
+
+data class VenueDetails(
+    @SerializedName("_id") val Id: String = "",
+    @SerializedName("venueName") val venueName: String = "",
+    @SerializedName("courtId") val courtId: ArrayList<CourtInfo> = arrayListOf(),
+    @SerializedName("venueAddress") val venueAddress: VenueAddress = VenueAddress(),
+    @SerializedName("location") val location: String? = null
+)
+
+data class VenueAddress(
+    @SerializedName("address") val address: String = "",
+    @SerializedName("state") val state: String = "",
+    @SerializedName("city") val city: String = "",
+    @SerializedName("zipCode") val zipCode: String = ""
+)

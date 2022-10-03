@@ -2,13 +2,24 @@ package com.softprodigy.ballerapp.data.response
 
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
-import com.softprodigy.ballerapp.data.response.team.Player
 
 data class StandingData(
     @SerializedName("categories")
     val categories: List<Categories> = emptyList(),
     @SerializedName("teamsStandings")
     val teamsStandings: List<Standing> = emptyList(),
+)
+
+data class StandingByLeagueAndDivisionData(
+    @SerializedName("categories") val categories: ArrayList<Categories> = arrayListOf(),
+    @SerializedName("allTeams") val allTeams: AllTeams = AllTeams()
+
+)
+
+data class AllTeams(
+    @SerializedName("_id") val Id: String = "",
+    @SerializedName("divisionName") val divisionName: String = "",
+    @SerializedName("registeredTeams") val registeredTeams: ArrayList<Standing> = arrayListOf()
 )
 
 data class Standing(
