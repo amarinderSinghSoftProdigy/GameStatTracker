@@ -3,17 +3,7 @@ package com.softprodigy.ballerapp.ui.features.home.events.team
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -37,20 +27,24 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.team.Team
-import com.softprodigy.ballerapp.ui.features.components.CoilImage
-import com.softprodigy.ballerapp.ui.features.components.DividerCommon
-import com.softprodigy.ballerapp.ui.features.components.FoldableItem
-import com.softprodigy.ballerapp.ui.features.components.Placeholder
+import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.home.events.EvEvents
+import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun EventTeamsScreen(moveToOpenTeams: (String) -> Unit, vm: EventTeamViewModel = hiltViewModel()) {
-    val state = vm.eventTeamState.value
-    val expand = remember {
-        true
+fun EventTeamsScreen(moveToOpenTeams: (String) -> Unit,eventViewModel: EventViewModel) {
+    val state = eventViewModel.eventState.value.divisionWiseTeamResponse
+    remember {
+        eventViewModel.onEvent(EvEvents.RefreshTeamsByDivision)
     }
-    LazyColumn(Modifier.fillMaxWidth()) {
-        items(state.eventTeams) { item ->
+    val expand = remember {
+        false
+    }
+
+    Column(Modifier.fillMaxSize()){
+        LazyColumn(Modifier.fillMaxWidth()) {
+        items(state) { item ->
             FoldableItem(
                 expanded = expand,
                 headerBackground = MaterialTheme.appColors.material.primary,
@@ -63,7 +57,7 @@ fun EventTeamsScreen(moveToOpenTeams: (String) -> Unit, vm: EventTeamViewModel =
                         }
                     }
                 },
-                childItems = item.teams,
+                childItems = item.team,
                 hasItemLeadingSpacing = false,
                 hasItemTrailingSpacing = false,
                 itemSpacing = 0.dp,
@@ -82,10 +76,10 @@ fun EventTeamsScreen(moveToOpenTeams: (String) -> Unit, vm: EventTeamViewModel =
                                     shape = RoundedCornerShape(
                                         topStart = if (index == 0) dimensionResource(id = R.dimen.size_8dp) else 0.dp,
                                         topEnd = if (index == 0) dimensionResource(id = R.dimen.size_8dp) else 0.dp,
-                                        bottomEnd = if (index == item.teams.size - 1) dimensionResource(
+                                        bottomEnd = if (index == item.team.size - 1) dimensionResource(
                                             id = R.dimen.size_8dp
                                         ) else 0.dp,
-                                        bottomStart = if (index == item.teams.size - 1) dimensionResource(
+                                        bottomStart = if (index == item.team.size - 1) dimensionResource(
                                             id = R.dimen.size_8dp
                                         ) else 0.dp
                                     )
@@ -95,7 +89,7 @@ fun EventTeamsScreen(moveToOpenTeams: (String) -> Unit, vm: EventTeamViewModel =
                                 moveToOpenTeams(team.name)
                             }
                         }
-                        if (index == item.teams.size - 1) {
+                        if (index == item.team.size - 1) {
                             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
                             DividerCommon()
                         }
@@ -103,6 +97,10 @@ fun EventTeamsScreen(moveToOpenTeams: (String) -> Unit, vm: EventTeamViewModel =
                 }
             )
         }
+    }
+    }
+    if(eventViewModel.eventState.value.isLoading){
+        CommonProgressBar()
     }
 }
 

@@ -3,7 +3,12 @@ package com.softprodigy.ballerapp.ui.features.home.events
 import com.softprodigy.ballerapp.data.response.DivisionResponse
 import com.softprodigy.ballerapp.data.response.MyLeagueResponse
 import com.softprodigy.ballerapp.data.response.VenuesId
+import com.softprodigy.ballerapp.data.response.team.DivisionWiseTeamResponse
 import com.softprodigy.ballerapp.data.response.team.Team
+import com.softprodigy.ballerapp.data.response.team.TeamsByLeagueDivisionResponse
+import com.softprodigy.ballerapp.ui.features.home.teams.standing.StandingLeagueDivisionUIState
+import com.softprodigy.ballerapp.ui.features.home.teams.standing.StandingUIState
+import com.softprodigy.ballerapp.ui.features.venue.VenueDetails
 
 
 data class EventState(
@@ -38,5 +43,9 @@ data class EventState(
     val isPostPracticeTimeSpan: Boolean = false,
     val showPrePostNoteDialog: Boolean = false,
     val note: String = "",
-    val noteType: NoteType? =null,
+    val noteType: NoteType? = null,
+    val teamsByLeagueDivision: List<TeamsByLeagueDivisionResponse> = listOf(),
+    val divisionWiseTeamResponse: List<DivisionWiseTeamResponse> = listOf(),
+    val venueDetails: VenueDetails = VenueDetails(),
+    val standingUIState: StandingLeagueDivisionUIState=StandingLeagueDivisionUIState()
 )
