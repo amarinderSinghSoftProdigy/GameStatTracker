@@ -1,6 +1,7 @@
 package com.softprodigy.ballerapp.ui.features.game_zone
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -35,13 +36,12 @@ fun PointList (
         modifier = Modifier
             .fillMaxSize()
             .background(color = colorResource(id = R.color.game_center_background_color))
+            //.background(Color.Red)
     ) {
 
         Column(
             Modifier
                 .fillMaxHeight()
-                .background(color = colorResource(id = R.color.game_center_background_color))
-
         ) {
             var items = stringArrayResource(id = R.array.game_periods);
             LazyColumn(
@@ -64,111 +64,115 @@ fun pointListItem(
     index: Int,
     point: String,
 ) {
-    Row(
-        modifier = Modifier
-            .height(dimensionResource(id = R.dimen.size_46dp))
-            .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-            .clickable { },
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
+    Column(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
-                .height(IntrinsicSize.Min)
-                .padding(
-                    PaddingValues(
-                        dimensionResource(id = R.dimen.size_12dp),
-                        dimensionResource(id = R.dimen.size_12dp)
-                    )
-                ), verticalAlignment = Alignment.CenterVertically
+                .height(dimensionResource(id = R.dimen.size_46dp))
+                .clickable { },
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-            AppText(
-                text = index.toString(),
-                color = colorResource(id = R.color.point_text_color),
-                fontSize = dimensionResource(id = R.dimen.txt_size_11).value.sp,
-                fontWeight = FontWeight.W400,
-                fontFamily = rubikFamily,
-                modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp))
-            )
-            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-
-            CoilImage(
-                //src = BuildConfig.IMAGE_SERVER + "URL.........",
-                src = "https://images.unsplash.com/profile-1446404465118-3a53b909cc82?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&cs=tinysrgb&fit=crop&h=128&w=128&s=27a346c2362207494baa7b76f5d606e5",
+            Row(
                 modifier = Modifier
-                    .size(dimensionResource(id = R.dimen.size_24dp))
-                    .clip(CircleShape)
-                    .background(
-                        color = MaterialTheme.appColors.material.onSurface,
-                        CircleShape
-                    ),
-                onError = {
-                    Placeholder(R.drawable.ic_team_placeholder)
-                },
-                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
-                isCrossFadeEnabled = false
-            )
-            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-            Text(
-                text = "Player Name",
-                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                color = colorResource(id = R.color.point_list_item_name_text_color),
-                fontWeight = FontWeight.W500,
-                fontFamily = rubikFamily,
-            )
-            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_4dp)))
-            Text(
-                text = "scores 2 points",
-                fontSize = dimensionResource(id = R.dimen.txt_size_11).value.sp,
-                color = colorResource(id = R.color.point_list_item_name_text_color),
-                fontWeight = FontWeight.W400,
-                fontFamily = rubikFamily,
-            )
-            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_4dp)))
-        }
+                    .height(IntrinsicSize.Min)
+                    .padding(
+                        PaddingValues(
+                            dimensionResource(id = R.dimen.size_12dp),
+                            dimensionResource(id = R.dimen.size_12dp)
+                        )
+                    ), verticalAlignment = Alignment.CenterVertically
+            ) {
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+                AppText(
+                    text = index.toString(),
+                    color = colorResource(id = R.color.game_point_list_item_text_color),
+                    fontSize = dimensionResource(id = R.dimen.txt_size_11).value.sp,
+                    fontWeight = FontWeight.W400,
+                    fontFamily = rubikFamily,
+                    modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp))
+                )
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
 
-        Row(
-            modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .fillMaxWidth(1f),
-            horizontalArrangement = Arrangement.End
-        ) {
-            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-            Text(
-                text = "10",
-                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                color = colorResource(id = R.color.point_text_color),
-                fontWeight = FontWeight.W500,
-                fontFamily = rubikFamily,
-            )
-            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
-            Text(
-                text = ":",
-                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                color = colorResource(id = R.color.point_text_color),
-                fontWeight = FontWeight.W500,
-                fontFamily = rubikFamily,
-            )
-            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
-            Text(
-                text = "0",
-                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                color = colorResource(id = R.color.point_text_color),
-                fontWeight = FontWeight.W500,
-                fontFamily = rubikFamily,
-            )
-            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-            ImageButton(
-                icon = painterResource(id = R.drawable.ic_menu),
+                CoilImage(
+                    //src = BuildConfig.IMAGE_SERVER + "URL.........",
+                    src = "https://images.unsplash.com/profile-1446404465118-3a53b909cc82?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&cs=tinysrgb&fit=crop&h=128&w=128&s=27a346c2362207494baa7b76f5d606e5",
+                    modifier = Modifier
+                        .size(dimensionResource(id = R.dimen.size_24dp))
+                        .clip(CircleShape)
+                        .background(
+                            color = MaterialTheme.appColors.material.onSurface,
+                            CircleShape
+                        ),
+                    onError = {
+                        Placeholder(R.drawable.ic_team_placeholder)
+                    },
+                    onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                    isCrossFadeEnabled = false
+                )
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+                Text(
+                    text = "Player Name",
+                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                    color = colorResource(id = R.color.game_point_list_item_name_text_color),
+                    fontWeight = FontWeight.W500,
+                    fontFamily = rubikFamily,
+                )
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_4dp)))
+                Text(
+                    text = "scores 2 points",
+                    fontSize = dimensionResource(id = R.dimen.txt_size_11).value.sp,
+                    color = colorResource(id = R.color.game_point_list_item_name_text_color),
+                    fontWeight = FontWeight.W400,
+                    fontFamily = rubikFamily,
+                )
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_4dp)))
+            }
+
+            Row(
                 modifier = Modifier
-                    .width(dimensionResource(id = R.dimen.size_16dp))
-                    .height(dimensionResource(id = R.dimen.size_16dp))
-                    ,
-                onClick = { /*TODO*/ }
-            )
-            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
+                    .align(Alignment.CenterVertically)
+                    .fillMaxWidth(1f),
+                horizontalArrangement = Arrangement.End
+            ) {
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+                Text(
+                    text = "10",
+                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                    color = colorResource(id = R.color.game_point_list_item_text_color),
+                    fontWeight = FontWeight.W500,
+                    fontFamily = rubikFamily,
+                )
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+                Text(
+                    text = ":",
+                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                    color = colorResource(id = R.color.game_point_list_item_text_color),
+                    fontWeight = FontWeight.W500,
+                    fontFamily = rubikFamily,
+                )
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+                Text(
+                    text = "0",
+                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                    color = colorResource(id = R.color.game_point_list_item_text_color),
+                    fontWeight = FontWeight.W500,
+                    fontFamily = rubikFamily,
+                )
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+                ImageButton(
+                    icon = painterResource(id = R.drawable.ic_menu),
+                    modifier = Modifier
+                        .width(dimensionResource(id = R.dimen.size_16dp))
+                        .height(dimensionResource(id = R.dimen.size_16dp)),
+                    onClick = { /*TODO*/ }
+                )
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
+
+            }
 
         }
-
+        Spacer(modifier = Modifier
+            .fillMaxWidth()
+            .height(dimensionResource(id = R.dimen.size_1dp))
+            .background(colorResource(id = R.color.game_center_list_item_divider_color)))
     }
 }

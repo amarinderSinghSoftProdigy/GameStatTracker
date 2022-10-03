@@ -50,7 +50,7 @@ fun GamePointController (
                                 .weight(1f)
                                 .border(
                                     dimensionResource(id = R.dimen.size_1dp),
-                                    colorResource(id = R.color.gray_border)
+                                    colorResource(id = R.color.game_grid_border_color)
                                 ),
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center,
@@ -85,7 +85,7 @@ fun GamePointController (
                                 .weight(1f)
                                 .border(
                                     dimensionResource(id = R.dimen.size_1dp),
-                                    colorResource(id = R.color.gray_border)
+                                    colorResource(id = R.color.game_grid_border_color)
                                 ),
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center,

@@ -35,12 +35,10 @@ fun TeamNavigationController (
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(id = R.color.game_center_background_color))
     ) {
         Column(modifier = Modifier
             .fillMaxHeight()
             .fillMaxWidth()) {
-
             teamHandler()
             PointList()
         }
@@ -51,7 +49,8 @@ fun TeamNavigationController (
 inline fun teamHandler() {
     Row(
         Modifier
-            .fillMaxWidth().background(Color.Black)
+            .fillMaxWidth()
+            .background(colorResource(id = R.color.game_period_background_color))
             .height(dimensionResource(id = R.dimen.size_46dp))
             .padding(
                 horizontal = dimensionResource(id = R.dimen.size_12dp),
@@ -91,6 +90,7 @@ inline fun teamHandler() {
                     modifier = Modifier
                         .width(dimensionResource(id = R.dimen.size_32dp))
                         .height(dimensionResource(id = R.dimen.size_32dp)),
+
                     onClick = { /*TODO*/ }
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
@@ -171,7 +171,6 @@ inline fun teamTitle(title: String = "", startPadding: Dp = 0.dp, endPadding: Dp
         modifier = Modifier.padding(start = startPadding, top = 0.dp, end = endPadding, bottom = 0.dp),
         fontFamily = rubikFamily,
         fontWeight = FontWeight.W500,
-        style = MaterialTheme.typography.h6,
     )
 }
 
@@ -186,7 +185,7 @@ inline fun teamScore(score: String = "", startPadding: Dp = 0.dp, endPadding: Dp
         textAlign = TextAlign.Center,
         modifier = Modifier.padding(startPadding,  0.dp, endPadding,  0.dp),
         fontFamily = rubikFamily,
-        fontWeight = FontWeight.W600,
+        fontWeight = FontWeight.SemiBold,
     )
 }
 

@@ -68,20 +68,21 @@ fun periodListItem(index: Int, periodItem: String = "", selectedIndex: Int = 1) 
             .width(dimensionResource(id = R.dimen.size_24dp))
             .height(dimensionResource(id = R.dimen.size_24dp))
             .clip(CircleShape)
-
-            .background(color = if (index == selectedIndex) Color.Blue else Color.Black)
+            .background(
+                color = if (index == selectedIndex) colorResource(id = R.color.game_period_selection_background_color)
+                        else colorResource(id = R.color.game_period_background_color))
             .padding(dimensionResource(id = R.dimen.size_4dp)),
-            contentAlignment = Alignment.Center
-    ) {
-        AppText(
-            text = periodItem,
-            textAlign = TextAlign.Center,
-            color = colorResource(id = R.color.game_grid_item_text_color),
-            fontSize = dimensionResource(id = R.dimen.txt_size_11).value.sp,
-            fontFamily = rubikFamily,
-            fontWeight = if (index == selectedIndex) FontWeight.W700 else FontWeight.W400,
-        )
-    }
+                contentAlignment = Alignment.Center
+            ) {
+                AppText(
+                    text = periodItem,
+                    textAlign = TextAlign.Center,
+                    color = colorResource(id = R.color.game_grid_item_text_color),
+                    fontSize = dimensionResource(id = R.dimen.txt_size_11).value.sp,
+                    fontFamily = rubikFamily,
+                    fontWeight = if (index == selectedIndex) FontWeight.W700 else FontWeight.W400,
+                )
+            }
 }
 
 @Composable
@@ -150,7 +151,7 @@ inline fun gameSettings() {
                         .weight(1f)
                         .border(
                             dimensionResource(id = R.dimen.size_1dp),
-                            colorResource(id = R.color.gray_border)
+                            colorResource(id = R.color.game_grid_border_color)
                         ),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
