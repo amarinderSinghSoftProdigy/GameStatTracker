@@ -283,7 +283,7 @@ class EventViewModel @Inject constructor(
             is EvEvents.GetGender -> {
                 viewModelScope.launch {
                     _state.value = _state.value.copy(gender = event.gender)
-
+                    getDivisions()
                 }
             }
             is EvEvents.PostNoteTimeSpan -> {
@@ -323,8 +323,7 @@ class EventViewModel @Inject constructor(
                 }
             }
         }
-        }
-
+    }
 
 
     private suspend fun addNote(noteType: NoteType, note: String, eventId: String) {
@@ -897,11 +896,11 @@ class EventViewModel @Inject constructor(
         val teamResponse =
             eventsRepo.getTeamsByLeagueAndDivision(
                 leagueId = leagueId,
-                divisionId=divisionId
+                divisionId = divisionId
             )
         _state.value = _state.value.copy(isLoading = false)
 
-        when(teamResponse){
+        when (teamResponse) {
             is ResultWrapper.GenericError -> {
                 _channel.send(
                     EventChannel.ShowToast(
@@ -948,10 +947,11 @@ class EventViewModel @Inject constructor(
         _state.value = _state.value.copy(isLoading = true)
         val teamResponse =
             eventsRepo.getTeamsByLeagueIdAllDivision(
-                leagueId = leagueId)
+                leagueId = leagueId
+            )
         _state.value = _state.value.copy(isLoading = false)
 
-        when(teamResponse){
+        when (teamResponse) {
             is ResultWrapper.GenericError -> {
                 _channel.send(
                     EventChannel.ShowToast(
@@ -994,16 +994,19 @@ class EventViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getAllTeamsStandingByLeaguedAndDivision(leagueId: String, divisionId: String) {
+    private suspend fun getAllTeamsStandingByLeaguedAndDivision(
+        leagueId: String,
+        divisionId: String
+    ) {
         _state.value = _state.value.copy(isLoading = true)
         val standingResponse =
             eventsRepo.getAllTeamsStandingByLeaguedAndDivision(
                 leagueId = leagueId,
-                divisionId=divisionId
+                divisionId = divisionId
             )
         _state.value = _state.value.copy(isLoading = false)
 
-        when(standingResponse){
+        when (standingResponse) {
             is ResultWrapper.GenericError -> {
                 _channel.send(
                     EventChannel.ShowToast(
@@ -1050,10 +1053,11 @@ class EventViewModel @Inject constructor(
         _state.value = _state.value.copy(isLoading = true)
         val venueResponse =
             eventsRepo.getVenueDetailsById(
-                venueId = venueId)
+                venueId = venueId
+            )
         _state.value = _state.value.copy(isLoading = false)
 
-        when(venueResponse){
+        when (venueResponse) {
             is ResultWrapper.GenericError -> {
                 _channel.send(
                     EventChannel.ShowToast(

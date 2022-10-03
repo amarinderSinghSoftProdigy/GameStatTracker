@@ -57,6 +57,7 @@ fun StandingScreen(
     vm: StandingViewModel = hiltViewModel()
 ) {
     val state = vm.standingUiState.value
+
     val onStandingSelectionChange = { standing: Standing ->
         vm.onEvent(StandingUIEvent.OnStandingSelected(standing))
     }
@@ -88,15 +89,12 @@ fun StandingScreen(
                         ) {
                             onStandingSelectionChange.invoke(standing)
                         }
-
                     }
                 }
                 Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_24dp)))
             }
         }
     }
-
-
 }
 
 @OptIn(ExperimentalMaterialApi::class)

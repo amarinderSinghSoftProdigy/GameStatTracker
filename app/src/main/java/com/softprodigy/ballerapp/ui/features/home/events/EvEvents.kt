@@ -47,7 +47,11 @@ sealed class EvEvents {
     ) : EvEvents()
 
     data class OnNoteChange(val note: String) : EvEvents()
-    data class OnAddNoteConfirmClick(val noteType: NoteType,val note:String,val eventId:String) : EvEvents()
+    data class OnAddNoteConfirmClick(
+        val noteType: NoteType,
+        val note: String,
+        val eventId: String
+    ) : EvEvents()
 
     object GetMyLeagues : EvEvents()
 
