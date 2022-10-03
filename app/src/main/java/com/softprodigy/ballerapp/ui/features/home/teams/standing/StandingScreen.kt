@@ -245,7 +245,7 @@ fun StandingTopTabs(pagerState: PagerState, tabData: List<Categories>) {
                     selected = pagerState.currentPage == index,
                     onClick = {
                         coroutineScope.launch {
-                            pagerState.animateScrollToPage(index)
+                            if (pagerState.pageCount != 0) pagerState.animateScrollToPage(index)
                         }
                     })
             }

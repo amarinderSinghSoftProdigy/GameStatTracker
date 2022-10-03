@@ -5,10 +5,16 @@ import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.safeApiCall
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.CreateEventReq
+import com.softprodigy.ballerapp.data.response.StandingByLeagueAndDivisionData
+import com.softprodigy.ballerapp.data.response.StandingData
+import com.softprodigy.ballerapp.data.response.team.DivisionWiseTeamResponse
+import com.softprodigy.ballerapp.data.response.team.TeamsByLeagueDivisionResponse
 import com.softprodigy.ballerapp.domain.BaseResponse
 import com.softprodigy.ballerapp.domain.repository.IEventsRepository
 import com.softprodigy.ballerapp.network.APIService
 import com.softprodigy.ballerapp.ui.features.home.events.*
+import com.softprodigy.ballerapp.ui.features.venue.VenueAddress
+import com.softprodigy.ballerapp.ui.features.venue.VenueDetails
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import okhttp3.FormBody
@@ -126,7 +132,7 @@ class EventsRepository @Inject constructor(
         sort: String,
         leagueId: String,
         divisionId: String
-    ): ResultWrapper<BaseResponse<Any>> {
+    ): ResultWrapper<BaseResponse<ArrayList<TeamsByLeagueDivisionResponse>>> {
         return safeApiCall(dispatcher) {
             service.getTeamsByLeagueAndDivision(
                 page = page,
@@ -138,7 +144,7 @@ class EventsRepository @Inject constructor(
         }
     }
 
-    override suspend fun getTeamsByLeagueIdAllDivision(leagueId: String): ResultWrapper<BaseResponse<Any>> {
+    override suspend fun getTeamsByLeagueIdAllDivision(leagueId: String): ResultWrapper<BaseResponse<ArrayList<DivisionWiseTeamResponse>>> {
         return safeApiCall(dispatcher) {
             service.getTeamsByLeagueIdAllDivision(leagueId = leagueId)
         }
@@ -150,7 +156,7 @@ class EventsRepository @Inject constructor(
         sort: String,
         leagueId: String,
         divisionId: String
-    ): ResultWrapper<BaseResponse<Any>> {
+    ): ResultWrapper<BaseResponse<StandingByLeagueAndDivisionData>> {
         return safeApiCall(dispatcher) {
             service.getAllTeamsStandingByLeaguedAndDivision(
                 page = page,
@@ -162,7 +168,7 @@ class EventsRepository @Inject constructor(
         }
     }
 
-    override suspend fun getVenueDetailsById(venueId: String): ResultWrapper<BaseResponse<Any>> {
+    override suspend fun getVenueDetailsById(venueId: String): ResultWrapper<BaseResponse<VenueDetails>> {
         return safeApiCall(dispatcher) {
             service.getVenueDetailsById(venueId = venueId)
         }

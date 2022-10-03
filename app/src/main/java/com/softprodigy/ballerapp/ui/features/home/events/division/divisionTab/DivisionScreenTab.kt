@@ -29,6 +29,7 @@ import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
+import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
 import com.softprodigy.ballerapp.ui.features.home.events.schedule.EventScheduleScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.standing.StandingScreen
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -37,7 +38,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun DivisionScreenTab() {
+fun DivisionScreenTab(divisionId: String,eventViewModel: EventViewModel) {
 
     val list = listOf(
         DivisionTabs.Teams,
@@ -53,7 +54,7 @@ fun DivisionScreenTab() {
             .background(Color.White),
     ) {
         DivisionTabs(pagerState = pagerState, list = list)
-        DivisionTabsContent(pagerState = pagerState)
+        DivisionTabsContent(pagerState = pagerState,divisionId,eventViewModel)
     }
 }
 
@@ -109,11 +110,11 @@ fun DivisionTabs(pagerState: PagerState, list: List<DivisionTabs>) {
 
 @ExperimentalPagerApi
 @Composable
-fun DivisionTabsContent(pagerState: PagerState) {
+fun DivisionTabsContent(pagerState: PagerState,divisionId:String,eventViewModel: EventViewModel) {
     HorizontalPager(state = pagerState) { page ->
         when (page) {
-            0 -> DivisionTeamScreen()
-            1 -> StandingScreen()
+            0 -> DivisionTeamScreen(divisionId,eventViewModel)
+            1 -> StandingByLeagueAndDivisionScreen(divisionId,eventViewModel)
             2 -> EventScheduleScreen(moveToOpenDetails = {})
         }
     }

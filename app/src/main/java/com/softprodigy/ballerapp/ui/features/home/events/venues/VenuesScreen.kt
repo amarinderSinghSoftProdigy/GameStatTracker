@@ -44,7 +44,7 @@ import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun VenuesScreen(moveToOpenVenues: (String) -> Unit, eventViewModel: EventViewModel) {
+fun VenuesScreen(moveToOpenVenues: (String,String) -> Unit, eventViewModel: EventViewModel) {
     val state = eventViewModel.eventState.value
 
     remember {
@@ -67,7 +67,7 @@ fun VenuesScreen(moveToOpenVenues: (String) -> Unit, eventViewModel: EventViewMo
             ) {
                 itemsIndexed(state.venuesList) { index, item ->
                     VenuesItem(item) {
-                        moveToOpenVenues(item.venueName)
+                        moveToOpenVenues(item.venueName,item._id)
                     }
                 }
             }
