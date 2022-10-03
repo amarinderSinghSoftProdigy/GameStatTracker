@@ -215,6 +215,9 @@ fun HomeScreen(
                     }
                 }
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+
+                LocationBlock()
+
                 UserFlowBackground(
                     padding = 0.dp,
                     color = Color.White

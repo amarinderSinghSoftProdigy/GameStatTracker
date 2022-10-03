@@ -25,7 +25,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -37,6 +36,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.*
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.ui.features.home.events.schedule.Space
@@ -607,8 +609,7 @@ fun LocationBlock() {
             )
         }
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-        CoilImage(
-            src = R.drawable.rectangle,
+        Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
                 .background(
@@ -616,14 +617,25 @@ fun LocationBlock() {
                     RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                 )
                 .height(dimensionResource(id = R.dimen.size_160dp))
-                .fillMaxWidth(),
-            onError = {
-                PlaceholderRect(R.drawable.ic_team_placeholder)
-            },
-            onLoading = { PlaceholderRect(R.drawable.ic_team_placeholder) },
-            isCrossFadeEnabled = false,
-            contentScale = ContentScale.Crop
-        )
+                .fillMaxWidth()
+        ) {
+
+            val singapore = LatLng(1.35, 103.87)
+            val cameraPositionState = rememberCameraPositionState {
+                position = CameraPosition.fromLatLngZoom(singapore, 15F)
+            }
+            GoogleMap(
+                uiSettings = MapUiSettings(compassEnabled = false, zoomControlsEnabled = false),
+                modifier = Modifier.fillMaxSize(),
+                cameraPositionState = cameraPositionState
+            ) {
+                Marker(
+                    state = MarkerState(position = singapore),
+                    title = "Singapore",
+                    snippet = "Marker in Singapore"
+                )
+            }
+        }
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
     }
 }
