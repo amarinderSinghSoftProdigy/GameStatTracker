@@ -2,8 +2,12 @@ package com.softprodigy.ballerapp.domain.repository
 
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.data.request.CreateEventReq
+import com.softprodigy.ballerapp.data.response.StandingByLeagueAndDivisionData
+import com.softprodigy.ballerapp.data.response.team.DivisionWiseTeamResponse
+import com.softprodigy.ballerapp.data.response.team.TeamsByLeagueDivisionResponse
 import com.softprodigy.ballerapp.domain.BaseResponse
 import com.softprodigy.ballerapp.ui.features.home.events.*
+import com.softprodigy.ballerapp.ui.features.venue.VenueDetails
 import javax.inject.Singleton
 
 @Singleton
@@ -35,9 +39,9 @@ interface IEventsRepository {
         sort: String = "",
         leagueId: String,
         divisionId: String
-    ): ResultWrapper<BaseResponse<Any>>
+    ): ResultWrapper<BaseResponse<ArrayList<TeamsByLeagueDivisionResponse>>>
 
-    suspend fun getTeamsByLeagueIdAllDivision(leagueId: String): ResultWrapper<BaseResponse<Any>>
+    suspend fun getTeamsByLeagueIdAllDivision(leagueId: String): ResultWrapper<BaseResponse<ArrayList<DivisionWiseTeamResponse>>>
 
     suspend fun getAllTeamsStandingByLeaguedAndDivision(
         page: Int = 1,
@@ -45,7 +49,7 @@ interface IEventsRepository {
         sort: String = "",
         leagueId: String,
         divisionId: String
-    ): ResultWrapper<BaseResponse<Any>>
+    ): ResultWrapper<BaseResponse<StandingByLeagueAndDivisionData>>
 
-    suspend fun getVenueDetailsById(venueId:String): ResultWrapper<BaseResponse<Any>>
+    suspend fun getVenueDetailsById(venueId: String): ResultWrapper<BaseResponse<VenueDetails>>
 }

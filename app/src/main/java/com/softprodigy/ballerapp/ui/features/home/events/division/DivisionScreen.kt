@@ -46,7 +46,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun DivisionScreen(
-    moveToOpenDivisions: (String) -> Unit, eventViewModel: EventViewModel
+    moveToOpenDivisions: (String,String) -> Unit, eventViewModel: EventViewModel
 ) {
     val vmState = eventViewModel.eventState.value
     val divisionTab = listOf("All", "Male", "Female")
@@ -107,7 +107,7 @@ fun DivisionTopTabs(pagerState: PagerState, tabData: List<String>) {
 @ExperimentalPagerApi
 @Composable
 fun TabsContent(
-    moveToOpenDivisions: (String) -> Unit,
+    moveToOpenDivisions: (String,String) -> Unit,
     pagerState: PagerState,
     vm: EventViewModel,
     vmState: EventState
@@ -137,7 +137,7 @@ fun TabsContent(
 }
 
 @Composable
-fun DivisionData(moveToOpenDivisions: (String) -> Unit, vm: EventViewModel, vmState: EventState) {
+fun DivisionData(moveToOpenDivisions: (String,String) -> Unit, vm: EventViewModel, vmState: EventState) {
 
 
     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
@@ -152,7 +152,7 @@ fun DivisionData(moveToOpenDivisions: (String) -> Unit, vm: EventViewModel, vmSt
     ) {
         itemsIndexed(vmState.divisions) { index, item ->
             DivisionItems(item) {
-                moveToOpenDivisions(item.divisionName)
+                moveToOpenDivisions(item.divisionName,item._id)
             }
         }
     }

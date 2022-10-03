@@ -425,13 +425,13 @@ fun NavControllerComposable(
                     eventTitle = it
                     navController.navigate(Route.GAME_DETAIL_SCREEN)
 
-                }, moveToOpenVenues = {
-                    eventTitle = it
-                    navController.navigate(Route.OPEN_VENUE)
+                }, moveToOpenVenues = { venueName,venueId ->
+                    eventTitle = venueName
+                    navController.navigate(Route.OPEN_VENUE+ "/${venueId}")
 
-                }, moveToOpenDivisions = {
-                    eventTitle = it
-                    navController.navigate(Route.DIVISION_TAB)
+                }, moveToOpenDivisions = { divisionName, divisionId ->
+                    eventTitle = divisionName
+                    navController.navigate(Route.DIVISION_TAB + "/${divisionId}")
                 }, moveToOpenTeams = {
                     eventTitle = it
                     navController.navigate(Route.TEAM_TAB)
@@ -623,24 +623,37 @@ fun NavControllerComposable(
         }
 
 
-        composable(route = Route.OPEN_VENUE) {
+        composable(route = Route.OPEN_VENUE+"/{venueId}",
+            arguments = listOf(
+                navArgument("venueId") {
+                    type = NavType.StringType
+                })) {
+
+            val venueId = it.arguments?.getString("venueId")?:""
             homeViewModel.setTopBar(
                 TopBarData(
                     label = eventTitle,
                     topBar = TopBar.OPEN_VENUE,
                 )
             )
-            OpenVenueTopTabs()
+            OpenVenueTopTabs(venueId,eventViewModel)
         }
 
-        composable(route = Route.DIVISION_TAB) {
+        composable(
+            route = Route.DIVISION_TAB + "/{divisionId}",
+            arguments = listOf(
+                navArgument("divisionId") {
+                    type = NavType.StringType
+                })
+        ) {
             homeViewModel.setTopBar(
                 TopBarData(
                     label = eventTitle,
                     topBar = TopBar.DIVISION_TAB,
                 )
             )
-            DivisionScreenTab()
+            val divisionId = it.arguments?.getString("divisionId") ?: ""
+            DivisionScreenTab(divisionId, eventViewModel)
         }
 
         composable(route = Route.TEAM_TAB) {
