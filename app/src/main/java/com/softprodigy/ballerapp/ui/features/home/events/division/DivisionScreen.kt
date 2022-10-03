@@ -21,9 +21,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -32,7 +30,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.DivisionResponse
@@ -46,16 +43,21 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun DivisionScreen(
-    moveToOpenDivisions: (String,String) -> Unit, eventViewModel: EventViewModel
+    moveToOpenDivisions: (String) -> Unit, eventViewModel: EventViewModel
 ) {
-    val vmState = eventViewModel.eventState.value
-    val divisionTab = listOf("All", "Male", "Female")
-
     remember {
         eventViewModel.onEvent(EvEvents.GetDivision)
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
+        val divisionTab = listOf("All", "Male", "Female")
+
+        val vmState = eventViewModel.eventState.value
+
+        val pagerState = rememberPagerState(
+            pageCount = divisionTab.size,
+            initialOffScreenLimit = 1,
+        )
 
         Column(
             modifier = Modifier
@@ -63,14 +65,15 @@ fun DivisionScreen(
                 .padding(all = dimensionResource(id = R.dimen.size_16dp))
         ) {
 
-            val pagerState = rememberPagerState(
-                pageCount = divisionTab.size,
-                initialOffScreenLimit = 1,
-            )
-
             DivisionTopTabs(pagerState, divisionTab)
+
             Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
-            TabsContent(moveToOpenDivisions, pagerState, eventViewModel, vmState)
+
+            DivisionData(
+                moveToOpenDivisions,
+                divisionTab[pagerState.currentPage],
+                eventViewModel,
+            )
 
         }
 
@@ -104,44 +107,39 @@ fun DivisionTopTabs(pagerState: PagerState, tabData: List<String>) {
     }
 }
 
-@ExperimentalPagerApi
+
 @Composable
-fun TabsContent(
-    moveToOpenDivisions: (String,String) -> Unit,
-    pagerState: PagerState,
+fun DivisionData(
+    moveToOpenDivisions: (String) -> Unit,
+    key: String,
     vm: EventViewModel,
-    vmState: EventState
 ) {
 
-    HorizontalPager(
-        state = pagerState,
-        modifier = Modifier.fillMaxSize(),
-        verticalAlignment = Alignment.Top
-    ) { page ->
-        when (page) {
-            0 -> {
-                vm.onEvent(EvEvents.GetGender(""))
-                DivisionData(moveToOpenDivisions, vm, vmState)
-            }
-            1 -> {
-                vm.onEvent(EvEvents.GetGender("Male"))
-                DivisionData(moveToOpenDivisions, vm, vmState)
-            }
-            2 -> {
-                vm.onEvent(EvEvents.GetGender("Female"))
-                DivisionData(moveToOpenDivisions, vm, vmState)
+    val state = vm.eventState.value
+    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
+    val divisionList = arrayListOf<DivisionResponse>()
+
+    when (key) {
+        "All" -> {
+            state.divisions.forEach {
+                divisionList.add(it)
             }
         }
-
+        "Male" -> {
+            divisionList.clear()
+            state.divisions.forEach {
+                if (it.gender == key)
+                    divisionList.add(it)
+            }
+        }
+        else -> {
+            divisionList.clear()
+            state.divisions.forEach {
+                if (it.gender == key)
+                    divisionList.add(it)
+            }
+        }
     }
-}
-
-@Composable
-fun DivisionData(moveToOpenDivisions: (String,String) -> Unit, vm: EventViewModel, vmState: EventState) {
-
-
-    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
-
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
@@ -150,13 +148,14 @@ fun DivisionData(moveToOpenDivisions: (String,String) -> Unit, vm: EventViewMode
                 color = MaterialTheme.colors.onPrimary
             )
     ) {
-        itemsIndexed(vmState.divisions) { index, item ->
+        itemsIndexed(divisionList) { index, item ->
+
             DivisionItems(item) {
-                moveToOpenDivisions(item.divisionName,item._id)
+                moveToOpenDivisions(item.divisionName)
             }
+
         }
     }
-
 }
 
 @Composable
@@ -203,3 +202,4 @@ fun DivisionItems(
     Divider(color = MaterialTheme.appColors.material.primary)
 
 }
+

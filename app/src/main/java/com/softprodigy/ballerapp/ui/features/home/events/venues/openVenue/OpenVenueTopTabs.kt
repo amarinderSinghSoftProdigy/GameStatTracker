@@ -28,8 +28,8 @@ fun OpenVenueTopTabs(venueId: String, eventViewModel: EventViewModel) {
         OpenVenueTabItems.Details,
         OpenVenueTabItems.Courts,
         OpenVenueTabItems.Schedule,
-
         )
+
     val pagerState = rememberPagerState(
         pageCount = tabData.size,
         initialOffScreenLimit = 1,
