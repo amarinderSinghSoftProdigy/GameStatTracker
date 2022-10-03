@@ -318,10 +318,12 @@ fun NavControllerComposable(
                 )
             )
             EventsScreen(
+                teamViewModel,
                 eventViewModel,
                 showDialog = showDialog,
                 dismissDialog = { homeViewModel.setDialog(it) },
                 moveToDetail = {
+                    eventTitle = it
                     navController.navigate(Route.LEAGUE_DETAIL_SCREEN)
                 },
                 moveToPracticeDetail = { eventId, eventName ->
@@ -392,7 +394,7 @@ fun NavControllerComposable(
         composable(route = Route.LEAGUE_DETAIL_SCREEN) {
             homeViewModel.setTopBar(
                 TopBarData(
-                    label = stringResource(id = R.string.back_to_school_tournament),
+                    label = eventTitle,
                     topBar = TopBar.MY_LEAGUE
                 )
             )
@@ -401,9 +403,9 @@ fun NavControllerComposable(
                     eventTitle = it
                     navController.navigate(Route.GAME_DETAIL_SCREEN)
 
-                }, moveToOpenVenues = { venueName,venueId ->
+                }, moveToOpenVenues = { venueName, venueId ->
                     eventTitle = venueName
-                    navController.navigate(Route.OPEN_VENUE+ "/${venueId}")
+                    navController.navigate(Route.OPEN_VENUE + "/${venueId}")
 
                 }, moveToOpenDivisions = { divisionName, divisionId ->
                     eventTitle = divisionName
@@ -437,8 +439,8 @@ fun NavControllerComposable(
                     topBar = TopBar.EVENT_DETAILS, label = eventTitle
                 )
             )
-            val eventId = it.arguments?.getString("eventId")?:""
-            EventDetailsScreen(eventViewModel,eventId)
+            val eventId = it.arguments?.getString("eventId") ?: ""
+            EventDetailsScreen(eventViewModel, eventId)
         }
         composable(route = Route.GAME_RULES_SCREENS) {
             homeViewModel.setTopBar(
@@ -599,20 +601,22 @@ fun NavControllerComposable(
         }
 
 
-        composable(route = Route.OPEN_VENUE+"/{venueId}",
+        composable(
+            route = Route.OPEN_VENUE + "/{venueId}",
             arguments = listOf(
                 navArgument("venueId") {
                     type = NavType.StringType
-                })) {
+                })
+        ) {
 
-            val venueId = it.arguments?.getString("venueId")?:""
+            val venueId = it.arguments?.getString("venueId") ?: ""
             homeViewModel.setTopBar(
                 TopBarData(
                     label = eventTitle,
                     topBar = TopBar.OPEN_VENUE,
                 )
             )
-            OpenVenueTopTabs(venueId,eventViewModel)
+            OpenVenueTopTabs(venueId, eventViewModel)
         }
 
         composable(

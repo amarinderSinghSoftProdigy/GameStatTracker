@@ -124,7 +124,7 @@ class CommonUtils {
                     data.girlsMin + " - " + data.girlsMax
                 }
                 "All" -> {
-                    data.boysMin + " - " + "M - " + data.boysMax + " , " + "F - " + data.girlsMin + " - " + data.girlsMax
+                    "M - " + data.boysMin + " - " + data.boysMax + " , " + "F - " + data.girlsMin + " - " + data.girlsMax
                 }
                 else -> {
                     ""

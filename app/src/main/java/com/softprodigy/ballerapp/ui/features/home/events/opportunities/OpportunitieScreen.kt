@@ -26,14 +26,16 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.CoilImage
 import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
 import com.softprodigy.ballerapp.ui.features.components.PlaceholderRect
-import com.softprodigy.ballerapp.ui.features.home.events.*
-import com.softprodigy.ballerapp.ui.features.home.events.LeagueItem
+import com.softprodigy.ballerapp.ui.features.home.events.EvEvents
+import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
+import com.softprodigy.ballerapp.ui.features.home.events.OpportunitiesItem
 import com.softprodigy.ballerapp.ui.theme.appColors
 import com.softprodigy.ballerapp.ui.utils.CommonUtils
 
 @Composable
-fun OpportunitieScreen(state: EventState, vm: EventViewModel, moveToOppDetails: (String) -> Unit) {
+fun OpportunitieScreen(vm: EventViewModel, moveToOppDetails: (String) -> Unit) {
 
+    val state = vm.eventState.value
     remember {
         vm.onEvent(EvEvents.GetOpportunities)
     }

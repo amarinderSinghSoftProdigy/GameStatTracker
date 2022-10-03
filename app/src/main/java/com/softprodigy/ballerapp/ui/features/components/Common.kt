@@ -37,11 +37,11 @@ import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.ui.features.home.events.schedule.Space
+import com.softprodigy.ballerapp.ui.features.venue.Location
 import com.softprodigy.ballerapp.ui.theme.ButtonColor
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -572,11 +572,9 @@ private fun animateAlignmentAsState(
 
 
 @Composable
-fun LocationBlock() {
+fun LocationBlock(location: Location) {
     Column(
-        Modifier
-            .fillMaxSize()
-            .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
+        Modifier.padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
     ) {
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -589,13 +587,13 @@ fun LocationBlock() {
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                 Text(
-                    text = "Springville HS Gym A",
+                    text = location.address,
                     color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
                 Text(
-                    text = "8502 Preston Rd. Inglewood, Maine",
+                    text = location.city + ", " + location.state + ", " + location.zipCode,
                     color = ColorBWGrayLight,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                 )
@@ -619,10 +617,8 @@ fun LocationBlock() {
                 .height(dimensionResource(id = R.dimen.size_160dp))
                 .fillMaxWidth()
         ) {
-
-            val singapore = LatLng(1.35, 103.87)
             val cameraPositionState = rememberCameraPositionState {
-                position = CameraPosition.fromLatLngZoom(singapore, 15F)
+                position = CameraPosition.fromLatLngZoom(location.latLong, 15F)
             }
             GoogleMap(
                 uiSettings = MapUiSettings(compassEnabled = false, zoomControlsEnabled = false),
@@ -630,9 +626,9 @@ fun LocationBlock() {
                 cameraPositionState = cameraPositionState
             ) {
                 Marker(
-                    state = MarkerState(position = singapore),
-                    title = "Singapore",
-                    snippet = "Marker in Singapore"
+                    state = MarkerState(position = location.latLong),
+                    title = location.address,
+                    snippet = location.city
                 )
             }
         }

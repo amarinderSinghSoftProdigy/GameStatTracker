@@ -30,6 +30,7 @@ import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.events.DaysOfPlay
 import com.softprodigy.ballerapp.ui.features.home.events.EvEvents
 import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
+import com.softprodigy.ballerapp.ui.features.venue.Location
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
 import com.softprodigy.ballerapp.ui.theme.appColors
 import com.softprodigy.ballerapp.ui.utils.CommonUtils
@@ -133,35 +134,14 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
                 .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
         ) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.weight(2F)) {
-                    Text(
-                        text = stringResource(id = R.string.location),
-                        color = ColorBWGrayLight,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                    )
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                    Text(
-                        text = "Springville HS Gym A",
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                    )
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
-                    Text(
-                        text = "8502 Preston Rd. Inglewood, Maine",
-                        color = ColorBWGrayLight,
-                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                    )
-                }
-                TransparentButtonButton(
-                    modifier = Modifier.weight(1F),
-                    text = stringResource(id = R.string.navigate),
-                    onClick = {},
-                    icon = painterResource(id = R.drawable.ic_nav),
-                    enabled = false,
+            LocationBlock(
+                Location(
+                    state.opportunitiesDetail.address,
+                    state.opportunitiesDetail.city,
+                    state.opportunitiesDetail.state,
+                    "",
                 )
-            }
+            )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             CoilImage(
                 src = R.drawable.rectangle,
