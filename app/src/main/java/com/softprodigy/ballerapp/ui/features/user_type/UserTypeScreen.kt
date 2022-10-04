@@ -60,6 +60,7 @@ fun UserTypeSelector(
         UserType.GAME_STAFF,
         UserType.PROGRAM_STAFF,
         UserType.FAN,
+        UserType.REFEREE
     )
     val state = signUpvm.signUpUiState.value
 

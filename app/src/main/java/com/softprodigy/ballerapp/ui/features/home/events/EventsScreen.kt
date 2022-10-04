@@ -5,14 +5,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -29,7 +28,9 @@ import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.apiToUIDateFormat
 import com.softprodigy.ballerapp.data.UserStorage
+import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
 import com.softprodigy.ballerapp.ui.features.home.events.opportunities.OpportunitieScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.theme.*
@@ -49,6 +50,8 @@ fun EventsScreen(
 ) {
     val teamState = teamVm.teamUiState.value
     val state = vm.eventState.value
+    val dataStoreManager = DataStoreManager(LocalContext.current)
+    val role = dataStoreManager.getRole.collectAsState(initial = "")
     // on below line we are creating variable for pager state.
     val pagerState = rememberPagerState(
         pageCount = 3,
@@ -60,16 +63,41 @@ fun EventsScreen(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            Tabs(pagerState = pagerState)
-            TabsContent(
-                pagerState = pagerState,
-                vm,
-                moveToDetail,
-                moveToPracticeDetail,
-                moveToGameDetail,
-                moveToOppDetails,
-                updateTopBar
-            )
+            val list = if (role.value == UserType.REFEREE.key) {
+                listOf(
+                    TabItems.MyShifts,
+                    TabItems.Opportunity,
+                )
+            } else {
+                listOf(
+                    TabItems.Events,
+                    TabItems.Leagues,
+                    TabItems.Opportunity,
+                )
+            }
+            Tabs(pagerState = pagerState, list)
+
+            if (role.value == UserType.REFEREE.key) {
+                TabsContentForReferee(
+                    pagerState = pagerState,
+                    vm,
+                    moveToOppDetails,
+                    updateTopBar,
+                    role
+                )
+            } else {
+                TabsContent(
+                    pagerState = pagerState,
+                    vm,
+                    moveToDetail,
+                    moveToPracticeDetail,
+                    moveToGameDetail,
+                    moveToOppDetails,
+                    updateTopBar,
+                    role
+                )
+            }
+
         }
 
         if (showDialog) {
@@ -94,12 +122,8 @@ fun EventsScreen(
 // creating a function for tabs
 @ExperimentalPagerApi
 @Composable
-fun Tabs(pagerState: PagerState) {
-    val list = listOf(
-        TabItems.Events,
-        TabItems.Leagues,
-        TabItems.Opportunity,
-    )
+fun Tabs(pagerState: PagerState, list: List<TabItems>) {
+
     val scope = rememberCoroutineScope()
     TabRow(
         selectedTabIndex = pagerState.currentPage,
@@ -152,34 +176,70 @@ fun TabsContent(
     moveToPracticeDetail: (String, String) -> Unit,
     moveToGameDetail: (String) -> Unit,
     moveToOppDetails: (String) -> Unit,
-    updateTopBar: (TopBarData) -> Unit
+    updateTopBar: (TopBarData) -> Unit,
+    role: State<String>
 ) {
 
     HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
         when (page) {
+
             0 -> {
                 MyEvents(vm, moveToPracticeDetail, moveToGameDetail)
             }
+
             1 -> {
                 MyLeagueScreen(vm, moveToDetail)
             }
+
             2 -> {
                 OpportunitieScreen(vm, moveToOppDetails)
             }
+
         }
-        SetTopBar(pagerState, page, updateTopBar)
+        SetTopBar(pagerState, page, updateTopBar, role)
+    }
+}
+
+@ExperimentalPagerApi
+@Composable
+fun TabsContentForReferee(
+    pagerState: PagerState,
+    vm: EventViewModel,
+    moveToOppDetails: (String) -> Unit,
+    updateTopBar: (TopBarData) -> Unit,
+    role: State<String>
+) {
+
+    HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
+        when (page) {
+
+            0 -> {
+                EmptyScreen(singleText = false, "No Shifts Found")
+            }
+
+            1 -> {
+                OpportunitieScreen(vm, moveToOppDetails)
+            }
+
+        }
+        SetTopBar(pagerState, page, updateTopBar, role)
     }
 }
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun SetTopBar(pagerState: PagerState, page: Int, updateTopBar: (TopBarData) -> Unit) {
+fun SetTopBar(
+    pagerState: PagerState,
+    page: Int,
+    updateTopBar: (TopBarData) -> Unit,
+    role: State<String>
+) {
     val label = stringResource(id = R.string.events_label)
     if (!pagerState.isScrollInProgress) {
         if (pagerState.currentPage == page) {
             val top = when (page) {
-                0 -> TopBar.MY_EVENT
-                1 -> TopBar.SINGLE_LABEL
+                0 -> if (role.value == UserType.REFEREE.key) TopBar.SINGLE_LABEL else TopBar.MY_EVENT
+                1 -> if (role.value == UserType.REFEREE.key) TopBar.EVENT_OPPORTUNITIES else TopBar.SINGLE_LABEL
                 2 -> TopBar.EVENT_OPPORTUNITIES
                 else -> TopBar.SINGLE_LABEL
             }
@@ -710,5 +770,6 @@ fun EventItem(
 enum class TabItems(val icon: Int, val stringId: String) {
     Events(R.drawable.ic_events, stringId = "my_events"),
     Leagues(R.drawable.ic_leagues, stringId = "my_leagues"),
-    Opportunity(R.drawable.ic_star, stringId = "opportunities")
+    Opportunity(R.drawable.ic_star, stringId = "opportunities"),
+    MyShifts(R.drawable.ic_events, "my_shifts")
 }

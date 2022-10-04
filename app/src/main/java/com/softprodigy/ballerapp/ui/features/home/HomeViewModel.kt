@@ -177,8 +177,8 @@ class HomeViewModel @Inject constructor(
                                 user = response.data
                             )
                         UserStorage.userId = response.data._Id
+                        setRole(response.data.role, response.data.email)
                         if (showToast) {
-                            setRole(response.data.role, response.data.email)
                             _homeChannel.send(
                                 HomeChannel.ShowToast(
                                     UiText.DynamicString(

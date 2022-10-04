@@ -590,7 +590,6 @@ class ProfileViewModel @Inject constructor(
             auuCard = _state.value.user.userDetails.auuCard,
             waiver = _state.value.user.userDetails.waiver,
             vaccineCard = _state.value.user.userDetails.vaccineCard,
-
             )
 
 
@@ -632,7 +631,7 @@ class ProfileViewModel @Inject constructor(
         }
         if (user.userDetails.positionPlayed.isNotEmpty()) {
 
-            /*user.userDetails.positionPlayed.forEachIndexed { index1, positionSTring ->
+            /* user.userDetails.positionPlayed.forEachIndexed { index1, positionSTring ->
                 _state.value.positionPlayed.forEachIndexed { index2, checkBoxData ->
                     if (positionSTring.equals(
                             checkBoxData.label,
@@ -644,6 +643,7 @@ class ProfileViewModel @Inject constructor(
                     }
                 }
             }*/
+
 
         }
 
