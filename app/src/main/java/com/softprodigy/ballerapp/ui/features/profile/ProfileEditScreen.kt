@@ -49,13 +49,6 @@ import com.softprodigy.ballerapp.common.validPhoneNumber
 import com.softprodigy.ballerapp.data.response.CheckBoxData
 import com.softprodigy.ballerapp.data.response.TeamDetails
 import com.softprodigy.ballerapp.ui.features.components.*
-import com.softprodigy.ballerapp.data.response.Team
-import com.softprodigy.ballerapp.ui.features.components.AppButton
-import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.CustomCheckBox
-import com.softprodigy.ballerapp.ui.features.components.DividerCommon
-import com.softprodigy.ballerapp.ui.features.components.EditProfileFields
-import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.appColors
 import com.softprodigy.ballerapp.ui.theme.error
@@ -163,7 +156,6 @@ fun ProfileEditScreen(
                         src = BuildConfig.IMAGE_SERVER + state.user.profileImage,
                         modifier = Modifier
                             .size(dimensionResource(id = R.dimen.size_200dp))
-                            .padding(bottom = dimensionResource(id = R.dimen.size_16dp))
                             .clip(CircleShape),
                         isCrossFadeEnabled = false,
                         onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },

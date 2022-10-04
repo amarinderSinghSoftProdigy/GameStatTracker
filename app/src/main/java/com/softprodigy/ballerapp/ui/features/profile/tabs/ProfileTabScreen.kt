@@ -4,22 +4,7 @@ package com.softprodigy.ballerapp.ui.features.profile.tabs
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,21 +17,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.accompanist.flowlayout.FlowRow
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.apiToUIDateFormat2
 import com.softprodigy.ballerapp.data.response.TeamDetails
-import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.CoilImage
-import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
-import com.softprodigy.ballerapp.ui.features.components.Placeholder
-import com.softprodigy.ballerapp.ui.features.components.PlaceholderRect
-import com.softprodigy.ballerapp.ui.features.components.ShowParentDialog
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.profile.ProfileChannel
 import com.softprodigy.ballerapp.ui.features.profile.ProfileEvent
 import com.softprodigy.ballerapp.ui.features.profile.ProfileViewModel
@@ -62,7 +45,9 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
      }*/
     val state = vm.state.value
     val context = LocalContext.current
-
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp / 2
+    val width = screenWidth.minus(dimensionResource(id = R.dimen.size_16dp).times(2))
 
     LaunchedEffect(key1 = Unit) {
         vm.channel.collect { uiEvent ->
@@ -78,10 +63,12 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
             }
         }
     }
-    Box(Modifier.fillMaxSize()) {
-        if (state.isLoading) {
-            CommonProgressBar()
-        }
+    Box(
+        Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+    ) {
+
 
         Column(
             modifier = Modifier
@@ -89,8 +76,7 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
                 .padding(
                     start = dimensionResource(id = R.dimen.size_16dp),
                     end = dimensionResource(id = R.dimen.size_16dp)
-                )
-            .verticalScroll(rememberScrollState()),
+                ),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -136,45 +122,64 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-                    .background(color = Color.White),
-            ) {
-                Column(modifier = Modifier.padding(dimensionResource(id = R.dimen.size_16dp))) {
-                    AppText(
-                        text = stringResource(id = R.string.parents),
-                        style = MaterialTheme.typography.h6,
-                        color = ColorBWBlack,
-                        fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp
-                    )
-                    LazyVerticalGrid(
-                        GridCells.Fixed(2),
-                        contentPadding = PaddingValues(10.dp)
-                    ) {
-                        items(state.user.parentDetails) { parentDetails ->
-
-                            Row(
-                                modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.size_5dp)),
-                            ) {
+            if (state.user.parentDetails.isNotEmpty())
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                        .background(color = Color.White),
+                ) {
+                    Column(modifier = Modifier.padding(dimensionResource(id = R.dimen.size_16dp))) {
+                        AppText(
+                            text = stringResource(id = R.string.parents),
+                            style = MaterialTheme.typography.h6,
+                            color = ColorBWBlack,
+                            fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp
+                        )
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+                        FlowRow {
+                            state.user.parentDetails.forEachIndexed { index, item ->
                                 ParentItem(
-                                    parentDetails.parentType,
-                                    "${parentDetails.parent.firstName} ${parentDetails.parent.lastName}",
-                                    parentDetails.parent.profileImage
+                                    width,
+                                    item.parentType,
+                                    "${item.parent.firstName} ${item.parent.lastName}",
+                                    item.parent.profileImage
                                 ) {
                                     vm.onEvent(
                                         ProfileEvent.OnParentDialogChange(true)
                                     )
                                     vm.onEvent(
-                                        ProfileEvent.OnParentClick(parentDetails)
+                                        ProfileEvent.OnParentClick(item)
                                     )
                                 }
                             }
                         }
+
+                        /*LazyVerticalGrid(
+                            GridCells.Fixed(2),
+                            contentPadding = PaddingValues(dimensionResource(id = R.dimen.size_10dp))
+                        ) {
+                            items(state.user.parentDetails) { parentDetails ->
+                                Row(
+                                    modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.size_5dp)),
+                                ) {
+                                    ParentItem(
+                                        parentDetails.parentType,
+                                        "${parentDetails.parent.firstName} ${parentDetails.parent.lastName}",
+                                        parentDetails.parent.profileImage
+                                    ) {
+                                        vm.onEvent(
+                                            ProfileEvent.OnParentDialogChange(true)
+                                        )
+                                        vm.onEvent(
+                                            ProfileEvent.OnParentClick(parentDetails)
+                                        )
+                                    }
+                                }
+                            }
+                        }*/
                     }
                 }
-            }
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
             ProfileItem(
@@ -247,35 +252,37 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
 
-                PreferenceItem(
-                    stringResource(id = R.string.favorite_college_team),
-                    if (state.user.userDetails.funFacts.isNotEmpty()) {
-                        state.user.userDetails.funFacts[0].favCollegeTeam
-                    } else "",
-                    stringResource(id = R.string.favorite_proff_team),
-                    if (state.user.userDetails.funFacts.isNotEmpty()) {
-                        state.user.userDetails.funFacts[0].favProfessionalTeam
-                    } else "",
-                )
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+                    PreferenceItem(
+                        stringResource(id = R.string.favorite_college_team),
+                        if (state.user.userDetails.funFacts.isNotEmpty()) {
+                            state.user.userDetails.funFacts[0].favCollegeTeam
+                        } else "",
+                        stringResource(id = R.string.favorite_proff_team),
+                        if (state.user.userDetails.funFacts.isNotEmpty()) {
+                            state.user.userDetails.funFacts[0].favProfessionalTeam
+                        } else "",
+                    )
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
 
-                PreferenceItem(
-                    stringResource(id = R.string.favorite_active_player),
-                    if (state.user.userDetails.funFacts.isNotEmpty()) {
-                        state.user.userDetails.funFacts[0].favActivePlayer
-                    } else "",
-                    stringResource(id = R.string.favoritea_all_time_tlayer),
-                    if (state.user.userDetails.funFacts.isNotEmpty()) {
-                        state.user.userDetails.funFacts[0].favAllTimePlayer
-                    } else "",
-                )
+                    PreferenceItem(
+                        stringResource(id = R.string.favorite_active_player),
+                        if (state.user.userDetails.funFacts.isNotEmpty()) {
+                            state.user.userDetails.funFacts[0].favActivePlayer
+                        } else "",
+                        stringResource(id = R.string.favoritea_all_time_tlayer),
+                        if (state.user.userDetails.funFacts.isNotEmpty()) {
+                            state.user.userDetails.funFacts[0].favAllTimePlayer
+                        } else "",
+                    )
+                }
             }
-        }
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_80dp)))
         }
     }
-
+    if (state.isLoading) {
+        CommonProgressBar()
+    }
     if (state.showParentDialog) {
         ShowParentDialog(
             onDismiss = {
@@ -322,17 +329,19 @@ fun ProfileItem(type: String, value: String) {
 
 @Composable
 fun ParentItem(
+    width: Dp,
     relation: String,
     value: String,
     imageUrl: String,
     click: () -> Unit
 ) {
     Row(modifier = Modifier
-//        .weight(1F)
+        .background(color = Color.Gray)
+        .width(width)
+        .padding(bottom = dimensionResource(id = R.dimen.size_12dp))
         .clickable {
             click()
         }) {
-
         CoilImage(
             src = BuildConfig.IMAGE_SERVER + imageUrl,
             modifier = Modifier
