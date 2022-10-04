@@ -35,6 +35,7 @@ import com.softprodigy.ballerapp.common.convertServerUtcDateToLocal
 import com.softprodigy.ballerapp.common.uiToAPiDate
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.venue.Location
 import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
 import com.softprodigy.ballerapp.ui.theme.ColorButtonRed
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -181,8 +182,8 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
                 )
             }
 
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-            Row(modifier = Modifier.fillMaxWidth()) {
+//            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+           /* Row(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.weight(2F)) {
                     AppText(
                         text = stringResource(id = R.string.location),
@@ -209,11 +210,19 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
                     icon = painterResource(id = R.drawable.ic_nav),
                     enabled = false,
                 )
-            }
+            }*/
+            LocationBlock(
+                Location(
+                    state.event.landmarkLocation,
+                    state.event.address.street,
+                    "",
+                    state.event.address.zip,
+                )
+            )
 
 
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
-            CoilImage(
+//            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+           /* CoilImage(
                 src = R.drawable.rectangle,
                 modifier = Modifier
                     .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
@@ -229,8 +238,8 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
                 onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
                 isCrossFadeEnabled = false,
                 contentScale = ContentScale.Crop
-            )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+            )*/
+//            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
         }
 
 

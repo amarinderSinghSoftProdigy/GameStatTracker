@@ -143,7 +143,7 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
                 )
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-            CoilImage(
+           /* CoilImage(
                 src = R.drawable.rectangle,
                 modifier = Modifier
                     .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
@@ -160,7 +160,7 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
                 isCrossFadeEnabled = false,
                 contentScale = ContentScale.Crop
             )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))*/
         }
         AppDivider()
         Column(
