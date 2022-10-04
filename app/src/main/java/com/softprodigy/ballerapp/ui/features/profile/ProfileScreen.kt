@@ -29,8 +29,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun ProfileScreen(
     vm: ProfileViewModel = hiltViewModel(),
-    onBackClick: () -> Unit,
-    moveToEditProfile: () -> Unit
 ) {
     val pagerState = rememberPagerState(pageCount = 2)
     Column(horizontalAlignment = Alignment.CenterHorizontally) {

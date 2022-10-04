@@ -258,10 +258,7 @@ fun NavControllerComposable(
                     topBar = TopBar.PROFILE,
                 )
             )
-            ProfileScreen(
-                onBackClick = { navController.popBackStack() },
-                moveToEditProfile = { navController.navigate(Route.PROFILE_EDIT_SCREEN) }
-            )
+            ProfileScreen()
         }
         composable(route = Route.PROFILE_EDIT_SCREEN) {
             homeViewModel.setTopBar(
