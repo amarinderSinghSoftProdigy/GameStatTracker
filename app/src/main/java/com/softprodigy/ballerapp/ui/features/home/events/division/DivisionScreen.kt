@@ -2,17 +2,7 @@ package com.softprodigy.ballerapp.ui.features.home.events.division
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -21,7 +11,9 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -36,14 +28,15 @@ import com.softprodigy.ballerapp.data.response.DivisionResponse
 import com.softprodigy.ballerapp.ui.features.components.AppTab
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
-import com.softprodigy.ballerapp.ui.features.home.events.*
+import com.softprodigy.ballerapp.ui.features.home.events.EvEvents
+import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun DivisionScreen(
-    moveToOpenDivisions: (String) -> Unit, eventViewModel: EventViewModel
+    moveToOpenDivisions: (String, String) -> Unit, eventViewModel: EventViewModel
 ) {
     remember {
         eventViewModel.onEvent(EvEvents.GetDivision)
@@ -110,7 +103,7 @@ fun DivisionTopTabs(pagerState: PagerState, tabData: List<String>) {
 
 @Composable
 fun DivisionData(
-    moveToOpenDivisions: (String) -> Unit,
+    moveToOpenDivisions: (String, String) -> Unit,
     key: String,
     vm: EventViewModel,
 ) {
@@ -151,7 +144,7 @@ fun DivisionData(
         itemsIndexed(divisionList) { index, item ->
 
             DivisionItems(item) {
-                moveToOpenDivisions(item.divisionName)
+                moveToOpenDivisions(item.divisionName, item._id)
             }
 
         }

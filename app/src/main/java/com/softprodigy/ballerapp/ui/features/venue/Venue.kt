@@ -1,5 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.venue
 
+import com.google.android.gms.maps.model.LatLng
 import com.google.gson.annotations.SerializedName
 
 data class Venue(
@@ -55,4 +56,12 @@ data class VenueAddress(
     @SerializedName("state") val state: String = "",
     @SerializedName("city") val city: String = "",
     @SerializedName("zipCode") val zipCode: String = ""
+)
+
+data class Location(
+    val address: String = "",
+    val state: String = "",
+    val city: String = "",
+    val zipCode: String = "",
+    var latLong: LatLng = LatLng(1.35, 103.87)
 )

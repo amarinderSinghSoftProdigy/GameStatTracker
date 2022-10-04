@@ -29,23 +29,25 @@ import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.apiToUIDateFormat
 import com.softprodigy.ballerapp.data.UserStorage
-import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.events.opportunities.OpportunitieScreen
+import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.theme.*
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun EventsScreen(
+    teamVm: TeamViewModel,
     vm: EventViewModel,
     showDialog: Boolean,
     dismissDialog: (Boolean) -> Unit,
-    moveToDetail: () -> Unit,
+    moveToDetail: (String) -> Unit,
     moveToPracticeDetail: (String, String) -> Unit, moveToGameDetail: (String) -> Unit,
     moveToOppDetails: (String) -> Unit,
     updateTopBar: (TopBarData) -> Unit
 ) {
+    val teamState = teamVm.teamUiState.value
     val state = vm.eventState.value
     // on below line we are creating variable for pager state.
     val pagerState = rememberPagerState(
@@ -61,7 +63,6 @@ fun EventsScreen(
             Tabs(pagerState = pagerState)
             TabsContent(
                 pagerState = pagerState,
-                state,
                 vm,
                 moveToDetail,
                 moveToPracticeDetail,
@@ -71,15 +72,11 @@ fun EventsScreen(
             )
         }
 
-        Box(Modifier.fillMaxSize()) {
-            if (showDialog) {
-                val teams: ArrayList<Team> = arrayListOf(
-                    Team(_id = "1", name = "Springfield Bucks"),
-                    Team(_id = "2", name = "Springfield Sprouts"),
-                )
+        if (showDialog) {
+            Box(Modifier.fillMaxSize()) {
                 SwitchTeamDialog(
-                    teamSelect = teams[0],
-                    teams = teams,
+                    teamSelect = state.team,
+                    teams = teamState.teams,
                     title = stringResource(id = R.string.switch_teams),
                     onDismiss = {
                         dismissDialog(false)
@@ -150,9 +147,8 @@ fun Tabs(pagerState: PagerState) {
 @Composable
 fun TabsContent(
     pagerState: PagerState,
-    state: EventState,
     vm: EventViewModel,
-    moveToDetail: () -> Unit,
+    moveToDetail: (String) -> Unit,
     moveToPracticeDetail: (String, String) -> Unit,
     moveToGameDetail: (String) -> Unit,
     moveToOppDetails: (String) -> Unit,
@@ -162,13 +158,13 @@ fun TabsContent(
     HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
         when (page) {
             0 -> {
-                MyEvents(state, vm, moveToPracticeDetail, moveToGameDetail)
+                MyEvents(vm, moveToPracticeDetail, moveToGameDetail)
             }
             1 -> {
-                MyLeagueScreen(state, vm, moveToDetail)
+                MyLeagueScreen(vm, moveToDetail)
             }
             2 -> {
-                OpportunitieScreen(state, vm, moveToOppDetails)
+                OpportunitieScreen(vm, moveToOppDetails)
             }
         }
         SetTopBar(pagerState, page, updateTopBar)
@@ -197,24 +193,24 @@ fun SetTopBar(pagerState: PagerState, page: Int, updateTopBar: (TopBarData) -> U
 // Screen for displaying a simple text message.
 @Composable
 fun BoxScope.MyEvents(
-    state: EventState,
     vm: EventViewModel,
     moveToPracticeDetail: (String, String) -> Unit,
     moveToGameDetail: (String) -> Unit
 ) {
 
+    val state = vm.eventState.value
     remember {
         vm.onEvent(EvEvents.RefreshEventScreen)
     }
     if (state.currentEvents.size > 0 || state.pastEvents.size > 0) {
         Box(modifier = Modifier.fillMaxSize()) {
 
-                Column(
-                    Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
-                        .verticalScroll(rememberScrollState()),
-                ) {
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
+                    .verticalScroll(rememberScrollState()),
+            ) {
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
                 var text = buildAnnotatedString {
                     append(stringResource(id = R.string.upcoming_Events))
@@ -280,8 +276,8 @@ fun BoxScope.MyEvents(
                     }
 
                 }
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
-                }
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+            }
 
 
             if (state.showGoingDialog) {
@@ -291,7 +287,7 @@ fun BoxScope.MyEvents(
                     onDismiss = {
                         vm.onEvent(EvEvents.OnGoingDialogClick(false))
                     },
-                    onDelete = {event->
+                    onDelete = { event ->
                         if (event.id.isNotEmpty()) {
                             vm.onEvent(EvEvents.OnConfirmGoing)
                         }
@@ -342,12 +338,6 @@ fun BoxScope.MyEvents(
                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-
-            /* LeadingIconAppButton(
-             icon = painterResource(id = R.drawable.ic_add_player),
-             text = stringResource(id = R.string.add_events),
-             onClick = {},
-         )*/
         }
     }
     if (state.showLoading) {
@@ -589,8 +579,10 @@ fun EventItem(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
 
-                            Row( horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically) {
+                            Row(
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.ic_cross_2),
                                     contentDescription = "",
@@ -608,7 +600,9 @@ fun EventItem(
                                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
 
                             }
-                            Row(modifier=Modifier.weight(1f), horizontalArrangement = Arrangement.Center,
+                            Row(
+                                modifier = Modifier.weight(1f),
+                                horizontalArrangement = Arrangement.Center,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(

@@ -3,18 +3,7 @@ package com.softprodigy.ballerapp.ui.features.home.events
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,7 +19,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
@@ -38,16 +26,15 @@ import com.softprodigy.ballerapp.data.response.MyLeagueResponse
 import com.softprodigy.ballerapp.ui.features.components.CoilImage
 import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
 import com.softprodigy.ballerapp.ui.features.components.PlaceholderRect
-import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
 import com.softprodigy.ballerapp.ui.theme.appColors
 import com.softprodigy.ballerapp.ui.utils.CommonUtils
 
 @Composable
 fun MyLeagueScreen(
-    state: EventState,
     vm: EventViewModel,
-    moveToDetail: () -> Unit,
+    moveToDetail: (String) -> Unit,
 ) {
+    val state = vm.eventState.value
     remember {
         vm.onEvent(EvEvents.GetMyLeagues)
     }
@@ -65,7 +52,7 @@ fun MyLeagueScreen(
                     items(state.myLeaguesList) { item ->
                         LeagueItem(item) {
                             vm.onEvent(EvEvents.GetLeagueId(item._id))
-                            moveToDetail()
+                            moveToDetail(item.eventDetail.name)
                         }
                     }
                 }
@@ -83,7 +70,7 @@ fun MyLeagueScreen(
             ) {
                 Image(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
-                    painter = painterResource(id = R.drawable.ic_star),
+                    painter = painterResource(id = R.drawable.ic_events_large),
                     contentDescription = null,
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_30dp)))

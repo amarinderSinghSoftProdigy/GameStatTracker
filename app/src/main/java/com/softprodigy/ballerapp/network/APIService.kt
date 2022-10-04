@@ -84,12 +84,16 @@ open interface APIService {
 
     @GET(ApiConstants.GET_ALL_INVITATION)
     suspend fun getAllInvitation(
-        @Query("page") page: Int, @Query("limit") limit: Int, @Query("sort") sort: String
+        @Query("page") page: Int,
+        @Query("limit") limit: Int,
+        @Query("sort") sort: String
     ): BaseResponse<ArrayList<Invitation>>
 
     @GET(ApiConstants.GET_ALL_EVENTS)
     suspend fun getAllevents(
-        @Query("page") page: Int, @Query("limit") limit: Int, @Query("sort") sort: String
+        @Query("page") page: Int,
+        @Query("limit") limit: Int,
+        @Query("sort") sort: String
     ): BaseResponse<EventsResponse>
 
     @PUT(ApiConstants.ACCEPT_TEAM_INVITATION)
@@ -148,7 +152,9 @@ open interface APIService {
 
     @GET(ApiConstants.EVENT_GET_DIVISIONS)
     suspend fun getEventDivision(
-        @Query("page") page: Int, @Query("limit") limit: Int, @Query("eventId") id: String
+        @Query("page") page: Int,
+        @Query("limit") limit: Int,
+        @Query("eventId") id: String
     ): BaseResponse<List<DivisionData>>
 
     @POST(ApiConstants.EVENT_TEAM_REGISTRATION)
@@ -225,4 +231,11 @@ open interface APIService {
     suspend fun getVenueDetailsById(
         @Query("id") venueId: String,
     ): BaseResponse<VenueDetails>
+
+    @GET(ApiConstants.SWAP_PROFILE)
+    suspend fun getSwapProfiles(): BaseResponse<List<SwapUser>>
+
+    @GET(ApiConstants.SWAP_TOKEN)
+    suspend fun updateProfileToken(@Query("userId") userId: String): BaseResponse<String>
+
 }

@@ -4,7 +4,9 @@ import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -105,7 +107,7 @@ fun TeamSetupScreenUpdated(
                 Column(
                     Modifier
                         .fillMaxWidth()
-                        .verticalScroll(rememberScrollState()),
+                        /*.verticalScroll(rememberScrollState())*/,
                     verticalArrangement = Arrangement.Center
                 ) {
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_64dp)))

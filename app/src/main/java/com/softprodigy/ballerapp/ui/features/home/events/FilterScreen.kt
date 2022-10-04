@@ -28,6 +28,7 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppDivider
 import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
+import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
@@ -60,45 +61,51 @@ fun FilterScreen(vm: EventViewModel, onSuccess: () -> Unit) {
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            FlowRow {
-                state.filters.forEach { item ->
-                    FilterItem(
-                        heading = item.key,
-                        list = item.value,
-                        setSelected = {
+    if (state.filters.isEmpty()) {
+        if (state.isLoading) {
+            CommonProgressBar()
+        } else {
+            EmptyScreen(singleText = true, stringResource(id = R.string.no_data_found))
+        }
+    } else {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                FlowRow {
+                    state.filters.forEach { item ->
+                        FilterItem(
+                            heading = item.key,
+                            list = item.value,
+                            setSelected = {
 
-                        }
-                    )
+                            }
+                        )
+                    }
                 }
-            }
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-            /*DistanceItem()
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                /*DistanceItem()
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             */
-            AppButton(
-                enabled = true,
-                icon = null,
-                themed = true,
-                onClick = {
-                    vm.onEvent(EvEvents.UpdateFilters(FilterUpdateRequest(state.filterPreference.toMutableList())))
-                },
-                text = stringResource(id = R.string.save),
-                isForceEnableNeeded = true
-            )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                AppButton(
+                    enabled = true,
+                    icon = null,
+                    themed = true,
+                    onClick = {
+                        vm.onEvent(EvEvents.UpdateFilters(FilterUpdateRequest(state.filterPreference.toMutableList())))
+                    },
+                    text = stringResource(id = R.string.save),
+                    isForceEnableNeeded = true
+                )
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+            }
         }
     }
-    if (state.isLoading) {
-        CommonProgressBar()
-    }
+
 }
 
 @Composable

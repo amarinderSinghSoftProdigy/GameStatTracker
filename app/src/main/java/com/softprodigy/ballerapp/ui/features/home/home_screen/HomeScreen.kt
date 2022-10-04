@@ -3,21 +3,8 @@ package com.softprodigy.ballerapp.ui.features.home.home_screen
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -45,6 +32,7 @@ import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.home.HomeChannel
 import com.softprodigy.ballerapp.ui.features.home.HomeViewModel
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamChannel
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
@@ -58,20 +46,18 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
-    name: String?,
     vm: HomeViewModel,
-    teamVm:TeamViewModel,
+    teamVm: TeamViewModel,
     logoClick: () -> Unit,
     onInvitationCLick: () -> Unit,
     gotToProfile: () -> Unit,
-    swap_profile: () -> Unit,
-    OnTeamDetailsSuccess: (String,String) -> Unit,
+    OnTeamDetailsSuccess: (String, String) -> Unit,
     showDialog: Boolean,
     dismissDialog: (Boolean) -> Unit,
     onCreateTeamClick: (Team?) -> Unit,
-    onTeamNameClick:()->Unit,
+    onTeamNameClick: () -> Unit,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
-    ) {
+) {
     val dataStoreManager = DataStoreManager(LocalContext.current)
     val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
     val role = dataStoreManager.getRole.collectAsState(initial = "")
@@ -86,12 +72,14 @@ fun HomeScreen(
     val onTeamSelectionChange = { team: Team ->
         teamVm.onEvent(TeamUIEvent.OnTeamSelected(team))
     }
+    val showSwapDialog = remember {
+        mutableStateOf(false)
+    }
 
     remember {
         coroutineScope.launch {
             homeScreenViewModel.getHomePageDetails()
             teamVm.getTeams()
-
         }
     }
     val onTeamSelectionConfirmed = { team: Team? ->
@@ -106,8 +94,22 @@ fun HomeScreen(
     }
 
     LaunchedEffect(key1 = Unit) {
-
-
+        vm.homeChannel.collect { uiEvent ->
+            when (uiEvent) {
+                is HomeChannel.OnSwapListSuccess -> {
+                    showSwapDialog.value = true
+                }
+                is HomeChannel.ShowToast -> {
+                    Toast.makeText(
+                        context,
+                        uiEvent.message.asString(context),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+    }
+    LaunchedEffect(key1 = Unit) {
         teamVm.teamChannel.collect { uiEvent ->
             when (uiEvent) {
                 is TeamChannel.ShowToast -> {
@@ -118,7 +120,7 @@ fun HomeScreen(
                     ).show()
                 }
                 is TeamChannel.OnTeamDetailsSuccess -> {
-                    OnTeamDetailsSuccess.invoke(uiEvent.teamId,uiEvent.teamName)
+                    OnTeamDetailsSuccess.invoke(uiEvent.teamId, uiEvent.teamName)
                 }
             }
         }
@@ -135,7 +137,7 @@ fun HomeScreen(
                     logoClick()
                 }
                 Options.SWAP_PROFILES -> {
-                    swap_profile()
+                    vm.onEvent(HomeScreenEvent.OnSwapClick)
                 }
             }
         }) {
@@ -148,7 +150,7 @@ fun HomeScreen(
                         end = dimensionResource(id = R.dimen.size_16dp),
                         start = dimensionResource(id = R.dimen.size_16dp)
                     )
-                    .verticalScroll(rememberScrollState()),
+                /*.verticalScroll(rememberScrollState())*/,
                 verticalArrangement = Arrangement.Center
             ) {
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))
@@ -370,23 +372,45 @@ fun HomeScreen(
                 )
             }
         }
-        if (showDialog) {
-            SelectTeamDialog(
-                teams = teamVm.teamUiState.value.teams,
-                onDismiss = { dismissDialog.invoke(false) },
-                onConfirmClick = { teamId,teamName ->
-                    if (UserStorage.teamId != teamId) {
-                        onTeamSelectionConfirmed(teamState.selectedTeam)
-                        teamVm.onEvent(TeamUIEvent.OnConfirmTeamClick(teamId,teamName))
-                    }
-                },
-                onSelectionChange = onTeamSelectionChange,
-                selected = teamState.selectedTeam,
-                showLoading = teamState.isLoading,
-                onCreateTeamClick = { onCreateTeamClick(teamState.selectedTeam) },
-                showCreateTeamButton = role.value.equals(UserType.COACH.key, ignoreCase = true)
-            )
-        }
+    }
+    if (showDialog) {
+        SelectTeamDialog(
+            teams = teamVm.teamUiState.value.teams,
+            onDismiss = { dismissDialog.invoke(false) },
+            onConfirmClick = { teamId, teamName ->
+                if (UserStorage.teamId != teamId) {
+                    onTeamSelectionConfirmed(teamState.selectedTeam)
+                    teamVm.onEvent(TeamUIEvent.OnConfirmTeamClick(teamId, teamName))
+                }
+            },
+            onSelectionChange = onTeamSelectionChange,
+            selected = teamState.selectedTeam,
+            showLoading = teamState.isLoading,
+            onCreateTeamClick = { onCreateTeamClick(teamState.selectedTeam) },
+            showCreateTeamButton = role.value.equals(UserType.COACH.key, ignoreCase = true)
+        )
+    }
+
+    if (showSwapDialog.value) {
+        SwapProfile(
+            users = homeState.swapUsers,
+            onDismiss = { showSwapDialog.value = false },
+            onConfirmClick = {
+                if (it != UserStorage.userId) {
+                    vm.onEvent(HomeScreenEvent.OnSwapUpdate(it))
+                }
+                showSwapDialog.value = false
+            },
+            showLoading = homeState.isDataLoading,
+            onCreatePlayerClick = {
+                vm.setAddProfile(true)
+                showSwapDialog.value = false
+            },
+            showCreatePlayerButton = false
+        )
+    }
+    if (homeState.isDataLoading) {
+        CommonProgressBar()
     }
 }
 

@@ -10,9 +10,7 @@ import android.widget.DatePicker
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
@@ -94,7 +92,9 @@ fun NewEventScreen(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -117,7 +117,6 @@ fun NewEventScreen(
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
                 EventTabs(pagerState = pagerState, onSelectionChange = {
                     vm.onEvent(NewEvEvent.OnEventTypeChange(it))
-
                 })
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))

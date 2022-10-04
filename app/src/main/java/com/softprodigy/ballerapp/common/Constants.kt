@@ -106,8 +106,12 @@ object ApiConstants {
     const val UPDATE_PROFILE = "v1/auth/updateUserProfile"
     const val VERIFY_PHONE = "v1/auth/verifyPhone"
     const val CONFIRM_PHONE = "v1/auth/confirmPhone"
+    const val SWAP_PROFILE = "v1/auth/swapProfileList"
+    const val SWAP_TOKEN = "v1/auth/swapProfileToken"
+
     const val RESET_PASS = "/reset/password/"
     const val RESEND_OTP = "/resendOtp"
+
     const val UPDATE_TEAM = "v1/team/update"
     const val GET_USER_DETAILS = "v1/auth/getUserProfile"
     const val GET_HOME_PAGE_DETAILS = "v1/coach/event/getHomePageDetails"

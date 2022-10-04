@@ -36,8 +36,9 @@ fun OpenVenueTopTabs(venueId: String, eventViewModel: EventViewModel) {
     )
 
     Column {
-        OpenVenueTabs(pagerState = pagerState, tabData = tabData)
-        OpenVenueContents(pagerState = pagerState, venueId, eventViewModel)
+        OpenVenuesDetailsScreen(venueId, eventViewModel)
+        //OpenVenueTabs(pagerState = pagerState, tabData = tabData)
+        //OpenVenueContents(pagerState = pagerState, venueId, eventViewModel)
     }
 }
 

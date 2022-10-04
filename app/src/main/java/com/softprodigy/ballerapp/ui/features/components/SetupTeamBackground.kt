@@ -1,9 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.components
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -88,7 +85,11 @@ fun CoachFlowBackground(
             }
 
 
-            Box(modifier = Modifier.fillMaxSize()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+            ) {
                 content()
                 Column(
                     modifier = Modifier
@@ -150,6 +151,7 @@ fun CoachFlowBackground(
                                     stringResource(id = R.string.my_profile),
                                     R.drawable.ic_profile
                                 ) {
+                                    showOptions.value = false
                                     click(Options.PROFILE)
                                 }
                                 Divider(thickness = dimensionResource(id = R.dimen.divider))
@@ -157,6 +159,7 @@ fun CoachFlowBackground(
                                     stringResource(id = R.string.swap_profiles),
                                     R.drawable.ic_swap
                                 ) {
+                                    showOptions.value = false
                                     click(Options.SWAP_PROFILES)
                                 }
                                 Divider(thickness = dimensionResource(id = R.dimen.divider))
@@ -164,6 +167,7 @@ fun CoachFlowBackground(
                                     stringResource(id = R.string.logout),
                                     R.drawable.ic_logout
                                 ) {
+                                    showOptions.value = false
                                     click(Options.LOGOUT)
                                 }
                             }
