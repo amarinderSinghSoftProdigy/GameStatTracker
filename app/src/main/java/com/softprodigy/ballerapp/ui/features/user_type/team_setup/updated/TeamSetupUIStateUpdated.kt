@@ -1,5 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated
 
+import com.softprodigy.ballerapp.data.request.Address
 import com.softprodigy.ballerapp.data.response.team.Player
 
 data class TeamSetupUIStateUpdated(
@@ -26,10 +27,9 @@ data class TeamSetupUIStateUpdated(
     val teamNameOnJerseys: String = "",
     val teamNameOnTournaments: String = "",
     val venueName: String = "",
-    val address: String = "",
 
     val coachName:String="",
     val coachRole:String="",
     val coachEmail:String="",
-
+    val selectedAddress:Address=Address(),
     )

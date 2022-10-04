@@ -10,13 +10,14 @@ data class CreateTeamRequest(
     @SerializedName("teamNameOnJersey") val teamNameOnJersey: String = "",
     @SerializedName("teamNameOnTournaments") val teamNameOnTournaments: String = "",
     @SerializedName("nameOfVenue") val nameOfVenue: String = "",
-    @SerializedName("address") val address: String = "",
+    @SerializedName("address") val address: Address = Address(),
+    @SerializedName("location") val location: Location = Location(),
     @SerializedName("primaryTeamColor") val primaryTeamColor: String = "",
     @SerializedName("colorCode") val colorCode: String = "",
     @SerializedName("secondaryTeamColor") val secondaryTeamColor: String = "",
     @SerializedName("tertiaryTeamColor") val tertiaryTeamColor: String = "",
     @SerializedName("members") val members: List<Members> = arrayListOf(),
-    @SerializedName("logo") val logo: String? = null
+    @SerializedName("logo") val logo: String? = null,
 )
 
 data class UpdateTeamRequest(
