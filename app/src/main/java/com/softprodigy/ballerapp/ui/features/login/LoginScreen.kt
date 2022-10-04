@@ -308,7 +308,7 @@ fun LoginScreen(
 
             AppButton(
                 singleButton = true,
-                enabled = email.isValidEmail() && password.isValidPassword(),
+                enabled = email.isValidEmail() && password.length>=6,
                 onClick = {
 //                    onLoginSuccess(null)
                     vm.onEvent(LoginUIEvent.Submit(email, password))

@@ -12,6 +12,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,6 +50,9 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
     val screenWidth = configuration.screenWidthDp.dp / 2
     val width = screenWidth.minus(dimensionResource(id = R.dimen.size_16dp).times(2))
 
+    remember {
+        vm.onEvent(ProfileEvent.GetProfile)
+    }
     LaunchedEffect(key1 = Unit) {
         vm.channel.collect { uiEvent ->
             when (uiEvent) {

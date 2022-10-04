@@ -42,11 +42,11 @@ class ProfileViewModel @Inject constructor(
     private val _channel = Channel<ProfileChannel>()
     val channel = _channel.receiveAsFlow()
 
-    init {
+    /*init {
         viewModelScope.launch {
             getUserDetails()
         }
-    }
+    }*/
 
     fun onEvent(event: ProfileEvent) {
         when (event) {
@@ -193,6 +193,9 @@ class ProfileViewModel @Inject constructor(
             is ProfileEvent.OnLeaveDialogClick -> {
                 _state.value =
                     _state.value.copy(showRemoveFromTeamDialog = event.showDialog)
+            }
+            ProfileEvent.GetProfile -> {
+                viewModelScope.launch { getUserDetails() }
             }
         }
     }

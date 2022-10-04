@@ -140,6 +140,7 @@ fun OpportunitiesItem(league: OpportunitiesItem, showLabel: Boolean, OnNextClick
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_6dp)))
                 Text(
+                    modifier=Modifier.padding(end= dimensionResource(id = R.dimen.size_100dp)),
                     text = league.eventShortDescription,
                     color = Color.Black,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,

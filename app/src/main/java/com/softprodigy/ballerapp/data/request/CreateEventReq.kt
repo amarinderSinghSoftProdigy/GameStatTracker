@@ -27,7 +27,7 @@ data class Address(
     @SerializedName("state") var state: String = "",
     @SerializedName("city") var city: String = "",
     @SerializedName("country") var country: String = "",
-    @SerializedName("zip") var zip: String? = "",
+    @SerializedName("zip") var zip: String = "",
     @SerializedName("lat") var lat: Double = 0.00,
     @SerializedName("long") var long: Double = 0.00,
 )
