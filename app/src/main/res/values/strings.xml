@@ -396,5 +396,6 @@
     <string name="add_post_note">Add Post-practice note</string>
     <string name="no_players_change_selection">No players in selected team, Please try with other team</string>
     <string name="my_shifts">My Shifts</string>
+    <string name="select_address">Select Address</string>
 
 </resources>

@@ -23,11 +23,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import coil.compose.rememberAsyncImagePainter
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.UserDocType
 import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.CoilImage
 import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
 import com.softprodigy.ballerapp.ui.features.components.DeleteDialog
 import com.softprodigy.ballerapp.ui.features.profile.ProfileEvent
@@ -133,9 +133,8 @@ fun DocumentItem(item: UserDocType, onImageClick: (String) -> Unit, onDeleteClic
                                 },
                         )
                     } else {
-                        Image(
-                            painter = rememberAsyncImagePainter(BuildConfig.IMAGE_SERVER + item.url),
-                            contentDescription = "",
+                        CoilImage(
+                            src = BuildConfig.IMAGE_SERVER + item.url,
                             modifier = Modifier
                                 .align(Alignment.Center)
                                 .size(dimensionResource(id = R.dimen.size_64dp))
@@ -143,9 +142,28 @@ fun DocumentItem(item: UserDocType, onImageClick: (String) -> Unit, onDeleteClic
                                 .background(
                                     color = MaterialTheme.appColors.material.primary,
                                     shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
-                                ).clickable {
+                                )
+                                .clickable {
                                     onImageClick(item.key)
                                 },
+                            onLoading = {
+                                Box {
+                                    Image(
+                                        painter = painterResource(R.drawable.ic_file),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(dimensionResource(id = R.dimen.size_32dp)),
+                                    )
+                                }
+                            },
+                            onError = {
+                                Box {
+                                    Image(
+                                        painter = painterResource(R.drawable.ic_file),
+                                        modifier = Modifier.size(dimensionResource(id = R.dimen.size_32dp)),
+                                        contentDescription = null,
+                                    )
+                                }
+                            }
                         )
                     }
                 }

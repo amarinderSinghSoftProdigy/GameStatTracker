@@ -97,7 +97,8 @@ object ApiConstants {
     const val GET_VENUES = "v1/event/getMyLeague/venues"
     const val GET_ALL_TEAMS_BY_DIVISION_AND_LEAGUES = "v1/event/getMyLeague/allTeams/byDivisionId"
     const val GET_ALL_TEAMS_BY_LEAGUE_ID_All_DIVISIONS = "v1/event/getMyLeague/allTeams/byDivisions"
-    const val GET_ALL_TEAMS_STANDING_BY_LEAGUE_AND_DIVISION = "v1/event/getMyLeague/allTeamsStanding/byDivisionId"
+    const val GET_ALL_TEAMS_STANDING_BY_LEAGUE_AND_DIVISION =
+        "v1/event/getMyLeague/allTeamsStanding/byDivisionId"
     const val GET_VENUE_DETAILS_BY_ID = "v1/event/getMyLeague/venueById"
 
     const val SOCIAL_LOGIN = "/social_login"
@@ -141,6 +142,22 @@ object ApiConstants {
     const val TWITTER = "twitter"
     const val email = "email"
     const val token = "token"
+}
+
+
+object FileExtensions {
+    val allowedExtension: ArrayList<String> = arrayListOf(
+        ".png",
+        ".jpg",
+        ".jpeg",
+        ".jfif",
+        ".pjpeg",
+        ".pjp",
+        ".avif",
+        ".csv",
+        ".pdf",
+        ".xlsx",
+    )
 }
 
 object RequestCode {
