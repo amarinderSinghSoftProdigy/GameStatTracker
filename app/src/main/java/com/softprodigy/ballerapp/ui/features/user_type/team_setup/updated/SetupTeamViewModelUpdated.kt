@@ -14,6 +14,7 @@ import com.softprodigy.ballerapp.common.getFileFromUri
 import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.CreateTeamRequest
+import com.softprodigy.ballerapp.data.request.Location
 import com.softprodigy.ballerapp.data.request.Members
 import com.softprodigy.ballerapp.data.request.UpdateTeamRequest
 import com.softprodigy.ballerapp.data.response.team.Player
@@ -187,10 +188,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
                 _teamSetupUiState.value = _teamSetupUiState.value.copy(venueName = event.venueName)
 
             }
-            is TeamSetupUIEventUpdated.OnAddressChange -> {
-                _teamSetupUiState.value = _teamSetupUiState.value.copy(address = event.address)
 
-            }
             is TeamSetupUIEventUpdated.OnCoachNameChange -> {
                 _teamSetupUiState.value = _teamSetupUiState.value.copy(coachName = event.coachName)
             }
@@ -199,6 +197,11 @@ class SetupTeamViewModelUpdated @Inject constructor(
             }
             is TeamSetupUIEventUpdated.OnCoachRoleChange -> {
                 _teamSetupUiState.value = _teamSetupUiState.value.copy(coachRole = event.coachRole)
+            }
+
+            is TeamSetupUIEventUpdated.OnAddressChanged->{
+                _teamSetupUiState.value =
+                    _teamSetupUiState.value.copy(selectedAddress = event.addressReq)
             }
         }
 
@@ -393,12 +396,20 @@ class SetupTeamViewModelUpdated @Inject constructor(
         val members = _teamSetupUiState.value.inviteMemberName.mapIndexed { index, name ->
             Members(name = name, email = _teamSetupUiState.value.inviteMemberEmail[index])
         }
+        val location = Location(
+            type = "Point",
+            coordinates = arrayListOf(
+                _teamSetupUiState.value.selectedAddress.lat,
+                _teamSetupUiState.value.selectedAddress.long
+            )
+        )
         val request = CreateTeamRequest(
             name = _teamSetupUiState.value.teamName,
             teamNameOnJersey = _teamSetupUiState.value.teamNameOnJerseys,
             teamNameOnTournaments = _teamSetupUiState.value.teamNameOnTournaments,
             nameOfVenue = _teamSetupUiState.value.venueName,
-            address = _teamSetupUiState.value.address,
+            address = _teamSetupUiState.value.selectedAddress,
+            location = location,
             colorCode = "#" + _teamSetupUiState.value.teamColorPrimary,
             primaryTeamColor = "#" + _teamSetupUiState.value.teamColorPrimary,
             secondaryTeamColor = "#" + _teamSetupUiState.value.teamColorSec,
