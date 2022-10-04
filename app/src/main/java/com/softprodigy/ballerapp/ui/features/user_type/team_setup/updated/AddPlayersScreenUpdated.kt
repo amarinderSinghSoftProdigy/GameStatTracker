@@ -169,7 +169,7 @@ fun AddPlayersScreenUpdated(
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Center
         ) {
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
+//            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
 
             UserFlowBackground(
                 modifier = Modifier.weight(1F),
@@ -179,7 +179,7 @@ fun AddPlayersScreenUpdated(
                     Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp))
                 ) {
 
-                    Row(
+                /*    Row(
                         Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.Top
@@ -191,13 +191,13 @@ fun AddPlayersScreenUpdated(
                             value = state.coachName,
 //                            readOnly=true,
                             onValueChange = { name ->
-                                /*  if (name.length <= maxChar)
+                                *//*  if (name.length <= maxChar)
                                       vm.onEvent(
                                           TeamSetupUIEventUpdated.OnNameValueChange(
                                               index = index,
                                               name
                                           )
-                                      )*/
+                                      )*//*
                                 vm.onEvent(
                                     TeamSetupUIEventUpdated.OnCoachNameChange(
                                         name
@@ -218,26 +218,26 @@ fun AddPlayersScreenUpdated(
                                 )
                             },
                             singleLine = true,
-                            /*    isError = !validName(state.inviteMemberName[index])
-                                        && state.inviteMemberName[index].isNotEmpty(),*/
+                            *//*    isError = !validName(state.inviteMemberName[index])
+                                        && state.inviteMemberName[index].isNotEmpty(),*//*
 //                                                || state.inviteMemberName[index].length > 30,
                             errorMessage = stringResource(id = R.string.valid_first_name),
                         )
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
 
-                        /*  AppSearchOutlinedTextField(
+                        *//*  AppSearchOutlinedTextField(
                               modifier = Modifier
                                   .weight(1f)
                                   .focusRequester(focusRequester),
                               value = state.coachRole,
                               onValueChange = { role ->
-                                  *//*  if (email.length <= maxChar)
+                                  *//**//*  if (email.length <= maxChar)
                                       vm.onEvent(
                                           TeamSetupUIEventUpdated.OnEmailValueChange(
                                               index = index,
                                               email
                                           )
-                                      )*//*
+                                      )*//**//*
                                 vm.onEvent(
                                     TeamSetupUIEventUpdated.OnCoachRoleChange(
                                        role))
@@ -264,7 +264,7 @@ fun AddPlayersScreenUpdated(
 //                                    && state.inviteMemberEmail[index].isNotEmpty()
 //                                    || state.inviteMemberEmail[index].length > 45),
                             errorMessage = stringResource(id = R.string.email_error)
-                        )*/
+                        )*//*
                         CompositionLocalProvider(
                             LocalRippleTheme provides ClearRippleTheme
                         ) {
@@ -417,7 +417,7 @@ fun AddPlayersScreenUpdated(
                                     placeable.place(0, 0)
                                 }
                             })
-
+*/
                     LazyColumn(
                         Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally
