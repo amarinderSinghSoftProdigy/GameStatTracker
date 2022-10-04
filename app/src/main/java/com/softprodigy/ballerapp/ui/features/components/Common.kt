@@ -163,7 +163,8 @@ fun BoxScope.CommonTabView(
             icon = painterResource(id = R.drawable.ic_edit)
         }
         TopBar.MY_EVENT -> {
-            icon = painterResource(id = R.drawable.ic_add_circle_filled)
+            if (userRole.equals(UserType.COACH.key, ignoreCase = true))
+                icon = painterResource(id = R.drawable.ic_add_circle_filled)
         }
         TopBar.EVENT_OPPORTUNITIES -> {
             icon = painterResource(id = R.drawable.ic_filter)
