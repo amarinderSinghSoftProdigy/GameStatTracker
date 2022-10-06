@@ -131,7 +131,6 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
         ) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             LocationBlock(

@@ -9,6 +9,7 @@ import com.softprodigy.ballerapp.data.response.homepage.HomePageCoachModel
 import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
+import com.softprodigy.ballerapp.data.response.team.TeamParent
 import com.softprodigy.ballerapp.domain.BaseResponse
 import com.softprodigy.ballerapp.ui.features.home.invitation.Invitation
 import com.softprodigy.ballerapp.ui.features.venue.Venue
@@ -27,6 +28,10 @@ interface ITeamRepository {
     suspend fun getTeams(
         coachId: String
     ): ResultWrapper<BaseResponse<ArrayList<Team>>>
+
+    suspend fun getTeamsUserId(
+        coachId: String
+    ): ResultWrapper<BaseResponse<ArrayList<TeamParent>>>
 
     suspend fun getTeamsByTeamID(teamId: String): ResultWrapper<BaseResponse<Team>>
 

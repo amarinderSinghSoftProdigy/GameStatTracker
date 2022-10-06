@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.team.Player
+import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.data.response.team.TeamLeaderBoard
+import com.softprodigy.ballerapp.data.response.team.TeamParent
 import com.softprodigy.ballerapp.ui.features.home.events.FilterPreference
 import com.softprodigy.ballerapp.ui.features.home.events.Participation
 import java.text.ParseException
@@ -129,6 +131,14 @@ class CommonUtils {
                 else -> {
                     ""
                 }
+            }
+            return result
+        }
+
+        fun getTeams(data: ArrayList<TeamParent>): ArrayList<Team> {
+            val result: ArrayList<Team> = ArrayList()
+            for (item in data) {
+                result.add(item.teamId)
             }
             return result
         }

@@ -86,8 +86,8 @@ class NewEventViewModel @Inject constructor(val eventsRepository: IEventsReposit
         val location = Location(
             type = "Point",
             coordinates = arrayListOf(
-                state.value.selectedAddress.lat,
-                state.value.selectedAddress.long
+                state.value.selectedAddress.long,
+                state.value.selectedAddress.lat
             )
         )
 

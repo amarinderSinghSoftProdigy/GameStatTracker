@@ -360,7 +360,7 @@ fun EventRegistraionDetails(vm: EventViewModel, teamVm: TeamViewModel, onSuccess
         )
     }
 
-    if (showDivisionDialog.value) {
+    if (showDivisionDialog.value && state.eventDivision.isNotEmpty()) {
         SelectDivisionDialog(
             division = state.divisionData,
             teams = state.eventDivision,

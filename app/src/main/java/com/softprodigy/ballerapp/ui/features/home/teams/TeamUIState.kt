@@ -2,11 +2,7 @@ package com.softprodigy.ballerapp.ui.features.home.teams
 
 import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
 import com.softprodigy.ballerapp.data.response.PlayerDetails
-import com.softprodigy.ballerapp.data.response.team.Coach
-import com.softprodigy.ballerapp.data.response.team.Player
-import com.softprodigy.ballerapp.data.response.team.Team
-import com.softprodigy.ballerapp.data.response.team.TeamLeaderBoard
-import com.softprodigy.ballerapp.data.response.team.TeamRoaster
+import com.softprodigy.ballerapp.data.response.team.*
 
 
 data class TeamUIState(

@@ -47,6 +47,7 @@ import com.softprodigy.ballerapp.common.get24HoursTimeWithAMPM
 import com.softprodigy.ballerapp.data.request.Address
 import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
@@ -150,6 +151,9 @@ fun NewEventScreen(
             themed = true,
             isForceEnableNeeded = true
         )
+    }
+    if (state.isLoading) {
+        CommonProgressBar()
     }
 }
 
