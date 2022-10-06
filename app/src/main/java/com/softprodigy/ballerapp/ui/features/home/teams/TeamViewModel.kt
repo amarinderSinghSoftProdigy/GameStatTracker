@@ -18,6 +18,7 @@ import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.data.response.team.TeamRoaster
 import com.softprodigy.ballerapp.domain.repository.IImageUploadRepo
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
+import com.softprodigy.ballerapp.ui.features.components.UserType
 import com.softprodigy.ballerapp.ui.utils.CommonUtils
 import com.softprodigy.ballerapp.ui.utils.dragDrop.ItemPosition
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -164,7 +165,81 @@ class TeamViewModel @Inject constructor(
     }
 
     suspend fun getTeams() {
-        when (val teamResponse = teamRepo.getTeams(UserStorage.userId)) {
+        if (UserStorage.role.equals(UserType.COACH.key, ignoreCase = true)) {
+            when (val teamResponse = teamRepo.getTeams(UserStorage.userId)) {
+                is ResultWrapper.GenericError -> {
+                    _teamChannel.send(
+                        TeamChannel.ShowToast(
+                            UiText.DynamicString(
+                                "${teamResponse.message}"
+                            )
+                        )
+                    )
+                    _teamUiState.value =
+                        _teamUiState.value.copy(
+                            isLoading = false
+                        )
+                }
+                is ResultWrapper.NetworkError -> {
+                    _teamChannel.send(
+                        TeamChannel.ShowToast(
+                            UiText.DynamicString(
+                                teamResponse.message
+                            )
+                        )
+                    )
+                    _teamUiState.value =
+                        _teamUiState.value.copy(
+                            isLoading = false
+                        )
+                }
+                is ResultWrapper.Success -> {
+                    teamResponse.value.let { response ->
+                        if (response.status) {
+                            if (/*_teamUiState.value.selectedTeam == null && */response.data.size > 0) {
+                                var selectionTeam: Team? = null
+                                response.data.toMutableList().forEach {
+                                    if (UserStorage.teamId == it._id) {
+                                        selectionTeam = it
+                                    }
+                                }
+                                val idToSearch =
+                                    if (selectionTeam == null) response.data[0]._id else selectionTeam?._id
+                                _teamUiState.value =
+                                    _teamUiState.value.copy(
+                                        teams = response.data,
+                                        selectedTeam = if (selectionTeam == null) response.data[0] else selectionTeam,
+                                        isLoading = false,
+                                        localLogo = null,
+                                    )
+                                viewModelScope.launch {
+                                    if (!idToSearch.isNullOrEmpty()) {
+                                        getTeamByTeamId(idToSearch)
+                                        dataStoreManager.setId(idToSearch)
+                                    }
+                                }
+                            }
+                        } else {
+                            _teamUiState.value =
+                                _teamUiState.value.copy(isLoading = false)
+                            _teamChannel.send(
+                                TeamChannel.ShowToast(
+                                    UiText.DynamicString(
+                                        response.statusMessage
+                                    )
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+        } else {
+            getTeamsUserId()
+        }
+    }
+
+    suspend fun getTeamsUserId() {
+        when (val teamResponse = teamRepo.getTeamsUserId(UserStorage.userId)) {
             is ResultWrapper.GenericError -> {
                 _teamChannel.send(
                     TeamChannel.ShowToast(
@@ -196,17 +271,18 @@ class TeamViewModel @Inject constructor(
                     if (response.status) {
                         if (/*_teamUiState.value.selectedTeam == null && */response.data.size > 0) {
                             var selectionTeam: Team? = null
-                            response.data.toMutableList().forEach {
+                            val list = CommonUtils.getTeams(response.data)
+                            list.toMutableList().forEach {
                                 if (UserStorage.teamId == it._id) {
                                     selectionTeam = it
                                 }
                             }
                             val idToSearch =
-                                if (selectionTeam == null) response.data[0]._id else selectionTeam?._id
+                                if (selectionTeam == null) list[0]._id else selectionTeam?._id
                             _teamUiState.value =
                                 _teamUiState.value.copy(
-                                    teams = response.data,
-                                    selectedTeam = if (selectionTeam == null) response.data[0] else selectionTeam,
+                                    teams = list,
+                                    selectedTeam = if (selectionTeam == null) list[0] else selectionTeam,
                                     isLoading = false,
                                     localLogo = null,
                                 )

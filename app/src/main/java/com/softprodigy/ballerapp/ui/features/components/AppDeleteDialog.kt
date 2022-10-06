@@ -170,7 +170,7 @@ fun SelectTeamDialog(
 
                     LazyColumn(
                         modifier = Modifier
-                            .height(dimensionResource(id = R.dimen.size_150dp))
+                            .height(dimensionResource(id = R.dimen.size_200dp))
                             .padding(
                                 bottom = dimensionResource(
                                     id = R.dimen.size_10dp
@@ -1073,16 +1073,16 @@ fun SelectGuardianRoleDialog(
                                 }
                             })
                     }
-                   /* Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                    /* Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
-                    DialogButton(
-                        text = stringResource(R.string.child_not_listed),
-                        onClick = {},
-                        modifier = Modifier.fillMaxWidth(),
-                        border = ButtonDefaults.outlinedBorder,
-                        onlyBorder = true,
-                        enabled = false
-                    )*/
+                     DialogButton(
+                         text = stringResource(R.string.child_not_listed),
+                         onClick = {},
+                         modifier = Modifier.fillMaxWidth(),
+                         border = ButtonDefaults.outlinedBorder,
+                         onlyBorder = true,
+                         enabled = false
+                     )*/
 
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
@@ -1235,6 +1235,7 @@ fun SwitchTeamDialog(
                     }
                     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
                     LazyColumn(
+                        modifier = Modifier.height(dimensionResource(id = R.dimen.size_200dp)),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -2012,7 +2013,7 @@ fun AddPlayer(
 @Composable
 fun AddNoteDialog(
     onDismiss: (NoteType) -> Unit,
-    onConfirmClick: (NoteType,String) -> Unit,
+    onConfirmClick: (NoteType, String) -> Unit,
     note: String,
     noteType: NoteType?,
     onNoteChange: (String) -> Unit,
@@ -2122,7 +2123,7 @@ fun AddNoteDialog(
                             text = stringResource(R.string.dialog_button_confirm),
                             onClick = {
                                 noteType?.let { noteType ->
-                                    onConfirmClick.invoke(noteType,note)
+                                    onConfirmClick.invoke(noteType, note)
                                     onDismiss.invoke(noteType)
                                 }
                             },

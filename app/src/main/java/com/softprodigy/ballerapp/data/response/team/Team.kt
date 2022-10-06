@@ -2,6 +2,13 @@ package com.softprodigy.ballerapp.data.response.team
 
 import com.google.gson.annotations.SerializedName
 
+data class TeamParent(
+    @SerializedName("_id")
+    val _id: String = "",
+    @SerializedName("teamId")
+    val teamId: Team = Team(),
+)
+
 data class Team(
     @SerializedName("_id")
     val _id: String = "",

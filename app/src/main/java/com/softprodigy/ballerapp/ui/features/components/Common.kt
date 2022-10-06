@@ -573,9 +573,9 @@ private fun animateAlignmentAsState(
 
 
 @Composable
-fun LocationBlock(location: Location) {
+fun LocationBlock(location: Location, padding: Dp = dimensionResource(id = R.dimen.size_16dp)) {
     Column(
-        Modifier.padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
+        Modifier.padding(horizontal = padding)
     ) {
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
         Row(modifier = Modifier.fillMaxWidth()) {

@@ -5,15 +5,12 @@ import com.softprodigy.ballerapp.data.request.*
 import com.softprodigy.ballerapp.data.response.*
 import com.softprodigy.ballerapp.data.response.homepage.HomePageCoachModel
 import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
-import com.softprodigy.ballerapp.data.response.team.DivisionWiseTeamResponse
-import com.softprodigy.ballerapp.data.response.team.Player
+import com.softprodigy.ballerapp.data.response.team.*
 import com.softprodigy.ballerapp.data.response.team.Team
-import com.softprodigy.ballerapp.data.response.team.TeamsByLeagueDivisionResponse
 import com.softprodigy.ballerapp.domain.BaseResponse
 import com.softprodigy.ballerapp.ui.features.home.events.*
 import com.softprodigy.ballerapp.ui.features.home.invitation.Invitation
 import com.softprodigy.ballerapp.ui.features.venue.Venue
-import com.softprodigy.ballerapp.ui.features.venue.VenueAddress
 import com.softprodigy.ballerapp.ui.features.venue.VenueDetails
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -44,6 +41,11 @@ open interface APIService {
     suspend fun getTeams(
         @Query("coachId") coachId: String,
     ): BaseResponse<ArrayList<Team>>
+
+    @GET(ApiConstants.GET_TEAMS_BY_USER_ID)
+    suspend fun getTeamsUser(
+        @Query("userId") coachId: String,
+    ): BaseResponse<ArrayList<TeamParent>>
 
     @GET(ApiConstants.GET_TEAM_BY_ID)
     suspend fun getTeamsByTeamId(

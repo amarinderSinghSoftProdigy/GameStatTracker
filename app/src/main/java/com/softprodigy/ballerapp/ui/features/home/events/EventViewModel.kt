@@ -41,22 +41,22 @@ class EventViewModel @Inject constructor(
 
         when (eventResponse) {
             is ResultWrapper.GenericError -> {
-               /* _channel.send(
-                    EventChannel.ShowToast(
-                        UiText.DynamicString(
-                            "${eventResponse.message}"
-                        )
-                    )
-                )*/
+                /* _channel.send(
+                     EventChannel.ShowToast(
+                         UiText.DynamicString(
+                             "${eventResponse.message}"
+                         )
+                     )
+                 )*/
             }
             is ResultWrapper.NetworkError -> {
-               /* _channel.send(
-                    EventChannel.ShowToast(
-                        UiText.DynamicString(
-                            eventResponse.message
-                        )
-                    )
-                )*/
+                /* _channel.send(
+                     EventChannel.ShowToast(
+                         UiText.DynamicString(
+                             eventResponse.message
+                         )
+                     )
+                 )*/
             }
             is ResultWrapper.Success -> {
                 eventResponse.value.let { response ->
@@ -67,13 +67,13 @@ class EventViewModel @Inject constructor(
                                 pastEvents = response.data.pastEvents
                             )
                     } else {
-                       /* _channel.send(
-                            EventChannel.ShowToast(
-                                UiText.DynamicString(
-                                    response.statusMessage
-                                )
-                            )
-                        )*/
+                        /* _channel.send(
+                             EventChannel.ShowToast(
+                                 UiText.DynamicString(
+                                     response.statusMessage
+                                 )
+                             )
+                         )*/
                     }
                 }
             }
@@ -335,7 +335,12 @@ class EventViewModel @Inject constructor(
             }
 
             is EvEvents.RefreshStandingByLeagueDivision -> {
-                viewModelScope.launch { getAllTeamsStandingByLeaguedAndDivision(leagueId = _state.value.leagueId, divisionId  =event.divisionId) }
+                viewModelScope.launch {
+                    getAllTeamsStandingByLeaguedAndDivision(
+                        leagueId = _state.value.leagueId,
+                        divisionId = event.divisionId
+                    )
+                }
             }
             is EvEvents.OnLeagueDivisionStandingSelected -> {
                 _state.value = _state.value.copy(
@@ -473,7 +478,7 @@ class EventViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         _state.value = _state.value.copy(eventDivision = response.data)
                     } else {
                         _channel.send(
@@ -779,13 +784,13 @@ class EventViewModel @Inject constructor(
         when (userResponse) {
             is ResultWrapper.GenericError -> {
                 /* _state.value = _state.value.copy(isLoading = false)*/
-               /* _channel.send(
-                    EventChannel.ShowToast(
-                        UiText.DynamicString(
-                            "${userResponse.message}"
-                        )
-                    )
-                )*/
+                /* _channel.send(
+                     EventChannel.ShowToast(
+                         UiText.DynamicString(
+                             "${userResponse.message}"
+                         )
+                     )
+                 )*/
             }
             is ResultWrapper.NetworkError -> {
                 /*  _state.value = _state.value.copy(isLoading = false)*/
@@ -803,13 +808,13 @@ class EventViewModel @Inject constructor(
                     if (response.status) {
                         _state.value = _state.value.copy(myLeaguesList = response.data)
                     } else {
-                       /* _channel.send(
-                            EventChannel.ShowToast(
-                                UiText.DynamicString(
-                                    response.statusMessage
-                                )
-                            )
-                        )*/
+                        /* _channel.send(
+                             EventChannel.ShowToast(
+                                 UiText.DynamicString(
+                                     response.statusMessage
+                                 )
+                             )
+                         )*/
                     }
                 }
             }
