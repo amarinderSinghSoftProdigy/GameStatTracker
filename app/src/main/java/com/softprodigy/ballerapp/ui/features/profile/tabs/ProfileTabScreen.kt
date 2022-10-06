@@ -12,6 +12,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,7 +22,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,6 +51,9 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
     val screenWidth = configuration.screenWidthDp.dp / 2
     val width = screenWidth.minus(dimensionResource(id = R.dimen.size_16dp).times(2))
 
+    remember {
+        vm.onEvent(ProfileEvent.GetProfile)
+    }
     LaunchedEffect(key1 = Unit) {
         vm.channel.collect { uiEvent ->
             when (uiEvent) {
@@ -130,7 +134,9 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
                         .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
                         .background(color = Color.White),
                 ) {
-                    Column(modifier = Modifier.padding(dimensionResource(id = R.dimen.size_16dp))) {
+                    Column(
+                        modifier = Modifier.padding(dimensionResource(id = R.dimen.size_16dp)),
+                    ) {
                         AppText(
                             text = stringResource(id = R.string.parents),
                             style = MaterialTheme.typography.h6,
@@ -351,12 +357,16 @@ fun ParentItem(
     imageUrl: String,
     click: () -> Unit
 ) {
-    Row(modifier = Modifier
-        .width(width)
-        .padding(bottom = dimensionResource(id = R.dimen.size_12dp))
-        .clickable {
-            click()
-        }) {
+    Row(
+        modifier = Modifier
+            .background(color = Color.Transparent)
+            .width(width)
+            .padding(bottom = dimensionResource(id = R.dimen.size_12dp))
+            .clickable {
+                click()
+            },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         CoilImage(
             src = BuildConfig.IMAGE_SERVER + imageUrl,
             modifier = Modifier
@@ -401,6 +411,7 @@ fun RowScope.DetailItem(heading: String, value: String) {
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
         AppText(
             text = value,
+            textAlign = TextAlign.Center,
             style = MaterialTheme.typography.h5,
             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
         )

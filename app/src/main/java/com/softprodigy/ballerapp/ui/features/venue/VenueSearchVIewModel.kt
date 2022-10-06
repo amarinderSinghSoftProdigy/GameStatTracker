@@ -27,7 +27,7 @@ class VenueSearchVIewModel @Inject constructor(val teamRepository: ITeamReposito
             is VenueEvent.OnSearchVenueChange -> {
                 _state.value = _state.value.copy(searchVenue = event.venue)
                 viewModelScope.launch {
-                    if (_state.value.searchVenue.length > 2)
+                    if (_state.value.searchVenue.length > 1)
                         getAllVenue()
                 }
             }

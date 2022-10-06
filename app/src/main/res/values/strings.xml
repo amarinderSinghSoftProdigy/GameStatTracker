@@ -412,5 +412,6 @@
     <string name="select_partner">Select Partner</string>
     <string name="referee_only_with_this_partner">Referee only with this partner</string>
     <string name="save_changes">Save Changes</string>
+    <string name="select_venue">Select Venue</string>
 
 </resources>

@@ -163,7 +163,8 @@ fun BoxScope.CommonTabView(
             icon = painterResource(id = R.drawable.ic_edit)
         }
         TopBar.MY_EVENT -> {
-            icon = painterResource(id = R.drawable.ic_add_circle_filled)
+            if (userRole.equals(UserType.COACH.key, ignoreCase = true))
+                icon = painterResource(id = R.drawable.ic_add_circle_filled)
         }
         TopBar.EVENT_OPPORTUNITIES -> {
             icon = painterResource(id = R.drawable.ic_filter)
@@ -572,9 +573,9 @@ private fun animateAlignmentAsState(
 
 
 @Composable
-fun LocationBlock(location: Location) {
+fun LocationBlock(location: Location, padding: Dp = dimensionResource(id = R.dimen.size_16dp)) {
     Column(
-        Modifier.padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
+        Modifier.padding(horizontal = padding)
     ) {
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
         Row(modifier = Modifier.fillMaxWidth()) {

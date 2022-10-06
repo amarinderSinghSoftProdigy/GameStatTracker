@@ -675,6 +675,7 @@ fun EventItem(
                         }
                     }
                 } else {
+                    DividerCommon()
                     Row(
                         Modifier
                             .fillMaxWidth()

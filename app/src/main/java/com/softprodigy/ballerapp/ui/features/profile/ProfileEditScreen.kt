@@ -111,6 +111,9 @@ fun ProfileEditScreen(
     )
     mDatePickerDialog.datePicker.maxDate = System.currentTimeMillis()
 
+    remember {
+        vm.onEvent(ProfileEvent.GetProfile)
+    }
 
     LaunchedEffect(key1 = Unit) {
         vm.channel.collect {

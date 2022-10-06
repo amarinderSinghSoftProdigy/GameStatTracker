@@ -37,6 +37,7 @@ sealed class ProfileEvent {
     data class OnLeaveConfirmClick(val teamId: String) : ProfileEvent()
 
     data class GetDocumentTypes(val teamId: String) : ProfileEvent()
+     object GetProfile : ProfileEvent()
     data class ShowDeleteDialog(val show: Boolean) : ProfileEvent()
     data class SetDeleteDocument(val docType: UserDocType) : ProfileEvent()
     data class DeleteDocument(val docType: UserDocType?) : ProfileEvent()

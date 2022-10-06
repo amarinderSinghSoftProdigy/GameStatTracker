@@ -27,6 +27,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
@@ -35,6 +36,7 @@ import com.softprodigy.ballerapp.common.convertServerUtcDateToLocal
 import com.softprodigy.ballerapp.common.uiToAPiDate
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.venue.Location
 import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
 import com.softprodigy.ballerapp.ui.theme.ColorButtonRed
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -180,78 +182,16 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
                     modifier = Modifier.weight(1.8f)
                 )
             }
-
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.weight(2F)) {
-                    AppText(
-                        text = stringResource(id = R.string.location),
-                        style = MaterialTheme.typography.h6,
-                        color = MaterialTheme.appColors.textField.label,
-                    )
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                    Text(
-                        text = state.event.landmarkLocation,
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                        style = MaterialTheme.typography.h5,
-                    )
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                    Text(
-                        text = state.event.address.street,
-                        color = MaterialTheme.appColors.textField.label,
-                        style = MaterialTheme.typography.h4
-                    )
-                }
-                TransparentButtonButton(
-                    modifier = Modifier.weight(1F),
-                    text = stringResource(id = R.string.navigate),
-                    onClick = {},
-                    icon = painterResource(id = R.drawable.ic_nav),
-                    enabled = false,
-                )
-            }
-
-
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
-            CoilImage(
-                src = R.drawable.rectangle,
-                modifier = Modifier
-                    .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-                    .background(
-                        color = Color.White,
-                        RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
-                    )
-                    .height(dimensionResource(id = R.dimen.size_160dp))
-                    .fillMaxWidth(),
-                onError = {
-                    Placeholder(R.drawable.ic_team_placeholder)
-                },
-                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
-                isCrossFadeEnabled = false,
-                contentScale = ContentScale.Crop
+            LocationBlock(
+                Location(
+                    state.event.landmarkLocation,
+                    state.event.address.street,
+                    "",
+                    state.event.address.zip,
+                ),
+                padding = 0.dp
             )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
         }
-
-
-        /* LazyRow(
-             modifier = Modifier
-                 .fillMaxWidth()
-         ) {
-             item {
-                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
-             }
-             itemsIndexed(images) { index, item ->
-                 Image(
-                     painter = rememberAsyncImagePainter("https://picsum.photos/200"),
-                     contentDescription = null,
-                     modifier = Modifier
-                         .padding(end = dimensionResource(id = R.dimen.size_10dp))
-                         .clip(RoundedCornerShape(dimensionResource(R.dimen.size_10dp)))
-                         .size(dimensionResource(id = R.dimen.size_70dp))
-                 )
-             }
-         }*/
 
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 

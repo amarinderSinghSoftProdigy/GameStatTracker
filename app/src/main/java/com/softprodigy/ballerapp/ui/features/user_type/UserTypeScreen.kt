@@ -37,13 +37,13 @@ fun UserTypeScreen(
     signUpvm: SignUpViewModel
 ) {
     CoachFlowBackground()
-    {
+    {}
         Box(
             Modifier.fillMaxWidth()
         ) {
             UserTypeSelector(onNextClick = onNextClick, signUpvm/*, signUpData*/)
         }
-    }
+
 }
 
 @SuppressLint("RememberReturnType")

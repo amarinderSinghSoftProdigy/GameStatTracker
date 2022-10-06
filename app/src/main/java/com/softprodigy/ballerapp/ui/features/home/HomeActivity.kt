@@ -345,8 +345,10 @@ fun NavControllerComposable(
                     navController.navigate(Route.GAME_DETAIL_SCREEN)
                 },
                 moveToOppDetails = {
-                    eventTitle = it
-                    navController.navigate(Route.OPP_DETAIL_SCREEN)
+                    if (UserStorage.role.equals(UserType.COACH.key, ignoreCase = true)) {
+                        eventTitle = it
+                        navController.navigate(Route.OPP_DETAIL_SCREEN)
+                    }
                 },
                 updateTopBar = {
                     homeViewModel.setTopBar(it)
@@ -372,7 +374,7 @@ fun NavControllerComposable(
                 )
             )
             OppEventDetails(eventViewModel, moveToRegistration = {
-                eventViewModel.onEvent(EvEvents.ClearRegister)
+                //eventViewModel.onEvent(EvEvents.ClearRegister)
                 navController.navigate(Route.EVENT_REGISTRATION)
             })
         }
@@ -680,6 +682,12 @@ fun NavControllerComposable(
             MyLeagueDetailScreen()
         }*/
         composable(route = Route.SELECT_VENUE) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label=stringResource(id = R.string.select_venue),
+                    topBar = TopBar.SINGLE_LABEL_BACK,
+                )
+            )
             VenueListScreen(onVenueClick = {
                 navController.previousBackStackEntry
                     ?.savedStateHandle
