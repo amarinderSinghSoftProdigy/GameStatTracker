@@ -63,5 +63,5 @@ data class Location(
     val state: String = "",
     val city: String = "",
     val zipCode: String = "",
-    var latLong: LatLng = LatLng(1.35, 103.87)
+    var latLong: LatLng = LatLng(0.0, 0.0)
 )
