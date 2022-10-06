@@ -1,8 +1,10 @@
 package com.softprodigy.ballerapp.ui.features.home.events
 
 import android.app.Application
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotMutableState
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.common.ResultWrapper
@@ -335,7 +337,12 @@ class EventViewModel @Inject constructor(
             }
 
             is EvEvents.RefreshStandingByLeagueDivision -> {
-                viewModelScope.launch { getAllTeamsStandingByLeaguedAndDivision(leagueId = _state.value.leagueId, divisionId  =event.divisionId) }
+                viewModelScope.launch {
+                    getAllTeamsStandingByLeaguedAndDivision(
+                        leagueId = _state.value.leagueId,
+                        divisionId = event.divisionId
+                    )
+                }
             }
             is EvEvents.OnLeagueDivisionStandingSelected -> {
                 _state.value = _state.value.copy(
@@ -343,6 +350,23 @@ class EventViewModel @Inject constructor(
                         selectedStanding = event.standing
                     )
                 )
+            }
+            is EvEvents.GetRefereeFilters -> {
+                getRefereeFilters()
+            }
+
+            is EvEvents.GenderSelected -> {
+                _state.value = _state.value.copy(selectedGender = event.gender)
+            }
+
+            is EvEvents.EventType -> {
+                _state.value = _state.value.copy(selectedEventType = event.eventType)
+
+            }
+
+            is EvEvents.Format -> {
+                _state.value = _state.value.copy(selectedFormat = event.format)
+
             }
         }
     }
@@ -1104,6 +1128,15 @@ class EventViewModel @Inject constructor(
         }
     }
 
+    private fun getRefereeFilters() {
+
+        val gender = arrayListOf("Male", "Female")
+        val eventType = arrayListOf("League", "Clinic", "Camp")
+        val format = arrayListOf("Indivisual", "Team")
+
+        _state.value =
+            _state.value.copy(genderList = gender, eventType = eventType, formatList = format)
+    }
 
 }
 

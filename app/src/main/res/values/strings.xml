@@ -397,5 +397,20 @@
     <string name="no_players_change_selection">No players in selected team, Please try with other team</string>
     <string name="my_shifts">My Shifts</string>
     <string name="select_address">Select Address</string>
+    <string name="register_as">Register as</string>
+    <string name="pay">Pay</string>
+    <string name="mailing_address">Mailing Address</string>
+    <string name="total_games">Total Games</string>
+    <string name="total_hoop_games">Total Hoops Games</string>
+    <string name="rating">Rating</string>
+    <string name="team_age_preference">Team Age Preference</string>
+    <string name="prefered_partner">Preferred Partner</string>
+    <string name="refereeing_experience">Refereeing Experience</string>
+    <string name="about_exp">About Experience</string>
+    <string name="years">Years</string>
+    <string name="age_range">Age Range</string>
+    <string name="select_partner">Select Partner</string>
+    <string name="referee_only_with_this_partner">Referee only with this partner</string>
+    <string name="save_changes">Save Changes</string>
 
 </resources>

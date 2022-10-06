@@ -21,6 +21,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -301,7 +302,7 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
 }
 
 @Composable
-fun ProfileItem(type: String, value: String) {
+fun ProfileItem(type: String, value: String, imageUrl: String? = null) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -318,11 +319,26 @@ fun ProfileItem(type: String, value: String) {
                 style = MaterialTheme.typography.h6,
                 color = ColorBWBlack
             )
-            AppText(
-                text = value,
-                style = MaterialTheme.typography.h5,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
-            )
+            Row {
+
+                AppText(
+                    text = value,
+                    style = MaterialTheme.typography.h5,
+                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                )
+                if (imageUrl != null) {
+                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+                    CoilImage(
+                        src = BuildConfig.IMAGE_SERVER + imageUrl,
+                        modifier = Modifier
+                            .size(dimensionResource(id = R.dimen.size_24dp))
+                            .clip(CircleShape),
+                        isCrossFadeEnabled = false,
+                        onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
+                        onError = { Placeholder(R.drawable.ic_user_profile_icon) }
+                    )
+                }
+            }
         }
     }
 }
@@ -336,7 +352,6 @@ fun ParentItem(
     click: () -> Unit
 ) {
     Row(modifier = Modifier
-        .background(color = Color.Gray)
         .width(width)
         .padding(bottom = dimensionResource(id = R.dimen.size_12dp))
         .clickable {
@@ -380,7 +395,8 @@ fun RowScope.DetailItem(heading: String, value: String) {
         AppText(
             text = heading,
             style = MaterialTheme.typography.h4,
-            color = ColorBWGrayLight
+            color = ColorBWGrayLight,
+            fontWeight = FontWeight.W500
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
         AppText(
@@ -402,12 +418,12 @@ fun TeamList(teams: SnapshotStateList<TeamDetails>) {
 
         Column(modifier = Modifier.fillMaxWidth()) {
             AppText(
-                text = stringResource(id = R.string.teams_label),
+                text = stringResource(id = R.string.teams),
                 style = MaterialTheme.typography.h6,
                 color = ColorBWBlack,
                 fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp
             )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_14dp)))
             teams.forEach { team ->
                 Column(
                 ) {
@@ -415,16 +431,14 @@ fun TeamList(teams: SnapshotStateList<TeamDetails>) {
                         CoilImage(
                             src = BuildConfig.IMAGE_SERVER + team.teamId.logo,
                             modifier = Modifier
-                                .size(dimensionResource(id = R.dimen.size_40dp))
+                                .size(dimensionResource(id = R.dimen.size_44dp))
                                 .clip(CircleShape),
                             isCrossFadeEnabled = false,
                             onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
                             onError = { Placeholder(R.drawable.ic_team_placeholder) }
                         )
-                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
-                        Column(
-                            modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_10dp)),
-                        ) {
+                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+                        Column{
                             AppText(
                                 text = team.teamId.name,
                                 style = MaterialTheme.typography.h5,
@@ -439,7 +453,7 @@ fun TeamList(teams: SnapshotStateList<TeamDetails>) {
 
                         }
                     }
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_5dp)))
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
                 }
             }
         }

@@ -3,7 +3,10 @@ package com.softprodigy.ballerapp.ui.features.profile
 import android.app.Application
 import android.net.Uri
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.common.ResultWrapper
@@ -15,12 +18,13 @@ import com.softprodigy.ballerapp.data.request.JerseyPerferencesReq
 import com.softprodigy.ballerapp.data.request.TeamDetailsReq
 import com.softprodigy.ballerapp.data.request.UpdateUserDetailsReq
 import com.softprodigy.ballerapp.data.request.UserDetailsReq
-import com.softprodigy.ballerapp.data.response.User
-import com.softprodigy.ballerapp.data.response.UserDocType
+import com.softprodigy.ballerapp.data.response.*
 import com.softprodigy.ballerapp.domain.repository.IImageUploadRepo
 import com.softprodigy.ballerapp.domain.repository.IUserRepository
+import com.softprodigy.ballerapp.ui.features.components.UserType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -34,7 +38,6 @@ class ProfileViewModel @Inject constructor(
     application: Application
 ) : AndroidViewModel(application) {
 
-
     private val _state = mutableStateOf(ProfileState())
     var state: State<ProfileState> = _state
         private set
@@ -42,9 +45,15 @@ class ProfileViewModel @Inject constructor(
     private val _channel = Channel<ProfileChannel>()
     val channel = _channel.receiveAsFlow()
 
+
     init {
         viewModelScope.launch {
-            getUserDetails()
+            dataStoreManager.getRole.collect {
+                if (it == UserType.REFEREE.key)
+                    getRefereeProfileData()
+                else
+                    getUserDetails()
+            }
         }
     }
 
@@ -71,8 +80,7 @@ class ProfileViewModel @Inject constructor(
 
             }
             is ProfileEvent.OnEmailChange -> {
-                _state.value =
-                    _state.value.copy(user = _state.value.user.copy(email = event.email))
+                _state.value = _state.value.copy(user = _state.value.user.copy(email = event.email))
             }
             is ProfileEvent.OnFirstNameChange -> {
                 _state.value =
@@ -87,17 +95,26 @@ class ProfileViewModel @Inject constructor(
                     _state.value.copy(user = _state.value.user.copy(lastName = event.lastName))
             }
             is ProfileEvent.OnLeaveTeamCLick -> {
-                _state.value =
-                    _state.value.copy(
-                        showRemoveFromTeamDialog = true,
-                        selectedTeamId = event.teamId,
-                        selectedTeamIndex = event.index
-                    )
+                _state.value = _state.value.copy(
+                    showRemoveFromTeamDialog = true,
+                    selectedTeamId = event.teamId,
+                    selectedTeamIndex = event.index
+                )
             }
             is ProfileEvent.OnPhoneChange -> {
-                _state.value =
-                    _state.value.copy(user = _state.value.user.copy(phone = event.phone))
+                _state.value = _state.value.copy(user = _state.value.user.copy(phone = event.phone))
             }
+            is ProfileEvent.OnAddressChange -> {
+                _state.value =
+                    _state.value.copy(user = _state.value.user.copy(address = event.address))
+
+            }
+            is ProfileEvent.OnExperienceChange -> {
+                _state.value.user.userDetails =
+                    _state.value.user.userDetails.copy(aboutExperience = event.exp)
+
+            }
+
             is ProfileEvent.OnPositionChange -> {
                 _state.value.user.teamDetails[event.index] =
                     _state.value.user.teamDetails[event.index].copy(position = event.position)
@@ -107,36 +124,29 @@ class ProfileViewModel @Inject constructor(
                     _state.value.user.teamDetails[event.index].copy(role = event.role)
             }
             is ProfileEvent.OnActivePlayerChange -> {
-                _state.value =
-                    _state.value.copy(favActivePlayer = event.activePlayer)
+                _state.value = _state.value.copy(favActivePlayer = event.activePlayer)
             }
             is ProfileEvent.OnAllTimeFavChange -> {
-                _state.value =
-                    _state.value.copy(favAllTimePlayer = event.allTimeFav)
+                _state.value = _state.value.copy(favAllTimePlayer = event.allTimeFav)
             }
             is ProfileEvent.OnCollegeTeamChange -> {
-                _state.value =
-                    _state.value.copy(favCollegeTeam = event.collegeTeam)
+                _state.value = _state.value.copy(favCollegeTeam = event.collegeTeam)
             }
             is ProfileEvent.OnGenderChange -> {
                 _state.value =
                     _state.value.copy(user = _state.value.user.copy(gender = event.gender))
             }
             is ProfileEvent.OnNbaTeamChange -> {
-                _state.value =
-                    _state.value.copy(favProfessionalTeam = event.nbaTeam)
+                _state.value = _state.value.copy(favProfessionalTeam = event.nbaTeam)
             }
             is ProfileEvent.OnPrefJerseyNoChange -> {
-                _state.value =
-                    _state.value.copy(jerseyNumerPerferences = event.prefJerseyNumber)
+                _state.value = _state.value.copy(jerseyNumerPerferences = event.prefJerseyNumber)
             }
             is ProfileEvent.OnShirtChange -> {
-                _state.value =
-                    _state.value.copy(shirtSize = event.shirt)
+                _state.value = _state.value.copy(shirtSize = event.shirt)
             }
             is ProfileEvent.OnWaistChange -> {
-                _state.value =
-                    _state.value.copy(waistSize = event.waist)
+                _state.value = _state.value.copy(waistSize = event.waist)
             }
             ProfileEvent.OnSaveUserDetailsClick -> {
                 viewModelScope.launch {
@@ -148,26 +158,22 @@ class ProfileViewModel @Inject constructor(
                     _state.value.positionPlayed[event.index].copy(isChecked = event.isChecked)
             }
             is ProfileEvent.OnLeaveConfirmClick -> {
-                _state.value =
-                    _state.value.copy(showRemoveFromTeamDialog = false)
+                _state.value = _state.value.copy(showRemoveFromTeamDialog = false)
                 viewModelScope.launch {
                     removeFromTeam()
                 }
             }
             is ProfileEvent.GetDocumentTypes -> {
-                _state.value =
-                    _state.value.copy(showRemoveFromTeamDialog = false)
+                _state.value = _state.value.copy(showRemoveFromTeamDialog = false)
                 viewModelScope.launch {
                     getDocumentTypes()
                 }
             }
             is ProfileEvent.ShowDeleteDialog -> {
-                _state.value =
-                    _state.value.copy(showDeleteDialog = event.show)
+                _state.value = _state.value.copy(showDeleteDialog = event.show)
             }
             is ProfileEvent.SetDeleteDocument -> {
-                _state.value =
-                    _state.value.copy(deleteDocument = event.docType)
+                _state.value = _state.value.copy(deleteDocument = event.docType)
             }
             is ProfileEvent.DeleteDocument -> {
                 viewModelScope.launch {
@@ -180,19 +186,19 @@ class ProfileViewModel @Inject constructor(
                 }
             }
             is ProfileEvent.OnImageSelected -> {
-                _state.value =
-                    _state.value.copy(imageUri = event.teamImageUri)
+                _state.value = _state.value.copy(imageUri = event.teamImageUri)
                 viewModelScope.launch {
                     imageUpload(event.docType)
                 }
             }
             is ProfileEvent.SetUploadKey -> {
-                _state.value =
-                    _state.value.copy(selectedDocKey = event.docType)
+                _state.value = _state.value.copy(selectedDocKey = event.docType)
             }
             is ProfileEvent.OnLeaveDialogClick -> {
-                _state.value =
-                    _state.value.copy(showRemoveFromTeamDialog = event.showDialog)
+                _state.value = _state.value.copy(showRemoveFromTeamDialog = event.showDialog)
+            }
+            is ProfileEvent.GetReferee -> {
+                getRefereeProfileData()
             }
         }
     }
@@ -492,16 +498,15 @@ class ProfileViewModel @Inject constructor(
         _state.value = _state.value.copy(isLoading = true)
         val uri = Uri.parse(_state.value.imageUri)
 
-        val file = getFileFromUriWithoutCompress(getApplication<Application>().applicationContext, uri)
+        val file =
+            getFileFromUriWithoutCompress(getApplication<Application>().applicationContext, uri)
 
         file?.let {
             val size = Integer.parseInt((it.length() / 1024).toString())
             Timber.i("Filesize after compressiod--> $size")
         }
         val userResponse = imageUploadRepo.uploadSingleFile(
-            mime = file?.extension ?: "image",
-            type = userDocType,
-            file
+            mime = file?.extension ?: "image", type = userDocType, file
         )
         when (userResponse) {
             is ResultWrapper.GenericError -> {
@@ -527,8 +532,7 @@ class ProfileViewModel @Inject constructor(
                     if (response.status) {
                         onEvent(
                             ProfileEvent.UpdateUserDoc(
-                                docType = userDocType,
-                                response.data.data
+                                docType = userDocType, response.data.data
                             )
                         )
                     } else {
@@ -548,10 +552,7 @@ class ProfileViewModel @Inject constructor(
     private fun generateUpdateRequest(): UpdateUserDetailsReq {
         val teamDetailsReq = _state.value.user.teamDetails.map {
             TeamDetailsReq(
-                teamId = it.teamId.Id,
-                role = it.role,
-                position = it.position,
-                jersey = it.jersey
+                teamId = it.teamId.Id, role = it.role, position = it.position, jersey = it.jersey
             )
         }
 
@@ -590,7 +591,7 @@ class ProfileViewModel @Inject constructor(
             auuCard = _state.value.user.userDetails.auuCard,
             waiver = _state.value.user.userDetails.waiver,
             vaccineCard = _state.value.user.userDetails.vaccineCard,
-            )
+        )
 
 
         return UpdateUserDetailsReq(
@@ -606,28 +607,25 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun saveResponseToState(user: User) {
-        _state.value =
-            _state.value.copy(
-                user = user,
-            )
+        _state.value = _state.value.copy(
+            user = user,
+        )
         if (user.userDetails.jerseyPerferences.isNotEmpty()) {
             _state.value = _state.value.copy(
-                jerseyNumerPerferences = user.userDetails.jerseyPerferences[0]
-                    .jerseyNumberPerferences.joinToString { jerseyPerferences ->
-                        jerseyPerferences
-                    },
+                jerseyNumerPerferences = user.userDetails.jerseyPerferences[0].jerseyNumberPerferences.joinToString { jerseyPerferences ->
+                    jerseyPerferences
+                },
                 shirtSize = user.userDetails.jerseyPerferences[0].shirtSize,
                 waistSize = user.userDetails.jerseyPerferences[0].waistSize
             )
         }
         if (user.userDetails.funFacts.isNotEmpty()) {
-            _state.value =
-                _state.value.copy(
-                    favCollegeTeam = user.userDetails.funFacts[0].favCollegeTeam,
-                    favActivePlayer = user.userDetails.funFacts[0].favActivePlayer,
-                    favAllTimePlayer = user.userDetails.funFacts[0].favAllTimePlayer,
-                    favProfessionalTeam = user.userDetails.funFacts[0].favProfessionalTeam
-                )
+            _state.value = _state.value.copy(
+                favCollegeTeam = user.userDetails.funFacts[0].favCollegeTeam,
+                favActivePlayer = user.userDetails.funFacts[0].favActivePlayer,
+                favAllTimePlayer = user.userDetails.funFacts[0].favAllTimePlayer,
+                favProfessionalTeam = user.userDetails.funFacts[0].favProfessionalTeam
+            )
         }
         if (user.userDetails.positionPlayed.isNotEmpty()) {
 
@@ -647,6 +645,39 @@ class ProfileViewModel @Inject constructor(
 
         }
 
+
+    }
+
+    private fun getRefereeProfileData() {
+
+        val user = User(
+            firstName = "George",
+            lastName = "Will",
+            email = "joe.m@example.com",
+            phone = "+91 8219163443",
+            address = "6127 Evergreen Rd, Dearborn Heights Michigan(MI), 48127",
+            teamDetails = mutableStateListOf(
+                TeamDetails(
+                    teamId = TeamId("1", "Springfield Bucks", logo = ""),
+                    role = "Referee"
+                ),
+                TeamDetails(
+                    teamId = TeamId("1", "Springfield Sprouts", logo = ""),
+                    role = "Program Manager"
+                )
+            ),
+            userDetails = UserDetails(
+                teamAgePerference = "10 - 16",
+                perferredPartner = "Lincoln Gouse",
+                refereeningExperience = "6 years",
+                aboutExperience = "Mauris, mauris, ut sed tortor nullam tristique habitant viverra. Sagittis tincidunt pellentesque pellentesque sem ornare fermentum amet, dictum mi.",
+                totalGames = "35",
+                totalHoopsGames = "24",
+                rating = "4.5"
+            )
+        )
+
+        _state.value = _state.value.copy(user = user)
 
     }
 

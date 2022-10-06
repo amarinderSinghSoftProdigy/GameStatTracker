@@ -47,5 +47,13 @@ data class EventState(
     val teamsByLeagueDivision: List<TeamsByLeagueDivisionResponse> = listOf(),
     val divisionWiseTeamResponse: List<DivisionWiseTeamResponse> = listOf(),
     val venueDetails: VenueDetails = VenueDetails(),
-    val standingUIState: StandingLeagueDivisionUIState=StandingLeagueDivisionUIState()
+    val standingUIState: StandingLeagueDivisionUIState = StandingLeagueDivisionUIState(),
+
+
+    val genderList: ArrayList<String> = arrayListOf(),
+    val eventType: ArrayList<String> = arrayListOf(),
+    val formatList: ArrayList<String> = arrayListOf(),
+    val selectedGender: String = "",
+    val selectedEventType: String = "",
+    val selectedFormat: String = ""
 )

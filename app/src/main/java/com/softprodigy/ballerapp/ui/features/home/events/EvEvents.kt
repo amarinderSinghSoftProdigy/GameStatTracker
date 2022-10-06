@@ -14,6 +14,7 @@ sealed class EvEvents {
 
     //Opportunities
     object GetFilters : EvEvents()
+    object GetRefereeFilters : EvEvents()
     object GetOpportunities : EvEvents()
     object GetOpportunityDetail : EvEvents()
     data class SetEventId(val id: String) : EvEvents()
@@ -61,11 +62,14 @@ sealed class EvEvents {
     data class GetGender(val gender: String) : EvEvents()
 
     object GetVenues : EvEvents()
-   data class RefreshTeamsByLeagueAndDivision(val divisionId: String) : EvEvents()
-   object RefreshTeamsByDivision : EvEvents()
-   data class RefreshVenueDetailsById(val venueId:String) : EvEvents()
-   data class OnLeagueDivisionStandingSelected(val standing:Standing) : EvEvents()
-   data class RefreshStandingByLeagueDivision(val divisionId: String):EvEvents()
+    data class RefreshTeamsByLeagueAndDivision(val divisionId: String) : EvEvents()
+    object RefreshTeamsByDivision : EvEvents()
+    data class RefreshVenueDetailsById(val venueId: String) : EvEvents()
+    data class OnLeagueDivisionStandingSelected(val standing: Standing) : EvEvents()
+    data class RefreshStandingByLeagueDivision(val divisionId: String) : EvEvents()
+    data class GenderSelected(val gender: String) : EvEvents()
+    data class EventType(val eventType: String) : EvEvents()
+    data class Format(val format: String) : EvEvents()
 }
 
 enum class NoteType(val type: String) {
