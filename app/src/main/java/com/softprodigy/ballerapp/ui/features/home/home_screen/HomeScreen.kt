@@ -78,8 +78,10 @@ fun HomeScreen(
 
     remember {
         coroutineScope.launch {
-            homeScreenViewModel.getHomePageDetails()
-            teamVm.getTeams()
+            if (!UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
+                homeScreenViewModel.getHomePageDetails()
+                teamVm.getTeams()
+            }
         }
     }
 
@@ -180,7 +182,7 @@ fun HomeScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable { /*logoClick()*/
-                                onTeamNameClick.invoke()
+                                /*onTeamNameClick.invoke()*/
                             }
                             .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                         contentAlignment = Alignment.CenterStart
@@ -201,7 +203,11 @@ fun HomeScreen(
                             )
                             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
                             Text(
-                                text = teamState.teamName.ifEmpty { teamName.value },
+                                text = if (UserStorage.role.equals(
+                                        UserType.REFEREE.key,
+                                        ignoreCase = true
+                                    )
+                                ) "Springfield Bucks Staff" else teamState.teamName.ifEmpty { teamName.value },
                                 style = MaterialTheme.typography.h3,
                                 fontWeight = FontWeight.W700,
                                 modifier = Modifier.weight(1f)

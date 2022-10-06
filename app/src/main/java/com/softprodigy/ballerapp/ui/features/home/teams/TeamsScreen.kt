@@ -141,7 +141,6 @@ fun TeamsScreen(
                 showCreateTeamButton = role.value.equals(UserType.COACH.key, ignoreCase = true)
             )
         }
-
     }
     /* if (state.isLoading) {
          CommonProgressBar()
@@ -167,9 +166,12 @@ fun TeamsContent(pagerState: PagerState, viewModel: TeamViewModel) {
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun TeamsTopTabs(pagerState: PagerState, tabData: List<TeamsTabItems>) {
+
     val coroutineScope = rememberCoroutineScope()
+
     AppScrollableTabRow(
-        pagerState = pagerState, tabs = {
+        pagerState = pagerState,
+        tabs = {
             tabData.forEachIndexed { index, item ->
                 AppTabLikeViewPager(
                     title = item.stringId,
@@ -182,7 +184,8 @@ fun TeamsTopTabs(pagerState: PagerState, tabData: List<TeamsTabItems>) {
                     }
                 )
             }
-        })
+        },
+    )
 }
 
 enum class TeamsTabItems(val icon: Int, val stringId: String) {

@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,11 +26,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.response.UserDocType
-import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.CoilImage
-import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
-import com.softprodigy.ballerapp.ui.features.components.DeleteDialog
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.profile.ProfileEvent
 import com.softprodigy.ballerapp.ui.features.profile.ProfileViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
@@ -39,8 +38,11 @@ import com.softprodigy.ballerapp.ui.theme.appColors
 fun DocumentTab(vm: ProfileViewModel) {
     val context = LocalContext.current
     val state = vm.state.value
+    val dataStoreManager = DataStoreManager(LocalContext.current)
+    val role = dataStoreManager.getRole.collectAsState(initial = "")
     remember {
-        vm.onEvent(ProfileEvent.GetDocumentTypes(state.selectedTeamId))
+        if (role.value != UserType.REFEREE.key)
+            vm.onEvent(ProfileEvent.GetDocumentTypes(state.selectedTeamId))
     }
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->

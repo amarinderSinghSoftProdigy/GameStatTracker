@@ -345,7 +345,7 @@ fun NavControllerComposable(
                     navController.navigate(Route.GAME_DETAIL_SCREEN)
                 },
                 moveToOppDetails = {
-                    if (UserStorage.role.equals(UserType.COACH.key, ignoreCase = true)) {
+                    if (UserStorage.role.equals(UserType.COACH.key, ignoreCase = true) || UserStorage.role.equals(UserType.REFEREE.key , ignoreCase = true)) {
                         eventTitle = it
                         navController.navigate(Route.OPP_DETAIL_SCREEN)
                     }

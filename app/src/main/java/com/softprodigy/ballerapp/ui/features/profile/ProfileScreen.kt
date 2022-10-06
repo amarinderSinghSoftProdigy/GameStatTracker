@@ -20,12 +20,11 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
-import com.softprodigy.ballerapp.ui.features.profile.tabs.DocumentTab
-import com.softprodigy.ballerapp.ui.features.profile.tabs.ProfileTabScreen
-import com.softprodigy.ballerapp.ui.features.profile.tabs.RefereeProfileScreen
+import com.softprodigy.ballerapp.ui.features.profile.tabs.*
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
@@ -38,10 +37,10 @@ fun ProfileScreen(
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
-        if (role.value == UserType.REFEREE.key) {
+        if (UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
 
             val list = listOf(
-                TabItems.Profile,
+                TabItems.RefereeProfile,
                 TabItems.Documents,
                 TabItems.Schedule,
                 TabItems.Pay
@@ -109,8 +108,8 @@ fun TabsRefereeContent(pagerState: PagerState, vm: ProfileViewModel) {
         when (page) {
             0 -> RefereeProfileScreen(vm)
             1 -> DocumentTab(vm)
-            2 -> DocumentTab(vm)
-            3 -> DocumentTab(vm)
+            2 -> RefereeScheduleTab(vm)
+            3 -> RefereePayTab(vm)
         }
     }
 }
@@ -120,4 +119,6 @@ enum class TabItems(val icon: Int, val stringId: String) {
     Documents(R.drawable.ic_documents, stringId = "documents"),
     Schedule(R.drawable.ic_schedule, "schedule"),
     Pay(R.drawable.ic_pay, "pay"),
+    RefereeProfile(R.drawable.ic_profile, stringId = "profile_label"),
+
 }

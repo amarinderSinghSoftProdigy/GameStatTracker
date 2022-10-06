@@ -46,13 +46,13 @@ class ProfileViewModel @Inject constructor(
     private val _channel = Channel<ProfileChannel>()
     val channel = _channel.receiveAsFlow()
 
-    /*init {
+    init {
         viewModelScope.launch {
             dataStoreManager.getRole.collect {
-                if (it == UserType.REFEREE.key)
+                if (it == UserType.REFEREE.key){
                     getRefereeProfileData()
-                else
-                    getUserDetails()
+                    getPayData()
+                }
             }
         }
     }
@@ -516,7 +516,8 @@ class ProfileViewModel @Inject constructor(
         _state.value = _state.value.copy(isLoading = true)
         val uri = Uri.parse(_state.value.imageUri)
 
-        val file = getFileFromUriWithoutCompress(getApplication<Application>().applicationContext, uri)
+        val file =
+            getFileFromUriWithoutCompress(getApplication<Application>().applicationContext, uri)
 
         file?.let {
             val size = Integer.parseInt((it.length() / 1024).toString())
@@ -669,6 +670,7 @@ class ProfileViewModel @Inject constructor(
             }*/
 
         }
+    }
 
     private fun getRefereeProfileData() {
 
@@ -701,6 +703,24 @@ class ProfileViewModel @Inject constructor(
 
         _state.value = _state.value.copy(user = user)
 
+    }
+
+    private fun getPayData() {
+
+        val payData =
+            arrayListOf(
+                PayResponse("Lorem Ipsum Dolor Sit Amet", "May 25, 2022", "\$120.00"),
+                PayResponse("Lorem Ipsum Dolor Sit Amet", "May 25, 2022", "\$120.00"),
+                PayResponse("Lorem Ipsum Dolor Sit Amet", "May 25, 2022", "\$120.00"),
+                PayResponse("Lorem Ipsum Dolor Sit Amet", "May 25, 2022", "\$120.00"),
+                PayResponse("Lorem Ipsum Dolor Sit Amet", "May 25, 2022", "\$120.00"),
+                PayResponse("Lorem Ipsum Dolor Sit Amet", "May 25, 2022", "\$120.00"),
+                PayResponse("Lorem Ipsum Dolor Sit Amet", "May 25, 2022", "\$120.00"),
+                PayResponse("Lorem Ipsum Dolor Sit Amet", "May 25, 2022", "\$120.00"),
+                PayResponse("Lorem Ipsum Dolor Sit Amet", "May 25, 2022", "\$120.00")
+            )
+
+        _state.value = _state.value.copy(payData = payData)
     }
 
 }
