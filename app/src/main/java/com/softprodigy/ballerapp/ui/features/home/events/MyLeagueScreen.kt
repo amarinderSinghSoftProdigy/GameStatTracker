@@ -111,14 +111,14 @@ fun LeagueItem(league: MyLeagueResponse, OnNextClick: () -> Unit) {
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .background(
-                        color = MaterialTheme.appColors.material.surface,
+                        color = MaterialTheme.appColors.material.primary,
                         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                     )
                     .size(dimensionResource(id = R.dimen.size_64dp))
                     .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
                 isCrossFadeEnabled = false,
-                onLoading = { PlaceholderRect(R.drawable.ic_team_placeholder) },
-                onError = { PlaceholderRect(R.drawable.ic_team_placeholder) }
+                onLoading = { PlaceholderRect(R.drawable.ic_events_placeholder) },
+                onError = { PlaceholderRect(R.drawable.ic_events_placeholder) }
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
 

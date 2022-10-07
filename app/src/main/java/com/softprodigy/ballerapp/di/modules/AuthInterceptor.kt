@@ -8,12 +8,12 @@ import timber.log.Timber
 /**
  * Interceptor to add auth token to requests
  */
-class AuthInterceptor() : Interceptor {
+class AuthInterceptor : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val requestBuilder = chain.request().newBuilder()
 
-        if (!UserStorage.token.isNullOrEmpty()) {
+        if (!UserStorage.token.isEmpty()) {
             requestBuilder.addHeader("Authorization", "Bearer ${UserStorage.token}")
             Timber.e("Token ${UserStorage.token}")
         }

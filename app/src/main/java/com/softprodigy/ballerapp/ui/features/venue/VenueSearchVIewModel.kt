@@ -60,7 +60,7 @@ class VenueSearchVIewModel @Inject constructor(val teamRepository: ITeamReposito
             }
             is ResultWrapper.Success -> {
                 venueResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.data != null) {
                         _state.value = _state.value.copy(venues = response.data)
                     }
                 }
