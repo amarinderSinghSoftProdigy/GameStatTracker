@@ -23,4 +23,10 @@
     <color name="game_period_background_color">#17191B</color>
     <color name="game_period_selection_background_color">#0177C1</color>
 
+    <color name="game_box_bg_color">#BF17191B</color>
+    <color name="game_add_roster_button_text_color">#FFFFFF</color>
+    <color name="game_box_period_bg_color">#17191B</color>
+    <color name="game_box_point_header_bg_color">#3C4348</color>
+    <color name="game_box_score_header_text_color">#FFFFFF</color>
+    <color name="game_box_score_list_item_bg_color">#BF17191B</color>
 </resources>

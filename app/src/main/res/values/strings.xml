@@ -220,6 +220,16 @@
     <string name="point_2">2 pts</string>
     <string name="point_3">3 pts</string>
 
+    <string name="review_roster_and_add_starters">Review Roster and Add Starters</string>
+    <string name="first_possession">First Possession</string>
+    <string name="pts_label">Pts</string>
+    <string name="fouls">Fouls</string>
+    <string name="fg">FG</string>
+    <string name="three_pt">3pt</string>
+    <string name="ft">FT</string>
+    <string name="rbnd">Rbnd</string>
+    <string name="total">Total</string>
+
     <string-array name="game_settings">
         <item>@string/exit</item>
         <item>@string/settings</item>
@@ -240,5 +250,11 @@
         <item>4Q</item>
         <item>5Q</item>
         <item>OT</item>
+    </string-array>
+
+    <string-array name="game_box_periods">
+        <item>1H</item>
+        <item>2H</item>
+        <item>All</item>
     </string-array>
 </resources>

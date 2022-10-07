@@ -69,7 +69,8 @@ fun NavControllerComposable(
     val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = hiltViewModel()
     NavHost(navController, startDestination = Route.GAME_ZONE_SCREEN) {
         composable(route = Route.GAME_ZONE_SCREEN) {
-            OverviewScreen()
+            //OverviewScreen()
+            BoxScoreScreen()
         }
     }
 }

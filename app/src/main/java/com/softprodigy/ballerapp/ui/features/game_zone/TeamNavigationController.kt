@@ -40,7 +40,11 @@ fun TeamNavigationController (
             .fillMaxHeight()
             .fillMaxWidth()) {
             teamHandler()
-            PointList()
+            //PointList()
+            Tracking(
+                isTrackingEmpty = true,
+                onAddRosterClick = {}
+            )
         }
     }
 }

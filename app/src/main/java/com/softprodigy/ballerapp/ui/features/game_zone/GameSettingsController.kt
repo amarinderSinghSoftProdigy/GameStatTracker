@@ -97,48 +97,56 @@ inline fun gameSettings() {
         var pointList = ArrayList<GameSettingsState>();
         pointList.add(
             GameSettingsState(
+                0,
                 stringResource(id = R.string.asst),
                 R.drawable.ic_plus
             )
         )
         pointList.add(
             GameSettingsState(
+                1,
                 stringResource(id = R.string.blk),
                 R.drawable.ic_plus
             )
         )
         pointList.add(
             GameSettingsState(
+                2,
                 stringResource(id = R.string.off_reb),
                 R.drawable.ic_plus
             )
         )
         pointList.add(
             GameSettingsState(
+                3,
                 stringResource(id = R.string.def_reb),
                 R.drawable.ic_plus
             )
         )
         pointList.add(
             GameSettingsState(
+                4,
                 stringResource(id = R.string.stl),
                 R.drawable.ic_plus
             )
         )
         pointList.add(
             GameSettingsState(
+                5,
                 stringResource(id = R.string.to),
                 R.drawable.ic_plus
             )
         )
         pointList.add(
             GameSettingsState(
+                6,
                 stringResource(id = R.string.foul),
                 R.drawable.ic_plus
             )
         )
         pointList.add(
             GameSettingsState(
+                7,
                 stringResource(id = R.string.sub),
                 R.drawable.ic_plus
             )

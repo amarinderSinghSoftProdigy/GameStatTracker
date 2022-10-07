@@ -47,13 +47,16 @@
     <dimen name="size_56dp">42dp</dimen>
     <dimen name="size_64dp">48dp</dimen>
     <dimen name="size_65dp">48.75dp</dimen>
+    <dimen name="size_69dp">51.75dp</dimen>
     <dimen name="size_70dp">52.5dp</dimen>
     <dimen name="size_72dp">54dp</dimen>
     <dimen name="size_80dp">60dp</dimen>
     <dimen name="size_82dp">61.5dp</dimen>
+    <dimen name="size_86dp">64.5dp</dimen>
     <dimen name="size_90dp">67.5dp</dimen>
     <dimen name="size_94dp">70.5dp</dimen>
     <dimen name="size_100dp">75dp</dimen>
+    <dimen name="size_110dp">82.5dp</dimen>
     <dimen name="size_120dp">90dp</dimen>
     <dimen name="size_130dp">97.5dp</dimen>
     <dimen name="size_140dp">105dp</dimen>
