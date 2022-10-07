@@ -11,9 +11,12 @@ plugins {
 android {
     compileSdk 33
 
+    dataBinding {
+        enabled = true
+    }
     defaultConfig {
         applicationId "com.softprodigy.ballerapp"
-        minSdk 21
+        minSdk 24
         targetSdk 33
         versionCode 1
         versionName "1.7"
@@ -22,6 +25,8 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+        manifestPlaceholders = [file_provider: "YOUR_PACKAGE_NAME"]
+
     }
 
     buildTypes {
@@ -94,6 +99,7 @@ dependencies {
     implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
     implementation 'androidx.activity:activity-compose:1.5.1'
+    implementation project(path: ':uikit-kotlin')
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
@@ -167,4 +173,11 @@ dependencies {
     implementation 'com.google.android.libraries.places:places:2.6.0'
 
     implementation 'com.google.maps.android:maps-compose:2.0.0'
+
+    //chat SDK
+    implementation 'com.cometchat:pro-android-chat-sdk:3.0.0'
+
+    implementation 'com.google.android.material:material:1.6.1'
+
+
 }

@@ -90,6 +90,9 @@
         <entry key="app/src/main/res/layout/activity_details.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_place_picker.xml" value="0.2140625" />
         <entry key="app/src/main/res/layout/twitter_login.xml" value="0.25" />
+        <entry key="uikit-kotlin/src/main/res/layouts/chats/layout/conversation_shimmer.xml" value="0.2140625" />
+        <entry key="uikit-kotlin/src/main/res/layouts/chats/layout/fragment_conversation_screen.xml" value="0.2140625" />
+        <entry key="uikit-kotlin/src/main/res/layouts/cometchat_ui/layout/activity_cometchat_unified.xml" value="0.2140625" />
       </map>
     </option>
   </component>

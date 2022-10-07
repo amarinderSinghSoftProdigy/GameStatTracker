@@ -27,6 +27,7 @@ import com.softprodigy.ballerapp.ui.features.components.SelectTeamDialog
 import com.softprodigy.ballerapp.ui.features.components.UserType
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
 import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
+import com.softprodigy.ballerapp.ui.features.home.teams.chat.TeamsChatScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.leaderboard.LeaderBoardScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.roaster.RoasterScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.standing.StandingScreen
@@ -144,7 +145,7 @@ fun TeamsContent(pagerState: PagerState, viewModel: TeamViewModel) {
     ) { index ->
         when (index) {
             0 -> StandingScreen()
-            1 -> EmptyScreen(singleText = true, heading = stringResource(id = R.string.coming_soon))
+            1 -> TeamsChatScreen()
             2 -> RoasterScreen(viewModel)
             3 -> LeaderBoardScreen()
         }

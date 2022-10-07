@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/ccp" />
             <option value="$PROJECT_DIR$/core" />
+            <option value="$PROJECT_DIR$/uikit-kotlin" />
           </set>
         </option>
       </GradleProjectSettings>
