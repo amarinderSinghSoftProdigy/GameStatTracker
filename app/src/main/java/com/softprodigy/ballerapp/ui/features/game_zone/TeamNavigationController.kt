@@ -42,7 +42,7 @@ fun TeamNavigationController (
             teamHandler()
             //PointList()
             Tracking(
-                isTrackingEmpty = true,
+                isTrackingEmpty = false,
                 onAddRosterClick = {}
             )
         }
@@ -137,7 +137,7 @@ inline fun teamHandler() {
 }
 
 @Composable
-inline fun teamLogo(logoSource :String = "", logoColor: Color = Color.Red) {
+inline fun teamLogo(logoSource :String = "", logoColor: Color = Color.Red, alpha: Float = 1f) {
     if (logoSource != "") {
         CoilImage(
             src = "", //state.localLogo ?: (BuildConfig.IMAGE_SERVER + state.logo),
@@ -145,7 +145,7 @@ inline fun teamLogo(logoSource :String = "", logoColor: Color = Color.Red) {
                 .fillMaxSize()
                 .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
                 .background(
-                    color = Color.Transparent,
+                    color = Color.Transparent.copy(alpha = alpha),
                     shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                 ),
             //.align(Alignment.Center),
@@ -165,10 +165,10 @@ inline fun teamLogo(logoSource :String = "", logoColor: Color = Color.Red) {
 }
 
 @Composable
-inline fun teamTitle(title: String = "", startPadding: Dp = 0.dp, endPadding: Dp = 0.dp) {
+inline fun teamTitle(title: String = "", startPadding: Dp = 0.dp, endPadding: Dp = 0.dp, alpha: Float? = 1f) {
     AppText(
         text = title,
-        color = colorResource(id = R.color.game_grid_item_text_color),
+        color = colorResource(id = R.color.game_grid_item_text_color).copy(alpha = alpha!!),
         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
         maxLines = 1,
         textAlign = TextAlign.Center,

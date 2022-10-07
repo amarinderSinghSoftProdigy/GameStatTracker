@@ -51,9 +51,7 @@ fun Tracking (
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(dimensionResource(id = R.dimen.size_46dp))
-                    .padding(
-                        horizontal = dimensionResource(id = R.dimen.size_16dp),
-                    )
+                    .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
                     //.border(dimensionResource(id = R.dimen.size_1dp), Color.Red)
                     .clip(RectangleShape)
                     .background(
@@ -63,10 +61,12 @@ fun Tracking (
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
 
-            ) {
+                ) {
                 AppText(
                     text = stringResource(id = R.string.review_roster_and_add_starters),
-                    color = colorResource(id = R.color.game_add_roster_button_text_color).copy(alpha = if(isTrackingEmpty) 1.0f else 0.6f),
+                    color = colorResource(
+                        id = R.color.game_add_roster_button_text_color).copy(alpha = if(isTrackingEmpty) 1.0f else 0.6f
+                    ),
                     fontFamily = rubikFamily,
                     fontSize = dimensionResource(id = R.dimen.size_12dp).value.sp,
                     fontWeight = FontWeight.W500,
@@ -81,7 +81,7 @@ fun Tracking (
                     .padding(
                         horizontal = dimensionResource(id = R.dimen.size_16dp),
                     ),
-                    //.background(Color.Black.copy(if(isTrackingEmpty) 0.6f else 1.0f)),
+                //.background(Color.Black.copy(if(isTrackingEmpty) 0.6f else 1.0f)),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -113,41 +113,30 @@ fun Tracking (
                     ) {
 
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
-                        teamLogo()
+                        teamLogo(alpha = if(isTrackingEmpty) 0.6f else 1.0f)
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                        teamTitle(title = stringResource(id = R.string.my_team))
-                    }
+                        teamTitle(title = stringResource(id = R.string.my_team), alpha = if(isTrackingEmpty) 0.6f else 1.0f)
 
-                    Row(
-                        Modifier
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .align(CenterVertically)
+                                //.clip(RectangleShape)
+                                /*.background(
+                                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
+                                    color = Color.Black.copy(alpha = if(isTrackingEmpty) 0.6f else 1.0f))*/,
+                            verticalAlignment = CenterVertically,
+                            horizontalArrangement = Arrangement.End,
+                        ) {
+                            ImageButton(
+                                icon = painterResource(id = R.drawable.ic_possesion_next_arrow_selected),
+                                modifier = Modifier
+                                    .width(dimensionResource(id = R.dimen.size_46dp))
+                                    .height(dimensionResource(id = R.dimen.size_46dp)),
 
-                            .align(CenterVertically)
-                            .clip(RectangleShape)
-                            .background(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_45dp)),color= Color.Black.copy(alpha = if(isTrackingEmpty) 0.4f else 1.0f))
-                           /*.background(
-                                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
-                                color = Color.Black.copy(alpha = if(isTrackingEmpty) 0.6f else 1.0f))*/,
-                        verticalAlignment = CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-                    ) {
-                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                        ImageButton(
-                            icon = painterResource(id = R.drawable.ic_possesion_next_arrow_selected),
-                            modifier = Modifier
-                                .width(dimensionResource(id = R.dimen.size_46dp))
-                                .height(dimensionResource(id = R.dimen.size_46dp)),
-
-                            onClick = { /*TODO*/ }
-                        )
-                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
-                        ImageButton(
-                            icon = painterResource(id = R.drawable.ic_possesion_next_arrow_selected),
-                            modifier = Modifier
-                                .width(dimensionResource(id = R.dimen.size_46dp))
-                                .height(dimensionResource(id = R.dimen.size_46dp)),
-                            onClick = { /*TODO*/ }
-                        )
-                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+                                onClick = { /*TODO*/ }
+                            )
+                        }
                     }
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
 
@@ -159,13 +148,13 @@ fun Tracking (
                         verticalAlignment = CenterVertically,
                         horizontalArrangement = Arrangement.End,
                     ) {
-                            ImageButton(
-                                icon = painterResource(id = R.drawable.ic_possesion_next_arrow_selected),
-                                modifier = Modifier
-                                    .width(dimensionResource(id = R.dimen.size_46dp))
-                                    .height(dimensionResource(id = R.dimen.size_46dp)),
-                                onClick = { /*TODO*/ }
-                            )
+                        ImageButton(
+                            icon = painterResource(id = R.drawable.ic_possesion_next_arrow_selected),
+                            modifier = Modifier
+                                .width(dimensionResource(id = R.dimen.size_46dp))
+                                .height(dimensionResource(id = R.dimen.size_46dp)),
+                            onClick = { /*TODO*/ }
+                        )
                         Row(
                             Modifier
                                 .align(CenterVertically)
@@ -173,9 +162,9 @@ fun Tracking (
                             verticalAlignment = CenterVertically,
                             horizontalArrangement = Arrangement.End,
                         ) {
-                            teamTitle(title = stringResource(id = R.string.other_team))
+                            teamTitle(title = stringResource(id = R.string.other_team), alpha = if(isTrackingEmpty) 0.6f else 1.0f)
                             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                            teamLogo(logoColor = Color.Blue)
+                            teamLogo(logoColor = Color.Blue, alpha = if(isTrackingEmpty) 0.6f else 1.0f)
                             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
                         }
                     }
