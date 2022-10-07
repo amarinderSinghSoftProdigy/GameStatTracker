@@ -5,11 +5,11 @@ import com.google.gson.annotations.SerializedName
 
 data class Venue(
     @SerializedName("_id") val Id: String = "",
-    @SerializedName("venueName") val venueName: String = "",
+    @SerializedName("venueName") val venueName: String? = null,
     @SerializedName("createdAt") val createdAt: String = "",
     @SerializedName("courtInfo") val courtInfo: List<CourtInfo> = listOf(),
     @SerializedName("totalCourts") val totalCourts: Int = 0,
-    @SerializedName("location") val location: String = "",
+    @SerializedName("location") val location: String? = null,
     @SerializedName("distance") val distance: String = "",
     @SerializedName("ratings") val ratings: List<Int> = listOf(),
     @SerializedName("courtCost") val courtCost: String = "",

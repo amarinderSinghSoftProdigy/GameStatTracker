@@ -1,19 +1,8 @@
 package com.softprodigy.ballerapp.ui.features.home.events.venues
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,25 +15,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.VenuesId
-import com.softprodigy.ballerapp.data.response.division.VenuesData
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.CoilImage
-import com.softprodigy.ballerapp.ui.features.components.Placeholder
+import com.softprodigy.ballerapp.ui.features.components.PlaceholderRect
 import com.softprodigy.ballerapp.ui.features.home.events.EvEvents
 import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun VenuesScreen(moveToOpenVenues: (String,String) -> Unit, eventViewModel: EventViewModel) {
+fun VenuesScreen(moveToOpenVenues: (String, String) -> Unit, eventViewModel: EventViewModel) {
     val state = eventViewModel.eventState.value
 
     remember {
@@ -67,7 +53,7 @@ fun VenuesScreen(moveToOpenVenues: (String,String) -> Unit, eventViewModel: Even
             ) {
                 itemsIndexed(state.venuesList) { index, item ->
                     VenuesItem(item) {
-                        moveToOpenVenues(item.venueName,item._id)
+                        moveToOpenVenues(item.venueName, item._id)
                     }
                 }
             }
@@ -97,15 +83,15 @@ fun VenuesItem(item: VenuesId, moveToOpenVenues: () -> Unit) {
                 modifier = Modifier
                     .size(dimensionResource(id = R.dimen.size_44dp))
                     .background(
-                        color = MaterialTheme.colors.error,
-                        RoundedCornerShape(dimensionResource(id = R.dimen.size_6dp))
+                        color = MaterialTheme.appColors.material.primary,
+                        RoundedCornerShape(dimensionResource(id = R.dimen.size_10dp))
                     )
                     .clip(
-                        RoundedCornerShape(dimensionResource(id = R.dimen.size_6dp))
+                        RoundedCornerShape(dimensionResource(id = R.dimen.size_10dp))
                     ),
                 isCrossFadeEnabled = false,
-                onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
-                onError = { Placeholder(R.drawable.ic_user_profile_icon) },
+                onLoading = { PlaceholderRect(R.drawable.ic_events_placeholder) },
+                onError = { PlaceholderRect(R.drawable.ic_events_placeholder) },
                 contentScale = ContentScale.Crop
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))

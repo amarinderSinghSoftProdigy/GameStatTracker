@@ -20,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
@@ -115,14 +116,14 @@ fun OpportunitiesItem(league: OpportunitiesItem, showLabel: Boolean, OnNextClick
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .background(
-                        color = MaterialTheme.appColors.material.surface,
+                        color = MaterialTheme.appColors.material.primary,
                         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                     )
                     .size(dimensionResource(id = R.dimen.size_64dp))
                     .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
                 isCrossFadeEnabled = false,
-                onLoading = { PlaceholderRect(R.drawable.ic_team_placeholder) },
-                onError = { PlaceholderRect(R.drawable.ic_team_placeholder) }
+                onLoading = { PlaceholderRect(R.drawable.ic_events_placeholder) },
+                onError = { PlaceholderRect(R.drawable.ic_events_placeholder) }
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
 
@@ -140,7 +141,9 @@ fun OpportunitiesItem(league: OpportunitiesItem, showLabel: Boolean, OnNextClick
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_6dp)))
                 Text(
-                    modifier=Modifier.padding(end= dimensionResource(id = R.dimen.size_100dp)),
+                    modifier = Modifier.padding(end = dimensionResource(id = R.dimen.size_100dp)),
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 2,
                     text = league.eventShortDescription,
                     color = Color.Black,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,

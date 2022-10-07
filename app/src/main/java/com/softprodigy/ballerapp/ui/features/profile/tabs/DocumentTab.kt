@@ -28,7 +28,6 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.UserDocType
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.CoilImage
-import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
 import com.softprodigy.ballerapp.ui.features.components.DeleteDialog
 import com.softprodigy.ballerapp.ui.features.profile.ProfileEvent
 import com.softprodigy.ballerapp.ui.features.profile.ProfileViewModel
@@ -85,9 +84,9 @@ fun DocumentTab(vm: ProfileViewModel) {
             )
         }
 
-        if (state.isLoading) {
+       /* if (state.isLoading) {
             CommonProgressBar()
-        }
+        }*/
     }
 }
 
