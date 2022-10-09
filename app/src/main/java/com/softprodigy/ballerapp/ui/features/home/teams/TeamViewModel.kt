@@ -19,6 +19,7 @@ import com.softprodigy.ballerapp.data.response.team.TeamRoaster
 import com.softprodigy.ballerapp.domain.repository.IImageUploadRepo
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import com.softprodigy.ballerapp.ui.features.components.UserType
+import com.softprodigy.ballerapp.ui.features.components.fromHex
 import com.softprodigy.ballerapp.ui.utils.CommonUtils
 import com.softprodigy.ballerapp.ui.utils.dragDrop.ItemPosition
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -241,13 +242,13 @@ class TeamViewModel @Inject constructor(
     suspend fun getTeamsUserId() {
         when (val teamResponse = teamRepo.getTeamsUserId(UserStorage.userId)) {
             is ResultWrapper.GenericError -> {
-                _teamChannel.send(
+               /* _teamChannel.send(
                     TeamChannel.ShowToast(
                         UiText.DynamicString(
                             "${teamResponse.message}"
                         )
                     )
-                )
+                )*/
                 _teamUiState.value =
                     _teamUiState.value.copy(
                         isLoading = false
@@ -498,6 +499,10 @@ class TeamViewModel @Inject constructor(
                         _teamChannel.send(
                             TeamChannel.OnTeamDetailsSuccess(response.data._id, response.data.name)
                         )
+
+                        /*update Color code to db*/
+                        updateColorData(response.data.colorCode)
+
                     } else {
                         _teamUiState.value =
                             _teamUiState.value.copy(isLoading = false)
@@ -512,6 +517,14 @@ class TeamViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private suspend fun updateColorData(colorCode:String) {
+
+        // storing team color to DB
+        dataStoreManager.setColor(colorCode)
+        AppConstants.SELECTED_COLOR = fromHex(colorCode.replace("#","").ifEmpty{"0177C1"})
+
     }
 
     private suspend fun getPlayerById(teamId: String) {

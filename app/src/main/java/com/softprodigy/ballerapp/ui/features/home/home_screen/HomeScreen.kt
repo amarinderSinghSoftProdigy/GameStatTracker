@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -174,6 +175,8 @@ fun HomeScreen(
                     color = MaterialTheme.appColors.material.primaryVariant
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
+
+                if(teamState.teams.isNotEmpty()){
                 UserFlowBackground(
                     padding = 0.dp,
                     color = Color.White
@@ -182,7 +185,7 @@ fun HomeScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable { /*logoClick()*/
-                                /*onTeamNameClick.invoke()*/
+                                onTeamNameClick.invoke()
                             }
                             .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                         contentAlignment = Alignment.CenterStart
@@ -194,12 +197,15 @@ fun HomeScreen(
                             verticalAlignment = Alignment.CenterVertically,
 
                             ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_ball),
-                                contentDescription = "",
+                            CoilImage(
+                                src =BuildConfig.IMAGE_SERVER+teamState.logo,
                                 modifier = Modifier
                                     .size(dimensionResource(id = R.dimen.size_48dp))
                                     .clip(CircleShape),
+                                isCrossFadeEnabled = false,
+                                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                                onError = { Placeholder(R.drawable.ic_team_placeholder) },
+                                contentScale = ContentScale.Crop
                             )
                             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
                             Text(
@@ -220,6 +226,7 @@ fun HomeScreen(
                             tint = ColorGreyLighter
                         )
                     }
+                }
                 }
                 if (role.value != UserType.REFEREE.key) {
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))

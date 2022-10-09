@@ -134,6 +134,8 @@ class HomeViewModel @Inject constructor(
             dataStoreManager.saveToken("")
             dataStoreManager.setRole("")
             dataStoreManager.setEmail("")
+            dataStoreManager.setColor("")
+            dataStoreManager.setTeamName("")
         }
     }
 

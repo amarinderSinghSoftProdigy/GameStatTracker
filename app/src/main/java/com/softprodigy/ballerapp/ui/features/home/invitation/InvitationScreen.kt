@@ -213,7 +213,7 @@ fun InvitationItem(
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
                 Text(
-                    text = " ${stringResource(id = R.string.sent_by)} ${invitation.name}",
+                    text = " ${stringResource(id = R.string.sent_by)} ${invitation.createdBy.name}",
                     color = MaterialTheme.appColors.textField.label,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                     fontWeight = FontWeight.W500,
