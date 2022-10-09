@@ -74,7 +74,7 @@ fun AppScrollableTabRow(
             )
         },
         backgroundColor = MaterialTheme.appColors.material.surface,
-        edgePadding = dimensionResource(id = R.dimen.size_25dp), tabs = tabs
+        edgePadding = dimensionResource(id = R.dimen.size_25dp), tabs = tabs,
     )
 }
 

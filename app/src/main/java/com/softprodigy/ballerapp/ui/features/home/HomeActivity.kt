@@ -40,6 +40,7 @@ import com.softprodigy.ballerapp.ui.features.home.events.division.divisionTab.Di
 import com.softprodigy.ballerapp.ui.features.home.events.game.GameDetailsScreen
 import com.softprodigy.ballerapp.ui.features.home.events.game.GameRuleScreen
 import com.softprodigy.ballerapp.ui.features.home.events.new_event.NewEventScreen
+import com.softprodigy.ballerapp.ui.features.home.events.opportunities.EventRefereeRegistrationScreen
 import com.softprodigy.ballerapp.ui.features.home.events.opportunities.EventRegisterSuccessScreen
 import com.softprodigy.ballerapp.ui.features.home.events.opportunities.EventRegistraionDetails
 import com.softprodigy.ballerapp.ui.features.home.events.opportunities.OppEventDetails
@@ -53,6 +54,7 @@ import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileEditScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileScreen
+import com.softprodigy.ballerapp.ui.features.profile.RefereeEditScreen
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.AddPlayersScreenUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupScreenUpdated
@@ -221,6 +223,8 @@ fun NavControllerComposable(
 ) {
     val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = hiltViewModel()
     var eventTitle by rememberSaveable { mutableStateOf("") }
+    val dataStoreManager = DataStoreManager(LocalContext.current)
+    val role = dataStoreManager.getRole.collectAsState(initial = "")
     NavHost(navController, startDestination = Route.HOME_SCREEN) {
         composable(route = Route.HOME_SCREEN) {
             homeViewModel.setTopAppBar(false)
@@ -276,12 +280,21 @@ fun NavControllerComposable(
                     topBar = TopBar.EDIT_PROFILE,
                 )
             )
-            ProfileEditScreen(
-                onBackClick = { navController.popBackStack() },
-                onUpdateSuccess = {
+
+            if (role.value == UserType.REFEREE.key) {
+                RefereeEditScreen(onBackClick = { navController.popBackStack() }) {
                     navController.popBackStack()
                 }
-            )
+            } else {
+                ProfileEditScreen(
+                    onBackClick = { navController.popBackStack() },
+                    onUpdateSuccess = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+
         }
         composable(route = Route.TEAMS_SCREEN) {
             homeViewModel.setTopBar(
@@ -342,7 +355,7 @@ fun NavControllerComposable(
                     navController.navigate(Route.GAME_DETAIL_SCREEN)
                 },
                 moveToOppDetails = {
-                    if (UserStorage.role.equals(UserType.COACH.key, ignoreCase = true)) {
+                    if (UserStorage.role.equals(UserType.COACH.key, ignoreCase = true) || UserStorage.role.equals(UserType.REFEREE.key , ignoreCase = true)) {
                         eventTitle = it
                         navController.navigate(Route.OPP_DETAIL_SCREEN)
                     }
@@ -382,9 +395,19 @@ fun NavControllerComposable(
                     topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
-            EventRegistraionDetails(eventViewModel, teamViewModel) {
-                navController.navigate(Route.EVENT_REGISTRATION_SUCCESS)
+
+            if (role.value == UserType.REFEREE.key) {
+
+                EventRefereeRegistrationScreen(vm = eventViewModel) {
+                    navController.navigate(Route.EVENT_REGISTRATION_SUCCESS)
+                }
+
+            } else {
+                EventRegistraionDetails(eventViewModel, teamViewModel) {
+                    navController.navigate(Route.EVENT_REGISTRATION_SUCCESS)
+                }
             }
+
         }
 
         composable(route = Route.EVENT_REGISTRATION_SUCCESS) {
@@ -432,9 +455,14 @@ fun NavControllerComposable(
                     topBar = TopBar.FILTER_EVENT,
                 )
             )
-            FilterScreen(eventViewModel) {
-                navController.popBackStack()
-            }
+            if (role.value == UserType.REFEREE.key)
+                RefereeFiltersScreen(eventViewModel) {
+                    navController.popBackStack()
+                }
+            else
+                FilterScreen(eventViewModel) {
+                    navController.popBackStack()
+                }
         }
         composable(
             route = Route.EVENTS_DETAIL_SCREEN + "/{eventId}",

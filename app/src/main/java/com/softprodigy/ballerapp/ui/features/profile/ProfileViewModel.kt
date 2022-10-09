@@ -3,20 +3,31 @@ package com.softprodigy.ballerapp.ui.features.profile
 import android.app.Application
 import android.net.Uri
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.getFileFromUriWithoutCompress
 import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
+import com.softprodigy.ballerapp.data.request.FunFactsReq
+import com.softprodigy.ballerapp.data.request.JerseyPerferencesReq
+import com.softprodigy.ballerapp.data.request.TeamDetailsReq
+import com.softprodigy.ballerapp.data.request.UpdateUserDetailsReq
+import com.softprodigy.ballerapp.data.request.UserDetailsReq
+import com.softprodigy.ballerapp.data.response.*
 import com.softprodigy.ballerapp.data.request.*
 import com.softprodigy.ballerapp.data.response.User
 import com.softprodigy.ballerapp.data.response.UserDocType
 import com.softprodigy.ballerapp.domain.repository.IImageUploadRepo
 import com.softprodigy.ballerapp.domain.repository.IUserRepository
+import com.softprodigy.ballerapp.ui.features.components.UserType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -38,11 +49,16 @@ class ProfileViewModel @Inject constructor(
     private val _channel = Channel<ProfileChannel>()
     val channel = _channel.receiveAsFlow()
 
-    /*init {
+    init {
         viewModelScope.launch {
-            getUserDetails()
+            dataStoreManager.getRole.collect {
+                if (it == UserType.REFEREE.key){
+                    getRefereeProfileData()
+                    getPayData()
+                }
+            }
         }
-    }*/
+    }
 
     fun onEvent(event: ProfileEvent) {
         when (event) {
@@ -91,9 +107,19 @@ class ProfileViewModel @Inject constructor(
                     )
             }
             is ProfileEvent.OnPhoneChange -> {
-                _state.value =
-                    _state.value.copy(user = _state.value.user.copy(phone = event.phone))
+                _state.value = _state.value.copy(user = _state.value.user.copy(phone = event.phone))
             }
+            is ProfileEvent.OnAddressChange -> {
+                _state.value =
+                    _state.value.copy(user = _state.value.user.copy(address = event.address))
+
+            }
+            is ProfileEvent.OnExperienceChange -> {
+                _state.value.user.userDetails =
+                    _state.value.user.userDetails.copy(aboutExperience = event.exp)
+
+            }
+
             is ProfileEvent.OnPositionChange -> {
                 _state.value.user.teamDetails[event.index] =
                     _state.value.user.teamDetails[event.index].copy(position = event.position)
@@ -187,8 +213,10 @@ class ProfileViewModel @Inject constructor(
                     _state.value.copy(selectedDocKey = event.docType)
             }
             is ProfileEvent.OnLeaveDialogClick -> {
-                _state.value =
-                    _state.value.copy(showRemoveFromTeamDialog = event.showDialog)
+                _state.value = _state.value.copy(showRemoveFromTeamDialog = event.showDialog)
+            }
+            is ProfileEvent.GetReferee -> {
+                getRefereeProfileData()
             }
             ProfileEvent.GetProfile -> {
                 viewModelScope.launch { getUserDetails() }
@@ -622,13 +650,12 @@ class ProfileViewModel @Inject constructor(
             )
         }
         if (user.userDetails.funFacts.isNotEmpty()) {
-            _state.value =
-                _state.value.copy(
-                    favCollegeTeam = user.userDetails.funFacts[0].favCollegeTeam,
-                    favActivePlayer = user.userDetails.funFacts[0].favActivePlayer,
-                    favAllTimePlayer = user.userDetails.funFacts[0].favAllTimePlayer,
-                    favProfessionalTeam = user.userDetails.funFacts[0].favProfessionalTeam
-                )
+            _state.value = _state.value.copy(
+                favCollegeTeam = user.userDetails.funFacts[0].favCollegeTeam,
+                favActivePlayer = user.userDetails.funFacts[0].favActivePlayer,
+                favAllTimePlayer = user.userDetails.funFacts[0].favAllTimePlayer,
+                favProfessionalTeam = user.userDetails.funFacts[0].favProfessionalTeam
+            )
         }
         if (user.userDetails.positionPlayed.isNotEmpty()) {
 
@@ -646,8 +673,57 @@ class ProfileViewModel @Inject constructor(
             }*/
 
         }
+    }
 
+    private fun getRefereeProfileData() {
 
+        val user = User(
+            firstName = "George",
+            lastName = "Will",
+            email = "joe.m@example.com",
+            phone = "+91 8219163443",
+            address = "6127 Evergreen Rd, Dearborn Heights Michigan(MI), 48127",
+            teamDetails = mutableStateListOf(
+                TeamDetails(
+                    teamId = TeamId("1", "Springfield Bucks", logo = ""),
+                    role = "Referee"
+                ),
+                TeamDetails(
+                    teamId = TeamId("1", "Springfield Sprouts", logo = ""),
+                    role = "Program Manager"
+                )
+            ),
+            userDetails = UserDetails(
+                teamAgePerference = "10 - 16",
+                perferredPartner = "Lincoln Gouse",
+                refereeningExperience = "6 years",
+                aboutExperience = "Mauris, mauris, ut sed tortor nullam tristique habitant viverra. Sagittis tincidunt pellentesque pellentesque sem ornare fermentum amet, dictum mi.",
+                totalGames = "35",
+                totalHoopsGames = "24",
+                rating = "4.5"
+            )
+        )
+
+        _state.value = _state.value.copy(user = user)
+
+    }
+
+    private fun getPayData() {
+
+        val payData =
+            arrayListOf(
+                PayResponse("Lorem Ipsum Dolor Sit Amet", "May 25, 2022", "\$120.00"),
+                PayResponse("Lorem Ipsum Dolor Sit Amet", "May 25, 2022", "\$120.00"),
+                PayResponse("Lorem Ipsum Dolor Sit Amet", "May 25, 2022", "\$120.00"),
+                PayResponse("Lorem Ipsum Dolor Sit Amet", "May 25, 2022", "\$120.00"),
+                PayResponse("Lorem Ipsum Dolor Sit Amet", "May 25, 2022", "\$120.00"),
+                PayResponse("Lorem Ipsum Dolor Sit Amet", "May 25, 2022", "\$120.00"),
+                PayResponse("Lorem Ipsum Dolor Sit Amet", "May 25, 2022", "\$120.00"),
+                PayResponse("Lorem Ipsum Dolor Sit Amet", "May 25, 2022", "\$120.00"),
+                PayResponse("Lorem Ipsum Dolor Sit Amet", "May 25, 2022", "\$120.00")
+            )
+
+        _state.value = _state.value.copy(payData = payData)
     }
 
 }

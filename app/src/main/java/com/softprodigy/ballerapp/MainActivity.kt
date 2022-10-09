@@ -480,7 +480,7 @@ fun NavControllerComposable(
                     UserStorage.role = userType
 
                     if (userType.equals(UserType.COACH.key, ignoreCase = true)
-                        || userType.equals(UserType.PLAYER.key, ignoreCase = true)
+                        || userType.equals(UserType.PLAYER.key, ignoreCase = true) || userType.equals(UserType.REFEREE.key, ignoreCase = true)
                     ) {
                         navController.navigate(PROFILE_SETUP_SCREEN)
                     } else {
@@ -556,7 +556,6 @@ fun NavControllerComposable(
                 navController.popBackStack()
             })
         }
-
     }
 }
 

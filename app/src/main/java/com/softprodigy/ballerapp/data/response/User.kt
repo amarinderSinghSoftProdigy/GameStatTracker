@@ -19,7 +19,7 @@ data class User(
     @SerializedName("profileImage") val profileImage: String = "",
     @SerializedName("phone") val phone: String = "",
     @SerializedName("teamDetails") val teamDetails: SnapshotStateList<TeamDetails> = mutableStateListOf(),
-    @SerializedName("userDetails") val userDetails: UserDetails = UserDetails(),
+    @SerializedName("userDetails") var userDetails: UserDetails = UserDetails(),
     @SerializedName("parentDetails") var parentDetails: ArrayList<ParentDetails> = arrayListOf(),
     @SerializedName("age") val age: String = "",
 )
@@ -70,9 +70,11 @@ data class UserDetails(
     @SerializedName("waiver") val waiver: String = "",
     @SerializedName("vaccineCard") val vaccineCard: String = "",
     @SerializedName("classOf") val classOf: String = "",
+    val totalGames: String = "",
+    val totalHoopsGames: String = "",
+    val rating: String = ""
 
-
-    )
+)
 
 data class FunFacts(
 

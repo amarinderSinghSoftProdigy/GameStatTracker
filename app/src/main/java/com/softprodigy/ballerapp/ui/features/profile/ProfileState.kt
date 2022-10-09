@@ -2,10 +2,7 @@ package com.softprodigy.ballerapp.ui.features.profile
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import com.softprodigy.ballerapp.data.response.CheckBoxData
-import com.softprodigy.ballerapp.data.response.ParentDetails
-import com.softprodigy.ballerapp.data.response.User
-import com.softprodigy.ballerapp.data.response.UserDocType
+import com.softprodigy.ballerapp.data.response.*
 
 data class ProfileState(
     val isLoading: Boolean = false,
@@ -36,5 +33,5 @@ data class ProfileState(
     val selectedTeamId: String = "",
     val selectedDocKey: String = "",
     val selectedTeamIndex: Int? = null,
-
+    val payData: ArrayList<PayResponse> = arrayListOf()
     )
