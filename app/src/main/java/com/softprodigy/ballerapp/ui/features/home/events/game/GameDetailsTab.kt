@@ -1,19 +1,8 @@
 package com.softprodigy.ballerapp.ui.features.home.events.game
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
@@ -33,21 +22,13 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberAsyncImagePainter
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.ui.features.components.AppDivider
-import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.CoilImage
-import com.softprodigy.ballerapp.ui.features.components.Placeholder
-import com.softprodigy.ballerapp.ui.features.components.TransparentButtonButton
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
-import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
-import com.softprodigy.ballerapp.ui.theme.ColorButtonRed
-import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
-import com.softprodigy.ballerapp.ui.theme.ColorMainPrimary
-import com.softprodigy.ballerapp.ui.theme.appColors
-import com.softprodigy.ballerapp.ui.theme.md_theme_light_primary
+import com.softprodigy.ballerapp.ui.features.venue.Location
+import com.softprodigy.ballerapp.ui.theme.*
 
 @Composable
 fun GameDetailsTab(vm: EventViewModel, moveToGameRules: () -> Unit) {
@@ -136,37 +117,15 @@ fun GameDetailsTab(vm: EventViewModel, moveToGameRules: () -> Unit) {
                     )
                 }
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Column(modifier = Modifier.weight(2F)) {
-                        AppText(
-                            text = stringResource(id = R.string.location),
-                            style = MaterialTheme.typography.h6,
-                            color = MaterialTheme.appColors.textField.label,
-                        )
-                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                        Text(
-                            text = "Springville HS Gym A",
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                            style = MaterialTheme.typography.h5,
-                        )
-
-                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-
-                        Text(
-                            text = "8502 Preston Rd. Inglewood, Maine",
-                            color = MaterialTheme.appColors.textField.label,
-                            style = MaterialTheme.typography.h4
-                        )
-                    }
-                    TransparentButtonButton(
-                        modifier = Modifier.weight(1F),
-                        text = stringResource(id = R.string.navigate),
-                        onClick = {},
-                        icon = painterResource(id = R.drawable.ic_nav),
-                        enabled = false,
-                    )
-                }
+                LocationBlock(
+                    Location(
+                        state.event.landmarkLocation,
+                        state.event.address.street,
+                        state.event.address.city,
+                        state.event.address.zip,
+                    ),
+                    padding = 0.dp
+                )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
                 CoilImage(
                     src = R.drawable.rectangle,

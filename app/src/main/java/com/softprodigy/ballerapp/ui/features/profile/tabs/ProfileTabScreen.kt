@@ -80,8 +80,6 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -168,30 +166,6 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
                                 }
                             }
                         }
-
-                        /*LazyVerticalGrid(
-                            GridCells.Fixed(2),
-                            contentPadding = PaddingValues(dimensionResource(id = R.dimen.size_10dp))
-                        ) {
-                            items(state.user.parentDetails) { parentDetails ->
-                                Row(
-                                    modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.size_5dp)),
-                                ) {
-                                    ParentItem(
-                                        parentDetails.parentType,
-                                        "${parentDetails.parent.firstName} ${parentDetails.parent.lastName}",
-                                        parentDetails.parent.profileImage
-                                    ) {
-                                        vm.onEvent(
-                                            ProfileEvent.OnParentDialogChange(true)
-                                        )
-                                        vm.onEvent(
-                                            ProfileEvent.OnParentClick(parentDetails)
-                                        )
-                                    }
-                                }
-                            }
-                        }*/
                     }
                 }
 
@@ -293,10 +267,12 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_80dp)))
         }
+
+        if (state.isLoading) {
+            CommonProgressBar()
+        }
     }
-    if (state.isLoading) {
-        CommonProgressBar()
-    }
+
     if (state.showParentDialog) {
         ShowParentDialog(
             onDismiss = {

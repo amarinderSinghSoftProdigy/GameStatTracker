@@ -186,7 +186,7 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
                 Location(
                     state.event.landmarkLocation,
                     state.event.address.street,
-                    "",
+                    state.event.address.city,
                     state.event.address.zip,
                 ),
                 padding = 0.dp

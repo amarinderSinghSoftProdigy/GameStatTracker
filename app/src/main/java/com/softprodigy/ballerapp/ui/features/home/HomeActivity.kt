@@ -67,6 +67,8 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class HomeActivity : ComponentActivity() {
 
+    var dataStoreManager: DataStoreManager = DataStoreManager(this)
+
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,7 +80,9 @@ class HomeActivity : ComponentActivity() {
             val teamViewModel: TeamViewModel = hiltViewModel()
             val eventViewModel: EventViewModel = hiltViewModel()
             val state = homeViewModel.state.value
-            val dataStoreManager = DataStoreManager(LocalContext.current)
+            dataStoreManager = DataStoreManager(LocalContext.current)
+            val userToken = dataStoreManager.userToken.collectAsState(initial = "")
+            UserStorage.token = userToken.value
             val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
             val teamId = dataStoreManager.getId.collectAsState(initial = "")
             val teamName = dataStoreManager.getTeamName.collectAsState(initial = "")
@@ -199,6 +203,11 @@ class HomeActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
     }
 }
 
@@ -684,7 +693,7 @@ fun NavControllerComposable(
         composable(route = Route.SELECT_VENUE) {
             homeViewModel.setTopBar(
                 TopBarData(
-                    label=stringResource(id = R.string.select_venue),
+                    label = stringResource(id = R.string.select_venue),
                     topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )

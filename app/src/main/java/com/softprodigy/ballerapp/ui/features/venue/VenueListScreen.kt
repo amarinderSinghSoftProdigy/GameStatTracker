@@ -63,13 +63,13 @@ fun VenueListScreen(vm: VenueSearchVIewModel = hiltViewModel(), onVenueClick: (S
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
 
         LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
-            if (state.isLoading)
-                item {
+            item {
+                if (state.isLoading)
                     CircularProgressIndicator(color = ColorBWBlack)
-                }
+            }
             items(state.venues) { venue ->
                 VenueList(venue = venue, onVenueClick = {
-                    onVenueClick.invoke(venue.venueName)
+                    onVenueClick.invoke(venue.venueName ?: "")
                 })
             }
         }
@@ -79,8 +79,7 @@ fun VenueListScreen(vm: VenueSearchVIewModel = hiltViewModel(), onVenueClick: (S
 
 @Composable
 fun VenueList(venue: Venue, onVenueClick: () -> Unit) {
-    Column(
-    ) {
+    Column {
         Row(modifier = Modifier
             .fillMaxWidth()
             .clickable { onVenueClick.invoke() }
@@ -92,15 +91,15 @@ fun VenueList(venue: Venue, onVenueClick: () -> Unit) {
                     .size(dimensionResource(id = R.dimen.size_40dp))
                     .clip(CircleShape),
                 isCrossFadeEnabled = false,
-                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
-                onError = { Placeholder(R.drawable.ic_team_placeholder) }
+                onLoading = { Placeholder(R.drawable.ic_ball) },
+                onError = { Placeholder(R.drawable.ic_ball) }
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
             Column(
                 modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_10dp)),
             ) {
                 AppText(
-                    text = venue.venueName,
+                    text = if (!venue.venueName.isNullOrEmpty()) venue.venueName else "",
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                     fontWeight = FontWeight.Bold,
                     fontFamily = rubikFamily,
@@ -108,7 +107,7 @@ fun VenueList(venue: Venue, onVenueClick: () -> Unit) {
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_5dp)))
                 AppText(
-                    text = venue.location,
+                    text = if (!venue.location.isNullOrEmpty()) venue.location else "",
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                     fontWeight = FontWeight.W400,
                     fontFamily = rubikFamily,
