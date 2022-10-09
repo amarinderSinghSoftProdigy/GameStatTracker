@@ -321,47 +321,28 @@ data class TopBarData(
 )
 
 enum class TopBar(val stringId: String, val back: Boolean) {
-    PROFILE(stringId = "profile_label", back = true), EDIT_PROFILE(
-        stringId = "edit_profile",
-        back = true
-    ),
-    MY_EVENT(stringId = "events_label", back = false), EVENT_DETAILS(
-        stringId = "",
-        back = true
-    ),
-    FILTER_EVENT(stringId = "filter_events", back = true), GAME_DETAILS(
-        stringId = "",
-        back = true
-    ),
-    EVENT_LEAGUES(
-        stringId = "events_label",
-        back = false
-    ),
-    REGISTRATION_FORM(stringId = "registration_form", back = true), TEAMS(
-        stringId = "teams_label",
-        back = false
-    ),
-    EVENT_OPPORTUNITIES(stringId = "events_label", back = false), MANAGE_TEAM(
-        stringId = "",
-        back = true
-    ),
-    SINGLE_LABEL_BACK(stringId = "", back = true), SINGLE_LABEL(stringId = "", back = false), EMPTY(
-        stringId = "",
-        back = false
-    ),
-    NEW_EVENT(stringId = "", back = true), MY_LEAGUE(stringId = "", back = true), GAME_RULES(
-        stringId = "",
-        back = true
-    ),
-    CREATE_TEAM(
-        stringId = "create_a_team",
-        back = true
-    ),
-    INVITE_TEAM_MEMBERS(stringId = "invite_team_member", back = true), OPEN_VENUE(
-        stringId = "",
-        back = true
-    ),
-    DIVISION_TAB(stringId = "", back = true), TEAM_TAB(stringId = "", back = true)
+    PROFILE(stringId = "profile_label", back = true),
+    EDIT_PROFILE(stringId = "edit_profile", back = true),
+    MY_EVENT(stringId = "events_label", back = false),
+    EVENT_DETAILS(stringId = "", back = true),
+    FILTER_EVENT(stringId = "filter_events", back = true),
+    GAME_DETAILS(stringId = "", back = true),
+    EVENT_LEAGUES(stringId = "events_label", back = false),
+    REGISTRATION_FORM(stringId = "registration_form", back = true),
+    TEAMS(stringId = "teams_label", back = false),
+    EVENT_OPPORTUNITIES(stringId = "events_label", back = false),
+    MANAGE_TEAM(stringId = "", back = true),
+    SINGLE_LABEL_BACK(stringId = "", back = true),
+    SINGLE_LABEL(stringId = "", back = false),
+    EMPTY(stringId = "", back = false),
+    NEW_EVENT(stringId = "", back = true),
+    MY_LEAGUE(stringId = "", back = true),
+    GAME_RULES(stringId = "", back = true),
+    CREATE_TEAM(stringId = "create_a_team", back = true),
+    INVITE_TEAM_MEMBERS(stringId = "invite_team_member", back = true),
+    OPEN_VENUE(stringId = "", back = true),
+    DIVISION_TAB(stringId = "", back = true),
+    TEAM_TAB(stringId = "", back = true)
 }
 
 @OptIn(ExperimentalAnimationApi::class)

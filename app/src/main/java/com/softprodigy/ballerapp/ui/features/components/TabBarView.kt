@@ -1,21 +1,10 @@
 package com.softprodigy.ballerapp.ui.features.components
 
 import androidx.compose.animation.animateColor
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -152,9 +141,9 @@ enum class BottomNavKey(val resId: String, val route: String) {
 enum class UserType(val stringId: String, val key: String) {
     PLAYER("player_label", "player"),
     COACH("coach_label", "coach"),
-    REFEREE("referee_label", "referee"),
+    REFEREE("game_staff_label", "gameStaff"),
     PARENT("parent_label", "parent"),
-    GAME_STAFF("game_staff_label", "gameStaff"),
+    //GAME_STAFF("game_staff_label", "gameStaff"),
     PROGRAM_STAFF("program_label", "programStaff"),
     FAN("fan_label", "fan")//Add items to add in the usertypes in the app.
 }

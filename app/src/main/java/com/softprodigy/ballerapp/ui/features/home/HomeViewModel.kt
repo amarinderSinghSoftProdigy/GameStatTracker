@@ -106,9 +106,9 @@ class HomeViewModel @Inject constructor(
         _state.value = _state.value.copy(showSwapProfile = show)
     }
 
-    fun setAddProfile(show: Boolean) {
+    /*fun setAddProfile(show: Boolean) {
         _state.value = _state.value.copy(showAddProfile = show)
-    }
+    }*/
 
     fun setTopBar(topBar: TopBarData) {
         searchJob?.cancel()

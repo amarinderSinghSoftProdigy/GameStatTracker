@@ -1,15 +1,7 @@
 package com.softprodigy.ballerapp.ui.features.user_type
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -20,12 +12,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.BottomButtons
-import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
-import com.softprodigy.ballerapp.ui.features.components.UserSelectionSurface
-import com.softprodigy.ballerapp.ui.features.components.UserType
-import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpUIEvent
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
@@ -57,7 +44,7 @@ fun UserTypeSelector(
         UserType.PLAYER,
         UserType.COACH,
         UserType.PARENT,
-        UserType.GAME_STAFF,
+        //UserType.GAME_STAFF,
         UserType.PROGRAM_STAFF,
         UserType.FAN,
         UserType.REFEREE

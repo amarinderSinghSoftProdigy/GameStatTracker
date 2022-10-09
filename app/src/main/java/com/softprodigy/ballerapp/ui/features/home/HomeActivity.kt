@@ -52,6 +52,7 @@ import com.softprodigy.ballerapp.ui.features.home.manage_team.MainManageTeamScre
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
+import com.softprodigy.ballerapp.ui.features.profile.AddProfileScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileEditScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileScreen
 import com.softprodigy.ballerapp.ui.features.profile.RefereeEditScreen
@@ -81,9 +82,9 @@ class HomeActivity : ComponentActivity() {
             val eventViewModel: EventViewModel = hiltViewModel()
             val state = homeViewModel.state.value
             dataStoreManager = DataStoreManager(LocalContext.current)
-           /* val userToken = dataStoreManager.userToken.collectAsState(initial = "")
-            UserStorage.token = userToken.value
-            */
+            /* val userToken = dataStoreManager.userToken.collectAsState(initial = "")
+             UserStorage.token = userToken.value
+             */
             val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
             val teamId = dataStoreManager.getId.collectAsState(initial = "")
             val teamName = dataStoreManager.getTeamName.collectAsState(initial = "")
@@ -195,13 +196,13 @@ class HomeActivity : ComponentActivity() {
                             moveToLogin(this)
                         })
                 }
-                if (state.showAddProfile) {
+                /*if (state.showAddProfile) {
                     AddPlayer(
                         onDismiss = { homeViewModel.setAddProfile(false) },
                         onConfirmClick = {
                         },
                     )
-                }
+                }*/
             }
         }
     }
@@ -232,6 +233,9 @@ fun NavControllerComposable(
             HomeScreen(
                 onInvitationCLick = {
                     navController.navigate(Route.INVITATION_SCREEN)
+                },
+                addProfileClick = {
+                    navController.navigate(Route.ADD_PROFILE_SCREEN)
                 },
                 logoClick = {
                     homeViewModel.setLogoutDialog(true)
@@ -273,6 +277,16 @@ fun NavControllerComposable(
                 )
             )
             ProfileScreen()
+        }
+
+        composable(route = Route.ADD_PROFILE_SCREEN) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = stringResource(id = R.string.add_new_profile),
+                    topBar = TopBar.SINGLE_LABEL_BACK,
+                )
+            )
+            AddProfileScreen()
         }
         composable(route = Route.PROFILE_EDIT_SCREEN) {
             homeViewModel.setTopBar(
@@ -355,7 +369,11 @@ fun NavControllerComposable(
                     navController.navigate(Route.GAME_DETAIL_SCREEN)
                 },
                 moveToOppDetails = {
-                    if (UserStorage.role.equals(UserType.COACH.key, ignoreCase = true) || UserStorage.role.equals(UserType.REFEREE.key , ignoreCase = true)) {
+                    if (UserStorage.role.equals(
+                            UserType.COACH.key,
+                            ignoreCase = true
+                        ) || UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)
+                    ) {
                         eventTitle = it
                         navController.navigate(Route.OPP_DETAIL_SCREEN)
                     }

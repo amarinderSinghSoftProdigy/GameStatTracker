@@ -20,16 +20,9 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.ui.features.components.AppStaticTabRow
-import com.softprodigy.ballerapp.ui.features.components.AppTabLikeViewPager
-import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
-import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
-import com.softprodigy.ballerapp.ui.features.profile.tabs.DocumentTab
-import com.softprodigy.ballerapp.ui.features.profile.tabs.ProfileTabScreen
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.ui.features.components.*
-import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
 import com.softprodigy.ballerapp.ui.features.profile.tabs.*
 import kotlinx.coroutines.launch
 
@@ -42,13 +35,8 @@ fun ProfileScreen(
     val role = dataStoreManager.getRole.collectAsState(initial = "")
 
     val state = vm.state.value
-    val pagerState = rememberPagerState(pageCount = 2)
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Tabs(pagerState = pagerState)
-        TabsContent(pagerState = pagerState, vm)
-
         if (UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
-
             val list = listOf(
                 TabItems.RefereeProfile,
                 TabItems.Documents,
@@ -59,18 +47,51 @@ fun ProfileScreen(
             Tabs(pagerState = pagerState, list)
             TabsRefereeContent(pagerState, vm)
         } else {
-            val list = listOf(
-                TabItems.Profile,
-                TabItems.Documents,
-            )
-            val pagerState = rememberPagerState(pageCount = list.size)
-            Tabs(pagerState = pagerState, list)
+            val pagerState = rememberPagerState(pageCount = 2)
+            Tabs(pagerState = pagerState)
             TabsContent(pagerState = pagerState, vm)
         }
     }
 
     if (state.isLoading) {
         CommonProgressBar()
+    }
+}
+
+
+@ExperimentalPagerApi
+@Composable
+fun Tabs(pagerState: PagerState) {
+    val list = listOf(
+        TabItems.Profile,
+        TabItems.Documents,
+    )
+    val coroutineScope = rememberCoroutineScope()
+    Surface(color = Color.White, modifier = Modifier.fillMaxWidth()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    start = dimensionResource(id = R.dimen.size_40dp),
+                    end = dimensionResource(id = R.dimen.size_40dp)
+                )
+        ) {
+            AppStaticTabRow(
+                pagerState = pagerState, tabs = {
+                    list.forEachIndexed { index, item ->
+                        AppTabLikeViewPager(
+                            title = item.stringId,
+                            painter = painterResource(id = item.icon),
+                            selected = pagerState.currentPage == index,
+                            onClick = {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(index)
+                                }
+                            }
+                        )
+                    }
+                })
+        }
     }
 }
 

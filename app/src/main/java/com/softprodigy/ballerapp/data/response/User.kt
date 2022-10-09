@@ -129,3 +129,18 @@ data class Parent(
     @SerializedName("id") val id: String = ""
 
 )
+
+
+data class AddProfileRequest(
+    val firstName: String = "",
+    val lastName: String = "",
+    val profileImage: String? = "",
+    val address: String = "",
+    val city: String = "",
+    val state: String = "",
+    val zip: String = "",
+    val gender: String = "",
+    val birthdate: String = "",
+    val role: String? = "",
+    val profileImageUri: String? = null,
+)

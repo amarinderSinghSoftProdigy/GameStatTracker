@@ -48,6 +48,7 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     vm: HomeViewModel,
     teamVm: TeamViewModel,
+    addProfileClick: () -> Unit,
     logoClick: () -> Unit,
     onInvitationCLick: () -> Unit,
     gotToProfile: () -> Unit,
@@ -470,10 +471,9 @@ fun HomeScreen(
             },
             showLoading = homeState.isDataLoading,
             onCreatePlayerClick = {
-                vm.setAddProfile(true)
-                showSwapDialog.value = false
+                addProfileClick()
             },
-            showCreatePlayerButton = false
+            showCreatePlayerButton = true
         )
     }
     if (homeState.isDataLoading) {

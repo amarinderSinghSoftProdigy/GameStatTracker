@@ -24,7 +24,7 @@ data class HomeState(
     val showDialog: Boolean = false,
     val showLogout: Boolean = false,
     val showSwapProfile: Boolean = false,
-    val showAddProfile: Boolean = false,
+    //val showAddProfile: Boolean = false,
     val bottomBar: BottomNavKey = BottomNavKey.HOME,
     val homeItemList: List<HomeItemResponse> = arrayListOf(),
     val user: User = User(),
