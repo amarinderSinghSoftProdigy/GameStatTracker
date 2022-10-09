@@ -14,7 +14,7 @@ data class User(
     @SerializedName("name") val name: String = "",
     @SerializedName("address") val address: String = "",
     @SerializedName("gender") val gender: String = "",
-    @SerializedName("birthdate") val birthdate: String = "",
+    @SerializedName("birthdate") val birthdate: String? = null,
     @SerializedName("id") val id: String = "",
     @SerializedName("profileImage") val profileImage: String = "",
     @SerializedName("phone") val phone: String = "",

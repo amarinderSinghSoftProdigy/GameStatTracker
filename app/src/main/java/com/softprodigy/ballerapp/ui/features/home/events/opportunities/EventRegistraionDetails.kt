@@ -187,8 +187,8 @@ fun EventRegistraionDetails(vm: EventViewModel, teamVm: TeamViewModel, onSuccess
                     onValueChange = {
                         if (it.isNotEmpty() || it != "0") {
                             showError.value = false
+                            vm.onEvent(EvEvents.RegisterCash(it))
                         }
-                        vm.onEvent(EvEvents.RegisterCash(it))
                     },
                     modifier = Modifier
                         .fillMaxWidth()

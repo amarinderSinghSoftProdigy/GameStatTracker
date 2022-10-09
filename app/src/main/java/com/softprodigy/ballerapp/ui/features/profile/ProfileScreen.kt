@@ -20,6 +20,7 @@ import com.google.accompanist.pager.PagerState
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppStaticTabRow
 import com.softprodigy.ballerapp.ui.features.components.AppTabLikeViewPager
+import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
 import com.softprodigy.ballerapp.ui.features.profile.tabs.DocumentTab
 import com.softprodigy.ballerapp.ui.features.profile.tabs.ProfileTabScreen
@@ -30,10 +31,15 @@ import kotlinx.coroutines.launch
 fun ProfileScreen(
     vm: ProfileViewModel = hiltViewModel(),
 ) {
+    val state = vm.state.value
     val pagerState = rememberPagerState(pageCount = 2)
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Tabs(pagerState = pagerState)
-        TabsContent(pagerState = pagerState,vm)
+        TabsContent(pagerState = pagerState, vm)
+    }
+
+    if (state.isLoading) {
+        CommonProgressBar()
     }
 }
 
@@ -76,7 +82,7 @@ fun Tabs(pagerState: PagerState) {
 
 @ExperimentalPagerApi
 @Composable
-fun TabsContent(pagerState: PagerState,vm:ProfileViewModel) {
+fun TabsContent(pagerState: PagerState, vm: ProfileViewModel) {
     HorizontalPager(state = pagerState) { page ->
         when (page) {
             0 -> ProfileTabScreen(vm)

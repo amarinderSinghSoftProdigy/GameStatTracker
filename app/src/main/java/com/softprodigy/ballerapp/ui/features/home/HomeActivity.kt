@@ -79,8 +79,9 @@ class HomeActivity : ComponentActivity() {
             val eventViewModel: EventViewModel = hiltViewModel()
             val state = homeViewModel.state.value
             dataStoreManager = DataStoreManager(LocalContext.current)
-            val userToken = dataStoreManager.userToken.collectAsState(initial = "")
+           /* val userToken = dataStoreManager.userToken.collectAsState(initial = "")
             UserStorage.token = userToken.value
+            */
             val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
             val teamId = dataStoreManager.getId.collectAsState(initial = "")
             val teamName = dataStoreManager.getTeamName.collectAsState(initial = "")

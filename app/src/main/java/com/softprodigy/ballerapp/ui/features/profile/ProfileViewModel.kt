@@ -10,11 +10,7 @@ import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.getFileFromUriWithoutCompress
 import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.data.request.FunFactsReq
-import com.softprodigy.ballerapp.data.request.JerseyPerferencesReq
-import com.softprodigy.ballerapp.data.request.TeamDetailsReq
-import com.softprodigy.ballerapp.data.request.UpdateUserDetailsReq
-import com.softprodigy.ballerapp.data.request.UserDetailsReq
+import com.softprodigy.ballerapp.data.request.*
 import com.softprodigy.ballerapp.data.response.User
 import com.softprodigy.ballerapp.data.response.UserDocType
 import com.softprodigy.ballerapp.domain.repository.IImageUploadRepo
@@ -495,7 +491,8 @@ class ProfileViewModel @Inject constructor(
         _state.value = _state.value.copy(isLoading = true)
         val uri = Uri.parse(_state.value.imageUri)
 
-        val file = getFileFromUriWithoutCompress(getApplication<Application>().applicationContext, uri)
+        val file =
+            getFileFromUriWithoutCompress(getApplication<Application>().applicationContext, uri)
 
         file?.let {
             val size = Integer.parseInt((it.length() / 1024).toString())
@@ -600,7 +597,7 @@ class ProfileViewModel @Inject constructor(
         return UpdateUserDetailsReq(
             firstName = _state.value.user.firstName,
             lastName = _state.value.user.lastName,
-            birthdate = _state.value.user.birthdate,
+            birthdate = _state.value.user.birthdate ?: "",
             phone = _state.value.user.phone,
             gender = _state.value.user.gender,
             grade = _state.value.user.userDetails.grade,
