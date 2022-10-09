@@ -11,6 +11,8 @@ sealed class ProfileEvent {
     data class OnLastNameChange(val lastName: String) : ProfileEvent()
     data class OnEmailChange(val email: String) : ProfileEvent()
     data class OnPhoneChange(val phone: String) : ProfileEvent()
+    data class OnAddressChange(val address: String) : ProfileEvent()
+    data class OnExperienceChange(val exp: String) : ProfileEvent()
     data class OnBirthdayChange(val birthday: String) : ProfileEvent()
     data class OnClassChange(val classOf: String) : ProfileEvent()
 
@@ -39,8 +41,8 @@ sealed class ProfileEvent {
     data class ShowDeleteDialog(val show: Boolean) : ProfileEvent()
     data class SetDeleteDocument(val docType: UserDocType) : ProfileEvent()
     data class DeleteDocument(val docType: UserDocType?) : ProfileEvent()
-    data class UpdateUserDoc(val docType: String,val url: String) : ProfileEvent()
-    data class OnImageSelected(val docType: String,val teamImageUri: String) : ProfileEvent()
+    data class UpdateUserDoc(val docType: String, val url: String) : ProfileEvent()
+    data class OnImageSelected(val docType: String, val teamImageUri: String) : ProfileEvent()
     data class SetUploadKey(val docType: String) : ProfileEvent()
-
+    object GetReferee : ProfileEvent()
 }
