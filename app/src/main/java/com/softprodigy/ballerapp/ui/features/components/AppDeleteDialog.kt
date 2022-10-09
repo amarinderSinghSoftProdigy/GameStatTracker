@@ -1190,7 +1190,7 @@ fun SwitchTeamDialog(
     onConfirmClick: (teams: Team) -> Unit,
     title: String,
     teams: ArrayList<Team>,
-    teamSelect: Team,
+    teamSelect: Team?,
 ) {
     val teamSelected = remember {
         mutableStateOf(teamSelect)
@@ -1244,7 +1244,7 @@ fun SwitchTeamDialog(
                                 modifier = Modifier
                                     .padding(bottom = dimensionResource(id = R.dimen.size_8dp))
                                     .background(
-                                        color = if (teamSelected.value._id == team._id) MaterialTheme.appColors.material.primary else Color.White,
+                                        color = if (teamSelected.value?._id == team._id) MaterialTheme.appColors.material.primary else Color.White,
                                         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
                                     )
                             ) {
@@ -1273,7 +1273,7 @@ fun SwitchTeamDialog(
                                         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                                         fontWeight = FontWeight.W500,
                                     )
-                                    CustomCheckBox(team._id == teamSelected.value._id) {
+                                    CustomCheckBox(team._id == teamSelected.value?._id) {
                                         teamSelected.value = team
                                     }
                                 }
@@ -1302,7 +1302,8 @@ fun SwitchTeamDialog(
                         DialogButton(
                             text = stringResource(R.string.dialog_button_confirm),
                             onClick = {
-                                onConfirmClick.invoke(teamSelected.value)
+                                teamSelected.value?.let { onConfirmClick.invoke(it) }
+//                                onConfirmClick.invoke(teamSelected.value)
                                 onDismiss.invoke()
                             },
                             modifier = Modifier

@@ -103,7 +103,7 @@ fun EventsScreen(
         if (showDialog) {
             Box(Modifier.fillMaxSize()) {
                 SwitchTeamDialog(
-                    teamSelect = state.team,
+                    teamSelect = teamState.selectedTeam,
                     teams = teamState.teams,
                     title = stringResource(id = R.string.switch_teams),
                     onDismiss = {
