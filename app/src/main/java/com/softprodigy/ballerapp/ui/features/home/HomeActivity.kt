@@ -505,14 +505,19 @@ fun NavControllerComposable(
             )
             GameRuleScreen(eventViewModel)
         }
-        composable(route = Route.MANAGED_TEAM_SCREEN) {
+        composable(route = Route.MANAGED_TEAM_SCREEN) { backStackEntry ->
+
+            // get data passed back from next stack
+            val venue: String = backStackEntry
+                .savedStateHandle.get<String>("venue") ?: ""
+
             homeViewModel.setTopBar(
                 TopBarData(
                     label = stringResource(id = R.string.manage_team),
                     topBar = TopBar.MANAGE_TEAM,
                 )
             )
-            MainManageTeamScreen(teamViewModel, onSuccess = {
+            MainManageTeamScreen(vm = teamViewModel, onSuccess = {
                 navController.popBackStack()
             }, onAddPlayerCLick = {
                 setColorUpdate(
@@ -520,6 +525,8 @@ fun NavControllerComposable(
                     teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
                 )
                 navController.navigate(Route.ADD_PLAYER_SCREEN + "/${UserStorage.teamId}")
+            }, venue = venue, onVenueClick = {
+                navController.navigate(Route.SELECT_VENUE)
             })
         }
 

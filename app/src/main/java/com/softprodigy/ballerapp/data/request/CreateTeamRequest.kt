@@ -32,7 +32,15 @@ data class UpdateTeamDetailRequest(
     @SerializedName("primaryTeamColor") val primaryTeamColor: String = "",
     @SerializedName("logo") val logo: String = "",
     @SerializedName("leaderboardPoints") val leaderboardPoints: List<TeamLeaderBoard> = arrayListOf(),
-    @SerializedName("playerPositions") val playerPositions: List<TeamRoaster> = arrayListOf()
+    @SerializedName("playerPositions") val playerPositions: List<TeamRoaster> = arrayListOf(),
+
+    @SerializedName("nameOfVenue") val nameOfVenue: String = "",
+    @SerializedName("secondaryTeamColor") val secondaryTeamColor: String = "",
+    @SerializedName("tertiaryTeamColor") val tertiaryTeamColor: String = "",
+    @SerializedName("teamNameOnJersey") val teamNameOnJersey: String = "",
+    @SerializedName("teamNameOnTournaments") val teamNameOnTournaments: String = "",
+    @SerializedName("address") val address: Address = Address(),
+    @SerializedName("location") val location: Location = Location(),
 )
 
 
