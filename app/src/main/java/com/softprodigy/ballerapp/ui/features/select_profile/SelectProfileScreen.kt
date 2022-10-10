@@ -110,7 +110,7 @@ fun SelectProfileScreen(vm: HomeViewModel = hiltViewModel(), onNextClick: () -> 
                 onNextClick = {
                     vm.onEvent(HomeScreenEvent.OnSwapUpdate(id.value))
                 },
-                enableState = true,
+                enableState = id.value.isNotEmpty(),
                 showOnlyNext = true,
             )
         }
