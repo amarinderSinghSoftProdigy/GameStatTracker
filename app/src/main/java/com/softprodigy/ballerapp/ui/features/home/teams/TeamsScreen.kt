@@ -22,11 +22,7 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.response.team.Team
-import com.softprodigy.ballerapp.ui.features.components.AppScrollableTabRow
-import com.softprodigy.ballerapp.ui.features.components.AppTabLikeViewPager
-import com.softprodigy.ballerapp.ui.features.components.SelectTeamDialog
-import com.softprodigy.ballerapp.ui.features.components.UserType
-import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.leaderboard.LeaderBoardScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.roaster.RoasterScreen
@@ -114,10 +110,11 @@ fun TeamsScreen(
     )
 
     Column {
-        TeamsTopTabs(pagerState = pagerState, tabData = tabData)
         if (role.value != UserType.REFEREE.key) {
+            TeamsTopTabs(pagerState = pagerState, tabData = tabData)
             TeamsContent(pagerState = pagerState, vm)
         } else {
+            RefereeTeamsTopTabs(pagerState = pagerState, tabData = tabData)
             EmptyScreen(singleText = true, heading = stringResource(id = R.string.coming_soon))
         }
     }
@@ -186,6 +183,28 @@ fun TeamsTopTabs(pagerState: PagerState, tabData: List<TeamsTabItems>) {
             }
         },
     )
+}
+
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+fun RefereeTeamsTopTabs(pagerState: PagerState, tabData: List<TeamsTabItems>) {
+
+    val coroutineScope = rememberCoroutineScope()
+
+    tabData.forEachIndexed { index, item ->
+        AppSingleTabLikeViewPager(
+            modifier = Modifier,
+            title = item.stringId,
+            painter = painterResource(id = item.icon),
+            selected = pagerState.currentPage == index,
+            onClick = {
+                coroutineScope.launch {
+                    pagerState.animateScrollToPage(index)
+                }
+            }
+        )
+    }
+
 }
 
 enum class TeamsTabItems(val icon: Int, val stringId: String) {

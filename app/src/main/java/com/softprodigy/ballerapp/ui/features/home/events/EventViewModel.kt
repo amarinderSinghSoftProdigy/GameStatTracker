@@ -10,6 +10,8 @@ import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
+import com.softprodigy.ballerapp.data.response.Format
+import com.softprodigy.ballerapp.data.response.GenderList
 import com.softprodigy.ballerapp.domain.repository.IEventsRepository
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import com.softprodigy.ballerapp.ui.utils.CommonUtils
@@ -1130,9 +1132,13 @@ class EventViewModel @Inject constructor(
 
     private fun getRefereeFilters() {
 
-        val gender = arrayListOf("Male", "Female")
-        val eventType = arrayListOf("League", "Clinic", "Camp")
-        val format = arrayListOf("Indivisual", "Team")
+        val gender = arrayListOf(GenderList("Male"), GenderList("Female"))
+        val eventType = arrayListOf(
+            com.softprodigy.ballerapp.data.response.EventType("League"),
+            com.softprodigy.ballerapp.data.response.EventType("Clinic"),
+            com.softprodigy.ballerapp.data.response.EventType("Camp")
+        )
+        val format = arrayListOf(Format("Indivisual"), Format("Team"))
 
         _state.value =
             _state.value.copy(genderList = gender, eventType = eventType, formatList = format)

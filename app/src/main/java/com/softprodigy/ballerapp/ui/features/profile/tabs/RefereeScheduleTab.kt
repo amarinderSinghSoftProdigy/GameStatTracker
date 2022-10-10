@@ -108,7 +108,7 @@ fun RefereeScheduleTab(vm: ProfileViewModel) {
 
             }
 
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
 
             AppText(
                 text = stringResource(id = R.string.unavailable_dates),
@@ -120,7 +120,7 @@ fun RefereeScheduleTab(vm: ProfileViewModel) {
                     .padding(start = dimensionResource(id = R.dimen.size_16dp)),
                 textAlign = TextAlign.Start
             )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_14dp)))
 
             Row(
                 modifier = Modifier
