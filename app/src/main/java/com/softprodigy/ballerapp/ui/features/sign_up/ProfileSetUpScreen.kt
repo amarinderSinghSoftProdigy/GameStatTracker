@@ -159,7 +159,7 @@ fun ProfileSetUpScreen(
                 }
 
                 is SignUpChannel.OnProfileImageUpload -> {
-                    signUpViewModel.onEvent(SignUpUIEvent.OnImageUploadSuccess)
+                    signUpViewModel.onEvent(SignUpUIEvent.OnImageUploadSuccess(false))
                 }
 
                 is SignUpChannel.OnProfileUpdateSuccess -> {
@@ -229,7 +229,7 @@ fun ProfileSetUpScreen(
                 Column(
                     Modifier
                         .fillMaxWidth()
-                        /*.verticalScroll(rememberScrollState())*/,
+                    /*.verticalScroll(rememberScrollState())*/,
                     verticalArrangement = Arrangement.Center
                 ) {
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_64dp)))
@@ -603,17 +603,14 @@ fun ProfileSetUpScreen(
                 }
 
                 if (state.isLoading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center),
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
-                    )
+                    CommonProgressBar()
                 }
             }
         }
     }
 }
 
-enum class BottomSheetType() {
+enum class BottomSheetType {
     OTP, IMAGE_PICKER
 }
 

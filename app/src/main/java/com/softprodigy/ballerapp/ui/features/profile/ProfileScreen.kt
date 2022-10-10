@@ -23,7 +23,6 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.ui.features.components.*
-import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
 import com.softprodigy.ballerapp.ui.features.profile.tabs.*
 import kotlinx.coroutines.launch
 
@@ -35,10 +34,9 @@ fun ProfileScreen(
     val dataStoreManager = DataStoreManager(LocalContext.current)
     val role = dataStoreManager.getRole.collectAsState(initial = "")
 
+    val state = vm.state.value
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-
         if (UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
-
             val list = listOf(
                 TabItems.RefereeProfile,
                 TabItems.Documents,
@@ -49,13 +47,50 @@ fun ProfileScreen(
             Tabs(pagerState = pagerState, list)
             TabsRefereeContent(pagerState, vm)
         } else {
-            val list = listOf(
-                TabItems.Profile,
-                TabItems.Documents,
-            )
-            val pagerState = rememberPagerState(pageCount = list.size)
-            Tabs(pagerState = pagerState, list)
+            val pagerState = rememberPagerState(pageCount = 2)
+            Tabs(pagerState = pagerState)
             TabsContent(pagerState = pagerState, vm)
+        }
+    }
+
+    if (state.isLoading) {
+        CommonProgressBar()
+    }
+}
+
+
+@ExperimentalPagerApi
+@Composable
+fun Tabs(pagerState: PagerState) {
+    val list = listOf(
+        TabItems.Profile,
+        TabItems.Documents,
+    )
+    val coroutineScope = rememberCoroutineScope()
+    Surface(color = Color.White, modifier = Modifier.fillMaxWidth()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    start = dimensionResource(id = R.dimen.size_40dp),
+                    end = dimensionResource(id = R.dimen.size_40dp)
+                )
+        ) {
+            AppStaticTabRow(
+                pagerState = pagerState, tabs = {
+                    list.forEachIndexed { index, item ->
+                        AppTabLikeViewPager(
+                            title = item.stringId,
+                            painter = painterResource(id = item.icon),
+                            selected = pagerState.currentPage == index,
+                            onClick = {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(index)
+                                }
+                            }
+                        )
+                    }
+                })
         }
     }
 }

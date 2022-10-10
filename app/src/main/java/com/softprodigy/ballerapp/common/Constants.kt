@@ -58,6 +58,7 @@ object Route {
     const val SELECT_VENUE = "selectVenue"
     const val LEAGUE_DETAIL_SCREEN = "leagueDetailScreen"
     const val PROFILE_SCREEN = "profileScreen"
+    const val ADD_PROFILE_SCREEN = "addProfileScreen"
     const val PROFILE_EDIT_SCREEN = "profileeditscreen"
     const val INVITATION_SCREEN = "invitationScreen"
     const val NEW_EVENT = "newEvent"
@@ -110,6 +111,7 @@ object ApiConstants {
     const val CONFIRM_PHONE = "v1/auth/confirmPhone"
     const val SWAP_PROFILE = "v1/auth/swapProfileList"
     const val SWAP_TOKEN = "v1/auth/swapProfileToken"
+    const val ADD_PROFILE = "v1/auth/addUserProfile"
 
     const val RESET_PASS = "/reset/password/"
     const val RESEND_OTP = "/resendOtp"

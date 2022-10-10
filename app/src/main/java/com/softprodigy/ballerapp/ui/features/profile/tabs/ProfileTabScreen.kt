@@ -170,10 +170,11 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
                 }
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-            ProfileItem(
-                stringResource(id = R.string.birthday),
-                apiToUIDateFormat2(state.user.birthdate)
-            )
+            if (state.user.birthdate != null)
+                ProfileItem(
+                    stringResource(id = R.string.birthday),
+                    apiToUIDateFormat2(state.user.birthdate)
+                )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
             ProfileItem(stringResource(id = R.string.classof), state.user.userDetails.classOf)
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
@@ -267,10 +268,6 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_80dp)))
         }
-
-        if (state.isLoading) {
-            CommonProgressBar()
-        }
     }
 
     if (state.showParentDialog) {
@@ -288,6 +285,8 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
             parentDetails = state.selectedParentDetails
         )
     }
+
+
 }
 
 @Composable
