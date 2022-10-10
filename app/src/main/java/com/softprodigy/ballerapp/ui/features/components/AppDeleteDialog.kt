@@ -2084,7 +2084,7 @@ fun AddNoteDialog(
                         singleLine = true,
                         placeholder = {
                             Text(
-                                text = stringResource(id = R.string.reason_not_going),
+                                text = stringResource(id = R.string.add_note),
                                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                 textAlign = TextAlign.Start
                             )

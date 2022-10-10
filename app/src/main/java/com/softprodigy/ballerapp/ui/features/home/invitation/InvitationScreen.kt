@@ -43,6 +43,7 @@ import com.softprodigy.ballerapp.ui.features.components.DeleteDialog
 import com.softprodigy.ballerapp.ui.features.components.Placeholder
 import com.softprodigy.ballerapp.ui.features.components.SelectGuardianRoleDialog
 import com.softprodigy.ballerapp.ui.features.components.SelectInvitationRoleDialog
+import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
 import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
 import com.softprodigy.ballerapp.ui.theme.ColorButtonRed
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -70,6 +71,7 @@ fun InvitationScreen() {
         }
     }
 
+    if(state.invitations.isNotEmpty()){
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             Modifier
@@ -85,11 +87,15 @@ fun InvitationScreen() {
                     })
                 }
             }
+        }
 
-        }
-        if (state.showLoading) {
-            CommonProgressBar()
-        }
+    }
+} else if(!state.showLoading){
+        EmptyScreen(singleText = true, stringResource(id = R.string.no_data_found))
+
+    }
+    if (state.showLoading) {
+        CommonProgressBar()
     }
     if (state.showRoleDialog) {
         SelectInvitationRoleDialog(
