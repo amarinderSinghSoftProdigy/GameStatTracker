@@ -315,7 +315,8 @@ fun RefereeEditScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     AppText(
                         text = stringResource(id = R.string.select_partner),
@@ -354,9 +355,9 @@ fun RefereeEditScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-
 
                     AppText(
                         text = stringResource(id = R.string.referee_only_with_this_partner),
@@ -364,14 +365,18 @@ fun RefereeEditScreen(
                         color = ColorBWBlack,
                     )
 
-                    CustomSwitch(isSelected = selected.value, onClick = {
-                        selected.value = !selected.value
-                    })
-
+                    Switch(
+                        modifier = Modifier.height(dimensionResource(id = R.dimen.size_25dp)),
+                        checked = selected.value,
+                        onCheckedChange = {
+                            selected.value = !selected.value
+                        },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = MaterialTheme.appColors.material.primaryVariant
+                        )
+                    )
                 }
-
             }
-
 
             AppButton(
                 enabled = validName(state.user.firstName)
@@ -481,9 +486,7 @@ fun RefereeTeams(
                     )
                 }
             )
-            DividerCommon()
         }
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
     }
 }
 
