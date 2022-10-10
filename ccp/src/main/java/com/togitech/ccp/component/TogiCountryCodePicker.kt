@@ -69,7 +69,7 @@ fun TogiCountryCodePicker(
         ) {
             Row {
                 Box(
-                    modifier = Modifier.weight(0.8F),
+                    modifier = Modifier.weight(0.9F),
                     contentAlignment = Alignment.CenterEnd
                 ) {
                     val dialog = TogiCodePicker()

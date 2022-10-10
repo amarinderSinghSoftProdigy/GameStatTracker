@@ -35,6 +35,7 @@ import com.softprodigy.ballerapp.ui.theme.appColors
 fun FilterScreen(vm: EventViewModel, onSuccess: () -> Unit) {
     val state = vm.eventState.value
     val context = LocalContext.current
+
     remember {
         vm.onEvent(EvEvents.GetFilters)
     }
