@@ -2,6 +2,9 @@ package com.softprodigy.ballerapp.ui.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import com.google.android.gms.maps.model.LatLng
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
@@ -13,6 +16,7 @@ import com.softprodigy.ballerapp.ui.features.home.events.Participation
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 class CommonUtils {
     companion object {
@@ -152,6 +156,14 @@ class CommonUtils {
                 }
             }
             return "user_type"
+        }
+
+        fun openMaps(context: Context, location: LatLng) {
+            val gmmIntentUri: Uri =
+                Uri.parse("geo:" + location.latitude + "," + location.longitude + "?q=")
+            val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
+            mapIntent.setPackage("com.google.android.apps.maps")
+            context.startActivity(mapIntent)
         }
     }
 }

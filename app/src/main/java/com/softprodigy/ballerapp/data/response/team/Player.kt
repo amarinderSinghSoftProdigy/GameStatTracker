@@ -119,6 +119,8 @@ data class Player(
     val practice3s: String? = "",
     @SerializedName("thirdPoint")
     val thirdPoint: String? = "",
+    @SerializedName("userInviteData")
+    val userInviteData: UserInviteData? = UserInviteData(),
 
     var locked: Boolean = false
 
