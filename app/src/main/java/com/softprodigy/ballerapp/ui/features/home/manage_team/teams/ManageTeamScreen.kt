@@ -1,79 +1,57 @@
 package com.softprodigy.ballerapp.ui.features.home.manage_team.teams
 
+import android.app.Activity
+import android.location.Geocoder
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Card
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.AutocompleteActivity
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.argbToHexString
 import com.softprodigy.ballerapp.common.validTeamName
-import com.softprodigy.ballerapp.ui.features.components.AppDivider
-import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
-import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.CoilImage
-import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
-import com.softprodigy.ballerapp.ui.features.components.PlaceholderRect
-import com.softprodigy.ballerapp.ui.features.components.UserFlowBackground
+import com.softprodigy.ballerapp.data.request.Address
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.ColorPickerBottomSheet
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.ColorType
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.UpdateColor
-import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
-import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
-import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
-import com.softprodigy.ballerapp.ui.theme.ColorMainPrimary
-import com.softprodigy.ballerapp.ui.theme.ColorPrimaryTransparent
-import com.softprodigy.ballerapp.ui.theme.appColors
+import com.softprodigy.ballerapp.ui.theme.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.io.IOException
+import java.util.*
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ManageTeamScreen(vm: TeamViewModel) {
+fun ManageTeamScreen(
+    vm: TeamViewModel, venue: String = "", onVenueClick: () -> Unit,
+) {
 
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
@@ -93,13 +71,89 @@ fun ManageTeamScreen(vm: TeamViewModel) {
     if (selectionUpdated.value.isNotEmpty()) {
         UpdateColor()
     }
+    var currentColorType: ColorType? by remember {
+        mutableStateOf(null)
+    }
+    val maxTeamChar = 30
+
+    LaunchedEffect(key1 = venue, block = {
+        if (venue.isNotEmpty()) {
+            vm.onEvent(TeamUIEvent.OnVenueChange(venue))
+        }
+    })
+    val context = LocalContext.current
+    val placePicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+        onResult = { activityResult ->
+            val addressReq = Address()
+
+            if (activityResult.resultCode == Activity.RESULT_OK) {
+                activityResult.data?.let {
+                    val place = activityResult.data?.let { data ->
+                        Autocomplete.getPlaceFromIntent(
+                            data
+                        )
+                    }
+                    val address = place?.address ?: ""
+                    val latLng = place?.latLng
+                    val lat = latLng?.latitude ?: 0.0
+                    val long = latLng?.longitude ?: 0.0
+
+                    addressReq.street = address
+                    addressReq.lat = lat
+                    addressReq.long = long
+
+                    val geocoder = Geocoder(context, Locale.getDefault())
+                    try {
+                        val addresses = geocoder.getFromLocation(lat, long, 1)
+                        val stateName: String = addresses?.get(0)?.adminArea ?: ""
+                        val cityName: String = addresses?.get(0)?.locality ?: ""
+                        val countryName: String = addresses?.get(0)?.countryName ?: ""
+                        val zip: String = addresses?.get(0)?.postalCode ?: ""
+
+                        addressReq.state = stateName
+                        addressReq.city = cityName
+                        addressReq.country = countryName
+                        addressReq.zip = zip
+
+
+                    } catch (e: IOException) {
+                        e.printStackTrace()
+                    }
+                }
+            }
+            if (addressReq.street.isNotEmpty()) {
+                vm.onEvent(TeamUIEvent.OnAddressChanged(addressReq))
+            }
+            if (activityResult.resultCode == AutocompleteActivity.RESULT_ERROR) {
+                activityResult.let {
+                    val status = it.data?.let { it1 -> Autocomplete.getStatusFromIntent(it1) }
+                    Timber.i("RESULT_ERROR ${status?.statusMessage}--$status")
+                }
+            }
+
+        }
+    )
+
     ModalBottomSheetLayout(
         sheetContent = {
             ColorPickerBottomSheet(controller, colorEnvelope = { colorEnvelope ->
                 if (!colorEnvelope.hexCode.contentEquals(AppConstants.PICKER_DEFAULT_COLOR)) {
-                    AppConstants.SELECTED_COLOR = colorEnvelope.color
                     selectionUpdated.value = colorEnvelope.hexCode
-                    vm.onEvent(TeamUIEvent.OnColorSelected(colorEnvelope.hexCode))
+                    when (currentColorType) {
+                        ColorType.PRIMARY -> {
+                            AppConstants.SELECTED_COLOR = colorEnvelope.color
+                            selectionUpdated.value = colorEnvelope.hexCode
+                            vm.onEvent(TeamUIEvent.OnColorSelected(colorEnvelope.hexCode))
+                        }
+                        ColorType.SECONDARY -> {
+                            vm.onEvent(TeamUIEvent.OnSecColorSelected(colorEnvelope.hexCode))
+
+                        }
+                        ColorType.TERTIARY -> {
+                            vm.onEvent(TeamUIEvent.OnTerColorSelected(colorEnvelope.hexCode))
+                        }
+                    }
                 }
             }, onDismiss = {
                 scope.launch {
@@ -154,8 +208,63 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                             isError = !validTeamName(state.teamName) && state.teamName.isNotEmpty(),
                             errorMessage = stringResource(id = R.string.valid_team_name)
                         )
-                    }
 
+
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+                        AppText(
+                            text = stringResource(id = R.string.team_name_jerseys),
+                            style = MaterialTheme.typography.h6,
+                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                        )
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+                        AppOutlineTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = state.teamNameOnJerseys,
+                            onValueChange = {
+                                if (it.length <= maxTeamChar)
+                                    vm.onEvent(TeamUIEvent.OnTeamNameJerseyChange(it))
+                            },
+                            placeholder = {
+                            },
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
+                                cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+
+                            ),
+                            isError = !validTeamName(state.teamNameOnJerseys) && state.teamNameOnJerseys.isNotEmpty(),
+                            errorMessage = stringResource(id = R.string.valid_team_name)
+                        )
+
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+                        AppText(
+                            text = stringResource(id = R.string.team_name_tournament),
+                            style = MaterialTheme.typography.h6,
+                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                        )
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+                        AppOutlineTextField(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = state.teamNameOnTournaments,
+                            onValueChange = {
+                                if (it.length <= maxTeamChar)
+                                    vm.onEvent(
+                                        TeamUIEvent.OnTeamNameTournamentsChange(
+                                            it
+                                        )
+                                    )
+                            },
+                            placeholder = {
+
+                            },
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
+                                cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+
+                            ),
+                            isError = !validTeamName(state.teamNameOnTournaments) && state.teamNameOnTournaments.isNotEmpty(),
+                            errorMessage = stringResource(id = R.string.valid_team_name)
+                        )
+                    }
                     AppDivider()
 
                     Row(
@@ -249,7 +358,7 @@ fun ManageTeamScreen(vm: TeamViewModel) {
 
                     ) {
                         AppText(
-                            text = stringResource(id = R.string.team_color),
+                            text = stringResource(id = R.string.primary_team_color),
                             style = MaterialTheme.typography.h6
                         )
                         Row(
@@ -257,14 +366,18 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.clickable {
                                 scope.launch {
-                                    modalBottomSheetState.animateTo(
-                                        ModalBottomSheetValue.Expanded
-                                    )
+                                    /* modalBottomSheetState.animateTo(
+                                         ModalBottomSheetValue.Expanded
+                                     )*/
+                                    currentColorType = ColorType.PRIMARY
+                                    modalBottomSheetState.show()
+
                                 }
                             },
                         ) {
                             Box(
                                 modifier = Modifier
+                                    .width(dimensionResource(id = R.dimen.size_100dp))
                                     .height(dimensionResource(id = R.dimen.size_32dp))
                                     .border(
                                         BorderStroke(
@@ -283,19 +396,14 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                             ) {
                                 AppText(
                                     modifier = Modifier
-                                        .align(Alignment.Center)
-                                        .padding(
-                                            horizontal = dimensionResource(
-                                                id = R.dimen.size_16dp
-                                            )
-                                        ),
+                                        .align(Alignment.Center),
                                     textAlign = TextAlign.Center,
-                                    text = if (state.teamColor.isNotEmpty()) {
-                                        if (state.teamColor.substring(0, 1) == "#") {
-                                            state.teamColor
+                                    text = if (state.teamColorPrimary.isNotEmpty()) {
+                                        if (state.teamColorPrimary.substring(0, 1) == "#") {
+                                            state.teamColorPrimary
                                         } else {
                                             "#" +
-                                                    state.teamColor
+                                                    state.teamColorPrimary
                                         }
                                     } else {
                                         MaterialTheme.appColors.material.primaryVariant.toArgb()
@@ -308,16 +416,16 @@ fun ManageTeamScreen(vm: TeamViewModel) {
 
                             Card(
                                 modifier = Modifier.size(dimensionResource(id = R.dimen.size_32dp)),
-                                backgroundColor = if (state.teamColor.isEmpty()) {
+                                backgroundColor = if (state.teamColorPrimary.isEmpty()) {
                                     MaterialTheme.appColors.material.primaryVariant
-                                } else if (state.teamColor.length < 6) {
+                                } else if (state.teamColorPrimary.length < 6) {
                                     MaterialTheme.appColors.material.primaryVariant
                                 } else {
-                                    Timber.e("color " + state.teamColor)
-                                    if (state.teamColor.startsWith("#")) {
-                                        Color(android.graphics.Color.parseColor(state.teamColor))
+                                    Timber.e("color " + state.teamColorPrimary)
+                                    if (state.teamColorPrimary.startsWith("#")) {
+                                        Color(android.graphics.Color.parseColor(state.teamColorPrimary))
                                     } else {
-                                        Color(android.graphics.Color.parseColor("#" + state.teamColor))
+                                        Color(android.graphics.Color.parseColor("#" + state.teamColorPrimary))
                                     }
                                 },
                                 shape = RoundedCornerShape(
@@ -326,7 +434,288 @@ fun ManageTeamScreen(vm: TeamViewModel) {
                             ) {}
                         }
                     }
+                    AppDivider()
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+
+                    ) {
+                        AppText(
+                            text = stringResource(id = R.string.secondary_team_color),
+                            style = MaterialTheme.typography.h6,
+                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                        )
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.clickable {
+                                scope.launch {
+                                    currentColorType = ColorType.SECONDARY
+                                    modalBottomSheetState.show()
+                                }
+                            },
+                        ) {
+
+                            Box(
+                                modifier = Modifier
+                                    .width(dimensionResource(id = R.dimen.size_100dp))
+                                    .height(dimensionResource(id = R.dimen.size_32dp))
+                                    .border(
+                                        /*BorderStroke(
+                                        dimensionResource(id = R.dimen.size_1dp),
+                                        ColorBWGrayBorder
+                                    )*/
+                                        width = dimensionResource(id = R.dimen.size_1dp),
+                                        color = MaterialTheme.appColors.editField.borderUnFocused,
+                                        shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_6dp))
+                                    )
+                                    .background(
+                                        color = Color.Transparent, shape = RoundedCornerShape(
+                                            dimensionResource(id = R.dimen.size_16dp)
+                                        )
+                                    )
+                                    .padding(dimensionResource(id = R.dimen.size_1dp))
+                            ) {
+                                AppText(
+                                    modifier = Modifier.align(Alignment.Center),
+                                    textAlign = TextAlign.Center,
+                                    text = if (state.teamColorSec.isNotEmpty()) {
+                                        "#" + state.teamColorSec
+                                    } else {
+                                        ""
+                                    },
+                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+
+
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+
+                            Card(
+                                modifier = Modifier.size(dimensionResource(id = R.dimen.size_32dp)),
+                                backgroundColor = if (state.teamColorSec.isEmpty()) {
+                                    MaterialTheme.appColors.buttonColor.bckgroundDisabled
+                                } else {
+//                                    Color(android.graphics.Color.parseColor("#" + state.teamColorSec))
+                                    if (state.teamColorSec.startsWith("#")) {
+                                        Color(android.graphics.Color.parseColor(state.teamColorSec))
+                                    } else {
+                                        Color(android.graphics.Color.parseColor("#" + state.teamColorSec))
+                                    }
+                                },
+                                shape = RoundedCornerShape(
+                                    dimensionResource(id = R.dimen.size_4dp)
+                                )
+                            ) {}
+                        }
+
+                    }
+                    AppDivider()
+
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+
+                    ) {
+                        AppText(
+                            text = stringResource(id = R.string.tertiary_team_color),
+                            style = MaterialTheme.typography.h6,
+                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                        )
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.clickable {
+                                scope.launch {
+                                    currentColorType = ColorType.TERTIARY
+                                    modalBottomSheetState.show()
+                                }
+                            },
+                        ) {
+
+                            Box(
+                                modifier = Modifier
+                                    .border(
+                                        /* BorderStroke(
+                                         dimensionResource(id = R.dimen.size_1dp),
+                                         ColorBWGrayBorder
+                                     )*/
+                                        width = dimensionResource(id = R.dimen.size_1dp),
+                                        color = MaterialTheme.appColors.editField.borderUnFocused,
+                                        shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_6dp))
+
+                                    )
+                                    .width(dimensionResource(id = R.dimen.size_100dp))
+                                    .height(dimensionResource(id = R.dimen.size_32dp))
+
+                                    .background(
+                                        color = Color.Transparent, shape = RoundedCornerShape(
+                                            dimensionResource(id = R.dimen.size_16dp)
+                                        )
+                                    )
+                                    .padding(dimensionResource(id = R.dimen.size_1dp))
+                            ) {
+                                AppText(
+                                    modifier = Modifier.align(Alignment.Center),
+                                    textAlign = TextAlign.Center,
+                                    text = if (state.teamColorThird.isNotEmpty()) {
+                                        "#" + state.teamColorThird
+                                    } else {
+                                        ""
+                                    },
+                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+
+                            Card(
+                                modifier = Modifier.size(dimensionResource(id = R.dimen.size_32dp)),
+                                backgroundColor = if (state.teamColorThird.isEmpty()) {
+                                    MaterialTheme.appColors.buttonColor.bckgroundDisabled
+                                } else {
+//                                    Color(android.graphics.Color.parseColor("#" + state.teamColorThird))
+                                    if (state.teamColorThird.startsWith("#")) {
+                                        Color(android.graphics.Color.parseColor(state.teamColorThird))
+                                    } else {
+                                        Color(android.graphics.Color.parseColor("#" + state.teamColorThird))
+                                    }
+                                },
+                                shape = RoundedCornerShape(
+                                    dimensionResource(id = R.dimen.size_4dp)
+                                )
+                            ) {}
+                        }
+
+                    }
                 }
+                AppText(
+                    text = stringResource(id = R.string.home_court),
+                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    style = MaterialTheme.typography.h6,
+                    modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
+                )
+
+                UserFlowBackground() {
+
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(dimensionResource(id = R.dimen.size_16dp))
+                    ) {
+
+//                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+                        AppText(
+                            text = stringResource(id = R.string.name_of_venue),
+                            style = MaterialTheme.typography.h6,
+                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                        )
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+
+                        Box(
+                            Modifier
+                                .fillMaxWidth()
+                                .clickable { onVenueClick.invoke() }
+                                .border(
+                                    width = dimensionResource(id = R.dimen.divider),
+                                    color = MaterialTheme.appColors.editField.borderUnFocused,
+                                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_6dp))
+                                )
+                                .padding(dimensionResource(id = R.dimen.size_16dp))
+                        )
+                        {
+                            if (state.venueName.isEmpty()) {
+                                AppText(
+                                    text = "",
+                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                    color = MaterialTheme.appColors.textField.labelDark,
+                                    fontWeight = FontWeight.W400,
+                                    fontFamily = rubikFamily
+                                )
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_14dp)))
+
+                            } else {
+                                AppText(
+                                    text = state.venueName,
+                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                    fontWeight = FontWeight.W400,
+                                )
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_14dp)))
+
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+                        AppText(
+                            text = stringResource(id = R.string.address),
+                            style = MaterialTheme.typography.h6,
+                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                        )
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+
+                        Box(
+                            Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    if (!Places.isInitialized()) {
+                                        Places.initialize(
+                                            context.applicationContext,
+                                            BuildConfig.MAPS_API_KEY
+                                        )
+                                    }
+                                    val fields = listOf(
+                                        Place.Field.NAME,
+                                        Place.Field.ADDRESS,
+                                        Place.Field.LAT_LNG
+                                    )
+                                    placePicker.launch(
+                                        Autocomplete
+                                            .IntentBuilder(
+                                                AutocompleteActivityMode.FULLSCREEN,
+                                                fields
+                                            )
+                                            .build(context)
+                                    )
+                                }
+                                .border(
+                                    width = dimensionResource(id = R.dimen.divider),
+                                    color = MaterialTheme.appColors.editField.borderUnFocused,
+                                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_6dp))
+                                )
+                                .padding(dimensionResource(id = R.dimen.size_16dp))
+                        )
+                        {
+                            if (state.selectedAddress.street.isEmpty()) {
+                                AppText(
+                                    text = "",
+                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                    color = MaterialTheme.appColors.textField.labelDark,
+                                    fontWeight = FontWeight.W400,
+                                    fontFamily = rubikFamily
+                                )
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_14dp)))
+
+                            } else {
+                                AppText(
+                                    text = state.selectedAddress.street,
+                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                    fontWeight = FontWeight.W400,
+                                )
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_14dp)))
+
+                            }
+                        }
+
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             }
 
             if (state.isLoading) {
