@@ -177,7 +177,7 @@ fun HomeScreen(
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
 
-                if(teamState.teams.isNotEmpty()){
+                if(teamState.teams.isNotEmpty() ){
                 UserFlowBackground(
                     padding = 0.dp,
                     color = Color.White
