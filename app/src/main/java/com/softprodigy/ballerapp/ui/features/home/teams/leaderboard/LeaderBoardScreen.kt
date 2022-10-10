@@ -3,19 +3,7 @@ package com.softprodigy.ballerapp.ui.features.home.teams.leaderboard
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -38,15 +26,11 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
+import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.TeamLeaderBoard
-import com.softprodigy.ballerapp.ui.features.components.AppTab
-import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.CoilImage
-import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
-import com.softprodigy.ballerapp.ui.features.components.Placeholder
-import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.theme.ColorPrimaryOrange
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
@@ -195,7 +179,7 @@ fun LeaderListItem(
                 )*/
 
                 CoilImage(
-                    src = leader.profileImage.toString(),
+                    src = BuildConfig.IMAGE_SERVER + leader.profileImage.toString(),
                     modifier = Modifier
                         .size(dimensionResource(id = R.dimen.size_32dp))
                         .clip(CircleShape)
