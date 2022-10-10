@@ -88,6 +88,7 @@
     <string name="last_name">Last Name</string>
     <string name="phone_num">Phone Number</string>
     <string name="valid_first_name">Please enter the valid first-name</string>
+    <string name="valid_event_name">Please enter the valid event name</string>
     <string name="valid_last_name">Please enter the valid last-name</string>
     <string name="valid_phone_number">Please enter a valid phone number</string>
     <string name="valid_image">Please select an image</string>

@@ -13,6 +13,8 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.*
@@ -25,10 +27,14 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -42,11 +48,11 @@ import com.google.android.libraries.places.widget.AutocompleteActivity.RESULT_ER
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.common.apiToUIDateFormat2
-import com.softprodigy.ballerapp.common.get24HoursTimeWithAMPM
+import com.softprodigy.ballerapp.common.*
 import com.softprodigy.ballerapp.data.request.Address
 import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.AppTextField
 import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -140,6 +146,7 @@ fun NewEventScreen(
                     )
                 ),
             enabled = state.eventName.isNotEmpty()
+                    && validEventName(state.eventName)
                     && state.selectedDate.isNotEmpty()
                     && state.selectedArrivalTime.isNotEmpty()
                     && state.selectedStartTime.isNotEmpty()
@@ -239,6 +246,8 @@ fun PracticeScreen(
             vm.onEvent(NewEvEvent.OnDateChanged(dateString))
         }, mYear, mMonth, mDay
     )
+    mDatePickerDialog.datePicker.minDate = System.currentTimeMillis()
+
 
     val mArrivalPickerDialog = TimePickerDialog(
         context,
@@ -464,6 +473,7 @@ fun PracticeItem(
     onNotificationChange: (Boolean) -> Unit,
 
     ) {
+    val focusManager = LocalFocusManager.current
 
     val customTextSelectionColors = TextSelectionColors(
         handleColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
@@ -527,8 +537,6 @@ fun PracticeItem(
 
                     } else {
                         Box(Modifier.fillMaxSize()) {
-
-
                             CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
                                 TextField(
                                     value = selectedValue, onValueChange = onSelectedValueChange,
@@ -543,7 +551,14 @@ fun PracticeItem(
                                         color = ColorBWBlack
                                     ),
                                     singleLine = true,
-                                )
+                                    keyboardOptions = KeyboardOptions(
+                                        imeAction = ImeAction.Done,
+                                        keyboardType = KeyboardType.Text,
+                                        capitalization = KeyboardCapitalization.Sentences
+                                    ),
+                                    keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+                                    isError = !validEventName(selectedValue) && selectedValue.isNotEmpty() || selectedValue.length > 30,
+                                    )
 
                             }
                             AppText(
