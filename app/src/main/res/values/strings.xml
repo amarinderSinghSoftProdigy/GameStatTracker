@@ -419,4 +419,5 @@
     <string name="selectDates">Select dates you\'re not available</string>
     <string name="update">Update Dates</string>
     <string name="unavailable_dates">Unavailable Dates</string>
+    <string name="settings">Settings</string>
 </resources>

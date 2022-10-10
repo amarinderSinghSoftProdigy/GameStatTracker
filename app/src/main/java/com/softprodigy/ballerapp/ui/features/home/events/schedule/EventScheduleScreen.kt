@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -43,8 +42,10 @@ fun EventScheduleScreen(
 
     val state = vm.eventScheduleState.value
     val stateEvent = vm.eventState.value
-    val expand = remember {
-        false
+    val expand = remember { true }
+
+    remember {
+        //vm.onEvent(EvEvents.GetSchedule(""))
     }
 
     Column(
@@ -131,7 +132,7 @@ fun EventScheduleHeaderItem(date: String, gamesCount: String, isExpanded: Boolea
                         width = dimensionResource(id = R.dimen.size_8dp)
                     )
                     .then(
-                        if (!isExpanded) Modifier.rotate(180f) else Modifier
+                        if (isExpanded) Modifier.rotate(180f) else Modifier
                     ),
                 tint = MaterialTheme.appColors.buttonColor.textDisabled
             )

@@ -16,6 +16,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.google.accompanist.flowlayout.FlowRow
+import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.events.EvEvents
@@ -128,7 +129,7 @@ fun OpenVenuesDetailsScreen(venueId: String, eventViewModel: EventViewModel) {
 fun ImageItem(url: String) {
     Column {
         CoilImage(
-            src = url,
+            src = BuildConfig.IMAGE_SERVER + url,
             modifier = Modifier
                 .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
                 .background(

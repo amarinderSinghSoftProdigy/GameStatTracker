@@ -145,6 +145,12 @@ fun HomeScreen(
                 Options.SWAP_PROFILES -> {
                     vm.onEvent(HomeScreenEvent.OnSwapClick)
                 }
+                Options.INVITE -> {
+                    onInviteClick()
+                }
+                else -> {
+                    //vm.onEvent(HomeScreenEvent.OnSwapClick)
+                }
             }
         }) {
         Box {
@@ -327,7 +333,11 @@ fun HomeScreen(
                         homeScreenState.homePageCoachModel.myEvents.toString()
                     )
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+                    //if (role.value == UserType.COACH.key)
                     EventInviteItem("invite_members", onInviteClick = onInviteClick)
+                    /*else Spacer(modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1F))*/
                 }
 
                 if (role.value == UserType.REFEREE.key) {

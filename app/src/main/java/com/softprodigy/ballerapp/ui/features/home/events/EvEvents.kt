@@ -70,6 +70,11 @@ sealed class EvEvents {
     data class GenderSelected(val gender: String) : EvEvents()
     data class EventType(val eventType: String) : EvEvents()
     data class Format(val format: String) : EvEvents()
+
+
+    data class GetSchedule(val eventId: String) : EvEvents()
+    //data class Format(val format: String) : EvEvents()
+    //data class Format(val format: String) : EvEvents()
 }
 
 enum class NoteType(val type: String) {
