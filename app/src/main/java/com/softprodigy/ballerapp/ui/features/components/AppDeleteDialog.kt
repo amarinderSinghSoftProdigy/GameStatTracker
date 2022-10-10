@@ -480,17 +480,21 @@ fun TeamListItem(team: Team, selected: Boolean, onClick: (Team) -> Unit) {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun UserListItem(user: SwapUser, onClick: () -> Unit) {
-    val selected = remember {
-        mutableStateOf(user._Id == UserStorage.userId)
-    }
+fun UserListItem(user: SwapUser, selected: Boolean, onClick: (String) -> Unit) {
+    /* val selected = remember {
+         mutableStateOf(selected)
+     }*/
 
     Surface(
-        onClick = { onClick() },
+        onClick = {
+            onClick(user._Id)
+        },
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_10dp)),
-        elevation = if (selected.value) dimensionResource(id = R.dimen.size_10dp) else 0.dp,
-        color = if (selected.value) MaterialTheme.appColors.material.primaryVariant else Color.Transparent,
-        modifier = Modifier.fillMaxWidth()
+        elevation = if (selected) dimensionResource(id = R.dimen.size_10dp) else 0.dp,
+        color = if (selected) MaterialTheme.appColors.material.primaryVariant else Color.Transparent,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = dimensionResource(id = R.dimen.size_16dp))
     ) {
         Row(
             modifier = Modifier
@@ -522,7 +526,7 @@ fun UserListItem(user: SwapUser, onClick: () -> Unit) {
                 fontWeight = FontWeight.W500,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                 modifier = Modifier.weight(1f),
-                color = if (selected.value) {
+                color = if (selected) {
                     MaterialTheme.appColors.buttonColor.textEnabled
                 } else {
                     MaterialTheme.appColors.buttonColor.bckgroundEnabled
@@ -1763,11 +1767,14 @@ fun SwapProfile(
                             }
                         }
                         item {
-                            users.forEach {
+                            users.forEach { item ->
                                 UserListItem(
-                                    user = it,
+                                    user = item,
+                                    selectedUser.value._Id == item._Id
                                 ) {
-                                    selectedUser.value = it
+                                    if (selectedUser.value._Id != it) {
+                                        selectedUser.value = item
+                                    }
                                 }
                             }
                         }

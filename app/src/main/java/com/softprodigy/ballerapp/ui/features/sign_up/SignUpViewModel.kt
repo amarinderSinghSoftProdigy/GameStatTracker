@@ -95,9 +95,9 @@ class SignUpViewModel @Inject constructor(
 
             is SignUpUIEvent.OnImageUploadSuccess -> {
                 viewModelScope.launch {
-                    if(event.fromNewProfile){
+                    if (event.fromNewProfile) {
                         addProfile()
-                    }else {
+                    } else {
                         updateUserProfile()
                     }
                 }
@@ -439,8 +439,18 @@ class SignUpViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 response.value.let { response ->
                     if (response.status) {
-
-
+                        _signUpUiState.value = _signUpUiState.value.copy(
+                            isLoading = false,
+                            errorMessage = null,
+                            successMessage = response.statusMessage
+                        )
+                        _signUpChannel.send(
+                            SignUpChannel.OnProfileUpdateSuccess(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
                     } else {
                         _signUpUiState.value = _signUpUiState.value.copy(
                             errorMessage = response.statusMessage,

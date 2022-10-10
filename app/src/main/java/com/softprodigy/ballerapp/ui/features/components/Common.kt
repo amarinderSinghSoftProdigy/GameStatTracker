@@ -345,6 +345,19 @@ enum class TopBar(val stringId: String, val back: Boolean) {
     TEAM_TAB(stringId = "", back = true)
 }
 
+fun getRoleList(): List<UserType> {
+    return listOf(
+        UserType.PLAYER,
+        UserType.COACH,
+        UserType.PARENT,
+        UserType.GAME_STAFF,
+        UserType.PROGRAM_STAFF,
+        UserType.FAN,
+        UserType.REFEREE
+    )
+}
+
+
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun <T> FoldableItem(

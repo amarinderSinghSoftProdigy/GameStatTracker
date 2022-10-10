@@ -25,11 +25,11 @@ fun UserTypeScreen(
 ) {
     CoachFlowBackground()
     {}
-        Box(
-            Modifier.fillMaxWidth()
-        ) {
-            UserTypeSelector(onNextClick = onNextClick, signUpvm/*, signUpData*/)
-        }
+    Box(
+        Modifier.fillMaxWidth()
+    ) {
+        UserTypeSelector(onNextClick = onNextClick, signUpvm/*, signUpData*/)
+    }
 
 }
 
@@ -39,16 +39,7 @@ fun UserTypeSelector(
     onNextClick: (String) -> Unit,
     signUpvm: SignUpViewModel,
 ) {
-
-    val options = listOf(
-        UserType.PLAYER,
-        UserType.COACH,
-        UserType.PARENT,
-        //UserType.GAME_STAFF,
-        UserType.PROGRAM_STAFF,
-        UserType.FAN,
-        UserType.REFEREE
-    )
+    val options = getRoleList()
     val state = signUpvm.signUpUiState.value
 
     val selectedUserType = remember {

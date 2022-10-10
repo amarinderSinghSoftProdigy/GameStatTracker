@@ -4,7 +4,6 @@ import androidx.compose.ui.graphics.Color
 import com.softprodigy.ballerapp.data.response.HomeItemResponse
 import com.softprodigy.ballerapp.data.response.SwapUser
 import com.softprodigy.ballerapp.data.response.User
-import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
 import com.softprodigy.ballerapp.ui.features.components.TopBar
 import com.softprodigy.ballerapp.ui.features.components.TopBarData
@@ -29,6 +28,4 @@ data class HomeState(
     val homeItemList: List<HomeItemResponse> = arrayListOf(),
     val user: User = User(),
     val swapUsers: List<SwapUser> = mutableListOf(),
-    val selectedPlayer: Player? = null,
-    val players: ArrayList<Player> = arrayListOf(),
 )

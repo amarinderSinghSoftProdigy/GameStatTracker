@@ -12,7 +12,6 @@ import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.response.HomeItemResponse
-import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.domain.repository.IUserRepository
 import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
 import com.softprodigy.ballerapp.ui.features.components.TopBarData
@@ -40,23 +39,10 @@ class HomeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-
             if (!UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
-
-                _state.value = _state.value.copy(
-                    players = arrayListOf(
-                        Player(_id = "1", name = "Neeraj", profileImage = null),
-                        Player(_id = "2", name = "Kausha;", profileImage = null),
-                        Player(_id = "3", name = "Amrinder", profileImage = null),
-                        Player(_id = "4", name = "Harsh", profileImage = null),
-                    ),
-                    selectedPlayer = Player(_id = "1", name = "Neeraj", profileImage = null)
-                )
                 getHomeList()
                 getUserInfo()
-
             }
-
         }
     }
 

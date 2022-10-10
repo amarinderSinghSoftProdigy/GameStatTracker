@@ -141,17 +141,7 @@ fun AddProfileScreen(
     val genderList =
         listOf(stringResource(id = R.string.male), stringResource(id = R.string.female))
 
-    val roleList = listOf(
-        UserType.PLAYER,
-        UserType.COACH,
-        UserType.PARENT,
-        //UserType.GAME_STAFF,
-        UserType.PROGRAM_STAFF,
-        UserType.FAN,
-        UserType.REFEREE
-    )
-
-
+    val roleList = getRoleList()
     LaunchedEffect(key1 = Unit) {
 
         signUpViewModel.signUpChannel.collect { uiEvent ->

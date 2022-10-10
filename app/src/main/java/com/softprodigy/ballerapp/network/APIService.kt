@@ -240,7 +240,7 @@ open interface APIService {
     @GET(ApiConstants.SWAP_TOKEN)
     suspend fun updateProfileToken(@Query("userId") userId: String): BaseResponse<String>
 
-    @PUT(ApiConstants.ADD_PROFILE)
+    @POST(ApiConstants.ADD_PROFILE)
     suspend fun addProfile(@Body request: AddProfileRequest): BaseResponse<Any>
 
 }
