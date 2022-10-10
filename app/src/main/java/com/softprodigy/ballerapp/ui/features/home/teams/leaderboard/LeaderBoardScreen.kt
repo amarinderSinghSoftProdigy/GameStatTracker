@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -31,6 +32,7 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.TeamLeaderBoard
 import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
 import com.softprodigy.ballerapp.ui.theme.ColorPrimaryOrange
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
@@ -51,27 +53,31 @@ fun LeaderBoardScreen(vm: LeaderBoardViewModel = hiltViewModel()) {
                 pageCount = state.leaderBoard.size,
                 initialOffScreenLimit = 1,
             )
-            Column(Modifier.fillMaxSize()) {
-                Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
-                LeaderTopTabs(pagerState, state.leaderBoard)
-                Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    itemsIndexed(state.leaders) { index, item ->
-                        val srNo = index + 1
-                        LeaderListItem(
-                            srNo = srNo,
-                            leader = item,
-                            selected = state.selectedLeader == item,
-                            key = state.leaderBoard[pagerState.currentPage].key.trim()
-                        ) {
-                            onLeaderSelectionChange.invoke(item)
+            if (state.leaderBoard.isNotEmpty()) {
+                Column(Modifier.fillMaxSize()) {
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
+                    LeaderTopTabs(pagerState, state.leaderBoard)
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        itemsIndexed(state.leaders) { index, item ->
+                            val srNo = index + 1
+                            LeaderListItem(
+                                srNo = srNo,
+                                leader = item,
+                                selected = state.selectedLeader == item,
+                                key = state.leaderBoard[pagerState.currentPage].key.trim()
+                            ) {
+                                onLeaderSelectionChange.invoke(item)
+                            }
                         }
                     }
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_24dp)))
                 }
-                Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_24dp)))
+            } else {
+                EmptyScreen(singleText = true, heading = stringResource(R.string.no_data_found))
             }
         }
     }

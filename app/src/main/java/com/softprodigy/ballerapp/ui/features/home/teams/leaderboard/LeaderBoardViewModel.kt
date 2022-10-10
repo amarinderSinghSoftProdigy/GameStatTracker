@@ -105,6 +105,10 @@ class LeaderBoardViewModel @Inject constructor(
         dataStoreManager.getId.collect {
 //            val leaderReponse = teamRepo.getLeaderBoard(it)
             val leaderReponse = teamRepo.getLeaderBoard(UserStorage.teamId)
+            _leaderUiState.value =
+                _leaderUiState.value.copy(
+                    isLoading = false
+                )
 
             when (leaderReponse) {
                 is ResultWrapper.GenericError -> {
