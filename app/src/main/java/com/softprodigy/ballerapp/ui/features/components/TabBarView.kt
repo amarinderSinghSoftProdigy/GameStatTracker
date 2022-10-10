@@ -141,10 +141,10 @@ enum class BottomNavKey(val resId: String, val route: String) {
 enum class UserType(val stringId: String, val key: String) {
     PLAYER("player_label", "player"),
     COACH("coach_label", "coach"),
-    REFEREE("program_label", "programStaff"),
+    REFEREE("referee_label", "programStaff"),
     PARENT("parent_label", "parent"),
-    GAME_STAFF("game_staff_label", "programStaff"),
-    PROGRAM_STAFF("program_label", "programStaff"),
+    GAME_STAFF("game_staff_label", "gameStaff"),
+    PROGRAM_STAFF("program_label", "program_Staff"),
     FAN("fan_label", "fan")//Add items to add in the usertypes in the app.
 }
 

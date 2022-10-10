@@ -6,14 +6,12 @@ import com.softprodigy.ballerapp.common.safeApiCall
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.CreateEventReq
 import com.softprodigy.ballerapp.data.response.StandingByLeagueAndDivisionData
-import com.softprodigy.ballerapp.data.response.StandingData
 import com.softprodigy.ballerapp.data.response.team.DivisionWiseTeamResponse
 import com.softprodigy.ballerapp.data.response.team.TeamsByLeagueDivisionResponse
 import com.softprodigy.ballerapp.domain.BaseResponse
 import com.softprodigy.ballerapp.domain.repository.IEventsRepository
 import com.softprodigy.ballerapp.network.APIService
 import com.softprodigy.ballerapp.ui.features.home.events.*
-import com.softprodigy.ballerapp.ui.features.venue.VenueAddress
 import com.softprodigy.ballerapp.ui.features.venue.VenueDetails
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -171,6 +169,14 @@ class EventsRepository @Inject constructor(
     override suspend fun getVenueDetailsById(venueId: String): ResultWrapper<BaseResponse<VenueDetails>> {
         return safeApiCall(dispatcher) {
             service.getVenueDetailsById(venueId = venueId)
+        }
+    }
+
+
+
+    override suspend fun getEventScheduleDetails(eventId: String): ResultWrapper<BaseResponse<Any>> {
+        return safeApiCall(dispatcher) {
+            service.getEventSchedule(eventId = eventId)
         }
     }
 

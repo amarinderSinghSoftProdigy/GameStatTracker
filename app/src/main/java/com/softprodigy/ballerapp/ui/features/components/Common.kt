@@ -45,6 +45,7 @@ import com.softprodigy.ballerapp.ui.features.venue.Location
 import com.softprodigy.ballerapp.ui.theme.ButtonColor
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
 import com.softprodigy.ballerapp.ui.theme.appColors
+import com.softprodigy.ballerapp.ui.utils.CommonUtils
 
 @Composable
 fun stringResourceByName(name: String): String {
@@ -568,6 +569,7 @@ private fun animateAlignmentAsState(
 
 @Composable
 fun LocationBlock(location: Location, padding: Dp = dimensionResource(id = R.dimen.size_16dp)) {
+    val context = LocalContext.current
     Column(
         Modifier.padding(horizontal = padding)
     ) {
@@ -596,9 +598,11 @@ fun LocationBlock(location: Location, padding: Dp = dimensionResource(id = R.dim
             TransparentButtonButton(
                 modifier = Modifier.weight(1F),
                 text = stringResource(id = R.string.navigate),
-                onClick = {},
+                onClick = {
+                    CommonUtils.openMaps(context, location.latLong)
+                },
                 icon = painterResource(id = R.drawable.ic_nav),
-                enabled = false,
+                enabled = true,
             )
         }
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))

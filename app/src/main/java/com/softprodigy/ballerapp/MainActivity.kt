@@ -548,6 +548,7 @@ fun NavControllerComposable(
                 })
         }
         composable(route = SELECT_PROFILE) {
+            mainViewModel.onEvent(MainEvent.OnColorChanges(AppConstants.SELECTED_COLOR))
             SelectProfileScreen(onNextClick = { moveToHome(activity) })
         }
 

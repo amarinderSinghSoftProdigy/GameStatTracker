@@ -58,6 +58,7 @@ fun HomeScreen(
     dismissDialog: (Boolean) -> Unit,
     onCreateTeamClick: (Team?) -> Unit,
     onTeamNameClick: () -> Unit,
+    onInviteClick: () -> Unit,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
 ) {
     val dataStoreManager = DataStoreManager(LocalContext.current)
@@ -177,57 +178,57 @@ fun HomeScreen(
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
 
-                if(teamState.teams.isNotEmpty()){
-                UserFlowBackground(
-                    padding = 0.dp,
-                    color = Color.White
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { /*logoClick()*/
-                                onTeamNameClick.invoke()
-                            }
-                            .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-                        contentAlignment = Alignment.CenterStart
+                if (teamState.teams.isNotEmpty()) {
+                    UserFlowBackground(
+                        padding = 0.dp,
+                        color = Color.White
                     ) {
-                        Row(
-                            Modifier
+                        Box(
+                            modifier = Modifier
                                 .fillMaxWidth()
-                                .align(Alignment.CenterStart),
-                            verticalAlignment = Alignment.CenterVertically,
+                                .clickable { /*logoClick()*/
+                                    onTeamNameClick.invoke()
+                                }
+                                .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
+                            Row(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.CenterStart),
+                                verticalAlignment = Alignment.CenterVertically,
 
-                            ) {
-                            CoilImage(
-                                src =BuildConfig.IMAGE_SERVER+teamState.logo,
-                                modifier = Modifier
-                                    .size(dimensionResource(id = R.dimen.size_48dp))
-                                    .clip(CircleShape),
-                                isCrossFadeEnabled = false,
-                                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
-                                onError = { Placeholder(R.drawable.ic_team_placeholder) },
-                                contentScale = ContentScale.Crop
-                            )
-                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
-                            Text(
-                                text = if (UserStorage.role.equals(
-                                        UserType.REFEREE.key,
-                                        ignoreCase = true
-                                    )
-                                ) "Springfield Bucks Staff" else teamState.teamName.ifEmpty { teamName.value },
-                                style = MaterialTheme.typography.h3,
-                                fontWeight = FontWeight.W700,
-                                modifier = Modifier.weight(1f)
+                                ) {
+                                CoilImage(
+                                    src = BuildConfig.IMAGE_SERVER + teamState.logo,
+                                    modifier = Modifier
+                                        .size(dimensionResource(id = R.dimen.size_48dp))
+                                        .clip(CircleShape),
+                                    isCrossFadeEnabled = false,
+                                    onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                                    onError = { Placeholder(R.drawable.ic_team_placeholder) },
+                                    contentScale = ContentScale.Crop
+                                )
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+                                Text(
+                                    text = if (UserStorage.role.equals(
+                                            UserType.REFEREE.key,
+                                            ignoreCase = true
+                                        )
+                                    ) "Springfield Bucks Staff" else teamState.teamName.ifEmpty { teamName.value },
+                                    style = MaterialTheme.typography.h3,
+                                    fontWeight = FontWeight.W700,
+                                    modifier = Modifier.weight(1f)
+                                )
+                            }
+                            Icon(
+                                modifier = Modifier.align(Alignment.CenterEnd),
+                                imageVector = Icons.Default.KeyboardArrowDown,
+                                contentDescription = null,
+                                tint = ColorGreyLighter
                             )
                         }
-                        Icon(
-                            modifier = Modifier.align(Alignment.CenterEnd),
-                            imageVector = Icons.Default.KeyboardArrowDown,
-                            contentDescription = null,
-                            tint = ColorGreyLighter
-                        )
                     }
-                }
                 }
                 if (role.value != UserType.REFEREE.key) {
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
@@ -326,7 +327,7 @@ fun HomeScreen(
                         homeScreenState.homePageCoachModel.myEvents.toString()
                     )
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                    EventInviteItem("invite_members")
+                    EventInviteItem("invite_members", onInviteClick = onInviteClick)
                 }
 
                 if (role.value == UserType.REFEREE.key) {
@@ -549,7 +550,8 @@ fun RowScope.EventItem(
 @Composable
 fun RowScope.EventInviteItem(
     headingId: String,
-    painter: Int = R.drawable.ic_invite
+    painter: Int = R.drawable.ic_invite,
+    onInviteClick: () -> Unit
 ) {
     UserFlowBackground(
         padding = 0.dp,
@@ -592,7 +594,9 @@ fun RowScope.EventInviteItem(
                         .fillMaxWidth()
                         .align(Alignment.CenterHorizontally),
                     text = stringResource(id = R.string.invite),
-                    onClick = { },
+                    onClick = {
+                        onInviteClick()
+                    },
                     painter = painterResource(id = R.drawable.ic_add_button),
                     isTransParent = false,
                     iconSize = dimensionResource(id = R.dimen.size_10dp)

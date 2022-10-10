@@ -3,16 +3,7 @@ package com.softprodigy.ballerapp.ui.features.home.events.schedule
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -44,7 +35,6 @@ import com.softprodigy.ballerapp.ui.features.components.FoldableItem
 import com.softprodigy.ballerapp.ui.features.components.Placeholder
 import com.softprodigy.ballerapp.ui.theme.appColors
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun EventScheduleScreen(
     vm: EventScheduleViewModel = hiltViewModel(),
@@ -52,6 +42,7 @@ fun EventScheduleScreen(
 ) {
 
     val state = vm.eventScheduleState.value
+    val stateEvent = vm.eventState.value
     val expand = remember {
         false
     }

@@ -131,7 +131,7 @@ fun EventTeamHeader(divisionName: String, isExpanded: Boolean = false) {
                     width = dimensionResource(id = R.dimen.size_12dp)
                 )
                 .then(
-                    if (!isExpanded) Modifier.rotate(180f) else Modifier
+                    if (isExpanded) Modifier.rotate(180f) else Modifier
                 ),
             tint = MaterialTheme.appColors.buttonColor.textDisabled
         )

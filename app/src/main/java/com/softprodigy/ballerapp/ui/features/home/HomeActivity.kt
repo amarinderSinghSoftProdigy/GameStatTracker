@@ -262,7 +262,14 @@ fun NavControllerComposable(
                             )
                         )
                     }
-                }, setupTeamViewModelUpdated = setupTeamViewModelUpdated
+                }, onInviteClick = {
+                    setColorUpdate(
+                        setupTeamViewModelUpdated,
+                        teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
+                    )
+                    navController.navigate(Route.ADD_PLAYER_SCREEN + "/${UserStorage.teamId}")
+                },
+                setupTeamViewModelUpdated = setupTeamViewModelUpdated
             )
             /* else {
                  HomeFirstTimeLoginScreen(onCreateTeamClick = {
@@ -286,7 +293,9 @@ fun NavControllerComposable(
                     topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
-            AddProfileScreen()
+            AddProfileScreen(onSuccess = {
+                navController.popBackStack()
+            })
         }
         composable(route = Route.PROFILE_EDIT_SCREEN) {
             homeViewModel.setTopBar(
@@ -525,15 +534,13 @@ fun NavControllerComposable(
 
 
         composable(route = Route.ADD_PLAYER_SCREEN) {
-
+            //homeViewModel.setTopAppBar(true)
+            homeViewModel.showBottomAppBar(false)
             homeViewModel.setTopBar(
                 TopBarData(
                     topBar = TopBar.INVITE_TEAM_MEMBERS,
                 )
             )
-            homeViewModel.setTopAppBar(true)
-            homeViewModel.showBottomAppBar(false)
-
             BackHandler {
                 homeViewModel.setScreen(false)
                 navController.popBackStack()

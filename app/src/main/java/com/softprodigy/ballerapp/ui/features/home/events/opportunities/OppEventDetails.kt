@@ -139,6 +139,7 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
                     state.opportunitiesDetail.city,
                     state.opportunitiesDetail.state,
                     "",
+                    //latLong = LatLng(state.opportunitiesDetail.)
                 )
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
