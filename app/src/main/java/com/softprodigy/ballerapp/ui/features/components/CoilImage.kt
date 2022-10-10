@@ -13,7 +13,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import coil.annotation.ExperimentalCoilApi
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.CachePolicy
@@ -28,7 +27,7 @@ fun CoilImage(
     isCrossFadeEnabled: Boolean = true,
     onError: @Composable (() -> Unit)? = null,
     onLoading: @Composable (() -> Unit)? = null,
-    contentScale: ContentScale = ContentScale.None
+    contentScale: ContentScale = ContentScale.Inside
 ) {
     val painter =
         rememberAsyncImagePainter(ImageRequest.Builder(LocalContext.current).data(src).apply(block = fun ImageRequest.Builder.() {
@@ -41,7 +40,7 @@ fun CoilImage(
             modifier = modifier,
             contentDescription = null,
         )
-        when (val state = painter.state) {
+        when (painter.state) {
             is AsyncImagePainter.State.Loading -> onLoading?.invoke()
             is AsyncImagePainter.State.Success -> Unit
             is AsyncImagePainter.State.Error, is AsyncImagePainter.State.Empty -> onError?.invoke()
@@ -49,7 +48,6 @@ fun CoilImage(
     }
 }
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun CoilImageBox(
     src: Any,

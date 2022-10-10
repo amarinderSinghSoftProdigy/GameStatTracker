@@ -7,6 +7,7 @@ import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.data.response.team.TeamLeaderBoard
 import com.softprodigy.ballerapp.data.response.team.TeamParent
+import com.softprodigy.ballerapp.ui.features.components.getRoleList
 import com.softprodigy.ballerapp.ui.features.home.events.FilterPreference
 import com.softprodigy.ballerapp.ui.features.home.events.Participation
 import java.text.ParseException
@@ -141,6 +142,16 @@ class CommonUtils {
                 result.add(item.teamId)
             }
             return result
+        }
+
+        fun getRole(role: String): String {
+            val list = getRoleList()
+            for (item in list) {
+                if (item.key == role) {
+                    return item.stringId
+                }
+            }
+            return "user_type"
         }
     }
 }

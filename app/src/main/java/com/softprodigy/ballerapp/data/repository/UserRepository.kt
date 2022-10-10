@@ -4,10 +4,7 @@ import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.safeApiCall
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.*
-import com.softprodigy.ballerapp.data.response.SwapUser
-import com.softprodigy.ballerapp.data.response.User
-import com.softprodigy.ballerapp.data.response.UserDocType
-import com.softprodigy.ballerapp.data.response.UserInfo
+import com.softprodigy.ballerapp.data.response.*
 import com.softprodigy.ballerapp.domain.BaseResponse
 import com.softprodigy.ballerapp.domain.repository.IUserRepository
 import com.softprodigy.ballerapp.network.APIService
@@ -119,6 +116,12 @@ class UserRepository @Inject constructor(
     override suspend fun updateProfileToken(userId: String): ResultWrapper<BaseResponse<String>> {
         return safeApiCall(dispatcher = dispatcher) {
             service.updateProfileToken(userId)
+        }
+    }
+
+    override suspend fun addProfile(request: AddProfileRequest): ResultWrapper<BaseResponse<Any>> {
+        return safeApiCall(dispatcher = dispatcher) {
+            service.addProfile(request)
         }
     }
 

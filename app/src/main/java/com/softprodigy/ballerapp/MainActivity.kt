@@ -411,17 +411,17 @@ fun NavControllerComposable(
                     }
                     val check =
                         it?.user?.role.equals(AppConstants.USER_TYPE_USER, ignoreCase = true)
-                    //if (check) {
+                    if (check) {
                         checkRole(
                             check,
                             navController,
                             activity
                         )
-                    /*} else {
+                    } else {
                         navController.navigate(SELECT_PROFILE) {
                             navController.popBackStack()
                         }
-                    }*/
+                    }
                 },
                 onRegister = {
                     navController.navigate(SIGN_UP_SCREEN)
@@ -480,7 +480,10 @@ fun NavControllerComposable(
                     UserStorage.role = userType
 
                     if (userType.equals(UserType.COACH.key, ignoreCase = true)
-                        || userType.equals(UserType.PLAYER.key, ignoreCase = true) || userType.equals(UserType.REFEREE.key, ignoreCase = true)
+                        || userType.equals(
+                            UserType.PLAYER.key,
+                            ignoreCase = true
+                        ) || userType.equals(UserType.REFEREE.key, ignoreCase = true)
                     ) {
                         navController.navigate(PROFILE_SETUP_SCREEN)
                     } else {
@@ -511,7 +514,7 @@ fun NavControllerComposable(
             }
 
             TeamSetupScreenUpdated(
-                venue=venue,
+                venue = venue,
                 vm = setupTeamViewModelUpdated,
                 onBackClick = {
                     mainViewModel.onEvent(MainEvent.OnShowTopBar(showAppBar = false))
