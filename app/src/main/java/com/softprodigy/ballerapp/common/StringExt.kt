@@ -54,5 +54,9 @@ fun validTeamName(name: String): Boolean {
     val regex = "^[A-Za-z0-9@$ ]*$"
     return name.matches(regex = regex.toRegex())
 }
+fun validEventName(name: String): Boolean {
+    val regex = "^[A-Za-z0-9@$ ]*$"
+    return name.matches(regex = regex.toRegex())
+}
 
 fun Int.argbToHexString() = String.format("#%06X", 0xFFFFFF and this)
