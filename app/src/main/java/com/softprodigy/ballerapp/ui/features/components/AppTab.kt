@@ -2,19 +2,9 @@ package com.softprodigy.ballerapp.ui.features.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ScrollableTabRow
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
-import androidx.compose.material.TabRowDefaults
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -75,7 +65,8 @@ fun AppScrollableTabRow(
         },
         backgroundColor = MaterialTheme.appColors.material.surface,
         edgePadding = dimensionResource(id = R.dimen.size_25dp), tabs = tabs,
-    )
+
+        )
 }
 
 @OptIn(ExperimentalPagerApi::class)
@@ -87,7 +78,6 @@ fun AppStaticTabRow(
 ) {
     TabRow(
         divider = {},
-        modifier = modifier,
         selectedTabIndex = pagerState.currentPage,
         indicator = { tabPositions ->
             TabRowDefaults.Indicator(
@@ -96,8 +86,9 @@ fun AppStaticTabRow(
             )
         },
         backgroundColor = MaterialTheme.appColors.material.surface,
-        tabs = tabs
-    )
+        tabs = tabs,
+
+        )
 }
 
 @Composable
@@ -120,6 +111,44 @@ fun AppTabLikeViewPager(
                 stringResourceByName(name = title),
                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                 color = if (selected) MaterialTheme.appColors.buttonColor.bckgroundEnabled else MaterialTheme.appColors.textField.label
+            )
+        }
+
+    })
+}
+
+@Composable
+fun AppSingleTabLikeViewPager(
+    modifier: Modifier = Modifier,
+    title: String,
+    painter: Painter,
+    selected: Boolean,
+    onClick: () -> Unit,
+) {
+    Tab(modifier = modifier, selected = selected, onClick = onClick, text = {
+
+        Column(verticalArrangement = Arrangement.Center) {
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_14dp)))
+            Row(horizontalArrangement = Arrangement.Center) {
+                Icon(
+                    painter = painter,
+                    contentDescription = null,
+                    tint = if (selected) MaterialTheme.appColors.material.primaryVariant else MaterialTheme.appColors.textField.label
+                )
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+                Text(
+                    stringResourceByName(name = title),
+                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                    color = if (selected) MaterialTheme.appColors.buttonColor.bckgroundEnabled else MaterialTheme.appColors.textField.label
+                )
+            }
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_14dp)))
+            Divider(
+                color = MaterialTheme.appColors.material.primaryVariant, modifier = Modifier
+                    .width(
+                        dimensionResource(id = R.dimen.size_70dp)
+                    )
+                    .height(dimensionResource(id = R.dimen.size_2dp))
             )
         }
 

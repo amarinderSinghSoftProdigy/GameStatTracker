@@ -6,7 +6,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Switch
+import androidx.compose.material.SwitchDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,12 +19,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import com.google.accompanist.flowlayout.FlowColumn
 import com.google.accompanist.flowlayout.FlowRow
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.data.response.EventType
+import com.softprodigy.ballerapp.data.response.Format
+import com.softprodigy.ballerapp.data.response.GenderList
 import com.softprodigy.ballerapp.ui.features.components.AppButton
 import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.CustomSwitch
 import com.softprodigy.ballerapp.ui.features.components.DividerCommon
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -66,8 +70,8 @@ fun RefereeFiltersScreen(vm: EventViewModel, onSuccess: () -> Unit) {
                     )
             ) {
                 state.genderList.forEach {
-                    RefereeFilterItem(it, state.selectedGender == it) {
-                        vm.onEvent(EvEvents.GenderSelected(it))
+                    RefereeGenderFilterItem(it.name, it.status, it) {
+                        /*vm.onEvent(EvEvents.GenderSelected(it))*/
                     }
                 }
             }
@@ -97,8 +101,8 @@ fun RefereeFiltersScreen(vm: EventViewModel, onSuccess: () -> Unit) {
                 )
             ) {
                 state.eventType.forEach {
-                    RefereeFilterItem(it, state.selectedEventType == it) {
-                        vm.onEvent(EvEvents.EventType(it))
+                    RefereeEventTypeFilterItem(it.name, it.status, it) {
+                        /* vm.onEvent(EvEvents.EventType(it))*/
                     }
                 }
             }
@@ -124,8 +128,8 @@ fun RefereeFiltersScreen(vm: EventViewModel, onSuccess: () -> Unit) {
                 )
             ) {
                 state.formatList.forEach {
-                    RefereeFilterItem(it, state.selectedFormat == it) {
-                        vm.onEvent(EvEvents.Format(it))
+                    RefereeFormatFilterItem(it.name, it.status, it) {
+                        /*vm.onEvent(EvEvents.Format(it))*/
                     }
                 }
             }
@@ -151,7 +155,12 @@ fun RefereeFiltersScreen(vm: EventViewModel, onSuccess: () -> Unit) {
 }
 
 @Composable
-fun RefereeFilterItem(name: String, selected: Boolean, onSelection: () -> Unit) {
+fun RefereeGenderFilterItem(
+    name: String,
+    selected: Boolean,
+    genderList: GenderList,
+    onSelection: () -> Unit
+) {
 
     Row(
         modifier = Modifier
@@ -161,6 +170,10 @@ fun RefereeFilterItem(name: String, selected: Boolean, onSelection: () -> Unit) 
         verticalAlignment = Alignment.CenterVertically
     ) {
 
+        val status = remember {
+            mutableStateOf(genderList.status)
+        }
+
         AppText(
             text = name,
             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
@@ -168,9 +181,111 @@ fun RefereeFilterItem(name: String, selected: Boolean, onSelection: () -> Unit) 
             fontWeight = FontWeight.W500,
         )
 
-        CustomSwitch(isSelected = selected, onClick = {
-            onSelection()
-        })
+        Switch(
+            modifier = Modifier.height(dimensionResource(id = R.dimen.size_25dp)),
+            checked = status.value,
+            onCheckedChange = {
+                /* onSelection()*/
+                genderList.status = !genderList.status
+                status.value = genderList.status
+
+            },
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = MaterialTheme.appColors.material.primaryVariant
+            )
+        )
+
+    }
+    DividerCommon()
+
+}
+
+
+@Composable
+fun RefereeEventTypeFilterItem(
+    name: String,
+    selected: Boolean,
+    eventType: EventType,
+    onSelection: () -> Unit
+) {
+    val status = remember {
+        mutableStateOf(eventType.status)
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+
+        AppText(
+            text = name,
+            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            style = MaterialTheme.typography.h5,
+            fontWeight = FontWeight.W500,
+        )
+
+        Switch(
+            modifier = Modifier.height(dimensionResource(id = R.dimen.size_25dp)),
+            checked = status.value,
+            onCheckedChange = {
+                /* onSelection()*/
+                eventType.status = !eventType.status
+                status.value = eventType.status
+            },
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = MaterialTheme.appColors.material.primaryVariant
+            )
+        )
+
+    }
+    DividerCommon()
+
+}
+
+
+@Composable
+fun RefereeFormatFilterItem(
+    name: String,
+    selected: Boolean,
+    format: Format,
+    onSelection: () -> Unit
+) {
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        val status = remember {
+            mutableStateOf(format.status)
+        }
+
+        AppText(
+            text = name,
+            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            style = MaterialTheme.typography.h5,
+            fontWeight = FontWeight.W500,
+        )
+
+        Switch(
+            modifier = Modifier.height(dimensionResource(id = R.dimen.size_25dp)),
+            checked = status.value,
+            onCheckedChange = {
+                /* onSelection()*/
+                format.status = !format.status
+                status.value = format.status
+            },
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = MaterialTheme.appColors.material.primaryVariant
+            )
+        )
 
     }
     DividerCommon()

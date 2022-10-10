@@ -300,6 +300,7 @@ fun ProfileItem(type: String, value: String, imageUrl: String? = null) {
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
             AppText(
@@ -307,7 +308,10 @@ fun ProfileItem(type: String, value: String, imageUrl: String? = null) {
                 style = MaterialTheme.typography.h6,
                 color = ColorBWBlack
             )
-            Row {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
 
                 AppText(
                     text = value,
@@ -409,7 +413,9 @@ fun TeamList(teams: SnapshotStateList<TeamDetails>) {
             .padding(all = dimensionResource(id = R.dimen.size_16dp)),
     ) {
 
-        Column(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+        ) {
             AppText(
                 text = stringResource(id = R.string.teams),
                 style = MaterialTheme.typography.h6,
@@ -419,8 +425,9 @@ fun TeamList(teams: SnapshotStateList<TeamDetails>) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_14dp)))
             teams.forEach { team ->
                 Column(
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Row() {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         CoilImage(
                             src = BuildConfig.IMAGE_SERVER + team.teamId.logo,
                             modifier = Modifier

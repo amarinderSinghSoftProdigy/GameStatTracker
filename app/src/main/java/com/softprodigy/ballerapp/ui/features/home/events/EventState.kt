@@ -1,8 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.home.events
 
-import com.softprodigy.ballerapp.data.response.DivisionResponse
-import com.softprodigy.ballerapp.data.response.MyLeagueResponse
-import com.softprodigy.ballerapp.data.response.VenuesId
+import com.softprodigy.ballerapp.data.response.*
 import com.softprodigy.ballerapp.data.response.team.DivisionWiseTeamResponse
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.data.response.team.TeamsByLeagueDivisionResponse
@@ -50,9 +48,9 @@ data class EventState(
     val standingUIState: StandingLeagueDivisionUIState = StandingLeagueDivisionUIState(),
 
 
-    val genderList: ArrayList<String> = arrayListOf(),
-    val eventType: ArrayList<String> = arrayListOf(),
-    val formatList: ArrayList<String> = arrayListOf(),
+    val genderList: ArrayList<GenderList> = arrayListOf(),
+    val eventType: ArrayList<com.softprodigy.ballerapp.data.response.EventType> = arrayListOf(),
+    val formatList: ArrayList<Format> = arrayListOf(),
     val selectedGender: String = "",
     val selectedEventType: String = "",
     val selectedFormat: String = ""
