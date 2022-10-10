@@ -19,6 +19,9 @@ import com.softprodigy.ballerapp.data.request.TeamDetailsReq
 import com.softprodigy.ballerapp.data.request.UpdateUserDetailsReq
 import com.softprodigy.ballerapp.data.request.UserDetailsReq
 import com.softprodigy.ballerapp.data.response.*
+import com.softprodigy.ballerapp.data.request.*
+import com.softprodigy.ballerapp.data.response.User
+import com.softprodigy.ballerapp.data.response.UserDocType
 import com.softprodigy.ballerapp.domain.repository.IImageUploadRepo
 import com.softprodigy.ballerapp.domain.repository.IUserRepository
 import com.softprodigy.ballerapp.ui.features.components.UserType
@@ -622,7 +625,7 @@ class ProfileViewModel @Inject constructor(
         return UpdateUserDetailsReq(
             firstName = _state.value.user.firstName,
             lastName = _state.value.user.lastName,
-            birthdate = _state.value.user.birthdate,
+            birthdate = _state.value.user.birthdate ?: "",
             phone = _state.value.user.phone,
             gender = _state.value.user.gender,
             grade = _state.value.user.userDetails.grade,

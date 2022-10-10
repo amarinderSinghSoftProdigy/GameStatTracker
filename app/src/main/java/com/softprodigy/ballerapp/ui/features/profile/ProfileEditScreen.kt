@@ -234,7 +234,7 @@ fun ProfileEditScreen(
                     )
                     DividerCommon()
                     EditProfileFields(
-                        data = apiToUIDateFormat2(state.user.birthdate),
+                        data = if (state.user.birthdate != null) apiToUIDateFormat2(state.user.birthdate) else "",
                         onValueChange = {
                             vm.onEvent(ProfileEvent.OnBirthdayChange(it))
 
@@ -491,7 +491,7 @@ fun ProfileEditScreen(
             }
 
             AppButton(
-                enabled = validName(state.user.firstName)
+                enabled = true /*validName(state.user.firstName)
                         && validName(state.user.lastName)
                         && state.user.email.isValidEmail()
                         && state.user.phone.isNotEmpty()
@@ -503,7 +503,7 @@ fun ProfileEditScreen(
                         && state.favCollegeTeam.isNotEmpty()
                         && state.favProfessionalTeam.isNotEmpty()
                         && state.favActivePlayer.isNotEmpty()
-                        && state.favAllTimePlayer.isNotEmpty(),
+                        && state.favAllTimePlayer.isNotEmpty()*/,
                 icon = null,
                 themed = true,
                 onClick = {
@@ -536,7 +536,6 @@ fun ProfileEditScreen(
     }
 
 }
-
 
 
 @Composable

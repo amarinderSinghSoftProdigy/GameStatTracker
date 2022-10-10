@@ -6,7 +6,7 @@ import com.softprodigy.ballerapp.data.request.SignUpData
 sealed class SignUpUIEvent {
 
     data class OnImageSelected(val profileImageUri: String) : SignUpUIEvent()
-    object OnImageUploadSuccess : SignUpUIEvent()
+    data class OnImageUploadSuccess(val fromNewProfile: Boolean = false) : SignUpUIEvent()
     object OnScreenNext : SignUpUIEvent()
     data class OnSignUpDataSelected(val signUpData: SignUpData) : SignUpUIEvent()
     object OnVerifyNumber : SignUpUIEvent()
@@ -18,6 +18,7 @@ sealed class SignUpUIEvent {
     data class OnPhoneNumberChanged(val phoneNumber: String) : SignUpUIEvent()
     data class OnBirthdayChanged(val birthday: String) : SignUpUIEvent()
     data class OnAddressChanged(val address: String) : SignUpUIEvent()
+    object OnAddProfileClicked : SignUpUIEvent()
 
     data class OnFacebookClick(val socialUser: SocialUserModel) : SignUpUIEvent()
     data class OnGoogleClick(val socialUser: SocialUserModel) : SignUpUIEvent()
