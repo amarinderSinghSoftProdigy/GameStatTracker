@@ -35,6 +35,7 @@ import com.softprodigy.ballerapp.ui.theme.appColors
 fun FilterScreen(vm: EventViewModel, onSuccess: () -> Unit) {
     val state = vm.eventState.value
     val context = LocalContext.current
+
     remember {
         vm.onEvent(EvEvents.GetFilters)
     }
@@ -43,11 +44,11 @@ fun FilterScreen(vm: EventViewModel, onSuccess: () -> Unit) {
         vm.eventChannel.collect { uiEvent ->
             when (uiEvent) {
                 is EventChannel.ShowToast -> {
-                    Toast.makeText(
+                   /* Toast.makeText(
                         context,
                         uiEvent.message.asString(context),
                         Toast.LENGTH_LONG
-                    ).show()
+                    ).show()*/
                 }
                 is EventChannel.OnSuccess -> {
                     Toast.makeText(
