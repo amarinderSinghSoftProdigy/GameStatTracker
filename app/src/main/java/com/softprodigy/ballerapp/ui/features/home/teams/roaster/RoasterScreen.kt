@@ -149,7 +149,7 @@ fun CoachListItem(
             overflow = TextOverflow.Ellipsis,
             maxLines = 2,
             textAlign = TextAlign.Center,
-            modifier = Modifier.width(dimensionResource(id = R.dimen.size_100dp))
+            modifier = Modifier.width(dimensionResource(id = R.dimen.size_120dp))
         )
 
         Row(

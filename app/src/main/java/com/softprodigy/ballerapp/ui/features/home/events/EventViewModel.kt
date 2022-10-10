@@ -1,10 +1,8 @@
 package com.softprodigy.ballerapp.ui.features.home.events
 
 import android.app.Application
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.snapshots.SnapshotMutableState
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.common.ResultWrapper
@@ -190,6 +188,7 @@ class EventViewModel @Inject constructor(
                 }
             }
             is EvEvents.GetDivisions -> {
+                onEvent(EvEvents.ClearRegister)
                 viewModelScope.launch {
                     getEventDivisions(event.id)
                 }

@@ -241,17 +241,20 @@ fun NavControllerComposable(
                     homeViewModel.setLogoutDialog(true)
                 },
                 onTeamNameClick = { homeViewModel.setDialog(true) },
-                vm = homeViewModel, gotToProfile = {
+                vm = homeViewModel,
+                gotToProfile = {
                     navController.navigate(Route.PROFILE_SCREEN)
                 },
                 teamVm = teamViewModel,
                 OnTeamDetailsSuccess = { teamId, teamName ->
                     UserStorage.teamId = teamId
                     UserStorage.teamName = teamName
-                }, showDialog = showDialog,
+                },
+                showDialog = showDialog,
                 dismissDialog = {
                     homeViewModel.setDialog(it)
-                }, onCreateTeamClick = {
+                },
+                onCreateTeamClick = {
                     navController.navigate(Route.TEAM_SETUP_SCREEN) {
 //                        navController.popBackStack()
                         setupTeamViewModelUpdated.onEvent(
@@ -262,7 +265,8 @@ fun NavControllerComposable(
                             )
                         )
                     }
-                }, onInviteClick = {
+                },
+                onInviteClick = {
                     setColorUpdate(
                         setupTeamViewModelUpdated,
                         teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
@@ -541,15 +545,17 @@ fun NavControllerComposable(
 
 
         composable(route = Route.ADD_PLAYER_SCREEN) {
-            //homeViewModel.setTopAppBar(true)
+            homeViewModel.setTopAppBar(true)
             homeViewModel.showBottomAppBar(false)
             homeViewModel.setTopBar(
                 TopBarData(
-                    topBar = TopBar.INVITE_TEAM_MEMBERS,
+                    label = stringResource(id = R.string.invite_team_member),
+                    topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
             BackHandler {
-                homeViewModel.setScreen(false)
+                homeViewModel.setTopAppBar(false)
+                homeViewModel.showBottomAppBar(true)
                 navController.popBackStack()
             }
             AddPlayersScreenUpdated(
@@ -561,7 +567,7 @@ fun NavControllerComposable(
                             inclusive = true
                         }
                     }
-                    homeViewModel.setScreen(false)
+                    //homeViewModel.setScreen(false)
                 }, onInvitationSuccess = {
                 })
         }
@@ -575,8 +581,15 @@ fun NavControllerComposable(
         ) {
             homeViewModel.setTopAppBar(true)
             homeViewModel.showBottomAppBar(false)
-
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = stringResource(id = R.string.invite_team_member),
+                    topBar = TopBar.SINGLE_LABEL_BACK,
+                )
+            )
             BackHandler {
+                homeViewModel.setTopAppBar(true)
+                homeViewModel.showBottomAppBar(true)
                 moveBackFromAddPlayer(homeViewModel, navController)
             }
             val teamId = it.arguments?.getString("teamId")
