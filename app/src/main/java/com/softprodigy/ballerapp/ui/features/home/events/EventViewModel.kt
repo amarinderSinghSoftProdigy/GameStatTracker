@@ -280,7 +280,7 @@ class EventViewModel @Inject constructor(
                 }
             }
             is EvEvents.GetLeagueId -> {
-                _state.value = _state.value.copy(leagueId = event.id)
+                _state.value = _state.value.copy(leagueId = event.id, eventId = event.eventId)
             }
 
             is EvEvents.GetGender -> {
@@ -369,9 +369,14 @@ class EventViewModel @Inject constructor(
                 _state.value = _state.value.copy(selectedFormat = event.format)
 
             }
+
+            is EvEvents.GetSchedule -> {
+                viewModelScope.launch {
+                    getEventSchedule(event.eventId)
+                }
+            }
         }
     }
-
 
     private suspend fun addNote(noteType: NoteType, note: String, eventId: String) {
 
@@ -1128,6 +1133,51 @@ class EventViewModel @Inject constructor(
             }
         }
     }
+
+    private suspend fun getEventSchedule(eventId: String) {
+        _state.value =
+            eventState.value.copy(showLoading = true)
+        val eventResponse = eventsRepo.getEventScheduleDetails(eventId)
+        _state.value =
+            eventState.value.copy(showLoading = false)
+
+        when (eventResponse) {
+            is ResultWrapper.GenericError -> {
+                _channel.send(
+                    EventChannel.ShowEventDetailsToast(
+                        UiText.DynamicString(
+                            "${eventResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _channel.send(
+                    EventChannel.ShowEventDetailsToast(
+                        UiText.DynamicString(
+                            eventResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                eventResponse.value.let { response ->
+                    if (response.data != null) {
+                        _state.value=_state.value.copy(scheduleResponse = response.data)
+                    } else {
+                        _channel.send(
+                            EventChannel.ShowEventDetailsToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
 
     private fun getRefereeFilters() {
 

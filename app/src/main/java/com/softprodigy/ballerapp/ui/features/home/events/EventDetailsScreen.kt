@@ -533,11 +533,11 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
                 onNoteChange = { note -> vm.onEvent(EvEvents.OnNoteChange(note)) }
             )
         }
-
-        if (state.showLoading) {
-            CommonProgressBar()
-        }
-
     }
+
+    if (state.showLoading) {
+        CommonProgressBar()
+    }
+
 }
 
