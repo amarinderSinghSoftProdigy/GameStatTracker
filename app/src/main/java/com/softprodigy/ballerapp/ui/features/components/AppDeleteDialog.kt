@@ -157,7 +157,7 @@ fun SelectTeamDialog(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_cross_1),
                             contentDescription = "",
-                            tint = MaterialTheme.appColors.buttonColor.textDisabled,
+                            tint = ColorGreyLighter,
                             modifier = Modifier
                                 .size(dimensionResource(id = R.dimen.size_12dp))
                                 .align(Alignment.TopEnd)
@@ -176,7 +176,6 @@ fun SelectTeamDialog(
                                     id = R.dimen.size_10dp
                                 )
                             ),
-                        verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         item {
@@ -1739,7 +1738,7 @@ fun SwapProfile(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_cross_1),
                             contentDescription = "",
-                            tint = MaterialTheme.appColors.buttonColor.textDisabled,
+                            tint = ColorGreyLighter,
                             modifier = Modifier
                                 .size(dimensionResource(id = R.dimen.size_12dp))
                                 .align(Alignment.TopEnd)
@@ -1758,7 +1757,6 @@ fun SwapProfile(
                                     id = R.dimen.size_10dp
                                 )
                             ),
-                        verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         item {

@@ -136,7 +136,8 @@ class HomeActivity : ComponentActivity() {
                                                     navController.navigate(Route.MANAGED_TEAM_SCREEN)
                                                 }
                                                 TopBar.MANAGE_TEAM -> {
-                                                    teamViewModel.onEvent(TeamUIEvent.OnTeamUpdate)
+                                                    if (!teamViewModel.teamUiState.value.isLoading)
+                                                        teamViewModel.onEvent(TeamUIEvent.OnTeamUpdate)
                                                 }
                                                 TopBar.PROFILE -> {
                                                     navController.navigate(Route.PROFILE_EDIT_SCREEN)

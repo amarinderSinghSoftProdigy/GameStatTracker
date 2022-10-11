@@ -152,6 +152,7 @@ class EventViewModel @Inject constructor(
                     _state.value.copy(registerRequest = _state.value.registerRequest.copy(payment = event.request))
             }
             is EvEvents.RegisterPlayer -> {
+
                 _state.value =
                     _state.value.copy(registerRequest = _state.value.registerRequest.copy(players = event.request))
             }
@@ -171,6 +172,7 @@ class EventViewModel @Inject constructor(
                     )
             }
             is EvEvents.RegisterTeam -> {
+                _state.value.registerRequest.players.clear()
                 _state.value =
                     _state.value.copy(
                         team = event.request,

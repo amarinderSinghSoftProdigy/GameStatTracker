@@ -452,7 +452,10 @@ fun EventItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    Row(modifier = Modifier.fillMaxWidth()) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Text(
                             modifier = Modifier.weight(1f),
                             text = events.eventName,
@@ -494,6 +497,11 @@ fun EventItem(
                             color = ColorBWGrayLight,
                             style = MaterialTheme.typography.h4
                         )
+
+                        /*if(events.startTime.toCharArray()[0] == "0"){
+
+                        }*/
+
                         Text(
                             text = "${apiToUIDateFormat(events.date)} ${events.startTime} - ${events.endTime}",
                             color = ColorBWGrayLight,
