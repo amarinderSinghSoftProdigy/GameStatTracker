@@ -31,6 +31,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
 import com.facebook.CallbackManager
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.IntentData
@@ -101,6 +102,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, true)
+//        startActivity(Intent(this, CometChatUI::class.java))
+
         setContent {
             val mainViewModel: MainViewModel = hiltViewModel()
             val state = mainViewModel.state.value

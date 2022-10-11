@@ -1,20 +1,13 @@
 package com.softprodigy.ballerapp.ui.features.home.teams.chat
 
 import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
 import android.util.Log
-import android.view.KeyEvent
 import android.view.View
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
-import android.widget.*
-import androidx.compose.foundation.layout.fillMaxSize
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.recyclerview.widget.RecyclerView
+import androidx.compose.ui.viewinterop.AndroidViewBinding
 import com.cometchat.pro.constants.CometChatConstants
 import com.cometchat.pro.core.CometChat
 import com.cometchat.pro.core.ConversationsRequest
@@ -23,84 +16,128 @@ import com.cometchat.pro.helpers.CometChatHelper
 import com.cometchat.pro.models.*
 import com.cometchat.pro.uikit.R
 import com.cometchat.pro.uikit.ui_components.chats.CometChatConversationList
-import com.cometchat.pro.uikit.ui_components.chats.CometChatStartConversation
 import com.cometchat.pro.uikit.ui_components.shared.cometchatConversations.CometChatConversation
 import com.cometchat.pro.uikit.ui_resources.utils.ErrorMessagesUtils
 import com.cometchat.pro.uikit.ui_resources.utils.Utils
-import com.cometchat.pro.uikit.ui_resources.utils.item_clickListener.OnItemClickListener
-import com.cometchat.pro.uikit.ui_resources.utils.recycler_touch.RecyclerViewSwipeListener
-import com.cometchat.pro.uikit.ui_settings.FeatureRestriction
 import com.cometchat.pro.uikit.ui_settings.UIKitSettings
 import com.cometchat.pro.uikit.ui_settings.enum.ConversationMode
+import com.softprodigy.ballerapp.databinding.FragmentConversationBinding
 
 @Composable
 fun TeamsChatScreen() {
     val context = LocalContext.current
-    AndroidView(factory = {
-        View.inflate(it, R.layout.fragment_conversation_screen, null)
-    }, modifier = Modifier.fillMaxSize(), update = {
 
-        var rvConversation //Uses to display list of conversations.
-                : CometChatConversation? = null
-        var conversationsRequest //Uses to fetch Conversations.
-                : ConversationsRequest? = null
-        var searchEdit //Uses to perform search operations.
-                : EditText? = null
-        var clearSearch //Use to clear the search operation performed on list.
-                : ImageView? = null
-        var tvTitle: TextView? = null
-//         var conversationShimmer: ShimmerFrameLayout? = null
-        var rlSearchBox: RelativeLayout? = null
-        var noConversationView: LinearLayout? = null
-        var vw: View? = null
-        var conversation: Conversation? = null
-        var conversationList: MutableList<Conversation> = ArrayList()
-        var ivStartConversation: ImageView? = null
+        AndroidViewBinding(FragmentConversationBinding::inflate) {
+            converstion.getFragment<CometChatConversationList>()
+    }
+}
 
+    /*  var conversationsRequest //Uses to fetch Conversations.
+            : ConversationsRequest? = null
 
-        tvTitle = it.findViewById(R.id.tv_title)
-        ivStartConversation =
-            it.findViewById(R.id.iv_start_conversation)
-        rlSearchBox = it.findViewById(R.id.rl_search_box)
-        searchEdit = it.findViewById(R.id.search_bar)
-        clearSearch = it.findViewById(R.id.clear_search)
-        noConversationView =
-            it.findViewById(R.id.no_conversation_view)
-//        conversationShimmer=it.findViewById<LinearLayout>(R.id.shimmer_layout)
-        rvConversation =
-            it.findViewById(R.id.rv_conversation_list)
+    conversationsRequest = ConversationsRequest.ConversationsRequestBuilder()
+        .setConversationType(UIKitSettings.conversationInMode.toString()).setLimit(50).build()
 
-
-        if (!FeatureRestriction.isChatSearchEnabled()) {
-            searchEdit?.visibility = View.GONE
-            clearSearch?.visibility = View.GONE
-        }
-
-        checkDarkMode(context = context, view = it, tvTitle)
-
-        ivStartConversation?.setOnClickListener {
-            val intent = Intent(context, CometChatStartConversation::class.java)
-            context.startActivity(intent)
-        }
-
-        searchEdit?.setOnEditorActionListener(TextView.OnEditorActionListener { textView: TextView, i: Int, keyEvent: KeyEvent? ->
-            if (i == EditorInfo.IME_ACTION_SEARCH) {
-                rvConversation?.searchConversation(textView.text.toString())
-                clearSearch?.visibility = View.VISIBLE
-                return@OnEditorActionListener true
+    conversationsRequest?.fetchNext(object : CometChat.CallbackListener<List<Conversation>>() {
+        override fun onSuccess(conversations: List<Conversation>) {
+            if (conversations.isNotEmpty()) {
+                Log.i("CallbackListener", "onSuccess: $conversations{}")
             }
-            false
-        })
-
-        clearSearch?.setOnClickListener {
-            searchEdit?.setText("")
-            clearSearch.visibility = View.GONE
-            rvConversation?.searchConversation(searchEdit?.text.toString())
-            val inputMethodManager: InputMethodManager =
-                context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            // Hide the soft keyboard
-            inputMethodManager.hideSoftInputFromWindow(searchEdit?.windowToken, 0)
         }
+
+        override fun onError(e: CometChatException) {
+            Log.i("CallbackListener", "onError: ${e.message}")
+        }
+    })*/
+
+
+//}
+
+
+
+/* val context = LocalContext.current
+ AndroidView(factory = {
+     View.inflate(it, R.layout.fragment_conversation_screen, null)
+ }, modifier = Modifier.fillMaxSize(),
+     update = {
+
+
+
+     var rvConversation //Uses to display list of conversations.
+             : CometChatConversation? = null
+     var conversationsRequest //Uses to fetch Conversations.
+             : ConversationsRequest? = null
+     var searchEdit //Uses to perform search operations.
+             : EditText? = null
+     var clearSearch //Use to clear the search operation performed on list.
+             : ImageView? = null
+     var tvTitle: TextView? = null
+//         var conversationShimmer: ShimmerFrameLayout? = null
+     var rlSearchBox: RelativeLayout? = null
+     var noConversationView: LinearLayout? = null
+     var vw: View? = null
+     var conversation: Conversation? = null
+     var conversationList: MutableList<Conversation> = ArrayList()
+     var ivStartConversation: ImageView? = null
+
+
+     tvTitle = it.findViewById(R.id.tv_title)
+     ivStartConversation =
+         it.findViewById(R.id.iv_start_conversation)
+     rlSearchBox = it.findViewById(R.id.rl_search_box)
+     searchEdit = it.findViewById(R.id.search_bar)
+     clearSearch = it.findViewById(R.id.clear_search)
+     noConversationView =
+         it.findViewById(R.id.no_conversation_view)
+//        conversationShimmer=it.findViewById<LinearLayout>(R.id.shimmer_layout)
+     rvConversation =
+         it.findViewById(R.id.rv_conversation_list)
+
+
+     if (!FeatureRestriction.isChatSearchEnabled()) {
+         searchEdit?.visibility = View.GONE
+         clearSearch?.visibility = View.GONE
+     }
+
+     checkDarkMode(context = context, view = it, tvTitle)
+
+     ivStartConversation?.setOnClickListener {
+         val intent = Intent(context, CometChatStartConversation::class.java)
+         context.startActivity(intent)
+     }
+
+     searchEdit?.setOnEditorActionListener(TextView.OnEditorActionListener { textView: TextView, i: Int, keyEvent: KeyEvent? ->
+         if (i == EditorInfo.IME_ACTION_SEARCH) {
+             rvConversation?.searchConversation(textView.text.toString())
+             clearSearch?.visibility = View.VISIBLE
+             return@OnEditorActionListener true
+         }
+         false
+     })
+
+     clearSearch?.setOnClickListener {
+         searchEdit?.setText("")
+         clearSearch.visibility = View.GONE
+         rvConversation?.searchConversation(searchEdit?.text.toString())
+         val inputMethodManager: InputMethodManager =
+             context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+         // Hide the soft keyboard
+         inputMethodManager.hideSoftInputFromWindow(searchEdit?.windowToken, 0)
+     }
+
+  *//*   makeConversationList(
+            context,
+            conversationsRequest,
+            noConversationView,
+            rvConversation,
+            conversationList,
+            onConversationListChange = {
+                conversationList = it
+            },
+            onConversationChange = {
+                conversationsRequest = it
+            }
+        )*//*
 
         // Uses to fetch next list of conversations if rvConversationList (RecyclerView) is scrolled in upward direction.
         rvConversation?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -174,9 +211,9 @@ fun TeamsChatScreen() {
         }
         swipeHelper.attachToRecyclerView(rvConversation)
 
-    })
+    })*/
 
-}
+
 
 private fun deleteConversations(
     conversation: Conversation,

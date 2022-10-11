@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowCompat
+import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -27,6 +28,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
 import com.softprodigy.ballerapp.MainActivity
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
@@ -63,7 +65,7 @@ import com.softprodigy.ballerapp.ui.theme.appColors
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class HomeActivity : ComponentActivity() {
+class HomeActivity : FragmentActivity() {
 
     var dataStoreManager: DataStoreManager = DataStoreManager(this)
 
@@ -72,6 +74,7 @@ class HomeActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, true)
 
+//        startActivity(Intent(this,CometChatUI::class.java))
         setContent {
             val fromSplash = intent.getBooleanExtra(IntentData.FROM_SPLASH, false)
             val homeViewModel: HomeViewModel = hiltViewModel()
