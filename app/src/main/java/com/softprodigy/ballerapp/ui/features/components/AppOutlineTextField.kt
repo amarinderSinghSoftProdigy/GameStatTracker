@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -259,7 +260,7 @@ fun EditProfileFields(
     trailingIcon: @Composable (() -> Unit)? = null,
     placeholder: @Composable (() -> Unit)?=null,
     enabled: Boolean = true,
-
+    fontWeight: FontWeight = FontWeight.W400
     ) {
     val customTextSelectionColors = TextSelectionColors(
         handleColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
@@ -293,7 +294,7 @@ fun EditProfileFields(
                         cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                         disabledBorderColor = Color.Transparent
                     ),
-                    textStyle = TextStyle(textAlign = TextAlign.End,color = ColorBWBlack),
+                    textStyle = TextStyle(textAlign = TextAlign.End,color = ColorBWBlack, fontWeight =fontWeight),
                     singleLine = true,
                     keyboardActions = keyboardActions,
                     keyboardOptions = keyboardOptions,

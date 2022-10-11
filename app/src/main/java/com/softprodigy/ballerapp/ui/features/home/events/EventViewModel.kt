@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
+import com.softprodigy.ballerapp.data.response.Format
+import com.softprodigy.ballerapp.data.response.GenderList
 import com.softprodigy.ballerapp.domain.repository.IEventsRepository
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import com.softprodigy.ballerapp.ui.utils.CommonUtils
@@ -186,6 +188,7 @@ class EventViewModel @Inject constructor(
                 }
             }
             is EvEvents.GetDivisions -> {
+                onEvent(EvEvents.ClearRegister)
                 viewModelScope.launch {
                     getEventDivisions(event.id)
                 }
@@ -348,6 +351,23 @@ class EventViewModel @Inject constructor(
                         selectedStanding = event.standing
                     )
                 )
+            }
+            is EvEvents.GetRefereeFilters -> {
+                getRefereeFilters()
+            }
+
+            is EvEvents.GenderSelected -> {
+                _state.value = _state.value.copy(selectedGender = event.gender)
+            }
+
+            is EvEvents.EventType -> {
+                _state.value = _state.value.copy(selectedEventType = event.eventType)
+
+            }
+
+            is EvEvents.Format -> {
+                _state.value = _state.value.copy(selectedFormat = event.format)
+
             }
         }
     }
@@ -1109,6 +1129,19 @@ class EventViewModel @Inject constructor(
         }
     }
 
+    private fun getRefereeFilters() {
+
+        val gender = arrayListOf(GenderList("Male"), GenderList("Female"))
+        val eventType = arrayListOf(
+            com.softprodigy.ballerapp.data.response.EventType("League"),
+            com.softprodigy.ballerapp.data.response.EventType("Clinic"),
+            com.softprodigy.ballerapp.data.response.EventType("Camp")
+        )
+        val format = arrayListOf(Format("Indivisual"), Format("Team"))
+
+        _state.value =
+            _state.value.copy(genderList = gender, eventType = eventType, formatList = format)
+    }
 
 }
 

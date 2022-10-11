@@ -88,6 +88,7 @@
     <string name="last_name">Last Name</string>
     <string name="phone_num">Phone Number</string>
     <string name="valid_first_name">Please enter the valid first-name</string>
+    <string name="valid_event_name">Please enter the valid event name</string>
     <string name="valid_last_name">Please enter the valid last-name</string>
     <string name="valid_phone_number">Please enter a valid phone number</string>
     <string name="valid_image">Please select an image</string>
@@ -373,6 +374,7 @@
     <string name="player_requirements">Player Requirements</string>
     <string name="swap_profiles">Swap Profiles</string>
     <string name="add_new_profile">Add New Profile</string>
+    <string name="add_profile">Add Profile</string>
     <string name="user_type">User Type</string>
     <string name="procced">Proceed</string>
     <string name="read_the_note">Read the note</string>
@@ -395,7 +397,27 @@
     <string name="add_pre_note">Add Pre-practice prep &amp; agenda note</string>
     <string name="add_post_note">Add Post-practice note</string>
     <string name="no_players_change_selection">No players in selected team, Please try with other team</string>
+    <string name="my_shifts">My Shifts</string>
     <string name="select_address">Select Address</string>
+    <string name="register_as">Register as</string>
+    <string name="pay">Pay</string>
+    <string name="mailing_address">Mailing Address</string>
+    <string name="total_games">Total Games</string>
+    <string name="total_hoop_games">Total Hoops Games</string>
+    <string name="rating">Rating</string>
+    <string name="team_age_preference">Team Age Preference</string>
+    <string name="prefered_partner">Preferred Partner</string>
+    <string name="refereeing_experience">Refereeing Experience</string>
+    <string name="about_exp">About Experience</string>
+    <string name="years">Years</string>
+    <string name="age_range">Age Range</string>
+    <string name="select_partner">Select Partner</string>
+    <string name="referee_only_with_this_partner">Referee only with this partner</string>
+    <string name="save_changes">Save Changes</string>
     <string name="select_venue">Select Venue</string>
-
+    <string name="pay_stats">Pay Stats</string>
+    <string name="selectDates">Select dates you\'re not available</string>
+    <string name="update">Update Dates</string>
+    <string name="unavailable_dates">Unavailable Dates</string>
+    <string name="settings">Settings</string>
 </resources>

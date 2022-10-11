@@ -4,10 +4,7 @@ import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.data.request.LoginRequest
 import com.softprodigy.ballerapp.data.request.SignUpData
 import com.softprodigy.ballerapp.data.request.UpdateUserDetailsReq
-import com.softprodigy.ballerapp.data.response.SwapUser
-import com.softprodigy.ballerapp.data.response.User
-import com.softprodigy.ballerapp.data.response.UserDocType
-import com.softprodigy.ballerapp.data.response.UserInfo
+import com.softprodigy.ballerapp.data.response.*
 import com.softprodigy.ballerapp.domain.BaseResponse
 import javax.inject.Singleton
 
@@ -45,5 +42,7 @@ interface IUserRepository {
     suspend fun getSwapProfiles(): ResultWrapper<BaseResponse<List<SwapUser>>>
 
     suspend fun updateProfileToken(userId: String): ResultWrapper<BaseResponse<String>>
+
+    suspend fun addProfile(request: AddProfileRequest): ResultWrapper<BaseResponse<Any>>
 
 }

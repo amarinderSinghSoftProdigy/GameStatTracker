@@ -480,17 +480,21 @@ fun TeamListItem(team: Team, selected: Boolean, onClick: (Team) -> Unit) {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun UserListItem(user: SwapUser, onClick: () -> Unit) {
-    val selected = remember {
-        mutableStateOf(user._Id == UserStorage.userId)
-    }
+fun UserListItem(user: SwapUser, selected: Boolean, onClick: (String) -> Unit) {
+    /* val selected = remember {
+         mutableStateOf(selected)
+     }*/
 
     Surface(
-        onClick = { onClick() },
+        onClick = {
+            onClick(user._Id)
+        },
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_10dp)),
-        elevation = if (selected.value) dimensionResource(id = R.dimen.size_10dp) else 0.dp,
-        color = if (selected.value) MaterialTheme.appColors.material.primaryVariant else Color.Transparent,
-        modifier = Modifier.fillMaxWidth()
+        elevation = if (selected) dimensionResource(id = R.dimen.size_10dp) else 0.dp,
+        color = if (selected) MaterialTheme.appColors.material.primaryVariant else Color.Transparent,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = dimensionResource(id = R.dimen.size_16dp))
     ) {
         Row(
             modifier = Modifier
@@ -522,7 +526,7 @@ fun UserListItem(user: SwapUser, onClick: () -> Unit) {
                 fontWeight = FontWeight.W500,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                 modifier = Modifier.weight(1f),
-                color = if (selected.value) {
+                color = if (selected) {
                     MaterialTheme.appColors.buttonColor.textEnabled
                 } else {
                     MaterialTheme.appColors.buttonColor.bckgroundEnabled
@@ -1190,7 +1194,7 @@ fun SwitchTeamDialog(
     onConfirmClick: (teams: Team) -> Unit,
     title: String,
     teams: ArrayList<Team>,
-    teamSelect: Team,
+    teamSelect: Team?,
 ) {
     val teamSelected = remember {
         mutableStateOf(teamSelect)
@@ -1244,7 +1248,7 @@ fun SwitchTeamDialog(
                                 modifier = Modifier
                                     .padding(bottom = dimensionResource(id = R.dimen.size_8dp))
                                     .background(
-                                        color = if (teamSelected.value._id == team._id) MaterialTheme.appColors.material.primary else Color.White,
+                                        color = if (teamSelected.value?._id == team._id) MaterialTheme.appColors.material.primary else Color.White,
                                         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
                                     )
                             ) {
@@ -1273,7 +1277,7 @@ fun SwitchTeamDialog(
                                         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                                         fontWeight = FontWeight.W500,
                                     )
-                                    CustomCheckBox(team._id == teamSelected.value._id) {
+                                    CustomCheckBox(team._id == teamSelected.value?._id) {
                                         teamSelected.value = team
                                     }
                                 }
@@ -1302,7 +1306,8 @@ fun SwitchTeamDialog(
                         DialogButton(
                             text = stringResource(R.string.dialog_button_confirm),
                             onClick = {
-                                onConfirmClick.invoke(teamSelected.value)
+                                teamSelected.value?.let { onConfirmClick.invoke(it) }
+//                                onConfirmClick.invoke(teamSelected.value)
                                 onDismiss.invoke()
                             },
                             modifier = Modifier
@@ -1762,11 +1767,14 @@ fun SwapProfile(
                             }
                         }
                         item {
-                            users.forEach {
+                            users.forEach { item ->
                                 UserListItem(
-                                    user = it,
+                                    user = item,
+                                    selectedUser.value._Id == item._Id
                                 ) {
-                                    selectedUser.value = it
+                                    if (selectedUser.value._Id != it) {
+                                        selectedUser.value = item
+                                    }
                                 }
                             }
                         }
@@ -2076,7 +2084,7 @@ fun AddNoteDialog(
                         singleLine = true,
                         placeholder = {
                             Text(
-                                text = stringResource(id = R.string.reason_not_going),
+                                text = stringResource(id = R.string.add_note),
                                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                 textAlign = TextAlign.Start
                             )

@@ -12,6 +12,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
@@ -22,6 +23,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -30,6 +32,8 @@ import com.google.accompanist.flowlayout.FlowRow
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.apiToUIDateFormat2
+import com.softprodigy.ballerapp.data.UserStorage
+import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.response.TeamDetails
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.profile.ProfileChannel
@@ -50,9 +54,12 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp / 2
     val width = screenWidth.minus(dimensionResource(id = R.dimen.size_16dp).times(2))
+    val dataStoreManager = DataStoreManager(LocalContext.current)
+    val role = dataStoreManager.getRole.collectAsState(initial = "")
 
     remember {
-        vm.onEvent(ProfileEvent.GetProfile)
+        if (!UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true))
+            vm.onEvent(ProfileEvent.GetProfile)
     }
     LaunchedEffect(key1 = Unit) {
         vm.channel.collect { uiEvent ->
@@ -163,10 +170,11 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
                 }
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-            ProfileItem(
-                stringResource(id = R.string.birthday),
-                apiToUIDateFormat2(state.user.birthdate)
-            )
+            if (state.user.birthdate != null)
+                ProfileItem(
+                    stringResource(id = R.string.birthday),
+                    apiToUIDateFormat2(state.user.birthdate)
+                )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
             ProfileItem(stringResource(id = R.string.classof), state.user.userDetails.classOf)
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
@@ -260,10 +268,6 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_80dp)))
         }
-
-        if (state.isLoading) {
-            CommonProgressBar()
-        }
     }
 
     if (state.showParentDialog) {
@@ -281,10 +285,12 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
             parentDetails = state.selectedParentDetails
         )
     }
+
+
 }
 
 @Composable
-fun ProfileItem(type: String, value: String) {
+fun ProfileItem(type: String, value: String, imageUrl: String? = null) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -294,6 +300,7 @@ fun ProfileItem(type: String, value: String) {
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
             AppText(
@@ -301,11 +308,29 @@ fun ProfileItem(type: String, value: String) {
                 style = MaterialTheme.typography.h6,
                 color = ColorBWBlack
             )
-            AppText(
-                text = value,
-                style = MaterialTheme.typography.h5,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
-            )
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                AppText(
+                    text = value,
+                    style = MaterialTheme.typography.h5,
+                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                )
+                if (imageUrl != null) {
+                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+                    CoilImage(
+                        src = BuildConfig.IMAGE_SERVER + imageUrl,
+                        modifier = Modifier
+                            .size(dimensionResource(id = R.dimen.size_24dp))
+                            .clip(CircleShape),
+                        isCrossFadeEnabled = false,
+                        onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
+                        onError = { Placeholder(R.drawable.ic_user_profile_icon) }
+                    )
+                }
+            }
         }
     }
 }
@@ -366,7 +391,8 @@ fun RowScope.DetailItem(heading: String, value: String) {
         AppText(
             text = heading,
             style = MaterialTheme.typography.h4,
-            color = ColorBWGrayLight
+            color = ColorBWGrayLight,
+            fontWeight = FontWeight.W500
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
         AppText(
@@ -387,31 +413,32 @@ fun TeamList(teams: SnapshotStateList<TeamDetails>) {
             .padding(all = dimensionResource(id = R.dimen.size_16dp)),
     ) {
 
-        Column(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+        ) {
             AppText(
-                text = stringResource(id = R.string.teams_label),
+                text = stringResource(id = R.string.teams),
                 style = MaterialTheme.typography.h6,
                 color = ColorBWBlack,
                 fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp
             )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_14dp)))
             teams.forEach { team ->
                 Column(
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Row() {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         CoilImage(
                             src = BuildConfig.IMAGE_SERVER + team.teamId.logo,
                             modifier = Modifier
-                                .size(dimensionResource(id = R.dimen.size_40dp))
+                                .size(dimensionResource(id = R.dimen.size_44dp))
                                 .clip(CircleShape),
                             isCrossFadeEnabled = false,
                             onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
                             onError = { Placeholder(R.drawable.ic_team_placeholder) }
                         )
-                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
-                        Column(
-                            modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_10dp)),
-                        ) {
+                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+                        Column {
                             AppText(
                                 text = team.teamId.name,
                                 style = MaterialTheme.typography.h5,
@@ -426,7 +453,7 @@ fun TeamList(teams: SnapshotStateList<TeamDetails>) {
 
                         }
                     }
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_5dp)))
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
                 }
             }
         }

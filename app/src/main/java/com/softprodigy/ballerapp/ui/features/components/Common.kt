@@ -45,6 +45,7 @@ import com.softprodigy.ballerapp.ui.features.venue.Location
 import com.softprodigy.ballerapp.ui.theme.ButtonColor
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
 import com.softprodigy.ballerapp.ui.theme.appColors
+import com.softprodigy.ballerapp.ui.utils.CommonUtils
 
 @Composable
 fun stringResourceByName(name: String): String {
@@ -321,48 +322,42 @@ data class TopBarData(
 )
 
 enum class TopBar(val stringId: String, val back: Boolean) {
-    PROFILE(stringId = "profile_label", back = true), EDIT_PROFILE(
-        stringId = "edit_profile",
-        back = true
-    ),
-    MY_EVENT(stringId = "events_label", back = false), EVENT_DETAILS(
-        stringId = "",
-        back = true
-    ),
-    FILTER_EVENT(stringId = "filter_events", back = true), GAME_DETAILS(
-        stringId = "",
-        back = true
-    ),
-    EVENT_LEAGUES(
-        stringId = "events_label",
-        back = false
-    ),
-    REGISTRATION_FORM(stringId = "registration_form", back = true), TEAMS(
-        stringId = "teams_label",
-        back = false
-    ),
-    EVENT_OPPORTUNITIES(stringId = "events_label", back = false), MANAGE_TEAM(
-        stringId = "",
-        back = true
-    ),
-    SINGLE_LABEL_BACK(stringId = "", back = true), SINGLE_LABEL(stringId = "", back = false), EMPTY(
-        stringId = "",
-        back = false
-    ),
-    NEW_EVENT(stringId = "", back = true), MY_LEAGUE(stringId = "", back = true), GAME_RULES(
-        stringId = "",
-        back = true
-    ),
-    CREATE_TEAM(
-        stringId = "create_a_team",
-        back = true
-    ),
-    INVITE_TEAM_MEMBERS(stringId = "invite_team_member", back = true), OPEN_VENUE(
-        stringId = "",
-        back = true
-    ),
-    DIVISION_TAB(stringId = "", back = true), TEAM_TAB(stringId = "", back = true)
+    PROFILE(stringId = "profile_label", back = true),
+    EDIT_PROFILE(stringId = "edit_profile", back = true),
+    MY_EVENT(stringId = "events_label", back = false),
+    EVENT_DETAILS(stringId = "", back = true),
+    FILTER_EVENT(stringId = "filter_events", back = true),
+    GAME_DETAILS(stringId = "", back = true),
+    EVENT_LEAGUES(stringId = "events_label", back = false),
+    REGISTRATION_FORM(stringId = "registration_form", back = true),
+    TEAMS(stringId = "teams_label", back = false),
+    EVENT_OPPORTUNITIES(stringId = "events_label", back = false),
+    MANAGE_TEAM(stringId = "", back = true),
+    SINGLE_LABEL_BACK(stringId = "", back = true),
+    SINGLE_LABEL(stringId = "", back = false),
+    EMPTY(stringId = "", back = false),
+    NEW_EVENT(stringId = "", back = true),
+    MY_LEAGUE(stringId = "", back = true),
+    GAME_RULES(stringId = "", back = true),
+    CREATE_TEAM(stringId = "create_a_team", back = true),
+    INVITE_TEAM_MEMBERS(stringId = "invite_team_member", back = true),
+    OPEN_VENUE(stringId = "", back = true),
+    DIVISION_TAB(stringId = "", back = true),
+    TEAM_TAB(stringId = "", back = true)
 }
+
+fun getRoleList(): List<UserType> {
+    return listOf(
+        UserType.PLAYER,
+        UserType.COACH,
+        UserType.PARENT,
+        UserType.GAME_STAFF,
+        UserType.PROGRAM_STAFF,
+        UserType.FAN,
+        UserType.REFEREE
+    )
+}
+
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -574,6 +569,7 @@ private fun animateAlignmentAsState(
 
 @Composable
 fun LocationBlock(location: Location, padding: Dp = dimensionResource(id = R.dimen.size_16dp)) {
+    val context = LocalContext.current
     Column(
         Modifier.padding(horizontal = padding)
     ) {
@@ -602,9 +598,11 @@ fun LocationBlock(location: Location, padding: Dp = dimensionResource(id = R.dim
             TransparentButtonButton(
                 modifier = Modifier.weight(1F),
                 text = stringResource(id = R.string.navigate),
-                onClick = {},
+                onClick = {
+                    CommonUtils.openMaps(context, location.latLong)
+                },
                 icon = painterResource(id = R.drawable.ic_nav),
-                enabled = false,
+                enabled = true,
             )
         }
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))

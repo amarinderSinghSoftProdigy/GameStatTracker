@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.android.gms.maps.model.LatLng
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.apiToUIDateFormat2
@@ -188,6 +189,7 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
                     state.event.address.street,
                     state.event.address.city,
                     state.event.address.zip,
+                    latLong = LatLng(state.event.address.lat, state.event.address.long)
                 ),
                 padding = 0.dp
             )

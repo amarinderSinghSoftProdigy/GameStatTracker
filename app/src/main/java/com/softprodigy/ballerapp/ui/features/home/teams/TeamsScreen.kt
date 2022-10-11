@@ -9,6 +9,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -21,11 +22,7 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.response.team.Team
-import com.softprodigy.ballerapp.ui.features.components.AppScrollableTabRow
-import com.softprodigy.ballerapp.ui.features.components.AppTabLikeViewPager
-import com.softprodigy.ballerapp.ui.features.components.SelectTeamDialog
-import com.softprodigy.ballerapp.ui.features.components.UserType
-import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.chat.TeamsChatScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.leaderboard.LeaderBoardScreen
@@ -42,7 +39,7 @@ fun TeamsScreen(
     showDialog: Boolean,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
     dismissDialog: (Boolean) -> Unit,
-    OnTeamDetailsSuccess: (String,String) -> Unit,
+    OnTeamDetailsSuccess: (String, String) -> Unit,
     onCreateTeamClick: (Team?) -> Unit,
     onBackPress: () -> Unit
 ) {
@@ -58,7 +55,9 @@ fun TeamsScreen(
 
     remember {
         scope.launch {
-            vm.getTeams()
+            if (role.value != UserType.REFEREE.key) {
+                vm.getTeams()
+            }
         }
     }
 
@@ -88,17 +87,23 @@ fun TeamsScreen(
                     ).show()
                 }
                 is TeamChannel.OnTeamDetailsSuccess -> {
-                    OnTeamDetailsSuccess.invoke(uiEvent.teamId,uiEvent.teamName)
+                    OnTeamDetailsSuccess.invoke(uiEvent.teamId, uiEvent.teamName)
                 }
             }
         }
     }
-    val tabData = listOf(
-        TeamsTabItems.Standings,
-        TeamsTabItems.Chat,
-        TeamsTabItems.Roaster,
-        TeamsTabItems.Leaderboard,
-    )
+
+    val tabData = if (role.value == UserType.REFEREE.key) {
+        listOf(TeamsTabItems.Chat)
+    } else {
+        listOf(
+            TeamsTabItems.Standings,
+            TeamsTabItems.Chat,
+            TeamsTabItems.Roaster,
+            TeamsTabItems.Leaderboard,
+        )
+    }
+
 
     val pagerState = rememberPagerState(
         pageCount = tabData.size,
@@ -106,8 +111,13 @@ fun TeamsScreen(
     )
 
     Column {
-        TeamsTopTabs(pagerState = pagerState, tabData = tabData)
-        TeamsContent(pagerState = pagerState, vm)
+        if (role.value != UserType.REFEREE.key) {
+            TeamsTopTabs(pagerState = pagerState, tabData = tabData)
+            TeamsContent(pagerState = pagerState, vm)
+        } else {
+            RefereeTeamsTopTabs(pagerState = pagerState, tabData = tabData)
+            EmptyScreen(singleText = true, heading = stringResource(id = R.string.coming_soon))
+        }
     }
 
 
@@ -116,10 +126,10 @@ fun TeamsScreen(
             SelectTeamDialog(
                 teams = vm.teamUiState.value.teams,
                 onDismiss = { dismissDialog.invoke(false) },
-                onConfirmClick = {teamId,teamName ->
+                onConfirmClick = { teamId, teamName ->
                     if (UserStorage.teamId != teamId) {
                         onTeamSelectionConfirmed(state.selectedTeam)
-                        vm.onEvent(TeamUIEvent.OnConfirmTeamClick(teamId,teamName))
+                        vm.onEvent(TeamUIEvent.OnConfirmTeamClick(teamId, teamName))
                     }
                 },
                 onSelectionChange = onTeamSelectionChange,
@@ -129,7 +139,6 @@ fun TeamsScreen(
                 showCreateTeamButton = role.value.equals(UserType.COACH.key, ignoreCase = true)
             )
         }
-
     }
     /* if (state.isLoading) {
          CommonProgressBar()
@@ -155,9 +164,12 @@ fun TeamsContent(pagerState: PagerState, viewModel: TeamViewModel) {
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun TeamsTopTabs(pagerState: PagerState, tabData: List<TeamsTabItems>) {
+
     val coroutineScope = rememberCoroutineScope()
+
     AppScrollableTabRow(
-        pagerState = pagerState, tabs = {
+        pagerState = pagerState,
+        tabs = {
             tabData.forEachIndexed { index, item ->
                 AppTabLikeViewPager(
                     title = item.stringId,
@@ -170,7 +182,30 @@ fun TeamsTopTabs(pagerState: PagerState, tabData: List<TeamsTabItems>) {
                     }
                 )
             }
-        })
+        },
+    )
+}
+
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+fun RefereeTeamsTopTabs(pagerState: PagerState, tabData: List<TeamsTabItems>) {
+
+    val coroutineScope = rememberCoroutineScope()
+
+    tabData.forEachIndexed { index, item ->
+        AppSingleTabLikeViewPager(
+            modifier = Modifier,
+            title = item.stringId,
+            painter = painterResource(id = item.icon),
+            selected = pagerState.currentPage == index,
+            onClick = {
+                coroutineScope.launch {
+                    pagerState.animateScrollToPage(index)
+                }
+            }
+        )
+    }
+
 }
 
 enum class TeamsTabItems(val icon: Int, val stringId: String) {

@@ -234,10 +234,18 @@ open interface APIService {
         @Query("id") venueId: String,
     ): BaseResponse<VenueDetails>
 
+    @GET(ApiConstants.GET_VENUE_DETAILS_BY_ID)
+    suspend fun getEventSchedule(
+        @Query("eventId") eventId: String,
+    ): BaseResponse<Any>
+
     @GET(ApiConstants.SWAP_PROFILE)
     suspend fun getSwapProfiles(): BaseResponse<List<SwapUser>>
 
     @GET(ApiConstants.SWAP_TOKEN)
     suspend fun updateProfileToken(@Query("userId") userId: String): BaseResponse<String>
+
+    @POST(ApiConstants.ADD_PROFILE)
+    suspend fun addProfile(@Body request: AddProfileRequest): BaseResponse<Any>
 
 }

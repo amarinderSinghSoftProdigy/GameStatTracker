@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.data.UserStorage
+import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
@@ -156,11 +158,29 @@ fun CoachFlowBackground(
                                 }
                                 Divider(thickness = dimensionResource(id = R.dimen.divider))
                                 OptionItem(
+                                    stringResource(id = R.string.settings),
+                                    R.drawable.ic_settings
+                                ) {
+                                    showOptions.value = false
+                                    //click(Options.SWAP_PROFILES)
+                                }
+                                Divider(thickness = dimensionResource(id = R.dimen.divider))
+                                OptionItem(
                                     stringResource(id = R.string.swap_profiles),
                                     R.drawable.ic_swap
                                 ) {
                                     showOptions.value = false
                                     click(Options.SWAP_PROFILES)
+                                }
+                                if (UserStorage.role == UserType.COACH.key) {
+                                    Divider(thickness = dimensionResource(id = R.dimen.divider))
+                                    OptionItem(
+                                        stringResource(id = R.string.invite),
+                                        R.drawable.ic_invite
+                                    ) {
+                                        showOptions.value = false
+                                        click(Options.INVITE)
+                                    }
                                 }
                                 Divider(thickness = dimensionResource(id = R.dimen.divider))
                                 OptionItem(
@@ -186,7 +206,8 @@ fun OptionItem(label: String, resource: Int, click: () -> Unit) {
         modifier = Modifier
             .padding(all = dimensionResource(id = R.dimen.size_16dp))
             .clickable { click() }) {
-        Image(
+        Icon(
+            tint = ColorGreyLighter,
             painter = painterResource(id = resource),
             contentDescription = "",
         )
@@ -275,7 +296,9 @@ fun BottomButtons(
 
 enum class Options {
     PROFILE,
+    SETTINGS,
     SWAP_PROFILES,
+    INVITE,
     LOGOUT,
     //Add options on the Profile dropwodn.
 }

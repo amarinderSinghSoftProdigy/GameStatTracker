@@ -2,7 +2,6 @@ package com.softprodigy.ballerapp.ui.features.sign_up
 
 import android.app.Application
 import android.net.Uri
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
@@ -16,6 +15,7 @@ import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.LoginRequest
 import com.softprodigy.ballerapp.data.request.SignUpData
+import com.softprodigy.ballerapp.data.response.AddProfileRequest
 import com.softprodigy.ballerapp.data.response.UserInfo
 import com.softprodigy.ballerapp.domain.repository.IImageUploadRepo
 import com.softprodigy.ballerapp.domain.repository.IUserRepository
@@ -43,7 +43,11 @@ class SignUpViewModel @Inject constructor(
 
     fun onEvent(event: SignUpUIEvent) {
         when (event) {
-
+            is SignUpUIEvent.OnAddProfileClicked -> {
+                viewModelScope.launch {
+                    imageUpload()
+                }
+            }
             is SignUpUIEvent.OnFirstNameChanged -> {
                 _signUpUiState.value =
                     _signUpUiState.value.copy(
@@ -90,17 +94,12 @@ class SignUpViewModel @Inject constructor(
             }
 
             is SignUpUIEvent.OnImageUploadSuccess -> {
-                /*  if (_signUpUiState.value.signUpData.token == null) {
-                      viewModelScope.launch {
-                          signUp()
-                      }
-                  } else {
-                      viewModelScope.launch {
-                          updateUserProfile()
-                      }
-                  }*/
                 viewModelScope.launch {
-                    updateUserProfile()
+                    if (event.fromNewProfile) {
+                        addProfile()
+                    } else {
+                        updateUserProfile()
+                    }
                 }
             }
 
@@ -417,6 +416,69 @@ class SignUpViewModel @Inject constructor(
                         )
                     )
                 }
+            }
+        }
+    }
+
+    private suspend fun addProfile() {
+        _signUpUiState.value = _signUpUiState.value.copy(isLoading = true)
+        val request = AddProfileRequest(
+            firstName = _signUpUiState.value.signUpData.firstName,
+            lastName = _signUpUiState.value.signUpData.lastName,
+            profileImage = _signUpUiState.value.signUpData.profileImage,
+            city = _signUpUiState.value.signUpData.address,
+            state = _signUpUiState.value.signUpData.address,
+            zip = _signUpUiState.value.signUpData.address,
+            address = _signUpUiState.value.signUpData.address,
+            gender = _signUpUiState.value.signUpData.gender,
+            birthdate = _signUpUiState.value.signUpData.birthdate,
+            role = _signUpUiState.value.signUpData.role
+        )
+        val response = IUserRepository.addProfile(request)
+        when (response) {
+            is ResultWrapper.Success -> {
+                response.value.let { response ->
+                    if (response.status) {
+                        _signUpUiState.value = _signUpUiState.value.copy(
+                            isLoading = false,
+                            errorMessage = null,
+                            successMessage = response.statusMessage
+                        )
+                        _signUpChannel.send(
+                            SignUpChannel.OnProfileUpdateSuccess(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    } else {
+                        _signUpUiState.value = _signUpUiState.value.copy(
+                            errorMessage = response.statusMessage,
+                            isLoading = false
+                        )
+                    }
+                }
+            }
+            is ResultWrapper.GenericError -> {
+                _signUpUiState.value = _signUpUiState.value.copy(
+                    isLoading = false,
+                    errorMessage = "${response.message}"
+                )
+                _signUpChannel.send(SignUpChannel.ShowToast(UiText.DynamicString("${response.message}")))
+            }
+            is ResultWrapper.NetworkError -> {
+                _signUpUiState.value =
+                    _signUpUiState.value.copy(
+                        errorMessage = response.message,
+                        isLoading = false
+                    )
+                _signUpChannel.send(
+                    SignUpChannel.ShowToast(
+                        UiText.DynamicString(
+                            response.message
+                        )
+                    )
+                )
             }
         }
     }

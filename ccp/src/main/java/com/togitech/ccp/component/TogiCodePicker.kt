@@ -62,7 +62,7 @@ class TogiCodePicker {
 
         Column(
             modifier = Modifier
-                .padding(padding)
+                .padding(vertical = padding)
                 .clickable(
                     interactionSource = interactionSource,
                     indication = null
@@ -73,7 +73,7 @@ class TogiCodePicker {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    modifier = modifier.width(34.dp),
+                    modifier = modifier.width(24.dp),
                     painter = painterResource(
                         id = getFlags(
                             isPickCountry.countryCode

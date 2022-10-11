@@ -42,6 +42,7 @@ import com.softprodigy.ballerapp.ui.features.home.events.division.divisionTab.Di
 import com.softprodigy.ballerapp.ui.features.home.events.game.GameDetailsScreen
 import com.softprodigy.ballerapp.ui.features.home.events.game.GameRuleScreen
 import com.softprodigy.ballerapp.ui.features.home.events.new_event.NewEventScreen
+import com.softprodigy.ballerapp.ui.features.home.events.opportunities.EventRefereeRegistrationScreen
 import com.softprodigy.ballerapp.ui.features.home.events.opportunities.EventRegisterSuccessScreen
 import com.softprodigy.ballerapp.ui.features.home.events.opportunities.EventRegistraionDetails
 import com.softprodigy.ballerapp.ui.features.home.events.opportunities.OppEventDetails
@@ -53,8 +54,10 @@ import com.softprodigy.ballerapp.ui.features.home.manage_team.MainManageTeamScre
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
+import com.softprodigy.ballerapp.ui.features.profile.AddProfileScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileEditScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileScreen
+import com.softprodigy.ballerapp.ui.features.profile.RefereeEditScreen
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.AddPlayersScreenUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupScreenUpdated
@@ -82,8 +85,9 @@ class HomeActivity : FragmentActivity() {
             val eventViewModel: EventViewModel = hiltViewModel()
             val state = homeViewModel.state.value
             dataStoreManager = DataStoreManager(LocalContext.current)
-            val userToken = dataStoreManager.userToken.collectAsState(initial = "")
-            UserStorage.token = userToken.value
+            /* val userToken = dataStoreManager.userToken.collectAsState(initial = "")
+             UserStorage.token = userToken.value
+             */
             val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
             val teamId = dataStoreManager.getId.collectAsState(initial = "")
             val teamName = dataStoreManager.getTeamName.collectAsState(initial = "")
@@ -195,13 +199,13 @@ class HomeActivity : FragmentActivity() {
                             moveToLogin(this)
                         })
                 }
-                if (state.showAddProfile) {
+                /*if (state.showAddProfile) {
                     AddPlayer(
                         onDismiss = { homeViewModel.setAddProfile(false) },
                         onConfirmClick = {
                         },
                     )
-                }
+                }*/
             }
         }
     }
@@ -223,6 +227,8 @@ fun NavControllerComposable(
 ) {
     val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = hiltViewModel()
     var eventTitle by rememberSaveable { mutableStateOf("") }
+    val dataStoreManager = DataStoreManager(LocalContext.current)
+    val role = dataStoreManager.getRole.collectAsState(initial = "")
     NavHost(navController, startDestination = Route.HOME_SCREEN) {
         composable(route = Route.HOME_SCREEN) {
             homeViewModel.setTopAppBar(false)
@@ -231,21 +237,27 @@ fun NavControllerComposable(
                 onInvitationCLick = {
                     navController.navigate(Route.INVITATION_SCREEN)
                 },
+                addProfileClick = {
+                    navController.navigate(Route.ADD_PROFILE_SCREEN)
+                },
                 logoClick = {
                     homeViewModel.setLogoutDialog(true)
                 },
                 onTeamNameClick = { homeViewModel.setDialog(true) },
-                vm = homeViewModel, gotToProfile = {
+                vm = homeViewModel,
+                gotToProfile = {
                     navController.navigate(Route.PROFILE_SCREEN)
                 },
                 teamVm = teamViewModel,
                 OnTeamDetailsSuccess = { teamId, teamName ->
                     UserStorage.teamId = teamId
                     UserStorage.teamName = teamName
-                }, showDialog = showDialog,
+                },
+                showDialog = showDialog,
                 dismissDialog = {
                     homeViewModel.setDialog(it)
-                }, onCreateTeamClick = {
+                },
+                onCreateTeamClick = {
                     navController.navigate(Route.TEAM_SETUP_SCREEN) {
 //                        navController.popBackStack()
                         setupTeamViewModelUpdated.onEvent(
@@ -256,7 +268,15 @@ fun NavControllerComposable(
                             )
                         )
                     }
-                }, setupTeamViewModelUpdated = setupTeamViewModelUpdated
+                },
+                onInviteClick = {
+                    setColorUpdate(
+                        setupTeamViewModelUpdated,
+                        teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
+                    )
+                    navController.navigate(Route.ADD_PLAYER_SCREEN + "/${UserStorage.teamId}")
+                },
+                setupTeamViewModelUpdated = setupTeamViewModelUpdated
             )
             /* else {
                  HomeFirstTimeLoginScreen(onCreateTeamClick = {
@@ -272,18 +292,39 @@ fun NavControllerComposable(
             )
             ProfileScreen()
         }
+
+        composable(route = Route.ADD_PROFILE_SCREEN) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = stringResource(id = R.string.add_new_profile),
+                    topBar = TopBar.SINGLE_LABEL_BACK,
+                )
+            )
+            AddProfileScreen(onSuccess = {
+                navController.popBackStack()
+            })
+        }
         composable(route = Route.PROFILE_EDIT_SCREEN) {
             homeViewModel.setTopBar(
                 TopBarData(
                     topBar = TopBar.EDIT_PROFILE,
                 )
             )
-            ProfileEditScreen(
-                onBackClick = { navController.popBackStack() },
-                onUpdateSuccess = {
+
+            if (role.value == UserType.REFEREE.key) {
+                RefereeEditScreen(onBackClick = { navController.popBackStack() }) {
                     navController.popBackStack()
                 }
-            )
+            } else {
+                ProfileEditScreen(
+                    onBackClick = { navController.popBackStack() },
+                    onUpdateSuccess = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+
         }
         composable(route = Route.TEAMS_SCREEN) {
             homeViewModel.setTopBar(
@@ -344,7 +385,11 @@ fun NavControllerComposable(
                     navController.navigate(Route.GAME_DETAIL_SCREEN)
                 },
                 moveToOppDetails = {
-                    if (UserStorage.role.equals(UserType.COACH.key, ignoreCase = true)) {
+                    if (UserStorage.role.equals(
+                            UserType.COACH.key,
+                            ignoreCase = true
+                        ) || UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)
+                    ) {
                         eventTitle = it
                         navController.navigate(Route.OPP_DETAIL_SCREEN)
                     }
@@ -384,9 +429,19 @@ fun NavControllerComposable(
                     topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
-            EventRegistraionDetails(eventViewModel, teamViewModel) {
-                navController.navigate(Route.EVENT_REGISTRATION_SUCCESS)
+
+            if (role.value == UserType.REFEREE.key) {
+
+                EventRefereeRegistrationScreen(vm = eventViewModel) {
+                    navController.navigate(Route.EVENT_REGISTRATION_SUCCESS)
+                }
+
+            } else {
+                EventRegistraionDetails(eventViewModel, teamViewModel) {
+                    navController.navigate(Route.EVENT_REGISTRATION_SUCCESS)
+                }
             }
+
         }
 
         composable(route = Route.EVENT_REGISTRATION_SUCCESS) {
@@ -434,9 +489,14 @@ fun NavControllerComposable(
                     topBar = TopBar.FILTER_EVENT,
                 )
             )
-            FilterScreen(eventViewModel) {
-                navController.popBackStack()
-            }
+            if (role.value == UserType.REFEREE.key)
+                RefereeFiltersScreen(eventViewModel) {
+                    navController.popBackStack()
+                }
+            else
+                FilterScreen(eventViewModel) {
+                    navController.popBackStack()
+                }
         }
         composable(
             route = Route.EVENTS_DETAIL_SCREEN + "/{eventId}",
@@ -461,14 +521,19 @@ fun NavControllerComposable(
             )
             GameRuleScreen(eventViewModel)
         }
-        composable(route = Route.MANAGED_TEAM_SCREEN) {
+        composable(route = Route.MANAGED_TEAM_SCREEN) { backStackEntry ->
+
+            // get data passed back from next stack
+            val venue: String = backStackEntry
+                .savedStateHandle.get<String>("venue") ?: ""
+
             homeViewModel.setTopBar(
                 TopBarData(
                     label = stringResource(id = R.string.manage_team),
                     topBar = TopBar.MANAGE_TEAM,
                 )
             )
-            MainManageTeamScreen(teamViewModel, onSuccess = {
+            MainManageTeamScreen(vm = teamViewModel, onSuccess = {
                 navController.popBackStack()
             }, onAddPlayerCLick = {
                 setColorUpdate(
@@ -476,22 +541,24 @@ fun NavControllerComposable(
                     teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
                 )
                 navController.navigate(Route.ADD_PLAYER_SCREEN + "/${UserStorage.teamId}")
+            }, venue = venue, onVenueClick = {
+                navController.navigate(Route.SELECT_VENUE)
             })
         }
 
 
         composable(route = Route.ADD_PLAYER_SCREEN) {
-
-            homeViewModel.setTopBar(
-                TopBarData(
-                    topBar = TopBar.INVITE_TEAM_MEMBERS,
-                )
-            )
             homeViewModel.setTopAppBar(true)
             homeViewModel.showBottomAppBar(false)
-
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = stringResource(id = R.string.invite_team_member),
+                    topBar = TopBar.SINGLE_LABEL_BACK,
+                )
+            )
             BackHandler {
-                homeViewModel.setScreen(false)
+                homeViewModel.setTopAppBar(false)
+                homeViewModel.showBottomAppBar(true)
                 navController.popBackStack()
             }
             AddPlayersScreenUpdated(
@@ -503,7 +570,7 @@ fun NavControllerComposable(
                             inclusive = true
                         }
                     }
-                    homeViewModel.setScreen(false)
+                    //homeViewModel.setScreen(false)
                 }, onInvitationSuccess = {
                 })
         }
@@ -517,8 +584,15 @@ fun NavControllerComposable(
         ) {
             homeViewModel.setTopAppBar(true)
             homeViewModel.showBottomAppBar(false)
-
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = stringResource(id = R.string.invite_team_member),
+                    topBar = TopBar.SINGLE_LABEL_BACK,
+                )
+            )
             BackHandler {
+                homeViewModel.setTopAppBar(true)
+                homeViewModel.showBottomAppBar(true)
                 moveBackFromAddPlayer(homeViewModel, navController)
             }
             val teamId = it.arguments?.getString("teamId")

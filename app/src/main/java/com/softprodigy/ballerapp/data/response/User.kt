@@ -14,12 +14,12 @@ data class User(
     @SerializedName("name") val name: String = "",
     @SerializedName("address") val address: String = "",
     @SerializedName("gender") val gender: String = "",
-    @SerializedName("birthdate") val birthdate: String = "",
+    @SerializedName("birthdate") val birthdate: String? = null,
     @SerializedName("id") val id: String = "",
     @SerializedName("profileImage") val profileImage: String = "",
     @SerializedName("phone") val phone: String = "",
     @SerializedName("teamDetails") val teamDetails: SnapshotStateList<TeamDetails> = mutableStateListOf(),
-    @SerializedName("userDetails") val userDetails: UserDetails = UserDetails(),
+    @SerializedName("userDetails") var userDetails: UserDetails = UserDetails(),
     @SerializedName("parentDetails") var parentDetails: ArrayList<ParentDetails> = arrayListOf(),
     @SerializedName("age") val age: String = "",
 )
@@ -70,9 +70,11 @@ data class UserDetails(
     @SerializedName("waiver") val waiver: String = "",
     @SerializedName("vaccineCard") val vaccineCard: String = "",
     @SerializedName("classOf") val classOf: String = "",
+    val totalGames: String = "",
+    val totalHoopsGames: String = "",
+    val rating: String = ""
 
-
-    )
+)
 
 data class FunFacts(
 
@@ -126,4 +128,19 @@ data class Parent(
     @SerializedName("name") val name: String = "",
     @SerializedName("id") val id: String = ""
 
+)
+
+
+data class AddProfileRequest(
+    val firstName: String = "",
+    val lastName: String = "",
+    val profileImage: String? = "",
+    val address: String = "",
+    val city: String = "",
+    val state: String = "",
+    val zip: String = "",
+    val gender: String = "",
+    val birthdate: String = "",
+    val role: String? = "",
+    val profileImageUri: String? = null,
 )

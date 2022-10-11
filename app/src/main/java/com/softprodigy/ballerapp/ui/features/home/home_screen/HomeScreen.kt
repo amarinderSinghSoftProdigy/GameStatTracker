@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -48,6 +49,7 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     vm: HomeViewModel,
     teamVm: TeamViewModel,
+    addProfileClick: () -> Unit,
     logoClick: () -> Unit,
     onInvitationCLick: () -> Unit,
     gotToProfile: () -> Unit,
@@ -56,6 +58,7 @@ fun HomeScreen(
     dismissDialog: (Boolean) -> Unit,
     onCreateTeamClick: (Team?) -> Unit,
     onTeamNameClick: () -> Unit,
+    onInviteClick: () -> Unit,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
 ) {
     val dataStoreManager = DataStoreManager(LocalContext.current)
@@ -78,10 +81,13 @@ fun HomeScreen(
 
     remember {
         coroutineScope.launch {
-            homeScreenViewModel.getHomePageDetails()
-            teamVm.getTeams()
+            if (!UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
+                homeScreenViewModel.getHomePageDetails()
+                teamVm.getTeams()
+            }
         }
     }
+
     val onTeamSelectionConfirmed = { team: Team? ->
         setupTeamViewModelUpdated.onEvent(
             TeamSetupUIEventUpdated.OnColorSelected(
@@ -139,6 +145,12 @@ fun HomeScreen(
                 Options.SWAP_PROFILES -> {
                     vm.onEvent(HomeScreenEvent.OnSwapClick)
                 }
+                Options.INVITE -> {
+                    onInviteClick()
+                }
+                else -> {
+                    //vm.onEvent(HomeScreenEvent.OnSwapClick)
+                }
             }
         }) {
         Box {
@@ -171,127 +183,140 @@ fun HomeScreen(
                     color = MaterialTheme.appColors.material.primaryVariant
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
-                UserFlowBackground(
-                    padding = 0.dp,
-                    color = Color.White
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { /*logoClick()*/
-                                onTeamNameClick.invoke()
-                            }
-                            .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-                        contentAlignment = Alignment.CenterStart
+
+                if (teamState.teams.isNotEmpty()) {
+                    UserFlowBackground(
+                        padding = 0.dp,
+                        color = Color.White
                     ) {
-                        Row(
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { /*logoClick()*/
+                                    onTeamNameClick.invoke()
+                                }
+                                .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                            contentAlignment = Alignment.CenterStart
+                        ) {
+                            Row(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.CenterStart),
+                                verticalAlignment = Alignment.CenterVertically,
+
+                                ) {
+                                CoilImage(
+                                    src = BuildConfig.IMAGE_SERVER + teamState.logo,
+                                    modifier = Modifier
+                                        .size(dimensionResource(id = R.dimen.size_48dp))
+                                        .clip(CircleShape),
+                                    isCrossFadeEnabled = false,
+                                    onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                                    onError = { Placeholder(R.drawable.ic_team_placeholder) },
+                                    contentScale = ContentScale.Crop
+                                )
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+                                Text(
+                                    text = if (UserStorage.role.equals(
+                                            UserType.REFEREE.key,
+                                            ignoreCase = true
+                                        )
+                                    ) "Springfield Bucks Staff" else teamState.teamName.ifEmpty { teamName.value },
+                                    style = MaterialTheme.typography.h3,
+                                    fontWeight = FontWeight.W700,
+                                    modifier = Modifier.weight(1f)
+                                )
+                            }
+                            Icon(
+                                modifier = Modifier.align(Alignment.CenterEnd),
+                                imageVector = Icons.Default.KeyboardArrowDown,
+                                contentDescription = null,
+                                tint = ColorGreyLighter
+                            )
+                        }
+                    }
+                }
+                if (role.value != UserType.REFEREE.key) {
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                    UserFlowBackground(
+                        padding = 0.dp,
+                        color = Color.White
+                    ) {
+                        Box(
                             Modifier
                                 .fillMaxWidth()
-                                .align(Alignment.CenterStart),
-                            verticalAlignment = Alignment.CenterVertically,
-
+                                /*.clickable {
+                                   onInvitationCLick.invoke()
+                               }*/
+                                .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Row(
+                                Modifier
+                                    .fillMaxSize(),
+                                verticalAlignment = Alignment.CenterVertically,
                             ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_ball),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .size(dimensionResource(id = R.dimen.size_48dp))
-                                    .clip(CircleShape),
-                            )
-                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
-                            Text(
-                                text = teamState.teamName.ifEmpty { teamName.value },
-                                style = MaterialTheme.typography.h3,
-                                fontWeight = FontWeight.W700,
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
-                        Icon(
-                            modifier = Modifier.align(Alignment.CenterEnd),
-                            imageVector = Icons.Default.KeyboardArrowDown,
-                            contentDescription = null,
-                            tint = ColorGreyLighter
-                        )
-                    }
-                }
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                UserFlowBackground(
-                    padding = 0.dp,
-                    color = Color.White
-                ) {
-                    Box(
-                        Modifier
-                            .fillMaxWidth()
-                            /*.clickable {
-                               onInvitationCLick.invoke()
-                           }*/
-                            .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Row(
-                            Modifier
-                                .fillMaxSize(),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_briefcase),
-                                contentDescription = "",
-                                tint = MaterialTheme.appColors.material.primaryVariant,
-                                modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
-                            )
-                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
-                            Text(
-                                text = stringResource(id = R.string.opportunities_to_work),
-                                style = MaterialTheme.typography.h6,
-                                modifier = Modifier.weight(1f),
-                            )
-                        }
-                        Text(
-                            text = homeScreenState.homePageCoachModel.opportunityToWork.toString(),
-                            fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
-                            modifier = Modifier.align(Alignment.CenterEnd)
-                        )
-                    }
-                }
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                UserFlowBackground(
-                    padding = 0.dp,
-                    color = Color.White
-                ) {
-                    Box(
-                        Modifier
-                            .fillMaxWidth()
-                            .clickable {
-                                onInvitationCLick.invoke()
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_briefcase),
+                                    contentDescription = "",
+                                    tint = MaterialTheme.appColors.material.primaryVariant,
+                                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
+                                )
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+                                Text(
+                                    text = stringResource(id = R.string.opportunities_to_work),
+                                    style = MaterialTheme.typography.h6,
+                                    modifier = Modifier.weight(1f),
+                                )
                             }
-                            .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Row(
-                            Modifier
-                                .fillMaxSize(),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_invite),
-                                contentDescription = "",
-                                tint = MaterialTheme.appColors.material.primaryVariant,
-                                modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
-                            )
-                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
                             Text(
-                                text = stringResource(id = R.string.pending_invitations),
-                                style = MaterialTheme.typography.h6,
-                                modifier = Modifier.weight(1f),
+                                text = homeScreenState.homePageCoachModel.opportunityToWork.toString(),
+                                fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
+                                modifier = Modifier.align(Alignment.CenterEnd)
                             )
                         }
-                        Text(
-                            text = homeScreenState.homePageCoachModel.pendingInvitations.toString(),
-                            fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
-                            modifier = Modifier.align(Alignment.CenterEnd)
-                        )
+                    }
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                    UserFlowBackground(
+                        padding = 0.dp,
+                        color = Color.White
+                    ) {
+                        Box(
+                            Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    onInvitationCLick.invoke()
+                                }
+                                .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Row(
+                                Modifier
+                                    .fillMaxSize(),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_invite),
+                                    contentDescription = "",
+                                    tint = MaterialTheme.appColors.material.primaryVariant,
+                                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
+                                )
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+                                Text(
+                                    text = stringResource(id = R.string.pending_invitations),
+                                    style = MaterialTheme.typography.h6,
+                                    modifier = Modifier.weight(1f),
+                                )
+                            }
+                            Text(
+                                text = homeScreenState.homePageCoachModel.pendingInvitations.toString(),
+                                fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
+                                modifier = Modifier.align(Alignment.CenterEnd)
+                            )
+                        }
                     }
                 }
+
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                 /*UserFlowBackground(
                     padding = 0.dp,
@@ -302,49 +327,101 @@ fun HomeScreen(
 
                 Row {
                     EventItem(
-                        "my_events",
+                        if (role.value != UserType.REFEREE.key)
+                            "my_events" else "my_shifts",
                         "events_label",
                         homeScreenState.homePageCoachModel.myEvents.toString()
                     )
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                    EventInviteItem("invite_members")
+                    //if (role.value == UserType.COACH.key)
+                    EventInviteItem("invite_members", onInviteClick = onInviteClick)
+                    /*else Spacer(modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1F))*/
                 }
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                UserFlowBackground(
-                    padding = 0.dp,
-                    color = Color.White
-                ) {
-                    Box(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Row(
-                            Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_home),
-                                contentDescription = "",
-                                tint = MaterialTheme.appColors.material.primaryVariant,
-                                modifier = Modifier.size(dimensionResource(id = R.dimen.size_18dp))
-                            )
-                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
 
+                if (role.value == UserType.REFEREE.key) {
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                    UserFlowBackground(
+                        padding = 0.dp,
+                        color = Color.White
+                    ) {
+                        Box(
+                            Modifier
+                                .fillMaxWidth()
+                                /*.clickable {
+                                   onInvitationCLick.invoke()
+                               }*/
+                                .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Row(
+                                Modifier
+                                    .fillMaxSize(),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_briefcase),
+                                    contentDescription = "",
+                                    tint = MaterialTheme.appColors.material.primaryVariant,
+                                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
+                                )
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+                                Text(
+                                    text = stringResource(id = R.string.opportunities_to_work),
+                                    style = MaterialTheme.typography.h6,
+                                    modifier = Modifier.weight(1f),
+                                )
+                            }
                             Text(
-                                text = stringResource(id = R.string.opportunities_to_play),
-                                style = MaterialTheme.typography.h6,
-                                modifier = Modifier.weight(1f)
+                                text = homeScreenState.homePageCoachModel.opportunityToWork.toString(),
+                                fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
+                                modifier = Modifier.align(Alignment.CenterEnd)
                             )
                         }
-                        Text(
-                            text = homeScreenState.homePageCoachModel.opportunityToPlay.toString(),
-                            fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
-                            modifier = Modifier.align(Alignment.CenterEnd)
-                        )
                     }
                 }
+
+                if (role.value != UserType.REFEREE.key) {
+
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                    UserFlowBackground(
+                        padding = 0.dp,
+                        color = Color.White
+                    ) {
+                        Box(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Row(
+                                Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_home),
+                                    contentDescription = "",
+                                    tint = MaterialTheme.appColors.material.primaryVariant,
+                                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_18dp))
+                                )
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+
+                                Text(
+                                    text = stringResource(id = R.string.opportunities_to_play),
+                                    style = MaterialTheme.typography.h6,
+                                    modifier = Modifier.weight(1f)
+                                )
+                            }
+                            Text(
+                                text = homeScreenState.homePageCoachModel.opportunityToPlay.toString(),
+                                fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
+                                modifier = Modifier.align(Alignment.CenterEnd)
+                            )
+                        }
+                    }
+                }
+
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
                 Row {
@@ -355,12 +432,21 @@ fun HomeScreen(
                         R.drawable.ic_leagues
                     )
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                    EventItem(
-                        "all_leagues",
-                        "leagues",
-                        homeScreenState.homePageCoachModel.allLeagues.toString(),
-                        R.drawable.ic_leagues
-                    )
+
+                    if (role.value == UserType.REFEREE.key) {
+                        EventItem(
+                            "", "", "", null, MaterialTheme.appColors.material.primary
+                        )
+                    }
+
+                    if (role.value != UserType.REFEREE.key) {
+                        EventItem(
+                            "all_leagues",
+                            "leagues",
+                            homeScreenState.homePageCoachModel.allLeagues.toString(),
+                            R.drawable.ic_leagues
+                        )
+                    }
                 }
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
             }
@@ -403,10 +489,9 @@ fun HomeScreen(
             },
             showLoading = homeState.isDataLoading,
             onCreatePlayerClick = {
-                vm.setAddProfile(true)
-                showSwapDialog.value = false
+                addProfileClick()
             },
-            showCreatePlayerButton = false
+            showCreatePlayerButton = true
         )
     }
     if (homeState.isDataLoading) {
@@ -420,7 +505,8 @@ fun RowScope.EventItem(
     headingId: String,
     stringId: String,
     value: String,
-    painter: Int = R.drawable.ic_events
+    painter: Int? = R.drawable.ic_events,
+    color: Color = Color.White
 ) {
     UserFlowBackground(
         padding = 0.dp,
@@ -428,7 +514,7 @@ fun RowScope.EventItem(
             .fillMaxWidth()
             .weight(1F)
             .height(dimensionResource(id = R.dimen.size_160dp)),
-        color = Color.White
+        color = color
 
     ) {
         Column(
@@ -439,13 +525,15 @@ fun RowScope.EventItem(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Icon(
-                    painter = painterResource(painter),
-                    contentDescription = null,
-                    tint = MaterialTheme.appColors.material.primaryVariant,
-                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_18dp))
+                painter?.let { painterResource(it) }?.let {
+                    Icon(
+                        painter = it,
+                        contentDescription = null,
+                        tint = MaterialTheme.appColors.material.primaryVariant,
+                        modifier = Modifier.size(dimensionResource(id = R.dimen.size_18dp))
 
-                )
+                    )
+                }
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
                 AppText(
                     text = stringResourceByName(headingId),
@@ -472,7 +560,8 @@ fun RowScope.EventItem(
 @Composable
 fun RowScope.EventInviteItem(
     headingId: String,
-    painter: Int = R.drawable.ic_invite
+    painter: Int = R.drawable.ic_invite,
+    onInviteClick: () -> Unit
 ) {
     UserFlowBackground(
         padding = 0.dp,
@@ -515,7 +604,9 @@ fun RowScope.EventInviteItem(
                         .fillMaxWidth()
                         .align(Alignment.CenterHorizontally),
                     text = stringResource(id = R.string.invite),
-                    onClick = { },
+                    onClick = {
+                        onInviteClick()
+                    },
                     painter = painterResource(id = R.drawable.ic_add_button),
                     isTransParent = false,
                     iconSize = dimensionResource(id = R.dimen.size_10dp)

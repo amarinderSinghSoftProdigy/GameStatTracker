@@ -12,10 +12,10 @@ import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.response.HomeItemResponse
-import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.domain.repository.IUserRepository
 import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
 import com.softprodigy.ballerapp.ui.features.components.TopBarData
+import com.softprodigy.ballerapp.ui.features.components.UserType
 import com.softprodigy.ballerapp.ui.features.home.home_screen.HomeScreenEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -38,18 +38,11 @@ class HomeViewModel @Inject constructor(
     val homeChannel = _homeChannel.receiveAsFlow()
 
     init {
-        _state.value = _state.value.copy(
-            players = arrayListOf(
-                Player(_id = "1", name = "Neeraj", profileImage = null),
-                Player(_id = "2", name = "Kausha;", profileImage = null),
-                Player(_id = "3", name = "Amrinder", profileImage = null),
-                Player(_id = "4", name = "Harsh", profileImage = null),
-            ),
-            selectedPlayer = Player(_id = "1", name = "Neeraj", profileImage = null)
-        )
-        getHomeList()
         viewModelScope.launch {
-            getUserInfo()
+            if (!UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
+                getHomeList()
+                getUserInfo()
+            }
         }
     }
 
@@ -99,9 +92,9 @@ class HomeViewModel @Inject constructor(
         _state.value = _state.value.copy(showSwapProfile = show)
     }
 
-    fun setAddProfile(show: Boolean) {
+    /*fun setAddProfile(show: Boolean) {
         _state.value = _state.value.copy(showAddProfile = show)
-    }
+    }*/
 
     fun setTopBar(topBar: TopBarData) {
         searchJob?.cancel()
@@ -127,6 +120,8 @@ class HomeViewModel @Inject constructor(
             dataStoreManager.saveToken("")
             dataStoreManager.setRole("")
             dataStoreManager.setEmail("")
+            dataStoreManager.setColor("")
+            dataStoreManager.setTeamName("")
         }
     }
 
@@ -178,8 +173,8 @@ class HomeViewModel @Inject constructor(
                             )
                         UserStorage.userId = response.data._Id
                         UserStorage.role = response.data.role
+                        setRole(response.data.role, response.data.email)
                         if (showToast) {
-                            setRole(response.data.role, response.data.email)
                             _homeChannel.send(
                                 HomeChannel.ShowToast(
                                     UiText.DynamicString(

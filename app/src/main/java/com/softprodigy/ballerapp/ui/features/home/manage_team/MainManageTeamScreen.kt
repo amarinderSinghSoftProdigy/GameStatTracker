@@ -26,7 +26,13 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun MainManageTeamScreen(vm: TeamViewModel, onSuccess: () -> Unit, onAddPlayerCLick: () -> Unit) {
+fun MainManageTeamScreen(
+    venue: String,
+    onVenueClick: () -> Unit,
+    vm: TeamViewModel,
+    onSuccess: () -> Unit,
+    onAddPlayerCLick: () -> Unit
+) {
     val context = LocalContext.current
     LaunchedEffect(key1 = Unit) {
         vm.teamChannel.collect { uiEvent ->
@@ -59,7 +65,7 @@ fun MainManageTeamScreen(vm: TeamViewModel, onSuccess: () -> Unit, onAddPlayerCL
 
     Column {
         ManageTeamsTopTabs(pagerState = pagerState, tabData = managedTabData)
-        ManageTeamsContent(pagerState = pagerState, vm, onAddPlayerCLick)
+        ManageTeamsContent(pagerState = pagerState, vm, onAddPlayerCLick, venue, onVenueClick)
     }
 
 }
@@ -67,14 +73,15 @@ fun MainManageTeamScreen(vm: TeamViewModel, onSuccess: () -> Unit, onAddPlayerCL
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun ManageTeamsContent(
-    pagerState: PagerState, vm: TeamViewModel, onAddPlayerCLick: () -> Unit
+    pagerState: PagerState, vm: TeamViewModel, onAddPlayerCLick: () -> Unit,
+    venue: String, onVenueClick: () -> Unit
 ) {
     HorizontalPager(
         state = pagerState,
         modifier = Modifier.fillMaxSize()
     ) { index ->
         when (index) {
-            0 -> ManageTeamScreen(vm)
+            0 -> ManageTeamScreen(vm, venue = venue, onVenueClick = onVenueClick)
             1 -> ManageTeamRoster(vm) {
                 onAddPlayerCLick.invoke()
             }

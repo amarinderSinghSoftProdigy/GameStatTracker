@@ -3,19 +3,7 @@ package com.softprodigy.ballerapp.ui.features.home.teams.leaderboard
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -33,20 +21,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
+import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.TeamLeaderBoard
-import com.softprodigy.ballerapp.ui.features.components.AppTab
-import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.CoilImage
-import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
-import com.softprodigy.ballerapp.ui.features.components.Placeholder
-import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
+import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
 import com.softprodigy.ballerapp.ui.theme.ColorPrimaryOrange
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
@@ -67,27 +53,31 @@ fun LeaderBoardScreen(vm: LeaderBoardViewModel = hiltViewModel()) {
                 pageCount = state.leaderBoard.size,
                 initialOffScreenLimit = 1,
             )
-            Column(Modifier.fillMaxSize()) {
-                Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
-                LeaderTopTabs(pagerState, state.leaderBoard)
-                Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    itemsIndexed(state.leaders) { index, item ->
-                        val srNo = index + 1
-                        LeaderListItem(
-                            srNo = srNo,
-                            leader = item,
-                            selected = state.selectedLeader == item,
-                            key = state.leaderBoard[pagerState.currentPage].key.trim()
-                        ) {
-                            onLeaderSelectionChange.invoke(item)
+            if (state.leaderBoard.isNotEmpty()) {
+                Column(Modifier.fillMaxSize()) {
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
+                    LeaderTopTabs(pagerState, state.leaderBoard)
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        itemsIndexed(state.leaders) { index, item ->
+                            val srNo = index + 1
+                            LeaderListItem(
+                                srNo = srNo,
+                                leader = item,
+                                selected = state.selectedLeader == item,
+                                key = state.leaderBoard[pagerState.currentPage].key.trim()
+                            ) {
+                                onLeaderSelectionChange.invoke(item)
+                            }
                         }
                     }
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_24dp)))
                 }
-                Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_24dp)))
+            } else {
+                EmptyScreen(singleText = true, heading = stringResource(R.string.no_data_found))
             }
         }
     }
@@ -195,7 +185,7 @@ fun LeaderListItem(
                 )*/
 
                 CoilImage(
-                    src = leader.profileImage.toString(),
+                    src = BuildConfig.IMAGE_SERVER + leader.profileImage.toString(),
                     modifier = Modifier
                         .size(dimensionResource(id = R.dimen.size_32dp))
                         .clip(CircleShape)

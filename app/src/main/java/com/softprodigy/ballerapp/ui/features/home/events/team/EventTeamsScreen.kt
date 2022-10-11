@@ -23,7 +23,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.team.Team
@@ -33,73 +32,74 @@ import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun EventTeamsScreen(moveToOpenTeams: (String) -> Unit,eventViewModel: EventViewModel) {
+fun EventTeamsScreen(moveToOpenTeams: (String) -> Unit, eventViewModel: EventViewModel) {
     val state = eventViewModel.eventState.value.divisionWiseTeamResponse
     remember {
         eventViewModel.onEvent(EvEvents.RefreshTeamsByDivision)
     }
     val expand = remember {
-        false
+        true
     }
 
-    Column(Modifier.fillMaxSize()){
+    Column(Modifier.fillMaxSize()) {
         LazyColumn(Modifier.fillMaxWidth()) {
-        items(state) { item ->
-            FoldableItem(
-                expanded = expand,
-                headerBackground = MaterialTheme.appColors.material.primary,
-                headerBorder = BorderStroke(0.dp, Color.Transparent),
-                header = { isExpanded ->
-                    Column {
-                        EventTeamHeader(divisionName = item.divisionName, isExpanded)
-                        if (!isExpanded) {
-                            DividerCommon()
-                        }
-                    }
-                },
-                childItems = item.team,
-                hasItemLeadingSpacing = false,
-                hasItemTrailingSpacing = false,
-                itemSpacing = 0.dp,
-                itemHorizontalPadding = 0.dp,
-                itemsBackground = MaterialTheme.appColors.material.primary,
-                item = { team, index ->
-                    Column {
-                        Box(
-                            modifier = Modifier
-                                .padding(
-                                    start = dimensionResource(id = R.dimen.size_16dp),
-                                    end = dimensionResource(id = R.dimen.size_16dp)
-                                )
-                                .background(
-                                    color = MaterialTheme.appColors.material.surface,
-                                    shape = RoundedCornerShape(
-                                        topStart = if (index == 0) dimensionResource(id = R.dimen.size_8dp) else 0.dp,
-                                        topEnd = if (index == 0) dimensionResource(id = R.dimen.size_8dp) else 0.dp,
-                                        bottomEnd = if (index == item.team.size - 1) dimensionResource(
-                                            id = R.dimen.size_8dp
-                                        ) else 0.dp,
-                                        bottomStart = if (index == item.team.size - 1) dimensionResource(
-                                            id = R.dimen.size_8dp
-                                        ) else 0.dp
-                                    )
-                                )
-                        ) {
-                            EventTeamSubItem(team) {
-                                moveToOpenTeams(team.name)
+            items(state) { item ->
+                if (item.team.isNotEmpty())
+                    FoldableItem(
+                        expanded = expand,
+                        headerBackground = MaterialTheme.appColors.material.primary,
+                        headerBorder = BorderStroke(0.dp, Color.Transparent),
+                        header = { isExpanded ->
+                            Column {
+                                EventTeamHeader(divisionName = item.divisionName, isExpanded)
+                                if (!isExpanded) {
+                                    DividerCommon()
+                                }
+                            }
+                        },
+                        childItems = item.team,
+                        hasItemLeadingSpacing = false,
+                        hasItemTrailingSpacing = false,
+                        itemSpacing = 0.dp,
+                        itemHorizontalPadding = 0.dp,
+                        itemsBackground = MaterialTheme.appColors.material.primary,
+                        item = { team, index ->
+                            Column {
+                                Box(
+                                    modifier = Modifier
+                                        .padding(
+                                            start = dimensionResource(id = R.dimen.size_16dp),
+                                            end = dimensionResource(id = R.dimen.size_16dp)
+                                        )
+                                        .background(
+                                            color = MaterialTheme.appColors.material.surface,
+                                            shape = RoundedCornerShape(
+                                                topStart = if (index == 0) dimensionResource(id = R.dimen.size_8dp) else 0.dp,
+                                                topEnd = if (index == 0) dimensionResource(id = R.dimen.size_8dp) else 0.dp,
+                                                bottomEnd = if (index == item.team.size - 1) dimensionResource(
+                                                    id = R.dimen.size_8dp
+                                                ) else 0.dp,
+                                                bottomStart = if (index == item.team.size - 1) dimensionResource(
+                                                    id = R.dimen.size_8dp
+                                                ) else 0.dp
+                                            )
+                                        )
+                                ) {
+                                    EventTeamSubItem(team) {
+                                        moveToOpenTeams(team.name)
+                                    }
+                                }
+                                if (index == item.team.size - 1) {
+                                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                                    DividerCommon()
+                                }
                             }
                         }
-                        if (index == item.team.size - 1) {
-                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-                            DividerCommon()
-                        }
-                    }
-                }
-            )
+                    )
+            }
         }
     }
-    }
-    if(eventViewModel.eventState.value.isLoading){
+    if (eventViewModel.eventState.value.isLoading) {
         CommonProgressBar()
     }
 }
@@ -132,7 +132,7 @@ fun EventTeamHeader(divisionName: String, isExpanded: Boolean = false) {
                     width = dimensionResource(id = R.dimen.size_12dp)
                 )
                 .then(
-                    if (!isExpanded) Modifier.rotate(180f) else Modifier
+                    if (isExpanded) Modifier.rotate(180f) else Modifier
                 ),
             tint = MaterialTheme.appColors.buttonColor.textDisabled
         )

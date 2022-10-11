@@ -3,17 +3,7 @@ package com.softprodigy.ballerapp.ui.features.home.teams.roaster
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -26,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -143,22 +134,22 @@ fun CoachListItem(
                 )
                 .size(dimensionResource(id = R.dimen.size_80dp))
                 .clip(CircleShape),
-                isCrossFadeEnabled = false,
-                onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
-                onError = { Placeholder(R.drawable.ic_user_profile_icon) }
+            isCrossFadeEnabled = false,
+            onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
+            onError = { Placeholder(R.drawable.ic_user_profile_icon) }
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
         AppText(
-            text = if (isCoach) ((("${coach?.firstName} ${coach?.lastName}")
-                ?: "")).capitalize() else ("${player?.firstName} ${player?.lastName}"
-                ?: "").capitalize(),
+            text = if (isCoach) ((("${coach?.firstName} ${coach?.lastName}"))).capitalize()
+            else ("${player?.firstName} ${player?.lastName}").capitalize(),
             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             style = MaterialTheme.typography.h6,
             overflow = TextOverflow.Ellipsis,
-            maxLines = 1,
-            modifier = Modifier.width(dimensionResource(id = R.dimen.size_100dp))
+            maxLines = 2,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.width(dimensionResource(id = R.dimen.size_120dp))
         )
 
         Row(
@@ -167,8 +158,9 @@ fun CoachListItem(
         ) {
 
             AppText(
-                text = if (isCoach) (coach?.coachPosition ?: "").capitalize() else (player?.position
-                    ?: "").capitalize(),
+                text = if (!isCoach) player?.userInviteData?.role
+                    ?: "" else coach?.userInviteData?.role
+                    ?: "",
                 color = MaterialTheme.appColors.material.primaryVariant,
                 style = MaterialTheme.typography.h6
             )
@@ -176,7 +168,7 @@ fun CoachListItem(
             if (!isCoach) {
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                 AppText(
-                    text = player?.position ?: "",
+                    text = player?.jerseyNumber ?: "",
                     color = MaterialTheme.appColors.textField.label,
                     style = MaterialTheme.typography.h6
                 )

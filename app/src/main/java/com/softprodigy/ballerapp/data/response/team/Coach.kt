@@ -72,5 +72,13 @@ data class Coach(
     @SerializedName("updatedAt")
     val updatedAt: String? = "",
     @SerializedName("userId")
-    val userId: String? = ""
+    val userId: String? = "",
+    @SerializedName("userInviteData")
+    val userInviteData: UserInviteData? = UserInviteData(),
+)
+
+data class UserInviteData(
+    val position: String? = "",
+    val jersey: String? = "",
+    val role: String? = "",
 )

@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
-import com.softprodigy.ballerapp.data.response.SelectProfileResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -31,10 +30,5 @@ class SelectProfileViewModel @Inject constructor(application: Application) :
 
     private fun getProfileData() {
 
-        val profileList = ArrayList<SelectProfileResponse>()
-        profileList.add(SelectProfileResponse(name = "George Will", role = "Player"))
-        profileList.add(SelectProfileResponse(name = "James Will", role = "Parent"))
-        _selectProfileUiState.value =
-            _selectProfileUiState.value.copy(selectProfileList = profileList)
     }
 }

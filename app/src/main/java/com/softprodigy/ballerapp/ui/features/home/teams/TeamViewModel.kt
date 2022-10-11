@@ -12,6 +12,7 @@ import com.softprodigy.ballerapp.common.getFileFromUri
 import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
+import com.softprodigy.ballerapp.data.request.Location
 import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
@@ -19,6 +20,7 @@ import com.softprodigy.ballerapp.data.response.team.TeamRoaster
 import com.softprodigy.ballerapp.domain.repository.IImageUploadRepo
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import com.softprodigy.ballerapp.ui.features.components.UserType
+import com.softprodigy.ballerapp.ui.features.components.fromHex
 import com.softprodigy.ballerapp.ui.utils.CommonUtils
 import com.softprodigy.ballerapp.ui.utils.dragDrop.ItemPosition
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -133,7 +135,15 @@ class TeamViewModel @Inject constructor(
             }
             is TeamUIEvent.OnColorSelected -> {
                 _teamUiState.value =
-                    _teamUiState.value.copy(teamColor = event.selectedColor)
+                    _teamUiState.value.copy(teamColorPrimary = event.selectedColor)
+            }
+            is TeamUIEvent.OnSecColorSelected -> {
+                _teamUiState.value =
+                    _teamUiState.value.copy(teamColorSec = event.secondaryColor)
+            }
+            is TeamUIEvent.OnTerColorSelected -> {
+                _teamUiState.value =
+                    _teamUiState.value.copy(teamColorThird = event.ternaryColor)
             }
 
             is TeamUIEvent.OnImageSelected -> {
@@ -150,6 +160,24 @@ class TeamViewModel @Inject constructor(
                 searchJob = viewModelScope.launch {
                     updateSelection(event.name)
                 }
+            }
+            is TeamUIEvent.OnTeamNameJerseyChange -> {
+                _teamUiState.value =
+                    _teamUiState.value.copy(teamNameOnJerseys = event.teamNameOnJersey)
+
+            }
+            is TeamUIEvent.OnTeamNameTournamentsChange -> {
+                _teamUiState.value =
+                    _teamUiState.value.copy(teamNameOnTournaments = event.teamNameOnTournaments)
+
+            }
+            is TeamUIEvent.OnVenueChange -> {
+                _teamUiState.value = _teamUiState.value.copy(venueName = event.venueName)
+
+            }
+            is TeamUIEvent.OnAddressChanged -> {
+                _teamUiState.value =
+                    _teamUiState.value.copy(selectedAddress = event.addressReq)
             }
         }
     }
@@ -241,13 +269,13 @@ class TeamViewModel @Inject constructor(
     suspend fun getTeamsUserId() {
         when (val teamResponse = teamRepo.getTeamsUserId(UserStorage.userId)) {
             is ResultWrapper.GenericError -> {
-                _teamChannel.send(
+               /* _teamChannel.send(
                     TeamChannel.ShowToast(
                         UiText.DynamicString(
                             "${teamResponse.message}"
                         )
                     )
-                )
+                )*/
                 _teamUiState.value =
                     _teamUiState.value.copy(
                         isLoading = false
@@ -314,6 +342,15 @@ class TeamViewModel @Inject constructor(
             _teamUiState.value.copy(
                 isLoading = true
             )
+
+        val location = Location(
+            type = "Point",
+            coordinates = arrayListOf(
+                _teamUiState.value.selectedAddress.lat,
+                _teamUiState.value.selectedAddress.long
+            )
+        )
+
         val newRoaster = arrayListOf<TeamRoaster>()
         _teamUiState.value.players.forEach {
             //val position = it.position.ifEmpty { it._id }
@@ -327,8 +364,17 @@ class TeamViewModel @Inject constructor(
             playerPositions = newRoaster,
             name = _teamUiState.value.teamName,
             logo = _teamUiState.value.logo ?: "",
-            colorCode = _teamUiState.value.teamColor,
-            primaryTeamColor = _teamUiState.value.teamColor,
+            colorCode = _teamUiState.value.teamColorPrimary,
+            primaryTeamColor = _teamUiState.value.teamColorPrimary,
+
+            nameOfVenue = _teamUiState.value.venueName,
+            secondaryTeamColor = _teamUiState.value.teamColorSec,
+            tertiaryTeamColor = _teamUiState.value.teamColorThird,
+            address = _teamUiState.value.selectedAddress,
+            location = location,
+            teamNameOnJersey = _teamUiState.value.teamNameOnJerseys,
+            teamNameOnTournaments = _teamUiState.value.teamNameOnTournaments,
+
 
             )
         _teamUiState.value = _teamUiState.value.copy(updatedTeam = request)
@@ -490,14 +536,24 @@ class TeamViewModel @Inject constructor(
                             players = CommonUtils.getPlayerTabs(response.data.players),
                             coaches = response.data.coaches,
                             teamName = response.data.name,
-                            teamColor = response.data.colorCode,
+                            teamColorPrimary = response.data.colorCode,
                             logo = response.data.logo,
                             leaderBoard = response.data.teamLeaderBoard,
-                            all = CommonUtils.getSelectedList(response.data.teamLeaderBoard)
+                            all = CommonUtils.getSelectedList(response.data.teamLeaderBoard),
+                            teamColorSec = response.data.secondaryTeamColor,
+                            teamColorThird = response.data.tertiaryTeamColor,
+                            teamNameOnJerseys = response.data.teamNameOnJersey,
+                            teamNameOnTournaments = response.data.teamNameOnTournaments,
+                            venueName = response.data.nameOfVenue,
+                            selectedAddress = response.data.address,
                         )
                         _teamChannel.send(
                             TeamChannel.OnTeamDetailsSuccess(response.data._id, response.data.name)
                         )
+
+                        /*update Color code to db*/
+                        updateColorData(response.data.colorCode)
+
                     } else {
                         _teamUiState.value =
                             _teamUiState.value.copy(isLoading = false)
@@ -512,6 +568,14 @@ class TeamViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private suspend fun updateColorData(colorCode:String) {
+
+        // storing team color to DB
+        dataStoreManager.setColor(colorCode)
+        AppConstants.SELECTED_COLOR = fromHex(colorCode.replace("#","").ifEmpty{"0177C1"})
+
     }
 
     private suspend fun getPlayerById(teamId: String) {
