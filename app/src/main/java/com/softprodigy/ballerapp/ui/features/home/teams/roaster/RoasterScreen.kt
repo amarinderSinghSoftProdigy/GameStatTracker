@@ -145,7 +145,7 @@ fun CoachListItem(
                     horizontalAlignment = Alignment.End,
 
                 ){
-                   Icon(painter = painterResource(id = R.drawable.ic_info),
+                   Icon(painter = painterResource(id = R.drawable.ic_player_info),
                         contentDescription = "",
                         tint = Color.Unspecified,
                          )
