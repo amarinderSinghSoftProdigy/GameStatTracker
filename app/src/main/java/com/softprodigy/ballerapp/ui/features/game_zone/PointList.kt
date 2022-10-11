@@ -1,25 +1,30 @@
 package com.softprodigy.ballerapp.ui.features.game_zone
 
+import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppText
@@ -30,13 +35,13 @@ import com.softprodigy.ballerapp.ui.theme.appColors
 import com.softprodigy.ballerapp.ui.theme.rubikFamily
 
 @Composable
-fun PointList (
+fun PointList(
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(color = colorResource(id = R.color.game_center_background_color))
-            //.background(Color.Red)
+        //.background(Color.Red)
     ) {
 
         Column(
@@ -52,6 +57,7 @@ fun PointList (
                     pointListItem(
                         index,
                         point = point,
+                        expanded = true
                     )
                 }
             }
@@ -63,7 +69,12 @@ fun PointList (
 fun pointListItem(
     index: Int,
     point: String,
+    expanded: Boolean = false,
 ) {
+    val pointListMenuItems = stringArrayResource(id = R.array.game_point_list_menu_items)
+    val disabledItem = 1
+    val contextForToast = LocalContext.current.applicationContext
+    var expanded by remember { mutableStateOf(false) }
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
@@ -163,16 +174,107 @@ fun pointListItem(
                     modifier = Modifier
                         .width(dimensionResource(id = R.dimen.size_16dp))
                         .height(dimensionResource(id = R.dimen.size_16dp)),
-                    onClick = { /*TODO*/ }
+                    onClick = { expanded = true }
                 )
+                // drop down menu
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = {
+                        expanded = false
+                    },
+                    modifier = Modifier.background(colorResource(id = R.color.game_box_bg_color), RoundedCornerShape(
+                        dimensionResource(id = R.dimen.size_8dp))),
+                ) {
+                    // adding items
+                    pointListMenuItems.forEachIndexed { itemIndex, itemValue ->
+                        DropdownMenuItem(
+                            onClick = {
+                                Toast.makeText(contextForToast, itemValue, Toast.LENGTH_SHORT)
+                                    .show()
+                                expanded = false
+                            },
+                            enabled = (itemIndex != disabledItem),
+                            modifier = Modifier.fillMaxWidth().padding(all = 0.dp),
+
+                        ) {
+
+                                AppText(
+                                    text = itemValue,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    textAlign = TextAlign.Center,
+                                    color = colorResource(id = R.color.game_point_list_item_text_color),
+                                    fontWeight = FontWeight.W400,
+                                    fontFamily = rubikFamily,
+                                    fontSize = dimensionResource(id = R.dimen.size_12dp).value.sp,
+                                )
+
+
+                        }
+                        Spacer(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(dimensionResource(id = R.dimen.size_1dp))
+                                .background(colorResource(id = R.color.game_center_list_item_divider_color))
+                        )
+                    }
+                }
+
+                /*Box {
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false },
+                    ) {
+                        DropdownMenuItem(onClick = { expanded = false }) {
+                            Text("Edit")
+                        }
+                        DropdownMenuItem(onClick = { expanded = false }) {
+                            Text("Save")
+                        }
+                        DropdownMenuItem(onClick = { expanded = false }) {
+                            Text("Add New")
+                        }
+                    }
+                }*/
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
 
             }
 
         }
-        Spacer(modifier = Modifier
-            .fillMaxWidth()
-            .height(dimensionResource(id = R.dimen.size_1dp))
-            .background(colorResource(id = R.color.game_center_list_item_divider_color)))
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(dimensionResource(id = R.dimen.size_1dp))
+                .background(colorResource(id = R.color.game_center_list_item_divider_color))
+        )
+    }
+}
+
+
+@Composable
+fun MenuItem(title: String) {
+    Column(modifier = Modifier.padding(6.dp)) {
+        Text(text = title, style = MaterialTheme.typography.subtitle1)
+    }
+}
+
+@Composable
+fun PopupMenu(
+    menuItems: List<String>,
+    onClickCallbacks: List<() -> Unit>,
+    showMenu: Boolean,
+    onDismiss: () -> Unit,
+) {
+    DropdownMenu(
+        expanded = showMenu,
+        onDismissRequest = { onDismiss() },
+    ) {
+        menuItems.forEachIndexed { index, item ->
+            DropdownMenuItem(onClick = {
+                onDismiss()
+                onClickCallbacks[index]
+            }) {
+                Text(text = item)
+            }
+        }
     }
 }

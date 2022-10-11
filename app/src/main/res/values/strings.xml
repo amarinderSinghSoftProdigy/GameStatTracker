@@ -230,6 +230,10 @@
     <string name="rbnd">Rbnd</string>
     <string name="total">Total</string>
 
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="add_new">Add New</string>
+
     <string-array name="game_settings">
         <item>@string/exit</item>
         <item>@string/settings</item>
@@ -256,5 +260,11 @@
         <item>1H</item>
         <item>2H</item>
         <item>All</item>
+    </string-array>
+
+    <string-array name="game_point_list_menu_items">
+        <item>@string/edit</item>
+        <item>@string/delete</item>
+        <item>@string/add_new</item>
     </string-array>
 </resources>

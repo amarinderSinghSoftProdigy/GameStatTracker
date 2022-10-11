@@ -24,8 +24,11 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.BuildConfig
@@ -121,6 +124,7 @@ fun RoasterScreen(vm: TeamViewModel) {
 fun CoachListItem(
     modifier: Modifier = Modifier,
     isCoach: Boolean = false,
+    isRoasterSelection:Boolean = false,
     coach: Coach? = null,
     player: Player? = null,
 ) {
@@ -152,10 +156,11 @@ fun CoachListItem(
             text = if (isCoach) ((("${coach?.firstName} ${coach?.lastName}")
                 ?: "")).capitalize() else ("${player?.firstName} ${player?.lastName}"
                 ?: "").capitalize(),
-            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            color = if(isRoasterSelection) colorResource(id = R.color.game_roaster_name_text_color) else MaterialTheme.appColors.buttonColor.bckgroundEnabled,
             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             style = MaterialTheme.typography.h6,
             overflow = TextOverflow.Ellipsis,
+            textAlign = if(isRoasterSelection) TextAlign.Center else TextAlign.Start,
             maxLines = 1,
             modifier = Modifier.width(dimensionResource(id = R.dimen.size_100dp))
         )
@@ -168,11 +173,12 @@ fun CoachListItem(
             AppText(
                 text = if (isCoach) (coach?.coachPosition ?: "").capitalize() else (player?.position
                     ?: "").capitalize(),
-                color = MaterialTheme.appColors.material.primaryVariant,
-                style = MaterialTheme.typography.h6
+                color = if(isRoasterSelection) colorResource(id = R.color.game_point_list_item_text_color) else MaterialTheme.appColors.material.primaryVariant,
+                style = MaterialTheme.typography.h6,
+                fontWeight = FontWeight.Normal,
             )
 
-            if (!isCoach) {
+            if (!isCoach && !isRoasterSelection) {
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                 AppText(
                     text = player?.position ?: "",

@@ -29,4 +29,9 @@
     <color name="game_box_point_header_bg_color">#3C4348</color>
     <color name="game_box_score_header_text_color">#FFFFFF</color>
     <color name="game_box_score_list_item_bg_color">#BF17191B</color>
+
+    <color name="game_roaster_selection_bg_color">#BF17191B</color>
+    <color name="game_roaster_name_text_color">#FFFFFF</color>
+    <color name="game_roaster_divider_bg_color">#1AFFFFFF</color>
+
 </resources>

@@ -66,6 +66,7 @@ fun OverviewScreen () {
                     //.padding(start = 0.dp, top = 0.dp, end = dimensionResource(id = R.dimen.size_20dp), bottom = 0.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
                 GameSettingsController()
             }
         }
