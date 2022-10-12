@@ -102,6 +102,7 @@ object ApiConstants {
     const val GET_ALL_TEAMS_STANDING_BY_LEAGUE_AND_DIVISION =
         "v1/event/getMyLeague/allTeamsStanding/byDivisionId"
     const val GET_VENUE_DETAILS_BY_ID = "v1/event/getMyLeague/venueById"
+    const val GET_EVENT_SCHEDULE = "v1/event/getMyLeagueSchedule"
 
     const val SOCIAL_LOGIN = "/social_login"
     const val SIGNUP = "v1/auth/register"

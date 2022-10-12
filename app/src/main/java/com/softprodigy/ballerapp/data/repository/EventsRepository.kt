@@ -174,7 +174,7 @@ class EventsRepository @Inject constructor(
 
 
 
-    override suspend fun getEventScheduleDetails(eventId: String): ResultWrapper<BaseResponse<Any>> {
+    override suspend fun getEventScheduleDetails(eventId: String): ResultWrapper<BaseResponse<List<ScheduleResponse>>> {
         return safeApiCall(dispatcher) {
             service.getEventSchedule(eventId = eventId)
         }

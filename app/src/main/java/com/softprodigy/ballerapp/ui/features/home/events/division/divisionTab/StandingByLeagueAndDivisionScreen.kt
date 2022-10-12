@@ -19,9 +19,10 @@ import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
 import com.softprodigy.ballerapp.ui.features.home.teams.standing.StandingListItem
 import com.softprodigy.ballerapp.ui.features.home.teams.standing.StandingTopTabs
 import com.softprodigy.ballerapp.ui.theme.appColors
+
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun StandingByLeagueAndDivisionScreen(divisionId:String,eventViewModel:EventViewModel) {
+fun StandingByLeagueAndDivisionScreen(divisionId: String, eventViewModel: EventViewModel) {
 
     val state = eventViewModel.eventState.value.standingUIState
     val onStandingSelectionChange = { standing: Standing ->
@@ -29,7 +30,7 @@ fun StandingByLeagueAndDivisionScreen(divisionId:String,eventViewModel:EventView
     }
 
     remember {
-     eventViewModel.onEvent(EvEvents.RefreshStandingByLeagueDivision(divisionId))
+        eventViewModel.onEvent(EvEvents.RefreshStandingByLeagueDivision(divisionId))
     }
 
     Box(modifier = Modifier.background(color = MaterialTheme.appColors.material.primary)) {

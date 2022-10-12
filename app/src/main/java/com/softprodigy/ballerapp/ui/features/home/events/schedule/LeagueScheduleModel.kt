@@ -1,11 +1,12 @@
 package com.softprodigy.ballerapp.ui.features.home.events.schedule
 
 import com.softprodigy.ballerapp.data.response.team.Team
+import com.softprodigy.ballerapp.ui.features.home.events.Matches
 
 data class LeagueScheduleModel(
     val date: String = "",
     val gameCount: String = "",
-    val matches: List<Match> = listOf()
+    val matches: List<Matches> = listOf()
 )
 
 data class Match(
