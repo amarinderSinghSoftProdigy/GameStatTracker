@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.accompanist.flowlayout.FlowRow
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.*
@@ -160,122 +161,125 @@ fun EventScheduleSubItem(
             .fillMaxWidth()
             .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
     ) {
-            Text(
-                text = match.timeSlot,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                fontWeight = FontWeight.Bold,
-                fontSize = dimensionResource(
-                    id = R.dimen.txt_size_12
-                ).value.sp
-            )
-            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.size_8dp)))
+        Text(
+            text = match.timeSlot,
+            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            fontWeight = FontWeight.Bold,
+            fontSize = dimensionResource(
+                id = R.dimen.txt_size_12
+            ).value.sp
+        )
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.size_8dp)))
 
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .clickable { moveToOpenDetails() }
-                .background(
-                    color = MaterialTheme.appColors.material.surface.copy(0.9f),
-                    shape = RoundedCornerShape(
-                        dimensionResource(id = R.dimen.size_8dp)
-                    )
-                )
-
-        ) {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(dimensionResource(id = R.dimen.size_8dp)),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(
-                    modifier = Modifier.weight(1f),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    Text(
-                        text = match.pairs[0][0].name,
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = dimensionResource(
-                            id = R.dimen.txt_size_12
-                        ).value.sp
-                    )
-                    Spacer(modifier = Modifier.width(dimensionResource(R.dimen.size_12dp)))
-                    CoilImage(src = BuildConfig.IMAGE_SERVER + match.pairs[0][0].logo,
-                        modifier = Modifier
-                            .size(dimensionResource(id = R.dimen.size_32dp))
-                            .clip(CircleShape),
-                        isCrossFadeEnabled = false,
-                        onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
-                        onError = { Placeholder(R.drawable.ic_team_placeholder) })
-                }
-                Spacer(modifier = Modifier.width(dimensionResource(R.dimen.size_12dp)))
-                Text(
-                    text = stringResource(id = R.string.vs),
-                    color = MaterialTheme.appColors.textField.labelDark,
-                    fontWeight = FontWeight.W400,
-                    fontSize = dimensionResource(
-                        id = R.dimen.txt_size_12
-                    ).value.sp
-                )
-                Spacer(modifier = Modifier.width(dimensionResource(R.dimen.size_12dp)))
-                Row(
-                    modifier = Modifier.weight(1f),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
-                ) {
-                    Spacer(modifier = Modifier.width(dimensionResource(R.dimen.size_12dp)))
-
-                    CoilImage(src = BuildConfig.IMAGE_SERVER + match.pairs[0][1].logo,
-                        modifier = Modifier
-                            .size(dimensionResource(id = R.dimen.size_32dp))
-                            .clip(CircleShape),
-                        isCrossFadeEnabled = false,
-                        onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
-                        onError = { Placeholder(R.drawable.ic_team_placeholder) })
-                    Spacer(modifier = Modifier.width(dimensionResource(R.dimen.size_12dp)))
-                    Text(
-                        text = match.pairs[0][1].name,
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = dimensionResource(
-                            id = R.dimen.txt_size_12
-                        ).value.sp
-                    )
-
-                }
-
-
-            }
-            AppDivider(color = MaterialTheme.appColors.buttonColor.bckgroundDisabled)
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        horizontal = dimensionResource(id = R.dimen.size_8dp),
-                        vertical = dimensionResource(
-                            id = R.dimen.size_4dp
+        FlowRow {
+            match.pairs.forEach { item->
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = dimensionResource(id = R.dimen.size_8dp))
+                        .clickable { moveToOpenDetails() }
+                        .background(
+                            color = MaterialTheme.appColors.material.surface.copy(0.9f),
+                            shape = RoundedCornerShape(
+                                dimensionResource(id = R.dimen.size_8dp)
+                            )
                         )
-                    ), horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = event.address,
-                    color = MaterialTheme.appColors.textField.labelDark,
-                    fontWeight = FontWeight.W400,
-                    fontSize = dimensionResource(
-                        id = R.dimen.txt_size_12
-                    ).value.sp
-                )
-                Text(
-                    text = match.timeSlot,
-                    color = MaterialTheme.appColors.textField.labelDark,
-                    fontWeight = FontWeight.W400,
-                    fontSize = dimensionResource(
-                        id = R.dimen.txt_size_12
-                    ).value.sp
-                )
+
+                ) {
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(dimensionResource(id = R.dimen.size_8dp)),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(
+                            modifier = Modifier.weight(1f),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            Text(
+                                text = item.teams[0].name,
+                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = dimensionResource(
+                                    id = R.dimen.txt_size_12
+                                ).value.sp
+                            )
+                            Spacer(modifier = Modifier.width(dimensionResource(R.dimen.size_12dp)))
+                            CoilImage(src = BuildConfig.IMAGE_SERVER + item.teams[0].logo,
+                                modifier = Modifier
+                                    .size(dimensionResource(id = R.dimen.size_32dp))
+                                    .clip(CircleShape),
+                                isCrossFadeEnabled = false,
+                                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                                onError = { Placeholder(R.drawable.ic_team_placeholder) })
+                        }
+                        Spacer(modifier = Modifier.width(dimensionResource(R.dimen.size_12dp)))
+                        Text(
+                            text = stringResource(id = R.string.vs),
+                            color = MaterialTheme.appColors.textField.labelDark,
+                            fontWeight = FontWeight.W400,
+                            fontSize = dimensionResource(
+                                id = R.dimen.txt_size_12
+                            ).value.sp
+                        )
+                        Spacer(modifier = Modifier.width(dimensionResource(R.dimen.size_12dp)))
+                        Row(
+                            modifier = Modifier.weight(1f),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Spacer(modifier = Modifier.width(dimensionResource(R.dimen.size_12dp)))
+
+                            CoilImage(src = BuildConfig.IMAGE_SERVER + item.teams[1].logo,
+                                modifier = Modifier
+                                    .size(dimensionResource(id = R.dimen.size_32dp))
+                                    .clip(CircleShape),
+                                isCrossFadeEnabled = false,
+                                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                                onError = { Placeholder(R.drawable.ic_team_placeholder) })
+                            Spacer(modifier = Modifier.width(dimensionResource(R.dimen.size_12dp)))
+                            Text(
+                                text = item.teams[1].name,
+                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = dimensionResource(
+                                    id = R.dimen.txt_size_12
+                                ).value.sp
+                            )
+
+                        }
+                    }
+                    AppDivider(color = MaterialTheme.appColors.buttonColor.bckgroundDisabled)
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                horizontal = dimensionResource(id = R.dimen.size_8dp),
+                                vertical = dimensionResource(
+                                    id = R.dimen.size_4dp
+                                )
+                            ), horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = event.address,
+                            color = MaterialTheme.appColors.textField.labelDark,
+                            fontWeight = FontWeight.W400,
+                            fontSize = dimensionResource(
+                                id = R.dimen.txt_size_12
+                            ).value.sp
+                        )
+                        Text(
+                            text = match.pairs[0].divisionName,
+                            color = MaterialTheme.appColors.textField.labelDark,
+                            fontWeight = FontWeight.W400,
+                            fontSize = dimensionResource(
+                                id = R.dimen.txt_size_12
+                            ).value.sp
+                        )
+                    }
+                }
             }
         }
         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.size_8dp)))

@@ -209,8 +209,13 @@ data class EventDetail(
 )
 
 data class Matches(
-    @SerializedName("pairs") val pairs: List<List<Pairs>> = mutableListOf(),
+    @SerializedName("pairs") val pairs: List<Teams> = mutableListOf(),
     @SerializedName("timeSlot") val timeSlot: String = "",
+)
+
+data class Teams(
+    @SerializedName("teams") val teams: List<Pairs> = mutableListOf(),
+    @SerializedName("divisionName") val divisionName: String = "",
 )
 
 data class Pairs(
