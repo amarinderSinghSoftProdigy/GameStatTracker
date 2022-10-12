@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.maps.android.compose.*
 import com.softprodigy.ballerapp.BuildConfig
@@ -666,19 +667,52 @@ fun LocationBlock(location: Location, padding: Dp = dimensionResource(id = R.dim
                 .height(dimensionResource(id = R.dimen.size_160dp))
                 .fillMaxWidth()
         ) {
-            val cameraPositionState = rememberCameraPositionState {
-                position = CameraPosition.fromLatLngZoom(location.latLong, 15F)
-            }
-            GoogleMap(
-                uiSettings = MapUiSettings(compassEnabled = false, zoomControlsEnabled = false),
-                modifier = Modifier.fillMaxSize(),
-                cameraPositionState = cameraPositionState
-            ) {
-                Marker(
-                    state = MarkerState(position = location.latLong),
-                    title = location.address,
-                    snippet = location.city
-                )
+            val initialZoom = 6f
+            val finalZoom = 20f
+            val destinationLatLng = location.latLong//LatLng(destination.lat, destination.lng)
+
+            if (location.latLong.latitude != 0.0 && location.latLong.longitude != 0.0) {
+                val cameraPositionState = rememberCameraPositionState {
+                    position = CameraPosition.fromLatLngZoom(destinationLatLng, initialZoom)
+                }
+                LaunchedEffect(key1 = true) {
+                    cameraPositionState.move(CameraUpdateFactory.zoomIn())
+                    cameraPositionState.animate(
+                        update = CameraUpdateFactory.newCameraPosition(
+                            CameraPosition(destinationLatLng, finalZoom, 0f, 0f)
+                        ),
+                        durationMs = 1000
+                    )
+                }
+                GoogleMap(
+                    uiSettings = MapUiSettings(
+                        compassEnabled = false,
+                        zoomControlsEnabled = false
+                    ),
+                    modifier = Modifier.fillMaxSize(),
+                    cameraPositionState = cameraPositionState,
+                ) {
+                    Marker(
+                        state = MarkerState(position = location.latLong),
+                        title = location.address,
+                        snippet = location.city
+                    )
+                }
+            } else {
+                val cameraPositionState = rememberCameraPositionState {
+                    position = CameraPosition.fromLatLngZoom(destinationLatLng, initialZoom)
+                }
+                GoogleMap(
+                    uiSettings = MapUiSettings(compassEnabled = false, zoomControlsEnabled = false),
+                    modifier = Modifier.fillMaxSize(),
+                    cameraPositionState = cameraPositionState,
+                ) {
+                    Marker(
+                        state = MarkerState(position = location.latLong),
+                        title = location.address,
+                        snippet = location.city
+                    )
+                }
             }
         }
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))

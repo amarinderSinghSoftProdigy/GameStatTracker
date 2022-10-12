@@ -25,28 +25,31 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.home.events.EvEvents
+import com.softprodigy.ballerapp.ui.features.home.events.EventDetail
+import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
+import com.softprodigy.ballerapp.ui.features.home.events.Matches
 import com.softprodigy.ballerapp.ui.features.components.AppDivider
 import com.softprodigy.ballerapp.ui.features.components.CoilImage
 import com.softprodigy.ballerapp.ui.features.components.FoldableItem
 import com.softprodigy.ballerapp.ui.features.components.Placeholder
 import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
 import com.softprodigy.ballerapp.ui.theme.appColors
+import com.softprodigy.ballerapp.ui.utils.CommonUtils
 
 @Composable
 fun EventScheduleScreen(
-    vm: EventScheduleViewModel = hiltViewModel(),
+    vm: EventViewModel,
     moveToOpenDetails: (String) -> Unit,
 ) {
-
-    val state = vm.eventScheduleState.value
-    val stateEvent = vm.eventState.value
+    val state = vm.eventState.value
     val expand = remember { true }
 
     remember {
-        //vm.onEvent(EvEvents.GetSchedule(""))
+        vm.onEvent(EvEvents.GetSchedule(state.eventId))
     }
 
     Column(
@@ -55,7 +58,7 @@ fun EventScheduleScreen(
             .background(color = MaterialTheme.appColors.material.primary)
     ) {
         LazyColumn(Modifier.fillMaxWidth()) {
-            items(state.leagueSchedules) { item: LeagueScheduleModel ->
+            items(state.scheduleResponse) { item ->
                 FoldableItem(
                     expanded = expand,
                     headerBackground = MaterialTheme.appColors.material.surface,
@@ -63,8 +66,8 @@ fun EventScheduleScreen(
                     header = { isExpanded ->
                         EventScheduleHeaderItem(
                             isExpanded = isExpanded,
-                            date = item.date,
-                            gamesCount = item.gameCount
+                            date = CommonUtils.formatDateSingle(item._id),
+                            gamesCount = item.totalgames
                         )
                     },
                     childItems = item.matches,
@@ -74,13 +77,17 @@ fun EventScheduleScreen(
                     itemHorizontalPadding = 0.dp,
                     itemsBackground = MaterialTheme.appColors.material.primary,
                     item = { match, index ->
-                        EventScheduleSubItem(match, index) {
-                            moveToOpenDetails(match.divisions)
+                        EventScheduleSubItem(match, item.event, index) {
+                            //moveToOpenDetails(match.divisions)
                         }
                     }
                 )
             }
         }
+    }
+
+    if (state.showLoading) {
+        CommonProgressBar()
     }
 
 }
@@ -144,7 +151,12 @@ fun EventScheduleHeaderItem(date: String, gamesCount: String, isExpanded: Boolea
 }
 
 @Composable
-fun EventScheduleSubItem(match: Match, index: Int, moveToOpenDetails: () -> Unit) {
+fun EventScheduleSubItem(
+    match: Matches,
+    event: EventDetail,
+    index: Int,
+    moveToOpenDetails: () -> Unit
+) {
     if (index == 0) {
         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.size_8dp)))
     }
@@ -153,9 +165,8 @@ fun EventScheduleSubItem(match: Match, index: Int, moveToOpenDetails: () -> Unit
             .fillMaxWidth()
             .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
     ) {
-        if (index == 0) {
             Text(
-                text = match.time,
+                text = match.timeSlot,
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                 fontWeight = FontWeight.Bold,
                 fontSize = dimensionResource(
@@ -163,7 +174,7 @@ fun EventScheduleSubItem(match: Match, index: Int, moveToOpenDetails: () -> Unit
                 ).value.sp
             )
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.size_8dp)))
-        }
+
         Column(
             Modifier
                 .fillMaxWidth()
@@ -189,7 +200,7 @@ fun EventScheduleSubItem(match: Match, index: Int, moveToOpenDetails: () -> Unit
                     horizontalArrangement = Arrangement.End
                 ) {
                     Text(
-                        text = match.teamA.name,
+                        text = match.pairs[0][0].name,
                         color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                         fontWeight = FontWeight.Bold,
                         fontSize = dimensionResource(
@@ -197,7 +208,7 @@ fun EventScheduleSubItem(match: Match, index: Int, moveToOpenDetails: () -> Unit
                         ).value.sp
                     )
                     Spacer(modifier = Modifier.width(dimensionResource(R.dimen.size_12dp)))
-                    CoilImage(src = BuildConfig.IMAGE_SERVER + match.teamA.logo,
+                    CoilImage(src = BuildConfig.IMAGE_SERVER + match.pairs[0][0].logo,
                         modifier = Modifier
                             .size(dimensionResource(id = R.dimen.size_32dp))
                             .clip(CircleShape),
@@ -222,7 +233,7 @@ fun EventScheduleSubItem(match: Match, index: Int, moveToOpenDetails: () -> Unit
                 ) {
                     Spacer(modifier = Modifier.width(dimensionResource(R.dimen.size_12dp)))
 
-                    CoilImage(src = BuildConfig.IMAGE_SERVER + match.teamB.logo,
+                    CoilImage(src = BuildConfig.IMAGE_SERVER + match.pairs[0][1].logo,
                         modifier = Modifier
                             .size(dimensionResource(id = R.dimen.size_32dp))
                             .clip(CircleShape),
@@ -231,7 +242,7 @@ fun EventScheduleSubItem(match: Match, index: Int, moveToOpenDetails: () -> Unit
                         onError = { Placeholder(R.drawable.ic_team_placeholder) })
                     Spacer(modifier = Modifier.width(dimensionResource(R.dimen.size_12dp)))
                     Text(
-                        text = match.teamB.name,
+                        text = match.pairs[0][1].name,
                         color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                         fontWeight = FontWeight.Bold,
                         fontSize = dimensionResource(
@@ -255,7 +266,7 @@ fun EventScheduleSubItem(match: Match, index: Int, moveToOpenDetails: () -> Unit
                     ), horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = match.location,
+                    text = event.address,
                     color = MaterialTheme.appColors.textField.labelDark,
                     fontWeight = FontWeight.W400,
                     fontSize = dimensionResource(
@@ -263,7 +274,7 @@ fun EventScheduleSubItem(match: Match, index: Int, moveToOpenDetails: () -> Unit
                     ).value.sp
                 )
                 Text(
-                    text = match.divisions,
+                    text = match.timeSlot,
                     color = MaterialTheme.appColors.textField.labelDark,
                     fontWeight = FontWeight.W400,
                     fontSize = dimensionResource(

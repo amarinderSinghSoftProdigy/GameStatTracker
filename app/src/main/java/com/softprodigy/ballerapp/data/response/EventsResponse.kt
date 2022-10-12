@@ -3,6 +3,7 @@ package com.softprodigy.ballerapp.ui.features.home.events
 import androidx.compose.ui.graphics.Color
 import com.google.gson.annotations.SerializedName
 import com.softprodigy.ballerapp.data.request.Address
+import com.softprodigy.ballerapp.data.request.Location
 import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
 import com.softprodigy.ballerapp.ui.theme.ColorButtonRed
 import com.softprodigy.ballerapp.ui.theme.ColorMainPrimary
@@ -56,7 +57,7 @@ data class EventDetails(
     @SerializedName("coachId") val coachId: CoachId = CoachId(),
     @SerializedName("jerseyColor") val jerseyColor: String = "",
     @SerializedName("currentDate") val serverDate: String = "",
-    )
+)
 
 
 enum class EventStatus(val status: String) {
@@ -126,8 +127,8 @@ data class OpportunitiesDetail(
     @SerializedName("potentialDaysOfPlay") val potentialDaysOfPlay: List<DaysOfPlay> = mutableListOf(),
     @SerializedName("skillLevel") val skillLevel: List<String> = mutableListOf(),
     @SerializedName("participation") val participation: Participation = Participation(),
-    @SerializedName("location") val location: LocationData = LocationData(),
-    @SerializedName("registration") val registration: Boolean = false
+    @SerializedName("registration") val registration: Boolean = false,
+    @SerializedName("location") val location: Location = Location(),
 )
 
 data class DaysOfPlay(
@@ -152,10 +153,6 @@ data class Participation(
     @SerializedName("girlsMax") val girlsMax: String = "",
 )
 
-data class LocationData(
-    @SerializedName("type") val type: String = "",
-    //@SerializedName("coordinates") val coordinates: Any,
-)
 
 data class DivisionData(
     @SerializedName("_id") val _id: String = "",
@@ -187,4 +184,38 @@ data class CoachId(
     @SerializedName("_id") val Id: String = "",
     @SerializedName("name") val name: String = "",
     @SerializedName("profileImage") val profileImage: String = ""
+)
+
+data class ScheduleResponse(
+    @SerializedName("_id") val _id: String = "",
+    @SerializedName("totalgames") val totalgames: String = "",
+    @SerializedName("eventid") val eventid: String = "",
+    @SerializedName("divisionid") val divisionid: String = "",
+    @SerializedName("event") val event: EventDetail = EventDetail(),
+    @SerializedName("matches") val matches: List<Matches> = mutableListOf(),
+)
+
+data class EventDetail(
+    @SerializedName("_id") val _id: String = "",
+    @SerializedName("address") val address: String = "",
+    @SerializedName("city") val city: String = "",
+    @SerializedName("name") val name: String = "",
+    @SerializedName("state") val state: String = "",
+    @SerializedName("zip") val zip: String = "",
+    @SerializedName("locationDesc") val locationDesc: String = "",
+    @SerializedName("centralLocation") val centralLocation: String = "",
+    @SerializedName("logo") val logo: String = "",
+    @SerializedName("startDate") val startDate: String = "",
+    @SerializedName("location") val location: Location = Location(),
+)
+
+data class Matches(
+    @SerializedName("pairs") val pairs: List<List<Pairs>> = mutableListOf(),
+    @SerializedName("timeSlot") val timeSlot: String = "",
+)
+
+data class Pairs(
+    @SerializedName("_id") val _id: String = "",
+    @SerializedName("name") val name: String = "",
+    @SerializedName("logo") val logo: String = ""
 )

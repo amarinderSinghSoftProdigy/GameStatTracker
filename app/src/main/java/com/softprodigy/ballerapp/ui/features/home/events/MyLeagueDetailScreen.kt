@@ -19,6 +19,7 @@ import com.softprodigy.ballerapp.ui.features.home.events.team.EventTeamsScreen
 import com.softprodigy.ballerapp.ui.features.home.events.venues.VenuesScreen
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun MyLeagueDetailScreen(
     moveToOpenDetails: (String) -> Unit,
@@ -88,7 +89,7 @@ fun MyLeagueContent(
         modifier = Modifier.fillMaxSize()
     ) { index ->
         when (index) {
-            0 -> EventScheduleScreen(moveToOpenDetails = moveToOpenDetails)
+            0 -> EventScheduleScreen(eventViewModel, moveToOpenDetails = moveToOpenDetails)
             1 -> DivisionScreen(moveToOpenDivisions, eventViewModel)
             2 -> EventTeamsScreen(moveToOpenTeams, eventViewModel)
             3 -> VenuesScreen(moveToOpenVenues, eventViewModel)
