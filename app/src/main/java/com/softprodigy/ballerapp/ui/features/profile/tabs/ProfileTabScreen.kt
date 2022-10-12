@@ -120,6 +120,8 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
                         color = ColorBWBlack,
                         fontSize = dimensionResource(id = R.dimen.txt_size_20).value.sp
                     )
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
+
                     Row(
                         modifier = Modifier
                     ) {
@@ -144,9 +146,9 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
                     ) {
                         AppText(
                             text = stringResource(id = R.string.parents),
-                            style = MaterialTheme.typography.h6,
+                            style = MaterialTheme.typography.h5,
                             color = ColorBWBlack,
-                            fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp
+                            fontWeight = FontWeight.W500
                         )
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
                         FlowRow {
@@ -195,9 +197,9 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
                 Column {
                     AppText(
                         text = stringResource(id = R.string.jersey_pref),
-                        style = MaterialTheme.typography.h6,
+                        style = MaterialTheme.typography.h5,
                         color = ColorBWBlack,
-                        fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp
+                        fontWeight = FontWeight.W500
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
 
@@ -235,9 +237,9 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
                 Column {
                     AppText(
                         text = stringResource(id = R.string.fun_facts),
-                        style = MaterialTheme.typography.h6,
+                        style = MaterialTheme.typography.h5,
                         color = ColorBWBlack,
-                        fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp
+                       fontWeight = FontWeight.W500
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
 
@@ -266,7 +268,7 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
                 }
             }
 
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_80dp)))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
         }
     }
 
@@ -305,8 +307,9 @@ fun ProfileItem(type: String, value: String, imageUrl: String? = null) {
         ) {
             AppText(
                 text = type,
-                style = MaterialTheme.typography.h6,
-                color = ColorBWBlack
+                style = MaterialTheme.typography.h5,
+                color = ColorBWBlack,
+                fontWeight = FontWeight.W500
             )
             Row(
                 horizontalArrangement = Arrangement.Center,
@@ -370,10 +373,12 @@ fun ParentItem(
                 style = MaterialTheme.typography.h6,
                 color = ColorBWBlack
             )
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_5dp)))
             AppText(
                 text = relation,
-                style = MaterialTheme.typography.h5,
-                color = ColorBWGrayLight
+                style = MaterialTheme.typography.h6,
+                color = ColorBWGrayLight,
+                fontWeight = FontWeight.W500
             )
         }
 
@@ -418,9 +423,9 @@ fun TeamList(teams: SnapshotStateList<TeamDetails>) {
         ) {
             AppText(
                 text = stringResource(id = R.string.teams),
-                style = MaterialTheme.typography.h6,
+                style = MaterialTheme.typography.h5,
                 color = ColorBWBlack,
-                fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp
+                fontWeight = FontWeight.W500
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_14dp)))
             teams.forEach { team ->

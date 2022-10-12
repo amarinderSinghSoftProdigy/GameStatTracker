@@ -53,5 +53,6 @@ data class EventState(
     val formatList: ArrayList<Format> = arrayListOf(),
     val selectedGender: String = "",
     val selectedEventType: String = "",
-    val selectedFormat: String = ""
+    val selectedFormat: String = "",
+    val price: String? = null,
 )

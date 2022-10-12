@@ -131,7 +131,13 @@ fun Tabs(pagerState: PagerState, list: List<TabItems>) {
         contentColor = Color.White,
         indicator = { tabPositions ->
             TabRowDefaults.Indicator(
-                Modifier.pagerTabIndicatorOffset(pagerState, tabPositions),
+                Modifier
+                    .pagerTabIndicatorOffset(pagerState, tabPositions)
+                    .padding(
+                        horizontal = dimensionResource(
+                            id = R.dimen.size_8dp
+                        )
+                    ),
                 height = dimensionResource(id = R.dimen.size_2dp),
                 color = MaterialTheme.appColors.material.primaryVariant
             )
@@ -150,7 +156,7 @@ fun Tabs(pagerState: PagerState, list: List<TabItems>) {
                         Text(
                             stringResourceByName(name = item.stringId),
                             fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                            color = if (pagerState.currentPage == index) MaterialTheme.appColors.material.primaryVariant else MaterialTheme.appColors.textField.label
+                            color = if (pagerState.currentPage == index) MaterialTheme.appColors.buttonColor.bckgroundEnabled else MaterialTheme.appColors.textField.label
                         )
                     }
                 },
@@ -498,12 +504,17 @@ fun EventItem(
                             style = MaterialTheme.typography.h4
                         )
 
-                        /*if(events.startTime.toCharArray()[0] == "0"){
-
-                        }*/
+                        var startTime = events.startTime
+                        var endTime = events.endTime
+                        if (events.startTime[0] == '0') {
+                            startTime = events.startTime.drop(1)
+                        }
+                        if (events.endTime[0] == '0') {
+                            endTime = events.endTime.drop(1)
+                        }
 
                         Text(
-                            text = "${apiToUIDateFormat(events.date)} ${events.startTime} - ${events.endTime}",
+                            text = "${apiToUIDateFormat(events.date)} $startTime - $endTime",
                             color = ColorBWGrayLight,
                             style = MaterialTheme.typography.h4
                         )

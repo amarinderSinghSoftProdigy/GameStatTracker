@@ -32,6 +32,7 @@ import com.softprodigy.ballerapp.ui.features.components.AppDivider
 import com.softprodigy.ballerapp.ui.features.components.CoilImage
 import com.softprodigy.ballerapp.ui.features.components.FoldableItem
 import com.softprodigy.ballerapp.ui.features.components.Placeholder
+import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
@@ -128,13 +129,13 @@ fun EventScheduleHeaderItem(date: String, gamesCount: String, isExpanded: Boolea
                 contentDescription = "",
                 modifier = Modifier
                     .size(
-                        height = dimensionResource(id = R.dimen.size_4dp),
-                        width = dimensionResource(id = R.dimen.size_8dp)
+                        height = dimensionResource(id = R.dimen.size_12dp),
+                        width = dimensionResource(id = R.dimen.size_12dp)
                     )
                     .then(
-                        if (isExpanded) Modifier.rotate(180f) else Modifier
+                        if (isExpanded) Modifier else Modifier.rotate(180f)
                     ),
-                tint = MaterialTheme.appColors.buttonColor.textDisabled
+                tint = ColorGreyLighter
             )
         }
         AppDivider(color = MaterialTheme.appColors.buttonColor.bckgroundDisabled)

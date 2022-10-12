@@ -234,7 +234,6 @@ fun SelectTeamDialog(
                             },
                             modifier = Modifier
                                 .weight(1f),
-                            border = ButtonDefaults.outlinedBorder,
                             enabled = (selected?.name ?: "").isNotEmpty(),
                             onlyBorder = false,
                         )
@@ -1239,7 +1238,6 @@ fun SwitchTeamDialog(
                     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
                     LazyColumn(
                         modifier = Modifier.height(dimensionResource(id = R.dimen.size_200dp)),
-                        verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         items(teams) { team ->

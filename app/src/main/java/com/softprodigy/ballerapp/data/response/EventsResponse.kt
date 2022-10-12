@@ -127,6 +127,7 @@ data class OpportunitiesDetail(
     @SerializedName("skillLevel") val skillLevel: List<String> = mutableListOf(),
     @SerializedName("participation") val participation: Participation = Participation(),
     @SerializedName("location") val location: LocationData = LocationData(),
+    @SerializedName("registration") val registration: Boolean = false
 )
 
 data class DaysOfPlay(

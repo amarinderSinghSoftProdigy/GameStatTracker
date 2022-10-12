@@ -1,13 +1,11 @@
 package com.softprodigy.ballerapp.ui.features.home.events.opportunities
 
 import android.widget.Toast
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
@@ -40,6 +39,7 @@ fun EventRegistraionDetails(vm: EventViewModel, teamVm: TeamViewModel, onSuccess
     val context = LocalContext.current
     val state = vm.eventState.value
     val teamState = teamVm.teamUiState.value
+    val maxCash = 10
     remember {
         vm.onEvent(EvEvents.GetDivisions(state.selectedEventId))
     }
@@ -60,11 +60,11 @@ fun EventRegistraionDetails(vm: EventViewModel, teamVm: TeamViewModel, onSuccess
         vm.eventChannel.collect { uiEvent ->
             when (uiEvent) {
                 is EventChannel.ShowToast -> {
-                    Toast.makeText(
+                   /* Toast.makeText(
                         context,
                         uiEvent.message.asString(context),
                         Toast.LENGTH_LONG
-                    ).show()
+                    ).show()*/
                 }
                 is EventChannel.OnSuccess -> {
                     Toast.makeText(
@@ -187,7 +187,9 @@ fun EventRegistraionDetails(vm: EventViewModel, teamVm: TeamViewModel, onSuccess
                     onValueChange = {
                         if (it.isNotEmpty() || it != "0") {
                             showError.value = false
-                            vm.onEvent(EvEvents.RegisterCash(it))
+                            if (it.length <= maxCash) {
+                                vm.onEvent(EvEvents.RegisterCash(it))
+                            }
                         }
                     },
                     modifier = Modifier
@@ -249,46 +251,65 @@ fun EventRegistraionDetails(vm: EventViewModel, teamVm: TeamViewModel, onSuccess
                 }
             }
         }
-        UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-            ) {
-                CustomCheckBox(
-                    state.registerRequest.termsAndCondition
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+            color = Color.White,
+            elevation = 1.dp,
+            shape = RoundedCornerShape(
+                dimensionResource(id = R.dimen.size_8dp)
+            )
+        ) {
+            Column {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                 ) {
-                    vm.onEvent(EvEvents.RegisterTerms(!state.registerRequest.termsAndCondition))
+                    CustomCheckBox(
+                        state.registerRequest.termsAndCondition
+                    ) {
+                        vm.onEvent(EvEvents.RegisterTerms(!state.registerRequest.termsAndCondition))
+                    }
+                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_20dp)))
+                    AppText(
+                        text = stringResource(id = R.string.i_agree) + " ",
+                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                        color = md_theme_light_onSurface,
+                    )
+                    AppText(
+                        text = stringResource(id = R.string.terms_cond),
+                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                        color = ColorMainPrimary,
+                    )
                 }
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_20dp)))
-                AppText(
-                    text = stringResource(id = R.string.i_agree) + " ",
-                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                    color = md_theme_light_onSurface,
-                )
-                AppText(
-                    text = stringResource(id = R.string.terms_cond),
-                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                    color = ColorMainPrimary,
-                )
-            }
-            DividerCommon()
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-            ) {
-                CustomCheckBox(
-                    state.registerRequest.privacy
-                ) {
-                    vm.onEvent(EvEvents.RegisterPrivacy(!state.registerRequest.privacy))
+                DividerCommon()
+                Surface(color = MaterialTheme.appColors.material.primary)
+                {
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                    ) {
+
+                        CustomCheckBox(
+                            state.registerRequest.privacy
+                        ) {
+                            vm.onEvent(EvEvents.RegisterPrivacy(!state.registerRequest.privacy))
+                        }
+
+                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_20dp)))
+
+                        AppText(
+                            text = stringResource(id = R.string.privacy),
+                            fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                            color = ColorMainPrimary,
+                        )
+
+                    }
                 }
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_20dp)))
-                AppText(
-                    text = stringResource(id = R.string.privacy),
-                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                    color = ColorMainPrimary,
-                )
             }
 
         }
@@ -318,7 +339,8 @@ fun EventRegistraionDetails(vm: EventViewModel, teamVm: TeamViewModel, onSuccess
                 if (message.isNotEmpty()) {
                     vm.onEvent(EvEvents.ShowToast(message))
                 } else {
-                    vm.onEvent(EvEvents.RegisterForEvent)
+                    if (!showError.value)
+                        vm.onEvent(EvEvents.RegisterForEvent)
                 }
             },
             text = stringResource(id = R.string.register),

@@ -225,6 +225,12 @@ fun NavControllerComposable(
 ) {
     val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = hiltViewModel()
     var eventTitle by rememberSaveable { mutableStateOf("") }
+    var teamLogo by rememberSaveable {
+        mutableStateOf("")
+    }
+    var eventMainTitle by rememberSaveable {
+        mutableStateOf("")
+    }
     val dataStoreManager = DataStoreManager(LocalContext.current)
     val role = dataStoreManager.getRole.collectAsState(initial = "")
     NavHost(navController, startDestination = Route.HOME_SCREEN) {
@@ -288,7 +294,7 @@ fun NavControllerComposable(
                     topBar = TopBar.PROFILE,
                 )
             )
-            ProfileScreen()
+            ProfileScreen(updateTopBar = {homeViewModel.setTopBar(it)} )
         }
 
         composable(route = Route.ADD_PROFILE_SCREEN) {
@@ -308,7 +314,6 @@ fun NavControllerComposable(
                     topBar = TopBar.EDIT_PROFILE,
                 )
             )
-
             if (role.value == UserType.REFEREE.key) {
                 RefereeEditScreen(onBackClick = { navController.popBackStack() }) {
                     navController.popBackStack()
@@ -371,7 +376,7 @@ fun NavControllerComposable(
                 showDialog = showDialog,
                 dismissDialog = { homeViewModel.setDialog(it) },
                 moveToDetail = {
-                    eventTitle = it
+                    eventMainTitle = it
                     navController.navigate(Route.LEAGUE_DETAIL_SCREEN)
                 },
                 moveToPracticeDetail = { eventId, eventName ->
@@ -458,7 +463,7 @@ fun NavControllerComposable(
         composable(route = Route.LEAGUE_DETAIL_SCREEN) {
             homeViewModel.setTopBar(
                 TopBarData(
-                    label = eventTitle,
+                    label = eventMainTitle,
                     topBar = TopBar.MY_LEAGUE
                 )
             )
@@ -474,8 +479,9 @@ fun NavControllerComposable(
                 }, moveToOpenDivisions = { divisionName, divisionId ->
                     eventTitle = divisionName
                     navController.navigate(Route.DIVISION_TAB + "/${divisionId}")
-                }, moveToOpenTeams = {
-                    eventTitle = it
+                }, moveToOpenTeams = { title, logo ->
+                    eventTitle = title
+                    teamLogo = logo
                     navController.navigate(Route.TEAM_TAB)
                 },
                 eventViewModel = eventViewModel
@@ -724,6 +730,7 @@ fun NavControllerComposable(
                 TopBarData(
                     label = eventTitle,
                     topBar = TopBar.TEAM_TAB,
+                    logo = teamLogo
                 )
             )
             EventTeamTabs(vm = teamViewModel)
