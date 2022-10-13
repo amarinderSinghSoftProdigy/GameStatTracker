@@ -3,8 +3,7 @@ package com.softprodigy.ballerapp.ui.features.components
 import androidx.annotation.FloatRange
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,19 +20,25 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.takeOrElse
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.*
+import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupPositionProvider
+import androidx.compose.ui.window.PopupProperties
+import androidx.core.graphics.ColorUtils
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -47,6 +52,7 @@ import com.softprodigy.ballerapp.ui.theme.ButtonColor
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
 import com.softprodigy.ballerapp.ui.theme.appColors
 import com.softprodigy.ballerapp.ui.utils.CommonUtils
+import kotlinx.coroutines.delay
 
 @Composable
 fun stringResourceByName(name: String): String {
@@ -666,5 +672,182 @@ fun LocationBlock(location: Location, padding: Dp = dimensionResource(id = R.dim
             }
         }
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
+    }
+}
+
+@Composable
+fun Tooltip(
+    expanded: MutableState<Boolean>,
+    modifier: Modifier = Modifier,
+    timeoutMillis: Long = TooltipTimeout,
+    backgroundColor: Color = Color.Black,
+    offset: DpOffset = DpOffset(0.dp, 0.dp),
+    properties: PopupProperties = PopupProperties(focusable = true),
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    val expandedStates = remember { MutableTransitionState(false) }
+    expandedStates.targetState = expanded.value
+
+    if (expandedStates.currentState || expandedStates.targetState) {
+        if (expandedStates.isIdle) {
+            LaunchedEffect(timeoutMillis, expanded) {
+                delay(timeoutMillis)
+                expanded.value = false
+            }
+        }
+
+        Popup(
+            onDismissRequest = { expanded.value = false },
+            popupPositionProvider = DropdownMenuPositionProvider(offset, LocalDensity.current),
+            properties = properties,
+        ) {
+            Box(
+                // Add space for elevation shadow
+                modifier = Modifier.padding(TooltipElevation),
+            ) {
+                TooltipContent(expandedStates, backgroundColor, modifier, content)
+            }
+        }
+    }
+}
+
+
+/** @see androidx.compose.material.DropdownMenuContent */
+@Composable
+private fun TooltipContent(
+    expandedStates: MutableTransitionState<Boolean>,
+    backgroundColor: Color,
+    modifier: Modifier,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    // Tooltip open/close animation.
+    val transition = updateTransition(expandedStates, "Tooltip")
+
+    val alpha by transition.animateFloat(
+        label = "alpha",
+        transitionSpec = {
+            if (false isTransitioningTo true) {
+                // Dismissed to expanded
+                tween(durationMillis = InTransitionDuration)
+            } else {
+                // Expanded to dismissed.
+                tween(durationMillis = OutTransitionDuration)
+            }
+        }
+    ) { if (it) 1f else 0f }
+
+    Card(
+        backgroundColor = backgroundColor.copy(alpha = 0.75f),
+        contentColor = MaterialTheme.colors.contentColorFor(backgroundColor)
+            .takeOrElse { backgroundColor.onColor() },
+        modifier = Modifier.alpha(alpha),
+        elevation = TooltipElevation,
+    ) {
+        val p = TooltipPadding
+        Column(
+            modifier = modifier
+                .padding(start = p, top = p * 0.5f, end = p, bottom = p * 0.7f)
+                .width(IntrinsicSize.Max),
+            content = content,
+        )
+    }
+}
+
+private val TooltipElevation = 16.dp
+private val TooltipPadding = 10.dp
+
+// Tooltip open/close animation duration.
+private const val InTransitionDuration = 64
+private const val OutTransitionDuration = 240
+
+// Default timeout before tooltip close
+private const val TooltipTimeout = 2_000L - OutTransitionDuration
+
+
+// Color utils
+
+/**
+ * Calculates an 'on' color for this color.
+ *
+ * @return [Color.Black] or [Color.White], depending on [isLightColor].
+ */
+fun Color.onColor(): Color {
+    return if (isLightColor()) Color.Black else Color.White
+}
+
+/**
+ * Calculates if this color is considered light.
+ *
+ * @return true or false, depending on the higher contrast between [Color.Black] and [Color.White].
+ *
+ */
+fun Color.isLightColor(): Boolean {
+    val contrastForBlack = calculateContrastFor(foreground = Color.Black)
+    val contrastForWhite = calculateContrastFor(foreground = Color.White)
+    return contrastForBlack > contrastForWhite
+}
+
+fun Color.calculateContrastFor(foreground: Color): Double {
+    return ColorUtils.calculateContrast(foreground.toArgb(), toArgb())
+}
+
+@Immutable
+internal data class DropdownMenuPositionProvider(
+    val contentOffset: DpOffset,
+    val density: Density,
+    val onPositionCalculated: (IntRect, IntRect) -> Unit = { _, _ -> }
+) : PopupPositionProvider {
+    override fun calculatePosition(
+        anchorBounds: IntRect,
+        windowSize: IntSize,
+        layoutDirection: LayoutDirection,
+        popupContentSize: IntSize
+    ): IntOffset {
+        // The min margin above and below the menu, relative to the screen.
+        val verticalMargin = with(density) { 48.dp.roundToPx() }
+        // The content offset specified using the dropdown offset parameter.
+        val contentOffsetX = with(density) { contentOffset.x.roundToPx() }
+        val contentOffsetY = with(density) { contentOffset.y.roundToPx() }
+
+        // Compute horizontal position.
+        val toRight = anchorBounds.left + contentOffsetX
+        val toLeft = anchorBounds.right - contentOffsetX - popupContentSize.width
+        val toDisplayRight = windowSize.width - popupContentSize.width
+        val toDisplayLeft = 0
+        val x = if (layoutDirection == LayoutDirection.Ltr) {
+            sequenceOf(
+                toRight,
+                toLeft,
+                // If the anchor gets outside of the window on the left, we want to position
+                // toDisplayLeft for proximity to the anchor. Otherwise, toDisplayRight.
+                if (anchorBounds.left >= 0) toDisplayRight else toDisplayLeft
+            )
+        } else {
+            sequenceOf(
+                toLeft,
+                toRight,
+                // If the anchor gets outside of the window on the right, we want to position
+                // toDisplayRight for proximity to the anchor. Otherwise, toDisplayLeft.
+                if (anchorBounds.right <= windowSize.width) toDisplayLeft else toDisplayRight
+            )
+        }.firstOrNull {
+            it >= 0 && it + popupContentSize.width <= windowSize.width
+        } ?: toLeft
+
+        // Compute vertical position.
+        val toBottom = maxOf(anchorBounds.bottom + contentOffsetY, verticalMargin)
+        val toTop = anchorBounds.top - contentOffsetY - popupContentSize.height
+        val toCenter = anchorBounds.top - popupContentSize.height / 2
+        val toDisplayBottom = windowSize.height - popupContentSize.height - verticalMargin
+        val y = sequenceOf(toBottom, toTop, toCenter, toDisplayBottom).firstOrNull {
+            it >= verticalMargin &&
+                    it + popupContentSize.height <= windowSize.height - verticalMargin
+        } ?: toTop
+
+        onPositionCalculated(
+            anchorBounds,
+            IntRect(x, y, x + popupContentSize.width, y + popupContentSize.height)
+        )
+        return IntOffset(x, y)
     }
 }

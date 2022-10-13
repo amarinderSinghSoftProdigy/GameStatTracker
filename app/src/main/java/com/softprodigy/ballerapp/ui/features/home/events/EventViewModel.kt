@@ -188,7 +188,7 @@ class EventViewModel @Inject constructor(
                 }
             }
             is EvEvents.GetDivisions -> {
-                onEvent(EvEvents.ClearRegister)
+//                onEvent(EvEvents.ClearRegister)
                 viewModelScope.launch {
                     getEventDivisions(event.id)
                 }

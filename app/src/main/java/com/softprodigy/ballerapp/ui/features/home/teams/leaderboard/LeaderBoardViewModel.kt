@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.UserStorage
@@ -39,9 +40,9 @@ class LeaderBoardViewModel @Inject constructor(
 //    }
 
     init {
-        viewModelScope.launch {
+      /*  viewModelScope.launch {
             getLeaderBoard()
-        }
+        }*/
         // TODO: temp data for design
 //        _leaderUiState.value = LeaderBoardUiState(
 //            leaders = mutableListOf(
@@ -105,6 +106,7 @@ class LeaderBoardViewModel @Inject constructor(
         dataStoreManager.getId.collect {
 //            val leaderReponse = teamRepo.getLeaderBoard(it)
             val leaderReponse = teamRepo.getLeaderBoard(UserStorage.teamId)
+
             _leaderUiState.value =
                 _leaderUiState.value.copy(
                     isLoading = false
@@ -119,10 +121,10 @@ class LeaderBoardViewModel @Inject constructor(
                             )
                         )
                     )
-                    _leaderUiState.value =
+                   /* _leaderUiState.value =
                         _leaderUiState.value.copy(
                             isLoading = false
-                        )
+                        )*/
                 }
                 is ResultWrapper.NetworkError -> {
                     _leaderChannel.send(
@@ -132,10 +134,10 @@ class LeaderBoardViewModel @Inject constructor(
                             )
                         )
                     )
-                    _leaderUiState.value =
+                    /*_leaderUiState.value =
                         _leaderUiState.value.copy(
                             isLoading = false
-                        )
+                        )*/
                 }
                 is ResultWrapper.Success -> {
                     leaderReponse.value.let { response ->
@@ -144,13 +146,13 @@ class LeaderBoardViewModel @Inject constructor(
                                 _leaderUiState.value.copy(
                                     players = response.data.players,
                                     leaderBoard = response.data.teamLeaderBoard,
-                                    isLoading = false,
+//                                    isLoading = false,
                                     leaders = response.data.players
 
                                 )
                         } else {
-                            _leaderUiState.value =
-                                _leaderUiState.value.copy(isLoading = false)
+                           /* _leaderUiState.value =
+                                _leaderUiState.value.copy(isLoading = false)*/
                             _leaderChannel.send(
                                 LeaderBoardChannel.ShowToast(
                                     UiText.DynamicString(
@@ -170,6 +172,9 @@ class LeaderBoardViewModel @Inject constructor(
             is LeaderBoardUIEvent.OnLeaderSelected -> {
                 _leaderUiState.value =
                     _leaderUiState.value.copy(selectedLeader = event.leader)
+            }
+            LeaderBoardUIEvent.RefreshLeaderBoardDat -> {
+                viewModelScope.launch { getLeaderBoard() }
             }
         }
     }
