@@ -182,7 +182,7 @@ fun pointListItem(
                     onDismissRequest = {
                         expanded = false
                     },
-                    modifier = Modifier.background(colorResource(id = R.color.game_box_bg_color), RoundedCornerShape(
+                    modifier = Modifier.background(colorResource(id = R.color.game_bg_color), RoundedCornerShape(
                         dimensionResource(id = R.dimen.size_8dp))),
                 ) {
                     // adding items

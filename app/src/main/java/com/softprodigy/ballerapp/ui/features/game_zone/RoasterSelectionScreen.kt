@@ -38,7 +38,7 @@ fun RoasterSelectionScreen()  {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(id = R.color.game_roaster_selection_bg_color))
+            .background(colorResource(id = R.color.game_bg_color))
     ) {
         Column(
             Modifier

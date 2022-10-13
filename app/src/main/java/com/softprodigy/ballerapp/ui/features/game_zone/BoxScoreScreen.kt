@@ -33,7 +33,7 @@ fun BoxScoreScreen()  {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(id = R.color.game_box_bg_color))
+            .background(colorResource(id = R.color.game_bg_color))
     ) {
         Column(
             Modifier

@@ -49,7 +49,6 @@ class GameZoneActivity : ComponentActivity() {
                         ) {
                             NavControllerComposable(
                                 navController = navController,
-
                                 fromSplash = fromSplash
                             )
                         }
@@ -66,12 +65,23 @@ fun NavControllerComposable(
     navController: NavHostController = rememberNavController(),
     fromSplash: Boolean = false
 ) {
-    val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = hiltViewModel()
-    NavHost(navController, startDestination = Route.GAME_ZONE_SCREEN) {
+
+
+    NavHost(navController, startDestination = Route.GAME_SETTINGS) {
+        composable(route = Route.OVERVIEW_SCREEN) {
+            OverviewScreen()
+        }
+
         composable(route = Route.GAME_ZONE_SCREEN) {
-            //OverviewScreen()
-            //BoxScoreScreen()
             RoasterSelectionScreen()
+        }
+
+        composable(route = Route.BOX_SCORE_SCREEN) {
+            BoxScoreScreen();
+        }
+
+        composable(route = Route.GAME_SETTINGS) {
+            GameSettingsScreen()
         }
     }
 }

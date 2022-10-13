@@ -234,6 +234,16 @@
     <string name="delete">Delete</string>
     <string name="add_new">Add New</string>
 
+    <string name="game_settings">Game Settings</string>
+    <string name="periods">Periods</string>
+    <string name="period_length">Period Length</string>
+    <string name="free_throws">Free Throws</string>
+    <string name="full_timeouts_per">Full Periods Per</string>
+    <string name="thirty_sec_timeouts_per">30 sec Timeouts Per</string>
+    <string name="halftime_length">Halftime Length</string>
+    <string name="shot_clock">Shot Clock</string>
+    <string name="fouling_out">Fouling Out</string>
+
     <string-array name="game_settings">
         <item>@string/exit</item>
         <item>@string/settings</item>
