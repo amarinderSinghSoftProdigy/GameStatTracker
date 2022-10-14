@@ -52,6 +52,7 @@ import com.softprodigy.ballerapp.ui.features.home.manage_team.MainManageTeamScre
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
+import com.softprodigy.ballerapp.ui.features.home.webview.CommonWebView
 import com.softprodigy.ballerapp.ui.features.profile.AddProfileScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileEditScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileScreen
@@ -231,6 +232,9 @@ fun NavControllerComposable(
     var eventMainTitle by rememberSaveable {
         mutableStateOf("")
     }
+    var url by rememberSaveable {
+        mutableStateOf("")
+    }
     val dataStoreManager = DataStoreManager(LocalContext.current)
     val role = dataStoreManager.getRole.collectAsState(initial = "")
     NavHost(navController, startDestination = Route.HOME_SCREEN) {
@@ -294,7 +298,7 @@ fun NavControllerComposable(
                     topBar = TopBar.PROFILE,
                 )
             )
-            ProfileScreen(updateTopBar = {homeViewModel.setTopBar(it)} )
+            ProfileScreen(updateTopBar = { homeViewModel.setTopBar(it) })
         }
 
         composable(route = Route.ADD_PROFILE_SCREEN) {
@@ -365,11 +369,11 @@ fun NavControllerComposable(
                 })
         }
         composable(route = Route.EVENTS_SCREEN) {
-            homeViewModel.setTopBar(
-                TopBarData(
-                    topBar = TopBar.MY_EVENT,
-                )
-            )
+            /* homeViewModel.setTopBar(
+                 TopBarData(
+                     topBar = TopBar.MY_EVENT,
+                 )
+             )*/
             EventsScreen(
                 teamViewModel,
                 eventViewModel,
@@ -440,12 +444,19 @@ fun NavControllerComposable(
                 }
 
             } else {
-                EventRegistraionDetails(eventViewModel, teamViewModel) {
+                EventRegistraionDetails(eventViewModel, teamViewModel, moveToPrivacy = {
+                    url = it
+                    navController.navigate(Route.WEB_VIEW)
+                }, moveToTermsAndConditions = {
+                    url = it
+                    navController.navigate(Route.WEB_VIEW)
+                }) {
                     navController.navigate(Route.EVENT_REGISTRATION_SUCCESS)
                 }
             }
-
         }
+
+
 
         composable(route = Route.EVENT_REGISTRATION_SUCCESS) {
             homeViewModel.setTopBar(
@@ -757,6 +768,16 @@ fun NavControllerComposable(
                     ?.set("venue", it)
                 navController.popBackStack()
             })
+        }
+
+        composable(route = Route.WEB_VIEW) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = "",
+                    topBar = TopBar.SINGLE_LABEL_BACK,
+                )
+            )
+            CommonWebView(url)
         }
     }
 }

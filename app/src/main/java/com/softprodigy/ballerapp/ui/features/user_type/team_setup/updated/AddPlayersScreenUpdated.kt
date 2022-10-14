@@ -136,19 +136,19 @@ fun AddPlayersScreenUpdated(
                     Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp))
                 ) {
 
-                /*    Row(
-                        Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.Top
-                    ) {
-                        AppSearchOutlinedTextField(
-                            modifier = Modifier
-                                .weight(1f)
-                                .focusRequester(focusRequester),
-                            value = state.coachName,
-//                            readOnly=true,
-                            onValueChange = { name ->
-                                *//*  if (name.length <= maxChar)
+                    /*    Row(
+                            Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.Top
+                        ) {
+                            AppSearchOutlinedTextField(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .focusRequester(focusRequester),
+                                value = state.coachName,
+    //                            readOnly=true,
+                                onValueChange = { name ->
+                                    *//*  if (name.length <= maxChar)
                                       vm.onEvent(
                                           TeamSetupUIEventUpdated.OnNameValueChange(
                                               index = index,
@@ -379,7 +379,7 @@ fun AddPlayersScreenUpdated(
                         Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        items(state.inviteMemberCount) { index ->
+                        items(count = state.inviteMemberCount) { index ->
                             Column(Modifier.fillMaxSize()) {
 
                                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))

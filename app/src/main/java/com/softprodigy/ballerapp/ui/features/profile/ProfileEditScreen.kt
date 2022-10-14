@@ -86,7 +86,6 @@ fun ProfileEditScreen(
     val context = LocalContext.current
     val focusRequester = FocusRequester()
 
-
     // Declaring integer values
     // for year, month and day
     val mYear: Int
@@ -198,7 +197,6 @@ fun ProfileEditScreen(
                             imeAction = ImeAction.Next,
                             capitalization = KeyboardCapitalization.Sentences,
                             keyboardType = KeyboardType.Email
-
                         ),
                         isError = !validName(state.user.lastName) && state.user.lastName.isNotEmpty() || state.user.lastName.length > 30,
                     )

@@ -66,6 +66,7 @@ object Route {
     const val OPEN_VENUE = "openVenue"
     const val DIVISION_TAB = "divisionTab"
     const val TEAM_TAB = "teamTab"
+    const val WEB_VIEW = "webview"
 }
 
 object ApiConstants {

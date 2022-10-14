@@ -51,14 +51,15 @@ fun LeaderBoardScreen(vm: LeaderBoardViewModel = hiltViewModel()) {
         vm.onEvent(LeaderBoardUIEvent.OnLeaderSelected(leader))
     }
     Box {
-        val pagerState = rememberPagerState(
-            pageCount = state.leaderBoard.size,
-            initialOffScreenLimit = 1,
-        )
+
         if (state.isLoading) {
             CommonProgressBar()
-        } else if (state.leaderBoard.isNotEmpty()) {
+        } else if (state.leaders.isNotEmpty()) {
             Column(Modifier.fillMaxSize()) {
+                val pagerState = rememberPagerState(
+                    pageCount = state.leaderBoard.size,
+                    initialOffScreenLimit = 1,
+                )
                 Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
                 LeaderTopTabs(pagerState, state.leaderBoard)
                 Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))

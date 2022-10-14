@@ -485,6 +485,7 @@ private fun PreferenceItem(
                     text = firstKey,
                     style = MaterialTheme.typography.h5,
                     color = ColorBWGrayLight,
+                    modifier = Modifier.height(dimensionResource(id = R.dimen.size_35dp))
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_5dp)))
                 AppText(
@@ -501,7 +502,8 @@ private fun PreferenceItem(
                 AppText(
                     text = secondKey,
                     style = MaterialTheme.typography.h5,
-                    color = ColorBWGrayLight
+                    color = ColorBWGrayLight,
+                    modifier = Modifier.height(dimensionResource(id = R.dimen.size_35dp))
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_5dp)))
                 AppText(
@@ -509,9 +511,7 @@ private fun PreferenceItem(
                     style = MaterialTheme.typography.h5,
                     color = ColorBWBlack
                 )
-
             }
-
         }
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_5dp)))
     }

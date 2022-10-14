@@ -35,7 +35,13 @@ import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.theme.*
 
 @Composable
-fun EventRegistraionDetails(vm: EventViewModel, teamVm: TeamViewModel, onSuccess: () -> Unit) {
+fun EventRegistraionDetails(
+    vm: EventViewModel,
+    teamVm: TeamViewModel,
+    moveToPrivacy: (String) -> Unit,
+    moveToTermsAndConditions: (String) -> Unit,
+    onSuccess: () -> Unit
+) {
     val context = LocalContext.current
     val state = vm.eventState.value
     val teamState = teamVm.teamUiState.value
@@ -60,11 +66,11 @@ fun EventRegistraionDetails(vm: EventViewModel, teamVm: TeamViewModel, onSuccess
         vm.eventChannel.collect { uiEvent ->
             when (uiEvent) {
                 is EventChannel.ShowToast -> {
-                   /* Toast.makeText(
-                        context,
-                        uiEvent.message.asString(context),
-                        Toast.LENGTH_LONG
-                    ).show()*/
+                    /* Toast.makeText(
+                         context,
+                         uiEvent.message.asString(context),
+                         Toast.LENGTH_LONG
+                     ).show()*/
                 }
                 is EventChannel.OnSuccess -> {
                     Toast.makeText(
@@ -282,6 +288,9 @@ fun EventRegistraionDetails(vm: EventViewModel, teamVm: TeamViewModel, onSuccess
                         text = stringResource(id = R.string.terms_cond),
                         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                         color = ColorMainPrimary,
+                        modifier = Modifier.clickable {
+                            moveToTermsAndConditions("")
+                        }
                     )
                 }
                 DividerCommon()
@@ -306,6 +315,9 @@ fun EventRegistraionDetails(vm: EventViewModel, teamVm: TeamViewModel, onSuccess
                             text = stringResource(id = R.string.privacy),
                             fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                             color = ColorMainPrimary,
+                            modifier = Modifier.clickable {
+                                moveToPrivacy("")
+                            }
                         )
 
                     }
