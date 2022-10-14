@@ -49,6 +49,7 @@ object Route {
     const val OVERVIEW_SCREEN = "overviewScreen"
     const val BOX_SCORE_SCREEN = "boxScoreScreen"
     const val GAME_SETTINGS = "gameSettings"
+    const val TIMEOUTS = "timeouts"
 }
 
 object ApiConstants {

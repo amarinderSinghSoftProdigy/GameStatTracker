@@ -93,7 +93,7 @@ fun BoxScoreScreen()  {
                 ) {
                     teamLogo();
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
-                    teamTitle("My Team name", endPadding = dimensionResource(id = R.dimen.size_8dp));
+                    teamTitle(title = "My Team name", modifier = Modifier.padding(start = 0.dp, top = 0.dp, end = dimensionResource(id = R.dimen.size_8dp), bottom = 0.dp))
                 }
 
                 Row(
@@ -112,7 +112,8 @@ fun BoxScoreScreen()  {
                     Modifier.fillMaxHeight(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    teamTitle("Other Team name", endPadding = dimensionResource(id = R.dimen.size_8dp))
+                    teamTitle(title = "Other Team name", modifier = Modifier.padding(start = 0.dp, top = 0.dp, end = dimensionResource(id = R.dimen.size_8dp), bottom = 0.dp)
+                    )
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
                     teamLogo();
                 }

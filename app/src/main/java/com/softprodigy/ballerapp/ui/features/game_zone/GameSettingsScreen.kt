@@ -52,50 +52,50 @@ fun GameSettingsScreen()  {
             )
             gameSettingViews()
         }
-
-
     }
 }
 
 @Composable
 private fun gameSettingsNavigation() {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .height(dimensionResource(id = R.dimen.size_46dp))
-            .background(Color.Transparent.copy(alpha = .75f))
-          ,
-        verticalAlignment = Alignment.CenterVertically,
-
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .height(dimensionResource(id = R.dimen.size_46dp)),
+        contentAlignment = Alignment.CenterEnd
     ) {
-        Box(
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(),
+            verticalAlignment = Alignment.CenterVertically,
+
+            ) {
+            AppText(
+                text = stringResource(id = R.string.game_settings),
+                color = colorResource(id = R.color.game_settings_title_color),
+                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                maxLines = 1,
+                textAlign = TextAlign.Center,
+                fontFamily = rubikFamily,
+                fontWeight = FontWeight.W500,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(end = dimensionResource(id = R.dimen.size_10dp))
+                .align(Alignment.TopEnd),
+            verticalArrangement = Arrangement.Center
         ) {
             ImageButton(
                 icon = painterResource(id = R.drawable.ic_wrong_white),
                 modifier = Modifier
-                    .width(dimensionResource(id = R.dimen.size_35dp))
-                    .height(dimensionResource(id = R.dimen.size_35dp))
-                    //.padding(all = dimensionResource(id = R.dimen.size_10dp))
-                    .align(Alignment.CenterEnd)
-                    .background(Color.Red)
-                ,
-
+                    .width(dimensionResource(id = R.dimen.size_24dp))
+                    .height(dimensionResource(id = R.dimen.size_24dp)),
                 onClick = { /*TODO*/ },
             )
         }
-
-        AppText(
-            text = stringResource(id = R.string.game_settings),
-            color = colorResource(id = R.color.game_settings_title_color),
-            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-            maxLines = 1,
-            textAlign = TextAlign.Center,
-            fontFamily = rubikFamily,
-            fontWeight = FontWeight.W500,
-            modifier = Modifier
-                .fillMaxWidth()
-
-        )
     }
 }
 

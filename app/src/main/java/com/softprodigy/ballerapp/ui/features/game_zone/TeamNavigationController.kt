@@ -73,7 +73,7 @@ inline fun teamHandler() {
             ) {
                 teamLogo();
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                teamTitle("My Team", endPadding = dimensionResource(id = R.dimen.size_8dp));
+                teamTitle(title ="My Team", modifier = Modifier.padding(start = 0.dp, top = 0.dp, end = dimensionResource(id = R.dimen.size_8dp), bottom = 0.dp));
             }
         }
 
@@ -125,10 +125,7 @@ inline fun teamHandler() {
                 Modifier.fillMaxHeight(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                teamTitle(
-                    "Other Team",
-                    startPadding = dimensionResource(id = R.dimen.size_8dp)
-                );
+                teamTitle(title = "Other Team", modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_8dp), top = 0.dp, end = 0.dp, bottom = 0.dp))
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
                 teamLogo(logoColor = Color.Blue);
             }
@@ -165,14 +162,15 @@ inline fun teamLogo(logoSource :String = "", logoColor: Color = Color.Red, alpha
 }
 
 @Composable
-inline fun teamTitle(title: String = "", startPadding: Dp = 0.dp, endPadding: Dp = 0.dp, alpha: Float? = 1f) {
+inline fun teamTitle(title: String = "", modifier: Modifier = Modifier, alpha: Float? = 1f) {
     AppText(
         text = title,
         color = colorResource(id = R.color.game_grid_item_text_color).copy(alpha = alpha!!),
         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
         maxLines = 1,
         textAlign = TextAlign.Center,
-        modifier = Modifier.padding(start = startPadding, top = 0.dp, end = endPadding, bottom = 0.dp),
+        //modifier = Modifier.padding(start = startPadding, top = 0.dp, end = endPadding, bottom = 0.dp),
+        modifier = modifier,
         fontFamily = rubikFamily,
         fontWeight = FontWeight.W500,
     )

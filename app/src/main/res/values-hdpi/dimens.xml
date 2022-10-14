@@ -39,6 +39,7 @@
     <dimen name="size_32dp">24dp</dimen>
     <dimen name="size_33dp">24.75dp</dimen>
     <dimen name="size_35dp">26.25dp</dimen>
+    <dimen name="size_36dp">27dp</dimen>
     <dimen name="size_40dp">30dp</dimen>
     <dimen name="size_44dp">33dp</dimen>
     <dimen name="size_45dp">33.75dp</dimen>
@@ -50,9 +51,11 @@
     <dimen name="size_69dp">51.75dp</dimen>
     <dimen name="size_70dp">52.5dp</dimen>
     <dimen name="size_72dp">54dp</dimen>
+    <dimen name="size_57dp">43.2dp</dimen>
     <dimen name="size_80dp">60dp</dimen>
     <dimen name="size_82dp">61.5dp</dimen>
     <dimen name="size_86dp">64.5dp</dimen>
+    <dimen name="size_88dp">66dp</dimen>
     <dimen name="size_90dp">67.5dp</dimen>
     <dimen name="size_94dp">70.5dp</dimen>
     <dimen name="size_100dp">75dp</dimen>
@@ -69,6 +72,7 @@
     <dimen name="size_270dp">202.5dp</dimen>
     <dimen name="size_300dp">225dp</dimen>
     <dimen name="size_400dp">300dp</dimen>
+    <dimen name="size_384dp">288dp</dimen>
     <dimen name="size_236dp">177dp</dimen>
     <dimen name="size_button">40dp</dimen>
 

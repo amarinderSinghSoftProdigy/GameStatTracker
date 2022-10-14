@@ -37,4 +37,10 @@
     <color name="game_settings_divider_color">#1AFFFFFF</color>
     <color name="game_settings_input_field_bg_color">#E517191B</color>
 
+    <color name="game_timeouts_slot_bg_color">#3C4348</color>
+    <color name="game_timeouts_slot_selected_bg_color">#0177C1</color>
+    <color name="game_timeouts_slot_text_color">#66FFFFFF</color>
+    <color name="game_timeouts_slot_selected_text_color">#FFFFFF</color>
+
+
 </resources>

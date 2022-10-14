@@ -244,6 +244,11 @@
     <string name="shot_clock">Shot Clock</string>
     <string name="fouling_out">Fouling Out</string>
 
+    <string name="first_half">First Half</string>
+    <string name="second_half">Second Half</string>
+    <string name="full">Full</string>
+    <string name="thirty_sec">30s</string>
+
     <string-array name="game_settings">
         <item>@string/exit</item>
         <item>@string/settings</item>
@@ -276,5 +281,13 @@
         <item>@string/edit</item>
         <item>@string/delete</item>
         <item>@string/add_new</item>
+    </string-array>
+    
+    <string-array name="game_timeouts">
+        <item>@string/full</item>
+        <item>@string/full</item>
+        <item>@string/thirty_sec</item>
+        <item>@string/thirty_sec</item>
+        <item>@string/thirty_sec</item>
     </string-array>
 </resources>
