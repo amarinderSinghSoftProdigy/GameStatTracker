@@ -25,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -39,6 +40,7 @@ import com.google.accompanist.pager.PagerState
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.maps.android.compose.*
+import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.ui.features.home.events.schedule.Space
@@ -117,12 +119,16 @@ fun BoxScope.CommonTabView(
             )
         }
     }
-
+    val interactionSource = remember { MutableInteractionSource() }
     Row(
         modifier = Modifier
             .align(Alignment.Center)
             .background(Color.Transparent)
-            .clickable(enabled = topBarData.topBar == TopBar.TEAMS) {
+            .clickable(
+                enabled = topBarData.topBar == TopBar.TEAMS,
+                indication = null,
+                interactionSource = interactionSource
+            ) {
                 if (topBarData.topBar == TopBar.TEAMS) {
                     if (labelClick != null) {
                         labelClick()
@@ -138,12 +144,41 @@ fun BoxScope.CommonTabView(
         } else {
             stringResourceByName(name = topBarData.topBar.stringId)
         }
-        Text(
-            textAlign = TextAlign.Center,
-            text = label,
-            style = MaterialTheme.typography.h3,
-            color = Color.White
-        )
+
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            if (topBarData.logo != null) {
+                CoilImage(
+                    src = BuildConfig.IMAGE_SERVER + topBarData.logo,
+                    modifier = Modifier
+                        .size(dimensionResource(id = R.dimen.size_32dp))
+                        .background(
+                            color = MaterialTheme.appColors.material.primary,
+                            CircleShape
+                        )
+                        .clip(
+                            CircleShape
+                        ),
+                    isCrossFadeEnabled = false,
+                    onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                    onError = { Placeholder(R.drawable.ic_team_placeholder) },
+                    contentScale = ContentScale.Crop
+                )
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+            }
+
+            Text(
+                textAlign = TextAlign.Center,
+                text = label,
+                style = MaterialTheme.typography.h3,
+                color = Color.White
+            )
+        }
+
+
         if (topBarData.topBar == TopBar.TEAMS) {
             AppSpacer(Modifier.size(dimensionResource(id = R.dimen.size_5dp)))
             Icon(
@@ -166,31 +201,44 @@ fun BoxScope.CommonTabView(
         }
         TopBar.MY_EVENT -> {
             if (userRole.equals(UserType.COACH.key, ignoreCase = true))
-                icon = painterResource(id = R.drawable.ic_add_circle_filled)
+                icon = painterResource(id = R.drawable.ic_top_add)
         }
         TopBar.EVENT_OPPORTUNITIES -> {
             icon = painterResource(id = R.drawable.ic_filter)
         }
+
         TopBar.GAME_DETAILS -> {
             icon = painterResource(id = R.drawable.ic_dots)
         }
         else -> {}
     }
     icon?.let {
-        Icon(
-            painter = icon,
-            contentDescription = "",
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .clickable {
-                    if (iconClick != null) {
-                        iconClick()
-                    }
-                }
-                .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-            tint = Color.White
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = icon,
+                contentDescription = "",
+                modifier = Modifier
+                    .size(dimensionResource(id = R.dimen.size_24dp))
+                    .clickable {
+                        if (iconClick != null) {
+                            iconClick()
+                        }
+                    },
+                tint = Color.White
+            )
+
+            Spacer(
+                modifier = Modifier
+                    .width(dimensionResource(id = R.dimen.size_20dp))
+            )
+        }
+
     }
+
 
     if (TopBar.MANAGE_TEAM == topBarData.topBar) {
         Text(
@@ -320,6 +368,7 @@ fun DividerCommon() {
 data class TopBarData(
     val label: String? = "",
     val topBar: TopBar,
+    val logo: String? = null
 )
 
 enum class TopBar(val stringId: String, val back: Boolean) {
@@ -344,7 +393,8 @@ enum class TopBar(val stringId: String, val back: Boolean) {
     INVITE_TEAM_MEMBERS(stringId = "invite_team_member", back = true),
     OPEN_VENUE(stringId = "", back = true),
     DIVISION_TAB(stringId = "", back = true),
-    TEAM_TAB(stringId = "", back = true)
+    TEAM_TAB(stringId = "", back = true),
+    DOCUMENT(stringId = "", back = false)
 }
 
 fun getRoleList(): List<UserType> {

@@ -152,6 +152,7 @@ class EventViewModel @Inject constructor(
                     _state.value.copy(registerRequest = _state.value.registerRequest.copy(payment = event.request))
             }
             is EvEvents.RegisterPlayer -> {
+
                 _state.value =
                     _state.value.copy(registerRequest = _state.value.registerRequest.copy(players = event.request))
             }
@@ -171,6 +172,7 @@ class EventViewModel @Inject constructor(
                     )
             }
             is EvEvents.RegisterTeam -> {
+                _state.value.registerRequest.players.clear()
                 _state.value =
                     _state.value.copy(
                         team = event.request,
@@ -191,6 +193,9 @@ class EventViewModel @Inject constructor(
                 onEvent(EvEvents.ClearRegister)
                 viewModelScope.launch {
                     getEventDivisions(event.id)
+                    _state.value = _state.value.copy(
+                        registerRequest = _state.value.registerRequest.copy(event = event.id)
+                    )
                 }
             }
             is EvEvents.SetEventId -> {
@@ -645,7 +650,7 @@ class EventViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
                     if (response.status) {
-                        _state.value = _state.value.copy(opportunitiesDetail = response.data)
+                        _state.value = _state.value.copy(opportunitiesDetail = response.data, price = response.data.standardPrice)
                     } else {
                         _channel.send(
                             EventChannel.ShowToast(
@@ -901,7 +906,7 @@ class EventViewModel @Inject constructor(
             teamRepo.getVenues(
                 leagueId = _state.value.leagueId
             )
-        _state.value = _state.value.copy(isLoading = false)
+       /* _state.value = _state.value.copy(isLoading = false)*/
 
         when (userResponse) {
             is ResultWrapper.GenericError -> {

@@ -96,7 +96,7 @@
     <string name="valid_venue_name">Venue name must contain alphanumeric character and use only these special character @ and $</string>
     <string name="valid_search">Invalid Keyword</string>
     <string name="alert_remove_player">Are you sure you want to remove the player?</string>
-    <string name="alert_decline_invitation">Are you sure you decline this team request?</string>
+    <string name="alert_decline_invitation">Are you sure you want to decline this team request?</string>
     <string name="alert_going_event_confirm">Are you sure that you are going to this event?</string>
     <string name="alert_delete_document">Are you sure you delete this document?</string>
     <string name="alert_remove_from_team">Are you sure you want to leave this team?</string>
@@ -177,7 +177,7 @@
     <string name="waist_size">Waist Size</string>
     <string name="fun_facts">Fun Facts</string>
     <string name="favorite_college_team">Favorite College Team</string>
-    <string name="favorite_proff_team">Favorite professional Team</string>
+    <string name="favorite_proff_team">Favorite Professional Team</string>
     <string name="favorite_active_player">Favorite Active Player</string>
     <string name="favoritea_all_time_tlayer">Favorite All-Time Player</string>
     <string name="pg">PG</string>

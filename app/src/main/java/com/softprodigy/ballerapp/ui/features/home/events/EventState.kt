@@ -54,5 +54,6 @@ data class EventState(
     val selectedGender: String = "",
     val selectedEventType: String = "",
     val selectedFormat: String = "",
-    val scheduleResponse: List<ScheduleResponse> = mutableListOf()
+    val scheduleResponse: List<ScheduleResponse> = mutableListOf(),
+    val price: String? = null,
 )
