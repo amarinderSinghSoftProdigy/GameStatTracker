@@ -13,59 +13,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeScreenViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewModel() {
-    /*var homeScreenState = mutableStateOf(HomeScreenState())
-        private set*/
+
 
     private val _homeUiState = mutableStateOf(HomeScreenState())
     val homeScreenState: State<HomeScreenState> = _homeUiState
 
     private val _homeScreenChannel = Channel<HomeScreenChannel>()
     val homeScreenChannel = _homeScreenChannel.receiveAsFlow()
-
-    /*fun onEvent(event: HomeScreenEvent) {
-        when(event){
-            HomeScreenEvent.OnPendingInvitationClick -> {
-
-            }
-        }
-
-    }
-    init {
-        viewModelScope.launch {
-            getHomePageDetails()
-        }
-    }*/
-
-    suspend fun getHomePageDetails() {
-        when (val homeResponse = teamRepo.getHomePageDetails()) {
-            is ResultWrapper.GenericError -> {
-                _homeScreenChannel.send(
-                    HomeScreenChannel.ShowToast(
-                        UiText.DynamicString(
-                            "${homeResponse.message}"
-                        )
-                    )
-                )
-            }
-            is ResultWrapper.NetworkError -> {
-                _homeScreenChannel.send(
-                    HomeScreenChannel.ShowToast(
-                        UiText.DynamicString(
-                            homeResponse.message
-                        )
-                    )
-                )
-            }
-            is ResultWrapper.Success -> {
-                homeResponse.value.let { baseResponse ->
-                    if (baseResponse.status) {
-                        _homeUiState.value =
-                            _homeUiState.value.copy(homePageCoachModel = baseResponse.data)
-                    }
-                }
-            }
-        }
-    }
 
     sealed class HomeScreenChannel {
         data class ShowToast(val message: UiText) : HomeScreenChannel()
