@@ -4,7 +4,6 @@ package com.softprodigy.ballerapp.ui.features.home
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -28,6 +27,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.cometchat.pro.constants.CometChatConstants
+import com.cometchat.pro.models.Conversation
+import com.cometchat.pro.models.Group
+import com.cometchat.pro.models.User
 import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
 import com.softprodigy.ballerapp.MainActivity
 import com.softprodigy.ballerapp.R
@@ -71,13 +74,14 @@ import dagger.hilt.android.AndroidEntryPoint
 class HomeActivity : FragmentActivity() {
 
     var dataStoreManager: DataStoreManager = DataStoreManager(this)
+    val cometChat = CometChatUI()
 
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, true)
-
-//        startActivity(Intent(this,CometChatUI::class.java))
+        cometChat.context = this
+        cometChat.setConversationClickListener()
         setContent {
             val fromSplash = intent.getBooleanExtra(IntentData.FROM_SPLASH, false)
             val homeViewModel: HomeViewModel = hiltViewModel()
@@ -108,7 +112,8 @@ class HomeActivity : FragmentActivity() {
                             teamViewModel,
                             eventViewModel,
                             navController = navController,
-                            fromSplash = fromSplash
+                            fromSplash = fromSplash,
+                            cometChat = cometChat
                         )
                     }
                 } else {
@@ -169,7 +174,8 @@ class HomeActivity : FragmentActivity() {
                                     eventViewModel,
                                     navController = navController,
                                     showDialog = state.showDialog,
-                                    fromSplash = fromSplash
+                                    fromSplash = fromSplash,
+                                    cometChat = cometChat
                                 )
                             }
                         },
@@ -199,20 +205,12 @@ class HomeActivity : FragmentActivity() {
                             moveToLogin(this)
                         })
                 }
-                /*if (state.showAddProfile) {
-                    AddPlayer(
-                        onDismiss = { homeViewModel.setAddProfile(false) },
-                        onConfirmClick = {
-                        },
-                    )
-                }*/
             }
         }
     }
 
     override fun onResume() {
         super.onResume()
-
     }
 }
 
@@ -223,7 +221,8 @@ fun NavControllerComposable(
     eventViewModel: EventViewModel,
     showDialog: Boolean = false,
     navController: NavHostController = rememberNavController(),
-    fromSplash: Boolean = false
+    fromSplash: Boolean = false,
+    cometChat: CometChatUI
 ) {
     val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = hiltViewModel()
     var eventTitle by rememberSaveable { mutableStateOf("") }
@@ -357,8 +356,8 @@ fun NavControllerComposable(
                         )
                     }
                 },
-                onBackPress = {
-                    navController.popBackStack()
+                onTeamItemClick = {
+
                 })
         }
         composable(route = Route.EVENTS_SCREEN) {
@@ -797,4 +796,10 @@ private fun moveToLogin(activity: HomeActivity) {
     val intent = Intent(activity, MainActivity::class.java)
     activity.startActivity(intent)
     activity.finish()
+}
+
+fun getConvoType(conversation: Conversation): Any {
+    return if (conversation.conversationType == CometChatConstants.CONVERSATION_TYPE_GROUP)
+        conversation.conversationWith as Group else
+        conversation.conversationWith as User
 }

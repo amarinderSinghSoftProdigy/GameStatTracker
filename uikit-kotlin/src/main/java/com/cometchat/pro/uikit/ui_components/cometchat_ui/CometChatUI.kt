@@ -1,6 +1,7 @@
 package com.cometchat.pro.uikit.ui_components.cometchat_ui
 
 import android.Manifest
+import android.app.Activity
 import android.app.ProgressDialog
 import android.content.DialogInterface
 import android.content.Intent
@@ -43,8 +44,6 @@ import com.cometchat.pro.uikit.ui_settings.FeatureRestriction
 import com.cometchat.pro.uikit.ui_settings.UIKitSettings
 import com.google.android.material.badge.BadgeDrawable
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.coroutines.launch
-import java.util.*
 
 /**
  * Purpose - CometChatUnified class is main class used to launch the fully working chat application.
@@ -56,12 +55,15 @@ import java.util.*
  *
  * Modified on  - 16th January 2020
  */
-class CometChatUI : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener, OnAlertDialogButtonClickListener {
+class CometChatUI : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener,
+    OnAlertDialogButtonClickListener {
     private var userSettingsEnabled: Boolean = false
     private var recentChatListEnabled: Boolean = false
     private var callListEnabled: Boolean = false
     private var groupListEnabled: Boolean = false
     private var userListEnabled: Boolean = false
+    var context: Activity? = null
+    var convo: Conversation? = null
 
     //Used to bind the layout with class
     private var activityCometChatUnifiedBinding: ActivityCometchatUnifiedBinding? = null
@@ -75,7 +77,8 @@ class CometChatUI : AppCompatActivity(), BottomNavigationView.OnNavigationItemSe
     private var group: Group? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activityCometChatUnifiedBinding = DataBindingUtil.setContentView(this, R.layout.activity_cometchat_unified)
+        activityCometChatUnifiedBinding =
+            DataBindingUtil.setContentView(this, R.layout.activity_cometchat_unified)
         initViewComponent()
         // It performs action on click of user item in CometChatUserListScreen.
         setUserClickListener()
@@ -92,12 +95,16 @@ class CometChatUI : AppCompatActivity(), BottomNavigationView.OnNavigationItemSe
         setConversationClickListener()
     }
 
-    private fun setConversationClickListener() {
-        CometChatConversationList.Companion.setItemClickListener(object : OnItemClickListener<Any>() {
+    fun setConversationClickListener() {
+        CometChatConversationList.Companion.setItemClickListener(object :
+            OnItemClickListener<Any>() {
             override fun OnItemClick(t: Any, position: Int) {
                 var conversation = t as Conversation;
                 if (conversation.conversationType == CometChatConstants.CONVERSATION_TYPE_GROUP)
-                    startGroupIntent(conversation.conversationWith as Group) else startUserIntent(conversation.conversationWith as User)
+                    startGroupIntent(conversation.conversationWith as Group) else startUserIntent(
+                    conversation.conversationWith as User
+                )
+                convo = conversation
             }
         })
     }
@@ -112,9 +119,21 @@ class CometChatUI : AppCompatActivity(), BottomNavigationView.OnNavigationItemSe
                     if (group!!.groupType == CometChatConstants.GROUP_TYPE_PASSWORD) {
                         val dialogview = layoutInflater.inflate(R.layout.cc_dialog, null)
                         val tvTitle = dialogview.findViewById<TextView>(R.id.textViewDialogueTitle)
-                        tvTitle.text = String.format(resources.getString(R.string.enter_password_to_join), group!!.name)
-                        CustomAlertDialogHelper(this@CometChatUI, resources.getString(R.string.password), dialogview, resources.getString(R.string.join),
-                                "", resources.getString(R.string.cancel), this@CometChatUI, 1, false)
+                        tvTitle.text = String.format(
+                            resources.getString(R.string.enter_password_to_join),
+                            group!!.name
+                        )
+                        CustomAlertDialogHelper(
+                            this@CometChatUI,
+                            resources.getString(R.string.password),
+                            dialogview,
+                            resources.getString(R.string.join),
+                            "",
+                            resources.getString(R.string.cancel),
+                            this@CometChatUI,
+                            1,
+                            false
+                        )
                     } else if (group!!.groupType == CometChatConstants.GROUP_TYPE_PUBLIC) {
                         joinGroup(group)
                     }
@@ -137,12 +156,19 @@ class CometChatUI : AppCompatActivity(), BottomNavigationView.OnNavigationItemSe
      * @see CometChatConversationList
      */
     private fun initViewComponent() {
-        if (!Utils.hasPermissions(this, Manifest.permission.RECORD_AUDIO,
-                        Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+        if (!Utils.hasPermissions(
+                this, Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+        ) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO,
-                        Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                        UIKitConstants.RequestCode.RECORD)
+                requestPermissions(
+                    arrayOf(
+                        Manifest.permission.RECORD_AUDIO,
+                        Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    ),
+                    UIKitConstants.RequestCode.RECORD
+                )
             }
         }
 //        badgeDrawable = activityCometChatUnifiedBinding!!.bottomNavigation.getOrCreateBadge(R.id.menu_conversation)
@@ -151,41 +177,49 @@ class CometChatUI : AppCompatActivity(), BottomNavigationView.OnNavigationItemSe
         if (UIKitSettings.color != null && UIKitSettings.color.isNotEmpty()) {
             window.statusBarColor = Color.parseColor(UIKitSettings.color)
             val widgetColor = Color.parseColor(UIKitSettings.color)
-            val colorStateList = ColorStateList(arrayOf(intArrayOf(-android.R.attr.state_selected), intArrayOf()), intArrayOf(Color.GRAY, widgetColor))
+            val colorStateList = ColorStateList(
+                arrayOf(intArrayOf(-android.R.attr.state_selected), intArrayOf()),
+                intArrayOf(Color.GRAY, widgetColor)
+            )
             activityCometChatUnifiedBinding?.bottomNavigation?.itemIconTintList = colorStateList
         }
 
         //        activityCometChatUnifiedBinding.bottomNavigation.getMenu().add(Menu.NONE,12,Menu.NONE,"Test").setIcon(R.drawable.ic_security_24dp);
 
-        FeatureRestriction.isRecentChatListEnabled(object : FeatureRestriction.OnSuccessListener{
+        FeatureRestriction.isRecentChatListEnabled(object : FeatureRestriction.OnSuccessListener {
             override fun onSuccess(p0: Boolean) {
                 recentChatListEnabled = p0
-                activityCometChatUnifiedBinding?.bottomNavigation?.menu?.findItem(R.id.menu_conversation)?.isVisible = p0
+                activityCometChatUnifiedBinding?.bottomNavigation?.menu?.findItem(R.id.menu_conversation)?.isVisible =
+                    p0
             }
         })
-        FeatureRestriction.isUserListEnabled(object : FeatureRestriction.OnSuccessListener{
+        FeatureRestriction.isUserListEnabled(object : FeatureRestriction.OnSuccessListener {
             override fun onSuccess(p0: Boolean) {
                 userListEnabled = p0
-                activityCometChatUnifiedBinding?.bottomNavigation?.menu?.findItem(R.id.menu_users)?.isVisible = p0
+                activityCometChatUnifiedBinding?.bottomNavigation?.menu?.findItem(R.id.menu_users)?.isVisible =
+                    p0
             }
         })
-        FeatureRestriction.isCallListEnabled(object : FeatureRestriction.OnSuccessListener{
+        FeatureRestriction.isCallListEnabled(object : FeatureRestriction.OnSuccessListener {
             override fun onSuccess(p0: Boolean) {
                 callListEnabled = p0
-                activityCometChatUnifiedBinding?.bottomNavigation?.menu?.findItem(R.id.menu_call)?.isVisible = p0
+                activityCometChatUnifiedBinding?.bottomNavigation?.menu?.findItem(R.id.menu_call)?.isVisible =
+                    p0
             }
         })
-        FeatureRestriction.isGroupListEnabled(object : FeatureRestriction.OnSuccessListener{
+        FeatureRestriction.isGroupListEnabled(object : FeatureRestriction.OnSuccessListener {
             override fun onSuccess(p0: Boolean) {
                 groupListEnabled = p0
-                activityCometChatUnifiedBinding?.bottomNavigation?.menu?.findItem(R.id.menu_group)?.isVisible = p0
+                activityCometChatUnifiedBinding?.bottomNavigation?.menu?.findItem(R.id.menu_group)?.isVisible =
+                    p0
             }
 
         })
-        FeatureRestriction.isUserSettingsEnabled(object : FeatureRestriction.OnSuccessListener{
+        FeatureRestriction.isUserSettingsEnabled(object : FeatureRestriction.OnSuccessListener {
             override fun onSuccess(p0: Boolean) {
                 userSettingsEnabled = p0
-                activityCometChatUnifiedBinding?.bottomNavigation?.menu?.findItem(R.id.menu_more)?.isVisible =  p0
+                activityCometChatUnifiedBinding?.bottomNavigation?.menu?.findItem(R.id.menu_more)?.isVisible =
+                    p0
             }
 
         })
@@ -214,20 +248,27 @@ class CometChatUI : AppCompatActivity(), BottomNavigationView.OnNavigationItemSe
         if (FeatureRestriction.isJoinLeaveGroupsEnabled()) {
             progressDialog = ProgressDialog.show(this, "", resources.getString(R.string.joining))
             progressDialog!!.setCancelable(false)
-            CometChat.joinGroup(group!!.guid, group.groupType, groupPassword, object : CallbackListener<Group?>() {
-                override fun onSuccess(group: Group?) {
-                    if (progressDialog != null) progressDialog!!.dismiss()
-                    group?.let { startGroupIntent(it) }
-                }
+            CometChat.joinGroup(
+                group!!.guid,
+                group.groupType,
+                groupPassword,
+                object : CallbackListener<Group?>() {
+                    override fun onSuccess(group: Group?) {
+                        if (progressDialog != null) progressDialog!!.dismiss()
+                        group?.let { startGroupIntent(it) }
+                    }
 
-                override fun onError(e: CometChatException) {
-                    if (progressDialog != null) progressDialog!!.dismiss()
+                    override fun onError(e: CometChatException) {
+                        if (progressDialog != null) progressDialog!!.dismiss()
 //                    ErrorMessagesUtils.cometChatErrorMessage(this@CometChatUI, e.code)
-                    ErrorMessagesUtils.showCometChatErrorDialog(this@CometChatUI, resources.getString(R.string.enter_the_correct_password))
+                        ErrorMessagesUtils.showCometChatErrorDialog(
+                            this@CometChatUI,
+                            resources.getString(R.string.enter_the_correct_password)
+                        )
 //                Snackbar.make(activityCometChatUnifiedBinding!!.bottomNavigation, resources.getString(R.string.unable_to_join_message) + e.message,
 //                        Snackbar.LENGTH_SHORT).show()
-                }
-            })
+                    }
+                })
         }
     }
 
@@ -251,7 +292,8 @@ class CometChatUI : AppCompatActivity(), BottomNavigationView.OnNavigationItemSe
      */
     val unreadConversationCount: Unit
         get() {
-            CometChat.getUnreadMessageCount(object : CallbackListener<HashMap<String?, HashMap<String, Int?>>>() {
+            CometChat.getUnreadMessageCount(object :
+                CallbackListener<HashMap<String?, HashMap<String, Int?>>>() {
                 override fun onSuccess(stringHashMapHashMap: HashMap<String?, HashMap<String, Int?>>) {
                     Log.e(TAG, "onSuccess: unread $stringHashMapHashMap")
                     unreadCount.addAll(stringHashMapHashMap["user"]!!.keys) //Add users whose messages are unread.
@@ -275,17 +317,17 @@ class CometChatUI : AppCompatActivity(), BottomNavigationView.OnNavigationItemSe
      */
     private fun setUnreadCount(message: BaseMessage) {
 //        if (message.editedAt == 0L && message.deletedAt == 0L) {
-            if (message.receiverType == CometChatConstants.RECEIVER_TYPE_GROUP) {
-                if (!unreadCount.contains(message.receiverUid)) {
-                    unreadCount.add(message.receiverUid)
+        if (message.receiverType == CometChatConstants.RECEIVER_TYPE_GROUP) {
+            if (!unreadCount.contains(message.receiverUid)) {
+                unreadCount.add(message.receiverUid)
 //                    setBadge()
-                }
-            } else {
-                if (!unreadCount.contains(message.sender.uid)) {
-                    unreadCount.add(message.sender.uid)
-//                    setBadge()
-                }
             }
+        } else {
+            if (!unreadCount.contains(message.sender.uid)) {
+                unreadCount.add(message.sender.uid)
+//                    setBadge()
+            }
+        }
 //        }
     }
 
@@ -329,15 +371,15 @@ class CometChatUI : AppCompatActivity(), BottomNavigationView.OnNavigationItemSe
      * @see CometChatMessageListActivity
      */
     private fun startUserIntent(user: User) {
-        Log.e(TAG, "startUserIntent: "+user.link )
-        val intent = Intent(this@CometChatUI, CometChatMessageListActivity::class.java)
-        intent.putExtra(UIKitConstants.IntentStrings.UID, user.uid)
-        intent.putExtra(UIKitConstants.IntentStrings.AVATAR, user.avatar)
-        intent.putExtra(UIKitConstants.IntentStrings.STATUS, user.status)
-        intent.putExtra(UIKitConstants.IntentStrings.NAME, user.name)
+        Log.e(TAG, "startUserIntent: " + user)
+        val intent = Intent(context, CometChatMessageListActivity::class.java)
+        intent.putExtra(UIKitConstants.IntentStrings.UID, user.uid ?: "")
+        intent.putExtra(UIKitConstants.IntentStrings.AVATAR, user.avatar ?: "")
+        intent.putExtra(UIKitConstants.IntentStrings.STATUS, user.status ?: "")
+        intent.putExtra(UIKitConstants.IntentStrings.NAME, user.name ?: "")
         intent.putExtra(UIKitConstants.IntentStrings.TYPE, CometChatConstants.RECEIVER_TYPE_USER)
-        intent.putExtra(UIKitConstants.IntentStrings.LINK, user.link)
-        startActivity(intent)
+        intent.putExtra(UIKitConstants.IntentStrings.LINK, user.link ?: "")
+        context?.startActivity(intent)
     }
 
     /**
@@ -347,7 +389,7 @@ class CometChatUI : AppCompatActivity(), BottomNavigationView.OnNavigationItemSe
      * @see CometChatMessageListActivity
      */
     private fun startGroupIntent(group: Group?) {
-        val intent = Intent(this@CometChatUI, CometChatMessageListActivity::class.java)
+        val intent = Intent(context, CometChatMessageListActivity::class.java)
         intent.putExtra(UIKitConstants.IntentStrings.GUID, group!!.guid)
         intent.putExtra(UIKitConstants.IntentStrings.AVATAR, group.icon)
         intent.putExtra(UIKitConstants.IntentStrings.GROUP_OWNER, group.owner)
@@ -357,7 +399,7 @@ class CometChatUI : AppCompatActivity(), BottomNavigationView.OnNavigationItemSe
         intent.putExtra(UIKitConstants.IntentStrings.MEMBER_COUNT, group.membersCount)
         intent.putExtra(UIKitConstants.IntentStrings.GROUP_DESC, group.description)
         intent.putExtra(UIKitConstants.IntentStrings.GROUP_PASSWORD, group.password)
-        startActivity(intent)
+        context?.startActivity(intent)
     }
 
     /**

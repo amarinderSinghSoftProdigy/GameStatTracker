@@ -1,47 +1,16 @@
 package com.softprodigy.ballerapp.ui.features.home.teams.chat
 
-import com.cometchat.pro.uikit.ui_components.chats.CometChatStartConversation
 
 
-
-import android.app.ProgressDialog
-import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
-import android.graphics.Bitmap
-import android.os.Bundle
-import android.os.Handler
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
+//import com.facebook.shimmer.ShimmerFrameLayout
 import android.view.*
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import android.widget.TextView.OnEditorActionListener
-import androidx.appcompat.app.AlertDialog
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
-import com.cometchat.pro.constants.CometChatConstants
 import com.cometchat.pro.core.CometChat
 import com.cometchat.pro.core.CometChat.*
 import com.cometchat.pro.core.ConversationsRequest
-import com.cometchat.pro.core.ConversationsRequest.ConversationsRequestBuilder
-import com.cometchat.pro.exceptions.CometChatException
 import com.cometchat.pro.helpers.CometChatHelper
 import com.cometchat.pro.models.*
-import com.cometchat.pro.uikit.R
-import com.cometchat.pro.uikit.ui_components.shared.cometchatConversations.CometChatConversation
-import com.cometchat.pro.uikit.ui_resources.utils.ErrorMessagesUtils
-//import com.facebook.shimmer.ShimmerFrameLayout
 import com.cometchat.pro.uikit.ui_resources.utils.item_clickListener.OnItemClickListener
-import com.cometchat.pro.uikit.ui_resources.utils.FontUtils
-import com.cometchat.pro.uikit.ui_resources.utils.Utils
-import com.cometchat.pro.uikit.ui_resources.utils.recycler_touch.RecyclerViewSwipeListener
-import com.cometchat.pro.uikit.ui_settings.FeatureRestriction
-import com.cometchat.pro.uikit.ui_settings.UIKitSettings
-import com.cometchat.pro.uikit.ui_settings.enum.ConversationMode
-import com.softprodigy.ballerapp.databinding.FragmentConversationBinding
 
 /*
 
@@ -53,9 +22,9 @@ import com.softprodigy.ballerapp.databinding.FragmentConversationBinding
 * Modified on  - 23rd March 2020
 
 */
-class ConversationFragment : Fragment(), TextWatcher {
+class ConversationFragment /*: Fragment(), TextWatcher*/ {
    /* private var rvConversation //Uses to display list of conversations.
-            : CometChatConversation? = null*/
+            : CometChatConversation? = null*//*
     private var conversationsRequest //Uses to fetch Conversations.
             : ConversationsRequest? = null
     private var searchEdit //Uses to perform search operations.
@@ -225,12 +194,12 @@ class ConversationFragment : Fragment(), TextWatcher {
         }
     }
 
-    /**
+    *//**
      * This method is used to retrieve list of conversations you have done.
      * For more detail please visit our official documentation []//prodocs.cometchat.com/docs/android-messaging-retrieve-conversations" ">&quot;https://prodocs.cometchat.com/docs/android-messaging-retrieve-conversations&quot;
      *
      * @see ConversationsRequest
-     */
+     *//*
     private fun makeConversationList() {
         if (conversationsRequest == null) {
             conversationsRequest = ConversationsRequestBuilder().setConversationType(UIKitSettings.conversationInMode.toString()).setLimit(50).build()
@@ -268,9 +237,9 @@ class ConversationFragment : Fragment(), TextWatcher {
         }
     }
 
-    /**
+    *//**
      * This method is used to hide shimmer effect if the list is loaded.
-     */
+     *//*
     private fun stopHideShimmer() {
 //        conversationShimmer?.stopShimmer()
 //        conversationShimmer?.visibility = View.GONE
@@ -278,11 +247,11 @@ class ConversationFragment : Fragment(), TextWatcher {
         rlSearchBox?.visibility = View.VISIBLE
     }
 
-    /**
+    *//**
      * This method has message listener which recieve real time message and based on these messages, conversations are updated.
      *
      * @see CometChat.addMessageListener
-     */
+     *//*
     private fun addConversationListener() {
         CometChat.addMessageListener(TAG, object : CometChat.MessageListener() {
             override fun onTextMessageReceived(message: TextMessage) {
@@ -357,13 +326,13 @@ class ConversationFragment : Fragment(), TextWatcher {
         })
     }
 
-    /**
+    *//**
      * This method is used to update conversation received in real-time.
      * @param baseMessage is object of BaseMessage.class used to get respective Conversation.
      * @param isRemove is boolean used to check whether conversation needs to be removed or not.
      *
      * @see CometChatHelper.getConversationFromMessage
-     */
+     *//*
     private fun updateConversation(baseMessage: BaseMessage, isRemove: Boolean) {
         if (binding.rvConversationList != null) {
             val conversation = CometChatHelper.getConversationFromMessage(baseMessage)
@@ -377,9 +346,9 @@ class ConversationFragment : Fragment(), TextWatcher {
         }
     }
 
-    /**
+    *//**
      * This method is used to remove the conversationlistener.
-     */
+     *//*
     private fun removeConversationListener() {
         CometChat.removeMessageListener(TAG)
         CometChat.removeGroupListener(TAG)
@@ -430,13 +399,13 @@ class ConversationFragment : Fragment(), TextWatcher {
         lateinit var events: OnItemClickListener<Any>
         private const val TAG = "ConversationList"
 
-        /**
+        *//**
          * @param onItemClickListener An object of `OnItemClickListener<T>` abstract class helps to initialize with events
          * to perform onItemClick & onItemLongClick.
          * @see OnItemClickListener
-         */
+         *//*
         fun setItemClickListener(onItemClickListener: OnItemClickListener<Any>) {
             events = onItemClickListener
         }
-    }
+    }*/
 }

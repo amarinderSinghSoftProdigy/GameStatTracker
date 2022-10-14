@@ -1,21 +1,20 @@
 package com.cometchat.pro.uikit.ui_components.chats
 
-import android.app.ProgressDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.*
+import android.view.KeyEvent
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import android.widget.TextView.OnEditorActionListener
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.cometchat.pro.constants.CometChatConstants
@@ -29,14 +28,14 @@ import com.cometchat.pro.models.*
 import com.cometchat.pro.uikit.R
 import com.cometchat.pro.uikit.ui_components.shared.cometchatConversations.CometChatConversation
 import com.cometchat.pro.uikit.ui_resources.utils.ErrorMessagesUtils
-import com.facebook.shimmer.ShimmerFrameLayout
-import com.cometchat.pro.uikit.ui_resources.utils.item_clickListener.OnItemClickListener
 import com.cometchat.pro.uikit.ui_resources.utils.FontUtils
 import com.cometchat.pro.uikit.ui_resources.utils.Utils
+import com.cometchat.pro.uikit.ui_resources.utils.item_clickListener.OnItemClickListener
 import com.cometchat.pro.uikit.ui_resources.utils.recycler_touch.RecyclerViewSwipeListener
 import com.cometchat.pro.uikit.ui_settings.FeatureRestriction
 import com.cometchat.pro.uikit.ui_settings.UIKitSettings
 import com.cometchat.pro.uikit.ui_settings.enum.ConversationMode
+import com.facebook.shimmer.ShimmerFrameLayout
 
 /*
 
@@ -62,12 +61,14 @@ class CometChatConversationList : Fragment(), TextWatcher {
     private var rlSearchBox: RelativeLayout? = null
     private var noConversationView: LinearLayout? = null
     private var vw: View? = null
-    private var conversation : Conversation? = null
+    var conversation: Conversation? = null
     private var conversationList: MutableList<Conversation> = ArrayList()
     private var ivStartConversation: ImageView? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         vw = inflater.inflate(R.layout.fragment_conversation_screen, container, false)
         rvConversation = vw?.findViewById(R.id.rv_conversation_list)
@@ -100,7 +101,8 @@ class CometChatConversationList : Fragment(), TextWatcher {
             searchEdit?.setText("")
             clearSearch?.visibility = View.GONE
             rvConversation?.searchConversation(searchEdit?.text.toString())
-            val inputMethodManager: InputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val inputMethodManager: InputMethodManager =
+                context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             // Hide the soft keyboard
             inputMethodManager.hideSoftInputFromWindow(searchEdit?.windowToken, 0)
         }
@@ -142,7 +144,8 @@ class CometChatConversationList : Fragment(), TextWatcher {
                                 resources.getColor(R.color.red),
                                 object : UnderlayButtonClickListener {
                                     override fun onClick(pos: Int) {
-                                        val conversation: Conversation? = rvConversation?.getConversation(pos)
+                                        val conversation: Conversation? =
+                                            rvConversation?.getConversation(pos)
                                         if (conversation != null) {
                                             deleteConversations(conversation)
                                         }
@@ -180,30 +183,36 @@ class CometChatConversationList : Fragment(), TextWatcher {
         var entity = AppEntity()
         if (conversation.conversationType == CometChatConstants.CONVERSATION_TYPE_USER) {
             entity = conversation.conversationWith as User
-            deleteConversation(entity.uid, conversation.conversationType, object : CallbackListener<String>(){
-                override fun onSuccess(p0: String?) {
-                    conversationList.remove(conversation)
-                    rvConversation?.remove(conversation)
-                }
+            deleteConversation(
+                entity.uid,
+                conversation.conversationType,
+                object : CallbackListener<String>() {
+                    override fun onSuccess(p0: String?) {
+                        conversationList.remove(conversation)
+                        rvConversation?.remove(conversation)
+                    }
 
-                override fun onError(p0: CometChatException?) {
-                    ErrorMessagesUtils.cometChatErrorMessage(context, p0?.code)
-                }
+                    override fun onError(p0: CometChatException?) {
+                        ErrorMessagesUtils.cometChatErrorMessage(context, p0?.code)
+                    }
 
-            })
+                })
         } else {
             entity = conversation.conversationWith as Group
-            deleteConversation(entity.guid, conversation.conversationType, object : CallbackListener<String>(){
-                override fun onSuccess(p0: String?) {
-                    conversationList.remove(conversation)
-                    rvConversation?.remove(conversation)
-                }
+            deleteConversation(
+                entity.guid,
+                conversation.conversationType,
+                object : CallbackListener<String>() {
+                    override fun onSuccess(p0: String?) {
+                        conversationList.remove(conversation)
+                        rvConversation?.remove(conversation)
+                    }
 
-                override fun onError(p0: CometChatException?) {
-                    ErrorMessagesUtils.cometChatErrorMessage(context, p0?.code)
-                }
+                    override fun onError(p0: CometChatException?) {
+                        ErrorMessagesUtils.cometChatErrorMessage(context, p0?.code)
+                    }
 
-            })
+                })
         }
     }
 
@@ -223,7 +232,9 @@ class CometChatConversationList : Fragment(), TextWatcher {
      */
     private fun makeConversationList() {
         if (conversationsRequest == null) {
-            conversationsRequest = ConversationsRequestBuilder().setConversationType(UIKitSettings.conversationInMode.toString()).setLimit(50).build()
+            conversationsRequest =
+                ConversationsRequestBuilder().setConversationType(UIKitSettings.conversationInMode.toString())
+                    .setLimit(50).build()
 
         }
         conversationsRequest?.fetchNext(object : CallbackListener<List<Conversation>>() {
@@ -264,8 +275,8 @@ class CometChatConversationList : Fragment(), TextWatcher {
     private fun stopHideShimmer() {
         conversationShimmer?.stopShimmer()
         conversationShimmer?.visibility = View.GONE
-        tvTitle?.visibility = View.VISIBLE
-        rlSearchBox?.visibility = View.VISIBLE
+        tvTitle?.visibility = View.GONE
+        rlSearchBox?.visibility = View.GONE
     }
 
     /**
@@ -313,7 +324,12 @@ class CometChatConversationList : Fragment(), TextWatcher {
             }
         })
         CometChat.addGroupListener(TAG, object : GroupListener() {
-            override fun onGroupMemberKicked(action: Action, kickedUser: User, kickedBy: User, kickedFrom: Group) {
+            override fun onGroupMemberKicked(
+                action: Action,
+                kickedUser: User,
+                kickedBy: User,
+                kickedFrom: Group
+            ) {
                 Log.e(TAG, "onGroupMemberKicked: $kickedUser")
                 if (kickedUser.uid == CometChat.getLoggedInUser().uid) {
                     if (rvConversation != null) updateConversation(action, true)
@@ -322,7 +338,12 @@ class CometChatConversationList : Fragment(), TextWatcher {
                 }
             }
 
-            override fun onMemberAddedToGroup(action: Action, addedby: User, userAdded: User, addedTo: Group) {
+            override fun onMemberAddedToGroup(
+                action: Action,
+                addedby: User,
+                userAdded: User,
+                addedTo: Group
+            ) {
                 Log.e(TAG, "onMemberAddedToGroup: ")
                 updateConversation(action, false)
             }
@@ -341,7 +362,14 @@ class CometChatConversationList : Fragment(), TextWatcher {
                 }
             }
 
-            override fun onGroupMemberScopeChanged(action: Action, updatedBy: User, updatedUser: User, scopeChangedTo: String, scopeChangedFrom: String, group: Group) {
+            override fun onGroupMemberScopeChanged(
+                action: Action,
+                updatedBy: User,
+                updatedUser: User,
+                scopeChangedTo: String,
+                scopeChangedFrom: String,
+                group: Group
+            ) {
                 updateConversation(action, false)
             }
         })
@@ -358,7 +386,9 @@ class CometChatConversationList : Fragment(), TextWatcher {
         if (rvConversation != null) {
             val conversation = CometChatHelper.getConversationFromMessage(baseMessage)
             if (isRemove) rvConversation?.remove(conversation)
-            else if (UIKitSettings.conversationInMode == ConversationMode.ALL_CHATS) rvConversation?.update(conversation)
+            else if (UIKitSettings.conversationInMode == ConversationMode.ALL_CHATS) rvConversation?.update(
+                conversation
+            )
             else if (UIKitSettings.conversationInMode == ConversationMode.GROUP && conversation.conversationType == CometChatConstants.CONVERSATION_TYPE_GROUP)
                 rvConversation?.update(conversation)
             else if (UIKitSettings.conversationInMode == ConversationMode.USER && conversation.conversationType == CometChatConstants.CONVERSATION_TYPE_USER)

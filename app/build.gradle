@@ -69,8 +69,8 @@ android {
         }
         create("develop") {
             dimension = "ballerapp"
-            //buildConfigField("String", "API_SERVER", "\"https://ballerapi.softprodigy.in/api/\"")
-            buildConfigField("String", "API_SERVER", "\"https://ballerapi-qa.softprodigy.in/api/\"")
+            buildConfigField("String", "API_SERVER", "\"https://ballerapi.softprodigy.in/api/\"")
+            //buildConfigField("String", "API_SERVER", "\"https://ballerapi-qa.softprodigy.in/api/\"")
 
             buildConfigField("String", "SERVER", "\"http://baller-app.softprodigyphp.in\"")
             buildConfigField("String", "IMAGE_SERVER", "\"http://ballerapp.s3.us-east-2.amazonaws.com/\"")
@@ -181,5 +181,7 @@ dependencies {
 
     /*Upgrading below library causes issues*/
     implementation "androidx.compose.ui:ui-viewbinding:1.1.1"
+
+    implementation "androidx.fragment:fragment-ktx:1.4.1"
 
 }
