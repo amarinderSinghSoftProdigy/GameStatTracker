@@ -14,6 +14,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -51,15 +52,14 @@ fun LeaderBoardScreen(vm: LeaderBoardViewModel = hiltViewModel()) {
         vm.onEvent(LeaderBoardUIEvent.OnLeaderSelected(leader))
     }
     Box {
-
+        val pagerState = key(state.leaderBoard.size) {rememberPagerState(
+            pageCount = state.leaderBoard.size,
+            initialOffScreenLimit = 1,
+        )}
         if (state.isLoading) {
             CommonProgressBar()
-        } else if (state.leaders.isNotEmpty()) {
+        } else if (state.leaderBoard.isNotEmpty()) {
             Column(Modifier.fillMaxSize()) {
-                val pagerState = rememberPagerState(
-                    pageCount = state.leaderBoard.size,
-                    initialOffScreenLimit = 1,
-                )
                 Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
                 LeaderTopTabs(pagerState, state.leaderBoard)
                 Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
@@ -101,7 +101,8 @@ fun LeaderTopTabs(pagerState: PagerState, tabData: List<TeamLeaderBoard>) {
                         selected = pagerState.currentPage == index,
                         onClick = {
                             coroutineScope.launch {
-                                pagerState.animateScrollToPage(index)
+                                if (pagerState.pageCount != 0)
+                                    pagerState.animateScrollToPage(index)
                             }
                         })
                 }

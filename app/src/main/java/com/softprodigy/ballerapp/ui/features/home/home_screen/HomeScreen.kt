@@ -82,7 +82,7 @@ fun HomeScreen(
     remember {
         coroutineScope.launch {
             if (!UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
-                homeScreenViewModel.getHomePageDetails()
+                vm.getHomePageDetails()
                 teamVm.getTeams()
             }
         }
@@ -270,7 +270,7 @@ fun HomeScreen(
                                 )
                             }
                             Text(
-                                text = homeScreenState.homePageCoachModel.opportunityToWork.toString(),
+                                text = homeState.homePageCoachModel.opportunityToWork.toString(),
                                 fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
                                 modifier = Modifier.align(Alignment.CenterEnd)
                             )
@@ -309,7 +309,7 @@ fun HomeScreen(
                                 )
                             }
                             Text(
-                                text = homeScreenState.homePageCoachModel.pendingInvitations.toString(),
+                                text = homeState.homePageCoachModel.pendingInvitations.toString(),
                                 fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
                                 modifier = Modifier.align(Alignment.CenterEnd)
                             )
@@ -330,7 +330,7 @@ fun HomeScreen(
                         if (role.value != UserType.REFEREE.key)
                             "my_events" else "my_shifts",
                         "events_label",
-                        homeScreenState.homePageCoachModel.myEvents.toString()
+                        homeState.homePageCoachModel.myEvents.toString()
                     )
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
                     //if (role.value == UserType.COACH.key)
@@ -374,7 +374,7 @@ fun HomeScreen(
                                 )
                             }
                             Text(
-                                text = homeScreenState.homePageCoachModel.opportunityToWork.toString(),
+                                text = homeState.homePageCoachModel.opportunityToWork.toString(),
                                 fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
                                 modifier = Modifier.align(Alignment.CenterEnd)
                             )
@@ -414,7 +414,7 @@ fun HomeScreen(
                                 )
                             }
                             Text(
-                                text = homeScreenState.homePageCoachModel.opportunityToPlay.toString(),
+                                text = homeState.homePageCoachModel.opportunityToPlay.toString(),
                                 fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
                                 modifier = Modifier.align(Alignment.CenterEnd)
                             )
@@ -428,7 +428,7 @@ fun HomeScreen(
                     EventItem(
                         "my_leagues",
                         "leagues",
-                        homeScreenState.homePageCoachModel.myLeagues.toString(),
+                        homeState.homePageCoachModel.myLeagues.toString(),
                         R.drawable.ic_leagues
                     )
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
@@ -443,7 +443,7 @@ fun HomeScreen(
                         EventItem(
                             "all_leagues",
                             "leagues",
-                            homeScreenState.homePageCoachModel.allLeagues.toString(),
+                            homeState.homePageCoachModel.allLeagues.toString(),
                             R.drawable.ic_leagues
                         )
                     }
