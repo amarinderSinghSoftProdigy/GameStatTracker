@@ -16,6 +16,7 @@ import com.softprodigy.ballerapp.ui.features.home.events.Participation
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.LinkedHashMap
 
 
 class CommonUtils {
@@ -40,7 +41,7 @@ class CommonUtils {
         }
 
         fun getFilterMap(teamLeaderBoard: List<FilterPreference>): HashMap<String, ArrayList<FilterPreference>> {
-            val result: HashMap<String, ArrayList<FilterPreference>> = HashMap()
+            val result: LinkedHashMap<String, ArrayList<FilterPreference>> = LinkedHashMap()
             val keys: ArrayList<String> = ArrayList()
             for (item in teamLeaderBoard) {
                 if (!keys.contains(item.key))

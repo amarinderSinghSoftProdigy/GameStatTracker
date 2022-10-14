@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -18,6 +19,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
@@ -25,8 +27,10 @@ import com.softprodigy.ballerapp.data.response.VenuesId
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.CoilImage
 import com.softprodigy.ballerapp.ui.features.components.PlaceholderRect
+import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
 import com.softprodigy.ballerapp.ui.features.home.events.EvEvents
 import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
+import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
@@ -40,24 +44,37 @@ fun VenuesScreen(moveToOpenVenues: (String, String) -> Unit, eventViewModel: Eve
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(all = dimensionResource(id = R.dimen.size_16dp))
-                    .background(
-                        shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
-                        color = MaterialTheme.colors.onPrimary
-                    )
 
-            ) {
-                itemsIndexed(state.venuesList) { index, item ->
-                    VenuesItem(item) {
-                        moveToOpenVenues(item.venueName, item._id)
+        if (state.isLoading) {
+            CircularProgressIndicator(
+                color = MaterialTheme.appColors.material.primaryVariant, modifier = Modifier.align(
+                    Alignment.Center
+                )
+            )
+        } else if (state.venuesList.isEmpty()) {
+            EmptyScreen(singleText = true, stringResource(id = R.string.no_data_found))
+
+        } else {
+            Column(modifier = Modifier.fillMaxSize()) {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(all = dimensionResource(id = R.dimen.size_16dp))
+                        .background(
+                            shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
+                            color = MaterialTheme.colors.onPrimary
+                        )
+
+                ) {
+                    itemsIndexed(state.venuesList) { index, item ->
+                        VenuesItem(item) {
+                            moveToOpenVenues(item.venueName, item._id)
+                        }
                     }
                 }
             }
         }
+
     }
 }
 
@@ -114,7 +131,7 @@ fun VenuesItem(item: VenuesId, moveToOpenVenues: () -> Unit) {
                     .then(
                         Modifier.rotate(270f)
                     ),
-                tint = MaterialTheme.appColors.buttonColor.textDisabled
+                tint = ColorGreyLighter
             )
 
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))

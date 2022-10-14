@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.BuildConfig
@@ -30,6 +31,7 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.team.TeamsByLeagueDivisionResponse
 import com.softprodigy.ballerapp.ui.features.components.CoilImage
 import com.softprodigy.ballerapp.ui.features.components.Placeholder
+import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
 import com.softprodigy.ballerapp.ui.features.home.events.EvEvents
 import com.softprodigy.ballerapp.ui.features.home.events.EventChannel
 import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
@@ -52,12 +54,12 @@ fun DivisionTeamScreen(
         eventViewModel.eventChannel.collect { uiEvent ->
             when (uiEvent) {
                 is EventChannel.ShowDivisionTeamToast -> {
-                    Toast.makeText(
+                   /* Toast.makeText(
                         context,
                         uiEvent.message.asString(context),
                         Toast.LENGTH_LONG
                     )
-                        .show()
+                        .show()*/
                 }
                 else -> Unit
             }
@@ -69,22 +71,29 @@ fun DivisionTeamScreen(
             .background(color = MaterialTheme.appColors.material.primary)
     ) {
 
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+        if(state.isEmpty()){
+            EmptyScreen(singleText = true, stringResource(id = R.string.no_data_found))
+        }
+        else {
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
-                .background(
-                    color = Color.White,
-                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_16dp))
-                )
-        ) {
-            items(state) { item ->
-                DivisionTeamItem(item)
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
+                    .background(
+                        color = Color.White,
+                        shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_16dp))
+                    )
+            ) {
+                items(state) { item ->
+                    DivisionTeamItem(item)
 
+                }
             }
         }
+
+
     }
 }
 
