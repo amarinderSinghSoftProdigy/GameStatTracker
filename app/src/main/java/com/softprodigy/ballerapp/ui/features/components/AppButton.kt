@@ -122,7 +122,7 @@ fun RowScope.ButtonView(text: String, color: Color) {
             .align(Alignment.CenterVertically),
         contentAlignment = Alignment.Center,
 
-    ) {
+        ) {
         AppText(
             textAlign = TextAlign.Center,
             text = text,
@@ -239,7 +239,7 @@ fun ButtonWithLeadingIconGrayed(
     colors: ButtonColor = MaterialTheme.appColors.buttonColor,
     contentPadding: PaddingValues = PaddingValues(
         vertical = dimensionResource(id = R.dimen.size_16dp),
-        horizontal = dimensionResource(id = R.dimen.size_24dp),
+        horizontal = dimensionResource(id = R.dimen.size_20dp),
     ),
     iconSize: Dp = dimensionResource(id = R.dimen.size_20dp),
 ) {
@@ -356,9 +356,7 @@ fun TransparentButtonButton(
     shape: Shape = RoundedCornerShape(8.dp),
     border: BorderStroke? = BorderStroke(
         width = dimensionResource(id = R.dimen.size_1dp),
-        color = MaterialTheme.appColors.buttonColor.textDisabled.copy(
-            alpha = 0.4f
-        )
+        color = ColorGreyLighter
     ),
     contentPadding: PaddingValues = PaddingValues(
         vertical = dimensionResource(id = R.dimen.size_10dp),
@@ -389,9 +387,8 @@ fun TransparentButtonButton(
                     modifier = Modifier
                         .size(dimensionResource(R.dimen.size_10dp)),
                     contentDescription = null,
-                    tint = MaterialTheme.appColors.buttonColor.textDisabled.copy(
-                        alpha = 0.8f
-                    )
+                    tint = ColorGreyLighter
+
                 )
                 AppText(
                     textAlign = TextAlign.Center,

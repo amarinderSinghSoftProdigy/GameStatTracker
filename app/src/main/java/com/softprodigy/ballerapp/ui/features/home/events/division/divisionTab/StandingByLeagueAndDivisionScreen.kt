@@ -9,11 +9,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.Standing
 import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
+import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
 import com.softprodigy.ballerapp.ui.features.home.events.EvEvents
 import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
 import com.softprodigy.ballerapp.ui.features.home.teams.standing.StandingListItem
@@ -35,8 +37,12 @@ fun StandingByLeagueAndDivisionScreen(divisionId: String, eventViewModel: EventV
 
     Box(modifier = Modifier.background(color = MaterialTheme.appColors.material.primary)) {
 
+
         if (state.isLoading) {
             CommonProgressBar()
+        } else if (state.allTeam.registeredTeams.isEmpty()) {
+            EmptyScreen(singleText = true, stringResource(id = R.string.no_data_found))
+
         } else {
             val pagerState = rememberPagerState(
                 pageCount = state.categories.size,
