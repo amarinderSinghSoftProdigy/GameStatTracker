@@ -32,11 +32,13 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
@@ -528,8 +530,9 @@ fun PracticeItem(
                         } else {
                             AppText(
                                 text = selectedValue,
-                                style = MaterialTheme.typography.h6,
+                                style = MaterialTheme.typography.h5,
                                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                fontWeight = FontWeight.W500
                             )
                             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_14dp)))
 
@@ -546,10 +549,7 @@ fun PracticeItem(
                                         unfocusedBorderColor = Color.Transparent,
                                         cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                                     ),
-                                    textStyle = TextStyle(
-                                        textAlign = TextAlign.End,
-                                        color = ColorBWBlack
-                                    ),
+                                    textStyle = MaterialTheme.typography.overline,
                                     singleLine = true,
                                     keyboardOptions = KeyboardOptions(
                                         imeAction = ImeAction.Done,
@@ -558,7 +558,7 @@ fun PracticeItem(
                                     ),
                                     keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
                                     isError = !validEventName(selectedValue) && selectedValue.isNotEmpty() || selectedValue.length > 30,
-                                    )
+                                )
 
                             }
                             AppText(

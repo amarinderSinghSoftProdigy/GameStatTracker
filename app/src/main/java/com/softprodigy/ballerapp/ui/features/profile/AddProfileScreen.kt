@@ -157,9 +157,15 @@ fun AddProfileScreen(
                 }
 
                 is SignUpChannel.OnProfileUpdateSuccess -> {
-                    Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
-                        .show()
-                    onSuccess()
+                    if (!state.status) {
+                        Toast.makeText(
+                            context,
+                            uiEvent.message.asString(context),
+                            Toast.LENGTH_LONG
+                        ).show()
+                        onSuccess()
+                    }
+
                 }
 
                 is SignUpChannel.OnOTPScreen -> {
@@ -219,6 +225,7 @@ fun AddProfileScreen(
                 .verticalScroll(rememberScrollState())
                 .fillMaxWidth()
         ) {
+
             Column(
                 Modifier
                     .fillMaxWidth(),
@@ -494,9 +501,11 @@ fun AddProfileScreen(
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             }
-
             if (state.isLoading) {
-                CommonProgressBar()
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center),
+                    color = MaterialTheme.appColors.material.primaryVariant
+                )
             }
         }
     }

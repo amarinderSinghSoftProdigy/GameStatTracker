@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
@@ -28,8 +29,10 @@ import com.softprodigy.ballerapp.data.response.DivisionResponse
 import com.softprodigy.ballerapp.ui.features.components.AppTab
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
+import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
 import com.softprodigy.ballerapp.ui.features.home.events.EvEvents
 import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
+import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
 
@@ -43,32 +46,39 @@ fun DivisionScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        val divisionTab = listOf("All", "Male", "Female")
-
         val vmState = eventViewModel.eventState.value
+        if (vmState.divisions.isEmpty()) {
 
-        val pagerState = rememberPagerState(
-            pageCount = divisionTab.size,
-            initialOffScreenLimit = 1,
-        )
+            EmptyScreen(singleText = true, stringResource(id = R.string.no_data_found))
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(all = dimensionResource(id = R.dimen.size_16dp))
-        ) {
+        } else {
+            val divisionTab = listOf("All", "Male", "Female")
 
-            DivisionTopTabs(pagerState, divisionTab)
-
-            Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
-
-            DivisionData(
-                moveToOpenDivisions,
-                divisionTab[pagerState.currentPage],
-                eventViewModel,
+            val pagerState = rememberPagerState(
+                pageCount = divisionTab.size,
+                initialOffScreenLimit = 1,
             )
 
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(all = dimensionResource(id = R.dimen.size_16dp))
+            ) {
+
+                DivisionTopTabs(pagerState, divisionTab)
+
+                Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
+
+                DivisionData(
+                    moveToOpenDivisions,
+                    divisionTab[pagerState.currentPage],
+                    eventViewModel,
+                )
+
+            }
         }
+
+
 
         if (vmState.isLoading) {
             CircularProgressIndicator(
@@ -88,7 +98,8 @@ fun DivisionTopTabs(pagerState: PagerState, tabData: List<String>) {
         itemsIndexed(tabData) { index, item ->
             Row {
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
-                AppTab(title = tabData[index],
+                AppTab(
+                    title = tabData[index],
                     selected = pagerState.currentPage == index,
                     onClick = {
                         coroutineScope.launch {
@@ -121,15 +132,13 @@ fun DivisionData(
         "Male" -> {
             divisionList.clear()
             state.divisions.forEach {
-                if (it.gender == key)
-                    divisionList.add(it)
+                if (it.gender == key) divisionList.add(it)
             }
         }
         else -> {
             divisionList.clear()
             state.divisions.forEach {
-                if (it.gender == key)
-                    divisionList.add(it)
+                if (it.gender == key) divisionList.add(it)
             }
         }
     }
@@ -185,7 +194,7 @@ fun DivisionItems(
                     .then(
                         Modifier.rotate(270f)
                     ),
-                tint = MaterialTheme.appColors.buttonColor.textDisabled
+                tint = ColorGreyLighter
             )
 
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))

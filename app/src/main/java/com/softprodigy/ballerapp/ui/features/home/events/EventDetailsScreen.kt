@@ -27,6 +27,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,6 +35,7 @@ import com.google.accompanist.flowlayout.FlowRow
 import com.google.android.gms.maps.model.LatLng
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.apiToUIDateFormat
 import com.softprodigy.ballerapp.common.apiToUIDateFormat2
 import com.softprodigy.ballerapp.common.convertServerUtcDateToLocal
 import com.softprodigy.ballerapp.common.uiToAPiDate
@@ -167,7 +169,7 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
             Row {
                 Text(
-                    text = apiToUIDateFormat2(state.event.date),
+                    text = apiToUIDateFormat(state.event.date),
                     color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                     style = MaterialTheme.typography.h5,
                     modifier = Modifier.weight(1.8f)
@@ -179,8 +181,20 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
                     modifier = Modifier.weight(1.5f)
 
                 )
+                var startTime = state.event.startTime
+                var endTime = state.event.endTime
+
+                if(startTime.isNotEmpty() && endTime.isNotEmpty()){
+                    if (startTime[0] == '0') {
+                        startTime = startTime.drop(1)
+                    }
+                    if (endTime[0] == '0') {
+                        endTime = endTime.drop(1)
+                    }
+                }
+
                 Text(
-                    text = "${state.event.startTime} - ${state.event.endTime}",
+                    text = "$startTime - $endTime",
                     color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                     style = MaterialTheme.typography.h5,
                     modifier = Modifier.weight(1.8f)
@@ -241,7 +255,8 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
 
                     Text(
-                        text = item.name.ifEmpty { stringResource(id = R.string.na) },
+                        text = item.name.substring(0, item.name.indexOf(' ')).capitalize()
+                            .ifEmpty { stringResource(id = R.string.na) },
                         color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                         style = MaterialTheme.typography.h5,
                         fontWeight = FontWeight.W500
@@ -455,9 +470,9 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
                             painter = painterResource(id = R.drawable.ic_tick),
                             contentDescription = "",
                             tint = Color.White,
-                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp))
+                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_12dp))
                         )
-                        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_12dp)))
+                        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_8dp)))
                         AppText(
                             text = stringResource(id = R.string.read_the_note),
                             color = Color.White,
