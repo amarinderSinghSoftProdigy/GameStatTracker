@@ -323,24 +323,19 @@ fun EventRegistraionDetails(vm: EventViewModel, teamVm: TeamViewModel, onSuccess
                 var message = ""
                 if (state.registerRequest.team.isEmpty()) {
                     message = context.getString(R.string.no_team_selected)
-                }
-                if (state.registerRequest.division.isEmpty()) {
+                } else if (state.registerRequest.division.isEmpty()) {
                     message = context.getString(R.string.please_select_division)
-                }
-                if (state.registerRequest.players.isEmpty()) {
+                } else if (state.registerRequest.players.isEmpty()) {
                     message = context.getString(R.string.please_select_player)
-                }
-                if (state.registerRequest.payment.isEmpty() || state.registerRequest.payment == "0") {
+                } else if (state.registerRequest.payment.isEmpty() || state.registerRequest.payment == "0") {
                     showError.value = true
-                }
-                if (!state.registerRequest.termsAndCondition || !state.registerRequest.privacy) {
+                } else if (!state.registerRequest.termsAndCondition || !state.registerRequest.privacy) {
                     message = context.getString(R.string.please_accept_tems)
                 }
                 if (message.isNotEmpty()) {
                     vm.onEvent(EvEvents.ShowToast(message))
-                } else {
-                    if (!showError.value)
-                        vm.onEvent(EvEvents.RegisterForEvent)
+                } else if (!showError.value) {
+                    vm.onEvent(EvEvents.RegisterForEvent)
                 }
             },
             text = stringResource(id = R.string.register),

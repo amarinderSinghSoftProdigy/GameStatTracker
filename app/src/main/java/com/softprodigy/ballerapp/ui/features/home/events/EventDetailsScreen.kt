@@ -1,20 +1,20 @@
 package com.softprodigy.ballerapp.ui.features.home.events
 
 import android.widget.Toast
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,10 +26,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.accompanist.flowlayout.FlowRow
 import com.google.android.gms.maps.model.LatLng
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
@@ -45,6 +47,7 @@ import com.softprodigy.ballerapp.ui.theme.ColorButtonRed
 import com.softprodigy.ballerapp.ui.theme.appColors
 import timber.log.Timber
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
 
@@ -258,25 +261,68 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
                         style = MaterialTheme.typography.h5,
                         fontWeight = FontWeight.W500
                     )
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_6dp)))
 
-                    Text(
-                        text = item.status,
-                        color = if (item.status.equals(
-                                EventStatus.GOING.status,
-                                ignoreCase = true
+                    Box {
+                        val showTooltip = remember { mutableStateOf(false) }
+
+                        // Buttons and Surfaces don't support onLongClick out of the box,
+                        // so use a simple Box with combinedClickable
+                        Box(
+                            modifier = Modifier
+                                .combinedClickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = rememberRipple(),
+                                    onClickLabel = "Button action description",
+                                    role = Role.Button,
+                                    onClick = { showTooltip.value = true },
+                                    onLongClick = { showTooltip.value = true },
+                                ),
+                        ) {
+                            Text(
+                                text = item.status,
+                                color = if (item.status.equals(
+                                        EventStatus.GOING.status,
+                                        ignoreCase = true
+                                    )
+                                )
+                                    ColorButtonGreen
+                                else if (item.status.equals(
+                                        EventStatus.NOT_GOING.status,
+                                        ignoreCase = true
+                                    )
+                                )
+                                    ColorButtonRed
+                                else
+                                    MaterialTheme.appColors.textField.labelDark,
+                                style = MaterialTheme.typography.h6
                             )
-                        )
-                            ColorButtonGreen
-                        else if (item.status.equals(
-                                EventStatus.NOT_GOING.status,
-                                ignoreCase = true
-                            )
-                        )
-                            ColorButtonRed
-                        else
-                            MaterialTheme.appColors.textField.labelDark,
-                        style = MaterialTheme.typography.h6
-                    )
+                        }
+                        if (item.reason.isNotEmpty()) {
+                            Tooltip(showTooltip) {
+                                // Tooltip content goes here.
+                                Text(item.reason)
+                            }
+                        }
+                    }
+                    /*                 Text(
+                                         text = item.status,
+                                         color = if (item.status.equals(
+                                                 EventStatus.GOING.status,
+                                                 ignoreCase = true
+                                             )
+                                         )
+                                             ColorButtonGreen
+                                         else if (item.status.equals(
+                                                 EventStatus.NOT_GOING.status,
+                                                 ignoreCase = true
+                                             )
+                                         )
+                                             ColorButtonRed
+                                         else
+                                             MaterialTheme.appColors.textField.labelDark,
+                                         style = MaterialTheme.typography.h6
+                                     )*/
                 }
             }
         }

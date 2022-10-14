@@ -509,7 +509,12 @@ class TeamViewModel @Inject constructor(
     }
 
     private suspend fun getTeamByTeamId(userId: String) {
-        when (val teamResponse = teamRepo.getTeamsByTeamID(userId)) {
+        _teamUiState.value =
+            _teamUiState.value.copy(isLoading = true)
+        val teamResponse = teamRepo.getTeamsByTeamID(userId)
+        _teamUiState.value =
+            _teamUiState.value.copy(isLoading = false)
+        when (teamResponse) {
             is ResultWrapper.GenericError -> {
                 _teamChannel.send(
                     TeamChannel.ShowToast(
