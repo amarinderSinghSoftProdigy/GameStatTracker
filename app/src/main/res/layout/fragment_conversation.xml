@@ -9,8 +9,7 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:orientation="vertical">
-
-        <fragment
+      <!--  <fragment
             android:id="@+id/converstion_fragment"
             android:name="com.cometchat.pro.uikit.ui_components.chats.CometChatConversationList"
             android:layout_width="match_parent"
@@ -118,11 +117,9 @@
 
             </LinearLayout>
 
-            <!-- <include
+            &lt;!&ndash; <include
                  layout="@layout/conversation_shimmer"
-                 android:visibility="gone" />-->
-        </fragment>
-
-
+                 android:visibility="gone" />&ndash;&gt;
+        </fragment>-->
     </androidx.fragment.app.FragmentContainerView>
 </layout>
