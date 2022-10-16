@@ -135,6 +135,9 @@ fun SelectProfileItems(
             .background(
                 color = if (isSelected) MaterialTheme.appColors.buttonColor.bckgroundEnabled else Color.White,
                 shape = (when {
+                    size == 1 -> {
+                        RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+                    }
                     index == 0 -> {
                         RoundedCornerShape(
                             topStart = dimensionResource(
