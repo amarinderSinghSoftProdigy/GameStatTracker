@@ -3,10 +3,10 @@ package com.softprodigy.ballerapp.ui.features.home.events.schedule
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.domain.repository.IEventsRepository
 import com.softprodigy.ballerapp.ui.features.home.events.EvEvents
 import com.softprodigy.ballerapp.ui.features.home.events.EventChannel
@@ -14,6 +14,7 @@ import com.softprodigy.ballerapp.ui.features.home.events.EventState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,7 +32,7 @@ class EventScheduleViewModel @Inject constructor(
     val eventChannel = _channel.receiveAsFlow()
 
     init {
-        eventScheduleState.value = eventScheduleState.value.copy(
+        /*eventScheduleState.value = eventScheduleState.value.copy(
             leagueSchedules = listOf(
                 LeagueScheduleModel(
                     "Sep 1, 2022", "2", matches = listOf(
@@ -133,11 +134,11 @@ class EventScheduleViewModel @Inject constructor(
                     )
                 )
             )
-        )
+        )*/
     }
 
 
-    suspend fun getEventDetails(eventId: String) {
+    private suspend fun getEventSchedule(eventId: String) {
         _state.value =
             eventState.value.copy(showLoading = true)
         val eventResponse = eventsRepo.getEventScheduleDetails(eventId)
@@ -184,6 +185,12 @@ class EventScheduleViewModel @Inject constructor(
     fun onEvent(event: EvEvents) {
         when (event) {
             is EvEvents.ClearRegister -> {
+            }
+            is EvEvents.GetSchedule -> {
+                viewModelScope.launch {
+                   // getEventDetails(event.eventId)
+                }
+
             }
         }
     }

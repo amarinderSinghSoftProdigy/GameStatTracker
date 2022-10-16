@@ -3,8 +3,7 @@ package com.softprodigy.ballerapp.ui.features.components
 import androidx.annotation.FloatRange
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,23 +20,32 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.takeOrElse
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.*
+import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupPositionProvider
+import androidx.compose.ui.window.PopupProperties
+import androidx.core.graphics.ColorUtils
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.maps.android.compose.*
+import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.ui.features.home.events.schedule.Space
@@ -46,6 +54,7 @@ import com.softprodigy.ballerapp.ui.theme.ButtonColor
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
 import com.softprodigy.ballerapp.ui.theme.appColors
 import com.softprodigy.ballerapp.ui.utils.CommonUtils
+import kotlinx.coroutines.delay
 
 @Composable
 fun stringResourceByName(name: String): String {
@@ -116,12 +125,16 @@ fun BoxScope.CommonTabView(
             )
         }
     }
-
+    val interactionSource = remember { MutableInteractionSource() }
     Row(
         modifier = Modifier
             .align(Alignment.Center)
             .background(Color.Transparent)
-            .clickable(enabled = topBarData.topBar == TopBar.TEAMS) {
+            .clickable(
+                enabled = topBarData.topBar == TopBar.TEAMS,
+                indication = null,
+                interactionSource = interactionSource
+            ) {
                 if (topBarData.topBar == TopBar.TEAMS) {
                     if (labelClick != null) {
                         labelClick()
@@ -137,12 +150,41 @@ fun BoxScope.CommonTabView(
         } else {
             stringResourceByName(name = topBarData.topBar.stringId)
         }
-        Text(
-            textAlign = TextAlign.Center,
-            text = label,
-            style = MaterialTheme.typography.h3,
-            color = Color.White
-        )
+
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            if (topBarData.logo != null) {
+                CoilImage(
+                    src = BuildConfig.IMAGE_SERVER + topBarData.logo,
+                    modifier = Modifier
+                        .size(dimensionResource(id = R.dimen.size_32dp))
+                        .background(
+                            color = MaterialTheme.appColors.material.primary,
+                            CircleShape
+                        )
+                        .clip(
+                            CircleShape
+                        ),
+                    isCrossFadeEnabled = false,
+                    onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                    onError = { Placeholder(R.drawable.ic_team_placeholder) },
+                    contentScale = ContentScale.Crop
+                )
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+            }
+
+            Text(
+                textAlign = TextAlign.Center,
+                text = label,
+                style = MaterialTheme.typography.h3,
+                color = Color.White
+            )
+        }
+
+
         if (topBarData.topBar == TopBar.TEAMS) {
             AppSpacer(Modifier.size(dimensionResource(id = R.dimen.size_5dp)))
             Icon(
@@ -165,31 +207,44 @@ fun BoxScope.CommonTabView(
         }
         TopBar.MY_EVENT -> {
             if (userRole.equals(UserType.COACH.key, ignoreCase = true))
-                icon = painterResource(id = R.drawable.ic_add_circle_filled)
+                icon = painterResource(id = R.drawable.ic_top_add)
         }
         TopBar.EVENT_OPPORTUNITIES -> {
             icon = painterResource(id = R.drawable.ic_filter)
         }
+
         TopBar.GAME_DETAILS -> {
             icon = painterResource(id = R.drawable.ic_dots)
         }
         else -> {}
     }
     icon?.let {
-        Icon(
-            painter = icon,
-            contentDescription = "",
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .clickable {
-                    if (iconClick != null) {
-                        iconClick()
-                    }
-                }
-                .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-            tint = Color.White
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = icon,
+                contentDescription = "",
+                modifier = Modifier
+                    .size(dimensionResource(id = R.dimen.size_24dp))
+                    .clickable {
+                        if (iconClick != null) {
+                            iconClick()
+                        }
+                    },
+                tint = Color.White
+            )
+
+            Spacer(
+                modifier = Modifier
+                    .width(dimensionResource(id = R.dimen.size_20dp))
+            )
+        }
+
     }
+
 
     if (TopBar.MANAGE_TEAM == topBarData.topBar) {
         Text(
@@ -319,6 +374,7 @@ fun DividerCommon() {
 data class TopBarData(
     val label: String? = "",
     val topBar: TopBar,
+    val logo: String? = null
 )
 
 enum class TopBar(val stringId: String, val back: Boolean) {
@@ -343,7 +399,8 @@ enum class TopBar(val stringId: String, val back: Boolean) {
     INVITE_TEAM_MEMBERS(stringId = "invite_team_member", back = true),
     OPEN_VENUE(stringId = "", back = true),
     DIVISION_TAB(stringId = "", back = true),
-    TEAM_TAB(stringId = "", back = true)
+    TEAM_TAB(stringId = "", back = true),
+    DOCUMENT(stringId = "", back = false)
 }
 
 fun getRoleList(): List<UserType> {
@@ -616,21 +673,231 @@ fun LocationBlock(location: Location, padding: Dp = dimensionResource(id = R.dim
                 .height(dimensionResource(id = R.dimen.size_160dp))
                 .fillMaxWidth()
         ) {
-            val cameraPositionState = rememberCameraPositionState {
-                position = CameraPosition.fromLatLngZoom(location.latLong, 15F)
-            }
-            GoogleMap(
-                uiSettings = MapUiSettings(compassEnabled = false, zoomControlsEnabled = false),
-                modifier = Modifier.fillMaxSize(),
-                cameraPositionState = cameraPositionState
-            ) {
-                Marker(
-                    state = MarkerState(position = location.latLong),
-                    title = location.address,
-                    snippet = location.city
-                )
+            val initialZoom = 6f
+            val finalZoom = 20f
+            val destinationLatLng = location.latLong//LatLng(destination.lat, destination.lng)
+
+            if (location.latLong.latitude != 0.0 && location.latLong.longitude != 0.0) {
+                val cameraPositionState = rememberCameraPositionState {
+                    position = CameraPosition.fromLatLngZoom(destinationLatLng, initialZoom)
+                }
+                LaunchedEffect(key1 = true) {
+                    cameraPositionState.move(CameraUpdateFactory.zoomIn())
+                    cameraPositionState.animate(
+                        update = CameraUpdateFactory.newCameraPosition(
+                            CameraPosition(destinationLatLng, finalZoom, 0f, 0f)
+                        ),
+                        durationMs = 1000
+                    )
+                }
+                GoogleMap(
+                    uiSettings = MapUiSettings(
+                        compassEnabled = false,
+                        zoomControlsEnabled = false
+                    ),
+                    modifier = Modifier.fillMaxSize(),
+                    cameraPositionState = cameraPositionState,
+                ) {
+                    Marker(
+                        state = MarkerState(position = location.latLong),
+                        title = location.address,
+                        snippet = location.city
+                    )
+                }
+            } else {
+                val cameraPositionState = rememberCameraPositionState {
+                    position = CameraPosition.fromLatLngZoom(destinationLatLng, initialZoom)
+                }
+                GoogleMap(
+                    uiSettings = MapUiSettings(compassEnabled = false, zoomControlsEnabled = false),
+                    modifier = Modifier.fillMaxSize(),
+                    cameraPositionState = cameraPositionState,
+                ) {
+                    Marker(
+                        state = MarkerState(position = location.latLong),
+                        title = location.address,
+                        snippet = location.city
+                    )
+                }
             }
         }
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
+    }
+}
+
+@Composable
+fun Tooltip(
+    expanded: MutableState<Boolean>,
+    modifier: Modifier = Modifier,
+    timeoutMillis: Long = TooltipTimeout,
+    backgroundColor: Color = Color.Black,
+    offset: DpOffset = DpOffset(0.dp, 0.dp),
+    properties: PopupProperties = PopupProperties(focusable = true),
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    val expandedStates = remember { MutableTransitionState(false) }
+    expandedStates.targetState = expanded.value
+
+    if (expandedStates.currentState || expandedStates.targetState) {
+        if (expandedStates.isIdle) {
+            LaunchedEffect(timeoutMillis, expanded) {
+                delay(timeoutMillis)
+                expanded.value = false
+            }
+        }
+
+        Popup(
+            onDismissRequest = { expanded.value = false },
+            popupPositionProvider = DropdownMenuPositionProvider(offset, LocalDensity.current),
+            properties = properties,
+        ) {
+            Box(
+                // Add space for elevation shadow
+                modifier = Modifier.padding(TooltipElevation),
+            ) {
+                TooltipContent(expandedStates, backgroundColor, modifier, content)
+            }
+        }
+    }
+}
+
+
+/** @see androidx.compose.material.DropdownMenuContent */
+@Composable
+private fun TooltipContent(
+    expandedStates: MutableTransitionState<Boolean>,
+    backgroundColor: Color,
+    modifier: Modifier,
+    content: @Composable ColumnScope.() -> Unit,
+) {
+    // Tooltip open/close animation.
+    val transition = updateTransition(expandedStates, "Tooltip")
+
+    val alpha by transition.animateFloat(
+        label = "alpha",
+        transitionSpec = {
+            if (false isTransitioningTo true) {
+                // Dismissed to expanded
+                tween(durationMillis = InTransitionDuration)
+            } else {
+                // Expanded to dismissed.
+                tween(durationMillis = OutTransitionDuration)
+            }
+        }
+    ) { if (it) 1f else 0f }
+
+    Card(
+        backgroundColor = backgroundColor.copy(alpha = 0.75f),
+        contentColor = MaterialTheme.colors.contentColorFor(backgroundColor)
+            .takeOrElse { backgroundColor.onColor() },
+        modifier = Modifier.alpha(alpha),
+        elevation = TooltipElevation,
+    ) {
+        val p = TooltipPadding
+        Column(
+            modifier = modifier
+                .padding(start = p, top = p * 0.5f, end = p, bottom = p * 0.7f)
+                .width(IntrinsicSize.Max),
+            content = content,
+        )
+    }
+}
+
+private val TooltipElevation = 16.dp
+private val TooltipPadding = 10.dp
+
+// Tooltip open/close animation duration.
+private const val InTransitionDuration = 64
+private const val OutTransitionDuration = 240
+
+// Default timeout before tooltip close
+private const val TooltipTimeout = 2_000L - OutTransitionDuration
+
+
+// Color utils
+
+/**
+ * Calculates an 'on' color for this color.
+ *
+ * @return [Color.Black] or [Color.White], depending on [isLightColor].
+ */
+fun Color.onColor(): Color {
+    return if (isLightColor()) Color.Black else Color.White
+}
+
+/**
+ * Calculates if this color is considered light.
+ *
+ * @return true or false, depending on the higher contrast between [Color.Black] and [Color.White].
+ *
+ */
+fun Color.isLightColor(): Boolean {
+    val contrastForBlack = calculateContrastFor(foreground = Color.Black)
+    val contrastForWhite = calculateContrastFor(foreground = Color.White)
+    return contrastForBlack > contrastForWhite
+}
+
+fun Color.calculateContrastFor(foreground: Color): Double {
+    return ColorUtils.calculateContrast(foreground.toArgb(), toArgb())
+}
+
+@Immutable
+internal data class DropdownMenuPositionProvider(
+    val contentOffset: DpOffset,
+    val density: Density,
+    val onPositionCalculated: (IntRect, IntRect) -> Unit = { _, _ -> }
+) : PopupPositionProvider {
+    override fun calculatePosition(
+        anchorBounds: IntRect,
+        windowSize: IntSize,
+        layoutDirection: LayoutDirection,
+        popupContentSize: IntSize
+    ): IntOffset {
+        // The min margin above and below the menu, relative to the screen.
+        val verticalMargin = with(density) { 48.dp.roundToPx() }
+        // The content offset specified using the dropdown offset parameter.
+        val contentOffsetX = with(density) { contentOffset.x.roundToPx() }
+        val contentOffsetY = with(density) { contentOffset.y.roundToPx() }
+
+        // Compute horizontal position.
+        val toRight = anchorBounds.left + contentOffsetX
+        val toLeft = anchorBounds.right - contentOffsetX - popupContentSize.width
+        val toDisplayRight = windowSize.width - popupContentSize.width
+        val toDisplayLeft = 0
+        val x = if (layoutDirection == LayoutDirection.Ltr) {
+            sequenceOf(
+                toRight,
+                toLeft,
+                // If the anchor gets outside of the window on the left, we want to position
+                // toDisplayLeft for proximity to the anchor. Otherwise, toDisplayRight.
+                if (anchorBounds.left >= 0) toDisplayRight else toDisplayLeft
+            )
+        } else {
+            sequenceOf(
+                toLeft,
+                toRight,
+                // If the anchor gets outside of the window on the right, we want to position
+                // toDisplayRight for proximity to the anchor. Otherwise, toDisplayLeft.
+                if (anchorBounds.right <= windowSize.width) toDisplayLeft else toDisplayRight
+            )
+        }.firstOrNull {
+            it >= 0 && it + popupContentSize.width <= windowSize.width
+        } ?: toLeft
+
+        // Compute vertical position.
+        val toBottom = maxOf(anchorBounds.bottom + contentOffsetY, verticalMargin)
+        val toTop = anchorBounds.top - contentOffsetY - popupContentSize.height
+        val toCenter = anchorBounds.top - popupContentSize.height / 2
+        val toDisplayBottom = windowSize.height - popupContentSize.height - verticalMargin
+        val y = sequenceOf(toBottom, toTop, toCenter, toDisplayBottom).firstOrNull {
+            it >= verticalMargin &&
+                    it + popupContentSize.height <= windowSize.height - verticalMargin
+        } ?: toTop
+
+        onPositionCalculated(
+            anchorBounds,
+            IntRect(x, y, x + popupContentSize.width, y + popupContentSize.height)
+        )
+        return IntOffset(x, y)
     }
 }

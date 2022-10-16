@@ -58,6 +58,7 @@ import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.chat.TeamsChatDetailScreen
+import com.softprodigy.ballerapp.ui.features.home.webview.CommonWebView
 import com.softprodigy.ballerapp.ui.features.profile.AddProfileScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileEditScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileScreen
@@ -149,7 +150,8 @@ class HomeActivity : FragmentActivity() {
                                                     navController.navigate(Route.MANAGED_TEAM_SCREEN)
                                                 }
                                                 TopBar.MANAGE_TEAM -> {
-                                                    teamViewModel.onEvent(TeamUIEvent.OnTeamUpdate)
+                                                    if (!teamViewModel.teamUiState.value.isLoading)
+                                                        teamViewModel.onEvent(TeamUIEvent.OnTeamUpdate)
                                                 }
                                                 TopBar.PROFILE -> {
                                                     navController.navigate(Route.PROFILE_EDIT_SCREEN)
@@ -231,6 +233,15 @@ fun NavControllerComposable(
 ) {
     val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = hiltViewModel()
     var eventTitle by rememberSaveable { mutableStateOf("") }
+    var teamLogo by rememberSaveable {
+        mutableStateOf("")
+    }
+    var eventMainTitle by rememberSaveable {
+        mutableStateOf("")
+    }
+    var url by rememberSaveable {
+        mutableStateOf("")
+    }
     val dataStoreManager = DataStoreManager(LocalContext.current)
     val role = dataStoreManager.getRole.collectAsState(initial = "")
     NavHost(navController, startDestination = Route.HOME_SCREEN) {
@@ -294,7 +305,7 @@ fun NavControllerComposable(
                     topBar = TopBar.PROFILE,
                 )
             )
-            ProfileScreen()
+            ProfileScreen(updateTopBar = { homeViewModel.setTopBar(it) })
         }
 
         composable(route = Route.ADD_PROFILE_SCREEN) {
@@ -314,7 +325,6 @@ fun NavControllerComposable(
                     topBar = TopBar.EDIT_PROFILE,
                 )
             )
-
             if (role.value == UserType.REFEREE.key) {
                 RefereeEditScreen(onBackClick = { navController.popBackStack() }) {
                     navController.popBackStack()
@@ -365,18 +375,18 @@ fun NavControllerComposable(
                 })
         }
         composable(route = Route.EVENTS_SCREEN) {
-            homeViewModel.setTopBar(
-                TopBarData(
-                    topBar = TopBar.MY_EVENT,
-                )
-            )
+            /* homeViewModel.setTopBar(
+                 TopBarData(
+                     topBar = TopBar.MY_EVENT,
+                 )
+             )*/
             EventsScreen(
                 teamViewModel,
                 eventViewModel,
                 showDialog = showDialog,
                 dismissDialog = { homeViewModel.setDialog(it) },
                 moveToDetail = {
-                    eventTitle = it
+                    eventMainTitle = it
                     navController.navigate(Route.LEAGUE_DETAIL_SCREEN)
                 },
                 moveToPracticeDetail = { eventId, eventName ->
@@ -440,12 +450,19 @@ fun NavControllerComposable(
                 }
 
             } else {
-                EventRegistraionDetails(eventViewModel, teamViewModel) {
+                EventRegistraionDetails(eventViewModel, teamViewModel, moveToPrivacy = {
+                    url = it
+                    navController.navigate(Route.WEB_VIEW)
+                }, moveToTermsAndConditions = {
+                    url = it
+                    navController.navigate(Route.WEB_VIEW)
+                }) {
                     navController.navigate(Route.EVENT_REGISTRATION_SUCCESS)
                 }
             }
-
         }
+
+
 
         composable(route = Route.EVENT_REGISTRATION_SUCCESS) {
             homeViewModel.setTopBar(
@@ -463,7 +480,7 @@ fun NavControllerComposable(
         composable(route = Route.LEAGUE_DETAIL_SCREEN) {
             homeViewModel.setTopBar(
                 TopBarData(
-                    label = eventTitle,
+                    label = eventMainTitle,
                     topBar = TopBar.MY_LEAGUE
                 )
             )
@@ -479,8 +496,9 @@ fun NavControllerComposable(
                 }, moveToOpenDivisions = { divisionName, divisionId ->
                     eventTitle = divisionName
                     navController.navigate(Route.DIVISION_TAB + "/${divisionId}")
-                }, moveToOpenTeams = {
-                    eventTitle = it
+                }, moveToOpenTeams = { title, logo ->
+                    eventTitle = title
+                    teamLogo = logo
                     navController.navigate(Route.TEAM_TAB)
                 },
                 eventViewModel = eventViewModel
@@ -729,6 +747,7 @@ fun NavControllerComposable(
                 TopBarData(
                     label = eventTitle,
                     topBar = TopBar.TEAM_TAB,
+                    logo = teamLogo
                 )
             )
             EventTeamTabs(vm = teamViewModel)
@@ -750,6 +769,16 @@ fun NavControllerComposable(
                     ?.set("venue", it)
                 navController.popBackStack()
             })
+        }
+
+        composable(route = Route.WEB_VIEW) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = "",
+                    topBar = TopBar.SINGLE_LABEL_BACK,
+                )
+            )
+            CommonWebView(url)
         }
     }
 

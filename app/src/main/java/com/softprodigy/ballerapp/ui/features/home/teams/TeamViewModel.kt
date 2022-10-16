@@ -354,7 +354,7 @@ class TeamViewModel @Inject constructor(
         val newRoaster = arrayListOf<TeamRoaster>()
         _teamUiState.value.players.forEach {
             //val position = it.position.ifEmpty { it._id }
-            if (it.position.isNotEmpty())
+            /* if (it.position.isNotEmpty())*/
                 newRoaster.add(TeamRoaster(it._id, ""))
         }
         //Need to update the request object.
@@ -509,7 +509,12 @@ class TeamViewModel @Inject constructor(
     }
 
     private suspend fun getTeamByTeamId(userId: String) {
-        when (val teamResponse = teamRepo.getTeamsByTeamID(userId)) {
+        _teamUiState.value =
+            _teamUiState.value.copy(isLoading = true)
+        val teamResponse = teamRepo.getTeamsByTeamID(userId)
+        _teamUiState.value =
+            _teamUiState.value.copy(isLoading = false)
+        when (teamResponse) {
             is ResultWrapper.GenericError -> {
                 _teamChannel.send(
                     TeamChannel.ShowToast(

@@ -7,4 +7,5 @@ import com.softprodigy.ballerapp.ui.features.home.teams.standing.StandingUIEvent
 
 sealed class LeaderBoardUIEvent{
     data class OnLeaderSelected(val leader: Player) : LeaderBoardUIEvent()
+    object RefreshLeaderBoardDat : LeaderBoardUIEvent()
 }

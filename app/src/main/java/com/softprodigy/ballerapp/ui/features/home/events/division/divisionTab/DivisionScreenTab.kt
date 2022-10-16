@@ -1,17 +1,8 @@
 package com.softprodigy.ballerapp.ui.features.home.events.division.divisionTab
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
-import androidx.compose.material.TabRowDefaults
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -22,23 +13,18 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
-import com.google.accompanist.pager.pagerTabIndicatorOffset
-import com.google.accompanist.pager.rememberPagerState
+import com.google.accompanist.pager.*
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.stringResourceByName
 import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
 import com.softprodigy.ballerapp.ui.features.home.events.schedule.EventScheduleScreen
-import com.softprodigy.ballerapp.ui.features.home.teams.standing.StandingScreen
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun DivisionScreenTab(divisionId: String,eventViewModel: EventViewModel) {
+fun DivisionScreenTab(divisionId: String, eventViewModel: EventViewModel) {
 
     val list = listOf(
         DivisionTabs.Teams,
@@ -54,7 +40,7 @@ fun DivisionScreenTab(divisionId: String,eventViewModel: EventViewModel) {
             .background(Color.White),
     ) {
         DivisionTabs(pagerState = pagerState, list = list)
-        DivisionTabsContent(pagerState = pagerState,divisionId,eventViewModel)
+        DivisionTabsContent(pagerState = pagerState, divisionId, eventViewModel)
     }
 }
 
@@ -110,12 +96,16 @@ fun DivisionTabs(pagerState: PagerState, list: List<DivisionTabs>) {
 
 @ExperimentalPagerApi
 @Composable
-fun DivisionTabsContent(pagerState: PagerState,divisionId:String,eventViewModel: EventViewModel) {
+fun DivisionTabsContent(
+    pagerState: PagerState,
+    divisionId: String,
+    eventViewModel: EventViewModel
+) {
     HorizontalPager(state = pagerState) { page ->
         when (page) {
-            0 -> DivisionTeamScreen(divisionId,eventViewModel)
-            1 -> StandingByLeagueAndDivisionScreen(divisionId,eventViewModel)
-            2 -> EventScheduleScreen(moveToOpenDetails = {})
+            0 -> DivisionTeamScreen(divisionId, eventViewModel)
+            1 -> StandingByLeagueAndDivisionScreen(divisionId, eventViewModel)
+            2 -> EventScheduleScreen(eventViewModel, moveToOpenDetails = {})
         }
     }
 }

@@ -29,10 +29,11 @@ import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.events.EvEvents
 import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
+import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun EventTeamsScreen(moveToOpenTeams: (String) -> Unit, eventViewModel: EventViewModel) {
+fun EventTeamsScreen(moveToOpenTeams: (String, String) -> Unit, eventViewModel: EventViewModel) {
     val state = eventViewModel.eventState.value.divisionWiseTeamResponse
     remember {
         eventViewModel.onEvent(EvEvents.RefreshTeamsByDivision)
@@ -86,7 +87,7 @@ fun EventTeamsScreen(moveToOpenTeams: (String) -> Unit, eventViewModel: EventVie
                                         )
                                 ) {
                                     EventTeamSubItem(team) {
-                                        moveToOpenTeams(team.name)
+                                        moveToOpenTeams(team.name, team.logo)
                                     }
                                 }
                                 if (index == item.team.size - 1) {
@@ -132,9 +133,9 @@ fun EventTeamHeader(divisionName: String, isExpanded: Boolean = false) {
                     width = dimensionResource(id = R.dimen.size_12dp)
                 )
                 .then(
-                    if (isExpanded) Modifier.rotate(180f) else Modifier
+                    if (isExpanded) Modifier else Modifier.rotate(180f)
                 ),
-            tint = MaterialTheme.appColors.buttonColor.textDisabled
+            tint = ColorGreyLighter
         )
     }
 }
@@ -193,7 +194,7 @@ fun EventTeamSubItem(team: Team, onClick: () -> Unit) {
                         width = dimensionResource(id = R.dimen.size_12dp)
                     )
                     .rotate(270f),
-                tint = MaterialTheme.appColors.buttonColor.textDisabled
+                tint = ColorGreyLighter
             )
         }
     }
