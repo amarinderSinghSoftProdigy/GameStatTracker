@@ -52,7 +52,6 @@ import com.softprodigy.ballerapp.common.Route.WELCOME_SCREEN
 import com.softprodigy.ballerapp.data.SocialUserModel
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.data.request.SignUpData
 import com.softprodigy.ballerapp.twitter_login.TwitterConstants
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.confirm_phone.OtpScreen
@@ -352,7 +351,6 @@ fun NavControllerComposable(
     navController: NavHostController,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated
 ) {
-//    val navController = rememberNavController()
     val signUpViewModel: SignUpViewModel = viewModel()
     val context = LocalContext.current
     val dataStoreManager = DataStoreManager(activity)
@@ -367,17 +365,7 @@ fun NavControllerComposable(
             SplashScreen {
                 scope.launch {
                     if (userToken.value.isNotEmpty()) {
-                        if (getRole.value.equals(AppConstants.USER_TYPE_USER, ignoreCase = true)) {
-                            signUpViewModel.signUpUiState.value.signUpData =
-//                                SignUpData(token = userToken.value)
-                                SignUpData(token = userToken.value, email = email.value)
-                        }
-                        checkRole(
-                            getRole.value.equals(AppConstants.USER_TYPE_USER, ignoreCase = true),
-                            navController,
-                            activity,
-                            fromSplash = true
-                        )
+                        moveToHome(activity, true)
                     } else if (color.value.isNotEmpty()) {
                         navController.popBackStack()
                         navController.navigate(LOGIN_SCREEN)
@@ -428,46 +416,8 @@ fun NavControllerComposable(
         composable(route = LOGIN_SCREEN) {
             LoginScreen(
                 signUpViewModel = signUpViewModel,
-                onLoginSuccess = {
-                    UserStorage.token = it?.token.toString()
-                    if (it?.user?.role.equals(AppConstants.USER_TYPE_USER, ignoreCase = true)) {
-                        signUpViewModel.signUpUiState.value.signUpData =
-                            SignUpData(
-                                token = UserStorage.token,
-                                email = it?.user?.email ?: "",
-                                firstName = it?.user?.firstName ?: "",
-                                lastName = it?.user?.lastName ?: "",
-                            )
-                        signUpViewModel.signUpUiState.value.isSocialUser = true
-                    }
-                    val check =
-                        it?.user?.role.equals(AppConstants.USER_TYPE_USER, ignoreCase = true)
-                    if (check) {
-                        checkRole(
-                            check,
-                            navController,
-                            activity
-                        )
-                    } else {
-                        navController.navigate(SELECT_PROFILE) {
-                            navController.popBackStack()
-                        }
-                    }
-                },
-                onRegister = {
+                onSuccess = {
                     navController.navigate(OTP_VERIFICATION_SCREEN)
-                },
-                onForgetPasswordClick = {
-                    navController.navigate(FORGOT_PASSWORD_SCREEN)
-                },
-                onTwitterClick = {
-                    scope.launch {
-                        activity.getRequestToken("login")
-                    }
-                },
-                twitterUser = activity.twitterUser.value,
-                onLoginFail = {
-                    activity.twitterUser.value = null
                 }
             )
         }
