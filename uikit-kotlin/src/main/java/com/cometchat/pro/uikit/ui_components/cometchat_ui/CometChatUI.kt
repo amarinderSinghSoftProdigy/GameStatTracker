@@ -63,7 +63,7 @@ class CometChatUI : AppCompatActivity(), BottomNavigationView.OnNavigationItemSe
     private var groupListEnabled: Boolean = false
     private var userListEnabled: Boolean = false
     var context: Activity? = null
-    var convo: Conversation? = null
+    var click: () -> Unit = {}
 
     //Used to bind the layout with class
     private var activityCometChatUnifiedBinding: ActivityCometchatUnifiedBinding? = null
@@ -104,7 +104,8 @@ class CometChatUI : AppCompatActivity(), BottomNavigationView.OnNavigationItemSe
                     startGroupIntent(conversation.conversationWith as Group) else startUserIntent(
                     conversation.conversationWith as User
                 )
-                convo = conversation
+                //convo = conversation
+                //click()
             }
         })
     }
@@ -477,5 +478,6 @@ class CometChatUI : AppCompatActivity(), BottomNavigationView.OnNavigationItemSe
     companion object {
         //Used to identify class in Log's
         private val TAG = CometChatUI::class.java.simpleName
+        var convo: Conversation? = null
     }
 }

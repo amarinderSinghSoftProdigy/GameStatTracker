@@ -57,6 +57,7 @@ import com.softprodigy.ballerapp.ui.features.home.manage_team.MainManageTeamScre
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
+import com.softprodigy.ballerapp.ui.features.home.teams.chat.TeamsChatDetailScreen
 import com.softprodigy.ballerapp.ui.features.profile.AddProfileScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileEditScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileScreen
@@ -69,6 +70,7 @@ import com.softprodigy.ballerapp.ui.features.venue.VenueListScreen
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
 import com.softprodigy.ballerapp.ui.theme.appColors
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class HomeActivity : FragmentActivity() {
@@ -103,6 +105,9 @@ class HomeActivity : FragmentActivity() {
             homeViewModel.showBottomAppBar(true)
             BallerAppMainTheme(customColor = state.color ?: Color.White) {
                 val navController = rememberNavController()
+                cometChat.click = {
+                    //navController.navigate(Route.MY_CHAT_DETAIL)
+                }
                 if (state.screen) {
                     Surface(
                         color = MaterialTheme.appColors.material.primary
@@ -346,7 +351,6 @@ fun NavControllerComposable(
                 },
                 onCreateTeamClick = {
                     navController.navigate(Route.TEAM_SETUP_SCREEN) {
-//                        navController.popBackStack()
                         setupTeamViewModelUpdated.onEvent(
                             TeamSetupUIEventUpdated.OnColorSelected(
                                 (it?.colorCode ?: "").replace(
@@ -357,7 +361,7 @@ fun NavControllerComposable(
                     }
                 },
                 onTeamItemClick = {
-
+                    //navController.navigate(Route.MY_CHAT_DETAIL)
                 })
         }
         composable(route = Route.EVENTS_SCREEN) {
@@ -729,15 +733,10 @@ fun NavControllerComposable(
             )
             EventTeamTabs(vm = teamViewModel)
         }
-        /*composable(route = Route.MY_LEAGUE) {
-            homeViewModel.setTopBar(
-                TopBarData(
-                    label = stringResource(id = R.string.back_to_school_tournament),
-                    topBar = TopBar.MY_LEAGUE
-                )
-            )
-            MyLeagueDetailScreen()
-        }*/
+        composable(route = Route.MY_CHAT_DETAIL) {
+            Timber.e("data "+CometChatUI.convo)
+            TeamsChatDetailScreen()
+        }
         composable(route = Route.SELECT_VENUE) {
             homeViewModel.setTopBar(
                 TopBarData(
@@ -753,6 +752,7 @@ fun NavControllerComposable(
             })
         }
     }
+
 }
 
 fun setColorToOriginalOnBack(

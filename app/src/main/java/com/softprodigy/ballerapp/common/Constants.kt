@@ -63,6 +63,7 @@ object Route {
     const val INVITATION_SCREEN = "invitationScreen"
     const val NEW_EVENT = "newEvent"
     const val MY_LEAGUE = "myLeague"
+    const val MY_CHAT_DETAIL = "myChatDetail"
     const val OPEN_VENUE = "openVenue"
     const val DIVISION_TAB = "divisionTab"
     const val TEAM_TAB = "teamTab"
