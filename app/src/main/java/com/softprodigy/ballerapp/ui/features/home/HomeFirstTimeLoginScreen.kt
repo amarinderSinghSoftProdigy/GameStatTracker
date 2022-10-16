@@ -81,6 +81,7 @@ fun HomeFirstTimeLoginScreen(viewModel: HomeViewModel, onCreateTeamClick: () -> 
                     style = MaterialTheme.typography.subtitle1,
                     color = MaterialTheme.appColors.material.primaryVariant
                 )
+
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
 
                 Column(modifier = Modifier.fillMaxWidth()) {

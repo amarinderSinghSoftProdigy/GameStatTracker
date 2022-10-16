@@ -33,13 +33,15 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                 invitationState.value = invitationState.value.copy(
                     showRoleDialog = true,
                     selectedInvitation = event.invitation,
-                    teamId = event.invitation.team._id
+                    teamId = event.invitation.team._id,
+                    showDeclineDialog = true,
                 )
             }
             is InvitationEvent.OnDeclineCLick -> {
                 invitationState.value = invitationState.value.copy(
                     showDeclineDialog = true,
-                    selectedInvitation = event.invitation
+                    selectedInvitation = event.invitation,
+                    showRoleDialog = false,
                 )
 
             }

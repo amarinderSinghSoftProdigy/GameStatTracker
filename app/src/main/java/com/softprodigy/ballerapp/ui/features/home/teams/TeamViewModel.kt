@@ -354,7 +354,7 @@ class TeamViewModel @Inject constructor(
         val newRoaster = arrayListOf<TeamRoaster>()
         _teamUiState.value.players.forEach {
             //val position = it.position.ifEmpty { it._id }
-            if (it.position.isNotEmpty())
+            /* if (it.position.isNotEmpty())*/
                 newRoaster.add(TeamRoaster(it._id, ""))
         }
         //Need to update the request object.

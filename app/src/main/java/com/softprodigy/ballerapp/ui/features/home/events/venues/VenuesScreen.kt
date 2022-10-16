@@ -74,7 +74,6 @@ fun VenuesScreen(moveToOpenVenues: (String, String) -> Unit, eventViewModel: Eve
                 }
             }
         }
-
     }
 }
 
