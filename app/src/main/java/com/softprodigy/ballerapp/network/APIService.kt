@@ -246,6 +246,6 @@ open interface APIService {
     suspend fun updateProfileToken(@Query("userId") userId: String): BaseResponse<String>
 
     @POST(ApiConstants.ADD_PROFILE)
-    suspend fun addProfile(@Body request: AddProfileRequest): BaseResponse<Any>
+    suspend fun addProfile(@Body request: AddProfileRequest): BaseResponse<UserInfo>
 
 }

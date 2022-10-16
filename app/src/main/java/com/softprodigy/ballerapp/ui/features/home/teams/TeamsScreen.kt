@@ -37,6 +37,7 @@ fun TeamsScreen(
     dismissDialog: (Boolean) -> Unit,
     OnTeamDetailsSuccess: (String, String) -> Unit,
     onCreateTeamClick: (Team?) -> Unit,
+    onCreateNewConversationClick: () -> Unit,
     onTeamItemClick: () -> Unit
 ) {
     //val dataStoreManager = DataStoreManager(LocalContext.current)
@@ -109,10 +110,15 @@ fun TeamsScreen(
     Column {
         if (UserStorage.role != UserType.REFEREE.key) {
             TeamsTopTabs(pagerState = pagerState, tabData = tabData)
-            TeamsContent(pagerState = pagerState, onTeamItemClick, vm)
+            TeamsContent(
+                pagerState = pagerState,
+                onTeamItemClick,
+                onCreateNewConversationClick = onCreateNewConversationClick,
+                vm
+            )
         } else {
             RefereeTeamsTopTabs(pagerState = pagerState, tabData = tabData)
-            TeamsChatScreen(onTeamItemClick)
+            TeamsChatScreen(onTeamItemClick, onCreateNewConversationClick)
             //EmptyScreen(singleText = true, heading = stringResource(id = R.string.coming_soon))
         }
     }
@@ -147,14 +153,19 @@ fun TeamsScreen(
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun TeamsContent(pagerState: PagerState, onTeamItemClick: () -> Unit, viewModel: TeamViewModel) {
+fun TeamsContent(
+    pagerState: PagerState,
+    onTeamItemClick: () -> Unit,
+    onCreateNewConversationClick: () -> Unit,
+    viewModel: TeamViewModel
+) {
     HorizontalPager(
         state = pagerState,
         modifier = Modifier.fillMaxSize()
     ) { index ->
         when (index) {
             0 -> StandingScreen()
-            1 -> TeamsChatScreen(onTeamItemClick)
+            1 -> TeamsChatScreen(onTeamItemClick, onCreateNewConversationClick)
             2 -> RoasterScreen(viewModel)
             3 -> LeaderBoardScreen()
         }

@@ -420,4 +420,7 @@
     <string name="update">Update Dates</string>
     <string name="unavailable_dates">Unavailable Dates</string>
     <string name="settings">Settings</string>
+    <string name="new_chat">New Chat</string>
+    <string name="enter_group_name">Enter group name</string>
+    <string name="no_members_in_the_team_currently">No members are there in the selected team.</string>
 </resources>

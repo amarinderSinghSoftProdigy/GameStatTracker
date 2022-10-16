@@ -5,6 +5,11 @@ import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
+import com.cometchat.pro.constants.CometChatConstants
+import com.cometchat.pro.core.CometChat
+import com.cometchat.pro.exceptions.CometChatException
+import com.cometchat.pro.models.Group
+import com.cometchat.pro.models.GroupMember
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.getFileFromUri
@@ -17,7 +22,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
+
 
 @HiltViewModel
 class ChatViewModel @Inject constructor(
@@ -37,6 +44,28 @@ class ChatViewModel @Inject constructor(
     fun onEvent(event: ChatUIEvent) {
         when (event) {
 
+
+            /*New conversation event*/
+            ChatUIEvent.OnConfirmGroupName -> {
+                createGroupWithMembers()
+            }
+            is ChatUIEvent.OnGroupNameChange -> {
+                _chatUiState.value = _chatUiState.value.copy(groupName = event.groupName)
+            }
+            is ChatUIEvent.ShowDialog -> {
+                _chatUiState.value =
+                    _chatUiState.value.copy(showCreateGroupNameDialog = event.showDialog)
+            }
+            is ChatUIEvent.OnCoachChange -> {
+                _chatUiState.value =
+                    _chatUiState.value.copy(selectedCoachesForNewGroup = event.selectedCoaches)
+
+            }
+            is ChatUIEvent.OnPlayerChange -> {
+                _chatUiState.value =
+                    _chatUiState.value.copy(selectedPlayersForNewGroup = event.selectedPlayers)
+
+            }
         }
     }
 
@@ -107,7 +136,36 @@ class ChatViewModel @Inject constructor(
 
     }
 
+    private fun createGroupWithMembers() {
 
+        val randomUid = UUID.randomUUID().toString()
+        val groupName = chatUiState.value.groupName
+
+        val mergedMembers = mutableListOf<String>()
+        mergedMembers.addAll(chatUiState.value.selectedPlayersForNewGroup.map { playerIdsList -> playerIdsList })
+        mergedMembers.addAll(chatUiState.value.selectedCoachesForNewGroup.map { coachIdsList -> coachIdsList })
+
+        val group = Group(randomUid, groupName, CometChatConstants.GROUP_TYPE_PRIVATE, null)
+        val groupMembers: MutableList<GroupMember> = ArrayList()
+        mergedMembers.map { memberId ->
+            groupMembers.add(GroupMember(memberId, CometChatConstants.SCOPE_PARTICIPANT))
+        }
+
+        CometChat.createGroupWithMembers(
+            group,
+            groupMembers,
+            null,
+            object : CometChat.CreateGroupWithMembersListener() {
+                override fun onSuccess(group: Group, hashMap: HashMap<String?, String?>) {
+                    Timber.i("CreateGroupWithMembersListener-- $group")
+                    Timber.i("CreateGroupWithMembersListener-- $hashMap")
+                }
+
+                override fun onError(e: CometChatException) {
+                    Timber.e("CreateGroupWithMembersListener-- ${e.message}")
+                }
+            })
+    }
 }
 
 sealed class ChatChannel {

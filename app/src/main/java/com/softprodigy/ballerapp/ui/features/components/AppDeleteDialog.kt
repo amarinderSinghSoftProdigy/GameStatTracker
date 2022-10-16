@@ -1591,6 +1591,7 @@ fun DeclineEventDialog(
     title: String,
     reason: String,
     onReasonChange: (String) -> Unit,
+    placeholderText : String = ""
 ) {
 
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -1641,7 +1642,7 @@ fun DeclineEventDialog(
                         singleLine = true,
                         placeholder = {
                             Text(
-                                text = stringResource(id = R.string.reason_not_going),
+                                text = if(placeholderText.isEmpty()) stringResource(id = R.string.reason_not_going)  else placeholderText,
                                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                 textAlign = TextAlign.Start
                             )
@@ -1690,7 +1691,7 @@ fun DeclineEventDialog(
                                 .weight(1f),
                             border = ButtonDefaults.outlinedBorder,
                             onlyBorder = false,
-                            enabled = reason.length > 4
+                            enabled = reason.trim().length > 3
                         )
                     }
                 }

@@ -12,7 +12,6 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -26,28 +25,25 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.team.Coach
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayStatus
 import com.softprodigy.ballerapp.ui.theme.appColors
+import timber.log.Timber
 
 @Composable
-fun NewConversationScreen(vm: TeamViewModel) {
-    val state = vm.teamUiState.value
-
-    var selectedPlayers = remember {
-        mutableStateListOf<String>()
-    }
-    var selectedCoach = remember {
-        mutableStateListOf<String>()
-    }
+fun NewConversationScreen(teamVm: TeamViewModel, chatVM: ChatViewModel = hiltViewModel()) {
+    val teamState = teamVm.teamUiState.value
+    val chatState = chatVM.chatUiState.value
 
     Box(Modifier.fillMaxSize()) {
-        if (state.coaches.isNotEmpty() || state.players.isNotEmpty()) {
+        if (teamState.coaches.isNotEmpty() || teamState.players.isNotEmpty()) {
 
 
             Column(
@@ -60,7 +56,7 @@ fun NewConversationScreen(vm: TeamViewModel) {
 
 
             ) {
-                if (state.coaches.isNotEmpty()) {
+                if (teamState.coaches.isNotEmpty()) {
 
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
                     Column(
@@ -91,13 +87,13 @@ fun NewConversationScreen(vm: TeamViewModel) {
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
                         LazyColumn() {
-                            items(state.coaches) { coach ->
+                            items(teamState.coaches) { coach ->
                                 TeamUserListCheckbox(
                                     isCoach = true,
                                     coachUser = coach,
-                                    selectedTeamMembers = selectedCoach
+                                    selectedTeamMembers = chatState.selectedCoachesForNewGroup
                                 ) {
-                                    selectedCoach = it
+                                    chatVM.onEvent(ChatUIEvent.OnCoachChange(selectedCoaches = it))
                                     Log.i("selectedCoach", "NewConversationScreen: $it")
 
                                 }
@@ -107,7 +103,7 @@ fun NewConversationScreen(vm: TeamViewModel) {
 
                 }
 
-                if (state.players.isNotEmpty()) {
+                if (teamState.players.isNotEmpty()) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -129,14 +125,20 @@ fun NewConversationScreen(vm: TeamViewModel) {
 
                         }
                         LazyColumn() {
-                            items(state.players) { player ->
+                            items(teamState.players) { player ->
                                 TeamUserListCheckbox(
                                     isCoach = false,
                                     teamUser = player,
-                                    selectedTeamMembers = selectedPlayers
+                                    selectedTeamMembers = chatState.selectedPlayersForNewGroup
                                 ) {
-                                    selectedPlayers = it
-                                    Log.i("selectedPlayers", "NewConversationScreen: $it")
+                                    chatVM.onEvent(ChatUIEvent.OnPlayerChange(selectedPlayers = it))
+                                    Timber.i(
+                                        "selectedPlayers NewConversationScreen: ${
+                                            it.map { playerId ->
+                                                playerId
+                                            }
+                                        }"
+                                    )
                                 }
                             }
                         }
@@ -145,6 +147,11 @@ fun NewConversationScreen(vm: TeamViewModel) {
                 }
             }
 
+        } else {
+            EmptyScreen(
+                singleText = true,
+                stringResource(id = R.string.no_members_in_the_team_currently)
+            )
         }
         IconButton(
             modifier = Modifier
@@ -152,14 +159,17 @@ fun NewConversationScreen(vm: TeamViewModel) {
                 .size(dimensionResource(id = R.dimen.size_44dp))
                 .background(
 
-                    color = if (selectedPlayers.isNotEmpty() || selectedCoach.isNotEmpty())
+                    color = if (chatState.selectedPlayersForNewGroup.isNotEmpty() || chatState.selectedCoachesForNewGroup.isNotEmpty())
                         MaterialTheme.appColors.material.primaryVariant
                     else MaterialTheme.appColors.buttonColor.bckgroundDisabled,
                     RoundedCornerShape(50)
                 )
                 .align(Alignment.BottomEnd),
-            enabled = selectedPlayers.isNotEmpty() || selectedCoach.isNotEmpty(),
-            onClick = {}
+            enabled = chatState.selectedPlayersForNewGroup.isNotEmpty() || chatState.selectedCoachesForNewGroup.isNotEmpty(),
+            onClick = {
+                chatVM.onEvent(ChatUIEvent.ShowDialog(true))
+
+            }
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_arrow_next),
@@ -169,10 +179,27 @@ fun NewConversationScreen(vm: TeamViewModel) {
                 )
             )
         }
-        if (state.isLoading) {
+        if (teamState.isLoading) {
             CommonProgressBar()
         }
 
+    }
+    if (chatState.showCreateGroupNameDialog) {
+        DeclineEventDialog(
+            title = stringResource(id = R.string.enter_group_name),
+            onDismiss = {
+                chatVM.onEvent(ChatUIEvent.ShowDialog(false))
+            },
+            onConfirmClick = {
+                chatVM.onEvent(ChatUIEvent.ShowDialog(false))
+                chatVM.onEvent(ChatUIEvent.OnConfirmGroupName)
+            },
+            onReasonChange = {
+                chatVM.onEvent(ChatUIEvent.OnGroupNameChange(it))
+            },
+            reason = chatState.groupName,
+            placeholderText = stringResource(id = R.string.enter_group_name)
+        )
     }
 
 

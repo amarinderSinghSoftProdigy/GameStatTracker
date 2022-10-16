@@ -2,10 +2,15 @@ package com.softprodigy.ballerapp.ui.features.sign_up
 
 import android.app.Application
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.cometchat.pro.core.CometChat
+import com.cometchat.pro.exceptions.CometChatException
+import com.cometchat.pro.models.User
+import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.common.ApiConstants
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.ResultWrapper
@@ -451,6 +456,11 @@ class SignUpViewModel @Inject constructor(
                                 )
                             )
                         )
+                        /*Register newly created user to cometchat*/
+                        registerProfileToCometChat(
+                            "${response.data.user.firstName} ${response.data.user.lastName}",
+                            response.data.user.id
+                        )
                     } else {
                         _signUpUiState.value = _signUpUiState.value.copy(
                             errorMessage = response.statusMessage,
@@ -542,6 +552,12 @@ class SignUpViewModel @Inject constructor(
                                     updateProfileResp.value.statusMessage
                                 )
                             )
+                        )
+
+                        /*Register newly updated user to cometchat*/
+                        registerProfileToCometChat(
+                            "${response.data.updateUser.firstName} ${response.data.updateUser.lastName}",
+                            response.data.updateUser.id
                         )
 
                     } else {
@@ -693,6 +709,26 @@ class SignUpViewModel @Inject constructor(
             if (email.isNotEmpty())
                 dataStore.setEmail(email)
         }
+    }
+
+    /*Register newly updated user to cometchat*/
+    private fun registerProfileToCometChat(name: String, uid: String) {
+
+        val authKey = BuildConfig.COMET_CHAT_AUTH_KEY
+        val user = User()
+        user.uid = uid
+        user.name = name
+
+        CometChat.createUser(user, authKey, object : CometChat.CallbackListener<User>() {
+            override fun onSuccess(user: User) {
+                Log.d("createUser", user.toString())
+            }
+
+            override fun onError(e: CometChatException) {
+                Log.e("createUser", "${e.message}")
+                e.printStackTrace()
+            }
+        })
     }
 }
 

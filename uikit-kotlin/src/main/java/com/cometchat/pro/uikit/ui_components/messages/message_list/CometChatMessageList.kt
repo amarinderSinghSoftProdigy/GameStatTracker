@@ -289,7 +289,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         vw = inflater.inflate(R.layout.fragment_cometchat_messagelist, container, false)
-
+        Log.i("CometChatMessageList", "onCreateView: ")
         return vw
     }
 
