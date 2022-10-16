@@ -3,6 +3,7 @@ package com.softprodigy.ballerapp.common
 import androidx.compose.ui.graphics.Color
 
 object AppConstants {
+    val REQUEST_CONTACT_CODE: Int = 1122
     const val ROLE = "role"
     const val TEAM_LOGO: String = "teamLogo"
     const val PROFILE_IMAGE: String = "profileImage"
@@ -116,6 +117,8 @@ object ApiConstants {
     const val SWAP_TOKEN = "v1/auth/swapProfileToken"
     const val ADD_PROFILE = "v1/auth/addUserProfile"
 
+    const val GET_CHATS = "v1/team/teamsChatDetails"
+
     const val RESET_PASS = "/reset/password/"
     const val RESEND_OTP = "/resendOtp"
 
@@ -148,6 +151,9 @@ object ApiConstants {
     const val TWITTER = "twitter"
     const val email = "email"
     const val token = "token"
+
+
+    const val AUTH_REGISTER_MOBILE = "v1/auth/registerMobile"
 }
 
 

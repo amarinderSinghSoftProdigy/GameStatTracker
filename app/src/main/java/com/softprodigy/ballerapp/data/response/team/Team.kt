@@ -26,6 +26,8 @@ data class Team(
     val players: ArrayList<Player> = ArrayList(),
     @SerializedName("leaderboardPoints")
     val teamLeaderBoard: ArrayList<TeamLeaderBoard> = ArrayList(),
+    @SerializedName("teamChatGroups")
+    val teamChatGroups: ArrayList<Any> = ArrayList(),
 
     @SerializedName("teamNameOnJersey") val teamNameOnJersey: String = "",
     @SerializedName("teamNameOnTournaments") val teamNameOnTournaments: String = "",

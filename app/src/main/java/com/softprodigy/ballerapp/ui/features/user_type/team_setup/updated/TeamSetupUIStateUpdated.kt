@@ -20,16 +20,24 @@ data class TeamSetupUIStateUpdated(
     val removePlayer: Player? = null,
 
     /* Initialising default value with three*/
-    val inviteMemberName: ArrayList<String> = arrayListOf("","",""),
-    val inviteMemberEmail: ArrayList<String> = arrayListOf("","",""),
-    var inviteMemberCount: Int = 3,
+    //val inviteMemberName: ArrayList<String> = arrayListOf("", "", "", "", ""),
+    //val inviteMemberEmail: ArrayList<String> = arrayListOf("", "", "", "", ""),
+    //var inviteMemberCount: Int = 5,
+    var inviteList: List<InviteObject> = mutableListOf(),
+    var teamInviteList: ArrayList<String> =  arrayListOf("", "", ""),
 
     val teamNameOnJerseys: String = "",
     val teamNameOnTournaments: String = "",
     val venueName: String = "",
 
-    val coachName:String="",
-    val coachRole:String="",
-    val coachEmail:String="",
-    val selectedAddress:Address=Address(),
-    )
+    val coachName: String = "",
+    val coachRole: String = "",
+    val coachEmail: String = "",
+    val selectedAddress: Address = Address(),
+)
+
+
+data class InviteObject(
+    var name: String = "",
+    var contact: String = "",
+)

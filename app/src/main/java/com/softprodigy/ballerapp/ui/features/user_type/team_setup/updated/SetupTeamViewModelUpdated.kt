@@ -41,6 +41,18 @@ class SetupTeamViewModelUpdated @Inject constructor(
     private val _teamSetupUiState = mutableStateOf(TeamSetupUIStateUpdated())
     val teamSetupUiState: State<TeamSetupUIStateUpdated> = _teamSetupUiState
 
+    init {
+        _teamSetupUiState.value =
+            _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList.toMutableList()
+                .apply {
+                    add(InviteObject())
+                    add(InviteObject())
+                    add(InviteObject())
+                    add(InviteObject())
+                    add(InviteObject())
+                })
+    }
+
     fun onEvent(event: TeamSetupUIEventUpdated) {
         when (event) {
             is TeamSetupUIEventUpdated.OnColorSelected -> {
@@ -116,7 +128,6 @@ class SetupTeamViewModelUpdated @Inject constructor(
 
             }
             TeamSetupUIEventUpdated.OnAddPlayerScreenNext -> {
-
                 viewModelScope.launch {
                     uploadTeamLogo()
                 }
@@ -124,43 +135,70 @@ class SetupTeamViewModelUpdated @Inject constructor(
             TeamSetupUIEventUpdated.OnLogoUploadSuccess -> {
                 viewModelScope.launch { createTeam() }
             }
+            is TeamSetupUIEventUpdated.OnContactAdded -> {
+                _teamSetupUiState.value.inviteList.toMutableList().forEach {
+                    if (it.name.isEmpty() && it.contact.isEmpty()) {
+                        it.name = event.data.name
+                        it.contact = event.data.contact.replace(" ", "")
+                        return
+                    }
+                }
+                _teamSetupUiState.value =
+                    _teamSetupUiState.value.copy(
+                        inviteList = _teamSetupUiState.value.inviteList.toMutableList()
+                    )
+            }
             is TeamSetupUIEventUpdated.OnNameValueChange -> {
 
-                _teamSetupUiState.value.inviteMemberName[event.index] = event.name
+                _teamSetupUiState.value =
+                    _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList.toMutableList()
+                        .apply {
+                            this[event.index].name = event.name
+                        })
 
-                /* To achieve recomposition only*/
+                /* To achieve recomposition only*//*
                 _teamSetupUiState.value =
                     _teamSetupUiState.value.copy(inviteMemberCount = _teamSetupUiState.value.inviteMemberCount + 1)
                 _teamSetupUiState.value =
-                    _teamSetupUiState.value.copy(inviteMemberCount = _teamSetupUiState.value.inviteMemberCount - 1)
+                    _teamSetupUiState.value.copy(inviteMemberCount = _teamSetupUiState.value.inviteMemberCount - 1)*/
 
             }
             is TeamSetupUIEventUpdated.OnEmailValueChange -> {
+                _teamSetupUiState.value =
+                    _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList.toMutableList()
+                        .apply {
+                            this[event.index].contact = event.email
+                        })
 
-                _teamSetupUiState.value.inviteMemberEmail[event.index] = event.email
+                /*_teamSetupUiState.value.inviteMemberEmail[event.index] = event.email*/
 
                 /* To achieve recomposition only*/
-                _teamSetupUiState.value =
+                /*_teamSetupUiState.value =
                     _teamSetupUiState.value.copy(inviteMemberCount = _teamSetupUiState.value.inviteMemberCount + 1)
                 _teamSetupUiState.value =
-                    _teamSetupUiState.value.copy(inviteMemberCount = _teamSetupUiState.value.inviteMemberCount - 1)
+                    _teamSetupUiState.value.copy(inviteMemberCount = _teamSetupUiState.value.inviteMemberCount - 1)*/
 
             }
             is TeamSetupUIEventUpdated.OnInviteCountValueChange -> {
-
                 if (event.addIntent) {
                     _teamSetupUiState.value =
-                        _teamSetupUiState.value.copy(inviteMemberCount = _teamSetupUiState.value.inviteMemberCount + 1)
-
-                    _teamSetupUiState.value.inviteMemberName.add("")
-                    _teamSetupUiState.value.inviteMemberEmail.add("")
+                        _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList.toMutableList()
+                            .apply {
+                                add(InviteObject())
+                            })
+                    /*_teamSetupUiState.value.inviteMemberName.add("")
+                    _teamSetupUiState.value.inviteMemberEmail.add("")*/
                 } else {
                     event.index?.let {
                         _teamSetupUiState.value =
-                            _teamSetupUiState.value.copy(inviteMemberCount = _teamSetupUiState.value.inviteMemberCount - 1)
-
-                        _teamSetupUiState.value.inviteMemberName.removeAt(event.index)
-                        _teamSetupUiState.value.inviteMemberEmail.removeAt(event.index)
+                            _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList.toMutableList()
+                                .apply {
+                                    removeAt(it)
+                                })
+                        /*_teamSetupUiState.value =
+                        _teamSetupUiState.value.copy(inviteMemberCount = _teamSetupUiState.value.inviteMemberCount - 1)*/
+                        /*_teamSetupUiState.value.inviteMemberName.removeAt(event.index)
+                        _teamSetupUiState.value.inviteMemberEmail.removeAt(event.index)*/
                     }
                 }
 
@@ -177,11 +215,13 @@ class SetupTeamViewModelUpdated @Inject constructor(
             }
 
             is TeamSetupUIEventUpdated.OnTeamNameJerseyChange -> {
-                _teamSetupUiState.value = _teamSetupUiState.value.copy(teamNameOnJerseys = event.teamNameOnJersey)
+                _teamSetupUiState.value =
+                    _teamSetupUiState.value.copy(teamNameOnJerseys = event.teamNameOnJersey)
 
             }
             is TeamSetupUIEventUpdated.OnTeamNameTournamentsChange -> {
-                _teamSetupUiState.value = _teamSetupUiState.value.copy(teamNameOnTournaments = event.teamNameOnTournaments)
+                _teamSetupUiState.value =
+                    _teamSetupUiState.value.copy(teamNameOnTournaments = event.teamNameOnTournaments)
 
             }
             is TeamSetupUIEventUpdated.OnVenueChange -> {
@@ -193,13 +233,14 @@ class SetupTeamViewModelUpdated @Inject constructor(
                 _teamSetupUiState.value = _teamSetupUiState.value.copy(coachName = event.coachName)
             }
             is TeamSetupUIEventUpdated.OnCoachEmailChange -> {
-                _teamSetupUiState.value = _teamSetupUiState.value.copy(coachEmail = event.coachEmail)
+                _teamSetupUiState.value =
+                    _teamSetupUiState.value.copy(coachEmail = event.coachEmail)
             }
             is TeamSetupUIEventUpdated.OnCoachRoleChange -> {
                 _teamSetupUiState.value = _teamSetupUiState.value.copy(coachRole = event.coachRole)
             }
 
-            is TeamSetupUIEventUpdated.OnAddressChanged->{
+            is TeamSetupUIEventUpdated.OnAddressChanged -> {
                 _teamSetupUiState.value =
                     _teamSetupUiState.value.copy(selectedAddress = event.addressReq)
             }
@@ -211,15 +252,16 @@ class SetupTeamViewModelUpdated @Inject constructor(
     private fun resetMemberValues() {
         _teamSetupUiState.value =
             _teamSetupUiState.value.copy(
-                inviteMemberCount = 3,
+                inviteList = ArrayList()
+                /*inviteMemberCount = 3,
                 inviteMemberName = arrayListOf("", "", ""),
-                inviteMemberEmail = arrayListOf("", "", "")
+                inviteMemberEmail = arrayListOf("", "", "")*/
             )
     }
 
     private suspend fun invitePlayers(teamId: String) {
-        val members = _teamSetupUiState.value.inviteMemberName.mapIndexed { index, name ->
-            Members(name = name, email = _teamSetupUiState.value.inviteMemberEmail[index])
+        val members = _teamSetupUiState.value.inviteList.mapIndexed { index, item ->
+            Members(name = item.name, email = item.contact)
         }
         val request = UpdateTeamRequest(teamID = teamId, members = members)
 
@@ -391,10 +433,8 @@ class SetupTeamViewModelUpdated @Inject constructor(
     }
 
     private suspend fun createTeam() {
-
-
-        val members = _teamSetupUiState.value.inviteMemberName.mapIndexed { index, name ->
-            Members(name = name, email = _teamSetupUiState.value.inviteMemberEmail[index])
+        val members = _teamSetupUiState.value.inviteList.mapIndexed { index, item ->
+            Members(name = item.name, email = item.contact)
         }
         val location = Location(
             type = "Point",
@@ -477,9 +517,10 @@ class SetupTeamViewModelUpdated @Inject constructor(
         }
     }
 
-    private fun inItToDefaultData(){
+    private fun inItToDefaultData() {
         Log.i("inItToDefaultData", "inItToDefaultData: ")
-       _teamSetupUiState.value= TeamSetupUIStateUpdated(teamColorPrimary=_teamSetupUiState.value.teamColorPrimary )
+        _teamSetupUiState.value =
+            TeamSetupUIStateUpdated(teamColorPrimary = _teamSetupUiState.value.teamColorPrimary)
     }
 }
 
