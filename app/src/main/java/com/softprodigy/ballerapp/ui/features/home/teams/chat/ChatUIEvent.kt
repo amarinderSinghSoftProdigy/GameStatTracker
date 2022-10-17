@@ -9,5 +9,5 @@ sealed class ChatUIEvent {
   data class OnPlayerChange(val selectedPlayers:SnapshotStateList<String>):ChatUIEvent()
   data class ShowDialog(val showDialog: Boolean):ChatUIEvent()
   data class OnGroupNameChange(val groupName: String):ChatUIEvent()
-  object OnConfirmGroupName:ChatUIEvent()
+  object OnInitiateNewConversation:ChatUIEvent()
 }
