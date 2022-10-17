@@ -319,7 +319,7 @@ class MainActivity : ComponentActivity() {
                 TeamSetupUIEventUpdated.OnContactAdded(
                     InviteObject(
                         name,
-                        number
+                        number.replace(" ", "")
                     )
                 )
             )
@@ -354,8 +354,8 @@ fun NavControllerComposable(
     val signUpViewModel: SignUpViewModel = viewModel()
     val context = LocalContext.current
     val dataStoreManager = DataStoreManager(activity)
-    val userToken = dataStoreManager.userToken.collectAsState(initial = "")
-    UserStorage.token = userToken.value
+    val userToken = UserStorage.token//dataStoreManager.userToken.collectAsState(initial = "")
+    //UserStorage.token= userToken.value
     val getRole = dataStoreManager.getRole.collectAsState(initial = "")
     val email = dataStoreManager.getEmail.collectAsState(initial = "")
     val scope = rememberCoroutineScope()
@@ -364,7 +364,7 @@ fun NavControllerComposable(
         composable(route = SPLASH_SCREEN) {
             SplashScreen {
                 scope.launch {
-                    if (userToken.value.isNotEmpty()) {
+                    if (userToken.isNotEmpty()) {
                         moveToHome(activity, true)
                     } else if (color.value.isNotEmpty()) {
                         navController.popBackStack()
@@ -530,7 +530,9 @@ fun NavControllerComposable(
         }
         composable(route = SELECT_PROFILE) {
             mainViewModel.onEvent(MainEvent.OnColorChanges(AppConstants.SELECTED_COLOR))
-            SelectProfileScreen(onNextClick = { moveToHome(activity) })
+            SelectProfileScreen(
+                vm = signUpViewModel,
+                onNextClick = { moveToHome(activity) })
         }
 
         composable(route = SELECT_VENUE) {
@@ -546,7 +548,12 @@ fun NavControllerComposable(
             OtpScreen(
                 viewModel = signUpViewModel,
                 onSuccess = {
-                    navController.navigate(SELECT_PROFILE)
+                    navController.popBackStack()
+                    if (it) {
+                        navController.navigate(PROFILE_SETUP_SCREEN)
+                    } else {
+                        navController.navigate(SELECT_PROFILE)
+                    }
                 }
             )
         }

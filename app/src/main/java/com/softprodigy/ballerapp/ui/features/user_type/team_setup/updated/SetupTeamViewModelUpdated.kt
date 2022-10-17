@@ -55,6 +55,11 @@ class SetupTeamViewModelUpdated @Inject constructor(
 
     fun onEvent(event: TeamSetupUIEventUpdated) {
         when (event) {
+            is TeamSetupUIEventUpdated.GetInvitedTeamPlayers -> {
+                viewModelScope.launch {
+                    getInvitePlayers(event.teamId)
+                }
+            }
             is TeamSetupUIEventUpdated.OnColorSelected -> {
                 _teamSetupUiState.value =
                     _teamSetupUiState.value.copy(teamColorPrimary = event.primaryColor)
@@ -136,16 +141,18 @@ class SetupTeamViewModelUpdated @Inject constructor(
                 viewModelScope.launch { createTeam() }
             }
             is TeamSetupUIEventUpdated.OnContactAdded -> {
-                _teamSetupUiState.value.inviteList.toMutableList().forEach {
-                    if (it.name.isEmpty() && it.contact.isEmpty()) {
-                        it.name = event.data.name
-                        it.contact = event.data.contact.replace(" ", "")
-                        return
-                    }
-                }
                 _teamSetupUiState.value =
                     _teamSetupUiState.value.copy(
-                        inviteList = _teamSetupUiState.value.inviteList.toMutableList()
+                        inviteList = _teamSetupUiState.value.inviteList.toMutableList().apply {
+                            this[_teamSetupUiState.value.index] = event.data
+                        }
+                    )
+            }
+
+            is TeamSetupUIEventUpdated.OnIndexChange -> {
+                _teamSetupUiState.value =
+                    _teamSetupUiState.value.copy(
+                        index = event.index
                     )
             }
             is TeamSetupUIEventUpdated.OnNameValueChange -> {
@@ -257,6 +264,63 @@ class SetupTeamViewModelUpdated @Inject constructor(
                 inviteMemberName = arrayListOf("", "", ""),
                 inviteMemberEmail = arrayListOf("", "", "")*/
             )
+    }
+
+    private suspend fun getInvitePlayers(teamId: String) {
+        _teamSetupUiState.value =
+            _teamSetupUiState.value.copy(isLoading = true)
+
+        val inviteMemberResponse = teamRepo.getInviteMembersByTeamId(teamId)
+
+        _teamSetupUiState.value =
+            _teamSetupUiState.value.copy(isLoading = false)
+        when (inviteMemberResponse) {
+            is ResultWrapper.GenericError -> {
+                _teamSetupChannel.send(
+                    TeamSetupChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${inviteMemberResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _teamSetupChannel.send(
+                    TeamSetupChannel.ShowToast(
+                        UiText.DynamicString(
+                            inviteMemberResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                inviteMemberResponse.value.let { response ->
+                    if (response.status) {
+                        _teamSetupChannel.send(
+                            TeamSetupChannel.OnInvitationSuccess(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                        resetMemberValues()
+                        inItToDefaultData()
+
+                    } else {
+                        _teamSetupUiState.value =
+                            _teamSetupUiState.value.copy(isLoading = false)
+                        _teamSetupChannel.send(
+                            TeamSetupChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+
     }
 
     private suspend fun invitePlayers(teamId: String) {

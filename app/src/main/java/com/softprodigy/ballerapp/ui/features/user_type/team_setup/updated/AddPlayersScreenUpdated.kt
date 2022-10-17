@@ -76,6 +76,12 @@ fun AddPlayersScreenUpdated(
         )
     )
 
+    remember {
+        if (!teamId.isNullOrEmpty()) {
+            vm.onEvent(TeamSetupUIEventUpdated.GetInvitedTeamPlayers(teamId))
+        }
+    }
+
     BackHandler {
         onBackClick.invoke()
         vm.onEvent(TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen)
@@ -161,11 +167,11 @@ fun AddPlayersScreenUpdated(
                                     Row(
                                         Modifier.fillMaxWidth(),
                                         horizontalArrangement = Arrangement.Center,
-                                        verticalAlignment = Alignment.Top
+                                        verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         AppSearchOutlinedTextField(
                                             modifier = Modifier
-                                                .weight(0.8f)
+                                                .weight(0.6f)
                                                 .focusRequester(focusRequester),
                                             value = item.name,
                                             onValueChange = { name ->
@@ -198,6 +204,7 @@ fun AddPlayersScreenUpdated(
                                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
 
                                         AppSearchOutlinedTextField(
+                                            visualTransformation = MaskTransformation(),
                                             modifier = Modifier
                                                 .weight(1f)
                                                 .focusRequester(focusRequester),
@@ -236,23 +243,31 @@ fun AddPlayersScreenUpdated(
                                         )
 
                                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
-                                    }
-                                    if (item.name.isEmpty()
-                                        && item.contact.isEmpty()
-                                    ) {
+
                                         Icon(
-                                            painter = painterResource(id = R.drawable.ic_remove),
+                                            painter = painterResource(id = R.drawable.ic_add),
                                             contentDescription = "",
                                             tint = Color.Unspecified,
                                             modifier = Modifier
-                                                .align(Alignment.TopEnd)
-                                                .background(
-                                                    AppConstants.SELECTED_COLOR,
-                                                    shape = RoundedCornerShape(50)
-                                                )
-                                                .padding(dimensionResource(id = R.dimen.size_2dp))
                                                 .clickable {
-                                                    updateItem(index, false)
+                                                    vm.onEvent(
+                                                        TeamSetupUIEventUpdated.OnIndexChange(
+                                                            index = index
+                                                        )
+                                                    )
+                                                    if (hasContactPermission(context)) {
+                                                        val intent =
+                                                            Intent(Intent.ACTION_GET_CONTENT)
+                                                        intent.type =
+                                                            ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
+                                                        context.startActivityForResult(
+                                                            intent,
+                                                            AppConstants.REQUEST_CONTACT_CODE,
+                                                            null
+                                                        )
+                                                    } else {
+                                                        requestContactPermission(context, context)
+                                                    }
                                                 }
                                         )
                                     }
@@ -273,44 +288,6 @@ fun AddPlayersScreenUpdated(
                         isTransParent = true
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-                }
-                AppDivider()
-                Box(modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        if (hasContactPermission(context)) {
-                            val intent = Intent(Intent.ACTION_GET_CONTENT)
-                            intent.type = ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
-                            context.startActivityForResult(
-                                intent,
-                                AppConstants.REQUEST_CONTACT_CODE,
-                                null
-                            )
-                        } else {
-                            requestContactPermission(context, context)
-                        }
-                    }) {
-                    Row(
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .padding(all = dimensionResource(id = R.dimen.size_16dp))
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_add_button),
-                            contentDescription = "",
-                            tint = ColorGreyLighter,
-                            modifier = Modifier.size(
-                                dimensionResource(id = R.dimen.size_10dp)
-                            )
-
-                        )
-                        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_12dp)))
-                        AppText(
-                            text = stringResource(id = R.string.add_from_contacts),
-                            color = MaterialTheme.appColors.buttonColor.textDisabled,
-                            style = MaterialTheme.typography.button
-                        )
-                    }
                 }
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))

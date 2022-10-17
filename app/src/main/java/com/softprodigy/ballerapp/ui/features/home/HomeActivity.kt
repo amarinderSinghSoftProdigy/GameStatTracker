@@ -62,10 +62,12 @@ import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.chat.TeamsChatDetailScreen
-import com.softprodigy.ballerapp.ui.features.profile.AddProfileScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileEditScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileScreen
 import com.softprodigy.ballerapp.ui.features.profile.RefereeEditScreen
+import com.softprodigy.ballerapp.ui.features.sign_up.ProfileSetUpScreen
+import com.softprodigy.ballerapp.ui.features.sign_up.SignUpUIEvent
+import com.softprodigy.ballerapp.ui.features.sign_up.SignUpViewModel
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.*
 import com.softprodigy.ballerapp.ui.features.venue.VenueListScreen
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
@@ -243,7 +245,7 @@ class HomeActivity : FragmentActivity() {
                 TeamSetupUIEventUpdated.OnContactAdded(
                     InviteObject(
                         name,
-                        number
+                        number.replace(" ", "")
                     )
                 )
             )
@@ -360,9 +362,17 @@ fun NavControllerComposable(
                     topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
-            AddProfileScreen(onSuccess = {
-                navController.popBackStack()
-            })
+            val signUpViewModel: SignUpViewModel = hiltViewModel()
+            signUpViewModel.onEvent(SignUpUIEvent.SetRegister)
+            ProfileSetUpScreen(
+                signUpViewModel = signUpViewModel,
+                onNext = {
+                    navController.popBackStack()
+                },
+                onBack = {
+                    navController.popBackStack()
+                })
+
         }
         composable(route = Route.PROFILE_EDIT_SCREEN) {
             homeViewModel.setTopBar(

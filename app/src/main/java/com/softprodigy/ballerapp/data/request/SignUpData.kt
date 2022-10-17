@@ -26,6 +26,14 @@ data class SignUpData(
     @SerializedName("id") val id: String? = null,
 ) : Parcelable
 
+data class SignUpPhoneData(
+    @SerializedName("firstName") val firstName: String = "",
+    @SerializedName("lastName") val lastName: String = "",
+    @SerializedName("email") var email: String? = null,
+    @SerializedName("phone") val phone: String = "",
+    @SerializedName("profileImage") val profileImage: String? = "",
+)
+
 
 class SignUpType : NavType<SignUpData>(isNullableAllowed = false) {
     override fun get(bundle: Bundle, key: String): SignUpData? {

@@ -1,19 +1,8 @@
 package com.softprodigy.ballerapp.ui.features.home.teams.manage_team
 
-import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -38,11 +27,7 @@ import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.team.Coach
 import com.softprodigy.ballerapp.data.response.team.Player
-import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.ButtonWithLeadingIcon
-import com.softprodigy.ballerapp.ui.features.components.CoilImage
-import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
-import com.softprodigy.ballerapp.ui.features.components.Placeholder
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayStatus
@@ -51,7 +36,6 @@ import com.softprodigy.ballerapp.ui.utils.dragDrop.ReorderableItem
 import com.softprodigy.ballerapp.ui.utils.dragDrop.detectReorderAfterLongPress
 import com.softprodigy.ballerapp.ui.utils.dragDrop.rememberReorderableLazyListState
 import com.softprodigy.ballerapp.ui.utils.dragDrop.reorderable
-import timber.log.Timber
 
 @Composable
 fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
@@ -176,7 +160,7 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
                     ButtonWithLeadingIcon(
-                        text = stringResource(id = R.string.add_player),
+                        text = stringResource(id = R.string.invite_team_member),
                         onClick = {
                             onAddPlayerCLick.invoke()
                         },

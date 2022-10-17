@@ -33,6 +33,10 @@ data class SwapUser(
     @SerializedName("status") val status: String = "",
 )
 
+data class ProfileList(
+    @SerializedName("profiles") val profiles: ArrayList<SwapUser> = ArrayList(),
+)
+
 data class TeamDetails(
 
     @SerializedName("_id") val Id: String = "",

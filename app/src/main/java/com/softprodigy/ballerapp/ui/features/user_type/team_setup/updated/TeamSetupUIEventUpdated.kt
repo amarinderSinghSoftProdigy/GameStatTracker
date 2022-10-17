@@ -21,6 +21,7 @@ sealed class TeamSetupUIEventUpdated {
     object OnLogoUploadSuccess : TeamSetupUIEventUpdated()
 
     data class OnContactAdded(val data: InviteObject) : TeamSetupUIEventUpdated()
+    data class OnIndexChange(val index: Int) : TeamSetupUIEventUpdated()
     data class OnNameValueChange(val index: Int, val name: String) : TeamSetupUIEventUpdated()
     data class OnEmailValueChange(val index: Int, val email: String) : TeamSetupUIEventUpdated()
     data class OnInviteCountValueChange(val index: Int? = null, val addIntent: Boolean) :
@@ -40,4 +41,5 @@ sealed class TeamSetupUIEventUpdated {
     data class OnCoachRoleChange(val coachRole: String) : TeamSetupUIEventUpdated()
     data class OnCoachEmailChange(val coachEmail: String) : TeamSetupUIEventUpdated()
     data class OnAddressChanged(val addressReq: Address) : TeamSetupUIEventUpdated()
+    data class GetInvitedTeamPlayers(val teamId: String) : TeamSetupUIEventUpdated()
 }
