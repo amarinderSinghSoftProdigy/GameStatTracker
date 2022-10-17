@@ -124,7 +124,7 @@ private fun gameTimeoutsViews() {
                 .padding(horizontal = dimensionResource(id = R.dimen.size_24dp))
             ) {
                 AppText(
-                    text = "1",
+                    text = "1/8",
                     textAlign = TextAlign.End,
                     fontSize = dimensionResource(id = R.dimen.size_14dp).value.sp,
                     fontFamily = rubikFamily,
@@ -154,7 +154,7 @@ private fun gameTimeoutsViews() {
                 horizontalAlignment = Alignment.End,
             ) {
                 AppText(
-                    text = "1",
+                    text = "1/10",
                     textAlign = TextAlign.End,
                     fontSize = dimensionResource(id = R.dimen.size_14dp).value.sp,
                     fontFamily = rubikFamily,
@@ -216,7 +216,7 @@ private fun timeslotView() {
                 )
             ) {
                 itemsIndexed(timeouts) { index, timeItem ->
-                    timeListItem(index, timeItem)
+                    timeListItem(index, timeItem, selected = index % 2 == 0)
                 }
             }
         }
@@ -237,7 +237,7 @@ private fun timeslotView() {
                 )
             ) {
                 itemsIndexed(timeouts) { index, timeItem ->
-                    timeListItem(index, timeItem)
+                    timeListItem(index, timeItem, selected = index % 2 == 0)
                 }
             }
         }

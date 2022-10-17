@@ -118,5 +118,6 @@ private fun roasterGridView(players: ArrayList<Player>) {
                     )
                 )
             }
-        })
+        }
+    )
 }

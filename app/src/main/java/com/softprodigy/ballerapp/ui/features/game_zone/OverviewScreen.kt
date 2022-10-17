@@ -53,7 +53,7 @@ fun OverviewScreen () {
                     .weight(1f)
                     //.background(colorResource(id = R.color.game_center_background_color)),
             ) {
-                TeamNavigationController()
+                TeamNavigationController(isTracking = true)
             }
             Column(
                 Modifier
@@ -61,7 +61,6 @@ fun OverviewScreen () {
                     //.padding(start = 0.dp, top = 0.dp, end = dimensionResource(id = R.dimen.size_20dp), bottom = 0.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 GameSettingsController()
             }
         }

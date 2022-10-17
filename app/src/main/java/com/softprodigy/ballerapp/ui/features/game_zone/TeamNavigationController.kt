@@ -30,7 +30,7 @@ import com.softprodigy.ballerapp.ui.theme.rubikFamily
 
 @Composable
 fun TeamNavigationController (
-
+    isTracking: Boolean = false
 ) {
     Box(
         modifier = Modifier
@@ -41,11 +41,14 @@ fun TeamNavigationController (
             .fillMaxHeight()
             .fillMaxWidth()) {
             teamHandler()
-            PointList()
-            /*Tracking(
-                isTrackingEmpty = true,
-                onAddRosterClick = {}
-            )*/
+
+            if(isTracking)
+                Tracking(
+                    isTrackingEmpty = true,
+                    onAddRosterClick = {}
+                )
+            else
+                PointList()
         }
     }
 }

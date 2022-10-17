@@ -136,8 +136,12 @@ fun CoachListItem(
     ) {
 
         if(isRoasterSelection)
-            Box(modifier = Modifier.align(alignment = Alignment.End)
-
+            Box(modifier = Modifier
+                .align(alignment = Alignment.End)
+                .padding(
+                    top = dimensionResource(id = R.dimen.size_20dp),
+                    end = dimensionResource(id = R.dimen.size_10dp),
+                )
             ){
                 Column( modifier = Modifier
                     .width(dimensionResource(id = R.dimen.size_14dp))
@@ -148,7 +152,7 @@ fun CoachListItem(
                    Icon(painter = painterResource(id = R.drawable.ic_player_info),
                         contentDescription = "",
                         tint = Color.Unspecified,
-                         )
+                   )
                 }
             }
 
@@ -158,7 +162,8 @@ fun CoachListItem(
             modifier =
             Modifier
                 .background(
-                    color = MaterialTheme.appColors.material.onSurface,
+                    //color = MaterialTheme.appColors.material.onSurface,
+                    color = Color.Red,
                     shape = CircleShape
                 )
                 .size(dimensionResource(id = R.dimen.size_80dp))
