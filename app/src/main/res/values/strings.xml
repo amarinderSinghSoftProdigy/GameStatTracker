@@ -423,4 +423,5 @@
     <string name="new_chat">New Chat</string>
     <string name="enter_group_name">Enter group name</string>
     <string name="no_members_in_the_team_currently">No members are there in the selected team.</string>
+    <string name="new_group_created_successfully">New group created successfully.</string>
 </resources>

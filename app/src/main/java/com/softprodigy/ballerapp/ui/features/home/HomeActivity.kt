@@ -373,7 +373,9 @@ fun NavControllerComposable(
                 )
             )
 
-            NewConversationScreen(teamVm = teamViewModel)
+            NewConversationScreen(teamVm = teamViewModel, onGroupCreateSuccess = {
+                navController.popBackStack()
+            })
 
         }
 

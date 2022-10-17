@@ -5,11 +5,13 @@ import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.cometchat.pro.constants.CometChatConstants
 import com.cometchat.pro.core.CometChat
 import com.cometchat.pro.exceptions.CometChatException
 import com.cometchat.pro.models.Group
 import com.cometchat.pro.models.GroupMember
+import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.getFileFromUri
@@ -17,10 +19,12 @@ import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.domain.repository.IChatRepository
 import com.softprodigy.ballerapp.domain.repository.IImageUploadRepo
+import com.softprodigy.ballerapp.ui.features.login.LoginChannel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -35,7 +39,7 @@ class ChatViewModel @Inject constructor(
 ) : AndroidViewModel(application) {
     var searchJob: Job? = null
     private val _chatChannel = Channel<ChatChannel>()
-    val teamChannel = _chatChannel.receiveAsFlow()
+    val chatChannel = _chatChannel.receiveAsFlow()
 
     private val _chatUiState = mutableStateOf(ChatUIState())
     val chatUiState: State<ChatUIState> = _chatUiState
@@ -159,10 +163,28 @@ class ChatViewModel @Inject constructor(
                 override fun onSuccess(group: Group, hashMap: HashMap<String?, String?>) {
                     Timber.i("CreateGroupWithMembersListener-- $group")
                     Timber.i("CreateGroupWithMembersListener-- $hashMap")
+                    ChatChannel.OnGroupResponse(
+                        isSuccess = true,
+                        UiText.StringResource(R.string.new_group_created_successfully)
+                    )
+                    viewModelScope.launch {
+                        _chatChannel.send(ChatChannel.OnGroupResponse(
+                            isSuccess = true,
+                            UiText.StringResource(R.string.new_group_created_successfully)
+                        ))
+                    }
+
+
                 }
 
                 override fun onError(e: CometChatException) {
                     Timber.e("CreateGroupWithMembersListener-- ${e.message}")
+
+                    viewModelScope.launch {
+                        ChatChannel.OnGroupResponse(
+                            isSuccess = false, UiText.StringResource(R.string.something_went_wrong)
+                        )
+                    }
                 }
             })
     }
@@ -170,4 +192,5 @@ class ChatViewModel @Inject constructor(
 
 sealed class ChatChannel {
     data class ShowToast(val message: UiText) : ChatChannel()
+    data class OnGroupResponse(val isSuccess: Boolean, val message: UiText) : ChatChannel()
 }

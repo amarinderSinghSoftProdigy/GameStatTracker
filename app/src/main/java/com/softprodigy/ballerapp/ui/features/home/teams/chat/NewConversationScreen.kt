@@ -1,6 +1,7 @@
 package com.softprodigy.ballerapp.ui.features.home.teams.chat
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,6 +13,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -19,9 +21,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,17 +40,42 @@ import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayStatus
 import com.softprodigy.ballerapp.ui.theme.appColors
+import com.softprodigy.ballerapp.ui.theme.rubikFamily
 import timber.log.Timber
 
 @Composable
-fun NewConversationScreen(teamVm: TeamViewModel, chatVM: ChatViewModel = hiltViewModel()) {
+fun NewConversationScreen(
+    teamVm: TeamViewModel,
+    chatVM: ChatViewModel = hiltViewModel(),
+    onGroupCreateSuccess: () -> Unit
+) {
     val teamState = teamVm.teamUiState.value
     val chatState = chatVM.chatUiState.value
+    val context = LocalContext.current
+
+
+    LaunchedEffect(key1 = Unit) {
+        chatVM.chatChannel.collect { chatChannel ->
+            when (chatChannel) {
+                is ChatChannel.OnGroupResponse -> {
+                    Toast.makeText(
+                        context,
+                        chatChannel.message.asString(context),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    if (chatChannel.isSuccess) {
+                        onGroupCreateSuccess.invoke()
+                    }
+                }
+                is ChatChannel.ShowToast -> {
+
+                }
+            }
+        }
+    }
 
     Box(Modifier.fillMaxSize()) {
         if (teamState.coaches.isNotEmpty() || teamState.players.isNotEmpty()) {
-
-
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -58,7 +88,7 @@ fun NewConversationScreen(teamVm: TeamViewModel, chatVM: ChatViewModel = hiltVie
             ) {
                 if (teamState.coaches.isNotEmpty()) {
 
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -76,9 +106,26 @@ fun NewConversationScreen(teamVm: TeamViewModel, chatVM: ChatViewModel = hiltVie
                     ) {
 
 
-                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+
+                        val coachSize = buildAnnotatedString {
+                            append(stringResource(id = R.string.coaches))
+                            val startIndex = length
+                            append(" ( ")
+                            append("" + teamState.coaches.size)
+                            append(" )")
+                            addStyle(
+                                SpanStyle(
+                                    color = MaterialTheme.appColors.textField.label,
+                                    fontFamily = rubikFamily,
+                                    fontWeight = FontWeight.W400
+                                ),
+                                startIndex,
+                                length,
+                            )
+                        }
                         Text(
-                            text = stringResource(id = R.string.coaches),
+                            text = coachSize,
                             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                             fontWeight = FontWeight.W600,
@@ -102,8 +149,8 @@ fun NewConversationScreen(teamVm: TeamViewModel, chatVM: ChatViewModel = hiltVie
                     }
 
                 }
-
                 if (teamState.players.isNotEmpty()) {
+                    AppDivider()
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -112,16 +159,33 @@ fun NewConversationScreen(teamVm: TeamViewModel, chatVM: ChatViewModel = hiltVie
                             )
                     ) {
                         Column {
-                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
+                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+
+                            val playersSize = buildAnnotatedString {
+                                append(stringResource(id = R.string.players))
+                                val startIndex = length
+                                append(" ( ")
+                                append("" + teamState.players.size)
+                                append(" )")
+                                addStyle(
+                                    SpanStyle(
+                                        color = MaterialTheme.appColors.textField.label,
+                                        fontFamily = rubikFamily,
+                                        fontWeight = FontWeight.W400
+                                    ),
+                                    startIndex,
+                                    length,
+                                )
+                            }
                             Text(
-                                text = stringResource(id = R.string.players),
+                                text = playersSize,
                                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                                 fontWeight = FontWeight.W600,
                                 modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
-
                             )
-                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+
+                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
 
                         }
                         LazyColumn() {
