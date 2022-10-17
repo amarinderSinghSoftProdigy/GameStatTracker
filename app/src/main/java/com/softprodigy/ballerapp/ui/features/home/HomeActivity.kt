@@ -58,7 +58,7 @@ import com.softprodigy.ballerapp.ui.features.home.manage_team.MainManageTeamScre
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
-import com.softprodigy.ballerapp.ui.features.home.webview.CommonWebView
+//import com.softprodigy.ballerapp.ui.features.home.webview.CommonWebView
 import com.softprodigy.ballerapp.ui.features.home.teams.chat.NewConversationScreen
 import com.softprodigy.ballerapp.ui.features.profile.AddProfileScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileEditScreen
@@ -800,7 +800,7 @@ fun NavControllerComposable(
                     topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
-            CommonWebView(url)
+//            CommonWebView(url)
         }
     }
 }
