@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.team.Coach
@@ -47,6 +48,7 @@ import timber.log.Timber
 fun NewConversationScreen(
     teamVm: TeamViewModel,
     chatVM: ChatViewModel = hiltViewModel(),
+    cometChat: CometChatUI,
     onGroupCreateSuccess: () -> Unit
 ) {
     val teamState = teamVm.teamUiState.value
@@ -57,7 +59,7 @@ fun NewConversationScreen(
     LaunchedEffect(key1 = Unit) {
         chatVM.chatChannel.collect { chatChannel ->
             when (chatChannel) {
-                is ChatChannel.OnGroupResponse -> {
+                is ChatChannel.OnNewConversationResponse -> {
                     Toast.makeText(
                         context,
                         chatChannel.message.asString(context),
@@ -70,6 +72,19 @@ fun NewConversationScreen(
                 is ChatChannel.ShowToast -> {
 
                 }
+                is ChatChannel.TriggerUserGetIntent -> {
+                    if (chatChannel.isSuccess) {
+                        chatChannel.user?.let { cometChat.startUserIntent(it) }
+                        onGroupCreateSuccess.invoke()
+                    } else if (chatChannel.message != null) {
+                        Toast.makeText(
+                            context,
+                            chatChannel.message.asString(context),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
             }
         }
     }
@@ -231,7 +246,11 @@ fun NewConversationScreen(
                 .align(Alignment.BottomEnd),
             enabled = chatState.selectedPlayersForNewGroup.isNotEmpty() || chatState.selectedCoachesForNewGroup.isNotEmpty(),
             onClick = {
-                chatVM.onEvent(ChatUIEvent.ShowDialog(true))
+                if (chatState.selectedPlayersForNewGroup.size.plus(chatState.selectedCoachesForNewGroup.size) > 1)
+                    chatVM.onEvent(ChatUIEvent.ShowDialog(true))
+                else {
+                    chatVM.onEvent(ChatUIEvent.OnInitiateNewConversation)
+                }
 
             }
         ) {
@@ -256,7 +275,7 @@ fun NewConversationScreen(
             },
             onConfirmClick = {
                 chatVM.onEvent(ChatUIEvent.ShowDialog(false))
-                chatVM.onEvent(ChatUIEvent.OnConfirmGroupName)
+                chatVM.onEvent(ChatUIEvent.OnInitiateNewConversation)
             },
             onReasonChange = {
                 chatVM.onEvent(ChatUIEvent.OnGroupNameChange(it))

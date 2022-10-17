@@ -58,6 +58,7 @@ fun TeamsChatScreen(
 
             AndroidViewBinding(FragmentConversationBinding::inflate) {
                 converstionContainer.getFragment<CometChatConversationList>()
+
             }
 
         }

@@ -61,7 +61,7 @@ class CometChatConversationList : Fragment(), TextWatcher {
     private var rlSearchBox: RelativeLayout? = null
     private var noConversationView: LinearLayout? = null
     private var vw: View? = null
-    var conversation: Conversation? = null
+   private var conversation: Conversation? = null
     private var conversationList: MutableList<Conversation> = ArrayList()
     private var ivStartConversation: ImageView? = null
 

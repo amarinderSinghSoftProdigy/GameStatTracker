@@ -354,8 +354,8 @@ fun NavControllerComposable(
     val signUpViewModel: SignUpViewModel = viewModel()
     val context = LocalContext.current
     val dataStoreManager = DataStoreManager(activity)
-    val userToken = dataStoreManager.userToken.collectAsState(initial = "")
-    UserStorage.token = userToken.value
+    val userToken = UserStorage.token//val userToken = dataStoreManager.userToken.collectAsState(initial = "")
+//    UserStorage.token = userToken.value
     val getRole = dataStoreManager.getRole.collectAsState(initial = "")
     val email = dataStoreManager.getEmail.collectAsState(initial = "")
     val scope = rememberCoroutineScope()
@@ -364,7 +364,7 @@ fun NavControllerComposable(
         composable(route = SPLASH_SCREEN) {
             SplashScreen {
                 scope.launch {
-                    if (userToken.value.isNotEmpty()) {
+                    if (userToken.isNotEmpty()) {
                         moveToHome(activity, true)
                     } else if (color.value.isNotEmpty()) {
                         navController.popBackStack()
