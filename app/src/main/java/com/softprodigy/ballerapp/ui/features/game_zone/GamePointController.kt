@@ -1,5 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.game_zone
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -9,12 +10,12 @@ import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.data.response.Standing
 import com.softprodigy.ballerapp.ui.features.components.ImageTextButton
 import com.softprodigy.ballerapp.ui.theme.rubikFamily
 
@@ -29,6 +30,11 @@ fun GamePointController (
             Modifier
                 .fillMaxWidth()
         ) {
+            Spacer(modifier = Modifier
+                .background(colorResource(id = R.color.game_grid_border_color))
+                .width(dimensionResource(id = R.dimen.size_1dp))
+                .fillMaxHeight()
+            )
             Column(
                 Modifier.
                         fillMaxSize(),
@@ -42,6 +48,7 @@ fun GamePointController (
                 settingsList.add(GameSettingsState(2, stringResource(id = R.string.box_score), R.drawable.ic_box_score))
                 settingsList.add(GameSettingsState(3, stringResource(id = R.string.timeouts), R.drawable.ic_timeouts))
 
+
                 LazyVerticalGrid(columns = GridCells.Fixed(2), modifier = Modifier.height(
                     dimensionResource(id = R.dimen.size_90dp)) ) {
                     itemsIndexed(settingsList) { index, setting ->
@@ -51,7 +58,7 @@ fun GamePointController (
                                 .height(dimensionResource(id = R.dimen.size_46dp))
                                 .weight(1f)
                                 .border(
-                                    dimensionResource(id = R.dimen.size_1dp),
+                                    dimensionResource(id = R.dimen.size_half_dp),
                                     colorResource(id = R.color.game_grid_border_color)
                                 )
                                 .clickable { onClick(setting) },
@@ -79,15 +86,19 @@ fun GamePointController (
                 pointList.add(GameSettingsState(3, stringResource(id = R.string.point_2), R.drawable.ic_correct))
                 pointList.add(GameSettingsState(4, stringResource(id = R.string.point_1), R.drawable.ic_wrong))
                 pointList.add(GameSettingsState(5, stringResource(id = R.string.point_1), R.drawable.ic_correct))
+                Spacer(modifier = Modifier
+                    .background(colorResource(id = R.color.game_grid_border_color))
+                    .fillMaxWidth()
+                    .height(dimensionResource(id = R.dimen.size_1dp))
+                )
                 LazyVerticalGrid(columns = GridCells.Fixed(2), ) {
                     itemsIndexed(pointList) { index, point ->
-
                         Column(
                             Modifier
                                 .height(dimensionResource(id = R.dimen.size_94dp))
                                 .weight(1f)
                                 .border(
-                                    dimensionResource(id = R.dimen.size_1dp),
+                                    dimensionResource(id = R.dimen.size_half_dp),
                                     colorResource(id = R.color.game_grid_border_color)
                                 ),
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -104,6 +115,11 @@ fun GamePointController (
                         }
                     }
                 }
+                Spacer(modifier = Modifier
+                    .background(colorResource(id = R.color.game_grid_border_color))
+                    .fillMaxWidth()
+                    .height(dimensionResource(id = R.dimen.size_1dp))
+                )
             }
         }
     }

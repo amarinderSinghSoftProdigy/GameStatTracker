@@ -60,6 +60,7 @@ import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
 import com.softprodigy.ballerapp.ui.theme.appColors
+import com.softprodigy.ballerapp.ui.theme.rubikFamily
 
 @Composable
 fun <T> DeleteDialog(
@@ -771,3 +772,152 @@ fun SelectInvitationRoleItem(
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
 }
 
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun AddNewPlayerDialog(
+    onDismiss: () -> Unit,
+    onSaveClick: () -> Unit,
+    playerName: String,
+    jerseyNumber: String,
+) {
+    val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    BallerAppMainTheme {
+        AlertDialog(
+            modifier = Modifier
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+            onDismissRequest = onDismiss,
+            buttons = {
+                Column(
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(
+                            all = dimensionResource(
+                                id = R.dimen.size_16dp
+                            )
+                        )
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+
+                        Row() {
+                            Text(
+                                text = stringResource(id = R.string.new_player),
+                                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                                fontWeight = FontWeight.W500,
+                                fontFamily = rubikFamily
+                            )
+                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_wrong_white),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .width(dimensionResource(id = R.dimen.size_24dp))
+                                    .height(dimensionResource(id = R.dimen.size_24dp)),
+                                tint = MaterialTheme.appColors.textField.label
+                            )
+                        }
+
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_close_color_picker),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(dimensionResource(id = R.dimen.size_14dp))
+                                .clickable {
+                                    onDismiss()
+                                },
+                            tint = MaterialTheme.appColors.textField.label
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
+
+                    AppSearchOutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(focusRequester),
+                        value = playerName!!,
+                        onValueChange = {
+                            //onSearchKeyChange.invoke(it)
+                        },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = ColorBWGrayBorder,
+                            unfocusedBorderColor = ColorBWGrayBorder,
+                            cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            backgroundColor = MaterialTheme.appColors.material.background
+                        ),
+                        placeholder = {
+                            Text(
+                                text = stringResource(id = R.string.name),
+                                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                fontFamily = rubikFamily,
+                                fontWeight = FontWeight.W400
+                            )
+                        },
+                        singleLine = true
+                    )
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
+                    AppSearchOutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(focusRequester),
+                        value = playerName!!,
+                        onValueChange = {},
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = ColorBWGrayBorder,
+                            unfocusedBorderColor = ColorBWGrayBorder,
+                            cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            backgroundColor = MaterialTheme.appColors.material.background
+                        ),
+                        placeholder = {
+                            Text(
+                                text = stringResource(id = R.string.jersey_number),
+                                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                fontFamily = rubikFamily,
+                                fontWeight = FontWeight.W400
+                            )
+                        },
+                        singleLine = true
+                    )
+
+
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = Color.White)
+                        .padding(all = dimensionResource(id = R.dimen.size_8dp))
+                ) {
+                    DialogButton(
+                        text = stringResource(R.string.dialog_button_cancel),
+                        onClick = onDismiss,
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(all = dimensionResource(id = R.dimen.size_8dp)),
+                        border = ButtonDefaults.outlinedBorder,
+                        onlyBorder = true,
+                        enabled = false
+                    )
+                    DialogButton(
+                        text = stringResource(R.string.save),
+                        onClick = {
+                            onSaveClick.invoke()
+                            onDismiss.invoke()
+                        },
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(all = dimensionResource(id = R.dimen.size_8dp)),
+                        border = ButtonDefaults.outlinedBorder,
+                        onlyBorder = false,
+                        enabled = playerName.isNotEmpty() && jerseyNumber.isNotEmpty()
+                    )
+                }
+            },
+        )
+    }
+}

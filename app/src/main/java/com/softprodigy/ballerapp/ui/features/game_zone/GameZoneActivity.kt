@@ -65,7 +65,7 @@ fun NavControllerComposable(
 ) {
 
 
-    NavHost(navController, startDestination = Route.GAME_SETTINGS) {
+    NavHost(navController, startDestination = Route.OVERVIEW_SCREEN) {
         composable(route = Route.OVERVIEW_SCREEN) {
             OverviewScreen()
         }

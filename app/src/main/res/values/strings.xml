@@ -249,6 +249,9 @@
     <string name="full">Full</string>
     <string name="thirty_sec">30s</string>
 
+    <string name="new_player">New Player</string>
+    <string name="jersey_number">Jersey Number</string>
+
     <string-array name="game_settings">
         <item>@string/exit</item>
         <item>@string/settings</item>

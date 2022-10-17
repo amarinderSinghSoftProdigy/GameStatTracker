@@ -35,16 +35,17 @@ fun TeamNavigationController (
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(colorResource(id = R.color.game_period_background_color))
     ) {
         Column(modifier = Modifier
             .fillMaxHeight()
             .fillMaxWidth()) {
             teamHandler()
-            //PointList()
-            Tracking(
+            PointList()
+            /*Tracking(
                 isTrackingEmpty = true,
                 onAddRosterClick = {}
-            )
+            )*/
         }
     }
 }
@@ -54,7 +55,7 @@ inline fun teamHandler() {
     Row(
         Modifier
             .fillMaxWidth()
-            .background(colorResource(id = R.color.game_period_background_color))
+            //.background(colorResource(id = R.color.game_period_background_color))
             .height(dimensionResource(id = R.dimen.size_46dp))
             .padding(
                 horizontal = dimensionResource(id = R.dimen.size_12dp),

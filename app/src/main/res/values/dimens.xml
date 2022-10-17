@@ -14,6 +14,7 @@
     <dimen name="txt_size_31">15.5sp</dimen>
     <dimen name="txt_size_36">18sp</dimen>
 
+    <dimen name="size_half_dp">0.25dp</dimen>
     <dimen name="divider">0.3dp</dimen>
     <dimen name="size_1dp">0.5dp</dimen>
     <dimen name="size_2dp">1dp</dimen>

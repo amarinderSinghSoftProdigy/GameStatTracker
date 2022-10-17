@@ -16,7 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
@@ -47,11 +47,14 @@ fun PointList(
         Column(
             Modifier
                 .fillMaxHeight()
+                //.background(colorResource(id = R.color.game_center_list_item_bg_color))
         ) {
             var items = stringArrayResource(id = R.array.game_periods);
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .background(Color.Transparent)
+                    //.background(color = colorResource(id = R.color.game_center_background_color))
             ) {
                 itemsIndexed(items) { index, point ->
                     pointListItem(
@@ -79,6 +82,7 @@ fun pointListItem(
         Row(
             modifier = Modifier
                 .height(dimensionResource(id = R.dimen.size_46dp))
+                .background(colorResource(id = R.color.game_center_list_item_bg_color))
                 .clickable { },
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -194,7 +198,9 @@ fun pointListItem(
                                 expanded = false
                             },
                             enabled = (itemIndex != disabledItem),
-                            modifier = Modifier.fillMaxWidth().padding(all = 0.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(all = 0.dp),
 
                         ) {
 
@@ -245,6 +251,7 @@ fun pointListItem(
                 .fillMaxWidth()
                 .height(dimensionResource(id = R.dimen.size_1dp))
                 .background(colorResource(id = R.color.game_center_list_item_divider_color))
+                //.background(Color.Red)
         )
     }
 }

@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringArrayResource
@@ -33,9 +32,24 @@ fun GameSettingsController (
     Box(
         modifier =  Modifier.fillMaxSize()
     ) {
-        Column(modifier = Modifier.fillMaxHeight()) {
-            periodSelection()
-            gameSettings()
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+        ) {
+            Spacer(modifier = Modifier
+                .background(colorResource(id = R.color.game_grid_border_color))
+                .width(dimensionResource(id = R.dimen.size_half_dp))
+                .fillMaxHeight()
+            )
+            Column(modifier = Modifier.fillMaxHeight()) {
+                periodSelection()
+                gameSettings()
+            }
+            Spacer(modifier = Modifier
+                .background(colorResource(id = R.color.game_grid_border_color))
+                .width(dimensionResource(id = R.dimen.size_half_dp))
+                .fillMaxHeight()
+            )
         }
     }
 }
@@ -151,6 +165,11 @@ inline fun gameSettings() {
                 R.drawable.ic_plus
             )
         )
+        Spacer(modifier = Modifier
+            .background(colorResource(id = R.color.game_grid_border_color))
+            .fillMaxWidth()
+            .height(dimensionResource(id = R.dimen.size_1dp))
+        )
         LazyVerticalGrid(columns = GridCells.Fixed(2),) {
             itemsIndexed(pointList) { index, point ->
                 Column(
@@ -176,5 +195,10 @@ inline fun gameSettings() {
                 }
             }
         }
+        Spacer(modifier = Modifier
+            .background(colorResource(id = R.color.game_grid_border_color))
+            .fillMaxWidth()
+            .height(dimensionResource(id = R.dimen.size_1dp))
+        )
     }
 }
