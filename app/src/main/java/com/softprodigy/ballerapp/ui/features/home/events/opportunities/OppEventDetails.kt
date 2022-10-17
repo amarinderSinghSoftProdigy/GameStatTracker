@@ -143,24 +143,24 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
                 )
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-           /* CoilImage(
-                src = R.drawable.rectangle,
-                modifier = Modifier
-                    .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-                    .background(
-                        color = Color.White,
-                        RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
-                    )
-                    .height(dimensionResource(id = R.dimen.size_160dp))
-                    .fillMaxWidth(),
-                onError = {
-                    PlaceholderRect(R.drawable.ic_team_placeholder)
-                },
-                onLoading = { PlaceholderRect(R.drawable.ic_team_placeholder) },
-                isCrossFadeEnabled = false,
-                contentScale = ContentScale.Crop
-            )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))*/
+            /* CoilImage(
+                 src = R.drawable.rectangle,
+                 modifier = Modifier
+                     .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                     .background(
+                         color = Color.White,
+                         RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+                     )
+                     .height(dimensionResource(id = R.dimen.size_160dp))
+                     .fillMaxWidth(),
+                 onError = {
+                     PlaceholderRect(R.drawable.ic_team_placeholder)
+                 },
+                 onLoading = { PlaceholderRect(R.drawable.ic_team_placeholder) },
+                 isCrossFadeEnabled = false,
+                 contentScale = ContentScale.Crop
+             )
+             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))*/
         }
         AppDivider()
         Column(
@@ -254,15 +254,16 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
             PlayerRequirements("AAU Card", null);
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))*/
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
-            AppButton(
-                enabled = true,
-                icon = null,
-                themed = true,
-                onClick = { moveToRegistration() },
-                text = stringResource(id = R.string.register),
-                isForceEnableNeeded = true,
-                modifier = Modifier.fillMaxWidth()
-            )
+            if (state.opportunitiesDetail.registration)
+                AppButton(
+                    enabled = true,
+                    icon = null,
+                    themed = true,
+                    onClick = { moveToRegistration() },
+                    text = stringResource(id = R.string.register),
+                    isForceEnableNeeded = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
         }
     }

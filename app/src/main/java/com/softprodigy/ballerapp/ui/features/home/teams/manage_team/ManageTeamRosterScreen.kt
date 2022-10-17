@@ -1,5 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.home.teams.manage_team
 
+import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -50,6 +51,7 @@ import com.softprodigy.ballerapp.ui.utils.dragDrop.ReorderableItem
 import com.softprodigy.ballerapp.ui.utils.dragDrop.detectReorderAfterLongPress
 import com.softprodigy.ballerapp.ui.utils.dragDrop.rememberReorderableLazyListState
 import com.softprodigy.ballerapp.ui.utils.dragDrop.reorderable
+import timber.log.Timber
 
 @Composable
 fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
@@ -130,10 +132,12 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                                 )
                                 // }
                             }
+
                         }
                     }
                 }
             }
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -215,6 +219,7 @@ fun TeamUserListItem(
     coachUser: Coach? = null,
     isCoach: Boolean = false,
 ) {
+
     Column {
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
         Box(

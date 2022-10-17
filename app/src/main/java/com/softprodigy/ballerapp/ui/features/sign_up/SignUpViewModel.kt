@@ -50,7 +50,8 @@ class SignUpViewModel @Inject constructor(
         when (event) {
             is SignUpUIEvent.OnAddProfileClicked -> {
                 viewModelScope.launch {
-                    imageUpload()
+                    if (!_signUpUiState.value.status)
+                        imageUpload()
                 }
             }
             is SignUpUIEvent.OnFirstNameChanged -> {
@@ -267,7 +268,7 @@ class SignUpViewModel @Inject constructor(
 
     private suspend fun imageUpload() {
         _signUpUiState.value =
-            _signUpUiState.value.copy(isLoading = true)
+            _signUpUiState.value.copy(isLoading = true, status = true)
 
         val uri = Uri.parse(signUpUiState.value.signUpData.profileImageUri)
 
@@ -281,8 +282,6 @@ class SignUpViewModel @Inject constructor(
             type = AppConstants.PROFILE_IMAGE,
             file
         )
-        _signUpUiState.value =
-            _signUpUiState.value.copy(isLoading = false)
 
         when (uploadLogoResponse) {
             is ResultWrapper.GenericError -> {
@@ -426,7 +425,7 @@ class SignUpViewModel @Inject constructor(
     }
 
     private suspend fun addProfile() {
-        _signUpUiState.value = _signUpUiState.value.copy(isLoading = true)
+        _signUpUiState.value = _signUpUiState.value.copy(isLoading = true, status = true)
         val request = AddProfileRequest(
             firstName = _signUpUiState.value.signUpData.firstName,
             lastName = _signUpUiState.value.signUpData.lastName,
@@ -447,7 +446,8 @@ class SignUpViewModel @Inject constructor(
                         _signUpUiState.value = _signUpUiState.value.copy(
                             isLoading = false,
                             errorMessage = null,
-                            successMessage = response.statusMessage
+                            successMessage = response.statusMessage,
+                            status = false
                         )
                         _signUpChannel.send(
                             SignUpChannel.OnProfileUpdateSuccess(

@@ -53,6 +53,6 @@ interface IEventsRepository {
 
     suspend fun getVenueDetailsById(venueId: String): ResultWrapper<BaseResponse<VenueDetails>>
 
-    suspend fun getEventScheduleDetails(eventId: String): ResultWrapper<BaseResponse<Any>>
+    suspend fun getEventScheduleDetails(eventId: String): ResultWrapper<BaseResponse<List<ScheduleResponse>>>
 
 }

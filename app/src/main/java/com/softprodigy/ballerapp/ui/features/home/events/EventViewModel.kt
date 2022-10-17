@@ -152,6 +152,7 @@ class EventViewModel @Inject constructor(
                     _state.value.copy(registerRequest = _state.value.registerRequest.copy(payment = event.request))
             }
             is EvEvents.RegisterPlayer -> {
+
                 _state.value =
                     _state.value.copy(registerRequest = _state.value.registerRequest.copy(players = event.request))
             }
@@ -171,6 +172,7 @@ class EventViewModel @Inject constructor(
                     )
             }
             is EvEvents.RegisterTeam -> {
+                _state.value.registerRequest.players.clear()
                 _state.value =
                     _state.value.copy(
                         team = event.request,
@@ -188,9 +190,12 @@ class EventViewModel @Inject constructor(
                 }
             }
             is EvEvents.GetDivisions -> {
-                onEvent(EvEvents.ClearRegister)
+//                onEvent(EvEvents.ClearRegister)
                 viewModelScope.launch {
                     getEventDivisions(event.id)
+                    _state.value = _state.value.copy(
+                        registerRequest = _state.value.registerRequest.copy(event = event.id)
+                    )
                 }
             }
             is EvEvents.SetEventId -> {
@@ -280,7 +285,7 @@ class EventViewModel @Inject constructor(
                 }
             }
             is EvEvents.GetLeagueId -> {
-                _state.value = _state.value.copy(leagueId = event.id)
+                _state.value = _state.value.copy(leagueId = event.id, eventId = event.eventId)
             }
 
             is EvEvents.GetGender -> {
@@ -369,9 +374,14 @@ class EventViewModel @Inject constructor(
                 _state.value = _state.value.copy(selectedFormat = event.format)
 
             }
+
+            is EvEvents.GetSchedule -> {
+                viewModelScope.launch {
+                    getEventSchedule(event.eventId)
+                }
+            }
         }
     }
-
 
     private suspend fun addNote(noteType: NoteType, note: String, eventId: String) {
 
@@ -640,7 +650,7 @@ class EventViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
                     if (response.status) {
-                        _state.value = _state.value.copy(opportunitiesDetail = response.data)
+                        _state.value = _state.value.copy(opportunitiesDetail = response.data, price = response.data.standardPrice)
                     } else {
                         _channel.send(
                             EventChannel.ShowToast(
@@ -896,7 +906,7 @@ class EventViewModel @Inject constructor(
             teamRepo.getVenues(
                 leagueId = _state.value.leagueId
             )
-        _state.value = _state.value.copy(isLoading = false)
+       /* _state.value = _state.value.copy(isLoading = false)*/
 
         when (userResponse) {
             is ResultWrapper.GenericError -> {
@@ -1128,6 +1138,51 @@ class EventViewModel @Inject constructor(
             }
         }
     }
+
+    private suspend fun getEventSchedule(eventId: String) {
+        _state.value =
+            eventState.value.copy(showLoading = true)
+        val eventResponse = eventsRepo.getEventScheduleDetails(eventId)
+        _state.value =
+            eventState.value.copy(showLoading = false)
+
+        when (eventResponse) {
+            is ResultWrapper.GenericError -> {
+                _channel.send(
+                    EventChannel.ShowEventDetailsToast(
+                        UiText.DynamicString(
+                            "${eventResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _channel.send(
+                    EventChannel.ShowEventDetailsToast(
+                        UiText.DynamicString(
+                            eventResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                eventResponse.value.let { response ->
+                    if (response.data != null) {
+                        _state.value=_state.value.copy(scheduleResponse = response.data)
+                    } else {
+                        _channel.send(
+                            EventChannel.ShowEventDetailsToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
 
     private fun getRefereeFilters() {
 

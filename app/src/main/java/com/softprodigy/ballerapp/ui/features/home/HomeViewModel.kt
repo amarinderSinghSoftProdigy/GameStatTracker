@@ -17,6 +17,7 @@ import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.response.HomeItemResponse
+import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import com.softprodigy.ballerapp.domain.repository.IUserRepository
 import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
 import com.softprodigy.ballerapp.ui.features.components.TopBarData
@@ -36,6 +37,7 @@ import kotlin.collections.ArrayList
 class HomeViewModel @Inject constructor(
     val dataStoreManager: DataStoreManager,
     val userRepo: IUserRepository, application: Application,
+    val teamRepo: ITeamRepository
 ) : AndroidViewModel(application) {
     var searchJob: Job? = null
 
@@ -303,6 +305,37 @@ class HomeViewModel @Inject constructor(
             }
         }
 
+    }
+
+    suspend fun getHomePageDetails() {
+        when (val homeResponse = teamRepo.getHomePageDetails()) {
+            is ResultWrapper.GenericError -> {
+                _homeChannel.send(
+                  HomeChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${homeResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _homeChannel.send(
+                    HomeChannel.ShowToast(
+                        UiText.DynamicString(
+                            homeResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                homeResponse.value.let { baseResponse ->
+                    if (baseResponse.status) {
+                        _state.value =
+                            _state.value.copy(homePageCoachModel = baseResponse.data)
+                    }
+                }
+            }
+        }
     }
 
     private fun setToken(token: String) {

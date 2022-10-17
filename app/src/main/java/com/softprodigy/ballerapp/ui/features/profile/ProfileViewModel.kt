@@ -52,7 +52,7 @@ class ProfileViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             dataStoreManager.getRole.collect {
-                if (it == UserType.REFEREE.key){
+                if (it == UserType.REFEREE.key) {
                     getRefereeProfileData()
                     getPayData()
                 }
@@ -533,6 +533,8 @@ class ProfileViewModel @Inject constructor(
         )
         when (userResponse) {
             is ResultWrapper.GenericError -> {
+                _state.value = _state.value.copy(isLoading = false)
+
                 _channel.send(
                     ProfileChannel.ShowToast(
                         UiText.DynamicString(
@@ -540,8 +542,11 @@ class ProfileViewModel @Inject constructor(
                         )
                     )
                 )
+
             }
             is ResultWrapper.NetworkError -> {
+                _state.value = _state.value.copy(isLoading = false)
+
                 _channel.send(
                     ProfileChannel.ShowToast(
                         UiText.DynamicString(
@@ -553,6 +558,7 @@ class ProfileViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
                     if (response.status) {
+                        _state.value = _state.value.copy(isLoading = false)
                         onEvent(
                             ProfileEvent.UpdateUserDoc(
                                 docType = userDocType,
@@ -560,6 +566,7 @@ class ProfileViewModel @Inject constructor(
                             )
                         )
                     } else {
+                        _state.value = _state.value.copy(isLoading = false)
                         _channel.send(
                             ProfileChannel.ShowToast(
                                 UiText.DynamicString(
@@ -659,19 +666,19 @@ class ProfileViewModel @Inject constructor(
         }
         if (user.userDetails.positionPlayed.isNotEmpty()) {
 
-            /*user.userDetails.positionPlayed.forEachIndexed { index1, positionSTring ->
-                _state.value.positionPlayed.forEachIndexed { index2, checkBoxData ->
+            user.userDetails.positionPlayed.forEachIndexed { index1, positionSTring ->
+                for (i in _state.value.positionPlayed.indices) {
                     if (positionSTring.equals(
-                            checkBoxData.label,
+                            _state.value.positionPlayed[i].label,
                             ignoreCase = true
                         )
                     ) {
-                        _state.value.positionPlayed[index2] =
-                            _state.value.positionPlayed[index2].copy(isChecked = true)
+                        _state.value.positionPlayed[i] =
+                            _state.value.positionPlayed[i].copy(isChecked = true)
                     }
                 }
-            }*/
 
+            }
         }
     }
 

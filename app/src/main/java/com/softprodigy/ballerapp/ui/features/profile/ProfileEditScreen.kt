@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
@@ -33,11 +34,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.capitalize
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.BuildConfig
@@ -81,7 +85,6 @@ fun ProfileEditScreen(
 
     val context = LocalContext.current
     val focusRequester = FocusRequester()
-
 
     // Declaring integer values
     // for year, month and day
@@ -194,7 +197,6 @@ fun ProfileEditScreen(
                             imeAction = ImeAction.Next,
                             capitalization = KeyboardCapitalization.Sentences,
                             keyboardType = KeyboardType.Email
-
                         ),
                         isError = !validName(state.user.lastName) && state.user.lastName.isNotEmpty() || state.user.lastName.length > 30,
                     )
@@ -328,7 +330,7 @@ fun ProfileEditScreen(
                     data =
                     state.jerseyNumerPerferences,
                     onValueChange = {
-                        if (it.length <= maxChar)
+                        if (it.length <= 5)
                             vm.onEvent(ProfileEvent.OnPrefJerseyNoChange(it))
                     },
                     stringResource(id = R.string.jersey_number),
@@ -346,7 +348,6 @@ fun ProfileEditScreen(
                         state.user.gender,
                         onValueChange = {
                             vm.onEvent(ProfileEvent.OnGenderChange(it))
-
                         },
                         stringResource(id = R.string.gender),
                         errorMessage = stringResource(id = R.string.valid_first_name),
@@ -388,7 +389,7 @@ fun ProfileEditScreen(
                 EditProfileFields(
                     state.shirtSize,
                     onValueChange = {
-                        if (it.length <= maxChar)
+                        if (it.length <= 3)
                             vm.onEvent(ProfileEvent.OnShirtChange(it))
 
                     },
@@ -404,7 +405,7 @@ fun ProfileEditScreen(
                 EditProfileFields(
                     state.waistSize,
                     onValueChange = {
-                        if (it.length <= maxChar)
+                        if (it.length <= 3)
                             vm.onEvent(ProfileEvent.OnWaistChange(it))
 
                     },
@@ -435,10 +436,10 @@ fun ProfileEditScreen(
                             vm.onEvent(ProfileEvent.OnCollegeTeamChange(it))
                     },
                     stringResource(id = R.string.favorite_college_team),
-                    errorMessage = stringResource(id = R.string.valid_first_name),
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Next,
-                        capitalization = KeyboardCapitalization.Sentences
+                        capitalization = KeyboardCapitalization.Sentences,
+                        keyboardType = KeyboardType.Email
                     ),
                 )
                 DividerCommon()
@@ -450,10 +451,10 @@ fun ProfileEditScreen(
                             vm.onEvent(ProfileEvent.OnNbaTeamChange(it))
                     },
                     stringResource(id = R.string.favorite_proff_team),
-                    errorMessage = stringResource(id = R.string.valid_first_name),
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Next,
-                        capitalization = KeyboardCapitalization.Sentences
+                        capitalization = KeyboardCapitalization.Sentences,
+                        keyboardType = KeyboardType.Email
                     ),
                 )
                 DividerCommon()
@@ -469,7 +470,8 @@ fun ProfileEditScreen(
                     errorMessage = stringResource(id = R.string.valid_first_name),
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Next,
-                        capitalization = KeyboardCapitalization.Sentences
+                        capitalization = KeyboardCapitalization.Sentences,
+                        keyboardType = KeyboardType.Email
                     ),
                 )
                 DividerCommon()
@@ -485,7 +487,8 @@ fun ProfileEditScreen(
                     errorMessage = stringResource(id = R.string.valid_first_name),
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Next,
-                        capitalization = KeyboardCapitalization.Sentences
+                        capitalization = KeyboardCapitalization.Sentences,
+                        keyboardType = KeyboardType.Email
                     ),
                 )
             }
@@ -560,7 +563,8 @@ fun Teams(
                     .background(color = Color.White)
             ) {
                 Row(
-                    modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp))
+                    modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Row(
                         modifier = Modifier.weight(1f),
@@ -577,9 +581,10 @@ fun Teams(
                         )
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
                         AppText(
-                            text = teamDetails.teamId.name,
-                            style = MaterialTheme.typography.h5,
-                            color = ColorBWBlack
+                            text = teamDetails.teamId.name.capitalize(),
+                            color = ColorBWBlack,
+                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                            fontWeight = FontWeight.W500
                         )
                     }
                     ClickableText(

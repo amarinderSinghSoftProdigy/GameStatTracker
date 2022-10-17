@@ -14,6 +14,8 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,43 +44,45 @@ import org.json.JSONObject
 @Composable
 fun LeaderBoardScreen(vm: LeaderBoardViewModel = hiltViewModel()) {
     val state = vm.leaderUiState.value
+    remember {
+        vm.onEvent(LeaderBoardUIEvent.RefreshLeaderBoardDat)
+
+    }
     val onLeaderSelectionChange = { leader: Player ->
         vm.onEvent(LeaderBoardUIEvent.OnLeaderSelected(leader))
     }
     Box {
+        val pagerState = key(state.leaderBoard.size) {rememberPagerState(
+            pageCount = state.leaderBoard.size,
+            initialOffScreenLimit = 1,
+        )}
         if (state.isLoading) {
             CommonProgressBar()
-        } else {
-            val pagerState = rememberPagerState(
-                pageCount = state.leaderBoard.size,
-                initialOffScreenLimit = 1,
-            )
-            if (state.leaderBoard.isNotEmpty()) {
-                Column(Modifier.fillMaxSize()) {
-                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
-                    LeaderTopTabs(pagerState, state.leaderBoard)
-                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        itemsIndexed(state.leaders) { index, item ->
-                            val srNo = index + 1
-                            LeaderListItem(
-                                srNo = srNo,
-                                leader = item,
-                                selected = state.selectedLeader == item,
-                                key = state.leaderBoard[pagerState.currentPage].key.trim()
-                            ) {
-                                onLeaderSelectionChange.invoke(item)
-                            }
+        } else if (state.leaderBoard.isNotEmpty()) {
+            Column(Modifier.fillMaxSize()) {
+                Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
+                LeaderTopTabs(pagerState, state.leaderBoard)
+                Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    itemsIndexed(state.leaders) { index, item ->
+                        val srNo = index + 1
+                        LeaderListItem(
+                            srNo = srNo,
+                            leader = item,
+                            selected = state.selectedLeader == item,
+                            key = state.leaderBoard[pagerState.currentPage].key.trim()
+                        ) {
+                            onLeaderSelectionChange.invoke(item)
                         }
                     }
-                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_24dp)))
                 }
-            } else {
-                EmptyScreen(singleText = true, heading = stringResource(R.string.no_data_found))
+                Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_24dp)))
             }
+        } else {
+            EmptyScreen(singleText = true, heading = stringResource(R.string.no_data_found))
         }
     }
 }
@@ -90,15 +94,18 @@ fun LeaderTopTabs(pagerState: PagerState, tabData: List<TeamLeaderBoard>) {
     LazyRow {
         itemsIndexed(tabData) { index, item ->
             Row {
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
-                AppTab(
-                    title = item.name,
-                    selected = pagerState.currentPage == index,
-                    onClick = {
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(index)
-                        }
-                    })
+                if (item.status) {
+                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+                    AppTab(
+                        title = item.name,
+                        selected = pagerState.currentPage == index,
+                        onClick = {
+                            coroutineScope.launch {
+                                if (pagerState.pageCount != 0)
+                                    pagerState.animateScrollToPage(index)
+                            }
+                        })
+                }
             }
         }
     }

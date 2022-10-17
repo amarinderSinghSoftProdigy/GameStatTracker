@@ -42,70 +42,71 @@ fun RoasterScreen(vm: TeamViewModel = hiltViewModel()) {
         modifier = Modifier
             .fillMaxSize()
     ) {
-        if (state.coaches.isEmpty() && state.players.isEmpty()) {
-            Column(modifier = Modifier.align(Alignment.Center)) {
-                AppText(
-                    text = stringResource(id = R.string.no_players_in_team),
-                    color = ColorBWBlack,
-                    style = MaterialTheme.typography.h3
-                )
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-                AppText(
-                    text = stringResource(id = R.string.please_add_players),
-                    color = ColorBWBlack,
-                    style = MaterialTheme.typography.h5
-                )
-            }
-        } else {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
-            ) {
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-
-                    state.coaches.forEach {
-                        CoachListItem(
-                            coach = it,
-                            modifier = Modifier
-                                .padding(
-                                    bottom = dimensionResource(
-                                        id = R.dimen.size_16dp
-                                    )
-                                ),
-                            isCoach = true
-                        )
-                    }
+        if (state.isLoading) {
+            CommonProgressBar()
+        } else
+            if (state.coaches.isEmpty() && state.players.isEmpty()) {
+                Column(modifier = Modifier.align(Alignment.Center)) {
+                    AppText(
+                        text = stringResource(id = R.string.no_players_in_team),
+                        color = ColorBWBlack,
+                        style = MaterialTheme.typography.h3
+                    )
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                    AppText(
+                        text = stringResource(id = R.string.please_add_players),
+                        color = ColorBWBlack,
+                        style = MaterialTheme.typography.h5
+                    )
                 }
-                CompositionLocalProvider(
-                    LocalOverScrollConfiguration provides null
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
                 ) {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(3),
-                        modifier = Modifier.fillMaxSize(),
-                        content = {
-                            items(state.players) {
-                                CoachListItem(
-                                    isCoach = false,
-                                    player = it, modifier = Modifier.padding(
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+
+                        state.coaches.forEach {
+                            CoachListItem(
+                                coach = it,
+                                modifier = Modifier
+                                    .padding(
                                         bottom = dimensionResource(
                                             id = R.dimen.size_16dp
                                         )
+                                    ),
+                                isCoach = true
+                            )
+                        }
+                    }
+                    CompositionLocalProvider(
+                        LocalOverScrollConfiguration provides null
+                    ) {
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(3),
+                            modifier = Modifier.fillMaxSize(),
+                            content = {
+                                items(state.players) {
+                                    CoachListItem(
+                                        isCoach = false,
+                                        player = it, modifier = Modifier.padding(
+                                            bottom = dimensionResource(
+                                                id = R.dimen.size_16dp
+                                            )
+                                        )
                                     )
-                                )
-                            }
-                        })
+                                }
+                            })
+                    }
                 }
             }
-        }
-        if (state.isLoading) {
-            CommonProgressBar()
-        }
+
     }
 }
 

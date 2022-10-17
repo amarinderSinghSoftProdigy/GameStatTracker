@@ -6,6 +6,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.R
 
@@ -79,9 +80,16 @@ val Typography = Typography(
         fontSize = 12.sp,
     ),
     caption = TextStyle(
-        fontWeight =  FontWeight.W500,
+        fontWeight = FontWeight.W500,
         fontSize = 13.sp,
         fontFamily = rubikFamily
+    ),
+    overline = TextStyle(
+        fontWeight = FontWeight.W500,
+        fontSize = 14.sp,
+        fontFamily = rubikFamily,
+        textAlign = TextAlign.End,
+        color = ColorBWBlack
     )
 
 )
