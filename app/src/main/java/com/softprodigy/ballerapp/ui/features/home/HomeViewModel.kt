@@ -21,7 +21,6 @@ import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import com.softprodigy.ballerapp.domain.repository.IUserRepository
 import com.softprodigy.ballerapp.ui.features.components.BottomNavKey
 import com.softprodigy.ballerapp.ui.features.components.TopBarData
-import com.softprodigy.ballerapp.ui.features.components.UserType
 import com.softprodigy.ballerapp.ui.features.home.home_screen.HomeScreenEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -50,7 +49,7 @@ class HomeViewModel @Inject constructor(
     init {
 
         viewModelScope.launch {
-            if (!UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
+            if (UserStorage.token.isNotEmpty()) {
                 getHomeList()
                 getUserInfo()
             }
@@ -311,7 +310,7 @@ class HomeViewModel @Inject constructor(
         when (val homeResponse = teamRepo.getHomePageDetails()) {
             is ResultWrapper.GenericError -> {
                 _homeChannel.send(
-                  HomeChannel.ShowToast(
+                    HomeChannel.ShowToast(
                         UiText.DynamicString(
                             "${homeResponse.message}"
                         )

@@ -248,4 +248,15 @@ open interface APIService {
     @POST(ApiConstants.ADD_PROFILE)
     suspend fun addProfile(@Body request: AddProfileRequest): BaseResponse<UserInfo>
 
+    @GET(ApiConstants.GET_CHATS)
+    suspend fun getAllChats(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int,
+        @Query("sort") sort: String,
+        @Query("userId") userId: String
+    ): BaseResponse<ArrayList<Team>>
+
+    @GET(ApiConstants.AUTH_REGISTER_MOBILE)
+    suspend fun registerMobile(): BaseResponse<Any>
+
 }

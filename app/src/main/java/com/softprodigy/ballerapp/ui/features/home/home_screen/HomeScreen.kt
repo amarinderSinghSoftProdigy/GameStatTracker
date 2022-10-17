@@ -81,7 +81,7 @@ fun HomeScreen(
 
     remember {
         coroutineScope.launch {
-            if (!UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
+            if (UserStorage.token.isNotEmpty()) {
                 vm.getHomePageDetails()
                 teamVm.getTeams()
             }

@@ -2,8 +2,12 @@ package com.softprodigy.ballerapp.ui.features.home
 
 //import com.softprodigy.ballerapp.ui.features.home.events.NewEventScreen
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
+import android.database.Cursor
+import android.net.Uri
 import android.os.Bundle
+import android.provider.ContactsContract
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -58,26 +62,26 @@ import com.softprodigy.ballerapp.ui.features.home.manage_team.MainManageTeamScre
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
+import com.softprodigy.ballerapp.ui.features.home.teams.chat.TeamsChatDetailScreen
 //import com.softprodigy.ballerapp.ui.features.home.webview.CommonWebView
 import com.softprodigy.ballerapp.ui.features.home.teams.chat.NewConversationScreen
 import com.softprodigy.ballerapp.ui.features.profile.AddProfileScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileEditScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileScreen
 import com.softprodigy.ballerapp.ui.features.profile.RefereeEditScreen
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.AddPlayersScreenUpdated
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupScreenUpdated
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.*
 import com.softprodigy.ballerapp.ui.features.venue.VenueListScreen
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
 import com.softprodigy.ballerapp.ui.theme.appColors
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class HomeActivity : FragmentActivity() {
 
     var dataStoreManager: DataStoreManager = DataStoreManager(this)
     val cometChat = CometChatUI()
+    var setupTeamViewModelUpdated: SetupTeamViewModelUpdated? = null
 
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,6 +94,7 @@ class HomeActivity : FragmentActivity() {
             val homeViewModel: HomeViewModel = hiltViewModel()
             val teamViewModel: TeamViewModel = hiltViewModel()
             val eventViewModel: EventViewModel = hiltViewModel()
+            setupTeamViewModelUpdated = hiltViewModel()
             val state = homeViewModel.state.value
             dataStoreManager = DataStoreManager(LocalContext.current)
             /* val userToken = dataStoreManager.userToken.collectAsState(initial = "")
@@ -104,8 +109,13 @@ class HomeActivity : FragmentActivity() {
             AppConstants.SELECTED_COLOR = fromHex(color.value.ifEmpty { "0177C1" })
             homeViewModel.setColor(AppConstants.SELECTED_COLOR)
             homeViewModel.showBottomAppBar(true)
-            BallerAppMainTheme(customColor = state.color ?: Color.White) {
+            BallerAppMainTheme(
+                customColor = state.color ?: MaterialTheme.appColors.material.primaryVariant
+            ) {
                 val navController = rememberNavController()
+                cometChat.click = {
+                    //navController.navigate(Route.MY_CHAT_DETAIL)
+                }
                 if (state.screen) {
                     Surface(
                         color = MaterialTheme.appColors.material.primary
@@ -116,7 +126,8 @@ class HomeActivity : FragmentActivity() {
                             eventViewModel,
                             navController = navController,
                             fromSplash = fromSplash,
-                            cometChat = cometChat
+                            cometChat = cometChat,
+                            setupTeamViewModelUpdated = setupTeamViewModelUpdated ?: hiltViewModel()
                         )
                     }
                 } else {
@@ -179,7 +190,9 @@ class HomeActivity : FragmentActivity() {
                                     navController = navController,
                                     showDialog = state.showDialog,
                                     fromSplash = fromSplash,
-                                    cometChat = cometChat
+                                    cometChat = cometChat,
+                                    setupTeamViewModelUpdated = setupTeamViewModelUpdated
+                                        ?: hiltViewModel()
                                 )
                             }
                         },
@@ -216,6 +229,44 @@ class HomeActivity : FragmentActivity() {
     override fun onResume() {
         super.onResume()
     }
+
+    // on below line we are calling on activity result method.
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode != Activity.RESULT_OK) return
+        if (requestCode == AppConstants.REQUEST_CONTACT_CODE && data != null) {
+            val contactData: Uri? = data.data
+            val cursor: Cursor = managedQuery(contactData, null, null, null, null)
+            cursor.moveToFirst()
+            val number: String =
+                cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER))
+            val name: String =
+                cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
+            setupTeamViewModelUpdated?.onEvent(
+                TeamSetupUIEventUpdated.OnContactAdded(
+                    InviteObject(
+                        name,
+                        number
+                    )
+                )
+            )
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
+        startActivityForResult(
+            intent,
+            AppConstants.REQUEST_CONTACT_CODE,
+            null
+        )
+    }
 }
 
 @Composable
@@ -226,9 +277,9 @@ fun NavControllerComposable(
     showDialog: Boolean = false,
     navController: NavHostController = rememberNavController(),
     fromSplash: Boolean = false,
-    cometChat: CometChatUI
+    cometChat: CometChatUI,
+    setupTeamViewModelUpdated: SetupTeamViewModelUpdated
 ) {
-    val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = hiltViewModel()
     var eventTitle by rememberSaveable { mutableStateOf("") }
     var teamLogo by rememberSaveable {
         mutableStateOf("")
@@ -358,7 +409,6 @@ fun NavControllerComposable(
                 },
                 onCreateTeamClick = {
                     navController.navigate(Route.TEAM_SETUP_SCREEN) {
-//                        navController.popBackStack()
                         setupTeamViewModelUpdated.onEvent(
                             TeamSetupUIEventUpdated.OnColorSelected(
                                 (it?.colorCode ?: "").replace(
@@ -369,6 +419,7 @@ fun NavControllerComposable(
                     }
                 },
                 onTeamItemClick = {
+                    //navController.navigate(Route.MY_CHAT_DETAIL)
 
                 }, onCreateNewConversationClick = {
                     navController.navigate(CREATE_NEW_CHAT_CONVO)
@@ -769,15 +820,10 @@ fun NavControllerComposable(
             )
             EventTeamTabs(vm = teamViewModel)
         }
-        /*composable(route = Route.MY_LEAGUE) {
-            homeViewModel.setTopBar(
-                TopBarData(
-                    label = stringResource(id = R.string.back_to_school_tournament),
-                    topBar = TopBar.MY_LEAGUE
-                )
-            )
-            MyLeagueDetailScreen()
-        }*/
+        composable(route = Route.MY_CHAT_DETAIL) {
+            Timber.e("data " + CometChatUI.convo)
+            TeamsChatDetailScreen()
+        }
         composable(route = Route.SELECT_VENUE) {
             homeViewModel.setTopBar(
                 TopBarData(
@@ -800,9 +846,11 @@ fun NavControllerComposable(
                     topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
+            //CommonWebView(url)
 //            CommonWebView(url)
         }
     }
+
 }
 
 fun setColorToOriginalOnBack(
@@ -853,3 +901,4 @@ fun getConvoType(conversation: Conversation): Any {
         conversation.conversationWith as Group else
         conversation.conversationWith as User
 }
+

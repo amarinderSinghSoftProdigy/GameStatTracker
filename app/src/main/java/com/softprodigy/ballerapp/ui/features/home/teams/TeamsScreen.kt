@@ -118,6 +118,7 @@ fun TeamsScreen(
             )
         } else {
             RefereeTeamsTopTabs(pagerState = pagerState, tabData = tabData)
+            TeamsChatScreen(onTeamItemClick = onTeamItemClick)
             TeamsChatScreen(onTeamItemClick, onCreateNewConversationClick)
             //EmptyScreen(singleText = true, heading = stringResource(id = R.string.coming_soon))
         }
@@ -165,6 +166,7 @@ fun TeamsContent(
     ) { index ->
         when (index) {
             0 -> StandingScreen()
+            1 -> TeamsChatScreen(onTeamItemClick = onTeamItemClick)
             1 -> TeamsChatScreen(onTeamItemClick, onCreateNewConversationClick)
             2 -> RoasterScreen(viewModel)
             3 -> LeaderBoardScreen()
