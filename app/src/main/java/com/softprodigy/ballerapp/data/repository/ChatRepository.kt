@@ -9,6 +9,8 @@ import com.softprodigy.ballerapp.domain.repository.IChatRepository
 import com.softprodigy.ballerapp.network.APIService
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import okhttp3.FormBody
+import okhttp3.RequestBody
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -25,6 +27,17 @@ class ChatRepository @Inject constructor(
         userId: String
     ): ResultWrapper<BaseResponse<ArrayList<Team>>> {
         return safeApiCall(dispatcher) { service.getAllChats(page, limit, sort, userId) }
+    }
+
+    override suspend fun saveChatGroup(
+        teamId: String,
+        groupId: String
+    ): ResultWrapper<BaseResponse<Any>> {
+        val request: RequestBody = FormBody.Builder()
+            .add("teamId", teamId)
+            .add("groupId", groupId)
+            .build()
+        return safeApiCall(dispatcher) { service.saveChatGroup(request) }
     }
 
 }

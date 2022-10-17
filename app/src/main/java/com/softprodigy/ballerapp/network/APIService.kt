@@ -259,4 +259,7 @@ open interface APIService {
     @GET(ApiConstants.AUTH_REGISTER_MOBILE)
     suspend fun registerMobile(): BaseResponse<Any>
 
+    @POST(ApiConstants.SAVE_CHAT_GROUP)
+    suspend fun saveChatGroup(@Body request: RequestBody):BaseResponse<Any>
+
 }

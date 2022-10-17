@@ -119,6 +119,7 @@ object ApiConstants {
     const val ADD_PROFILE = "v1/auth/addUserProfile"
 
     const val GET_CHATS = "v1/team/teamsChatDetails"
+    const val SAVE_CHAT_GROUP = "v1/team/saveChatGroup"
 
     const val RESET_PASS = "/reset/password/"
     const val RESEND_OTP = "/resendOtp"

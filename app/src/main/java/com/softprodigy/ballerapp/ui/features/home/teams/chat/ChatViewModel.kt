@@ -194,100 +194,140 @@ class ChatViewModel @Inject constructor(
 
     }
 
-    private fun startNewConversation() {
+    private suspend fun saveChatGroup(groupId: String) {
+        _chatUiState.value = _chatUiState.value.copy(isLoading = true)
+        val response = chatRepo.saveChatGroup(teamId = UserStorage.teamId, groupId = groupId)
+        _chatUiState.value = _chatUiState.value.copy(isLoading = false)
 
-        val randomUid = UUID.randomUUID().toString()
-        val groupName = chatUiState.value.groupName
-
-        val mergedMembers = mutableListOf<String>()
-        mergedMembers.addAll(chatUiState.value.selectedPlayersForNewGroup.map { playerIdsList -> playerIdsList })
-        mergedMembers.addAll(chatUiState.value.selectedCoachesForNewGroup.map { coachIdsList -> coachIdsList })
-
-        val group = Group(randomUid, groupName, CometChatConstants.GROUP_TYPE_PRIVATE, null)
-        val groupMembers: MutableList<GroupMember> = ArrayList()
-        mergedMembers.map { memberId ->
-            groupMembers.add(GroupMember(memberId, CometChatConstants.SCOPE_PARTICIPANT))
-        }
-
-        if (groupMembers.size > 1) {
-            CometChat.createGroupWithMembers(
-                group,
-                groupMembers,
-                null,
-                object : CometChat.CreateGroupWithMembersListener() {
-                    override fun onSuccess(group: Group, hashMap: HashMap<String?, String?>) {
-                        Timber.i("CreateGroupWithMembersListener-- $group")
-                        Timber.i("CreateGroupWithMembersListener-- $hashMap")
-                        ChatChannel.OnNewConversationResponse(
-                            isSuccess = true,
-                            UiText.StringResource(R.string.new_group_created_successfully)
+        when (response) {
+            is ResultWrapper.GenericError -> {
+                _chatChannel.send(
+                    ChatChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${response.message}"
                         )
-                        viewModelScope.launch {
-                            _chatChannel.send(
-                                ChatChannel.OnNewConversationResponse(
-                                    isSuccess = true,
-                                    UiText.StringResource(R.string.new_group_created_successfully)
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _chatChannel.send(
+                    ChatChannel.ShowToast(
+                        UiText.DynamicString(
+                            response.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                response.value.let { resp ->
+                    if (!resp.status) {
+                        _chatChannel.send(
+                            ChatChannel.ShowToast(
+                                UiText.DynamicString(
+                                    resp.statusMessage
                                 )
                             )
+                        )
+                    }
+                }
+            }
+        }}
+
+        private fun startNewConversation() {
+
+            val randomUid = UUID.randomUUID().toString()
+            val groupName = chatUiState.value.groupName
+
+            val mergedMembers = mutableListOf<String>()
+            mergedMembers.addAll(chatUiState.value.selectedPlayersForNewGroup.map { playerIdsList -> playerIdsList })
+            mergedMembers.addAll(chatUiState.value.selectedCoachesForNewGroup.map { coachIdsList -> coachIdsList })
+
+            val group = Group(randomUid, groupName, CometChatConstants.GROUP_TYPE_PRIVATE, null)
+            val groupMembers: MutableList<GroupMember> = ArrayList()
+            mergedMembers.map { memberId ->
+                groupMembers.add(GroupMember(memberId, CometChatConstants.SCOPE_PARTICIPANT))
+            }
+
+            if (groupMembers.size > 1) {
+                CometChat.createGroupWithMembers(
+                    group,
+                    groupMembers,
+                    null,
+                    object : CometChat.CreateGroupWithMembersListener() {
+                        override fun onSuccess(group: Group, hashMap: HashMap<String?, String?>) {
+                            Timber.i("CreateGroupWithMembersListener-- $group")
+                            Timber.i("CreateGroupWithMembersListener-- $hashMap")
+                            ChatChannel.OnNewConversationResponse(
+                                isSuccess = true,
+                                UiText.StringResource(R.string.new_group_created_successfully)
+                            )
+                            viewModelScope.launch {
+                                saveChatGroup(randomUid)
+                                _chatChannel.send(
+                                    ChatChannel.OnNewConversationResponse(
+                                        isSuccess = true,
+                                        UiText.StringResource(R.string.new_group_created_successfully)
+                                    )
+                                )
+                            }
+
+
+                        }
+
+                        override fun onError(e: CometChatException) {
+                            Timber.e("CreateGroupWithMembersListener-- ${e.message}")
+                            viewModelScope.launch {
+                                _chatChannel.send(
+                                    ChatChannel.OnNewConversationResponse(
+                                        isSuccess = false,
+                                        UiText.StringResource(R.string.something_went_wrong)
+                                    )
+                                )
+                            }
+                        }
+                    })
+            } else {
+
+                val uId = mergedMembers.getOrNull(0) ?: ""
+                CometChat.getUser(uId, object : CometChat.CallbackListener<User?>() {
+                    override fun onSuccess(user: User?) {
+                        Timber.d("User details fetched for user: " + user.toString())
+
+
+                        user?.let {
+                            viewModelScope.launch {
+                                _chatChannel.send(
+                                    ChatChannel.TriggerUserGetIntent(
+                                        isSuccess = true,
+                                        it
+                                    )
+                                )
+
+                            }
                         }
 
 
                     }
 
                     override fun onError(e: CometChatException) {
-                        Timber.e("CreateGroupWithMembersListener-- ${e.message}")
-                        viewModelScope.launch {
-                            _chatChannel.send(
-                                ChatChannel.OnNewConversationResponse(
-                                    isSuccess = false,
-                                    UiText.StringResource(R.string.something_went_wrong)
-                                )
-                            )
-                        }
-                    }
-                })
-        } else {
-
-            val uId = mergedMembers.getOrNull(0) ?: ""
-            CometChat.getUser(uId, object : CometChat.CallbackListener<User?>() {
-                override fun onSuccess(user: User?) {
-                    Timber.d("User details fetched for user: " + user.toString())
-
-
-                    user?.let {
+                        Log.d("TAG", "User details fetching failed with exception: " + e.message)
                         viewModelScope.launch {
                             _chatChannel.send(
                                 ChatChannel.TriggerUserGetIntent(
-                                    isSuccess = true,
-                                    it
+                                    isSuccess = false,
+                                    null,
+                                    UiText.StringResource(R.string.user_has_not_registered_with_chat)
                                 )
                             )
-
                         }
+
                     }
 
+                })
 
-                }
-
-                override fun onError(e: CometChatException) {
-                    Log.d("TAG", "User details fetching failed with exception: " + e.message)
-                    viewModelScope.launch {
-                        _chatChannel.send(
-                            ChatChannel.TriggerUserGetIntent(
-                                isSuccess = false,
-                                null,
-                                UiText.StringResource(R.string.user_has_not_registered_with_chat)
-                            )
-                        )
-                    }
-
-                }
-
-            })
+            }
 
         }
-
-    }
 }
 
 sealed class ChatChannel {
