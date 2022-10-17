@@ -1,5 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.game_zone
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,7 +31,8 @@ import com.softprodigy.ballerapp.ui.theme.rubikFamily
 
 @Composable
 fun TeamNavigationController (
-    isTracking: Boolean = false
+    isTracking: Boolean = false,
+    onAddRosterClick: () -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -45,7 +47,7 @@ fun TeamNavigationController (
             if(isTracking)
                 Tracking(
                     isTrackingEmpty = true,
-                    onAddRosterClick = {}
+                    onAddRosterClick = onAddRosterClick
                 )
             else
                 PointList()

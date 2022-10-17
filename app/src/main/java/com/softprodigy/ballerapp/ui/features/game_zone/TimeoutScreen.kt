@@ -1,6 +1,7 @@
 package com.softprodigy.ballerapp.ui.features.game_zone
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -22,7 +23,9 @@ import com.softprodigy.ballerapp.ui.theme.rubikFamily
 
 
 @Composable
-fun TimeoutsScreen()  {
+fun TimeoutsScreen(
+    onTimeoutClose: () -> Unit
+)  {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -34,7 +37,7 @@ fun TimeoutsScreen()  {
                 .fillMaxHeight()
                 .fillMaxWidth(),
         ) {
-            gameTimeoutsNavigation()
+            gameTimeoutsNavigation(onTimeoutClose)
             Spacer(modifier = Modifier
                 .fillMaxWidth()
                 .height(dimensionResource(id = R.dimen.size_1dp))
@@ -50,7 +53,7 @@ fun TimeoutsScreen()  {
 }
 
 @Composable
-private fun gameTimeoutsNavigation() {
+private fun gameTimeoutsNavigation(onTimeoutClose:() -> Unit ) {
     Box(modifier = Modifier
         .fillMaxWidth()
         .height(dimensionResource(id = R.dimen.size_46dp)),
@@ -82,7 +85,8 @@ private fun gameTimeoutsNavigation() {
             modifier = Modifier
                 .fillMaxHeight()
                 .padding(end = dimensionResource(id = R.dimen.size_10dp))
-                .align(Alignment.TopEnd),
+                .align(Alignment.TopEnd)
+                .clickable { onTimeoutClose.invoke() },
             verticalArrangement = Arrangement.Center
         ) {
             ImageButton(
@@ -90,7 +94,7 @@ private fun gameTimeoutsNavigation() {
                 modifier = Modifier
                     .width(dimensionResource(id = R.dimen.size_24dp))
                     .height(dimensionResource(id = R.dimen.size_24dp)),
-                onClick = { /*TODO*/ },
+                onClick = { },
             )
         }
     }

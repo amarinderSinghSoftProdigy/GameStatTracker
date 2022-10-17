@@ -29,7 +29,9 @@ import com.softprodigy.ballerapp.ui.theme.rubikFamily
 
 
 @Composable
-fun GameSettingsScreen()  {
+fun GameSettingsScreen(
+    onClose: () -> Unit
+)  {
     Box(
         modifier = Modifier
             .fillMaxSize()

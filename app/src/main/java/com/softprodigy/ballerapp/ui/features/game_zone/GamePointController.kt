@@ -21,7 +21,8 @@ import com.softprodigy.ballerapp.ui.theme.rubikFamily
 
 @Composable
 fun GamePointController (
-    onClick: (GameSettingsState) -> Unit
+    onSettingClick: (GameSettingsState) -> Unit,
+    onPointClick: (GameSettingsState) -> Unit,
 ) {
     Box(
         modifier =  Modifier.fillMaxSize()
@@ -61,7 +62,7 @@ fun GamePointController (
                                     dimensionResource(id = R.dimen.size_half_dp),
                                     colorResource(id = R.color.game_grid_border_color)
                                 )
-                                .clickable { onClick(setting) },
+                                /*.clickable { onSettingClick.invoke(setting) }*/,
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center,
                         ) {
@@ -73,7 +74,8 @@ fun GamePointController (
                                 color = colorResource(id = R.color.game_grid_item_text_color),
                                 fontFamily = rubikFamily,
                                 fontWeight = FontWeight.W500,
-                            ) {}
+                                onClick = { onSettingClick.invoke(setting) }
+                            )
                         }
                     }
                 }
@@ -100,9 +102,11 @@ fun GamePointController (
                                 .border(
                                     dimensionResource(id = R.dimen.size_half_dp),
                                     colorResource(id = R.color.game_grid_border_color)
-                                ),
+                                )
+                                .clickable { onPointClick(point) },
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center,
+
                         ) {
                             ImageTextButton(
                                 title = point.title!!,
@@ -111,7 +115,8 @@ fun GamePointController (
                                 spacerBetween = R.dimen.size_12dp,
                                 color = colorResource(id = R.color.game_grid_item_text_color),
                                 fontWeight = FontWeight.W500,
-                            ) {}
+                                onClick = { onPointClick.invoke(point) }
+                            )
                         }
                     }
                 }

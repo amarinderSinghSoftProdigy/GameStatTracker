@@ -1,5 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.game_zone
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
@@ -12,7 +13,12 @@ import androidx.compose.ui.unit.dp
 import com.softprodigy.ballerapp.R
 
 @Composable
-fun OverviewScreen () {
+fun OverviewScreen (
+    onSettingClick: (GameSettingsState) -> Unit,
+    onPointClick: (GameSettingsState) -> Unit,
+    onAddRosterClick: () -> Unit,
+) {
+    var isTracking:Boolean = true
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -38,9 +44,10 @@ fun OverviewScreen () {
 
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                GamePointController(onClick = { gameSetting: GameSettingsState ->
-                    gameSettingScreenNavigation(gameSetting)
-                })
+                GamePointController(
+                    onSettingClick = onSettingClick,
+                    onPointClick = onPointClick
+                )
                 Spacer(modifier = Modifier
                     .height(dimensionResource(id = R.dimen.size_1dp))
                     .fillMaxWidth()
@@ -53,7 +60,10 @@ fun OverviewScreen () {
                     .weight(1f)
                     //.background(colorResource(id = R.color.game_center_background_color)),
             ) {
-                TeamNavigationController(isTracking = true)
+                TeamNavigationController(
+                    isTracking = isTracking,
+                    onAddRosterClick = onAddRosterClick
+                )
             }
             Column(
                 Modifier
@@ -64,14 +74,5 @@ fun OverviewScreen () {
                 GameSettingsController()
             }
         }
-    }
-}
-
-
-private fun gameSettingScreenNavigation(gameSetting: GameSettingsState) {
-    TODO("Not yet implemented")
-    if (gameSetting.id == 0) {
-
-
     }
 }

@@ -1,6 +1,7 @@
 package com.softprodigy.ballerapp.ui.features.game_zone
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -48,7 +49,8 @@ fun Tracking (
                     .clip(RectangleShape)
                     .background(
                         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
-                        color = Color.Black.copy(alpha = if(isTrackingEmpty) 1.0f else 0.6f)),
+                        color = Color.Black.copy(alpha = if(isTrackingEmpty) 1.0f else 0.6f))
+                    .clickable { onAddRosterClick.invoke() },
 
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,

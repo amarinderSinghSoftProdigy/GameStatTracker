@@ -47,6 +47,7 @@ object Route {
     const val INVITATION_SCREEN="invitationScreen"
     const val GAME_ZONE_SCREEN = "gameZoneScreen"
     const val OVERVIEW_SCREEN = "overviewScreen"
+    const val ROASTER_SELECTION_SCREEN = "roasterSelectionScreen"
     const val BOX_SCORE_SCREEN = "boxScoreScreen"
     const val GAME_SETTINGS = "gameSettings"
     const val TIMEOUTS = "timeouts"

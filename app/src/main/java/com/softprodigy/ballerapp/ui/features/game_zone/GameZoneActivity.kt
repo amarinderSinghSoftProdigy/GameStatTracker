@@ -65,25 +65,46 @@ fun NavControllerComposable(
 ) {
 
 
-    NavHost(navController, startDestination = Route.TIMEOUTS) {
+    NavHost(navController, startDestination = Route.OVERVIEW_SCREEN) {
         composable(route = Route.OVERVIEW_SCREEN) {
-            OverviewScreen()
+            OverviewScreen(
+                onSettingClick = {
+                        //gameSetting: GameSettingsState -> gameSettingScreenNavigation(gameSetting)
+                    when(it.id) {
+                        0 -> { navController.popBackStack() }
+                        1 -> { navController.navigate(Route.GAME_SETTINGS) }
+                        2 -> { navController.navigate(Route.BOX_SCORE_SCREEN) }
+                        3 -> { navController.navigate(Route.TIMEOUTS) }
+                        else -> {}
+                    }
+                },
+                onPointClick = {},
+                onAddRosterClick= { navController.navigate(Route.ROASTER_SELECTION_SCREEN) }
+            )
         }
 
-        composable(route = Route.GAME_ZONE_SCREEN) {
-            RoasterSelectionScreen()
+        composable(route = Route.ROASTER_SELECTION_SCREEN) {
+            RoasterSelectionScreen(
+                onClose = { navController.popBackStack() }
+            )
         }
 
         composable(route = Route.BOX_SCORE_SCREEN) {
-            BoxScoreScreen();
+            BoxScoreScreen(
+                onClose = { navController.popBackStack() }
+            )
         }
 
         composable(route = Route.GAME_SETTINGS) {
-            GameSettingsScreen()
+            GameSettingsScreen(
+                onClose = { navController.popBackStack() }
+            )
         }
 
         composable(route = Route.TIMEOUTS) {
-            TimeoutsScreen()
+            TimeoutsScreen(
+                onTimeoutClose = { navController.popBackStack() }
+            )
         }
     }
 }

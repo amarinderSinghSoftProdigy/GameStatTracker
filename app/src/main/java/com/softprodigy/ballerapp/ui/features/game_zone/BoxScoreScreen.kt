@@ -24,7 +24,9 @@ import com.softprodigy.ballerapp.ui.theme.rubikFamily
 
 
 @Composable
-fun BoxScoreScreen()  {
+fun BoxScoreScreen(
+    onClose: () -> Unit
+)  {
     Box(
         modifier = Modifier
             .fillMaxSize()

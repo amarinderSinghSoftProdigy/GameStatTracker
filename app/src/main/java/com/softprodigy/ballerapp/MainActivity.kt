@@ -438,7 +438,7 @@ fun NavControllerComposable(activity: MainActivity) {
         }
 
         composable(route = OVERVIEW_SCREEN) {
-            OverviewScreen(
+            GameZoneActivity(
             )
         }
     }

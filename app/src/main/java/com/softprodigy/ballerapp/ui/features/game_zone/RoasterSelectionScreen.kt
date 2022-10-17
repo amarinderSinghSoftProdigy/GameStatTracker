@@ -21,7 +21,9 @@ import com.softprodigy.ballerapp.ui.features.home.teams.roaster.CoachListItem
 
 
 @Composable
-fun RoasterSelectionScreen()  {
+fun RoasterSelectionScreen(
+    onClose: () -> Unit
+)  {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -95,10 +97,10 @@ fun RoasterSelectionScreen()  {
                 modifier = Modifier
                     .width(dimensionResource(id = R.dimen.size_24dp))
                     .height(dimensionResource(id = R.dimen.size_24dp)),
-                onClick = { /*TODO*/ },)
-            }
+                onClick = { onClose.invoke() },
+            )
         }
-
+    }
 }
 
 @Composable
