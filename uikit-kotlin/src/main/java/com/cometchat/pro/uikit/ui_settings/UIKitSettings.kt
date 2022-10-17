@@ -64,13 +64,13 @@ class UIKitSettings(context: Context) {
         var searchGroups: Boolean = true
         var searchMessages: Boolean = true
         // Voice & Video Calling/Conferencing
-        var userAudioCall: Boolean = true
-        var userVideoCall: Boolean = true
-        var groupAudioCall: Boolean = true
-        var groupVideoCall: Boolean = true
-        var callRecording: Boolean = true
-        var callLiveStreaming: Boolean = true
-        var callTranscription: Boolean = true
+        var userAudioCall: Boolean = false
+        var userVideoCall: Boolean = false
+        var groupAudioCall: Boolean = false
+        var groupVideoCall: Boolean = false
+        var callRecording: Boolean = false
+        var callLiveStreaming: Boolean = false
+        var callTranscription: Boolean = false
 
         //User Experience
         var thumbnailGeneration: Boolean = true

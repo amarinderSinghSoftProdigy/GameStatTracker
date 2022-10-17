@@ -11,6 +11,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -20,12 +21,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.cometchat.pro.uikit.ui_components.chats.CometChatConversationList
+import com.google.accompanist.pager.ExperimentalPagerApi
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.databinding.FragmentConversationBinding
 import com.softprodigy.ballerapp.ui.features.components.AppTab
 import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
+import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
 import com.softprodigy.ballerapp.ui.theme.appColors
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun TeamsChatScreen(
     vm: ChatViewModel = hiltViewModel(),
@@ -36,6 +41,12 @@ fun TeamsChatScreen(
     val selected = remember {
         mutableStateOf(0)
     }
+    val pagerState = rememberPagerState(
+        pageCount = state.teams.size,
+        initialOffScreenLimit = 1,
+    )
+    val coroutineScope = rememberCoroutineScope()
+
 
     Box(modifier = Modifier.fillMaxSize()) {
 
@@ -50,10 +61,22 @@ fun TeamsChatScreen(
                             selected = index == selected.value,
                             onClick = {
                                 selected.value = index
+                                coroutineScope.launch {
+                                    if (pagerState.pageCount != 0) pagerState.animateScrollToPage(
+                                        index
+                                    )
+                                }
                             })
                     }
                 }
             }
+            /* LazyColumn(
+                 modifier = Modifier
+                     .fillMaxWidth()
+             ) {
+
+
+             }*/
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
             AndroidViewBinding(FragmentConversationBinding::inflate) {
