@@ -17,6 +17,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.systemuicontroller.SystemUiController
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.softprodigy.ballerapp.common.IntentData
 import com.softprodigy.ballerapp.common.Route
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
@@ -32,6 +34,8 @@ class GameZoneActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, true)
         setContent {
             val fromSplash = intent.getBooleanExtra(IntentData.FROM_SPLASH, false)
+            val systemUiController: SystemUiController = rememberSystemUiController()
+            systemUiController.isStatusBarVisible = false
             BallerAppMainTheme(customColor = Color.White) {
                 val navController = rememberNavController()
 
