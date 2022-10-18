@@ -230,7 +230,7 @@ class CometChatConversationList : Fragment(), TextWatcher {
      *
      * @see ConversationsRequest
      */
-    private fun makeConversationList() {
+     fun makeConversationList() {
         if (conversationsRequest == null) {
             conversationsRequest =
                 ConversationsRequestBuilder().setConversationType(UIKitSettings.conversationInMode.toString())
@@ -242,8 +242,10 @@ class CometChatConversationList : Fragment(), TextWatcher {
                 if (conversations.isNotEmpty()) {
                     stopHideShimmer()
                     noConversationView?.visibility = View.GONE
-                    rvConversation?.setConversationList(conversations)
-                    conversationList = conversations as MutableList<Conversation>
+
+                    setTeamFilteredConversation(conversations)
+                    /*  rvConversation?.setConversationList(conversations)
+                      conversationList = conversations as MutableList<Conversation>*/
                 } else {
                     checkNoConverstaion()
                 }
@@ -256,6 +258,37 @@ class CometChatConversationList : Fragment(), TextWatcher {
                 Log.d(TAG, "onError: " + e.message)
             }
         })
+    }
+
+    private fun setTeamFilteredConversation(conversations: List<Conversation>) {
+        val filteredConversation = mutableListOf<Conversation>()
+
+        conversations.forEach { conversation ->
+
+            if (getConvoType(conversation) is User) {
+                val user = conversation.conversationWith as User
+                if (memberIds.contains(user.uid)) {
+                    filteredConversation.add(conversation)
+                }
+            } else if (getConvoType(conversation) is Group) {
+                val group = conversation.conversationWith as Group
+                if (memberIds.contains(group.guid)) {
+                    filteredConversation.add(conversation)
+                }
+            }
+        }
+
+        if(filteredConversation.isNotEmpty()) {
+            conversationList = filteredConversation as MutableList<Conversation>
+            rvConversation?.setConversationList(filteredConversation)
+
+        }
+        else
+        {
+            checkNoConverstaion()
+
+        }
+
     }
 
     private fun checkNoConverstaion() {
@@ -447,9 +480,9 @@ class CometChatConversationList : Fragment(), TextWatcher {
     }
 
     companion object {
+        var memberIds = mutableListOf<String>()
         lateinit var events: OnItemClickListener<Any>
         private const val TAG = "ConversationList"
-
         /**
          * @param onItemClickListener An object of `OnItemClickListener<T>` abstract class helps to initialize with events
          * to perform onItemClick & onItemLongClick.
@@ -459,4 +492,10 @@ class CometChatConversationList : Fragment(), TextWatcher {
             events = onItemClickListener
         }
     }
+}
+
+fun getConvoType(conversation: Conversation): Any {
+    return if (conversation.conversationType == CometChatConstants.CONVERSATION_TYPE_GROUP)
+        conversation.conversationWith as Group else
+        conversation.conversationWith as User
 }

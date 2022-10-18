@@ -8,10 +8,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -26,9 +24,7 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.databinding.FragmentConversationBinding
 import com.softprodigy.ballerapp.ui.features.components.AppTab
 import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
-import com.softprodigy.ballerapp.ui.features.components.rememberPagerState
 import com.softprodigy.ballerapp.ui.theme.appColors
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -37,80 +33,86 @@ fun TeamsChatScreen(
     onTeamItemClick: () -> Unit,
     onCreateNewConversationClick: () -> Unit
 ) {
+
     val state = vm.chatUiState.value
-    val selected = remember {
+    val selected = rememberSaveable {
         mutableStateOf(0)
     }
-    val pagerState = rememberPagerState(
-        pageCount = state.teams.size,
-        initialOffScreenLimit = 1,
-    )
-    val coroutineScope = rememberCoroutineScope()
+    var key = remember { mutableStateOf("selected")}
+        Box(modifier = Modifier.fillMaxSize()) {
 
+            Column {
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                LazyRow {
+                    itemsIndexed(state.teams) { index, item ->
+                        Row {
+                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+                            AppTab(
+                                title = item.name,
+                                selected = index == selected.value,
+                                onClick = {
+                                    val mergedIds = mutableListOf<String>()
+                                    val playerIds = item.players.map {
+                                        it._id
+                                    }
+                                    val coachIds = item.coaches.map {
+                                        it._id
+                                    }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+                                    val groupId = item.teamChatGroups.map {
+                                        it.groupId
+                                    }
+                                    mergedIds.addAll(playerIds)
+                                    mergedIds.addAll(coachIds)
+                                    mergedIds.addAll(groupId)
 
-        Column {
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-            LazyRow {
-                itemsIndexed(state.teams) { index, item ->
-                    Row {
-                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
-                        AppTab(
-                            title = item.name,
-                            selected = index == selected.value,
-                            onClick = {
-                                selected.value = index
-                                coroutineScope.launch {
-                                    if (pagerState.pageCount != 0) pagerState.animateScrollToPage(
-                                        index
-                                    )
-                                }
-                            })
+//                                userIds = mergedIds
+                                    selected.value = index
+
+                                    CometChatConversationList.memberIds = mergedIds
+                                    key.value = index.toString()
+                                })
+                        }
                     }
                 }
+
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+
+                key(key.value) {
+                AndroidViewBinding(FragmentConversationBinding::inflate) {
+                    converstionContainer.getFragment<CometChatConversationList>()
+
+                }
+                }
             }
-            /* LazyColumn(
-                 modifier = Modifier
-                     .fillMaxWidth()
-             ) {
-
-
-             }*/
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-
-            AndroidViewBinding(FragmentConversationBinding::inflate) {
-                converstionContainer.getFragment<CometChatConversationList>()
-
-            }
-
-        }
-        IconButton(
-            modifier = Modifier
-                .offset((-20).dp, (-20).dp)
-                .size(dimensionResource(id = R.dimen.size_44dp))
-                .background(
-                    MaterialTheme.appColors.material.primaryVariant,
-                    RoundedCornerShape(50)
-                )
-                .align(Alignment.BottomEnd),
-            enabled = true,
-            onClick = { onCreateNewConversationClick.invoke() }
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_cross_1),
-                "",
-                tint = MaterialTheme.appColors.buttonColor.textEnabled,
+            IconButton(
                 modifier = Modifier
-                    .width(
-                        dimensionResource(id = R.dimen.size_16dp)
+                    .offset((-20).dp, (-20).dp)
+                    .size(dimensionResource(id = R.dimen.size_44dp))
+                    .background(
+                        MaterialTheme.appColors.material.primaryVariant,
+                        RoundedCornerShape(50)
                     )
-                    .rotate(45f)
-            )
-        }
-        if (state.isLoading) {
-            CommonProgressBar()
+                    .align(Alignment.BottomEnd),
+                enabled = true,
+                onClick = { onCreateNewConversationClick.invoke() }
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_cross_1),
+                    "",
+                    tint = MaterialTheme.appColors.buttonColor.textEnabled,
+                    modifier = Modifier
+                        .width(
+                            dimensionResource(id = R.dimen.size_16dp)
+                        )
+                        .rotate(45f)
+                )
+            }
+            if (state.isLoading) {
+                CommonProgressBar()
+            }
+
         }
 
     }
-}
+

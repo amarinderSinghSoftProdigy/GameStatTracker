@@ -6,7 +6,7 @@ data class Coach(
     @SerializedName("__v")
     val __v: Int? = null,
     @SerializedName("_id")
-    val _id: String? = null,
+    val _id: String = "",
     @SerializedName("address")
     val address: String? = "",
     @SerializedName("assists")

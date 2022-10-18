@@ -27,7 +27,7 @@ data class Team(
     @SerializedName("leaderboardPoints")
     val teamLeaderBoard: ArrayList<TeamLeaderBoard> = ArrayList(),
     @SerializedName("teamChatGroups")
-    val teamChatGroups: ArrayList<Any> = ArrayList(),
+    val teamChatGroups: ArrayList<TeamChatGroup> = ArrayList(),
 
     @SerializedName("teamNameOnJersey") val teamNameOnJersey: String = "",
     @SerializedName("teamNameOnTournaments") val teamNameOnTournaments: String = "",
@@ -37,4 +37,10 @@ data class Team(
     @SerializedName("nameOfVenue") val nameOfVenue: String = "",
     @SerializedName("location") val location: Location = Location(),
     @SerializedName("address") val address: Address = Address(),
+)
+
+data class TeamChatGroup(
+    @SerializedName("_id"     ) val Id      : String = "",
+    @SerializedName("teamId"  ) val teamId  : String = "",
+    @SerializedName("groupId" ) val groupId : String = ""
 )
