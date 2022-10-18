@@ -14,6 +14,7 @@ import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.SignUpPhoneData
 import com.softprodigy.ballerapp.data.response.AddProfileRequest
+import com.softprodigy.ballerapp.data.response.SwapUser
 import com.softprodigy.ballerapp.data.response.UserInfo
 import com.softprodigy.ballerapp.domain.repository.IImageUploadRepo
 import com.softprodigy.ballerapp.domain.repository.IUserRepository
@@ -43,15 +44,15 @@ class SignUpViewModel @Inject constructor(
         when (event) {
             is SignUpUIEvent.OnSwapUpdate -> {
                 viewModelScope.launch {
-                    updateProfileToken(event.userId)
+                    updateProfileToken(event.user)
                 }
             }
-            is SignUpUIEvent.OnAddProfileClicked -> {
-                viewModelScope.launch {
-                    if (!_signUpUiState.value.status)
-                        imageUpload()
-                }
-            }
+            /* is SignUpUIEvent.OnAddProfileClicked -> {
+                 viewModelScope.launch {
+                     if (!_signUpUiState.value.status)
+                         imageUpload()
+                 }
+             }*/
             is SignUpUIEvent.OnFirstNameChanged -> {
                 _signUpUiState.value =
                     _signUpUiState.value.copy(
@@ -206,9 +207,9 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    private suspend fun updateProfileToken(userId: String) {
+    private suspend fun updateProfileToken(userId: SwapUser) {
         _signUpUiState.value = _signUpUiState.value.copy(isLoading = true)
-        val userResponse = IUserRepository.updateInitialProfileToken(userId)
+        val userResponse = IUserRepository.updateInitialProfileToken(userId._Id)
         _signUpUiState.value = _signUpUiState.value.copy(isLoading = false)
 
         when (userResponse) {
@@ -233,9 +234,9 @@ class SignUpViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
                     if (response.status) {
-                        setToken(response.data, "", "")
+                        setToken(response.data, userId.role, "")
                         _signUpChannel.send(
-                            SignUpChannel.ShowToast(
+                            SignUpChannel.OnProfileUpdateSuccess(
                                 UiText.DynamicString(
                                     response.statusMessage
                                 )
@@ -320,7 +321,7 @@ class SignUpViewModel @Inject constructor(
 
     private suspend fun imageUpload() {
         _signUpUiState.value =
-            _signUpUiState.value.copy(isLoading = true, status = true)
+            _signUpUiState.value.copy(isLoading = true)
 
         val uri = Uri.parse(signUpUiState.value.signUpData.profileImageUri)
 
@@ -414,7 +415,7 @@ class SignUpViewModel @Inject constructor(
                             setToken(
                                 response.data.token,
                                 response.data.user.role,
-                                response.data.user.email
+                                signUpData.email ?: ""
                             )
                             _signUpUiState.value = _signUpUiState.value.copy(
                                 registered = true,
@@ -422,7 +423,17 @@ class SignUpViewModel @Inject constructor(
                                 errorMessage = null,
                                 successMessage = response.statusMessage
                             )
-                            imageUpload()
+                            if (_signUpUiState.value.signUpData.profileImageUri.isNullOrEmpty()) {
+                                _signUpChannel.send(
+                                    SignUpChannel.OnProfileUpdateSuccess(
+                                        UiText.DynamicString(
+                                            response.statusMessage
+                                        ),
+                                    )
+                                )
+                            } else {
+                                imageUpload()
+                            }
                         } else {
                             _signUpUiState.value = _signUpUiState.value.copy(
                                 errorMessage = response.statusMessage,
@@ -548,7 +559,7 @@ class SignUpViewModel @Inject constructor(
     }*/
 
     private suspend fun addProfile() {
-        _signUpUiState.value = _signUpUiState.value.copy(isLoading = true, status = true)
+        _signUpUiState.value = _signUpUiState.value.copy(isLoading = true)
         val request = AddProfileRequest(
             firstName = _signUpUiState.value.signUpData.firstName,
             lastName = _signUpUiState.value.signUpData.lastName,
@@ -556,32 +567,30 @@ class SignUpViewModel @Inject constructor(
             city = "",
             state = "",
             zip = "",
-            address = _signUpUiState.value.signUpData.address ?: "",
-            gender = _signUpUiState.value.signUpData.gender ?: "",
-            birthdate = _signUpUiState.value.signUpData.birthdate ?: "",
+            address = _signUpUiState.value.signUpData.address,
+            gender = _signUpUiState.value.signUpData.gender,
+            birthdate = _signUpUiState.value.signUpData.birthdate,
             role = _signUpUiState.value.signUpData.role
         )
-        val response = IUserRepository.addProfile(request)
-        when (response) {
+        when (val response = IUserRepository.addProfile(request)) {
             is ResultWrapper.Success -> {
-                response.value.let { response ->
-                    if (response.status) {
+                response.value.let { resp ->
+                    if (resp.status) {
                         _signUpUiState.value = _signUpUiState.value.copy(
                             isLoading = false,
                             errorMessage = null,
-                            successMessage = response.statusMessage,
-                            status = false
+                            successMessage = resp.statusMessage,
                         )
                         _signUpChannel.send(
                             SignUpChannel.OnProfileUpdateSuccess(
                                 UiText.DynamicString(
-                                    response.statusMessage
+                                    resp.statusMessage
                                 )
                             )
                         )
                     } else {
                         _signUpUiState.value = _signUpUiState.value.copy(
-                            errorMessage = response.statusMessage,
+                            errorMessage = resp.statusMessage,
                             isLoading = false
                         )
                     }
@@ -614,11 +623,14 @@ class SignUpViewModel @Inject constructor(
     private suspend fun updateUserProfile() {
         val updateUserRequestData = signUpUiState.value.signUpData
         val signUpDataRequest = SignUpPhoneData(
+            phone = null,
             firstName = updateUserRequestData.firstName,
             lastName = updateUserRequestData.lastName,
-            email = updateUserRequestData.email,
+            email = if ((updateUserRequestData.email
+                    ?: "").isEmpty()
+            ) null else updateUserRequestData.email,
             profileImage = updateUserRequestData.profileImage,
-           /* phone = signUpUiState.value.phoneCode + updateUserRequestData.phone,*/
+            /* phone = signUpUiState.value.phoneCode + updateUserRequestData.phone,*/
         )
         when (val updateProfileResp = IUserRepository.updateUserProfile(signUpDataRequest)) {
             is ResultWrapper.GenericError -> {
@@ -647,7 +659,6 @@ class SignUpViewModel @Inject constructor(
                 updateProfileResp.value.let { response ->
                     if (response.status) {
                         setToken(
-//                            token = signUpUiState.value.signUpData.token ?: "",
                             token = response.data.token,
                             role = signUpUiState.value.signUpData.role ?: "",
                             email = signUpUiState.value.signUpData.email ?: "",

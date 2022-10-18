@@ -99,13 +99,13 @@ class HomeActivity : FragmentActivity() {
             /* val userToken = dataStoreManager.userToken.collectAsState(initial = "")
              UserStorage.token = userToken.value
              */
-            val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
+            val color = dataStoreManager.getColor.collectAsState(initial = AppConstants.DEFAULT_COLOR)
             val teamId = dataStoreManager.getId.collectAsState(initial = "")
             val teamName = dataStoreManager.getTeamName.collectAsState(initial = "")
             val role = dataStoreManager.getRole.collectAsState(initial = "")
             UserStorage.teamId = teamId.value
             UserStorage.teamName = teamName.value
-            AppConstants.SELECTED_COLOR = fromHex(color.value.ifEmpty { "0177C1" })
+            AppConstants.SELECTED_COLOR = fromHex(color.value.ifEmpty { AppConstants.DEFAULT_COLOR })
             homeViewModel.setColor(AppConstants.SELECTED_COLOR)
             homeViewModel.showBottomAppBar(true)
             BallerAppMainTheme(
@@ -124,7 +124,7 @@ class HomeActivity : FragmentActivity() {
                             teamViewModel,
                             eventViewModel,
                             navController = navController,
-                            fromSplash = fromSplash,
+                            role = role.value,
                             cometChat = cometChat,
                             setupTeamViewModelUpdated = setupTeamViewModelUpdated ?: hiltViewModel()
                         )
@@ -188,7 +188,7 @@ class HomeActivity : FragmentActivity() {
                                     eventViewModel,
                                     navController = navController,
                                     showDialog = state.showDialog,
-                                    fromSplash = fromSplash,
+                                    role = role.value,
                                     cometChat = cometChat,
                                     setupTeamViewModelUpdated = setupTeamViewModelUpdated
                                         ?: hiltViewModel()
@@ -275,7 +275,7 @@ fun NavControllerComposable(
     eventViewModel: EventViewModel,
     showDialog: Boolean = false,
     navController: NavHostController = rememberNavController(),
-    fromSplash: Boolean = false,
+    role: String = "",
     cometChat: CometChatUI,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated
 ) {
@@ -289,13 +289,11 @@ fun NavControllerComposable(
     var url by rememberSaveable {
         mutableStateOf("")
     }
-    val dataStoreManager = DataStoreManager(LocalContext.current)
-    val role = dataStoreManager.getRole.collectAsState(initial = "")
     NavHost(navController, startDestination = Route.HOME_SCREEN) {
         composable(route = Route.HOME_SCREEN) {
             homeViewModel.setTopAppBar(false)
-            //if (fromSplash)
             HomeScreen(
+                role,
                 onInvitationCLick = {
                     navController.navigate(Route.INVITATION_SCREEN)
                 },
@@ -321,14 +319,14 @@ fun NavControllerComposable(
                 },
                 onCreateTeamClick = {
                     navController.navigate(Route.TEAM_SETUP_SCREEN) {
-//                        navController.popBackStack()
-                        setupTeamViewModelUpdated.onEvent(
-                            TeamSetupUIEventUpdated.OnColorSelected(
-                                (it?.colorCode ?: "").replace(
-                                    "#", ""
+                        if (it != null)
+                            setupTeamViewModelUpdated.onEvent(
+                                TeamSetupUIEventUpdated.OnColorSelected(
+                                    (it.colorCode).replace(
+                                        "#", ""
+                                    )
                                 )
                             )
-                        )
                     }
                 },
                 onInviteClick = {
@@ -340,11 +338,6 @@ fun NavControllerComposable(
                 },
                 setupTeamViewModelUpdated = setupTeamViewModelUpdated
             )
-            /* else {
-                 HomeFirstTimeLoginScreen(onCreateTeamClick = {
-                     navController.navigate(Route.TEAM_SETUP_SCREEN)
-                 }, viewModel = homeViewModel)
-             }*/
         }
         composable(route = Route.PROFILE_SCREEN) {
             homeViewModel.setTopBar(
@@ -380,7 +373,7 @@ fun NavControllerComposable(
                     topBar = TopBar.EDIT_PROFILE,
                 )
             )
-            if (role.value == UserType.REFEREE.key) {
+            if (role == UserType.REFEREE.key) {
                 RefereeEditScreen(onBackClick = { navController.popBackStack() }) {
                     navController.popBackStack()
                 }
@@ -498,8 +491,7 @@ fun NavControllerComposable(
                 )
             )
 
-            if (role.value == UserType.REFEREE.key) {
-
+            if (role == UserType.REFEREE.key) {
                 EventRefereeRegistrationScreen(vm = eventViewModel) {
                     navController.navigate(Route.EVENT_REGISTRATION_SUCCESS)
                 }
@@ -565,7 +557,7 @@ fun NavControllerComposable(
                     topBar = TopBar.FILTER_EVENT,
                 )
             )
-            if (role.value == UserType.REFEREE.key)
+            if (role == UserType.REFEREE.key)
                 RefereeFiltersScreen(eventViewModel) {
                     navController.popBackStack()
                 }

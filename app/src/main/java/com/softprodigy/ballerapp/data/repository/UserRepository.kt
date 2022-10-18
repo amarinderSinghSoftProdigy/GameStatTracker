@@ -44,7 +44,7 @@ class UserRepository @Inject constructor(
     override suspend fun signUp(signUpData: SignUpData): ResultWrapper<BaseResponse<UserInfo>> =
         safeApiCall(dispatcher = dispatcher) { service.signUp(signUpData) }
 
-    override suspend fun signUpPhone(signUpData: SignUpPhoneData): ResultWrapper<BaseResponse<UserInfo>> {
+    override suspend fun signUpPhone(signUpData: SignUpPhoneData): ResultWrapper<BaseResponse<UserPhoneInfo>> {
         return safeApiCall(dispatcher = dispatcher) {
             service.registerMobile(signUpData)
         }

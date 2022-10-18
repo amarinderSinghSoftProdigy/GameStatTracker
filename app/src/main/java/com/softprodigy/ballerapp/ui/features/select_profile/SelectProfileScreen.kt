@@ -38,7 +38,7 @@ fun SelectProfileScreen(vm: SignUpViewModel, onNextClick: () -> Unit) {
     val state = vm.signUpUiState.value
     val context = LocalContext.current
     val id = remember {
-        mutableStateOf("")
+        mutableStateOf(SwapUser())
     }
 
     /*remember {
@@ -47,7 +47,7 @@ fun SelectProfileScreen(vm: SignUpViewModel, onNextClick: () -> Unit) {
     LaunchedEffect(key1 = Unit) {
         vm.signUpChannel.collect { uiEvent ->
             when (uiEvent) {
-                is SignUpChannel.ShowToast -> {
+                is SignUpChannel.OnProfileUpdateSuccess -> {
                     Toast.makeText(
                         context,
                         uiEvent.message.asString(context),
@@ -81,14 +81,14 @@ fun SelectProfileScreen(vm: SignUpViewModel, onNextClick: () -> Unit) {
                 modifier = Modifier
                     .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
             ) {
-                state.profileList.forEachIndexed { index, it ->
+                state.profileList.forEachIndexed { index, item ->
                     SelectProfileItems(
                         size = state.profileList.size,
                         index = index,
-                        users = it,
-                        isSelected = id.value == it._Id,
+                        users = item,
+                        isSelected = id.value._Id == item._Id,
                         onConfirmClick = {
-                            id.value = it
+                            id.value = item
                         },
                     )
                 }
@@ -109,7 +109,7 @@ fun SelectProfileScreen(vm: SignUpViewModel, onNextClick: () -> Unit) {
                 onNextClick = {
                     vm.onEvent(SignUpUIEvent.OnSwapUpdate(id.value))
                 },
-                enableState = id.value.isNotEmpty(),
+                enableState = id.value._Id.isNotEmpty(),
                 showOnlyNext = true,
             )
         }
@@ -125,7 +125,7 @@ fun SelectProfileItems(
     index: Int,
     users: SwapUser,
     isSelected: Boolean,
-    onConfirmClick: (String) -> Unit,
+    onConfirmClick: () -> Unit,
 ) {
 
     Row(
@@ -165,7 +165,7 @@ fun SelectProfileItems(
 
             )
             .clickable {
-                onConfirmClick(users._Id)
+                onConfirmClick()
             },
         verticalAlignment = Alignment.CenterVertically,
     ) {

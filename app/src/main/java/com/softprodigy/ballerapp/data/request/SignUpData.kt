@@ -30,8 +30,8 @@ data class SignUpPhoneData(
     @SerializedName("firstName") val firstName: String = "",
     @SerializedName("lastName") val lastName: String = "",
     @SerializedName("email") var email: String? = null,
-    @SerializedName("phone") val phone: String = "",
-    @SerializedName("profileImage") val profileImage: String? = "",
+    @SerializedName("phone") val phone: String? = null,
+    @SerializedName("profileImage") val profileImage: String? = null,
 )
 
 

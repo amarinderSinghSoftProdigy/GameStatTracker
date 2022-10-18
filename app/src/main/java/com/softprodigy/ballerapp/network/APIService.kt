@@ -263,6 +263,6 @@ open interface APIService {
     ): BaseResponse<ArrayList<Team>>
 
     @POST(ApiConstants.AUTH_REGISTER_MOBILE)
-    suspend fun registerMobile(@Body signUpData: SignUpPhoneData): BaseResponse<UserInfo>
+    suspend fun registerMobile(@Body signUpData: SignUpPhoneData): BaseResponse<UserPhoneInfo>
 
 }

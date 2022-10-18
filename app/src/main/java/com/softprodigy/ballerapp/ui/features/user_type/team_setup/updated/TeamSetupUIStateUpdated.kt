@@ -14,6 +14,7 @@ data class TeamSetupUIStateUpdated(
     val isLoading: Boolean = false,
     val players: ArrayList<Player> = ArrayList(),
     val selectedPlayers: ArrayList<Player> = ArrayList(),
+    val invitedPlayers: ArrayList<Player> = ArrayList(),
     val search: String = "",
 
     val showDialog: Boolean = false,

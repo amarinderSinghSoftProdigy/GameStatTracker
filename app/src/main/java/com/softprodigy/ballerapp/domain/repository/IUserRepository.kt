@@ -22,7 +22,7 @@ interface IUserRepository {
 
     suspend fun signUp(signUpData: SignUpData): ResultWrapper<BaseResponse<UserInfo>>
 
-    suspend fun signUpPhone(signUpData: SignUpPhoneData): ResultWrapper<BaseResponse<UserInfo>>
+    suspend fun signUpPhone(signUpData: SignUpPhoneData): ResultWrapper<BaseResponse<UserPhoneInfo>>
 
     suspend fun forgotPassword(email: String): ResultWrapper<BaseResponse<Any>>
 

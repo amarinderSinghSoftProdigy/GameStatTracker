@@ -296,15 +296,8 @@ class SetupTeamViewModelUpdated @Inject constructor(
             is ResultWrapper.Success -> {
                 inviteMemberResponse.value.let { response ->
                     if (response.status) {
-                        _teamSetupChannel.send(
-                            TeamSetupChannel.OnInvitationSuccess(
-                                UiText.DynamicString(
-                                    response.statusMessage
-                                )
-                            )
-                        )
-                        resetMemberValues()
-                        inItToDefaultData()
+                        _teamSetupUiState.value =
+                            _teamSetupUiState.value.copy(invitedPlayers = ArrayList())
 
                     } else {
                         _teamSetupUiState.value =

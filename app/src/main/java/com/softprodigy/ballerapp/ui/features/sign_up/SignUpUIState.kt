@@ -13,5 +13,5 @@ data class SignUpUIState(
     var phoneCode: String? = null,
     var registered: Boolean = false,
     //var isSocialUser: Boolean = false,
-    var status: Boolean = false
+    //var status: Boolean = false
 )

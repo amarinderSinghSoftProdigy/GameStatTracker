@@ -343,7 +343,7 @@ fun ProfileSetUpScreen(
                             EditFields(
                                 data = state.signUpData.email ?: "",
                                 onValueChange = {
-                                    if (it.length <= maxEmailChar)
+                                    if (it.length <= maxEmailChar && it.isNotEmpty())
                                         signUpViewModel.onEvent(SignUpUIEvent.OnEmailChanged(it))
 
                                 },
@@ -353,7 +353,7 @@ fun ProfileSetUpScreen(
                                     capitalization = KeyboardCapitalization.Sentences
                                 ),
                                 isError = (state.signUpData.email
-                                    ?: "").isEmpty() && state.signUpData.email?.isValidEmail() != true,
+                                    ?: "").isNotEmpty() && state.signUpData.email?.isValidEmail() != true,
                                 errorMessage = stringResource(id = R.string.email_error),
                                 enabled = false
                             )
@@ -590,11 +590,11 @@ fun ProfileSetUpScreen(
                         },
                         enableState = validName(state.signUpData.firstName)
                                 && validName(state.signUpData.lastName)
-                                && validPhoneNumber(state.signUpData.phone)
+                                && validPhoneNumber(state.signUpData.phone),
                                 //&& (state.signUpData.email ?: "".isValidEmail()) != true
-                                && state.signUpData.profileImageUri != null
+                                //&& state.signUpData.profileImageUri != null
                                 //&& state.signUpData.phoneVerified
-                                && check,
+                                //&& check,
                         firstText = stringResource(id = R.string.back),
                         secondText = stringResource(id = R.string.next)
                     )
@@ -602,12 +602,11 @@ fun ProfileSetUpScreen(
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
                 }
-
-                if (state.isLoading) {
-                    CommonProgressBar()
-                }
             }
         }
+    }
+    if (state.isLoading) {
+        CommonProgressBar()
     }
 }
 

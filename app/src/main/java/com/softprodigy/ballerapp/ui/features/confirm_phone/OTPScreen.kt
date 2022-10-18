@@ -85,11 +85,7 @@ fun OtpScreen(
                         .show()
                 }
                 is SignUpChannel.OnSuccess -> {
-                    var bool = false
-                    if (uiEvent.count == 0) {
-                        bool = true
-                    }
-                    onSuccess(bool)
+                    onSuccess(uiEvent.count == 0)
                 }
                 else -> Unit
             }

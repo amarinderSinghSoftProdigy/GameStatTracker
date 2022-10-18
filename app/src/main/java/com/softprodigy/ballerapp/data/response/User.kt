@@ -24,6 +24,26 @@ data class User(
     @SerializedName("age") val age: String = "",
 )
 
+data class SaveUser(
+    @SerializedName("firstName") val firstName: String = "",
+    @SerializedName("lastName") val lastName: String = "",
+    @SerializedName("profileImage") val profileImage: String = "",
+    @SerializedName("role") val role: String = "",
+    @SerializedName("loginType") val loginType: String = "",
+    @SerializedName("refreshToken") val refreshToken: String = "",
+    @SerializedName("refreshTokenExpireAt") val refreshTokenExpireAt: String = "",
+    @SerializedName("phone") val phone: String = "",
+    @SerializedName("phoneVerified") val phoneVerified: Boolean = false,
+    @SerializedName("isDelete") val isDelete: Boolean = false,
+    @SerializedName("otp") val otp: String = "",
+    @SerializedName("name") val name: String = "",
+    @SerializedName("id") val id: String = "",
+    @SerializedName("createdAt") val createdAt: String = "",
+    @SerializedName("updatedAt") val updatedAt: String = "",
+    @SerializedName("_id") val _id: String = "",
+    @SerializedName("__v") val __v: String = "",
+)
+
 data class SwapUser(
     @SerializedName("_id") val _Id: String = "",
     @SerializedName("firstName") val firstName: String = "",
