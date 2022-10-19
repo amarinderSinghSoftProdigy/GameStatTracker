@@ -251,6 +251,12 @@
 
     <string name="new_player">New Player</string>
     <string name="jersey_number">Jersey Number</string>
+    <string name="two_halves">2 Halves</string>
+    <string name="four_quarters">4 Quarters</string>
+    
+    <string name="personal_foul">Personal Foul</string>
+    <string name="flagrant_foul">Flagrant Foul</string>
+    <string name="technical_foul">Technical Foul</string>
 
     <string-array name="game_settings">
         <item>@string/exit</item>
@@ -292,5 +298,11 @@
         <item>@string/thirty_sec</item>
         <item>@string/thirty_sec</item>
         <item>@string/thirty_sec</item>
+    </string-array>
+
+    <string-array name="game_foul">
+        <item>@string/personal_foul</item>
+        <item>@string/flagrant_foul</item>
+        <item>@string/technical_foul</item>
     </string-array>
 </resources>

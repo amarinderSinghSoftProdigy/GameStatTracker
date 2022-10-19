@@ -1,5 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -43,6 +44,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -57,10 +59,7 @@ import com.softprodigy.ballerapp.common.argbToHexString
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
-import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
-import com.softprodigy.ballerapp.ui.theme.ColorBWGrayBorder
-import com.softprodigy.ballerapp.ui.theme.appColors
-import com.softprodigy.ballerapp.ui.theme.rubikFamily
+import com.softprodigy.ballerapp.ui.theme.*
 
 @Composable
 fun <T> DeleteDialog(
@@ -788,17 +787,14 @@ fun AddNewPlayerDialog(
     BallerAppMainTheme {
         AlertDialog(
             modifier = Modifier
+                .background(color = colorResource(id = R.color.game_dialog_bg_color))
                 .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
             onDismissRequest = {  },
             buttons = {
                 Column(
                     modifier = Modifier
-                        .background(color = Color.White)
-                        .padding(
-                            all = dimensionResource(
-                                id = R.dimen.size_16dp
-                            )
-                        )
+                        .background(color = colorResource(id = R.color.game_dialog_bg_color))
+                        .padding(all = dimensionResource(id = R.dimen.size_16dp))
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -814,26 +810,16 @@ fun AddNewPlayerDialog(
                                 fontFamily = rubikFamily
                             )
                             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_wrong_white),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .width(dimensionResource(id = R.dimen.size_24dp))
-                                    .height(dimensionResource(id = R.dimen.size_24dp)),
-                                tint = MaterialTheme.appColors.textField.label
-                            )
                         }
 
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_close_color_picker),
+                            painter = painterResource(id = R.drawable.ic_wrong_white),
                             contentDescription = "",
                             modifier = Modifier
-
-                                .size(dimensionResource(id = R.dimen.size_14dp))
-                                .clickable {
-                                   /* onDismiss()*/
-                                },
-                            tint = MaterialTheme.appColors.textField.label
+                                .width(dimensionResource(id = R.dimen.size_24dp))
+                                .height(dimensionResource(id = R.dimen.size_24dp))
+                                .clickable { onDismiss.invoke() },
+                            tint = Color.White.copy(alpha = 0.6f)
                         )
                     }
                     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
@@ -847,10 +833,10 @@ fun AddNewPlayerDialog(
                             //onSearchKeyChange.invoke(it)
                         },
                         colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = ColorBWGrayBorder,
-                            unfocusedBorderColor = ColorBWGrayBorder,
-                            cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                            backgroundColor = MaterialTheme.appColors.material.background
+                            focusedBorderColor = colorResource(id = R.color.game_dialog_text_field_bg_color).copy(alpha = 0.1f),
+                            unfocusedBorderColor = colorResource(id = R.color.game_dialog_text_field_bg_color).copy(alpha = 0.1f),
+                            cursorColor = Color.White,
+                            backgroundColor = colorResource(id = R.color.game_dialog_text_field_bg_color)
                         ),
                         placeholder = {
                             Text(
@@ -867,13 +853,13 @@ fun AddNewPlayerDialog(
                         modifier = Modifier
                             .fillMaxWidth()
                             .focusRequester(focusRequester),
-                        value = playerName!!,
+                        value = jerseyNumber!!,
                         onValueChange = {},
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             focusedBorderColor = ColorBWGrayBorder,
                             unfocusedBorderColor = ColorBWGrayBorder,
-                            cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                            backgroundColor = MaterialTheme.appColors.material.background
+                            cursorColor = Color.White,
+                            backgroundColor = colorResource(id = R.color.game_dialog_text_field_bg_color)
                         ),
                         placeholder = {
                             Text(
@@ -885,20 +871,33 @@ fun AddNewPlayerDialog(
                         },
                         singleLine = true
                     )
-
-
                 }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(color = Color.White)
+                        .background(color = colorResource(id = R.color.game_dialog_bg_color))
                         .padding(all = dimensionResource(id = R.dimen.size_8dp))
                 ) {
-                    DialogButton(
+                    /*DialogButton(
                         text = stringResource(R.string.dialog_button_cancel),
                         onClick = {  },
                         modifier = Modifier
                             .weight(1f)
+                            .padding(all = dimensionResource(id = R.dimen.size_8dp)),
+                        border = BorderStroke(
+                            width = dimensionResource(id = R.dimen.size_1dp),
+                            color = colorResource(id = R.color.game_dialog_bg_color).copy(alpha = 0.1f)
+                        ),
+
+                        onlyBorder = true,
+                        enabled = false,
+                    )*/
+                    DialogButton(
+                        text = stringResource(R.string.dialog_button_cancel),
+                        onClick = onDismiss,
+                        modifier = Modifier
+                            .weight(1f)
+                            .background(color = colorResource(id = R.color.game_dialog_bg_color))
                             .padding(all = dimensionResource(id = R.dimen.size_8dp)),
                         border = ButtonDefaults.outlinedBorder,
                         onlyBorder = true,
@@ -912,10 +911,94 @@ fun AddNewPlayerDialog(
                         },
                         modifier = Modifier
                             .weight(1f)
+                            .background(color = colorResource(id = R.color.game_dialog_bg_color).copy(alpha = 0.1f))
                             .padding(all = dimensionResource(id = R.dimen.size_8dp)),
                         border = ButtonDefaults.outlinedBorder,
                         onlyBorder = false,
                         enabled = playerName.isNotEmpty() && jerseyNumber.isNotEmpty()
+                    )
+                }
+            },
+        )
+    }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun GameSettingsDialog(
+    onDismiss: () -> Unit,
+) {
+    val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    BallerAppMainTheme {
+        AlertDialog(
+            modifier = Modifier
+                .background(color = colorResource(id = R.color.game_dialog_bg_color))
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+            onDismissRequest = {  },
+            buttons = {
+                Column(
+                    modifier = Modifier
+                        .background(color = colorResource(id = R.color.game_dialog_bg_color))
+                        .padding(all = dimensionResource(id = R.dimen.size_16dp))
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+
+                        Row() {
+                            Text(
+                                text = stringResource(id = R.string.periods),
+                                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                                fontWeight = FontWeight.W500,
+                                fontFamily = rubikFamily,
+                                color = Color.White,
+                            )
+                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+                        }
+
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_wrong_white),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .width(dimensionResource(id = R.dimen.size_24dp))
+                                .height(dimensionResource(id = R.dimen.size_24dp))
+                                .clickable { onDismiss.invoke() },
+                            tint = Color.White.copy(alpha = 0.6f)
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
+                    DialogButton(
+                        text = stringResource(R.string.two_halves),
+                        onClick = {
+                            /* onSaveClick.invoke()
+                             onDismiss.invoke()*/
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(color = colorResource(id = R.color.game_dialog_bg_color).copy(alpha = 0.1f))
+                            .padding(all = dimensionResource(id = R.dimen.size_8dp)),
+                        border = ButtonDefaults.outlinedBorder,
+                        onlyBorder = false,
+                    )
+
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
+                    DialogButton(
+                        text = stringResource(R.string.four_quarters),
+                        onClick = {
+                            /* onSaveClick.invoke()
+                             onDismiss.invoke()*/
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(color = colorResource(id = R.color.game_dialog_bg_color).copy(alpha = 0.1f))
+                            .padding(all = dimensionResource(id = R.dimen.size_8dp)),
+                        border = ButtonDefaults.outlinedBorder,
+                        onlyBorder = false,
                     )
                 }
             },

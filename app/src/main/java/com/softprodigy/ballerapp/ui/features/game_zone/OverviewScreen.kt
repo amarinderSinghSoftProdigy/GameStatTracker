@@ -11,6 +11,8 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.ui.features.components.AddNewPlayerDialog
+import com.softprodigy.ballerapp.ui.features.components.GameSettingsDialog
 
 @Composable
 fun OverviewScreen (
@@ -74,5 +76,12 @@ fun OverviewScreen (
                 GameSettingsController()
             }
         }
+        /*AddNewPlayerDialog(
+            onDismiss = {   },
+            onSaveClick = {   },
+            playerName = "Satish",
+            jerseyNumber = "02"
+        )*/
+        //GameSettingsDialog {}
     }
 }

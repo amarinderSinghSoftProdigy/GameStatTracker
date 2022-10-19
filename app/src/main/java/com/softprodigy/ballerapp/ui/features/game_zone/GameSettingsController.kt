@@ -1,5 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.game_zone
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -9,7 +10,10 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -172,6 +176,9 @@ inline fun gameSettings() {
                 .fillMaxHeight()
                 .width(dimensionResource(id = R.dimen.size_half_dp))
         )
+        var expanded by remember { mutableStateOf(false) }
+        var fouls = stringArrayResource(id = R.array.game_foul)
+        var foul = stringResource(id = R.string.foul)
         LazyVerticalGrid(columns = GridCells.Fixed(2),) {
             itemsIndexed(pointList) { index, point ->
                 Row(
@@ -193,7 +200,41 @@ inline fun gameSettings() {
                         color = colorResource(id = R.color.game_grid_item_text_color),
                         fontFamily = rubikFamily,
                         fontWeight = FontWeight.W500,
-                    ) {}
+                        onClick = {
+                            expanded = point.title.equals(foul)
+                        }
+                    )
+
+                    // drop down menu
+                    if (point.title.equals(foul)) {
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false },
+                            modifier = Modifier
+                                .background(colorResource(id = R.color.game_bg_color))
+                                .clip(RoundedCornerShape(size = dimensionResource(id = R.dimen.size_8dp))),
+                        ) {
+                            // adding items
+                            fouls.forEachIndexed { itemIndex, itemValue ->
+                                DropdownMenuItem(
+                                    onClick = { expanded = false },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .fillMaxHeight(),
+                                ) {
+                                    AppText(
+                                        text = itemValue,
+                                        modifier = Modifier.fillMaxWidth(),
+                                        textAlign = TextAlign.Center,
+                                        color = colorResource(id = R.color.game_point_list_item_text_color),
+                                        fontWeight = FontWeight.W400,
+                                        fontFamily = rubikFamily,
+                                        fontSize = dimensionResource(id = R.dimen.size_12dp).value.sp,
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
