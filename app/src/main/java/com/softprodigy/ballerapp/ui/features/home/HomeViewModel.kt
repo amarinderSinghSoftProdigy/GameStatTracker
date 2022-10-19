@@ -28,9 +28,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -196,6 +194,10 @@ class HomeViewModel @Inject constructor(
                                 )
                             )
                         }
+
+                        _homeChannel.send(
+                                HomeChannel.OnUserIdUpdate
+                            )
                         /*Register newly updated user to cometchat*/
                         registerProfileToCometChat(
                             "${response.data.firstName} ${response.data.lastName}",
@@ -359,6 +361,7 @@ class HomeViewModel @Inject constructor(
 sealed class HomeChannel {
     data class ShowToast(val message: UiText) : HomeChannel()
     object OnSwapListSuccess : HomeChannel()
+    object OnUserIdUpdate : HomeChannel()
 }
 
 /*Register newly updated user to cometchat*/

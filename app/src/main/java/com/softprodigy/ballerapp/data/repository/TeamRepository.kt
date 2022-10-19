@@ -131,7 +131,7 @@ class TeamRepository @Inject constructor(
         }
     }
 
-    override suspend fun getUserRoles(): ResultWrapper<BaseResponse<ArrayList<String>>> {
+    override suspend fun getUserRoles(): ResultWrapper<BaseResponse<List<UserRoles>>> {
         return safeApiCall(dispatcher) {
             service.getUserRoles()
         }
