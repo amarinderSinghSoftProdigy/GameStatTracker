@@ -1,6 +1,7 @@
 package com.softprodigy.ballerapp.common
 
 import androidx.compose.ui.graphics.Color
+import com.softprodigy.ballerapp.ui.theme.Yellow700
 
 object AppConstants {
     val REQUEST_CONTACT_CODE: Int = 1122
@@ -27,8 +28,8 @@ object AppConstants {
     const val SKIP = "skip"
     const val PAGE = 1
     const val PAGE_LIMIT = 20
-    var DEFAULT_COLOR: Color = Color(0xFF0177C1)
-    var SELECTED_COLOR: Color = Color(0xFF0177C1)
+    var DEFAULT_COLOR = "FF923D"
+    var SELECTED_COLOR: Color = Yellow700
 }
 
 object Route {
@@ -116,6 +117,7 @@ object ApiConstants {
     const val CONFIRM_PHONE = "v1/auth/confirmPhone"
     const val SWAP_PROFILE = "v1/auth/swapProfileList"
     const val SWAP_TOKEN = "v1/auth/swapProfileToken"
+    const val SWAP_INITIAL_TOKEN = "v1/auth/initialSwapProfileToken"
     const val ADD_PROFILE = "v1/auth/addUserProfile"
 
     const val GET_CHATS = "v1/team/teamsChatDetails"
@@ -125,6 +127,7 @@ object ApiConstants {
     const val RESEND_OTP = "/resendOtp"
 
     const val UPDATE_TEAM = "v1/team/update"
+    const val GET_TEAM_INVITED = "v1/team/getInvitedTeamMembers"
     const val GET_USER_DETAILS = "v1/auth/getUserProfile"
     const val GET_HOME_PAGE_DETAILS = "v1/coach/event/getHomePageDetails"
     const val GET_USER_FULL_DETAILS = "v1/userDetails"
@@ -181,6 +184,7 @@ object RequestCode {
 
 object IntentData {
     const val FROM_SPLASH = "fromSplash"
+    const val ROLE = "role"
 }
 
 object CometChatErrorCodes {

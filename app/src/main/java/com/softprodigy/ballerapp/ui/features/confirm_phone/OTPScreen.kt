@@ -10,7 +10,6 @@ import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -45,13 +44,12 @@ import com.softprodigy.ballerapp.ui.theme.ColorBWGrayDark
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.delay
-import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun OtpScreen(
     viewModel: SignUpViewModel,
-    onSuccess: () -> Unit
+    onSuccess: (Boolean) -> Unit
 ) {
     // create variable for value
     var value by remember {
@@ -87,7 +85,7 @@ fun OtpScreen(
                         .show()
                 }
                 is SignUpChannel.OnSuccess -> {
-                    onSuccess()
+                    onSuccess(uiEvent.count == 0)
                 }
                 else -> Unit
             }

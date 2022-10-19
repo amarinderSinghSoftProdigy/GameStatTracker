@@ -21,34 +21,33 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.SwapUser
 import com.softprodigy.ballerapp.ui.features.components.*
-import com.softprodigy.ballerapp.ui.features.home.HomeChannel
-import com.softprodigy.ballerapp.ui.features.home.HomeViewModel
-import com.softprodigy.ballerapp.ui.features.home.home_screen.HomeScreenEvent
+import com.softprodigy.ballerapp.ui.features.sign_up.SignUpChannel
+import com.softprodigy.ballerapp.ui.features.sign_up.SignUpUIEvent
+import com.softprodigy.ballerapp.ui.features.sign_up.SignUpViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorMainPrimary
 import com.softprodigy.ballerapp.ui.theme.appColors
 import com.softprodigy.ballerapp.ui.utils.CommonUtils
 
 @Composable
-fun SelectProfileScreen(vm: HomeViewModel = hiltViewModel(), onNextClick: () -> Unit) {
+fun SelectProfileScreen(vm: SignUpViewModel, onNextClick: () -> Unit) {
 
-    val state = vm.state.value
+    val state = vm.signUpUiState.value
     val context = LocalContext.current
     val id = remember {
-        mutableStateOf("")
+        mutableStateOf(SwapUser())
     }
 
-    remember {
-        vm.onEvent(HomeScreenEvent.OnSwapClick)
-    }
+    /*remember {
+       vm.onEvent(HomeScreenEvent.OnSwapClick)
+    }*/
     LaunchedEffect(key1 = Unit) {
-        vm.homeChannel.collect { uiEvent ->
+        vm.signUpChannel.collect { uiEvent ->
             when (uiEvent) {
-                is HomeChannel.ShowToast -> {
+                is SignUpChannel.OnProfileUpdateSuccess -> {
                     Toast.makeText(
                         context,
                         uiEvent.message.asString(context),
@@ -82,14 +81,14 @@ fun SelectProfileScreen(vm: HomeViewModel = hiltViewModel(), onNextClick: () -> 
                 modifier = Modifier
                     .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
             ) {
-                state.swapUsers.forEachIndexed { index, it ->
+                state.profileList.forEachIndexed { index, item ->
                     SelectProfileItems(
-                        size = state.swapUsers.size,
+                        size = state.profileList.size,
                         index = index,
-                        users = it,
-                        isSelected = id.value == it._Id,
+                        users = item,
+                        isSelected = id.value._Id == item._Id,
                         onConfirmClick = {
-                            id.value = it
+                            id.value = item
                         },
                     )
                 }
@@ -108,14 +107,14 @@ fun SelectProfileScreen(vm: HomeViewModel = hiltViewModel(), onNextClick: () -> 
                 secondText = stringResource(id = R.string.next),
                 onBackClick = { },
                 onNextClick = {
-                    vm.onEvent(HomeScreenEvent.OnSwapUpdate(id.value))
+                    vm.onEvent(SignUpUIEvent.OnSwapUpdate(id.value))
                 },
-                enableState = id.value.isNotEmpty(),
+                enableState = id.value._Id.isNotEmpty(),
                 showOnlyNext = true,
             )
         }
     }
-    if (state.isDataLoading) {
+    if (state.isLoading) {
         CommonProgressBar()
     }
 }
@@ -126,7 +125,7 @@ fun SelectProfileItems(
     index: Int,
     users: SwapUser,
     isSelected: Boolean,
-    onConfirmClick: (String) -> Unit,
+    onConfirmClick: () -> Unit,
 ) {
 
     Row(
@@ -166,7 +165,7 @@ fun SelectProfileItems(
 
             )
             .clickable {
-                onConfirmClick(users._Id)
+                onConfirmClick()
             },
         verticalAlignment = Alignment.CenterVertically,
     ) {

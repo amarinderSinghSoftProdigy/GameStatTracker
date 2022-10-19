@@ -18,9 +18,9 @@ import com.softprodigy.ballerapp.common.getFileFromUri
 import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.data.request.LoginRequest
-import com.softprodigy.ballerapp.data.request.SignUpData
+import com.softprodigy.ballerapp.data.request.SignUpPhoneData
 import com.softprodigy.ballerapp.data.response.AddProfileRequest
+import com.softprodigy.ballerapp.data.response.SwapUser
 import com.softprodigy.ballerapp.data.response.UserInfo
 import com.softprodigy.ballerapp.domain.repository.IImageUploadRepo
 import com.softprodigy.ballerapp.domain.repository.IUserRepository
@@ -48,12 +48,17 @@ class SignUpViewModel @Inject constructor(
 
     fun onEvent(event: SignUpUIEvent) {
         when (event) {
-            is SignUpUIEvent.OnAddProfileClicked -> {
+            is SignUpUIEvent.OnSwapUpdate -> {
                 viewModelScope.launch {
-                    if (!_signUpUiState.value.status)
-                        imageUpload()
+                    updateProfileToken(event.user)
                 }
             }
+            /* is SignUpUIEvent.OnAddProfileClicked -> {
+                 viewModelScope.launch {
+                     if (!_signUpUiState.value.status)
+                         imageUpload()
+                 }
+             }*/
             is SignUpUIEvent.OnFirstNameChanged -> {
                 _signUpUiState.value =
                     _signUpUiState.value.copy(
@@ -111,11 +116,11 @@ class SignUpViewModel @Inject constructor(
 
             is SignUpUIEvent.OnScreenNext -> {
                 viewModelScope.launch {
-                    if (_signUpUiState.value.isSocialUser) /*Means we have token to call upload profile pic*/
+                    if (_signUpUiState.value.registered) /*Means we have token to call upload profile pic*/
                         imageUpload()
                     else {
                         /*Means we don't have token to call upload profile pic*/
-                        signUp()
+                        signUpWithPhone()
                     }
                 }
             }
@@ -128,6 +133,10 @@ class SignUpViewModel @Inject constructor(
                     _signUpChannel.send(SignUpChannel.OnSignUpSelected)
                 }
             }
+            is SignUpUIEvent.SetRegister -> {
+                _signUpUiState.value =
+                    _signUpUiState.value.copy(registered = true)
+            }
 
             is SignUpUIEvent.OnVerifyNumber -> {
                 verifyPhone()
@@ -136,7 +145,7 @@ class SignUpViewModel @Inject constructor(
             is SignUpUIEvent.OnConfirmNumber -> {
                 confirmPhone(event.phoneNumber, event.otp)
             }
-            is SignUpUIEvent.OnFacebookClick -> {
+            /*is SignUpUIEvent.OnFacebookClick -> {
                 login(
                     LoginRequest(
                         email = event.socialUser.email,
@@ -163,7 +172,7 @@ class SignUpViewModel @Inject constructor(
                         twitterId = event.socialUser.id
                     )
                 )
-            }
+            }*/
             is SignUpUIEvent.OnGenderChange -> {
                 _signUpUiState.value =
                     _signUpUiState.value.copy(
@@ -204,7 +213,57 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    private fun login(loginRequest: LoginRequest) {
+    private suspend fun updateProfileToken(userId: SwapUser) {
+        _signUpUiState.value = _signUpUiState.value.copy(isLoading = true)
+        val userResponse = IUserRepository.updateInitialProfileToken(userId._Id)
+        _signUpUiState.value = _signUpUiState.value.copy(isLoading = false)
+
+        when (userResponse) {
+            is ResultWrapper.GenericError -> {
+                _signUpChannel.send(
+                    SignUpChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${userResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _signUpChannel.send(
+                    SignUpChannel.ShowToast(
+                        UiText.DynamicString(
+                            userResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                userResponse.value.let { response ->
+                    if (response.status) {
+                        setToken(response.data, userId.role, "")
+                        _signUpChannel.send(
+                            SignUpChannel.OnProfileUpdateSuccess(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    } else {
+                        _signUpChannel.send(
+                            SignUpChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+
+    }
+
+    /*private fun login(loginRequest: LoginRequest) {
         viewModelScope.launch {
             _signUpUiState.value = _signUpUiState.value.copy(isLoading = true)
 
@@ -251,9 +310,9 @@ class SignUpViewModel @Inject constructor(
 
             }
         }
-    }
+    }*/
 
-    private fun setLoginDataToState(userInfo: UserInfo) {
+    /*private fun setLoginDataToState(userInfo: UserInfo) {
         _signUpUiState.value =
             _signUpUiState.value.copy(
                 isLoading = false,
@@ -264,11 +323,11 @@ class SignUpViewModel @Inject constructor(
                     role = userInfo.user.role
                 )
             )
-    }
+    }*/
 
     private suspend fun imageUpload() {
         _signUpUiState.value =
-            _signUpUiState.value.copy(isLoading = true, status = true)
+            _signUpUiState.value.copy(isLoading = true)
 
         val uri = Uri.parse(signUpUiState.value.signUpData.profileImageUri)
 
@@ -335,43 +394,34 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    private suspend fun signUp() {
+    private suspend fun signUpWithPhone() {
         _signUpUiState.value =
             _signUpUiState.value.copy(isLoading = true)
         val signUpData = signUpUiState.value.signUpData
-        val signUpDataRequest = SignUpData(
+        val signUpDataRequest = SignUpPhoneData(
             firstName = signUpData.firstName,
             lastName = signUpData.lastName,
             email = signUpData.email,
-//            profileImage = signUpData.profileImage,
             phone = signUpUiState.value.phoneCode + signUpData.phone,
-            address = signUpData.address,
-            phoneVerified = signUpData.phoneVerified,
-            gender = signUpData.gender,
-            birthdate = signUpData.birthdate,
-            role = signUpData.role?.lowercase(),
-            password = signUpData.password,
-            repeatPassword = signUpData.repeatPassword,
         )
 
         viewModelScope.launch {
             _signUpUiState.value = _signUpUiState.value.copy(isLoading = true)
 
             val signUpResponse =
-                IUserRepository.signUp(signUpDataRequest)
+                IUserRepository.signUpPhone(signUpDataRequest)
 
             _signUpUiState.value =
                 _signUpUiState.value.copy(isLoading = false)
             when (signUpResponse) {
 
                 is ResultWrapper.Success -> {
-
                     signUpResponse.value.let { response ->
                         if (response.status) {
                             setToken(
                                 response.data.token,
                                 response.data.user.role,
-                                response.data.user.email
+                                signUpData.email ?: ""
                             )
                             _signUpUiState.value = _signUpUiState.value.copy(
                                 registered = true,
@@ -379,16 +429,17 @@ class SignUpViewModel @Inject constructor(
                                 errorMessage = null,
                                 successMessage = response.statusMessage
                             )
-                            /*  _signUpChannel.send(
-                                  SignUpChannel.OnSignUpSuccess(
-                                      UiText.DynamicString(
-                                          signUpResponse.value.statusMessage
-                                      )
-                                  )
-
-                              )*/
-                            imageUpload()
-
+                            if (_signUpUiState.value.signUpData.profileImageUri.isNullOrEmpty()) {
+                                _signUpChannel.send(
+                                    SignUpChannel.OnProfileUpdateSuccess(
+                                        UiText.DynamicString(
+                                            response.statusMessage
+                                        ),
+                                    )
+                                )
+                            } else {
+                                imageUpload()
+                            }
                         } else {
                             _signUpUiState.value = _signUpUiState.value.copy(
                                 errorMessage = response.statusMessage,
@@ -424,46 +475,133 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
+    /*  private suspend fun signUp() {
+          _signUpUiState.value =
+              _signUpUiState.value.copy(isLoading = true)
+          val signUpData = signUpUiState.value.signUpData
+          val signUpDataRequest = SignUpData(
+              firstName = signUpData.firstName,
+              lastName = signUpData.lastName,
+              email = signUpData.email,
+  //            profileImage = signUpData.profileImage,
+              phone = signUpUiState.value.phoneCode + signUpData.phone,
+              address = signUpData.address,
+              phoneVerified = signUpData.phoneVerified,
+              gender = signUpData.gender,
+              birthdate = signUpData.birthdate,
+              role = signUpData.role?.lowercase(),
+              password = signUpData.password,
+              repeatPassword = signUpData.repeatPassword,
+          )
+
+          viewModelScope.launch {
+              _signUpUiState.value = _signUpUiState.value.copy(isLoading = true)
+
+              val signUpResponse =
+                  IUserRepository.signUp(signUpDataRequest)
+
+              _signUpUiState.value =
+                  _signUpUiState.value.copy(isLoading = false)
+              when (signUpResponse) {
+
+                  is ResultWrapper.Success -> {
+
+                      signUpResponse.value.let { response ->
+                          if (response.status) {
+                              setToken(
+                                  response.data.token,
+                                  response.data.user.role,
+                                  response.data.user.email
+                              )
+                              _signUpUiState.value = _signUpUiState.value.copy(
+                                  registered = true,
+                                  isLoading = false,
+                                  errorMessage = null,
+                                  successMessage = response.statusMessage
+                              )
+                              *//*  _signUpChannel.send(
+                                  SignUpChannel.OnSignUpSuccess(
+                                      UiText.DynamicString(
+                                          signUpResponse.value.statusMessage
+                                      )
+                                  )
+
+                              )*//*
+                            imageUpload()
+
+                        } else {
+                            _signUpUiState.value = _signUpUiState.value.copy(
+                                errorMessage = response.statusMessage,
+                                isLoading = false
+                            )
+                        }
+                    }
+                }
+                is ResultWrapper.GenericError -> {
+                    _signUpUiState.value = _signUpUiState.value.copy(isLoading = false)
+                    _signUpUiState.value =
+                        _signUpUiState.value.copy(
+                            errorMessage = "${signUpResponse.message}",
+                            isLoading = false
+                        )
+                    _signUpChannel.send(SignUpChannel.ShowToast(UiText.DynamicString("${signUpResponse.message}")))
+                }
+                is ResultWrapper.NetworkError -> {
+                    _signUpUiState.value =
+                        _signUpUiState.value.copy(
+                            errorMessage = signUpResponse.message,
+                            isLoading = false
+                        )
+                    _signUpChannel.send(
+                        SignUpChannel.ShowToast(
+                            UiText.DynamicString(
+                                signUpResponse.message
+                            )
+                        )
+                    )
+                }
+            }
+        }
+    }*/
+
     private suspend fun addProfile() {
-        _signUpUiState.value = _signUpUiState.value.copy(isLoading = true, status = true)
+        _signUpUiState.value = _signUpUiState.value.copy(isLoading = true)
         val request = AddProfileRequest(
             firstName = _signUpUiState.value.signUpData.firstName,
             lastName = _signUpUiState.value.signUpData.lastName,
             profileImage = _signUpUiState.value.signUpData.profileImage,
-            city = _signUpUiState.value.signUpData.address,
-            state = _signUpUiState.value.signUpData.address,
-            zip = _signUpUiState.value.signUpData.address,
+            city = "",
+            state = "",
+            zip = "",
             address = _signUpUiState.value.signUpData.address,
             gender = _signUpUiState.value.signUpData.gender,
             birthdate = _signUpUiState.value.signUpData.birthdate,
             role = _signUpUiState.value.signUpData.role
         )
-        val response = IUserRepository.addProfile(request)
-        when (response) {
+        when (val response = IUserRepository.addProfile(request)) {
             is ResultWrapper.Success -> {
-                response.value.let { response ->
-                    if (response.status) {
+                response.value.let { resp ->
+                    if (resp.status) {
                         _signUpUiState.value = _signUpUiState.value.copy(
                             isLoading = false,
                             errorMessage = null,
-                            successMessage = response.statusMessage,
-                            status = false
+                            successMessage = resp.statusMessage,
                         )
                         _signUpChannel.send(
                             SignUpChannel.OnProfileUpdateSuccess(
                                 UiText.DynamicString(
-                                    response.statusMessage
+                                    resp.statusMessage
                                 )
                             )
                         )
                         /*Register newly created user to cometchat*/
                         registerProfileToCometChat(
-                            "${response.data.user.firstName} ${response.data.user.lastName}",
-                            response.data.user.id
+                            "${resp.data.user.firstName} ${resp.data.user.lastName}",
+                            resp.data.user.id
                         )
                     } else {
                         _signUpUiState.value = _signUpUiState.value.copy(
-                            errorMessage = response.statusMessage,
+                            errorMessage = resp.statusMessage,
                             isLoading = false
                         )
                     }
@@ -495,19 +633,15 @@ class SignUpViewModel @Inject constructor(
 
     private suspend fun updateUserProfile() {
         val updateUserRequestData = signUpUiState.value.signUpData
-        val signUpDataRequest = SignUpData(
+        val signUpDataRequest = SignUpPhoneData(
+            phone = null,
             firstName = updateUserRequestData.firstName,
             lastName = updateUserRequestData.lastName,
-            email = null, /*null data does not considered in request by rettrofit*/
+            email = if ((updateUserRequestData.email
+                    ?: "").isEmpty()
+            ) null else updateUserRequestData.email,
             profileImage = updateUserRequestData.profileImage,
-            phone = signUpUiState.value.phoneCode + updateUserRequestData.phone,
-            address = updateUserRequestData.address,
-            phoneVerified = updateUserRequestData.phoneVerified,
-            gender = updateUserRequestData.gender,
-            birthdate = updateUserRequestData.birthdate,
-            role = updateUserRequestData.role?.lowercase(),
-//            password = updateUserRequestData.password,
-//            repeatPassword = updateUserRequestData.repeatPassword
+            /* phone = signUpUiState.value.phoneCode + updateUserRequestData.phone,*/
         )
         when (val updateProfileResp = IUserRepository.updateUserProfile(signUpDataRequest)) {
             is ResultWrapper.GenericError -> {
@@ -536,7 +670,6 @@ class SignUpViewModel @Inject constructor(
                 updateProfileResp.value.let { response ->
                     if (response.status) {
                         setToken(
-//                            token = signUpUiState.value.signUpData.token ?: "",
                             token = response.data.token,
                             role = signUpUiState.value.signUpData.role ?: "",
                             email = signUpUiState.value.signUpData.email ?: "",
@@ -653,15 +786,17 @@ class SignUpViewModel @Inject constructor(
                                     isLoading = false,
                                     errorMessage = null,
                                     successMessage = response.statusMessage,
+                                    profileList = response.data.profiles,
                                     signUpData = _signUpUiState.value.signUpData.copy(
-                                        phoneVerified = response.status
+                                        phoneVerified = response.status,
                                     )
                                 )
                             _signUpChannel.send(
                                 SignUpChannel.OnSuccess(
                                     UiText.DynamicString(
-                                        response.statusMessage
-                                    )
+                                        response.statusMessage,
+                                    ),
+                                    response.data.profiles.size
                                 )
                             )
 
@@ -736,7 +871,7 @@ sealed class SignUpChannel {
     data class ShowToast(val message: UiText) : SignUpChannel()
     object OnProfileImageUpload : SignUpChannel()
     data class OnProfileUpdateSuccess(val message: UiText) : SignUpChannel()
-    data class OnSuccess(val message: UiText) : SignUpChannel()
+    data class OnSuccess(val message: UiText, val count: Int) : SignUpChannel()
     object OnOTPScreen : SignUpChannel()
     object OnSignUpSelected : SignUpChannel()
     data class OnLoginSuccess(val loginResponse: UserInfo) : SignUpChannel()

@@ -29,7 +29,6 @@ import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -319,7 +318,7 @@ class MainActivity : ComponentActivity() {
                 TeamSetupUIEventUpdated.OnContactAdded(
                     InviteObject(
                         name,
-                        number
+                        number.replace(" ", "")
                     )
                 )
             )
@@ -354,8 +353,8 @@ fun NavControllerComposable(
     val signUpViewModel: SignUpViewModel = viewModel()
     val context = LocalContext.current
     val dataStoreManager = DataStoreManager(activity)
-    val userToken = UserStorage.token//val userToken = dataStoreManager.userToken.collectAsState(initial = "")
-//    UserStorage.token = userToken.value
+    val userToken = dataStoreManager.userToken.collectAsState(initial = "")
+    UserStorage.token= userToken.value
     val getRole = dataStoreManager.getRole.collectAsState(initial = "")
     val email = dataStoreManager.getEmail.collectAsState(initial = "")
     val scope = rememberCoroutineScope()
@@ -364,7 +363,7 @@ fun NavControllerComposable(
         composable(route = SPLASH_SCREEN) {
             SplashScreen {
                 scope.launch {
-                    if (userToken.isNotEmpty()) {
+                    if (userToken.value.isNotEmpty()) {
                         moveToHome(activity, true)
                     } else if (color.value.isNotEmpty()) {
                         navController.popBackStack()
@@ -390,12 +389,12 @@ fun NavControllerComposable(
                 },
                 twitterUser = activity.twitterUserRegister.value,
                 onSocialLoginSuccess = { userInfo ->
-                    checkRole(
-                        userInfo.user.role.equals(
-                            AppConstants.USER_TYPE_USER,
-                            ignoreCase = true
-                        ), navController, activity
-                    )
+                    /* checkRole(
+                         userInfo.user.role.equals(
+                             AppConstants.USER_TYPE_USER,
+                             ignoreCase = true
+                         ), navController, activity
+                     )*/
                 }, onPreviousClick = {
                     navController.popBackStack()
                 },
@@ -437,13 +436,13 @@ fun NavControllerComposable(
             ProfileSetUpScreen(
                 signUpViewModel = signUpViewModel,
                 onNext = {
-                    if (UserStorage.role.equals(UserType.COACH.key, ignoreCase = true)) {
+                    /*if (UserStorage.role.equals(UserType.COACH.key, ignoreCase = true)) {
                         navController.navigate(TEAM_SETUP_SCREEN) {
                             navController.popBackStack()
                         }
-                    } else {
-                        moveToHome(activity)
-                    }
+                    } else {*/
+                    moveToHome(activity)
+                    //}
                 },
                 onBack = {
                     navController.popBackStack()
@@ -518,19 +517,20 @@ fun NavControllerComposable(
                 )
             )
             mainViewModel.onEvent(MainEvent.OnColorChanges(AppConstants.SELECTED_COLOR))
-
             AddPlayersScreenUpdated(
                 vm = setupTeamViewModelUpdated,
                 onBackClick = { navController.popBackStack() },
                 onNextClick = {
-                    moveToHome(activity)
+                    //moveToHome(activity)
                 }, onInvitationSuccess = {
 
                 })
         }
         composable(route = SELECT_PROFILE) {
             mainViewModel.onEvent(MainEvent.OnColorChanges(AppConstants.SELECTED_COLOR))
-            SelectProfileScreen(onNextClick = { moveToHome(activity) })
+            SelectProfileScreen(
+                vm = signUpViewModel,
+                onNextClick = { moveToHome(activity) })
         }
 
         composable(route = SELECT_VENUE) {
@@ -546,7 +546,12 @@ fun NavControllerComposable(
             OtpScreen(
                 viewModel = signUpViewModel,
                 onSuccess = {
-                    navController.navigate(SELECT_PROFILE)
+                    navController.popBackStack()
+                    if (it) {
+                        navController.navigate(PROFILE_SETUP_SCREEN)
+                    } else {
+                        navController.navigate(SELECT_PROFILE)
+                    }
                 }
             )
         }
@@ -563,6 +568,7 @@ private fun moveToHome(activity: MainActivity, fromSplash: Boolean = false) {
     activity.finish()
 }
 
+/*
 private fun checkRole(
     check: Boolean,
     navController: NavController,
@@ -577,3 +583,4 @@ private fun checkRole(
         moveToHome(activity, fromSplash)
     }
 }
+*/

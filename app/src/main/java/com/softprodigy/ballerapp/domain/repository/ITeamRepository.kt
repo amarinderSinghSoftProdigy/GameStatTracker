@@ -48,6 +48,8 @@ interface ITeamRepository {
 
     suspend fun inviteMembersByTeamId(updateTeamRequest: UpdateTeamRequest): ResultWrapper<BaseResponse<Any>>
 
+    suspend fun getInviteMembersByTeamId(teamId: String): ResultWrapper<BaseResponse<Any>>
+
     suspend fun getAllInvitation(
         page: Int = 1,
         limit: Int = 50,

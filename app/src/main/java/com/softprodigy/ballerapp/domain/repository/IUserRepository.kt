@@ -3,6 +3,7 @@ package com.softprodigy.ballerapp.domain.repository
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.data.request.LoginRequest
 import com.softprodigy.ballerapp.data.request.SignUpData
+import com.softprodigy.ballerapp.data.request.SignUpPhoneData
 import com.softprodigy.ballerapp.data.request.UpdateUserDetailsReq
 import com.softprodigy.ballerapp.data.response.*
 import com.softprodigy.ballerapp.domain.BaseResponse
@@ -17,13 +18,15 @@ interface IUserRepository {
 
     suspend fun verifyPhone(phone: String): ResultWrapper<BaseResponse<Any>>
 
-    suspend fun confirmPhone(phone: String, otp: String): ResultWrapper<BaseResponse<Any>>
+    suspend fun confirmPhone(phone: String, otp: String): ResultWrapper<BaseResponse<ProfileList>>
 
     suspend fun signUp(signUpData: SignUpData): ResultWrapper<BaseResponse<UserInfo>>
 
+    suspend fun signUpPhone(signUpData: SignUpPhoneData): ResultWrapper<BaseResponse<UserPhoneInfo>>
+
     suspend fun forgotPassword(email: String): ResultWrapper<BaseResponse<Any>>
 
-    suspend fun updateUserProfile(userProfile: SignUpData): ResultWrapper<BaseResponse<UserInfo>>
+    suspend fun updateUserProfile(userProfile: SignUpPhoneData): ResultWrapper<BaseResponse<UserInfo>>
 
     suspend fun getUserProfile(): ResultWrapper<BaseResponse<User>>
 
@@ -44,5 +47,7 @@ interface IUserRepository {
     suspend fun updateProfileToken(userId: String): ResultWrapper<BaseResponse<String>>
 
     suspend fun addProfile(request: AddProfileRequest): ResultWrapper<BaseResponse<UserInfo>>
+
+    suspend fun updateInitialProfileToken(userId: String): ResultWrapper<BaseResponse<String>>
 
 }

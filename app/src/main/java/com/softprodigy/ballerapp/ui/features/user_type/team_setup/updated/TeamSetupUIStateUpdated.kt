@@ -14,6 +14,7 @@ data class TeamSetupUIStateUpdated(
     val isLoading: Boolean = false,
     val players: ArrayList<Player> = ArrayList(),
     val selectedPlayers: ArrayList<Player> = ArrayList(),
+    val invitedPlayers: ArrayList<Player> = ArrayList(),
     val search: String = "",
 
     val showDialog: Boolean = false,
@@ -24,12 +25,13 @@ data class TeamSetupUIStateUpdated(
     //val inviteMemberEmail: ArrayList<String> = arrayListOf("", "", "", "", ""),
     //var inviteMemberCount: Int = 5,
     var inviteList: List<InviteObject> = mutableListOf(),
-    var teamInviteList: ArrayList<String> =  arrayListOf("", "", ""),
+    var teamInviteList: ArrayList<String> = arrayListOf("", "", ""),
 
     val teamNameOnJerseys: String = "",
     val teamNameOnTournaments: String = "",
     val venueName: String = "",
 
+    val index: Int = 0,
     val coachName: String = "",
     val coachRole: String = "",
     val coachEmail: String = "",
