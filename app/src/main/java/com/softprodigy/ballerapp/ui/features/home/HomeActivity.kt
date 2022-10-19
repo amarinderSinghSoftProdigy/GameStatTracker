@@ -53,10 +53,7 @@ import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
 import com.softprodigy.ballerapp.ui.features.home.webview.CommonWebView
-import com.softprodigy.ballerapp.ui.features.profile.AddProfileScreen
-import com.softprodigy.ballerapp.ui.features.profile.ProfileEditScreen
-import com.softprodigy.ballerapp.ui.features.profile.ProfileScreen
-import com.softprodigy.ballerapp.ui.features.profile.RefereeEditScreen
+import com.softprodigy.ballerapp.ui.features.profile.*
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.AddPlayersScreenUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupScreenUpdated
@@ -225,6 +222,7 @@ fun NavControllerComposable(
     fromSplash: Boolean = false
 ) {
     val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = hiltViewModel()
+    val profileViewModel: ProfileViewModel = hiltViewModel()
     var eventTitle by rememberSaveable { mutableStateOf("") }
     var teamLogo by rememberSaveable {
         mutableStateOf("")
@@ -298,7 +296,7 @@ fun NavControllerComposable(
                     topBar = TopBar.PROFILE,
                 )
             )
-            ProfileScreen(updateTopBar = { homeViewModel.setTopBar(it) })
+            ProfileScreen(updateTopBar = { homeViewModel.setTopBar(it) }, vm = profileViewModel)
         }
 
         composable(route = Route.ADD_PROFILE_SCREEN) {
@@ -318,8 +316,14 @@ fun NavControllerComposable(
                     topBar = TopBar.EDIT_PROFILE,
                 )
             )
-            if (role.value == UserType.REFEREE.key) {
-                RefereeEditScreen(onBackClick = { navController.popBackStack() }) {
+            if (UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
+                RefereeEditScreen(
+                    profileViewModel,
+                    onBackClick = { navController.popBackStack() },
+                    OnNextGameStaffClick = {
+                        navController.navigate(Route.GAME_STAFF_SCREEN)
+                    },
+                ) {
                     navController.popBackStack()
                 }
             } else {
@@ -504,11 +508,11 @@ fun NavControllerComposable(
                     topBar = TopBar.FILTER_EVENT,
                 )
             )
-            if (role.value == UserType.REFEREE.key)
+           /* if (role.value == UserType.REFEREE.key)
                 RefereeFiltersScreen(eventViewModel) {
                     navController.popBackStack()
                 }
-            else
+            else*/
                 FilterScreen(eventViewModel) {
                     navController.popBackStack()
                 }
@@ -778,6 +782,18 @@ fun NavControllerComposable(
                 )
             )
             CommonWebView(url)
+        }
+
+        composable(route = Route.GAME_STAFF_SCREEN) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = "",
+                    topBar = TopBar.SINGLE_LABEL_BACK,
+                )
+            )
+            SearchGameStaff(profileViewModel,onGameStaffClick = {
+                navController.popBackStack()
+            })
         }
     }
 }

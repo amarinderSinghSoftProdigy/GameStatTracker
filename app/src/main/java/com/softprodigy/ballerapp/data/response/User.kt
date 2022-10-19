@@ -21,7 +21,10 @@ data class User(
     @SerializedName("teamDetails") val teamDetails: SnapshotStateList<TeamDetails> = mutableStateListOf(),
     @SerializedName("userDetails") var userDetails: UserDetails = UserDetails(),
     @SerializedName("parentDetails") var parentDetails: ArrayList<ParentDetails> = arrayListOf(),
-    @SerializedName("age") val age: String = "",
+    @SerializedName("age") val age: Int? = null,
+    @SerializedName("totalGames") val totalGames: Int? = 0,
+    @SerializedName("totalHoopGames") val totalHoopsGames: Int? = 0,
+    @SerializedName("rating") val rating: Double? = 0.0
 )
 
 data class SwapUser(
@@ -56,13 +59,12 @@ data class UserDetails(
     @SerializedName("funFacts") val funFacts: ArrayList<FunFacts> = arrayListOf(),
     @SerializedName("grade") val grade: String = "",
     @SerializedName("jerseyPerferences") val jerseyPerferences: SnapshotStateList<JerseyPerferences> = mutableStateListOf(),
-    @SerializedName("perferredPartner") val perferredPartner: String = "",
+    @SerializedName("perferredPartner") val preferredPartner: PerferredPartner = PerferredPartner(),
     @SerializedName("positionPlayed") val positionPlayed: ArrayList<String> = arrayListOf(),
     @SerializedName("refereeWithPartner") val refereeWithPartner: Boolean = false,
     @SerializedName("refereeningExperience") val refereeningExperience: String = "",
     @SerializedName("teamAgePerference") val teamAgePerference: String = "",
     @SerializedName("updatedAt") val updatedAt: String = "",
-
     @SerializedName("birthCertificate") val birthCertificate: String = "",
     @SerializedName("gradeVerfication") val gradeVerfication: String = "",
     @SerializedName("permissionSlip") val permissionSlip: String = "",
@@ -70,10 +72,12 @@ data class UserDetails(
     @SerializedName("waiver") val waiver: String = "",
     @SerializedName("vaccineCard") val vaccineCard: String = "",
     @SerializedName("classOf") val classOf: String = "",
-    val totalGames: String = "",
-    val totalHoopsGames: String = "",
-    val rating: String = ""
+)
 
+data class PerferredPartner(
+    @SerializedName("_id") val id: String = "",
+    @SerializedName("profileImage") val profileImage: String = "",
+    @SerializedName("name") val name: String = ""
 )
 
 data class FunFacts(

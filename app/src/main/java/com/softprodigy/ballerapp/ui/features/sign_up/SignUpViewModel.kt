@@ -344,7 +344,7 @@ class SignUpViewModel @Inject constructor(
             phoneVerified = signUpData.phoneVerified,
             gender = signUpData.gender,
             birthdate = signUpData.birthdate,
-            role = signUpData.role?.lowercase(),
+            role = signUpData.role,
             password = signUpData.password,
             repeatPassword = signUpData.repeatPassword,
         )
@@ -495,7 +495,7 @@ class SignUpViewModel @Inject constructor(
             phoneVerified = updateUserRequestData.phoneVerified,
             gender = updateUserRequestData.gender,
             birthdate = updateUserRequestData.birthdate,
-            role = updateUserRequestData.role?.lowercase(),
+            role = updateUserRequestData.role,
 //            password = updateUserRequestData.password,
 //            repeatPassword = updateUserRequestData.repeatPassword
         )

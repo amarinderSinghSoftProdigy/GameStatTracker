@@ -34,7 +34,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                     showRoleDialog = true,
                     selectedInvitation = event.invitation,
                     teamId = event.invitation.team._id,
-                    showDeclineDialog = true,
+                    showDeclineDialog = false,
                 )
             }
             is InvitationEvent.OnDeclineCLick -> {
@@ -260,7 +260,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
     private suspend fun getUserRoles() {
         invitationState.value = invitationState.value.copy(showLoading = true)
 
-        when (val userRoles = teamRepo.getUserRoles()) {
+        when (val userRoles = teamRepo.getUserRoles("")) {
             is ResultWrapper.GenericError -> {
                 invitationState.value = invitationState.value.copy(showLoading = false)
 

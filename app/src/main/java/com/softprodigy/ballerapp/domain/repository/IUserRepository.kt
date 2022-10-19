@@ -45,4 +45,6 @@ interface IUserRepository {
 
     suspend fun addProfile(request: AddProfileRequest): ResultWrapper<BaseResponse<Any>>
 
+    suspend fun getSearchGameStaff(search: String): ResultWrapper<BaseResponse<List<GetSearchStaff>>>
+
 }

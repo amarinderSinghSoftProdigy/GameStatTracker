@@ -125,4 +125,9 @@ class UserRepository @Inject constructor(
         }
     }
 
+    override suspend fun getSearchGameStaff(search: String): ResultWrapper<BaseResponse<List<GetSearchStaff>>> {
+        return safeApiCall(dispatcher = dispatcher) {
+            service.getSearchGameStaff(search)
+        }
+    }
 }

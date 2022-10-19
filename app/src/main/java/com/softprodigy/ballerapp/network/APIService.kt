@@ -114,7 +114,7 @@ open interface APIService {
     suspend fun getHomePageDetails(): BaseResponse<HomePageCoachModel>
 
     @GET(ApiConstants.GET_USER_ROLE)
-    suspend fun getUserRoles(): BaseResponse<ArrayList<String>>
+    suspend fun getUserRoles(@Query("type") type: String): BaseResponse<ArrayList<String>>
 
     @GET(ApiConstants.GET_TEAM_PLAYER_BY_ID)
     suspend fun getTeamPlayerById(@Query("teamId") id: String): BaseResponse<ArrayList<PlayerDetails>>
@@ -247,5 +247,11 @@ open interface APIService {
 
     @POST(ApiConstants.ADD_PROFILE)
     suspend fun addProfile(@Body request: AddProfileRequest): BaseResponse<Any>
+
+    @GET(ApiConstants.GET_SEARCH_GAME_STAFF)
+    suspend fun getSearchGameStaff(@Query("search") search: String): BaseResponse<List<GetSearchStaff>>
+
+    @POST(ApiConstants.REGISTER_GAME_STAFF)
+    suspend fun registerGameStaff(@Body gameStaffRegisterRequest: GameStaffRegisterRequest): BaseResponse<Any>
 
 }

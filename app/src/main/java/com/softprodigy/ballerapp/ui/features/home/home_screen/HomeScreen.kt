@@ -236,7 +236,7 @@ fun HomeScreen(
                         }
                     }
                 }
-                if (role.value != UserType.REFEREE.key) {
+                if (!UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                     UserFlowBackground(
                         padding = 0.dp,
@@ -327,7 +327,7 @@ fun HomeScreen(
 
                 Row {
                     EventItem(
-                        if (role.value != UserType.REFEREE.key)
+                        if (!UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true))
                             "my_events" else "my_shifts",
                         "events_label",
                         homeState.homePageCoachModel.myEvents.toString()
@@ -340,7 +340,7 @@ fun HomeScreen(
                         .weight(1F))*/
                 }
 
-                if (role.value == UserType.REFEREE.key) {
+                if (UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                     UserFlowBackground(
                         padding = 0.dp,
@@ -382,7 +382,7 @@ fun HomeScreen(
                     }
                 }
 
-                if (role.value != UserType.REFEREE.key) {
+                if (!UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
 
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                     UserFlowBackground(
@@ -433,13 +433,13 @@ fun HomeScreen(
                     )
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
 
-                    if (role.value == UserType.REFEREE.key) {
+                    if (UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
                         EventItem(
                             "", "", "", null, MaterialTheme.appColors.material.primary
                         )
                     }
 
-                    if (role.value != UserType.REFEREE.key) {
+                    if (!UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
                         EventItem(
                             "all_leagues",
                             "leagues",
