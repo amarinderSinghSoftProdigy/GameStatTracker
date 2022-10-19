@@ -97,8 +97,9 @@ public class Utils {
         }
 
         fun isDarkMode(context: Context): Boolean {
-            val nightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-            return nightMode == Configuration.UI_MODE_NIGHT_YES
+            /*val nightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+            return nightMode == Configuration.UI_MODE_NIGHT_YES*/
+            return  false
         }
 
         fun softTransition(`$this$softTransition`: Float, compareWith: Float, allowedDiff: Float, scaleFactor: Float): Float {

@@ -3,7 +3,7 @@ package com.softprodigy.ballerapp.ui.features.sign_up
 import com.softprodigy.ballerapp.data.request.SignUpData
 import com.softprodigy.ballerapp.data.response.SwapUser
 
-data class SignUpUIState(
+open data class SignUpUIState(
     var isLoading: Boolean = false,
     var errorMessage: String? = null,
     var successMessage: String? = null,

@@ -371,7 +371,7 @@ class CometChatUI : AppCompatActivity(), BottomNavigationView.OnNavigationItemSe
      * @param user
      * @see CometChatMessageListActivity
      */
-    private fun startUserIntent(user: User) {
+    public fun startUserIntent(user: User) {
         Log.e(TAG, "startUserIntent: " + user)
         val intent = Intent(context, CometChatMessageListActivity::class.java)
         intent.putExtra(UIKitConstants.IntentStrings.UID, user.uid ?: "")

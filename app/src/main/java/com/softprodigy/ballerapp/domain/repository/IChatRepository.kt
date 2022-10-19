@@ -14,4 +14,9 @@ interface IChatRepository {
         userId: String
     ): ResultWrapper<BaseResponse<ArrayList<Team>>>
 
+    suspend fun saveChatGroup(
+        teamId: String,
+        groupId: String
+    ): ResultWrapper<BaseResponse<Any>>
+
 }

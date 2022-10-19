@@ -46,8 +46,8 @@ interface IUserRepository {
 
     suspend fun updateProfileToken(userId: String): ResultWrapper<BaseResponse<String>>
 
-    suspend fun updateInitialProfileToken(userId: String): ResultWrapper<BaseResponse<String>>
+    suspend fun addProfile(request: AddProfileRequest): ResultWrapper<BaseResponse<UserInfo>>
 
-    suspend fun addProfile(request: AddProfileRequest): ResultWrapper<BaseResponse<Any>>
+    suspend fun updateInitialProfileToken(userId: String): ResultWrapper<BaseResponse<String>>
 
 }

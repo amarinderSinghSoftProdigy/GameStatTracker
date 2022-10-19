@@ -47,6 +47,7 @@ object Route {
     const val GAME_DETAIL_SCREEN = "game_detail_screen"
     const val OPP_DETAIL_SCREEN = "opp_detail_screen"
     const val EVENT_REGISTRATION = "event_registration"
+    const val CREATE_NEW_CHAT_CONVO = "chat_create_new_conversation"
     const val EVENT_REGISTRATION_SUCCESS = "eventRegistrationSuccess"
     const val TEAMS_SCREEN = "teamsScreen"
     const val SPLASH_SCREEN = "splashScreen"
@@ -120,6 +121,7 @@ object ApiConstants {
     const val ADD_PROFILE = "v1/auth/addUserProfile"
 
     const val GET_CHATS = "v1/team/teamsChatDetails"
+    const val SAVE_CHAT_GROUP = "v1/team/saveChatGroup"
 
     const val RESET_PASS = "/reset/password/"
     const val RESEND_OTP = "/resendOtp"
@@ -183,4 +185,8 @@ object RequestCode {
 object IntentData {
     const val FROM_SPLASH = "fromSplash"
     const val ROLE = "role"
+}
+
+object CometChatErrorCodes {
+    const val ERR_UID_ALREADY_EXISTS = "ERR_UID_ALREADY_EXISTS"
 }

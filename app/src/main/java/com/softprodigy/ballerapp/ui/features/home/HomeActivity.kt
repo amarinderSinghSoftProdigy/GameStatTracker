@@ -41,6 +41,7 @@ import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.IntentData
 import com.softprodigy.ballerapp.common.Route
+import com.softprodigy.ballerapp.common.Route.CREATE_NEW_CHAT_CONVO
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.ui.features.components.*
@@ -62,6 +63,7 @@ import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.chat.TeamsChatDetailScreen
+import com.softprodigy.ballerapp.ui.features.home.teams.chat.NewConversationScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileEditScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileScreen
 import com.softprodigy.ballerapp.ui.features.profile.RefereeEditScreen
@@ -420,8 +422,28 @@ fun NavControllerComposable(
                 },
                 onTeamItemClick = {
                     //navController.navigate(Route.MY_CHAT_DETAIL)
+
+                }, onCreateNewConversationClick = {
+                    navController.navigate(CREATE_NEW_CHAT_CONVO)
                 })
         }
+
+        composable(route = Route.CREATE_NEW_CHAT_CONVO) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = stringResource(id = R.string.new_chat),
+                    topBar = TopBar.SINGLE_LABEL_BACK,
+                )
+            )
+
+            NewConversationScreen(cometChat = cometChat,teamVm = teamViewModel, onGroupCreateSuccess = {
+                navController.popBackStack()
+            })
+
+        }
+
+
+
         composable(route = Route.EVENTS_SCREEN) {
             /* homeViewModel.setTopBar(
                  TopBarData(
@@ -826,6 +848,7 @@ fun NavControllerComposable(
                 )
             )
             //CommonWebView(url)
+//            CommonWebView(url)
         }
     }
 

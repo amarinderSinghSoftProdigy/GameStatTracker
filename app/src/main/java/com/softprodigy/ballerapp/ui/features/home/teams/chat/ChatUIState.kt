@@ -1,5 +1,7 @@
 package com.softprodigy.ballerapp.ui.features.home.teams.chat
 
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.softprodigy.ballerapp.data.request.Address
 import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
 import com.softprodigy.ballerapp.data.response.PlayerDetails
@@ -36,4 +38,11 @@ data class ChatUIState(
     val venueName: String = "",
     val selectedAddress: Address = Address(),
 
+
+
+    /*New conversation states*/
+    val selectedPlayersForNewGroup:SnapshotStateList<String> = mutableStateListOf(),
+    val selectedCoachesForNewGroup:SnapshotStateList<String> = mutableStateListOf(),
+    val showCreateGroupNameDialog : Boolean = false,
+    val groupName : String = ""
     )

@@ -131,7 +131,7 @@ class UserRepository @Inject constructor(
         }
     }
 
-    override suspend fun addProfile(request: AddProfileRequest): ResultWrapper<BaseResponse<Any>> {
+    override suspend fun addProfile(request: AddProfileRequest): ResultWrapper<BaseResponse<UserInfo>> {
         return safeApiCall(dispatcher = dispatcher) {
             service.addProfile(request)
         }

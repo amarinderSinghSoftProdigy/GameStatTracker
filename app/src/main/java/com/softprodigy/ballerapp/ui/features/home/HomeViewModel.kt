@@ -6,7 +6,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.cometchat.pro.core.CometChat
+import com.cometchat.pro.exceptions.CometChatException
+import com.cometchat.pro.models.User
+import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.CometChatErrorCodes
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
 import com.softprodigy.ballerapp.data.UserStorage
@@ -22,7 +27,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -40,6 +48,7 @@ class HomeViewModel @Inject constructor(
     val homeChannel = _homeChannel.receiveAsFlow()
 
     init {
+
         viewModelScope.launch {
             if (UserStorage.token.isNotEmpty()) {
                 //getHomeList()
@@ -187,6 +196,11 @@ class HomeViewModel @Inject constructor(
                                 )
                             )
                         }
+                        /*Register newly updated user to cometchat*/
+                        registerProfileToCometChat(
+                            "${response.data.firstName} ${response.data.lastName}",
+                            response.data._Id
+                        )
                     } else {
                         _homeChannel.send(
                             HomeChannel.ShowToast(
@@ -345,4 +359,48 @@ class HomeViewModel @Inject constructor(
 sealed class HomeChannel {
     data class ShowToast(val message: UiText) : HomeChannel()
     object OnSwapListSuccess : HomeChannel()
+}
+
+/*Register newly updated user to cometchat*/
+private fun registerProfileToCometChat(name: String, uid: String) {
+    val authKey = BuildConfig.COMET_CHAT_AUTH_KEY
+    val user = User()
+    user.uid = uid
+    user.name = name
+
+    CometChat.createUser(user, authKey, object : CometChat.CallbackListener<User>() {
+        override fun onSuccess(user: User) {
+            Timber.i("CometChat- createUser $user")
+            /*It means user registered successfully so let's login  */
+            loginToCometChat(uid)
+        }
+
+        override fun onError(e: CometChatException) {
+            Timber.e("CometChat- createUser ${e.message}")
+            if (e.code.equals(CometChatErrorCodes.ERR_UID_ALREADY_EXISTS)) {
+
+                /*It means user already registered so login to his profile */
+                loginToCometChat(uid)
+
+
+            }
+        }
+    })
+}
+
+/*Login registered user */
+private fun loginToCometChat(uid: String) {
+
+    CometChat.login(
+        uid,
+        BuildConfig.COMET_CHAT_AUTH_KEY,
+        object : CometChat.CallbackListener<User?>() {
+            override fun onSuccess(user: User?) {
+                Timber.i(" CometChat- Login Successful : " + user.toString())
+            }
+
+            override fun onError(e: CometChatException) {
+                Timber.e("CometChat- Login failed with exception:  ${e.message} ${e.code}");
+            }
+        })
 }

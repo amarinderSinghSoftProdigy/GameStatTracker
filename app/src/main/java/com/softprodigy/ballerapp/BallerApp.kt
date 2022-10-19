@@ -34,8 +34,8 @@ class BallerApp : Application() {
     }
 
     private fun initChat() {
-        val appID = "22157742ffa95f12"
-        val region = "us"
+        val appID = BuildConfig.COMET_CHAT_APP_KEY
+        val region = BuildConfig.COMET_CHAT_REGION
         val appSettings =
             AppSettings.AppSettingsBuilder().subscribePresenceForAllUsers().setRegion(region)
                 .build()
@@ -50,19 +50,6 @@ class BallerApp : Application() {
             }
         })
 
-
-        val UID = "SUPERHERO1" // Replace with the UID of the user to login
-        val AUTH_KEY = "3aee9c1b55e111786020c00c72669e83bfd0486e" // Replace with your App Auth Key
-
-        CometChat.login(UID, AUTH_KEY, object : CometChat.CallbackListener<User?>() {
-            override fun onSuccess(user: User?) {
-                Timber.i("Login Successful : " + user.toString())
-            }
-
-            override fun onError(e: CometChatException) {
-                Timber.i("Login failed with exception: " + e.message);
-            }
-        })
 
     }
 }

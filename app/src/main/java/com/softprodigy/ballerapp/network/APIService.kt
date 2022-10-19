@@ -252,7 +252,7 @@ open interface APIService {
     suspend fun getInviteMembersByTeamId(@Query("teamId") teamId: String): BaseResponse<Any>
 
     @POST(ApiConstants.ADD_PROFILE)
-    suspend fun addProfile(@Body request: AddProfileRequest): BaseResponse<Any>
+    suspend fun addProfile(@Body request: AddProfileRequest): BaseResponse<UserInfo>
 
     @GET(ApiConstants.GET_CHATS)
     suspend fun getAllChats(
@@ -264,5 +264,8 @@ open interface APIService {
 
     @POST(ApiConstants.AUTH_REGISTER_MOBILE)
     suspend fun registerMobile(@Body signUpData: SignUpPhoneData): BaseResponse<UserPhoneInfo>
+
+    @POST(ApiConstants.SAVE_CHAT_GROUP)
+    suspend fun saveChatGroup(@Body request: RequestBody):BaseResponse<Any>
 
 }
