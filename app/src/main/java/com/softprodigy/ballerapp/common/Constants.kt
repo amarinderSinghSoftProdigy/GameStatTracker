@@ -1,8 +1,10 @@
 package com.softprodigy.ballerapp.common
 
 import androidx.compose.ui.graphics.Color
+import com.softprodigy.ballerapp.ui.theme.Yellow700
 
 object AppConstants {
+    val REQUEST_CONTACT_CODE: Int = 1122
     const val ROLE = "role"
     const val TEAM_LOGO: String = "teamLogo"
     const val PROFILE_IMAGE: String = "profileImage"
@@ -26,8 +28,8 @@ object AppConstants {
     const val SKIP = "skip"
     const val PAGE = 1
     const val PAGE_LIMIT = 20
-    var DEFAULT_COLOR: Color = Color(0xFF0177C1)
-    var SELECTED_COLOR: Color = Color(0xFF0177C1)
+    var DEFAULT_COLOR = "FF923D"
+    var SELECTED_COLOR: Color = Yellow700
 }
 
 object Route {
@@ -63,6 +65,7 @@ object Route {
     const val INVITATION_SCREEN = "invitationScreen"
     const val NEW_EVENT = "newEvent"
     const val MY_LEAGUE = "myLeague"
+    const val MY_CHAT_DETAIL = "myChatDetail"
     const val OPEN_VENUE = "openVenue"
     const val DIVISION_TAB = "divisionTab"
     const val TEAM_TAB = "teamTab"
@@ -113,12 +116,16 @@ object ApiConstants {
     const val CONFIRM_PHONE = "v1/auth/confirmPhone"
     const val SWAP_PROFILE = "v1/auth/swapProfileList"
     const val SWAP_TOKEN = "v1/auth/swapProfileToken"
+    const val SWAP_INITIAL_TOKEN = "v1/auth/initialSwapProfileToken"
     const val ADD_PROFILE = "v1/auth/addUserProfile"
+
+    const val GET_CHATS = "v1/team/teamsChatDetails"
 
     const val RESET_PASS = "/reset/password/"
     const val RESEND_OTP = "/resendOtp"
 
     const val UPDATE_TEAM = "v1/team/update"
+    const val GET_TEAM_INVITED = "v1/team/getInvitedTeamMembers"
     const val GET_USER_DETAILS = "v1/auth/getUserProfile"
     const val GET_HOME_PAGE_DETAILS = "v1/coach/event/getHomePageDetails"
     const val GET_USER_FULL_DETAILS = "v1/userDetails"
@@ -147,6 +154,9 @@ object ApiConstants {
     const val TWITTER = "twitter"
     const val email = "email"
     const val token = "token"
+
+
+    const val AUTH_REGISTER_MOBILE = "v1/auth/registerMobile"
 }
 
 
@@ -172,4 +182,5 @@ object RequestCode {
 
 object IntentData {
     const val FROM_SPLASH = "fromSplash"
+    const val ROLE = "role"
 }

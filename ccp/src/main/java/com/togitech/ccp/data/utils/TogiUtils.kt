@@ -18,7 +18,7 @@ fun getDefaultLangCode(context: Context): String {
 fun getDefaultPhoneCode(context: Context): String {
     val defaultCountry = getDefaultLangCode(context)
     val defaultCode: CountryData = getLibCountries().first() { it.countryCode == defaultCountry }
-    return defaultCode.countryPhoneCode.ifBlank { "+90" }
+    return defaultCode.countryPhoneCode.ifBlank { "+1" }
 }
 
 fun checkPhoneNumber(phone: String, fullPhoneNumber: String, countryCode: String): Boolean {

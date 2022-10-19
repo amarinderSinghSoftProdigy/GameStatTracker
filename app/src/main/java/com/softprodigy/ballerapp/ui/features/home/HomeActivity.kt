@@ -2,9 +2,12 @@ package com.softprodigy.ballerapp.ui.features.home
 
 //import com.softprodigy.ballerapp.ui.features.home.events.NewEventScreen
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
+import android.database.Cursor
+import android.net.Uri
 import android.os.Bundle
-import androidx.activity.ComponentActivity
+import android.provider.ContactsContract
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -20,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowCompat
+import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -27,6 +31,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.cometchat.pro.constants.CometChatConstants
+import com.cometchat.pro.models.Conversation
+import com.cometchat.pro.models.Group
+import com.cometchat.pro.models.User
+import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
 import com.softprodigy.ballerapp.MainActivity
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
@@ -52,51 +61,60 @@ import com.softprodigy.ballerapp.ui.features.home.manage_team.MainManageTeamScre
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
-import com.softprodigy.ballerapp.ui.features.home.webview.CommonWebView
-import com.softprodigy.ballerapp.ui.features.profile.AddProfileScreen
+import com.softprodigy.ballerapp.ui.features.home.teams.chat.TeamsChatDetailScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileEditScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileScreen
 import com.softprodigy.ballerapp.ui.features.profile.RefereeEditScreen
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.AddPlayersScreenUpdated
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupScreenUpdated
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
+import com.softprodigy.ballerapp.ui.features.sign_up.ProfileSetUpScreen
+import com.softprodigy.ballerapp.ui.features.sign_up.SignUpUIEvent
+import com.softprodigy.ballerapp.ui.features.sign_up.SignUpViewModel
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.*
 import com.softprodigy.ballerapp.ui.features.venue.VenueListScreen
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
 import com.softprodigy.ballerapp.ui.theme.appColors
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
-class HomeActivity : ComponentActivity() {
+class HomeActivity : FragmentActivity() {
 
     var dataStoreManager: DataStoreManager = DataStoreManager(this)
+    val cometChat = CometChatUI()
+    var setupTeamViewModelUpdated: SetupTeamViewModelUpdated? = null
 
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, true)
-
+        cometChat.context = this
+        cometChat.setConversationClickListener()
         setContent {
             val fromSplash = intent.getBooleanExtra(IntentData.FROM_SPLASH, false)
             val homeViewModel: HomeViewModel = hiltViewModel()
             val teamViewModel: TeamViewModel = hiltViewModel()
             val eventViewModel: EventViewModel = hiltViewModel()
+            setupTeamViewModelUpdated = hiltViewModel()
             val state = homeViewModel.state.value
             dataStoreManager = DataStoreManager(LocalContext.current)
             /* val userToken = dataStoreManager.userToken.collectAsState(initial = "")
              UserStorage.token = userToken.value
              */
-            val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
+            val color = dataStoreManager.getColor.collectAsState(initial = AppConstants.DEFAULT_COLOR)
             val teamId = dataStoreManager.getId.collectAsState(initial = "")
             val teamName = dataStoreManager.getTeamName.collectAsState(initial = "")
             val role = dataStoreManager.getRole.collectAsState(initial = "")
             UserStorage.teamId = teamId.value
             UserStorage.teamName = teamName.value
-            AppConstants.SELECTED_COLOR = fromHex(color.value.ifEmpty { "0177C1" })
+            AppConstants.SELECTED_COLOR = fromHex(color.value.ifEmpty { AppConstants.DEFAULT_COLOR })
             homeViewModel.setColor(AppConstants.SELECTED_COLOR)
             homeViewModel.showBottomAppBar(true)
-            BallerAppMainTheme(customColor = state.color ?: Color.White) {
+            BallerAppMainTheme(
+                customColor = state.color ?: MaterialTheme.appColors.material.primaryVariant
+            ) {
                 val navController = rememberNavController()
+                cometChat.click = {
+                    //navController.navigate(Route.MY_CHAT_DETAIL)
+                }
                 if (state.screen) {
                     Surface(
                         color = MaterialTheme.appColors.material.primary
@@ -106,7 +124,9 @@ class HomeActivity : ComponentActivity() {
                             teamViewModel,
                             eventViewModel,
                             navController = navController,
-                            fromSplash = fromSplash
+                            role = role.value,
+                            cometChat = cometChat,
+                            setupTeamViewModelUpdated = setupTeamViewModelUpdated ?: hiltViewModel()
                         )
                     }
                 } else {
@@ -168,7 +188,10 @@ class HomeActivity : ComponentActivity() {
                                     eventViewModel,
                                     navController = navController,
                                     showDialog = state.showDialog,
-                                    fromSplash = fromSplash
+                                    role = role.value,
+                                    cometChat = cometChat,
+                                    setupTeamViewModelUpdated = setupTeamViewModelUpdated
+                                        ?: hiltViewModel()
                                 )
                             }
                         },
@@ -198,20 +221,50 @@ class HomeActivity : ComponentActivity() {
                             moveToLogin(this)
                         })
                 }
-                /*if (state.showAddProfile) {
-                    AddPlayer(
-                        onDismiss = { homeViewModel.setAddProfile(false) },
-                        onConfirmClick = {
-                        },
-                    )
-                }*/
             }
         }
     }
 
     override fun onResume() {
         super.onResume()
+    }
 
+    // on below line we are calling on activity result method.
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode != Activity.RESULT_OK) return
+        if (requestCode == AppConstants.REQUEST_CONTACT_CODE && data != null) {
+            val contactData: Uri? = data.data
+            val cursor: Cursor = managedQuery(contactData, null, null, null, null)
+            cursor.moveToFirst()
+            val number: String =
+                cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER))
+            val name: String =
+                cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
+            setupTeamViewModelUpdated?.onEvent(
+                TeamSetupUIEventUpdated.OnContactAdded(
+                    InviteObject(
+                        name,
+                        number.replace(" ", "")
+                    )
+                )
+            )
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
+        startActivityForResult(
+            intent,
+            AppConstants.REQUEST_CONTACT_CODE,
+            null
+        )
     }
 }
 
@@ -222,9 +275,10 @@ fun NavControllerComposable(
     eventViewModel: EventViewModel,
     showDialog: Boolean = false,
     navController: NavHostController = rememberNavController(),
-    fromSplash: Boolean = false
+    role: String = "",
+    cometChat: CometChatUI,
+    setupTeamViewModelUpdated: SetupTeamViewModelUpdated
 ) {
-    val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = hiltViewModel()
     var eventTitle by rememberSaveable { mutableStateOf("") }
     var teamLogo by rememberSaveable {
         mutableStateOf("")
@@ -235,13 +289,11 @@ fun NavControllerComposable(
     var url by rememberSaveable {
         mutableStateOf("")
     }
-    val dataStoreManager = DataStoreManager(LocalContext.current)
-    val role = dataStoreManager.getRole.collectAsState(initial = "")
     NavHost(navController, startDestination = Route.HOME_SCREEN) {
         composable(route = Route.HOME_SCREEN) {
             homeViewModel.setTopAppBar(false)
-            //if (fromSplash)
             HomeScreen(
+                role,
                 onInvitationCLick = {
                     navController.navigate(Route.INVITATION_SCREEN)
                 },
@@ -267,14 +319,14 @@ fun NavControllerComposable(
                 },
                 onCreateTeamClick = {
                     navController.navigate(Route.TEAM_SETUP_SCREEN) {
-//                        navController.popBackStack()
-                        setupTeamViewModelUpdated.onEvent(
-                            TeamSetupUIEventUpdated.OnColorSelected(
-                                (it?.colorCode ?: "").replace(
-                                    "#", ""
+                        if (it != null)
+                            setupTeamViewModelUpdated.onEvent(
+                                TeamSetupUIEventUpdated.OnColorSelected(
+                                    (it.colorCode).replace(
+                                        "#", ""
+                                    )
                                 )
                             )
-                        )
                     }
                 },
                 onInviteClick = {
@@ -286,11 +338,6 @@ fun NavControllerComposable(
                 },
                 setupTeamViewModelUpdated = setupTeamViewModelUpdated
             )
-            /* else {
-                 HomeFirstTimeLoginScreen(onCreateTeamClick = {
-                     navController.navigate(Route.TEAM_SETUP_SCREEN)
-                 }, viewModel = homeViewModel)
-             }*/
         }
         composable(route = Route.PROFILE_SCREEN) {
             homeViewModel.setTopBar(
@@ -308,9 +355,17 @@ fun NavControllerComposable(
                     topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
-            AddProfileScreen(onSuccess = {
-                navController.popBackStack()
-            })
+            val signUpViewModel: SignUpViewModel = hiltViewModel()
+            signUpViewModel.onEvent(SignUpUIEvent.SetRegister)
+            ProfileSetUpScreen(
+                signUpViewModel = signUpViewModel,
+                onNext = {
+                    navController.popBackStack()
+                },
+                onBack = {
+                    navController.popBackStack()
+                })
+
         }
         composable(route = Route.PROFILE_EDIT_SCREEN) {
             homeViewModel.setTopBar(
@@ -318,7 +373,7 @@ fun NavControllerComposable(
                     topBar = TopBar.EDIT_PROFILE,
                 )
             )
-            if (role.value == UserType.REFEREE.key) {
+            if (role == UserType.REFEREE.key) {
                 RefereeEditScreen(onBackClick = { navController.popBackStack() }) {
                     navController.popBackStack()
                 }
@@ -354,7 +409,6 @@ fun NavControllerComposable(
                 },
                 onCreateTeamClick = {
                     navController.navigate(Route.TEAM_SETUP_SCREEN) {
-//                        navController.popBackStack()
                         setupTeamViewModelUpdated.onEvent(
                             TeamSetupUIEventUpdated.OnColorSelected(
                                 (it?.colorCode ?: "").replace(
@@ -364,8 +418,8 @@ fun NavControllerComposable(
                         )
                     }
                 },
-                onBackPress = {
-                    navController.popBackStack()
+                onTeamItemClick = {
+                    //navController.navigate(Route.MY_CHAT_DETAIL)
                 })
         }
         composable(route = Route.EVENTS_SCREEN) {
@@ -437,8 +491,7 @@ fun NavControllerComposable(
                 )
             )
 
-            if (role.value == UserType.REFEREE.key) {
-
+            if (role == UserType.REFEREE.key) {
                 EventRefereeRegistrationScreen(vm = eventViewModel) {
                     navController.navigate(Route.EVENT_REGISTRATION_SUCCESS)
                 }
@@ -504,7 +557,7 @@ fun NavControllerComposable(
                     topBar = TopBar.FILTER_EVENT,
                 )
             )
-            if (role.value == UserType.REFEREE.key)
+            if (role == UserType.REFEREE.key)
                 RefereeFiltersScreen(eventViewModel) {
                     navController.popBackStack()
                 }
@@ -746,15 +799,10 @@ fun NavControllerComposable(
             )
             EventTeamTabs(vm = teamViewModel)
         }
-        /*composable(route = Route.MY_LEAGUE) {
-            homeViewModel.setTopBar(
-                TopBarData(
-                    label = stringResource(id = R.string.back_to_school_tournament),
-                    topBar = TopBar.MY_LEAGUE
-                )
-            )
-            MyLeagueDetailScreen()
-        }*/
+        composable(route = Route.MY_CHAT_DETAIL) {
+            Timber.e("data " + CometChatUI.convo)
+            TeamsChatDetailScreen()
+        }
         composable(route = Route.SELECT_VENUE) {
             homeViewModel.setTopBar(
                 TopBarData(
@@ -777,9 +825,10 @@ fun NavControllerComposable(
                     topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
-            CommonWebView(url)
+            //CommonWebView(url)
         }
     }
+
 }
 
 fun setColorToOriginalOnBack(
@@ -824,3 +873,10 @@ private fun moveToLogin(activity: HomeActivity) {
     activity.startActivity(intent)
     activity.finish()
 }
+
+fun getConvoType(conversation: Conversation): Any {
+    return if (conversation.conversationType == CometChatConstants.CONVERSATION_TYPE_GROUP)
+        conversation.conversationWith as Group else
+        conversation.conversationWith as User
+}
+

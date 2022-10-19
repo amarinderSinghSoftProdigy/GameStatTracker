@@ -7,7 +7,14 @@ data class UserInfo(
     @SerializedName("tokenExpireAt") val tokenExpireAt: Int? = null,
     @SerializedName("refreshToken") val refreshToken: String? = null,
     @SerializedName("refreshTokenExpireAt") val refreshTokenExpireAt: Int? = null
+)
 
+data class UserPhoneInfo(
+    @SerializedName("saveUser") val user: SaveUser = SaveUser(),
+    @SerializedName("token") val token: String = "",
+    @SerializedName("tokenExpireAt") val tokenExpireAt: Int? = null,
+    @SerializedName("refreshToken") val refreshToken: String? = null,
+    @SerializedName("refreshTokenExpireAt") val refreshTokenExpireAt: Int? = null
 )
 
 

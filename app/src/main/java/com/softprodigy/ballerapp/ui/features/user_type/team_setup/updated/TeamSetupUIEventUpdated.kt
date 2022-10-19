@@ -20,15 +20,20 @@ sealed class TeamSetupUIEventUpdated {
     object OnAddPlayerScreenNext : TeamSetupUIEventUpdated()
     object OnLogoUploadSuccess : TeamSetupUIEventUpdated()
 
-    data class OnNameValueChange(val index:Int,val name:String): TeamSetupUIEventUpdated()
-    data class OnEmailValueChange(val index:Int,val email:String): TeamSetupUIEventUpdated()
-    data class OnInviteCountValueChange(val index: Int? = null, val addIntent: Boolean): TeamSetupUIEventUpdated()
+    data class OnContactAdded(val data: InviteObject) : TeamSetupUIEventUpdated()
+    data class OnIndexChange(val index: Int) : TeamSetupUIEventUpdated()
+    data class OnNameValueChange(val index: Int, val name: String) : TeamSetupUIEventUpdated()
+    data class OnEmailValueChange(val index: Int, val email: String) : TeamSetupUIEventUpdated()
+    data class OnInviteCountValueChange(val index: Int? = null, val addIntent: Boolean) :
+        TeamSetupUIEventUpdated()
 
-    data class OnInviteTeamMembers(val teamId:String): TeamSetupUIEventUpdated()
-    object OnBackButtonClickFromPlayerScreen:TeamSetupUIEventUpdated()
+    data class OnInviteTeamMembers(val teamId: String) : TeamSetupUIEventUpdated()
+    object OnBackButtonClickFromPlayerScreen : TeamSetupUIEventUpdated()
 
     data class OnTeamNameJerseyChange(val teamNameOnJersey: String) : TeamSetupUIEventUpdated()
-    data class OnTeamNameTournamentsChange(val teamNameOnTournaments: String) : TeamSetupUIEventUpdated()
+    data class OnTeamNameTournamentsChange(val teamNameOnTournaments: String) :
+        TeamSetupUIEventUpdated()
+
     data class OnVenueChange(val venueName: String) : TeamSetupUIEventUpdated()
     data class OnAddressChange(val address: String) : TeamSetupUIEventUpdated()
 
@@ -36,4 +41,5 @@ sealed class TeamSetupUIEventUpdated {
     data class OnCoachRoleChange(val coachRole: String) : TeamSetupUIEventUpdated()
     data class OnCoachEmailChange(val coachEmail: String) : TeamSetupUIEventUpdated()
     data class OnAddressChanged(val addressReq: Address) : TeamSetupUIEventUpdated()
+    data class GetInvitedTeamPlayers(val teamId: String) : TeamSetupUIEventUpdated()
 }

@@ -159,7 +159,7 @@ fun ProfileSetUpScreen(
                 }
 
                 is SignUpChannel.OnProfileImageUpload -> {
-                    signUpViewModel.onEvent(SignUpUIEvent.OnImageUploadSuccess(false))
+                    signUpViewModel.onEvent(SignUpUIEvent.OnImageUploadSuccess(state.registered))
                 }
 
                 is SignUpChannel.OnProfileUpdateSuccess -> {
@@ -343,7 +343,7 @@ fun ProfileSetUpScreen(
                             EditFields(
                                 data = state.signUpData.email ?: "",
                                 onValueChange = {
-                                    if (it.length <= maxEmailChar)
+                                    if (it.length <= maxEmailChar && it.isNotEmpty())
                                         signUpViewModel.onEvent(SignUpUIEvent.OnEmailChanged(it))
 
                                 },
@@ -352,10 +352,10 @@ fun ProfileSetUpScreen(
                                     keyboardType = KeyboardType.Email,
                                     capitalization = KeyboardCapitalization.Sentences
                                 ),
-                                isError = ((state.signUpData.email?.isValidEmail() != true
-                                        || ((state.signUpData.email?.length) ?: 0) > 45)),
+                                isError = (state.signUpData.email
+                                    ?: "").isNotEmpty() && state.signUpData.email?.isValidEmail() != true,
                                 errorMessage = stringResource(id = R.string.email_error),
-                                enabled = true
+                                enabled = false
                             )
                             state.signUpData.token?.let { _ ->
                                 AppDivider()
@@ -533,7 +533,7 @@ fun ProfileSetUpScreen(
                                     )
                                 }
                             }
-                            if (validPhoneNumber(state.signUpData.phone) && !state.signUpData.phoneVerified) {
+                            /*if (validPhoneNumber(state.signUpData.phone) && !state.signUpData.phoneVerified) {
 
                                 Column(
                                     modifier = Modifier
@@ -567,7 +567,7 @@ fun ProfileSetUpScreen(
                                         .padding(all = dimensionResource(id = R.dimen.size_20dp)),
                                     textAlign = TextAlign.End
                                 )
-                            }
+                            }*/
 
                         }
                     }
@@ -590,10 +590,11 @@ fun ProfileSetUpScreen(
                         },
                         enableState = validName(state.signUpData.firstName)
                                 && validName(state.signUpData.lastName)
-                                && validPhoneNumber(state.signUpData.phone)
-                                && (state.signUpData.email ?: "".isValidEmail()) != true
-                                && state.signUpData.profileImageUri != null
-                                && state.signUpData.phoneVerified && check,
+                                && validPhoneNumber(state.signUpData.phone),
+                                //&& (state.signUpData.email ?: "".isValidEmail()) != true
+                                //&& state.signUpData.profileImageUri != null
+                                //&& state.signUpData.phoneVerified
+                                //&& check,
                         firstText = stringResource(id = R.string.back),
                         secondText = stringResource(id = R.string.next)
                     )
@@ -601,12 +602,11 @@ fun ProfileSetUpScreen(
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
                 }
-
-                if (state.isLoading) {
-                    CommonProgressBar()
-                }
             }
         }
+    }
+    if (state.isLoading) {
+        CommonProgressBar()
     }
 }
 

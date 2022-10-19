@@ -33,7 +33,11 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.OffsetMapping
+import androidx.compose.ui.text.input.TransformedText
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.Popup
@@ -408,9 +412,9 @@ fun getRoleList(): List<UserType> {
         UserType.PLAYER,
         UserType.COACH,
         UserType.PARENT,
-        UserType.GAME_STAFF,
+        //UserType.GAME_STAFF,
         UserType.PROGRAM_STAFF,
-        UserType.FAN,
+        //UserType.FAN,
         UserType.REFEREE
     )
 }
@@ -900,4 +904,44 @@ internal data class DropdownMenuPositionProvider(
         )
         return IntOffset(x, y)
     }
+}
+
+class MaskTransformation : VisualTransformation {
+    override fun filter(text: AnnotatedString): TransformedText {
+        return maskFilter(text.text)
+    }
+}
+
+//const val mask = "(***) *** ****"
+
+fun maskFilter(text: String): TransformedText {
+
+    val trimmed = if (text.length >= 10) text.substring(0..9) else text
+    var out = ""
+    for (i in trimmed.indices) {
+        if (i == 0) out += "("
+        out += trimmed[i]
+        if (i == 2) out += ") "
+        if (i == 5) out += " "
+    }
+
+    val numberOffsetTranslator = object : OffsetMapping {
+        override fun originalToTransformed(offset: Int): Int {
+            if (offset < 1) return offset
+            if (offset < 3) return offset + 1
+            if (offset < 6) return offset + 3
+            if (offset < 10) return offset + 4
+            return 14
+        }
+
+        override fun transformedToOriginal(offset: Int): Int {
+            /* if (offset <= 1) return offset
+            if (offset <= 4) return offset - 1
+            if (offset <= 9) return offset - 2*/
+            //return 13
+            return offset
+        }
+    }
+
+    return TransformedText(AnnotatedString(out), numberOffsetTranslator)
 }

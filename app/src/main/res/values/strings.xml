@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name">Baller</string>
     <string name="map_key">486006362864421</string>
     <string name="facebook_app_id">486006362864421</string>
@@ -105,6 +105,7 @@
     <string name="verify_number">Verify Phone Number</string>
     <string name="number_same_as_confirm">Verify Number must be same as Phone number</string>
     <string name="enter_number">Enter your phone number</string>
+    <string name="your_phone_number">Your Phone Number</string>
     <string name="verified">Verified</string>
     <string name="home_label">Home</string>
     <string name="events_label">Events</string>
@@ -232,7 +233,8 @@
     <string name="resend_code_in">Resend code in</string>
     <string name="pending_invitations">Pending Invitation</string>
     <string name="invite">Invite</string>
-    <string name="invite_members">Invite Members</string>
+    <string name="invited">Invited</string>
+    <string name="invite_members" translatable="false">Invite Members</string>
     <string name="please_add_players">Please invite players to the team.</string>
     <string name="practice">Practice</string>
     <string name="game">Game</string>
@@ -374,6 +376,7 @@
     <string name="player_requirements">Player Requirements</string>
     <string name="swap_profiles">Swap Profiles</string>
     <string name="add_new_profile">Add New Profile</string>
+    <string name="add_from_contacts">Add From Contacts</string>
     <string name="add_profile">Add Profile</string>
     <string name="user_type">User Type</string>
     <string name="procced">Proceed</string>
@@ -420,4 +423,5 @@
     <string name="update">Update Dates</string>
     <string name="unavailable_dates">Unavailable Dates</string>
     <string name="settings">Settings</string>
+    <string name="verification_code">Verification Code</string>
 </resources>

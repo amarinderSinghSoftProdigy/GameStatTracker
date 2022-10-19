@@ -6,10 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -20,10 +18,9 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.UserStorage
-import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.ui.features.components.*
-import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
+import com.softprodigy.ballerapp.ui.features.home.teams.chat.TeamsChatScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.leaderboard.LeaderBoardScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.roaster.RoasterScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.standing.StandingScreen
@@ -40,10 +37,10 @@ fun TeamsScreen(
     dismissDialog: (Boolean) -> Unit,
     OnTeamDetailsSuccess: (String, String) -> Unit,
     onCreateTeamClick: (Team?) -> Unit,
-    onBackPress: () -> Unit
+    onTeamItemClick: () -> Unit
 ) {
-    val dataStoreManager = DataStoreManager(LocalContext.current)
-    val role = dataStoreManager.getRole.collectAsState(initial = "")
+    //val dataStoreManager = DataStoreManager(LocalContext.current)
+    //val role = dataStoreManager.getRole.collectAsState(initial = "")
     val context = LocalContext.current
     val state = vm.teamUiState.value
     val onTeamSelectionChange = { team: Team ->
@@ -54,7 +51,7 @@ fun TeamsScreen(
 
     remember {
         scope.launch {
-            if (role.value != UserType.REFEREE.key) {
+            if (UserStorage.role != UserType.REFEREE.key) {
                 vm.getTeams()
             }
         }
@@ -92,7 +89,7 @@ fun TeamsScreen(
         }
     }
 
-    val tabData = if (role.value == UserType.REFEREE.key) {
+    val tabData = if (UserStorage.role == UserType.REFEREE.key) {
         listOf(TeamsTabItems.Chat)
     } else {
         listOf(
@@ -110,12 +107,13 @@ fun TeamsScreen(
     )
 
     Column {
-        if (role.value != UserType.REFEREE.key) {
+        if (UserStorage.role != UserType.REFEREE.key) {
             TeamsTopTabs(pagerState = pagerState, tabData = tabData)
-            TeamsContent(pagerState = pagerState, vm)
+            TeamsContent(pagerState = pagerState, onTeamItemClick, vm)
         } else {
             RefereeTeamsTopTabs(pagerState = pagerState, tabData = tabData)
-            EmptyScreen(singleText = true, heading = stringResource(id = R.string.coming_soon))
+            TeamsChatScreen(onTeamItemClick = onTeamItemClick)
+            //EmptyScreen(singleText = true, heading = stringResource(id = R.string.coming_soon))
         }
     }
 
@@ -135,7 +133,10 @@ fun TeamsScreen(
                 selected = state.selectedTeam,
                 showLoading = state.isLoading,
                 onCreateTeamClick = { onCreateTeamClick(state.selectedTeam) },
-                showCreateTeamButton = role.value.equals(UserType.COACH.key, ignoreCase = true)
+                showCreateTeamButton = UserStorage.role.equals(
+                    UserType.COACH.key,
+                    ignoreCase = true
+                )
             )
         }
     }
@@ -146,14 +147,14 @@ fun TeamsScreen(
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun TeamsContent(pagerState: PagerState, viewModel: TeamViewModel) {
+fun TeamsContent(pagerState: PagerState, onTeamItemClick: () -> Unit, viewModel: TeamViewModel) {
     HorizontalPager(
         state = pagerState,
         modifier = Modifier.fillMaxSize()
     ) { index ->
         when (index) {
             0 -> StandingScreen()
-            1 -> EmptyScreen(singleText = true, heading = stringResource(id = R.string.coming_soon))
+            1 -> TeamsChatScreen(onTeamItemClick = onTeamItemClick)
             2 -> RoasterScreen(viewModel)
             3 -> LeaderBoardScreen()
         }
