@@ -76,11 +76,11 @@ fun AddPlayersScreenUpdated(
         )
     )
 
-    remember {
+    /*remember {
         if (!teamId.isNullOrEmpty()) {
             vm.onEvent(TeamSetupUIEventUpdated.GetInvitedTeamPlayers(teamId))
         }
-    }
+    }*/
 
     BackHandler {
         onBackClick.invoke()
@@ -134,7 +134,7 @@ fun AddPlayersScreenUpdated(
             verticalArrangement = Arrangement.Top
         ) {
             UserFlowBackground(color = MaterialTheme.appColors.buttonColor.textEnabled) {
-                FoldableItem(
+                /*FoldableItem(
                     expanded = expanded.value,
                     headerBackground = MaterialTheme.appColors.material.surface,
                     headerBorder = BorderStroke(0.dp, Color.Transparent),
@@ -156,7 +156,7 @@ fun AddPlayersScreenUpdated(
                     }
                 )
 
-                AppDivider()
+                AppDivider()*/
 
                 Column(modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.size_16dp))) {
                     FlowRow {
