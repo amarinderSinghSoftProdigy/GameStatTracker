@@ -16,13 +16,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.data.response.team.Player
+import com.softprodigy.ballerapp.ui.features.components.AddNewPlayerDialog
 import com.softprodigy.ballerapp.ui.features.components.ImageButton
 import com.softprodigy.ballerapp.ui.features.home.teams.roaster.CoachListItem
 
 
 @Composable
 fun RoasterSelectionScreen(
-    onClose: () -> Unit
+    onRoasterSelectionClose: () -> Unit
 )  {
     Box(
         modifier = Modifier
@@ -97,7 +98,9 @@ fun RoasterSelectionScreen(
                 modifier = Modifier
                     .width(dimensionResource(id = R.dimen.size_24dp))
                     .height(dimensionResource(id = R.dimen.size_24dp)),
-                onClick = { onClose.invoke() },
+                onClick = { //onRoasterSelectionClose.invoke()
+
+                    },
             )
         }
     }

@@ -34,6 +34,7 @@ fun TeamNavigationController (
     isTracking: Boolean = false,
     onAddRosterClick: () -> Unit,
 ) {
+    var hasTracking = isTracking;
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -42,9 +43,12 @@ fun TeamNavigationController (
         Column(modifier = Modifier
             .fillMaxHeight()
             .fillMaxWidth()) {
-            teamHandler()
+            teamHandler(
+                onPreviousClick = { hasTracking = true },
+                onNextClick = { hasTracking = false }
+            )
 
-            if(isTracking)
+            if(hasTracking)
                 Tracking(
                     isTrackingEmpty = true,
                     onAddRosterClick = onAddRosterClick
@@ -56,7 +60,7 @@ fun TeamNavigationController (
 }
 
 @Composable
-inline fun teamHandler() {
+fun teamHandler(onPreviousClick: () -> Unit, onNextClick: () -> Unit) {
     Row(
         Modifier
             .fillMaxWidth()
@@ -101,7 +105,7 @@ inline fun teamHandler() {
                         .width(dimensionResource(id = R.dimen.size_32dp))
                         .height(dimensionResource(id = R.dimen.size_32dp)),
 
-                    onClick = { /*TODO*/ }
+                    onClick = { onPreviousClick.invoke() }
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
                 teamScore("50")

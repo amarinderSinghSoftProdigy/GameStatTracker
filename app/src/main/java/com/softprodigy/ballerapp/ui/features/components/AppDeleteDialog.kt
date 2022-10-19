@@ -542,7 +542,8 @@ fun PlayerListDialogItem(
                 src = BuildConfig.IMAGE_SERVER + player.profileImage,
                 modifier = Modifier
                     .size(dimensionResource(id = R.dimen.size_32dp))
-                    .clip(CircleShape).background(
+                    .clip(CircleShape)
+                    .background(
                         color = MaterialTheme.appColors.material.onSurface,
                         CircleShape
                     ),
@@ -709,7 +710,6 @@ fun SelectInvitationRoleDialog(
             },
         )
     }
-
 }
 
 
@@ -778,8 +778,8 @@ fun SelectInvitationRoleItem(
 fun AddNewPlayerDialog(
     onDismiss: () -> Unit,
     onSaveClick: () -> Unit,
-    playerName: String,
-    jerseyNumber: String,
+    playerName: String = "",
+    jerseyNumber: String = "",
 ) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
@@ -789,7 +789,7 @@ fun AddNewPlayerDialog(
         AlertDialog(
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
-            onDismissRequest = onDismiss,
+            onDismissRequest = {  },
             buttons = {
                 Column(
                     modifier = Modifier
@@ -828,9 +828,10 @@ fun AddNewPlayerDialog(
                             painter = painterResource(id = R.drawable.ic_close_color_picker),
                             contentDescription = "",
                             modifier = Modifier
+
                                 .size(dimensionResource(id = R.dimen.size_14dp))
                                 .clickable {
-                                    onDismiss()
+                                   /* onDismiss()*/
                                 },
                             tint = MaterialTheme.appColors.textField.label
                         )
@@ -895,7 +896,7 @@ fun AddNewPlayerDialog(
                 ) {
                     DialogButton(
                         text = stringResource(R.string.dialog_button_cancel),
-                        onClick = onDismiss,
+                        onClick = {  },
                         modifier = Modifier
                             .weight(1f)
                             .padding(all = dimensionResource(id = R.dimen.size_8dp)),
@@ -906,8 +907,8 @@ fun AddNewPlayerDialog(
                     DialogButton(
                         text = stringResource(R.string.save),
                         onClick = {
-                            onSaveClick.invoke()
-                            onDismiss.invoke()
+                           /* onSaveClick.invoke()
+                            onDismiss.invoke()*/
                         },
                         modifier = Modifier
                             .weight(1f)

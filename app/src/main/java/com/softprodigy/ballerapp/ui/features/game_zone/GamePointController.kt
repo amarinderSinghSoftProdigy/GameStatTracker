@@ -30,11 +30,13 @@ fun GamePointController (
         Row(
             Modifier
                 .fillMaxWidth()
+                .fillMaxHeight()
         ) {
             Spacer(modifier = Modifier
                 .background(colorResource(id = R.color.game_grid_border_color))
                 .width(dimensionResource(id = R.dimen.size_1dp))
-                .fillMaxHeight()
+                //.height(dimensionResource(id = R.dimen.size_368dp))
+
             )
             Column(
                 Modifier.
@@ -123,7 +125,7 @@ fun GamePointController (
                 Spacer(modifier = Modifier
                     .background(colorResource(id = R.color.game_grid_border_color))
                     .fillMaxWidth()
-                    .height(dimensionResource(id = R.dimen.size_1dp))
+                    .height(dimensionResource(id = R.dimen.size_half_dp))
                 )
             }
         }

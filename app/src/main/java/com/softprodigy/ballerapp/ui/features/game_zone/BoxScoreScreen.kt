@@ -25,7 +25,7 @@ import com.softprodigy.ballerapp.ui.theme.rubikFamily
 
 @Composable
 fun BoxScoreScreen(
-    onClose: () -> Unit
+    onBoxScoreClose: () -> Unit
 )  {
     Box(
         modifier = Modifier
@@ -65,7 +65,7 @@ fun BoxScoreScreen(
                         .width(dimensionResource(id = R.dimen.size_24dp))
                         .height(dimensionResource(id = R.dimen.size_24dp))
                         ,
-                    onClick = { /*TODO*/ },
+                    onClick = { onBoxScoreClose.invoke() },
                 )
             }
             Spacer(modifier = Modifier

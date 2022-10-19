@@ -23,6 +23,7 @@
     <color name="game_point_list_item_name_text_color">#FFFFFF</color>
     <color name="game_period_background_color">#17191B</color>
     <color name="game_period_selection_background_color">#0177C1</color>
+    <color name="game_period_list_pop_up_bg_color">#6617191B</color>
 
     <color name="game_bg_color">#BF17191B</color>
     <color name="game_add_roster_button_text_color">#FFFFFF</color>

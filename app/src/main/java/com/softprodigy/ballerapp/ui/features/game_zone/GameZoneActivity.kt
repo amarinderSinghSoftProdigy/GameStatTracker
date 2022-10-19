@@ -21,6 +21,7 @@ import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.softprodigy.ballerapp.common.IntentData
 import com.softprodigy.ballerapp.common.Route
+import com.softprodigy.ballerapp.ui.features.components.AddNewPlayerDialog
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
 import com.softprodigy.ballerapp.ui.theme.appColors
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,7 +39,6 @@ class GameZoneActivity : ComponentActivity() {
             systemUiController.isStatusBarVisible = false
             BallerAppMainTheme(customColor = Color.White) {
                 val navController = rememberNavController()
-
                 Scaffold(
                     backgroundColor = MaterialTheme.appColors.material.primary,
                     content = {
@@ -68,7 +68,6 @@ fun NavControllerComposable(
     fromSplash: Boolean = false
 ) {
 
-
     NavHost(navController, startDestination = Route.OVERVIEW_SCREEN) {
         composable(route = Route.OVERVIEW_SCREEN) {
             OverviewScreen(
@@ -89,19 +88,19 @@ fun NavControllerComposable(
 
         composable(route = Route.ROASTER_SELECTION_SCREEN) {
             RoasterSelectionScreen(
-                onClose = { navController.popBackStack() }
+                onRoasterSelectionClose = { navController.popBackStack() }
             )
         }
 
         composable(route = Route.BOX_SCORE_SCREEN) {
             BoxScoreScreen(
-                onClose = { navController.popBackStack() }
+                onBoxScoreClose = { navController.popBackStack() }
             )
         }
 
         composable(route = Route.GAME_SETTINGS) {
             GameSettingsScreen(
-                onClose = { navController.popBackStack() }
+                onCloseSettings = { navController.popBackStack() }
             )
         }
 

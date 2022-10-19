@@ -1,6 +1,7 @@
 package com.softprodigy.ballerapp.ui.features.game_zone
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
@@ -30,7 +31,7 @@ import com.softprodigy.ballerapp.ui.theme.rubikFamily
 
 @Composable
 fun GameSettingsScreen(
-    onClose: () -> Unit
+    onCloseSettings: () -> Unit
 )  {
     Box(
         modifier = Modifier
@@ -43,7 +44,7 @@ fun GameSettingsScreen(
                 .fillMaxHeight()
                 .fillMaxWidth(),
         ) {
-            gameSettingsNavigation()
+            gameSettingsNavigation(onCloseSettings)
             Spacer(modifier = Modifier
                 .fillMaxWidth()
                 .height(dimensionResource(id = R.dimen.size_1dp))
@@ -55,7 +56,7 @@ fun GameSettingsScreen(
 }
 
 @Composable
-private fun gameSettingsNavigation() {
+private fun gameSettingsNavigation(onCloseSettings: () -> Unit) {
     Box(modifier = Modifier
         .fillMaxWidth()
         .height(dimensionResource(id = R.dimen.size_46dp)),
@@ -84,7 +85,8 @@ private fun gameSettingsNavigation() {
             modifier = Modifier
                 .fillMaxHeight()
                 .padding(end = dimensionResource(id = R.dimen.size_10dp))
-                .align(Alignment.TopEnd),
+                .align(Alignment.TopEnd)
+                .clickable { onCloseSettings.invoke() },
             verticalArrangement = Arrangement.Center
         ) {
             ImageButton(

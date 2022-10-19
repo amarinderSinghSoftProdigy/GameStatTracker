@@ -183,75 +183,48 @@ fun pointListItem(
                 // drop down menu
                 DropdownMenu(
                     expanded = expanded,
-                    onDismissRequest = {
-                        expanded = false
-                    },
-                    modifier = Modifier.background(colorResource(id = R.color.game_bg_color), RoundedCornerShape(
-                        dimensionResource(id = R.dimen.size_8dp))),
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier.background(colorResource(id = R.color.game_bg_color))
+                        .clip(RoundedCornerShape(size = dimensionResource(id = R.dimen.size_8dp))),
                 ) {
                     // adding items
                     pointListMenuItems.forEachIndexed { itemIndex, itemValue ->
                         DropdownMenuItem(
                             onClick = {
-                                Toast.makeText(contextForToast, itemValue, Toast.LENGTH_SHORT)
-                                    .show()
+                                Toast.makeText(contextForToast, itemValue, Toast.LENGTH_SHORT).show()
                                 expanded = false
                             },
                             enabled = (itemIndex != disabledItem),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(all = 0.dp),
+                            modifier = Modifier.fillMaxWidth(),
+                            ) {
 
-                        ) {
-
-                                AppText(
-                                    text = itemValue,
-                                    modifier = Modifier.fillMaxWidth(),
-                                    textAlign = TextAlign.Center,
-                                    color = colorResource(id = R.color.game_point_list_item_text_color),
-                                    fontWeight = FontWeight.W400,
-                                    fontFamily = rubikFamily,
-                                    fontSize = dimensionResource(id = R.dimen.size_12dp).value.sp,
-                                )
-
-
+                            AppText(
+                                text = itemValue,
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.Center,
+                                color = colorResource(id = R.color.game_point_list_item_text_color),
+                                fontWeight = FontWeight.W400,
+                                fontFamily = rubikFamily,
+                                fontSize = dimensionResource(id = R.dimen.size_12dp).value.sp,
+                            )
                         }
-                        Spacer(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(dimensionResource(id = R.dimen.size_1dp))
-                                .background(colorResource(id = R.color.game_center_list_item_divider_color))
-                        )
+                        if(pointListMenuItems.size - 1 != itemIndex)
+                            Spacer(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(dimensionResource(id = R.dimen.size_1dp))
+                                    .background(colorResource(id = R.color.game_center_list_item_divider_color))
+                            )
                     }
                 }
-
-                /*Box {
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false },
-                    ) {
-                        DropdownMenuItem(onClick = { expanded = false }) {
-                            Text("Edit")
-                        }
-                        DropdownMenuItem(onClick = { expanded = false }) {
-                            Text("Save")
-                        }
-                        DropdownMenuItem(onClick = { expanded = false }) {
-                            Text("Add New")
-                        }
-                    }
-                }*/
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
-
             }
-
         }
         Spacer(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(dimensionResource(id = R.dimen.size_1dp))
                 .background(colorResource(id = R.color.game_center_list_item_divider_color))
-                //.background(Color.Red)
         )
     }
 }
