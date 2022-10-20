@@ -8,6 +8,7 @@ import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
 import com.softprodigy.ballerapp.data.request.UpdateTeamRequest
 import com.softprodigy.ballerapp.data.response.*
 import com.softprodigy.ballerapp.data.response.homepage.HomePageCoachModel
+import com.softprodigy.ballerapp.data.response.invitation.UserRoleModel
 import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
@@ -131,7 +132,7 @@ class TeamRepository @Inject constructor(
         }
     }
 
-    override suspend fun getUserRoles(): ResultWrapper<BaseResponse<ArrayList<String>>> {
+    override suspend fun getUserRoles(): ResultWrapper<BaseResponse<ArrayList<UserRoleModel>>> {
         return safeApiCall(dispatcher) {
             service.getUserRoles()
         }

@@ -4,6 +4,7 @@ import com.softprodigy.ballerapp.common.ApiConstants
 import com.softprodigy.ballerapp.data.request.*
 import com.softprodigy.ballerapp.data.response.*
 import com.softprodigy.ballerapp.data.response.homepage.HomePageCoachModel
+import com.softprodigy.ballerapp.data.response.invitation.UserRoleModel
 import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.data.response.team.*
 import com.softprodigy.ballerapp.data.response.team.Team
@@ -114,7 +115,7 @@ open interface APIService {
     suspend fun getHomePageDetails(): BaseResponse<HomePageCoachModel>
 
     @GET(ApiConstants.GET_USER_ROLE)
-    suspend fun getUserRoles(): BaseResponse<ArrayList<String>>
+    suspend fun getUserRoles(): BaseResponse<ArrayList<UserRoleModel>>
 
     @GET(ApiConstants.GET_TEAM_PLAYER_BY_ID)
     suspend fun getTeamPlayerById(@Query("teamId") id: String): BaseResponse<ArrayList<PlayerDetails>>

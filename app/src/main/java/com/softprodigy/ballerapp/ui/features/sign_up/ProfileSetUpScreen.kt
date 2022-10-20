@@ -63,6 +63,8 @@ import java.util.*
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun ProfileSetUpScreen(
+    countryCode:String="",
+    mobileNumber:String="",
     onNext: () -> Unit,
     onBack: () -> Unit,
     signUpViewModel: SignUpViewModel
@@ -147,7 +149,23 @@ fun ProfileSetUpScreen(
     val genderList =
         listOf(stringResource(id = R.string.male), stringResource(id = R.string.female))
 
+    LaunchedEffect(key1 = mobileNumber, key2 = countryCode) {
 
+        if(mobileNumber.isNotEmpty()){
+        signUpViewModel.onEvent(
+            SignUpUIEvent.OnPhoneNumberChanged(
+                mobileNumber
+            )
+        )}
+
+        if(countryCode.isNotEmpty()){
+        signUpViewModel.onEvent(
+            SignUpUIEvent.OnCountryCode(
+                countryCode
+            )
+        )
+        }
+    }
     LaunchedEffect(key1 = Unit) {
 
         signUpViewModel.signUpChannel.collect { uiEvent ->

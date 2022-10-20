@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
+import com.softprodigy.ballerapp.data.response.invitation.UserRoleModel
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -34,7 +35,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                     showRoleDialog = true,
                     selectedInvitation = event.invitation,
                     teamId = event.invitation.team._id,
-                    showDeclineDialog = true,
+                    showDeclineDialog = false,
                 )
             }
             is InvitationEvent.OnDeclineCLick -> {
@@ -84,6 +85,10 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                 invitationState.value =
                     invitationState.value.copy(showGuardianDialog = event.showGuardianDialog)
             }
+            is InvitationEvent.OnAddPlayerDialogClick -> {
+                invitationState.value =
+                    invitationState.value.copy(showAddPlayerDialog = event.showAddPlayerDialog)
+            }
 
             InvitationEvent.OnClearGuardianValues -> {
                 invitationState.value =
@@ -104,11 +109,11 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                 viewModelScope.launch {
                     acceptTeamInvitation(
                         invitationId = invitationState.value.selectedInvitation.id,
-                        role = invitationState.value.selectedRole,
+                        role = invitationState.value.selectedRole.key,
                         playerGender = invitationState.value.selectedGender,
                         playerId = invitationState.value.selectedPlayerId
                     )
-                    invitationState.value = invitationState.value.copy(selectedRole = "")
+                    invitationState.value = invitationState.value.copy(selectedRole = UserRoleModel())
                 }
             }
         }

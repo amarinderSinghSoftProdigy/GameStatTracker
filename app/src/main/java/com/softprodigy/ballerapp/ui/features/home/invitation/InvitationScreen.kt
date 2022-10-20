@@ -1,19 +1,17 @@
 package com.softprodigy.ballerapp.ui.features.home.invitation
 
+import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.provider.ContactsContract
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -33,23 +31,24 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.apiToUIDateFormat
-import com.softprodigy.ballerapp.ui.features.components.CoilImage
-import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
-import com.softprodigy.ballerapp.ui.features.components.DeleteDialog
-import com.softprodigy.ballerapp.ui.features.components.Placeholder
-import com.softprodigy.ballerapp.ui.features.components.SelectGuardianRoleDialog
-import com.softprodigy.ballerapp.ui.features.components.SelectInvitationRoleDialog
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.hasContactPermission
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.requestContactPermission
 import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
 import com.softprodigy.ballerapp.ui.theme.ColorButtonRed
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun InvitationScreen() {
+fun InvitationScreen(vmSetupTeam: SetupTeamViewModelUpdated,onNewProfileIntent:(countryCode:String,mobileNumber:String)-> Unit) {
     val vm: InvitationViewModel = hiltViewModel()
     val state = vm.invitationState.value
     val context = LocalContext.current
@@ -104,11 +103,10 @@ fun InvitationScreen() {
                 vm.onEvent(InvitationEvent.OnClearValues)
             },
             onConfirmClick = { /*vm.onEvent(InvitationEvent.OnRoleConfirmClick)*/
-                if (state.selectedRole == "Guardian") {
+                if (state.selectedRole.value == "Guardian") {
                     vm.onEvent(InvitationEvent.OnRoleConfirmClick)
                     vm.onEvent(InvitationEvent.OnGuardianDialogClick(true))
-                }
-                else {
+                } else {
                     vm.onEvent(InvitationEvent.OnInvitationConfirm)
                     vm.onEvent(InvitationEvent.OnRoleDialogClick(false))
                 }
@@ -144,6 +142,9 @@ fun InvitationScreen() {
             onDismiss = {
                 vm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
                 vm.onEvent(InvitationEvent.OnClearGuardianValues)
+            },
+            onChildNotListedCLick = {
+                vm.onEvent(InvitationEvent.OnAddPlayerDialogClick(true))
             }
         )
     }
@@ -162,7 +163,80 @@ fun InvitationScreen() {
             }
         )
     }
+
+    if (state.showAddPlayerDialog) {
+        InviteTeamMembersDialog(
+            onBack = {
+                vm.onEvent(InvitationEvent.OnRoleDialogClick(true))
+                vm.onEvent(InvitationEvent.OnGuardianDialogClick(true))
+                vm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
+            },
+            onConfirmClick = {
+//                onNewProfileIntent.invoke("+12","8888888888")
+//                vm.onEvent(InvitationEvent.OnRoleDialogClick(false))
+//                vm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
+//                vm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
+            },
+            onIndexChange = { index ->
+                vmSetupTeam.onEvent(
+                    TeamSetupUIEventUpdated.OnIndexChange(
+                        index = index
+                    )
+                )
+
+               /* when (PackageManager.PERMISSION_GRANTED) {
+                    //First time asking for permission ... to be granted by user
+                    ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.READ_CONTACTS
+                    ) -> {
+                        launchContactForResult.launch(contactIntent)
+                    }
+                    else -> {
+                        //If permission has been already granted
+                        launchContactPermission.launch(Manifest.permission.READ_CONTACTS)
+                    }
+                }*/
+                if (hasContactPermission(context)) {
+                    val intent =
+                        Intent(Intent.ACTION_GET_CONTENT)
+                    intent.type =
+                        ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
+                    (context as Activity ).startActivityForResult(
+                        intent,
+                        AppConstants.REQUEST_CONTACT_CODE,
+                        null
+                    )
+                } else {
+                    requestContactPermission(context, (context as Activity ))
+                }
+            },
+            inviteList = vmSetupTeam.teamSetupUiState.value.inviteList,
+            onNameValueChange = { index, name ->
+                vmSetupTeam.onEvent(
+                    TeamSetupUIEventUpdated.OnNameValueChange(
+                        index = index,
+                        name
+                    )
+                )
+
+            },
+            onEmailValueChange = { index, email ->
+                vmSetupTeam.onEvent(
+                    TeamSetupUIEventUpdated.OnEmailValueChange(
+                        index = index,
+                        email
+                    )
+                )
+
+            },
+            onInviteCountValueChange = { addIntent ->
+                vmSetupTeam.onEvent(TeamSetupUIEventUpdated.OnInviteCountValueChange(addIntent = true))
+            }
+        )
+    }
 }
+
 
 @Composable
 fun InvitationItem(
