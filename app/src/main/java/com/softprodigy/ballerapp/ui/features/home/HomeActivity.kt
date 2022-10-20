@@ -353,7 +353,7 @@ fun NavControllerComposable(
                         setupTeamViewModelUpdated,
                         teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
                     )
-                    navController.navigate(Route.ADD_PLAYER_SCREEN + "/${UserStorage.teamId}")
+                    navController.navigate(Route.ADD_MY_PLAYER_SCREEN + "/${UserStorage.teamId}")
                 },
                 setupTeamViewModelUpdated = setupTeamViewModelUpdated
             )
@@ -659,7 +659,7 @@ fun NavControllerComposable(
                     setupTeamViewModelUpdated,
                     teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
                 )
-                navController.navigate(Route.ADD_PLAYER_SCREEN + "/${UserStorage.teamId}")
+                navController.navigate(Route.ADD_MY_PLAYER_SCREEN + "/${UserStorage.teamId}")
             }, venue = venue, onVenueClick = {
                 navController.navigate(Route.SELECT_VENUE)
             })
@@ -695,7 +695,7 @@ fun NavControllerComposable(
         }
 
         composable(
-            route = Route.ADD_PLAYER_SCREEN + "/{teamId}",
+            route = Route.ADD_MY_PLAYER_SCREEN + "/{teamId}",
             arguments = listOf(
                 navArgument("teamId") {
                     type = NavType.StringType

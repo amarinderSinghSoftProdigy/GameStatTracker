@@ -54,6 +54,7 @@ object Route {
     const val SELECT_USER_TYPE = "selectUserTypeScreen"
     const val TEAM_SETUP_SCREEN = "teamSetupScreen"
     const val ADD_PLAYER_SCREEN = "addPlayerScreen"
+    const val ADD_MY_PLAYER_SCREEN = "addMyPlayerScreen"
     const val PROFILE_SETUP_SCREEN = "profileSetupScreen"
     const val ROASTER_SCREEN = "roasterScreen"
     const val MANAGED_TEAM_SCREEN = "managedTeamScreen"
