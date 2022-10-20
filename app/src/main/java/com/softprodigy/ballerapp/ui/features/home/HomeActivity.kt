@@ -2,8 +2,12 @@ package com.softprodigy.ballerapp.ui.features.home
 
 //import com.softprodigy.ballerapp.ui.features.home.events.NewEventScreen
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
+import android.database.Cursor
+import android.net.Uri
 import android.os.Bundle
+import android.provider.ContactsContract
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
@@ -20,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowCompat
+import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -27,11 +32,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.cometchat.pro.constants.CometChatConstants
+import com.cometchat.pro.models.Conversation
+import com.cometchat.pro.models.Group
+import com.cometchat.pro.models.User
+import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
 import com.softprodigy.ballerapp.MainActivity
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.IntentData
 import com.softprodigy.ballerapp.common.Route
+import com.softprodigy.ballerapp.common.Route.CREATE_NEW_CHAT_CONVO
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.ui.features.components.*

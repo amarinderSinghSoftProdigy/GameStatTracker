@@ -362,7 +362,7 @@
     <string name="you_received">You received a %1$s</string>
     <string name="you_sent">You sent a %1$s </string>
     <string name="you_wont_be_able_send_or_receive_messages">You won\'t be able send or receive messages</string>
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge"/>
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar"/>
     <style name="DialogAnimation">
         <item name="android:windowEnterAnimation">@anim/animate_slides_down</item>
         <item name="android:windowExitAnimation">@anim/animate_slides_up</item>
