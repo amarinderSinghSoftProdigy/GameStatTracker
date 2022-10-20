@@ -1,10 +1,12 @@
 package com.softprodigy.ballerapp.ui.features.home.invitation
 
 import com.softprodigy.ballerapp.data.response.PlayerDetails
+import com.softprodigy.ballerapp.data.response.UserRoles
 import com.softprodigy.ballerapp.data.response.invitation.UserRoleModel
 
 data class InvitationState(
     val invitations: ArrayList<Invitation> = arrayListOf(),
+    val roles: List<UserRoles> = mutableListOf(),
     val roles: ArrayList<UserRoleModel> = arrayListOf(),
     val showRoleDialog: Boolean = false,
     val showDeclineDialog: Boolean = false,

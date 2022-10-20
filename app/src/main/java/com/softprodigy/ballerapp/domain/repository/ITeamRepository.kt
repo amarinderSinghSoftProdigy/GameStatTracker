@@ -70,7 +70,7 @@ interface ITeamRepository {
 
     suspend fun getHomePageDetails(): ResultWrapper<BaseResponse<HomePageCoachModel>>
 
-    suspend fun getUserRoles(): ResultWrapper<BaseResponse<ArrayList<UserRoleModel>>>
+    suspend fun getUserRoles(): ResultWrapper<BaseResponse<List<UserRoles>>>
 
     suspend fun getPlayerById(id: String): ResultWrapper<BaseResponse<ArrayList<PlayerDetails>>>
 

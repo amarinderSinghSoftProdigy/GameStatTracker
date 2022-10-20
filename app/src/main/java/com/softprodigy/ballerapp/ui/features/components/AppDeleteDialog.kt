@@ -51,6 +51,7 @@ import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.response.ParentDetails
 import com.softprodigy.ballerapp.data.response.PlayerDetails
 import com.softprodigy.ballerapp.data.response.SwapUser
+import com.softprodigy.ballerapp.data.response.UserRoles
 import com.softprodigy.ballerapp.data.response.invitation.UserRoleModel
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
@@ -790,11 +791,11 @@ fun CheckBoxButton(icon: Painter, tintColor: String, selected: Boolean, onItemCl
 fun SelectInvitationRoleDialog(
     onDismiss: () -> Unit,
     onConfirmClick: () -> Unit,
-    onSelectionChange: (UserRoleModel) -> Unit,
+    onSelectionChange: (String) -> Unit,
     title: String,
-    selected: UserRoleModel?,
+    selected: String?,
     showLoading: Boolean,
-    roleList: ArrayList<UserRoleModel>
+    roleList: List<UserRoles>
 ) {
 
     BallerAppMainTheme {
@@ -851,10 +852,10 @@ fun SelectInvitationRoleDialog(
 
                         items(roleList) { role ->
                             SelectInvitationRoleItem(
-                                role = role,
-                                isSelected = selected == role,
+                                role = role.value,
+                                isSelected = selected == role.key,
                                 onItemClick = {
-                                    onSelectionChange.invoke(it)
+                                    onSelectionChange.invoke(role.key)
                                 })
                         }
                     }
@@ -888,7 +889,7 @@ fun SelectInvitationRoleDialog(
                             modifier = Modifier
                                 .weight(1f),
                             border = ButtonDefaults.outlinedBorder,
-                            enabled = (selected?.value?: "").isNotEmpty(),
+                            enabled = (selected ?: "").isNotEmpty(),
                             onlyBorder = false,
                         )
                     }
@@ -903,8 +904,8 @@ fun SelectInvitationRoleDialog(
 
 @Composable
 fun SelectInvitationRoleItem(
-    role: UserRoleModel,
-    onItemClick: (UserRoleModel) -> Unit,
+    role: String,
+    onItemClick: (String) -> Unit,
     isSelected: Boolean
 ) {
     Row(
@@ -931,7 +932,7 @@ fun SelectInvitationRoleItem(
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
 
             Text(
-                text = role.value,
+                text = role,
                 modifier = Modifier.weight(1f),
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.W400

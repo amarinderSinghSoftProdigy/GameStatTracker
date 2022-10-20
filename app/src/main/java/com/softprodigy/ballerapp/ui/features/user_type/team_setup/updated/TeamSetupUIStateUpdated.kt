@@ -1,6 +1,7 @@
 package com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated
 
 import com.softprodigy.ballerapp.data.request.Address
+import com.softprodigy.ballerapp.data.response.UserRoles
 import com.softprodigy.ballerapp.data.response.team.Player
 
 data class TeamSetupUIStateUpdated(
@@ -10,6 +11,7 @@ data class TeamSetupUIStateUpdated(
     val teamName: String = "",
     val teamImageUri: String? = null,
     val teamImageServerUrl: String = "",
+    val roles: List<UserRoles> = mutableListOf(),
 
     val isLoading: Boolean = false,
     val players: ArrayList<Player> = ArrayList(),

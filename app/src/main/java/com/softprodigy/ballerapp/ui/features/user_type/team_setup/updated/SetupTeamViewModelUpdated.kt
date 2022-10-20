@@ -47,14 +47,17 @@ class SetupTeamViewModelUpdated @Inject constructor(
                 .apply {
                     add(InviteObject())
                     add(InviteObject())
-                    add(InviteObject())
-                    add(InviteObject())
-                    add(InviteObject())
                 })
+
     }
 
     fun onEvent(event: TeamSetupUIEventUpdated) {
         when (event) {
+            is TeamSetupUIEventUpdated.GetRoles -> {
+                viewModelScope.launch {
+                    getUserRoles()
+                }
+            }
             is TeamSetupUIEventUpdated.GetInvitedTeamPlayers -> {
                 viewModelScope.launch {
                     getInvitePlayers(event.teamId)
@@ -255,6 +258,52 @@ class SetupTeamViewModelUpdated @Inject constructor(
 
 
     }
+
+
+    private suspend fun getUserRoles() {
+        _teamSetupUiState.value = _teamSetupUiState.value.copy(isLoading = true)
+        val userRoles = teamRepo.getUserRoles()
+        _teamSetupUiState.value = _teamSetupUiState.value.copy(isLoading = false)
+        when (userRoles) {
+            is ResultWrapper.GenericError -> {
+                _teamSetupChannel.send(
+                    TeamSetupChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${userRoles.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _teamSetupChannel.send(
+                    TeamSetupChannel.ShowToast(
+                        UiText.DynamicString(
+                            userRoles.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                userRoles.value.let { response ->
+                    if (response.status) {
+                        _teamSetupUiState.value =
+                            _teamSetupUiState.value.copy(
+                                roles = response.data
+                            )
+                    } else {
+                        _teamSetupChannel.send(
+                            TeamSetupChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
 
     private fun resetMemberValues() {
         _teamSetupUiState.value =
