@@ -55,6 +55,7 @@ import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.ui.features.home.events.schedule.Space
 import com.softprodigy.ballerapp.ui.features.venue.Location
 import com.softprodigy.ballerapp.ui.theme.ButtonColor
+import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayLight
 import com.softprodigy.ballerapp.ui.theme.appColors
 import com.softprodigy.ballerapp.ui.utils.CommonUtils
@@ -284,15 +285,19 @@ fun PagerIndicator(size: Int, currentPage: Int) {
 
 @Composable
 fun Indicator(isSelected: Boolean) {
-    val width = animateDpAsState(targetValue = dimensionResource(id = R.dimen.size_10dp))
+    val width =
+        if (isSelected) animateDpAsState(targetValue = dimensionResource(id = R.dimen.size_24dp)) else animateDpAsState(
+            targetValue = dimensionResource(id = R.dimen.size_10dp)
+        )
+
 
     Box(
         modifier = Modifier
-            .padding(dimensionResource(id = R.dimen.size_1dp))
+            .padding(dimensionResource(id = R.dimen.size_3dp))
             .height(dimensionResource(id = R.dimen.size_10dp))
             .width(width = width.value)
             .clip(CircleShape)
-            .background(if (isSelected) Color.Black else Color.Gray)
+            .background(if (isSelected) Color.White else ColorBWBlack.copy(0.3f))
     )
 }
 
