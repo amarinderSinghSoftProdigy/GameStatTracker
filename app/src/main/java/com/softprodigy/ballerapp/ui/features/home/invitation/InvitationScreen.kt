@@ -1,14 +1,9 @@
 package com.softprodigy.ballerapp.ui.features.home.invitation
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
 import android.provider.ContactsContract
 import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -31,7 +26,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
@@ -39,20 +33,40 @@ import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.apiToUIDateFormat
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.hasContactPermission
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.requestContactPermission
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.*
 import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
 import com.softprodigy.ballerapp.ui.theme.ColorButtonRed
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun InvitationScreen(vmSetupTeam: SetupTeamViewModelUpdated,onNewProfileIntent:(countryCode:String,mobileNumber:String)-> Unit) {
+fun InvitationScreen(vmSetupTeam: SetupTeamViewModelUpdated,onNewProfileIntent:(countryCode:String,mobileNumber:String)-> Unit,
+                     onInvitationSuccess: () -> Unit
+) {
     val vm: InvitationViewModel = hiltViewModel()
     val state = vm.invitationState.value
     val context = LocalContext.current
+    val teamState = vmSetupTeam.teamSetupUiState.value
 
+    LaunchedEffect(key1 = Unit) {
+        vmSetupTeam.teamSetupChannel.collect { uiEvent ->
+            when (uiEvent) {
+                is TeamSetupChannel.ShowToast -> {
+                    Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
+                        .show()
+                }
+                is TeamSetupChannel.OnInvitationSuccess -> {
+                    Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
+                        .show()
+                    onInvitationSuccess.invoke()
+                vm.onEvent(InvitationEvent.OnRoleDialogClick(false))
+                vm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
+                vm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
+
+                }
+                else -> Unit
+            }
+        }
+    }
 
     LaunchedEffect(key1 = true) {
         vm.invitationChannel.collect {
@@ -103,7 +117,7 @@ fun InvitationScreen(vmSetupTeam: SetupTeamViewModelUpdated,onNewProfileIntent:(
                 vm.onEvent(InvitationEvent.OnClearValues)
             },
             onConfirmClick = { /*vm.onEvent(InvitationEvent.OnRoleConfirmClick)*/
-                if (state.selectedRole.value == "Guardian") {
+                if (state.selectedRoleKey == "guardian" || (state.selectedRoleKey == "player")) {
                     vm.onEvent(InvitationEvent.OnRoleConfirmClick)
                     vm.onEvent(InvitationEvent.OnGuardianDialogClick(true))
                 } else {
@@ -111,16 +125,18 @@ fun InvitationScreen(vmSetupTeam: SetupTeamViewModelUpdated,onNewProfileIntent:(
                     vm.onEvent(InvitationEvent.OnRoleDialogClick(false))
                 }
             },
-            onSelectionChange = { vm.onEvent(InvitationEvent.OnRoleClick(role = it)) },
+            onSelectionChange = { vm.onEvent(InvitationEvent.OnRoleClick(roleKey = it)) },
             title = stringResource(id = R.string.what_is_your_role),
-            selected = state.selectedRole,
+            selected = state.selectedRoleKey,
             showLoading = state.showLoading,
             roleList = state.roles
         )
     }
 
     if (state.showGuardianDialog) {
-        SelectGuardianRoleDialog(onBack = {
+        SelectGuardianRoleDialog(
+            state.selectedRoleKey,
+            onBack = {
             vm.onEvent(InvitationEvent.OnRoleDialogClick(true))
             vm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
         },
@@ -130,11 +146,7 @@ fun InvitationScreen(vmSetupTeam: SetupTeamViewModelUpdated,onNewProfileIntent:(
                 vm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
             },
             onSelectionChange = { vm.onEvent(InvitationEvent.OnGuardianClick(guardian = it)) },
-            title = stringResource(
-                R.string.select_the_players_guardian
-            ),
             selected = state.selectedGuardian,
-            showLoading = state.showLoading,
             guardianList = state.playerDetails,
             onValueSelected = {
                 vm.onEvent(InvitationEvent.OnValuesSelected(it))
@@ -172,10 +184,9 @@ fun InvitationScreen(vmSetupTeam: SetupTeamViewModelUpdated,onNewProfileIntent:(
                 vm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
             },
             onConfirmClick = {
-//                onNewProfileIntent.invoke("+12","8888888888")
-//                vm.onEvent(InvitationEvent.OnRoleDialogClick(false))
-//                vm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
-//                vm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
+                if (state.selectedInvitation.team._id.isNotEmpty()) {
+                    vmSetupTeam.onEvent(TeamSetupUIEventUpdated.OnInviteTeamMembers(state.selectedInvitation.team._id))
+                }
             },
             onIndexChange = { index ->
                 vmSetupTeam.onEvent(
@@ -184,34 +195,21 @@ fun InvitationScreen(vmSetupTeam: SetupTeamViewModelUpdated,onNewProfileIntent:(
                     )
                 )
 
-               /* when (PackageManager.PERMISSION_GRANTED) {
-                    //First time asking for permission ... to be granted by user
-                    ContextCompat.checkSelfPermission(
-                        context,
-                        Manifest.permission.READ_CONTACTS
-                    ) -> {
-                        launchContactForResult.launch(contactIntent)
-                    }
-                    else -> {
-                        //If permission has been already granted
-                        launchContactPermission.launch(Manifest.permission.READ_CONTACTS)
-                    }
-                }*/
                 if (hasContactPermission(context)) {
                     val intent =
                         Intent(Intent.ACTION_GET_CONTENT)
                     intent.type =
                         ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
-                    (context as Activity ).startActivityForResult(
+                    (context as Activity).startActivityForResult(
                         intent,
                         AppConstants.REQUEST_CONTACT_CODE,
                         null
                     )
                 } else {
-                    requestContactPermission(context, (context as Activity ))
+                    requestContactPermission(context, (context as Activity))
                 }
             },
-            inviteList = vmSetupTeam.teamSetupUiState.value.inviteList,
+            inviteList = teamState.inviteList,
             onNameValueChange = { index, name ->
                 vmSetupTeam.onEvent(
                     TeamSetupUIEventUpdated.OnNameValueChange(
@@ -232,6 +230,20 @@ fun InvitationScreen(vmSetupTeam: SetupTeamViewModelUpdated,onNewProfileIntent:(
             },
             onInviteCountValueChange = { addIntent ->
                 vmSetupTeam.onEvent(TeamSetupUIEventUpdated.OnInviteCountValueChange(addIntent = true))
+            }, OnCountryValueChange = { index, code ->
+                vmSetupTeam.onEvent(
+                    TeamSetupUIEventUpdated.OnCountryValueChange(
+                        index = index,
+                        code = code
+                    )
+                )
+            }, roles = state.roles, onRoleValueChange = { index, role ->
+                vmSetupTeam.onEvent(
+                    TeamSetupUIEventUpdated.OnRoleValueChange(
+                        index = index,
+                        role = role
+                    )
+                )
             }
         )
     }

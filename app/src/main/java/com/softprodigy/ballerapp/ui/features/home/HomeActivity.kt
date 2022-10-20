@@ -747,6 +747,8 @@ fun NavControllerComposable(
             InvitationScreen(setupTeamViewModelUpdated, onNewProfileIntent = { countryCode, mobileNumber->
                 navController.navigate(Route.ADD_PROFILE_SCREEN + "/$countryCode/$mobileNumber")
 
+            }, onInvitationSuccess = {
+                navController.popBackStack()
             })
         }
         composable(route = Route.TEAM_SETUP_SCREEN) { backStackEntry ->

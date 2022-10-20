@@ -321,7 +321,7 @@ fun ProfileSetUpScreen(
                             AppDivider()
 
                             EditFields(
-                                state.signUpData.firstName,
+                               data = state.signUpData.firstName,
                                 onValueChange = {
                                     if (it.length <= maxChar)
                                         signUpViewModel.onEvent(
@@ -330,7 +330,7 @@ fun ProfileSetUpScreen(
                                             )
                                         )
                                 },
-                                stringResource(id = R.string.first_name),
+                               head = stringResource(id = R.string.first_name),
                                 isError = !validName(state.signUpData.firstName) && state.signUpData.firstName.isNotEmpty() || state.signUpData.firstName.length > 30,
                                 errorMessage = stringResource(id = R.string.valid_first_name),
                                 keyboardOptions = KeyboardOptions(
@@ -479,6 +479,15 @@ fun ProfileSetUpScreen(
 
                             AppDivider()
                             Column {
+                                Row(verticalAlignment = Alignment.CenterVertically){
+                                    AppText(
+                                        text = stringResource(id = R.string.phone_num),
+                                        style = MaterialTheme.typography.h6,
+                                        color = ColorBWBlack,
+                                        modifier = Modifier
+                                            .padding(start = dimensionResource(id = R.dimen.size_16dp))
+                                    )
+                                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -526,17 +535,10 @@ fun ProfileSetUpScreen(
                                             readOnly = state.signUpData.phoneVerified,
                                             cursorColor = Color.Black,
                                             content = {
-                                                AppText(
-                                                    text = stringResource(id = R.string.phone_num),
-                                                    style = MaterialTheme.typography.h6,
-                                                    color = ColorBWBlack,
-                                                    modifier = Modifier
-                                                        .align(Alignment.CenterStart)
-                                                        .padding(start = dimensionResource(id = R.dimen.size_16dp))
-                                                )
                                             }
                                         )
                                     }
+                                }
                                 }
 
                                 if ((!validPhoneNumber(state.signUpData.phone) && state.signUpData.phone.isNotEmpty())) {

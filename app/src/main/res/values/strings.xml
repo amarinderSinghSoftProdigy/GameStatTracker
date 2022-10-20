@@ -430,4 +430,7 @@
     <string name="new_group_created_successfully">New group created successfully.</string>
     <string name="user_has_not_registered_with_chat">This user has not registered with chat facility yet.</string>
     <string name="select_role">Select Role</string>
+    <string name="mobile_number">Mobile Number</string>
+    <string name="my_guardian_not_listed">My guardian is not listed</string>
+    <string name="confirm_your_guardin">Confirm your guardian</string>
 </resources>

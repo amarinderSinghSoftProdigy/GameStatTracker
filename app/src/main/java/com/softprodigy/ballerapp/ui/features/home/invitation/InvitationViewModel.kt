@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
-import com.softprodigy.ballerapp.data.response.invitation.UserRoleModel
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -52,7 +51,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
 
             }
             is InvitationEvent.OnRoleClick -> {
-                invitationState.value = invitationState.value.copy(selectedRole = event.role)
+                invitationState.value = invitationState.value.copy(selectedRoleKey = event.roleKey)
 
             }
             is InvitationEvent.OnDeclineConfirmClick -> {
@@ -109,11 +108,11 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                 viewModelScope.launch {
                     acceptTeamInvitation(
                         invitationId = invitationState.value.selectedInvitation.id,
-                        role = invitationState.value.selectedRole.key,
+                        role = invitationState.value.selectedRoleKey,
                         playerGender = invitationState.value.selectedGender,
                         playerId = invitationState.value.selectedPlayerId
                     )
-                    invitationState.value = invitationState.value.copy(selectedRole = UserRoleModel())
+                    invitationState.value = invitationState.value.copy(selectedRoleKey = "")
                 }
             }
         }

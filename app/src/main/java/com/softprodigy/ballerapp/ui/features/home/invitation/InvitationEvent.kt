@@ -6,7 +6,7 @@ import com.softprodigy.ballerapp.data.response.invitation.UserRoleModel
 sealed class InvitationEvent {
     data class OnAcceptCLick(val invitation: Invitation) : InvitationEvent()
     data class OnDeclineCLick(val invitation: Invitation) : InvitationEvent()
-    data class OnRoleClick(val role: UserRoleModel) : InvitationEvent()
+    data class OnRoleClick(val roleKey: String) : InvitationEvent()
     data class OnRoleDialogClick(val showRoleDialog: Boolean) : InvitationEvent()
     data class OnDeleteDialogClick(val showDeleteDialog: Boolean) : InvitationEvent()
     object OnRoleConfirmClick : InvitationEvent()

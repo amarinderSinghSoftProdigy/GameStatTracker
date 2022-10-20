@@ -45,6 +45,7 @@ data class UpdateTeamDetailRequest(
 
 
 data class Members(
-    @SerializedName("name") var name: String? = null,
-    @SerializedName("email") var email: String? = null
+    @SerializedName("name") var name: String = "",
+    @SerializedName("mobileNumber") var mobileNumber: String = "",
+    @SerializedName("role") var role: String = "",
 )

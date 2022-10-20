@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,6 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import androidx.core.app.ActivityCompat
@@ -45,12 +47,14 @@ import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.validName
-import com.softprodigy.ballerapp.common.validPhoneNumber
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.response.UserRoles
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.theme.*
-import timber.log.Timber
+import com.togitech.ccp.component.TogiCountryCodePicker
+import com.togitech.ccp.data.utils.getDefaultLangCode
+import com.togitech.ccp.data.utils.getDefaultPhoneCode
+import com.togitech.ccp.data.utils.getLibCountries
 
 val maxChar = 45
 
@@ -66,16 +70,7 @@ fun AddPlayersScreenUpdated(
     val context = LocalContext.current as Activity
     val state = vm.teamSetupUiState.value
     val focusRequester = remember { FocusRequester() }
-    Timber.i("AddPlayersScreenUpdated-- teamId--$teamId")
-    val dataStoreManager = DataStoreManager(LocalContext.current)
-    val email = dataStoreManager.getEmail.collectAsState(initial = "Kaushal")
-    val expanded = remember { mutableStateOf(false) }
 
-    vm.onEvent(
-        TeamSetupUIEventUpdated.OnCoachEmailChange(
-            email.value
-        )
-    )
 
     remember {
         vm.onEvent(TeamSetupUIEventUpdated.GetRoles)
@@ -236,6 +231,17 @@ fun InviteItem(
     val roleObject = remember { mutableStateOf(UserRoles()) }
     var expanded by remember { mutableStateOf(false) }
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
+    var defaultLang by rememberSaveable { mutableStateOf(getDefaultLangCode(context)) }
+    val getDefaultPhoneCode = getDefaultPhoneCode(context)
+
+    LaunchedEffect(key1 = Unit) {
+        vm.onEvent(
+            TeamSetupUIEventUpdated.OnCountryValueChange(
+                index = index,
+                code = getDefaultPhoneCode
+            )
+        )
+    }
 
     Column(Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
@@ -325,6 +331,13 @@ fun InviteItem(
                     roles.forEach { label ->
                         DropdownMenuItem(onClick = {
                             roleObject.value = label
+
+                            vm.onEvent(
+                                TeamSetupUIEventUpdated.OnRoleValueChange(
+                                    index = index,
+                                    role = label
+                                )
+                            )
                             expanded = false
                         }) {
                             Text(
@@ -339,49 +352,64 @@ fun InviteItem(
         }
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
         Row(
-            Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            AppSearchOutlinedTextField(
-                visualTransformation = MaskTransformation(),
+            Modifier
+                .fillMaxWidth()
+                .border(
+                    1.dp,
+                    color = MaterialTheme.appColors.editField.borderUnFocused,
+                    shape = RoundedCornerShape(
+                        dimensionResource(id = R.dimen.size_8dp)
+                    )
+                )
+                .padding(horizontal = dimensionResource(id = R.dimen.size_8dp)),
+            verticalAlignment = Alignment.CenterVertically,
+
+            ) {
+
+            TogiCountryCodePicker(
                 modifier = Modifier
                     .weight(1f)
                     .focusRequester(focusRequester),
-                value = item.contact,
-                onValueChange = { email ->
-                    if (email.length <= maxChar)
+                pickedCountry = {
+                    vm.onEvent(
+                        TeamSetupUIEventUpdated.OnCountryValueChange(
+                            index = index,
+                            code = it.countryPhoneCode
+                        )
+                    )
+                    defaultLang = it.countryCode
+                },
+                defaultCountry = getLibCountries().single { it.countryCode == defaultLang },
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent,
+                dialogAppBarTextColor = Color.Black,
+                showCountryFlag = false,
+                dialogAppBarColor = Color.White,
+                error = true,
+                text = item.contact,
+                onValueChange = { contact ->
+                    if (contact.length <= 10)
                         vm.onEvent(
                             TeamSetupUIEventUpdated.OnEmailValueChange(
                                 index = index,
-                                email
+                                contact
                             )
                         )
+
                 },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = ColorBWGrayBorder,
-                    unfocusedBorderColor = ColorBWGrayBorder,
-                    cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                    backgroundColor = MaterialTheme.appColors.material.background
-                ),
-                placeholder = {
+                readOnly = false,
+                cursorColor = Color.Black,
+                placeHolder = {
                     Text(
-                        text = stringResource(id = R.string.phone_num),
+                        text = stringResource(id = R.string.mobile_number),
                         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                         color = MaterialTheme.appColors.textField.label,
                     )
                 },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Next,
-                    keyboardType = KeyboardType.Phone
-
-                ),
-                isError = item.contact.isNotEmpty() && item.contact.length != 10
-                        && !validPhoneNumber(item.contact),
-                errorMessage = stringResource(id = R.string.valid_phone_number)
+                content = {
+                },
+                textStyle = TextStyle(textAlign = TextAlign.Start)
             )
-
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
 
             Icon(

@@ -1,6 +1,7 @@
 package com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated
 
 import com.softprodigy.ballerapp.data.request.Address
+import com.softprodigy.ballerapp.data.response.UserRoles
 import com.softprodigy.ballerapp.data.response.team.Player
 
 
@@ -25,6 +26,8 @@ sealed class TeamSetupUIEventUpdated {
     data class OnIndexChange(val index: Int) : TeamSetupUIEventUpdated()
     data class OnNameValueChange(val index: Int, val name: String) : TeamSetupUIEventUpdated()
     data class OnEmailValueChange(val index: Int, val email: String) : TeamSetupUIEventUpdated()
+    data class OnCountryValueChange(val index: Int, val code: String) : TeamSetupUIEventUpdated()
+    data class OnRoleValueChange(val index: Int, val role: UserRoles) : TeamSetupUIEventUpdated()
     data class OnInviteCountValueChange(val index: Int? = null, val addIntent: Boolean) :
         TeamSetupUIEventUpdated()
 
