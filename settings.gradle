@@ -11,6 +11,9 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven { url 'https://jitpack.io' }
+        maven {
+            url "https://dl.cloudsmith.io/public/cometchat/cometchat-pro-android/maven/"
+        }
     }
 }
 rootProject.name = "ballerapp"
@@ -18,3 +21,4 @@ include ':app'
 include 'core'
 //include 'buildSrc'
 include ':ccp'
+include ':uikit-kotlin'

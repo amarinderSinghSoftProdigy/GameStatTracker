@@ -77,6 +77,10 @@ class TeamRepository @Inject constructor(
         return safeApiCall(dispatcher) { service.sendInvitation(updateTeamRequest = updateTeamRequest) }
     }
 
+    override suspend fun getInviteMembersByTeamId(teamId: String): ResultWrapper<BaseResponse<Any>> {
+        return safeApiCall(dispatcher) { service.getInviteMembersByTeamId(teamId = teamId) }
+    }
+
     override suspend fun getTeamsStanding(
         page: Int,
         limit: Int

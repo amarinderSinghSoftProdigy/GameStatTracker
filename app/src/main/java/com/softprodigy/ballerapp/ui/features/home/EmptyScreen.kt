@@ -1,12 +1,7 @@
 package com.softprodigy.ballerapp.ui.features.home
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,12 +10,14 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.LeadingIconAppButton
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.appColors
+import com.softprodigy.ballerapp.ui.theme.rubikFamily
 
 @Composable
 fun EmptyScreen(
@@ -33,11 +30,13 @@ fun EmptyScreen(
     Box(Modifier.fillMaxSize()) {
         if (singleText) {
             AppText(
-                modifier = Modifier.align(Alignment.Center),
+                modifier = Modifier.align(Alignment.Center).fillMaxWidth(0.95f),
                 text = heading.ifEmpty { stringResource(id = R.string.coming_soon) },
                 fontSize = dimensionResource(id = R.dimen.txt_size_18).value.sp,
                 color = ColorBWBlack,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+                fontFamily = rubikFamily
             )
         } else {
             Column(

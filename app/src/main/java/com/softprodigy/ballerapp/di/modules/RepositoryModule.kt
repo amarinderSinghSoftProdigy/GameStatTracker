@@ -1,13 +1,7 @@
 package com.softprodigy.ballerapp.di.modules
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.data.repository.EventsRepository
-import com.softprodigy.ballerapp.data.repository.ImageUploadRepo
-import com.softprodigy.ballerapp.data.repository.TeamRepository
-import com.softprodigy.ballerapp.data.repository.UserRepository
-import com.softprodigy.ballerapp.domain.repository.IEventsRepository
-import com.softprodigy.ballerapp.domain.repository.IImageUploadRepo
-import com.softprodigy.ballerapp.domain.repository.ITeamRepository
-import com.softprodigy.ballerapp.domain.repository.IUserRepository
+import com.softprodigy.ballerapp.data.repository.*
+import com.softprodigy.ballerapp.domain.repository.*
 import com.softprodigy.ballerapp.network.APIService
 import dagger.Module
 import dagger.Provides
@@ -35,6 +29,15 @@ object RepositoryModule {
         dataStoreManager: DataStoreManager,
     ): ITeamRepository {
         return TeamRepository(service = apiService, dataStoreManager = dataStoreManager)
+    }
+
+    @Provides
+    @Singleton
+    fun provideChatRepo(
+        apiService: APIService,
+        dataStoreManager: DataStoreManager,
+    ): IChatRepository {
+        return ChatRepository(service = apiService, dataStoreManager = dataStoreManager)
     }
 
     @Provides
