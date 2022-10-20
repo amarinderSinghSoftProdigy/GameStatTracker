@@ -3,6 +3,7 @@ package com.softprodigy.ballerapp.ui.features.home.teams
 import com.softprodigy.ballerapp.data.request.Address
 import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
 import com.softprodigy.ballerapp.data.response.PlayerDetails
+import com.softprodigy.ballerapp.data.response.SwapUser
 import com.softprodigy.ballerapp.data.response.team.*
 
 
@@ -11,6 +12,8 @@ data class TeamUIState(
     val isLoading: Boolean = false,
     val teams: ArrayList<Team> = ArrayList(),
     val players: ArrayList<Player> = ArrayList(),
+    val supportStaff: ArrayList<SwapUser> = ArrayList(),
+    val acceptPending: ArrayList<SwapUser> = ArrayList(),
     val playersList: ArrayList<PlayerDetails> = ArrayList(),
     val coaches: ArrayList<Coach> = ArrayList(),
     val leaderBoard: List<TeamLeaderBoard> = emptyList(),
