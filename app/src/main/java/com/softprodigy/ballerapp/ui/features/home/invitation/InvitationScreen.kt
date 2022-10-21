@@ -1,19 +1,12 @@
 package com.softprodigy.ballerapp.ui.features.home.invitation
 
+import android.app.Activity
+import android.content.Intent
+import android.provider.ContactsContract
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -36,24 +29,50 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.apiToUIDateFormat
-import com.softprodigy.ballerapp.ui.features.components.CoilImage
-import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
-import com.softprodigy.ballerapp.ui.features.components.DeleteDialog
-import com.softprodigy.ballerapp.ui.features.components.Placeholder
-import com.softprodigy.ballerapp.ui.features.components.SelectGuardianRoleDialog
-import com.softprodigy.ballerapp.ui.features.components.SelectInvitationRoleDialog
+import com.softprodigy.ballerapp.data.UserStorage
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
+import com.softprodigy.ballerapp.ui.features.home.HomeViewModel
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.*
 import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
 import com.softprodigy.ballerapp.ui.theme.ColorButtonRed
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun InvitationScreen() {
+fun InvitationScreen(
+    vmSetupTeam: SetupTeamViewModelUpdated,
+    homeVm: HomeViewModel,
+    onNewProfileIntent: (countryCode: String, mobileNumber: String) -> Unit,
+    onInvitationSuccess: () -> Unit
+) {
     val vm: InvitationViewModel = hiltViewModel()
     val state = vm.invitationState.value
     val context = LocalContext.current
+    val teamState = vmSetupTeam.teamSetupUiState.value
+    val homeState = homeVm.state.value
 
+    LaunchedEffect(key1 = Unit) {
+        vmSetupTeam.teamSetupChannel.collect { uiEvent ->
+            when (uiEvent) {
+                is TeamSetupChannel.ShowToast -> {
+                    Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
+                        .show()
+                }
+                is TeamSetupChannel.OnInvitationSuccess -> {
+                    Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
+                        .show()
+                    onInvitationSuccess.invoke()
+                vm.onEvent(InvitationEvent.OnRoleDialogClick(false))
+                vm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
+                vm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
+
+                }
+                else -> Unit
+            }
+        }
+    }
 
     LaunchedEffect(key1 = true) {
         vm.invitationChannel.collect {
@@ -104,25 +123,31 @@ fun InvitationScreen() {
                 vm.onEvent(InvitationEvent.OnClearValues)
             },
             onConfirmClick = { /*vm.onEvent(InvitationEvent.OnRoleConfirmClick)*/
-                if (state.selectedRole == "Guardian") {
+                if (state.selectedRoleKey == "guardian" || (state.selectedRoleKey == "player")) {
                     vm.onEvent(InvitationEvent.OnRoleConfirmClick)
                     vm.onEvent(InvitationEvent.OnGuardianDialogClick(true))
-                }
-                else {
+                } else {
                     vm.onEvent(InvitationEvent.OnInvitationConfirm)
                     vm.onEvent(InvitationEvent.OnRoleDialogClick(false))
                 }
             },
-            onSelectionChange = { vm.onEvent(InvitationEvent.OnRoleClick(role = it)) },
-            title = stringResource(id = R.string.what_is_your_role),
-            selected = state.selectedRole,
+            onSelectionChange = { vm.onEvent(InvitationEvent.OnRoleClick(roleKey = it)) },
+            title = stringResource(
+                id = R.string.what_is_your_role,
+                state.selectedInvitation.team.name
+            ),
+            selected = state.selectedRoleKey,
             showLoading = state.showLoading,
-            roleList = state.roles
+            roleList = state.roles,
+            userName = "${homeState.user.firstName} ${homeState.user.lastName}",
+            userLogo = BuildConfig.IMAGE_SERVER + homeState.user.profileImage,
         )
     }
 
     if (state.showGuardianDialog) {
-        SelectGuardianRoleDialog(onBack = {
+        SelectGuardianRoleDialog(
+            state.selectedRoleKey,
+            onBack = {
             vm.onEvent(InvitationEvent.OnRoleDialogClick(true))
             vm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
         },
@@ -132,11 +157,7 @@ fun InvitationScreen() {
                 vm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
             },
             onSelectionChange = { vm.onEvent(InvitationEvent.OnGuardianClick(guardian = it)) },
-            title = stringResource(
-                R.string.select_the_players_guardian
-            ),
             selected = state.selectedGuardian,
-            showLoading = state.showLoading,
             guardianList = state.playerDetails,
             onValueSelected = {
                 vm.onEvent(InvitationEvent.OnValuesSelected(it))
@@ -144,6 +165,9 @@ fun InvitationScreen() {
             onDismiss = {
                 vm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
                 vm.onEvent(InvitationEvent.OnClearGuardianValues)
+            },
+            onChildNotListedCLick = {
+                vm.onEvent(InvitationEvent.OnAddPlayerDialogClick(true))
             }
         )
     }
@@ -162,7 +186,90 @@ fun InvitationScreen() {
             }
         )
     }
+
+    if (state.showAddPlayerDialog) {
+        vmSetupTeam.initialInviteCount(1)
+        InviteTeamMembersDialog(
+            onBack = {
+                vm.onEvent(InvitationEvent.OnRoleDialogClick(true))
+                vm.onEvent(InvitationEvent.OnGuardianDialogClick(true))
+                vm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
+            },
+            onConfirmClick = {
+                if (state.selectedInvitation.team._id.isNotEmpty()) {
+
+//                    if(homeState.user.phone.equals())
+                    vmSetupTeam.onEvent(
+                        TeamSetupUIEventUpdated.OnInviteTeamMembers(
+                            state.selectedInvitation.team._id,
+                            userType = state.selectedRoleKey,
+                            type = "acceptInvitation"
+                        )
+                    )
+                }
+            },
+            onIndexChange = { index ->
+                vmSetupTeam.onEvent(
+                    TeamSetupUIEventUpdated.OnIndexChange(
+                        index = index
+                    )
+                )
+
+                if (hasContactPermission(context)) {
+                    val intent =
+                        Intent(Intent.ACTION_GET_CONTENT)
+                    intent.type =
+                        ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
+                    (context as Activity).startActivityForResult(
+                        intent,
+                        AppConstants.REQUEST_CONTACT_CODE,
+                        null
+                    )
+                } else {
+                    requestContactPermission(context, (context as Activity))
+                }
+            },
+            inviteList = teamState.inviteList,
+            onNameValueChange = { index, name ->
+                vmSetupTeam.onEvent(
+                    TeamSetupUIEventUpdated.OnNameValueChange(
+                        index = index,
+                        name
+                    )
+                )
+
+            },
+            onEmailValueChange = { index, email ->
+                vmSetupTeam.onEvent(
+                    TeamSetupUIEventUpdated.OnEmailValueChange(
+                        index = index,
+                        email
+                    )
+                )
+
+            },
+            onInviteCountValueChange = { addIntent ->
+                vmSetupTeam.onEvent(TeamSetupUIEventUpdated.OnInviteCountValueChange(addIntent = true))
+            },
+            OnCountryValueChange = { index, code ->
+                vmSetupTeam.onEvent(
+                    TeamSetupUIEventUpdated.OnCountryValueChange(
+                        index = index,
+                        code = code
+                    )
+                )
+            }, roles = state.roles, onRoleValueChange = { index, role ->
+                vmSetupTeam.onEvent(
+                    TeamSetupUIEventUpdated.OnRoleValueChange(
+                        index = index,
+                        role = role
+                    )
+                )
+            }
+        )
+    }
 }
+
 
 @Composable
 fun InvitationItem(

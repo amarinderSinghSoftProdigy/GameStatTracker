@@ -48,10 +48,11 @@ class TogiCodePicker {
         padding: Dp = 15.dp,
         defaultSelectedCountry: CountryData = getLibCountries().first(),
         showCountryCode: Boolean = true,
+        showCountryFlag: Boolean = true,
         pickedCountry: (CountryData) -> Unit,
         dialogAppBarColor: Color = MaterialTheme.colors.primary,
         dialogAppBarTextColor: Color = Color.White,
-    ) {
+        ) {
         val countryList: List<CountryData> = getLibCountries()
         var isPickCountry by remember { mutableStateOf(defaultSelectedCountry) }
         var isOpenDialog by remember { mutableStateOf(false) }
@@ -67,11 +68,14 @@ class TogiCodePicker {
                     interactionSource = interactionSource,
                     indication = null
                 ) { isOpenDialog = true },
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                if(showCountryFlag){
                 Image(
                     modifier = modifier.width(24.dp),
                     painter = painterResource(
@@ -79,14 +83,15 @@ class TogiCodePicker {
                             isPickCountry.countryCode
                         )
                     ), contentDescription = null
-                )
+                )}
                 if (showCountryCode) {
                     Text(
                         text = isPickCountry.countryPhoneCode,
-                        fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(start = 6.dp)
                     )
-                    Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = null)
+                    if(!showCountryFlag){
+                        Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = null)
+                    }
                 }
             }
         }

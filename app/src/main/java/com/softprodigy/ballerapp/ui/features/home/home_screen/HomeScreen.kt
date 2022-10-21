@@ -81,7 +81,6 @@ fun HomeScreen(
         coroutineScope.launch {
             if (UserStorage.token.isNotEmpty()) {
                 vm.getHomePageDetails()
-                teamVm.getTeams()
             }
         }
     }
@@ -100,6 +99,9 @@ fun HomeScreen(
     LaunchedEffect(key1 = Unit) {
         vm.homeChannel.collect { uiEvent ->
             when (uiEvent) {
+                is HomeChannel.OnUserIdUpdate -> {
+                    teamVm.getTeamsUserId()
+                }
                 is HomeChannel.OnSwapListSuccess -> {
                     showSwapDialog.value = true
                 }
@@ -151,14 +153,14 @@ fun HomeScreen(
                 }
             }
         }) {
-        if (role == AppConstants.USER_TYPE_USER || role.isEmpty()) {
+        if (teamState.loadFirstUi) {
             HomeFirstTimeLoginScreen(vm, teamVm, {
                 onTeamNameClick(it)
             }, {
                 onCreateTeamClick(null)
             }
             )
-        } else {
+        } else if (role.isNotEmpty()) {
             Box {
                 Column(
                     Modifier

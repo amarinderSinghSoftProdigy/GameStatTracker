@@ -11,33 +11,35 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.toSize
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.accompanist.flowlayout.FlowRow
@@ -45,12 +47,16 @@ import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.validName
-import com.softprodigy.ballerapp.common.validPhoneNumber
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.data.response.team.Player
+import com.softprodigy.ballerapp.data.response.UserRoles
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.theme.*
-import timber.log.Timber
+import com.togitech.ccp.component.TogiCountryCodePicker
+import com.togitech.ccp.data.utils.getDefaultLangCode
+import com.togitech.ccp.data.utils.getDefaultPhoneCode
+import com.togitech.ccp.data.utils.getLibCountries
+
+val maxChar = 45
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
@@ -64,23 +70,13 @@ fun AddPlayersScreenUpdated(
     val context = LocalContext.current as Activity
     val state = vm.teamSetupUiState.value
     val focusRequester = remember { FocusRequester() }
-    val maxChar = 45
-    Timber.i("AddPlayersScreenUpdated-- teamId--$teamId")
-    val dataStoreManager = DataStoreManager(LocalContext.current)
-    val email = dataStoreManager.getEmail.collectAsState(initial = "Kaushal")
-    val expanded = remember { mutableStateOf(false) }
 
-    vm.onEvent(
-        TeamSetupUIEventUpdated.OnCoachEmailChange(
-            email.value
-        )
-    )
 
-    /*remember {
-        if (!teamId.isNullOrEmpty()) {
-            vm.onEvent(TeamSetupUIEventUpdated.GetInvitedTeamPlayers(teamId))
-        }
-    }*/
+    remember {
+        vm.onEvent(TeamSetupUIEventUpdated.GetRoles)
+        /*if (!teamId.isNullOrEmpty())
+            vm.onEvent(TeamSetupUIEventUpdated.GetInvitedTeamPlayers(teamId))*/
+    }
 
     BackHandler {
         onBackClick.invoke()
@@ -134,7 +130,7 @@ fun AddPlayersScreenUpdated(
             verticalArrangement = Arrangement.Top
         ) {
             UserFlowBackground(color = MaterialTheme.appColors.buttonColor.textEnabled) {
-                /*FoldableItem(
+               /* FoldableItem(
                     expanded = expanded.value,
                     headerBackground = MaterialTheme.appColors.material.surface,
                     headerBorder = BorderStroke(0.dp, Color.Transparent),
@@ -161,117 +157,8 @@ fun AddPlayersScreenUpdated(
                 Column(modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.size_16dp))) {
                     FlowRow {
                         state.inviteList.forEachIndexed { index, item ->
-                            Column(Modifier.fillMaxSize()) {
-                                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
-                                Box(modifier = Modifier.fillMaxWidth()) {
-                                    Row(
-                                        Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.Center,
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        AppSearchOutlinedTextField(
-                                            modifier = Modifier
-                                                .weight(0.6f)
-                                                .focusRequester(focusRequester),
-                                            value = item.name,
-                                            onValueChange = { name ->
-                                                if (name.length <= maxChar)
-                                                    vm.onEvent(
-                                                        TeamSetupUIEventUpdated.OnNameValueChange(
-                                                            index = index,
-                                                            name
-                                                        )
-                                                    )
-                                            },
-                                            colors = TextFieldDefaults.outlinedTextFieldColors(
-                                                focusedBorderColor = ColorBWGrayBorder,
-                                                unfocusedBorderColor = ColorBWGrayBorder,
-                                                cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                                                backgroundColor = MaterialTheme.appColors.material.background
-                                            ),
-                                            placeholder = {
-                                                Text(
-                                                    text = stringResource(id = R.string.name),
-                                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                                                    color = MaterialTheme.appColors.textField.label,
-                                                )
-                                            },
-                                            singleLine = true,
-                                            isError = !validName(item.name)
-                                                    && item.name.isNotEmpty(),
-                                            errorMessage = stringResource(id = R.string.valid_first_name),
-                                        )
-                                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-
-                                        AppSearchOutlinedTextField(
-                                            visualTransformation = MaskTransformation(),
-                                            modifier = Modifier
-                                                .weight(1f)
-                                                .focusRequester(focusRequester),
-                                            value = item.contact,
-                                            onValueChange = { email ->
-                                                if (email.length <= maxChar)
-                                                    vm.onEvent(
-                                                        TeamSetupUIEventUpdated.OnEmailValueChange(
-                                                            index = index,
-                                                            email
-                                                        )
-                                                    )
-                                            },
-                                            colors = TextFieldDefaults.outlinedTextFieldColors(
-                                                focusedBorderColor = ColorBWGrayBorder,
-                                                unfocusedBorderColor = ColorBWGrayBorder,
-                                                cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                                                backgroundColor = MaterialTheme.appColors.material.background
-                                            ),
-                                            placeholder = {
-                                                Text(
-                                                    text = stringResource(id = R.string.phone_num),
-                                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                                                    color = MaterialTheme.appColors.textField.label,
-                                                )
-                                            },
-                                            singleLine = true,
-                                            keyboardOptions = KeyboardOptions(
-                                                imeAction = ImeAction.Next,
-                                                keyboardType = KeyboardType.Phone
-
-                                            ),
-                                            isError = item.contact.isNotEmpty() && item.contact.length != 10
-                                                    && !validPhoneNumber(item.contact),
-                                            errorMessage = stringResource(id = R.string.valid_phone_number)
-                                        )
-
-                                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
-
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.ic_add),
-                                            contentDescription = "",
-                                            tint = Color.Unspecified,
-                                            modifier = Modifier
-                                                .clickable {
-                                                    vm.onEvent(
-                                                        TeamSetupUIEventUpdated.OnIndexChange(
-                                                            index = index
-                                                        )
-                                                    )
-                                                    if (hasContactPermission(context)) {
-                                                        val intent =
-                                                            Intent(Intent.ACTION_GET_CONTENT)
-                                                        intent.type =
-                                                            ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
-                                                        context.startActivityForResult(
-                                                            intent,
-                                                            AppConstants.REQUEST_CONTACT_CODE,
-                                                            null
-                                                        )
-                                                    } else {
-                                                        requestContactPermission(context, context)
-                                                    }
-                                                }
-                                        )
-                                    }
-                                }
+                            Column {
+                                InviteItem(item, index, vm, focusRequester, context, state.roles)
                             }
                         }
                     }
@@ -332,45 +219,270 @@ fun AddPlayersScreenUpdated(
     }
 }
 
+
 @Composable
-fun PlayerListUI(
-    players: List<Player>,
-    modifier: Modifier = Modifier,
-    onPlayerClick: (Player) -> Unit,
-    searchedText: String,
-    teamColor: String
-) {
-    var filteredCountries: ArrayList<Player>
-    LazyColumn(modifier = modifier) {
-        filteredCountries = if (searchedText.isEmpty()) {
-            ArrayList()
-        } else {
-            val resultList = ArrayList<Player>()
-            for (player in players) {
-                if (player.name.lowercase()
-                        .contains(searchedText.lowercase())
-                    || player.email!!.lowercase()
-                        .contains(searchedText.lowercase())
+fun InviteItem(
+    item: InviteObject,
+    index: Int,
+    vm: SetupTeamViewModelUpdated,
+    focusRequester: FocusRequester,
+    context: Activity,
+    roles: List<UserRoles>,
+
+    ) {
+    val roleObject = remember { mutableStateOf(UserRoles()) }
+    var expanded by remember { mutableStateOf(false) }
+    var textFieldSize by remember { mutableStateOf(Size.Zero) }
+    var defaultLang by rememberSaveable { mutableStateOf(getDefaultLangCode(context)) }
+    val getDefaultPhoneCode = getDefaultPhoneCode(context)
+
+    LaunchedEffect(key1 = Unit) {
+        vm.onEvent(
+            TeamSetupUIEventUpdated.OnCountryValueChange(
+                index = index,
+                code = getDefaultPhoneCode
+            )
+        )
+    }
+
+    Column(Modifier.fillMaxSize()) {
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AppSearchOutlinedTextField(
+                modifier = Modifier
+                    .weight(0.7f)
+                    .focusRequester(focusRequester),
+                value = item.name,
+                onValueChange = { name ->
+                    if (name.length <= maxChar)
+                        vm.onEvent(
+                            TeamSetupUIEventUpdated.OnNameValueChange(
+                                index = index,
+                                name
+                            )
+                        )
+                },
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = ColorBWGrayBorder,
+                    unfocusedBorderColor = ColorBWGrayBorder,
+                    cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    backgroundColor = MaterialTheme.appColors.material.background
+                ),
+                placeholder = {
+                    Text(
+                        text = stringResource(id = R.string.name),
+                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                        color = MaterialTheme.appColors.textField.label,
+                    )
+                },
+                singleLine = true,
+                isError = !validName(item.name)
+                        && item.name.isNotEmpty(),
+                errorMessage = stringResource(id = R.string.valid_first_name),
+            )
+            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                EditFields(
+                    roleObject.value.value,
+                    textStyle = TextStyle().copy(textAlign = TextAlign.Start),
+                    onValueChange = {},
+                    head = "",
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next,
+                        keyboardType = KeyboardType.Text
+                    ),
+                    placeholder = {
+                        Text(
+                            text = stringResource(id = R.string.select_role),
+                            fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                            color = MaterialTheme.appColors.textField.label,
+                        )
+                    },
+                    modifier = Modifier
+                        .onGloballyPositioned {
+                            textFieldSize = it.size.toSize()
+                        }
+                        .border(
+                            shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
+                            width = dimensionResource(id = R.dimen.size_1dp),
+                            color = ColorBWGrayBorder
+                        ),
+                    trailingIcon = {
+                        Icon(
+                            painterResource(id = R.drawable.ic_arrow_down),
+                            contentDescription = null,
+                            modifier = Modifier.clickable {
+                                expanded = !expanded
+                            })
+                    },
+                    enabled = true
+                )
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier
+                        .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+                        .background(MaterialTheme.colors.background)
                 ) {
-                    resultList.add(player)
+                    roles.forEach { label ->
+                        DropdownMenuItem(onClick = {
+                            roleObject.value = label
+
+                            vm.onEvent(
+                                TeamSetupUIEventUpdated.OnRoleValueChange(
+                                    index = index,
+                                    role = label
+                                )
+                            )
+                            expanded = false
+                        }) {
+                            Text(
+                                text = label.value,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
                 }
             }
-            resultList
+
         }
-        items(filteredCountries) { filteredCountry ->
-            PlayerListItem(
-                painterResource(id = R.drawable.ic_add_player),
-                player = filteredCountry,
-                teamColor = teamColor,
-                onItemClick = { selectedPlayer ->
-                    onPlayerClick.invoke(selectedPlayer)
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .border(
+                    1.dp,
+                    color = MaterialTheme.appColors.editField.borderUnFocused,
+                    shape = RoundedCornerShape(
+                        dimensionResource(id = R.dimen.size_8dp)
+                    )
+                )
+                .padding(horizontal = dimensionResource(id = R.dimen.size_8dp)),
+            verticalAlignment = Alignment.CenterVertically,
+
+            ) {
+
+            TogiCountryCodePicker(
+                modifier = Modifier
+                    .weight(1f)
+                    .focusRequester(focusRequester),
+                pickedCountry = {
+                    vm.onEvent(
+                        TeamSetupUIEventUpdated.OnCountryValueChange(
+                            index = index,
+                            code = it.countryPhoneCode
+                        )
+                    )
+                    defaultLang = it.countryCode
                 },
-                showBackground = false
+                defaultCountry = getLibCountries().single { it.countryCode == defaultLang },
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent,
+                dialogAppBarTextColor = Color.Black,
+                showCountryFlag = false,
+                dialogAppBarColor = Color.White,
+                error = true,
+                text = item.contact,
+                onValueChange = { contact ->
+                    if (contact.length <= 10)
+                        vm.onEvent(
+                            TeamSetupUIEventUpdated.OnEmailValueChange(
+                                index = index,
+                                contact
+                            )
+                        )
+
+                },
+                readOnly = false,
+                cursorColor = Color.Black,
+                placeHolder = {
+                    Text(
+                        text = stringResource(id = R.string.mobile_number),
+                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                        color = MaterialTheme.appColors.textField.label,
+                    )
+                },
+                content = {
+                },
+                textStyle = TextStyle(textAlign = TextAlign.Start)
+            )
+            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
+
+            Icon(
+                painter = painterResource(id = R.drawable.ic_add),
+                contentDescription = "",
+                tint = Color.Unspecified,
+                modifier = Modifier
+                    .clickable {
+                        vm.onEvent(
+                            TeamSetupUIEventUpdated.OnIndexChange(
+                                index = index
+                            )
+                        )
+                        if (hasContactPermission(context)) {
+                            val intent =
+                                Intent(Intent.ACTION_GET_CONTENT)
+                            intent.type =
+                                ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
+                            context.startActivityForResult(
+                                intent,
+                                AppConstants.REQUEST_CONTACT_CODE,
+                                null
+                            )
+                        } else {
+                            requestContactPermission(context, context)
+                        }
+                    }
             )
         }
     }
 }
+/*@Composable
+fun PlayerListUI(
+  players: List<Player>,
+  modifier: Modifier = Modifier,
+  onPlayerClick: (Player) -> Unit,
+  searchedText: String,
+  teamColor: String
+) {
+  var filteredCountries: ArrayList<Player>
+  LazyColumn(modifier = modifier) {
+      filteredCountries = if (searchedText.isEmpty()) {
+          ArrayList()
+      } else {
+          val resultList = ArrayList<Player>()
+          for (player in players) {
+              if (player.name.lowercase()
+                      .contains(searchedText.lowercase())
+                  || player.email!!.lowercase()
+                      .contains(searchedText.lowercase())
+              ) {
+                  resultList.add(player)
+              }
+          }
+          resultList
+      }
+      items(filteredCountries) { filteredCountry ->
+          PlayerListItem(
+              painterResource(id = R.drawable.ic_add_player),
+              player = filteredCountry,
+              teamColor = teamColor,
+              onItemClick = { selectedPlayer ->
+                  onPlayerClick.invoke(selectedPlayer)
+              },
+              showBackground = false
+          )
+      }
+  }
+}*/
 
+/*
 @Composable
 fun PlayerListItem(
     icon: Painter,
@@ -418,6 +530,7 @@ fun PlayerListItem(
     }
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
 }
+*/
 
 @Composable
 fun AddRemoveButton(icon: Painter, teamColor: String, onItemClick: () -> Unit) {

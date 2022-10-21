@@ -1,11 +1,7 @@
 package com.togitech.ccp.component
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
@@ -39,6 +35,7 @@ fun TogiCountryCodePicker(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     showCountryCode: Boolean = true,
+    showCountryFlag: Boolean = true,
     defaultCountry: CountryData,
     pickedCountry: (CountryData) -> Unit,
     focusedBorderColor: Color = Color.Transparent,
@@ -50,12 +47,14 @@ fun TogiCountryCodePicker(
     readOnly: Boolean = true,
     rowPadding: Modifier = modifier.padding(vertical = 0.dp, horizontal = 0.dp),
     content: @Composable () -> Unit,
+    placeHolder: (@Composable () -> Unit)? = null,
+    textStyle:TextStyle = TextStyle(textAlign = TextAlign.End)
 ) {
     var textFieldValueState by remember { mutableStateOf(TextFieldValue(text = text)) }
     val textFieldValue = textFieldValueState.copy(text = text)
     val keyboardController = LocalTextInputService.current
     Row(
-        modifier = Modifier
+        modifier = modifier
             .background(color = Color.Transparent)
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -64,20 +63,20 @@ fun TogiCountryCodePicker(
             content()
         }
         Column(
-            modifier = rowPadding.weight(0.7F),
-            horizontalAlignment = Alignment.End
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Row {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
                 Box(
-                    modifier = Modifier.weight(0.9F),
-                    contentAlignment = Alignment.CenterEnd
                 ) {
                     val dialog = TogiCodePicker()
                     dialog.TogiCodeDialog(
+                        padding=0.dp,
                         pickedCountry = pickedCountry,
                         defaultSelectedCountry = defaultCountry,
                         dialogAppBarColor = dialogAppBarColor,
                         showCountryCode = showCountryCode,
+                        showCountryFlag = showCountryFlag,
                         dialogAppBarTextColor = dialogAppBarTextColor
                     )
                 }
@@ -97,19 +96,14 @@ fun TogiCountryCodePicker(
                     ),
                     singleLine = true,
                     visualTransformation = PhoneNumberTransformation(defaultCountry.countryCode.uppercase()),
-                    placeholder = {
-                        Box(contentAlignment = Alignment.CenterEnd) {
-                           /* Text(
-                                textAlign = TextAlign.End,
-                                text = stringResource(id = getNumberHint(defaultCountry.countryCode))
-                            )*/
-                        }
-                    },
+                    placeholder =
+                        placeHolder
+                    ,
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.NumberPassword,
                         autoCorrect = true,
                     ),
-                    textStyle = TextStyle(textAlign = TextAlign.End),
+                    textStyle = textStyle,
                     keyboardActions = KeyboardActions(onDone = { keyboardController?.hideSoftwareKeyboard() }),
                     readOnly = readOnly
                     /* leadingIcon = {

@@ -51,7 +51,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
 
             }
             is InvitationEvent.OnRoleClick -> {
-                invitationState.value = invitationState.value.copy(selectedRole = event.role)
+                invitationState.value = invitationState.value.copy(selectedRoleKey = event.roleKey)
 
             }
             is InvitationEvent.OnDeclineConfirmClick -> {
@@ -84,6 +84,10 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                 invitationState.value =
                     invitationState.value.copy(showGuardianDialog = event.showGuardianDialog)
             }
+            is InvitationEvent.OnAddPlayerDialogClick -> {
+                invitationState.value =
+                    invitationState.value.copy(showAddPlayerDialog = event.showAddPlayerDialog)
+            }
 
             InvitationEvent.OnClearGuardianValues -> {
                 invitationState.value =
@@ -104,11 +108,11 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                 viewModelScope.launch {
                     acceptTeamInvitation(
                         invitationId = invitationState.value.selectedInvitation.id,
-                        role = invitationState.value.selectedRole,
+                        role = invitationState.value.selectedRoleKey,
                         playerGender = invitationState.value.selectedGender,
                         playerId = invitationState.value.selectedPlayerId
                     )
-                    invitationState.value = invitationState.value.copy(selectedRole = "")
+                    invitationState.value = invitationState.value.copy(selectedRoleKey = "")
                 }
             }
         }

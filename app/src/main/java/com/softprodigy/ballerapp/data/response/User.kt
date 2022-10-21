@@ -131,6 +131,11 @@ data class TeamId(
 
 )
 
+data class UserRoles(
+    @SerializedName("value") val value: String = "",
+    @SerializedName("key") val key: String = "",
+)
+
 data class UserDocType(
     @SerializedName("name") val name: String = "",
     @SerializedName("key") val key: String = "",
