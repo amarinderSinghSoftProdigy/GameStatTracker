@@ -34,7 +34,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                     showRoleDialog = true,
                     selectedInvitation = event.invitation,
                     teamId = event.invitation.team._id,
-                    showDeclineDialog = true,
+                    showDeclineDialog = false,
                 )
             }
             is InvitationEvent.OnDeclineCLick -> {
@@ -51,7 +51,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
 
             }
             is InvitationEvent.OnRoleClick -> {
-                invitationState.value = invitationState.value.copy(selectedRole = event.role)
+                invitationState.value = invitationState.value.copy(selectedRoleKey = event.roleKey)
 
             }
             is InvitationEvent.OnDeclineConfirmClick -> {
@@ -84,6 +84,10 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                 invitationState.value =
                     invitationState.value.copy(showGuardianDialog = event.showGuardianDialog)
             }
+            is InvitationEvent.OnAddPlayerDialogClick -> {
+                invitationState.value =
+                    invitationState.value.copy(showAddPlayerDialog = event.showAddPlayerDialog)
+            }
 
             InvitationEvent.OnClearGuardianValues -> {
                 invitationState.value =
@@ -104,11 +108,11 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                 viewModelScope.launch {
                     acceptTeamInvitation(
                         invitationId = invitationState.value.selectedInvitation.id,
-                        role = invitationState.value.selectedRole,
-                        playerGender = invitationState.value.selectedGender,
+                        role = invitationState.value.selectedRoleKey,
+                        guardianGender = event.gender ?: "",
                         playerId = invitationState.value.selectedPlayerId
                     )
-                    invitationState.value = invitationState.value.copy(selectedRole = "")
+                    invitationState.value = invitationState.value.copy(selectedRoleKey = "")
                 }
             }
         }
@@ -166,9 +170,9 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
         invitationId: String,
         role: String,
         playerId: String,
-        playerGender: String
+        guardianGender: String
     ) {
-        Timber.i("acceptTeamInvitation-- id--$invitationId role--$role")
+        Timber.i("acceptTeamInvitation-- id--$invitationId role--$role playerId--$playerId guardianGender--$guardianGender")
         invitationState.value =
             invitationState.value.copy(showLoading = true)
         val acceptInviteResponse =
@@ -176,7 +180,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                 invitationId = invitationId,
                 role = role,
                 playerId = playerId,
-                playerGender = playerGender
+                guardianGender = guardianGender.capitalize()
             )
         invitationState.value =
             invitationState.value.copy(showLoading = false)
@@ -202,6 +206,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
             }
             is ResultWrapper.Success -> {
                 acceptInviteResponse.value.let { response ->
+                    getAllInvitation()
                     _invitationChannel.send(
                         InvitationChannel.Success(
                             UiText.DynamicString(
@@ -210,6 +215,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                         )
                     )
                 }
+
             }
         }
     }
@@ -245,6 +251,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
             }
             is ResultWrapper.Success -> {
                 rejectInviteResponse.value.let { response ->
+                    getAllInvitation()
                     _invitationChannel.send(
                         InvitationChannel.Success(
                             UiText.DynamicString(
@@ -253,6 +260,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                         )
                     )
                 }
+
             }
         }
     }
@@ -260,7 +268,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
     private suspend fun getUserRoles() {
         invitationState.value = invitationState.value.copy(showLoading = true)
 
-        when (val userRoles = teamRepo.getUserRoles()) {
+        when (val userRoles = teamRepo.getUserRoles("")) {
             is ResultWrapper.GenericError -> {
                 invitationState.value = invitationState.value.copy(showLoading = false)
 

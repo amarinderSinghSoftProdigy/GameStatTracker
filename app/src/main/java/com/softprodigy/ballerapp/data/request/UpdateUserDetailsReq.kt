@@ -1,16 +1,22 @@
 package com.softprodigy.ballerapp.data.request
 
 import com.google.gson.annotations.SerializedName
+import com.softprodigy.ballerapp.data.response.PerferredPartner
 
 data class UpdateUserDetailsReq(
+    @SerializedName("profileImage") val profileImage: String = "",
     @SerializedName("firstName") val firstName: String = "",
     @SerializedName("lastName") val lastName: String = "",
     @SerializedName("birthdate") val birthdate: String = "",
     @SerializedName("phone") val phone: String = "",
     @SerializedName("gender") val gender: String = "",
     @SerializedName("grade") val grade: String = "",
-    @SerializedName("teamDetails") val teamDetailsReq: List<TeamDetailsReq> = arrayListOf(),
-    @SerializedName("userDetails") val userDetailsReq: UserDetailsReq = UserDetailsReq()
+    @SerializedName("email") val email: String = "",
+    @SerializedName("address") val address: String = "",
+    @SerializedName("teamDetails")
+    val teamDetailsReq: List<TeamDetailsReq> = arrayListOf(),
+    @SerializedName("userDetails")
+    val userDetailsReq: UserDetailsReq = UserDetailsReq()
 )
 
 data class TeamDetailsReq(
@@ -31,8 +37,12 @@ data class UserDetailsReq(
     @SerializedName("permissionSlip") val permissionSlip: String = "",
     @SerializedName("auuCard") val auuCard: String = "",
     @SerializedName("waiver") val waiver: String = "",
-    @SerializedName("vaccineCard") val vaccineCard: String = ""
-
+    @SerializedName("vaccineCard") val vaccineCard: String = "",
+    @SerializedName("aboutExperience") val aboutExperience: String = "",
+    @SerializedName("perferredPartner") val perferredPartner: String = "",
+    @SerializedName("refereeWithPartner") val refereeWithPartner: Boolean = false,
+    @SerializedName("refereeningExperience") val refereeningExperience: String = "",
+    @SerializedName("teamAgePerference") val teamAgePerference: String = "",
 )
 
 data class JerseyPerferencesReq(

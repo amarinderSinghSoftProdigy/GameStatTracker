@@ -6,6 +6,7 @@ import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
 import com.softprodigy.ballerapp.data.request.UpdateTeamRequest
 import com.softprodigy.ballerapp.data.response.*
 import com.softprodigy.ballerapp.data.response.homepage.HomePageCoachModel
+import com.softprodigy.ballerapp.data.response.invitation.UserRoleModel
 import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
@@ -61,7 +62,7 @@ interface ITeamRepository {
         invitationId: String,
         role: String,
         playerId: String,
-        playerGender: String,
+        guardianGender: String,
     ): ResultWrapper<BaseResponse<Any>>
 
 
@@ -69,7 +70,7 @@ interface ITeamRepository {
 
     suspend fun getHomePageDetails(): ResultWrapper<BaseResponse<HomePageCoachModel>>
 
-    suspend fun getUserRoles(): ResultWrapper<BaseResponse<ArrayList<String>>>
+    suspend fun getUserRoles(role:String): ResultWrapper<BaseResponse<List<UserRoles>>>
 
     suspend fun getPlayerById(id: String): ResultWrapper<BaseResponse<ArrayList<PlayerDetails>>>
 
@@ -98,4 +99,5 @@ interface ITeamRepository {
         sort: String = "",
         leagueId: String
     ): ResultWrapper<BaseResponse<VenuesResponse>>
+
 }

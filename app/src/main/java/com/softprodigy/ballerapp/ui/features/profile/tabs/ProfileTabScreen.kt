@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -111,7 +112,8 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
                             .clip(CircleShape),
                         isCrossFadeEnabled = false,
                         onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
-                        onError = { Placeholder(R.drawable.ic_user_profile_icon) }
+                        onError = { Placeholder(R.drawable.ic_user_profile_icon) },
+                        contentScale = ContentScale.Fit
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
                     AppText(
@@ -211,6 +213,7 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
                         stringResource(id = R.string.gender),
                         state.user.gender
                     )
+
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
 
                     PreferenceItem(
@@ -239,7 +242,7 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
                         text = stringResource(id = R.string.fun_facts),
                         style = MaterialTheme.typography.h5,
                         color = ColorBWBlack,
-                       fontWeight = FontWeight.W500
+                        fontWeight = FontWeight.W500
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
 
