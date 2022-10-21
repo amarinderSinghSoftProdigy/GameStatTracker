@@ -489,8 +489,8 @@ fun HomeScreen(
             users = homeState.swapUsers,
             onDismiss = { showSwapDialog.value = false },
             onConfirmClick = {
-                if (it != UserStorage.userId) {
-                    vm.onEvent(HomeScreenEvent.OnSwapUpdate(it))
+                if (it._Id != UserStorage.userId) {
+                    vm.onEvent(HomeScreenEvent.OnSwapUpdate(it._Id))
                 }
                 showSwapDialog.value = false
             },

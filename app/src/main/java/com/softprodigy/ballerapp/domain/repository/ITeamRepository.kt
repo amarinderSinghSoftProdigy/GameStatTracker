@@ -62,7 +62,7 @@ interface ITeamRepository {
         invitationId: String,
         role: String,
         playerId: String,
-        playerGender: String,
+        guardianGender: String,
     ): ResultWrapper<BaseResponse<Any>>
 
 

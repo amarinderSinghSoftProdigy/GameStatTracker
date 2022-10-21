@@ -445,4 +445,5 @@
     <string name="info_text">"At ultrices adipiscing convallis sed elit tellus sollicitun sit. Ac non eu sed congue ipsum, suscipit diam molestie. Mauris arcu dolor aliquet sed sit. "</string>
     <string name="invite_others_to_the_team">Invite others to the team</string>
     <string name="success_player_has_been_added_to_the_team">Success! %1$s has been added to %2$s</string>
+    <string name="invite_from_your_profile">Invite from your profile</string>
 </resources>
