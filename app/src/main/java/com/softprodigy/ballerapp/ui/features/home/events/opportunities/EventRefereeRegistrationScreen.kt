@@ -20,7 +20,6 @@ import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.events.EvEvents
 import com.softprodigy.ballerapp.ui.features.home.events.EventChannel
 import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
-import com.softprodigy.ballerapp.ui.features.home.invitation.InvitationEvent
 import com.softprodigy.ballerapp.ui.theme.ColorMainPrimary
 import com.softprodigy.ballerapp.ui.theme.md_theme_light_onSurface
 
@@ -185,7 +184,8 @@ fun EventRefereeRegistrationScreen(vm: EventViewModel, onNextScreen: () -> Unit)
             title = stringResource(id = R.string.select_role),
             selected = state.selectedRole,
             showLoading = state.showLoading,
-            roleList = state.roles
+            roleList = state.roles,
+            "",""
         )
     }
 }
