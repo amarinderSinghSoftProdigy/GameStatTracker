@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -36,7 +35,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -211,7 +209,7 @@ fun ProfileEditScreen(
                     ) {
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_32dp)))
 
-                        Box(contentAlignment = Alignment.BottomEnd) {
+                        Box(contentAlignment = Alignment.TopEnd) {
                             CoilImage(
                                 src = if (state.selectedImage.isEmpty()) BuildConfig.IMAGE_SERVER + state.user.profileImage else Uri.parse(
                                     state.selectedImage
@@ -225,26 +223,30 @@ fun ProfileEditScreen(
                                 onError = { Placeholder(R.drawable.ic_user_profile_icon) },
                                 contentScale = ContentScale.Fit
                             )
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_top_add),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .size(dimensionResource(id = R.dimen.size_40dp))
-                                    .padding(
-                                        end = dimensionResource(id = R.dimen.size_20dp),
-                                        bottom = dimensionResource(
-                                            id = R.dimen.size_20dp
-                                        )
+                            Box(modifier = Modifier
+                                .size(dimensionResource(id = R.dimen.size_50dp))
+                                .padding(
+                                    end = dimensionResource(id = R.dimen.size_20dp),
+                                    top = dimensionResource(
+                                        id = R.dimen.size_20dp
                                     )
-                                    .clickable {
-                                        scope.launch {
-                                            modalBottomSheetState.animateTo(
-                                                ModalBottomSheetValue.Expanded
-                                            )
-                                        }
-                                    },
-                                tint = MaterialTheme.appColors.material.primaryVariant
-                            )
+                                )
+                                .background(
+                                    color = MaterialTheme.appColors.material.primaryVariant,
+                                    shape = CircleShape
+                                )
+                                .clickable {
+                                    scope.launch {
+                                        modalBottomSheetState.animateTo(
+                                            ModalBottomSheetValue.Expanded
+                                        )
+                                    }
+                                }) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_edit),
+                                    contentDescription = "",
+                                )
+                            }
                         }
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_48dp)))
                         DividerCommon()

@@ -25,7 +25,6 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -52,7 +51,7 @@ class TogiCodePicker {
         pickedCountry: (CountryData) -> Unit,
         dialogAppBarColor: Color = MaterialTheme.colors.primary,
         dialogAppBarTextColor: Color = Color.White,
-        ) {
+    ) {
         val countryList: List<CountryData> = getLibCountries()
         var isPickCountry by remember { mutableStateOf(defaultSelectedCountry) }
         var isOpenDialog by remember { mutableStateOf(false) }
@@ -75,22 +74,28 @@ class TogiCodePicker {
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                if(showCountryFlag){
-                Image(
-                    modifier = modifier.width(24.dp),
-                    painter = painterResource(
-                        id = getFlags(
-                            isPickCountry.countryCode
-                        )
-                    ), contentDescription = null
-                )}
+                if (showCountryFlag) {
+                    Image(
+                        modifier = modifier.width(24.dp),
+                        painter = painterResource(
+                            id = getFlags(
+                                isPickCountry.countryCode
+                            )
+                        ), contentDescription = null
+                    )
+                }
                 if (showCountryCode) {
                     Text(
                         text = isPickCountry.countryPhoneCode,
-                        modifier = Modifier.padding(start = 6.dp)
+                        modifier = Modifier.padding(start = 6.dp),
+                        color = Color.Black
                     )
-                    if(!showCountryFlag){
-                        Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = null)
+                    if (!showCountryFlag) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowDropDown,
+                            contentDescription = null,
+                            tint = Color.Black
+                        )
                     }
                 }
             }

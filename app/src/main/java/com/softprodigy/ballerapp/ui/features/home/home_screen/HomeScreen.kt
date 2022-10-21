@@ -61,7 +61,7 @@ fun HomeScreen(
     onTeamNameClick: (Boolean) -> Unit,
     onInviteClick: () -> Unit,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
-    showBottomBar : (Boolean) -> Unit
+    showBottomBar: (Boolean) -> Unit
 ) {
     val dataStoreManager = DataStoreManager(LocalContext.current)
     val color = dataStoreManager.getColor.collectAsState(initial = AppConstants.DEFAULT_COLOR)
@@ -120,14 +120,15 @@ fun HomeScreen(
         teamVm.teamChannel.collect { uiEvent ->
             when (uiEvent) {
                 is TeamChannel.ShowToast -> {
-                    Toast.makeText(
+                   /* Toast.makeText(
                         context,
                         uiEvent.message.asString(context),
                         Toast.LENGTH_LONG
-                    ).show()
+                    ).show()*/
                 }
                 is TeamChannel.OnTeamDetailsSuccess -> {
                     OnTeamDetailsSuccess.invoke(uiEvent.teamId, uiEvent.teamName)
+                    vm.showBottomAppBar(uiEvent.show)
                 }
             }
         }
@@ -154,7 +155,7 @@ fun HomeScreen(
                 }
             }
         }) {
-        if (teamState.loadFirstUi) {
+        if (!homeState.showBottomAppBar) {
             HomeFirstTimeLoginScreen(vm, teamVm, {
                 onTeamNameClick(it)
             }, {
@@ -206,7 +207,7 @@ fun HomeScreen(
                                         } else {
                                             onTeamNameClick.invoke(false)
                                         }
-                                       /* onTeamNameClick.invoke(showBottomBar)*/
+                                        /* onTeamNameClick.invoke(showBottomBar)*/
                                     }
                                     .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                                 contentAlignment = Alignment.CenterStart
@@ -347,56 +348,9 @@ fun HomeScreen(
                             homeState.homePageCoachModel.myEvents.toString()
                         )
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                        //if (role.value == UserType.COACH.key)
                         EventInviteItem("invite_members", onInviteClick = onInviteClick)
-                        /*else Spacer(modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1F))*/
                     }
 
-                    /*    if (role == UserType.REFEREE.key) {
-                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                            UserFlowBackground(
-                                padding = 0.dp,
-                                color = Color.White
-                            ) {
-                                Box(
-                                    Modifier
-                                        .fillMaxWidth()
-                                        *//*.clickable {
-                                   onInvitationCLick.invoke()
-                               }*//*
-                                    .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Row(
-                                    Modifier
-                                        .fillMaxSize(),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                ) {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.ic_briefcase),
-                                        contentDescription = "",
-                                        tint = MaterialTheme.appColors.material.primaryVariant,
-                                        modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
-                                    )
-                                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
-                                    Text(
-                                        text = stringResource(id = R.string.opportunities_to_work),
-                                        style = MaterialTheme.typography.h6,
-                                        modifier = Modifier.weight(1f),
-                                    )
-                                }
-                                Text(
-                                    text = homeState.homePageCoachModel.opportunityToWork.toString(),
-                                    fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
-                                    modifier = Modifier.align(Alignment.CenterEnd)
-                                )
-                            }
-                        }
-                    }*/
-
-                    /*if (role != UserType.REFEREE.key) {*/
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                     UserFlowBackground(
                         padding = 0.dp,
@@ -446,19 +400,13 @@ fun HomeScreen(
                         )
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
 
-                        /*if (role == UserType.REFEREE.key) {
-                            EventItem(
-                                "", "", "", null, MaterialTheme.appColors.material.primary
-                            )
-                        }*/
-                        /*if (role != UserType.REFEREE.key) {*/
                         EventItem(
                             "all_leagues",
                             "leagues",
                             homeState.homePageCoachModel.allLeagues.toString(),
                             R.drawable.ic_leagues
                         )
-                        /*   }*/
+
                     }
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
                 }
@@ -479,8 +427,6 @@ fun HomeScreen(
             selected = teamState.selectedTeam,
             showLoading = teamState.isLoading,
             onCreateTeamClick = { onCreateTeamClick(teamState.selectedTeam) },
-            showCreateTeamButton = role.equals(UserType.COACH.key, ignoreCase = true),
-            showBottomBar = showBottomBar
         )
     }
 
@@ -501,7 +447,7 @@ fun HomeScreen(
             showCreatePlayerButton = true
         )
     }
-    if (homeState.isDataLoading) {
+    if (homeState.isDataLoading || teamState.isLoading) {
         CommonProgressBar()
     }
 }

@@ -129,6 +129,7 @@ class HomeViewModel @Inject constructor(
     fun clearToken() {
         viewModelScope.launch {
             dataStoreManager.saveToken("")
+            dataStoreManager.setId("")
             dataStoreManager.setRole("")
             dataStoreManager.setEmail("")
             dataStoreManager.setColor("")
@@ -337,6 +338,9 @@ class HomeViewModel @Inject constructor(
                         _state.value =
                             _state.value.copy(homePageCoachModel = baseResponse.data)
                         getHomeList()
+                        _homeChannel.send(
+                            HomeChannel.OnUserIdUpdate
+                        )
                     }
                 }
             }

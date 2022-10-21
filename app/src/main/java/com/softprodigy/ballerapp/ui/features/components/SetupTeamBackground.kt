@@ -53,7 +53,7 @@ fun CoachFlowBackground(
                     .align(Alignment.TopEnd)
                     .absoluteOffset(
                         x = dimensionResource(id = R.dimen.size_64dp),
-                        y = -dimensionResource(id = R.dimen.size_45dp)
+                        y = -dimensionResource(id = R.dimen.size_35dp)
                     )
             ) {
                 Surface(
@@ -74,7 +74,7 @@ fun CoachFlowBackground(
                 ) {
                     Box(
                         modifier = Modifier
-                            .size(dimensionResource(id = R.dimen.size_200dp))
+                            .size(dimensionResource(id = R.dimen.size_270dp))
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_ball_lines),

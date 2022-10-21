@@ -1,6 +1,5 @@
 package com.softprodigy.ballerapp.ui.features.components
 
-import android.R.attr.phoneNumber
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
@@ -48,7 +47,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.window.DialogProperties
-import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
@@ -141,8 +139,6 @@ fun SelectTeamDialog(
     showLoading: Boolean,
     teams: ArrayList<Team>,
     onCreateTeamClick: () -> Unit,
-    showCreateTeamButton: Boolean = false,
-    showBottomBar: (Boolean) -> Unit
 ) {
     val homeViewModel: HomeViewModel = hiltViewModel()
     val teamId = remember {
@@ -210,11 +206,6 @@ fun SelectTeamDialog(
                         item {
                             teams.forEach {
                                 TeamListItem(team = it, selected = selected == it) { team ->
-                                    if (team.name == "Team Total Hoop") {
-                                        showBottomBar(true)
-                                    } else {
-                                        showBottomBar(false)
-                                    }
                                     onSelectionChange.invoke(team)
                                     teamId.value = team._id
                                     teamName.value = team.name

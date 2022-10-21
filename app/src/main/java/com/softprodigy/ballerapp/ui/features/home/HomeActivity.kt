@@ -8,7 +8,6 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -63,18 +62,10 @@ import com.softprodigy.ballerapp.ui.features.home.manage_team.MainManageTeamScre
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
-import com.softprodigy.ballerapp.ui.features.home.webview.CommonWebView
-import com.softprodigy.ballerapp.ui.features.profile.*
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.AddPlayersScreenUpdated
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupScreenUpdated
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
-import com.softprodigy.ballerapp.ui.features.home.teams.chat.TeamsChatDetailScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.chat.NewConversationScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.chat.TeamsChatDetailScreen
-import com.softprodigy.ballerapp.ui.features.profile.ProfileEditScreen
-import com.softprodigy.ballerapp.ui.features.profile.ProfileScreen
-import com.softprodigy.ballerapp.ui.features.profile.RefereeEditScreen
+import com.softprodigy.ballerapp.ui.features.home.webview.CommonWebView
+import com.softprodigy.ballerapp.ui.features.profile.*
 import com.softprodigy.ballerapp.ui.features.sign_up.ProfileSetUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpUIEvent
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpViewModel
@@ -119,7 +110,7 @@ class HomeActivity : FragmentActivity() {
             AppConstants.SELECTED_COLOR =
                 fromHex(color.value.ifEmpty { AppConstants.DEFAULT_COLOR })
             homeViewModel.setColor(AppConstants.SELECTED_COLOR)
-            homeViewModel.showBottomAppBar(true)
+            //homeViewModel.showBottomAppBar(true)
             BallerAppMainTheme(
                 customColor = state.color ?: MaterialTheme.appColors.material.primaryVariant
             ) {
@@ -233,13 +224,6 @@ class HomeActivity : FragmentActivity() {
                             moveToLogin(this)
                         })
                 }
-                /*if (state.showAddProfile) {
-                    AddPlayer(
-                        onDismiss = { homeViewModel.setAddProfile(false) },
-                        onConfirmClick = {
-                        },
-                    )
-                }*/
             }
         }
     }
@@ -298,7 +282,7 @@ fun NavControllerComposable(
     cometChat: CometChatUI,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated
 ) {
-    val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = hiltViewModel()
+    //val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = hiltViewModel()
     val profileViewModel: ProfileViewModel = hiltViewModel()
     var eventTitle by rememberSaveable { mutableStateOf("") }
     var teamLogo by rememberSaveable {
@@ -317,15 +301,6 @@ fun NavControllerComposable(
     NavHost(navController, startDestination = Route.HOME_SCREEN) {
         composable(route = Route.HOME_SCREEN) {
             homeViewModel.setTopAppBar(false)
-
-            if (!showDialog && !showBottomBar) {
-                homeViewModel.showBottomAppBar(true)
-            }
-            if (showDialog && showBottomBar) {
-                homeViewModel.showBottomAppBar(false)
-            }
-
-            //if (fromSplash)
             HomeScreen(
                 role,
                 onInvitationCLick = {
@@ -378,11 +353,6 @@ fun NavControllerComposable(
                     showBottomBar = it
                 }
             )
-            /* else {
-                 HomeFirstTimeLoginScreen(onCreateTeamClick = {
-                     navController.navigate(Route.TEAM_SETUP_SCREEN)
-                 }, viewModel = homeViewModel)
-             }*/
         }
         composable(route = Route.PROFILE_SCREEN) {
             homeViewModel.setTopBar(
@@ -748,6 +718,7 @@ fun NavControllerComposable(
                     }
                     //homeViewModel.setScreen(false)
                 }, onInvitationSuccess = {
+
                 })
         }
 

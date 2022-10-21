@@ -292,13 +292,14 @@ class TeamViewModel @Inject constructor(
             loadFirstUi = true,
         )
         _teamChannel.send(
-            TeamChannel.OnTeamDetailsSuccess(team._id, team.name)
+            TeamChannel.OnTeamDetailsSuccess(team._id, team.name, false)
         )
         updateColorData(team.colorCode)
     }
 
     private suspend fun setDefaultData(team: Team) {
         _teamUiState.value = _teamUiState.value.copy(
+            loadFirstUi = true,
             isLoading = false,
             teamName = team.name,
             teamColorPrimary = team.colorCode,
@@ -307,7 +308,7 @@ class TeamViewModel @Inject constructor(
             teamColorThird = team.tertiaryTeamColor,
         )
         _teamChannel.send(
-            TeamChannel.OnTeamDetailsSuccess(team._id, team.name)
+            TeamChannel.OnTeamDetailsSuccess(team._id, team.name, false)
         )
         updateColorData(team.colorCode)
     }
@@ -619,12 +620,19 @@ class TeamViewModel @Inject constructor(
                             selectedAddress = response.data.address,
                         )
                         _teamChannel.send(
-                            TeamChannel.OnTeamDetailsSuccess(response.data._id, response.data.name)
+                            TeamChannel.OnTeamDetailsSuccess(
+                                response.data._id,
+                                response.data.name,
+                                true
+                            )
                         )
                         /*update Color code to db*/
                         updateColorData(response.data.colorCode)
 
                     } else {
+                        if (_teamUiState.value.selectedTeam != null) {
+                            setDefaultData(_teamUiState.value.selectedTeam!!)
+                        }
                         _teamUiState.value =
                             _teamUiState.value.copy(isLoading = false)
                         _teamChannel.send(
@@ -711,5 +719,9 @@ sealed class TeamChannel {
     data class OnTeamsUpdate(val message: UiText, val teamId: String, val teamName: String) :
         TeamChannel()
 
-    data class OnTeamDetailsSuccess(val teamId: String, val teamName: String) : TeamChannel()
+    data class OnTeamDetailsSuccess(
+        val teamId: String,
+        val teamName: String,
+        val show: Boolean = true
+    ) : TeamChannel()
 }
