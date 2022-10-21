@@ -48,6 +48,7 @@ import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.response.ParentDetails
 import com.softprodigy.ballerapp.data.response.PlayerDetails
 import com.softprodigy.ballerapp.data.response.SwapUser
+import com.softprodigy.ballerapp.data.response.UserRoles
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.ui.features.home.events.DivisionData
@@ -789,7 +790,7 @@ fun SelectInvitationRoleDialog(
     title: String,
     selected: String?,
     showLoading: Boolean,
-    roleList: ArrayList<String>
+    roleList: List<UserRoles>
 ) {
 
     BallerAppMainTheme {
@@ -846,10 +847,10 @@ fun SelectInvitationRoleDialog(
 
                         items(roleList) { role ->
                             SelectInvitationRoleItem(
-                                role = role,
-                                isSelected = selected == role,
+                                role = role.value,
+                                isSelected = selected == role.key,
                                 onItemClick = {
-                                    onSelectionChange.invoke(it)
+                                    onSelectionChange.invoke(role.key)
                                 })
                         }
                     }

@@ -114,7 +114,7 @@ open interface APIService {
     suspend fun getHomePageDetails(): BaseResponse<HomePageCoachModel>
 
     @GET(ApiConstants.GET_USER_ROLE)
-    suspend fun getUserRoles(@Query("type") type: String): BaseResponse<ArrayList<String>>
+    suspend fun getUserRoles(@Query("type") type: String): BaseResponse<List<UserRoles>>
 
     @GET(ApiConstants.GET_TEAM_PLAYER_BY_ID)
     suspend fun getTeamPlayerById(@Query("teamId") id: String): BaseResponse<ArrayList<PlayerDetails>>

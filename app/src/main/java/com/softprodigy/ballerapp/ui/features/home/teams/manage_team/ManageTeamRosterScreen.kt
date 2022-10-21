@@ -5,12 +5,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,10 +29,12 @@ import androidx.compose.ui.unit.sp
 import com.google.accompanist.flowlayout.FlowRow
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.data.response.SwapUser
 import com.softprodigy.ballerapp.data.response.team.Coach
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
+import com.softprodigy.ballerapp.ui.features.home.teams.roaster.User
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorBWGrayStatus
 import com.softprodigy.ballerapp.ui.theme.appColors
@@ -40,13 +46,22 @@ import com.softprodigy.ballerapp.ui.utils.dragDrop.reorderable
 @Composable
 fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
     val state = vm.teamUiState.value
+    val scroll = remember {
+        mutableStateOf(false)
+    }
     val recordState =
         rememberReorderableLazyListState(
             onMove = vm::moveItemRoaster,
             canDragOver = vm::isRoasterDragEnabled
         )
+
+    val recordStatePending =
+        rememberReorderableLazyListState(
+            onMove = vm::moveItemUser,
+            canDragOver = vm::isUserDragEnabled
+        )
     Box {
-        if (state.coaches.isNotEmpty() || state.players.isNotEmpty()) {
+        if (state.coaches.isNotEmpty() || state.players.isNotEmpty() || state.acceptPending.isNotEmpty()) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -54,74 +69,111 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                         start = dimensionResource(id = R.dimen.size_16dp),
                         end = dimensionResource(id = R.dimen.size_16dp),
                     )
-
+                    .verticalScroll(rememberScrollState())
             ) {
-                if (state.coaches.isNotEmpty()) {
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
-                    Text(
-                        text = stringResource(id = R.string.coaches),
-                        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                        fontWeight = FontWeight.W600,
-                    )
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                    MangeTeamDataHeaderItem(coaches = state.coaches)
-                }
-                if (state.players.isNotEmpty()) {
+                FlowRow {
                     Column {
-                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
-                        Text(
-                            text = stringResource(id = R.string.all_players),
-                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                            fontWeight = FontWeight.W600,
-                        )
-                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                    }
-                    LazyColumn(
-                        state = recordState.listState,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = dimensionResource(id = R.dimen.size_80dp))
-                            .then(
-                                Modifier
-                                    .reorderable(recordState)
-                                    .detectReorderAfterLongPress(recordState)
-                            ),
-                    ) {
-                        items(state.players, key = { item -> item.uniqueId }) { item ->
-                            ReorderableItem(
-                                reorderableState = recordState,
-                                key = item.uniqueId,
-                            ) { dragging ->
-                                val elevation =
-                                    animateDpAsState(if (dragging) dimensionResource(id = R.dimen.size_10dp) else 0.dp)
-                                /* if (item.locked) {
-                                     Column {
-                                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
-                                         Text(
-                                             text = item._id,
-                                             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                                             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                                             fontWeight = FontWeight.W600,
-                                         )
-                                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                                     }
-                                 } else {*/
-                                MangeTeamDataHeaderItem(
-                                    modifier = Modifier
-                                        .shadow(elevation.value),
-                                    dragging = dragging,
-                                    players = item
-                                )
-                                // }
+                        if (state.coaches.isNotEmpty()) {
+                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
+                            Text(
+                                text = stringResource(id = R.string.coaches),
+                                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                fontWeight = FontWeight.W600,
+                            )
+                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(dimensionResource(id = R.dimen.size_56dp) * state.coaches.size)
+                            ) {
+                                items(state.coaches) {
+                                    MangeTeamDataHeaderItem(coaches = it)
+                                }
                             }
-
                         }
+                        if (state.players.isNotEmpty()) {
+                            Column {
+                                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
+                                Text(
+                                    text = stringResource(id = R.string.all_players),
+                                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                    fontWeight = FontWeight.W600,
+                                )
+                                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                            }
+                            LazyColumn(
+                                state = recordState.listState,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(dimensionResource(id = R.dimen.size_56dp) * state.players.size)
+                                    .then(
+                                        Modifier
+                                            .reorderable(recordState)
+                                            .detectReorderAfterLongPress(recordState)
+                                    ),
+                            ) {
+                                items(state.players, key = { item -> item.uniqueId }) { item ->
+                                    ReorderableItem(
+                                        reorderableState = recordState,
+                                        key = item.uniqueId,
+                                    ) { dragging ->
+                                        val elevation =
+                                            animateDpAsState(if (dragging) dimensionResource(id = R.dimen.size_10dp) else 0.dp)
+                                        MangeTeamDataHeaderItem(
+                                            modifier = Modifier
+                                                .shadow(elevation.value),
+                                            players = item
+                                        )
+                                    }
+
+                                }
+                            }
+                        }
+                        if (state.acceptPending.isNotEmpty()) {
+                            Column {
+                                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
+                                Text(
+                                    text = stringResource(id = R.string.invited),
+                                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                    fontWeight = FontWeight.W600,
+                                )
+                                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                            }
+                            LazyColumn(
+                                state = recordStatePending.listState,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(dimensionResource(id = R.dimen.size_56dp) * state.acceptPending.size)
+                                    .then(
+                                        Modifier
+                                            .reorderable(recordStatePending)
+                                            .detectReorderAfterLongPress(recordStatePending)
+                                    ),
+                            ) {
+                                items(state.acceptPending, key = { item -> item._Id }) { item ->
+                                    ReorderableItem(
+                                        reorderableState = recordStatePending,
+                                        key = item._Id,
+                                    ) { dragging ->
+                                        val elevation =
+                                            animateDpAsState(if (dragging) dimensionResource(id = R.dimen.size_10dp) else 0.dp)
+                                        MangeTeamDataHeaderItem(
+                                            modifier = Modifier
+                                                .shadow(elevation.value),
+                                            user = item
+                                        )
+                                    }
+
+                                }
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_80dp)))
                     }
                 }
             }
-
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -131,7 +183,7 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
             ) {
                 ButtonWithLeadingIcon(
                     modifier = Modifier.align(Alignment.Center),
-                    text = stringResource(id = R.string.add_player),
+                    text = stringResource(id = R.string.invite_team_member),
                     onClick = {
                         onAddPlayerCLick.invoke()
                     },
@@ -178,19 +230,17 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
 @Composable
 fun MangeTeamDataHeaderItem(
     modifier: Modifier = Modifier,
-    dragging: Boolean = false,
-    coaches: ArrayList<Coach>? = null,
+    coaches: Coach? = null,
     players: Player? = null,
+    user: SwapUser? = null,
 ) {
     Column(modifier = modifier) {
-        if (!coaches.isNullOrEmpty()) {
-            FlowRow {
-                coaches.forEach {
-                    TeamUserListItem(coachUser = it, isCoach = true)
-                }
-            }
+        if (coaches != null) {
+            TeamUserListItem(coachUser = coaches, type = User.Coach)
         } else if (players != null) {
-            TeamUserListItem(modifier, teamUser = players, isCoach = false, dragging = dragging)
+            TeamUserListItem(modifier, teamUser = players, type = User.Player)
+        } else if (user != null) {
+            TeamUserListItem(modifier, user = user, type = User.User)
         }
     }
 }
@@ -198,11 +248,36 @@ fun MangeTeamDataHeaderItem(
 @Composable
 fun TeamUserListItem(
     modifier: Modifier = Modifier,
-    dragging: Boolean = false,
+    user: SwapUser? = null,
     teamUser: Player? = null,
     coachUser: Coach? = null,
-    isCoach: Boolean = false,
+    type: User,
 ) {
+    val data: SwapUser = when (type) {
+        User.Coach -> {
+            SwapUser(
+                coachUser?._id ?: "",
+                coachUser?.firstName ?: "",
+                coachUser?.lastName ?: "",
+                coachUser?.role ?: "",
+                coachUser?.profileImage ?: "",
+                ""
+            )
+        }
+        User.Player -> {
+            SwapUser(
+                teamUser?._id ?: "",
+                teamUser?.firstName ?: "",
+                teamUser?.lastName ?: "",
+                teamUser?.role ?: "",
+                teamUser?.profileImage ?: "",
+                teamUser?.status ?: ""
+            )
+        }
+        User.User, User.Staff -> {
+            user ?: SwapUser()
+        }
+    }
 
     Column {
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
@@ -224,9 +299,9 @@ fun TeamUserListItem(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                val url = "" + if (isCoach) coachUser?.profileImage else teamUser?.profileImage
+                val url = "" + data.profileImage
                 CoilImage(
-                    src = if (url.contains("http")) url else BuildConfig.IMAGE_SERVER + url,
+                    src = BuildConfig.IMAGE_SERVER + url,
                     modifier =
                     Modifier
                         .background(
@@ -241,8 +316,7 @@ fun TeamUserListItem(
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
                 Text(
-                    text = if (isCoach) "${coachUser?.firstName} ${coachUser?.lastName}"
-                        ?: "" else "${teamUser?.firstName} ${teamUser?.lastName}",
+                    text = "${data.firstName} ${data.lastName}",
                     fontWeight = FontWeight.Bold,
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                     color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
@@ -255,13 +329,14 @@ fun TeamUserListItem(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = if (isCoach) coachUser?.coachPosition ?: "" else teamUser?.jerseyNumber
-                        ?: "",
+                    text = if (User.Coach == type) coachUser?.coachPosition
+                        ?: "" else if (User.Player == type) teamUser?.jerseyNumber
+                        ?: "" else "",
                     fontWeight = FontWeight.Bold,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                     color = MaterialTheme.appColors.material.primaryVariant
                 )
-                if (!isCoach) {
+                if (User.Player == type) {
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                     Text(
                         text = teamUser?.position ?: "",
@@ -272,16 +347,14 @@ fun TeamUserListItem(
                 }
 
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_14dp)))
-                if (!isCoach) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_drag),
-                        contentDescription = "",
-                        modifier =
-                        Modifier
-                            .size(dimensionResource(id = R.dimen.size_12dp)),
-                        tint = Color.Unspecified
-                    )
-                }
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_drag),
+                    contentDescription = "",
+                    modifier =
+                    Modifier
+                        .size(dimensionResource(id = R.dimen.size_12dp)),
+                    tint = Color.Unspecified
+                )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_20dp)))
 
             }
