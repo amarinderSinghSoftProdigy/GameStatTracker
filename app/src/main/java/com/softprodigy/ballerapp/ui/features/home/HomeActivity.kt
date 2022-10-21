@@ -71,6 +71,7 @@ import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSe
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
 import com.softprodigy.ballerapp.ui.features.home.teams.chat.TeamsChatDetailScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.chat.NewConversationScreen
+import com.softprodigy.ballerapp.ui.features.home.teams.chat.TeamsChatDetailScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileEditScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileScreen
 import com.softprodigy.ballerapp.ui.features.profile.RefereeEditScreen
@@ -382,6 +383,39 @@ fun NavControllerComposable(
             val signUpViewModel: SignUpViewModel = hiltViewModel()
             signUpViewModel.onEvent(SignUpUIEvent.SetRegister)
             ProfileSetUpScreen(
+                signUpViewModel = signUpViewModel,
+                onNext = {
+                    navController.popBackStack()
+                },
+                onBack = {
+                    navController.popBackStack()
+                })
+
+        }
+
+        composable(route = Route.ADD_PROFILE_SCREEN + "/{countryCode}/{mobileNumber}",
+            arguments = listOf(
+                navArgument("countryCode") {
+                    type = NavType.StringType
+                }, navArgument("mobileNumber") {
+                    type = NavType.StringType
+                })
+        ) {
+
+            val countryCode = it.arguments?.getString("countryCode") ?: ""
+            val mobileNumber = it.arguments?.getString("mobileNumber") ?: ""
+
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = stringResource(id = R.string.add_new_profile),
+                    topBar = TopBar.SINGLE_LABEL_BACK,
+                )
+            )
+            val signUpViewModel: SignUpViewModel = hiltViewModel()
+            signUpViewModel.onEvent(SignUpUIEvent.SetRegister)
+            ProfileSetUpScreen(
+                mobileNumber = mobileNumber,
+                countryCode = countryCode,
                 signUpViewModel = signUpViewModel,
                 onNext = {
                     navController.popBackStack()
@@ -740,7 +774,12 @@ fun NavControllerComposable(
                 homeViewModel.setTopAppBar(false)
                 navController.popBackStack()
             }
-            InvitationScreen()
+            InvitationScreen(setupTeamViewModelUpdated, onNewProfileIntent = { countryCode, mobileNumber->
+                navController.navigate(Route.ADD_PROFILE_SCREEN + "/$countryCode/$mobileNumber")
+
+            }, onInvitationSuccess = {
+                navController.popBackStack()
+            }, homeVm = homeViewModel)
         }
         composable(route = Route.TEAM_SETUP_SCREEN) { backStackEntry ->
 

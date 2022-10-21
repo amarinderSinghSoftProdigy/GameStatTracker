@@ -13,25 +13,28 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -39,11 +42,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.window.DialogProperties
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.argbToHexString
+import com.softprodigy.ballerapp.common.validName
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.response.ParentDetails
 import com.softprodigy.ballerapp.data.response.PlayerDetails
@@ -54,7 +59,12 @@ import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.ui.features.home.events.DivisionData
 import com.softprodigy.ballerapp.ui.features.home.events.NoteType
 import com.softprodigy.ballerapp.ui.features.profile.tabs.DetailItem
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.InviteObject
 import com.softprodigy.ballerapp.ui.theme.*
+import com.togitech.ccp.component.TogiCountryCodePicker
+import com.togitech.ccp.data.utils.getDefaultLangCode
+import com.togitech.ccp.data.utils.getDefaultPhoneCode
+import com.togitech.ccp.data.utils.getLibCountries
 
 @Composable
 fun <T> DeleteDialog(
@@ -790,7 +800,9 @@ fun SelectInvitationRoleDialog(
     title: String,
     selected: String?,
     showLoading: Boolean,
-    roleList: List<UserRoles>
+    roleList: List<UserRoles>,
+    userName: String,
+    userLogo: String,
 ) {
 
     BallerAppMainTheme {
@@ -815,7 +827,7 @@ fun SelectInvitationRoleDialog(
                             text = title,
                             style = MaterialTheme.typography.h5,
                             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                            fontWeight = FontWeight.W500
+                            fontWeight = FontWeight.W500,
                         )
 
                         Icon(
@@ -830,6 +842,58 @@ fun SelectInvitationRoleDialog(
                         )
                     }
                     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
+
+                    Row(
+                        modifier = Modifier
+                            .background(
+                                color = MaterialTheme.appColors.material.primary,
+                                shape = RoundedCornerShape(
+                                    dimensionResource(id = R.dimen.size_8dp)
+                                )
+                            )
+                            .padding(dimensionResource(id = R.dimen.size_12dp)),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        CoilImage(
+                            src = userLogo,
+                            modifier = Modifier
+                                .size(
+                                    dimensionResource(id = R.dimen.size_44dp)
+                                )
+                                .clip(CircleShape)
+                                .border(
+                                    dimensionResource(id = R.dimen.size_2dp),
+                                    MaterialTheme.colors.surface,
+                                    CircleShape,
+                                ),
+                            isCrossFadeEnabled = false,
+                            onLoading = { Placeholder(R.drawable.ic_profile_placeholder) },
+                            onError = { Placeholder(R.drawable.ic_profile_placeholder) }
+                        )
+                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+
+                        Column(
+                            verticalArrangement = Arrangement.Center,
+                        ) {
+                            AppText(
+                                text = userName,
+                                style = MaterialTheme.typography.h3,
+                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                            )
+
+                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
+
+                            AppText(
+                                text = stringResource(
+                                    R.string.select_your_role_on_specific_team
+                                ),
+                                style = MaterialTheme.typography.h6,
+                                color = ColorMainPrimary,
+                                textAlign = TextAlign.Start
+                            )
+                        }
+                    }
+
 
                     LazyColumn(
                         modifier = Modifier
@@ -1015,12 +1079,12 @@ fun SelectGuardianRoleItem(
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun SelectGuardianRoleDialog(
+    selectedRole: String,
     onBack: () -> Unit,
     onConfirmClick: () -> Unit,
+    onChildNotListedCLick: () -> Unit,
     onSelectionChange: (String) -> Unit,
-    title: String,
     selected: String?,
-    showLoading: Boolean,
     onDismiss: () -> Unit,
     guardianList: ArrayList<PlayerDetails>,
     onValueSelected: (PlayerDetails) -> Unit
@@ -1045,7 +1109,10 @@ fun SelectGuardianRoleDialog(
                 ) {
                     Box(modifier = Modifier.fillMaxWidth()) {
                         Text(
-                            text = title,
+                            text = if (selectedRole == "guardian") stringResource(R.string.select_the_players_guardian) else stringResource(
+                                R.string.confirm_your_guardin
+                            ),
+
                             style = MaterialTheme.typography.h5,
                             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                             fontWeight = FontWeight.W500
@@ -1076,16 +1143,18 @@ fun SelectGuardianRoleDialog(
                                 }
                             })
                     }
-                    /* Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
                      DialogButton(
-                         text = stringResource(R.string.child_not_listed),
-                         onClick = {},
+                         text = if (selectedRole == "guardian") stringResource(R.string.child_not_listed) else stringResource(
+                             R.string.my_guardian_not_listed
+                         ),
+                         onClick = onChildNotListedCLick,
                          modifier = Modifier.fillMaxWidth(),
                          border = ButtonDefaults.outlinedBorder,
                          onlyBorder = true,
                          enabled = false
-                     )*/
+                     )
 
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
@@ -2140,6 +2209,472 @@ fun AddNoteDialog(
                             enabled = note.length > 4
                         )
                     }
+                }
+            },
+        )
+    }
+}
+
+@Composable
+fun InviteTeamMembersDialog(
+    onBack: () -> Unit,
+    onConfirmClick: () -> Unit,
+    onIndexChange: (Int) -> Unit,
+    inviteList: SnapshotStateList<InviteObject>,
+    onNameValueChange: (Int, String) -> Unit,
+    onEmailValueChange: (Int, String) -> Unit,
+    onInviteCountValueChange: (addIntent: Boolean) -> Unit,
+    OnCountryValueChange: (Int, String) -> Unit,
+    roles: List<UserRoles>,
+    onRoleValueChange: (Int, UserRoles) -> Unit
+) {
+    val context = LocalContext.current
+    val focusRequester = remember { FocusRequester() }
+
+
+
+
+    BallerAppMainTheme {
+        AlertDialog(
+            modifier = Modifier
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+            onDismissRequest = {
+
+            },
+            buttons = {
+                val showInfoBox = remember {
+                    mutableStateOf(true)
+                }
+                Column(
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(
+                            all = dimensionResource(
+                                id = R.dimen.size_16dp
+                            )
+                        ),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            text = stringResource(id = R.string.invite_team_member),
+                            style = MaterialTheme.typography.h5,
+                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            fontWeight = FontWeight.W500
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_18dp)))
+
+                    if (showInfoBox.value) {
+                        InfoBox(
+                            title = "Info box",
+                            content = stringResource(id = R.string.info_text),
+                            color = ColorMainPrimary,
+                            onCancelClick = {
+//                                showInfoBox.value = false
+                            })
+                    }
+
+                    UserFlowBackground(
+                        color = MaterialTheme.appColors.buttonColor.textEnabled, modifier = Modifier
+                            .height(
+                                dimensionResource(id = R.dimen.size_150dp)
+                            )
+                            .fillMaxWidth(), padding = 0.dp
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .verticalScroll(
+                                    rememberScrollState()
+                                )
+                        ) {
+                            inviteList.forEachIndexed { index, item ->
+                                val roleObject = remember { mutableStateOf(UserRoles()) }
+                                var expanded by remember { mutableStateOf(false) }
+                                var textFieldSize by remember { mutableStateOf(Size.Zero) }
+                                var defaultLang by rememberSaveable {
+                                    mutableStateOf(
+                                        getDefaultLangCode(context)
+                                    )
+                                }
+                                val getDefaultPhoneCode = getDefaultPhoneCode(context)
+
+
+                                LaunchedEffect(key1 = Unit) {
+                                    OnCountryValueChange.invoke(index, getDefaultPhoneCode)
+
+                                }
+
+
+                                Column(Modifier.fillMaxSize()) {
+                                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+                                    Row(
+                                        Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.Center,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        AppSearchOutlinedTextField(
+                                            modifier = Modifier
+                                                .weight(0.6f)
+                                                .focusRequester(focusRequester),
+                                            value = item.name,
+                                            onValueChange = { name ->
+                                                if (name.length <= 30)
+                                                    onNameValueChange.invoke(index, name)
+                                            },
+                                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                                focusedBorderColor = ColorBWGrayBorder,
+                                                unfocusedBorderColor = ColorBWGrayBorder,
+                                                cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                                backgroundColor = MaterialTheme.appColors.material.background
+                                            ),
+                                            placeholder = {
+                                                Text(
+                                                    text = stringResource(id = R.string.name),
+                                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                                    color = MaterialTheme.appColors.textField.label,
+                                                )
+                                            },
+                                            singleLine = true,
+                                            isError = !validName(item.name)
+                                                    && item.name.isNotEmpty(),
+                                            errorMessage = stringResource(id = R.string.valid_first_name),
+                                        )
+                                        Spacer(
+                                            modifier = Modifier.width(
+                                                dimensionResource(
+                                                    id = R.dimen.size_8dp
+                                                )
+                                            )
+                                        )
+                                        Column(
+                                            modifier = Modifier.weight(1f)
+                                        ) {
+                                            EditFields(
+                                                roleObject.value.value,
+                                                textStyle = TextStyle().copy(textAlign = TextAlign.Start),
+                                                onValueChange = {},
+                                                head = "",
+                                                keyboardOptions = KeyboardOptions(
+                                                    imeAction = ImeAction.Next,
+                                                    keyboardType = KeyboardType.Text
+                                                ),
+                                                placeholder = {
+                                                    Text(
+                                                        text = stringResource(id = R.string.select_role),
+                                                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                                        color = MaterialTheme.appColors.textField.label,
+                                                    )
+                                                },
+                                                modifier = Modifier
+                                                    .onGloballyPositioned {
+                                                        textFieldSize = it.size.toSize()
+                                                    }
+                                                    .border(
+                                                        shape = RoundedCornerShape(
+                                                            dimensionResource(id = R.dimen.size_8dp)
+                                                        ),
+                                                        width = dimensionResource(id = R.dimen.size_1dp),
+                                                        color = ColorBWGrayBorder
+                                                    ),
+                                                trailingIcon = {
+                                                    Icon(
+                                                        painterResource(id = R.drawable.ic_arrow_down),
+                                                        contentDescription = null,
+                                                        modifier = Modifier.clickable {
+                                                            expanded = !expanded
+                                                        })
+                                                },
+                                                enabled = true
+                                            )
+                                            DropdownMenu(
+                                                expanded = expanded,
+                                                onDismissRequest = { expanded = false },
+                                                modifier = Modifier
+                                                    .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+                                                    .background(MaterialTheme.colors.background)
+                                            ) {
+                                                roles.forEach { label ->
+                                                    DropdownMenuItem(onClick = {
+                                                        roleObject.value = label
+                                                        onRoleValueChange.invoke(
+                                                            index,
+                                                            label
+                                                        )
+                                                        expanded = false
+                                                    }) {
+                                                        Text(
+                                                            text = label.value,
+                                                            textAlign = TextAlign.Center
+                                                        )
+                                                    }
+                                                }
+                                            }
+
+                                        }
+                                    }
+
+                                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+
+                                    Row(
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .border(
+                                                1.dp,
+                                                color = MaterialTheme.appColors.editField.borderUnFocused,
+                                                shape = RoundedCornerShape(
+                                                    dimensionResource(id = R.dimen.size_8dp)
+                                                )
+                                            )
+                                            .padding(horizontal = dimensionResource(id = R.dimen.size_8dp)),
+                                        verticalAlignment = Alignment.CenterVertically,
+
+                                        ) {
+
+                                        TogiCountryCodePicker(
+                                            modifier = Modifier
+                                                .weight(1f)
+                                                .focusRequester(focusRequester),
+                                            pickedCountry = {
+                                                OnCountryValueChange(index, it.countryPhoneCode)
+                                                defaultLang = it.countryCode
+                                            },
+                                            defaultCountry = getLibCountries().single { it.countryCode == defaultLang },
+                                            focusedBorderColor = Color.Transparent,
+                                            unfocusedBorderColor = Color.Transparent,
+                                            dialogAppBarTextColor = Color.Black,
+                                            showCountryFlag = false,
+                                            dialogAppBarColor = Color.White,
+                                            error = true,
+                                            text = item.contact,
+                                            onValueChange = { mobileNumber ->
+                                                if (mobileNumber.length <= 10)
+                                                    onEmailValueChange(index, mobileNumber)
+
+                                            },
+                                            readOnly = false,
+                                            cursorColor = Color.Black,
+                                            placeHolder = {
+                                                Text(
+                                                    text = stringResource(id = R.string.mobile_number),
+                                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                                    color = MaterialTheme.appColors.textField.label,
+                                                )
+                                            },
+                                            content = {
+
+                                            },
+                                            textStyle = TextStyle(textAlign = TextAlign.Start)
+                                        )
+                                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
+
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.ic_add),
+                                            contentDescription = "",
+                                            tint = Color.Unspecified,
+                                            modifier = Modifier
+                                                .clickable { onIndexChange.invoke(index) }
+                                        )
+                                    }
+
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+
+
+                        }
+
+                    }
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+
+                    AppDivider()
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(color = Color.White)
+                            .padding(
+                                vertical = dimensionResource(id = R.dimen.size_16dp)
+                            ),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        DialogButton(
+                            text = stringResource(R.string.back),
+                            onClick = onBack,
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = dimensionResource(id = R.dimen.size_10dp)),
+                            border = ButtonDefaults.outlinedBorder,
+                            onlyBorder = true,
+                            enabled = false
+                        )
+                        DialogButton(
+                            text = stringResource(R.string.invite),
+                            onClick = {
+                                onConfirmClick.invoke()
+                            },
+                            modifier = Modifier
+                                .weight(1f),
+                            border = ButtonDefaults.outlinedBorder,
+                            enabled = inviteList.isNotEmpty() &&
+                                    inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() },
+                            onlyBorder = false,
+                        )
+                    }
+                }
+            })
+    }
+}
+
+@Composable
+fun InfoBox(title: String, content: String, color: Color, onCancelClick: () -> Unit) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .border(
+                width = dimensionResource(id = R.dimen.size_1dp),
+                color = color,
+                shape = RoundedCornerShape(
+                    dimensionResource(id = R.dimen.size_8dp)
+                )
+            )
+            .background(
+                color = color.copy(0.1f),
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+            )
+            .padding(dimensionResource(id = R.dimen.size_16dp))
+
+    ) {
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_info),
+                    contentDescription = "",
+                    modifier = Modifier.size(
+                        dimensionResource(id = R.dimen.size_18dp)
+                    ),
+                    tint = color
+                )
+
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
+
+                AppText(
+                    text = title,
+                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    fontFamily = rubikFamily
+                )
+
+            }
+
+
+            Icon(
+                painter = painterResource(id = R.drawable.ic_cross_1),
+                contentDescription = "",
+                modifier = Modifier
+                    .size(
+                        dimensionResource(id = R.dimen.size_12dp)
+                    )
+                    .clickable {
+                        onCancelClick.invoke()
+                    },
+                tint = color
+            )
+
+        }
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+        AppText(
+            text = content,
+            color = ColorBWGrayDark,
+            fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+            fontFamily = rubikFamily
+        )
+
+    }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun InvitationSuccessfullySentDialog(
+    onDismiss: () -> Unit,
+    onConfirmClick: () -> Unit,
+    teamLogo: String,
+    teamName: String,
+    playerName: String,
+) {
+/*   InvitationSuccessfullySentDialog(
+            onDismiss = { },
+            onConfirmClick = {
+
+            },
+            teamLogo = BuildConfig.IMAGE_SERVER + "teamLogo/1666259687828-IMG_20220805_120020_710.jpg",
+            teamName ="My name",
+            playerName ="My player"
+        )*/
+    val keyboardController = LocalSoftwareKeyboardController.current
+    BallerAppMainTheme {
+        AlertDialog(
+            modifier = Modifier
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+            onDismissRequest = {
+                onDismiss.invoke()
+            },
+            buttons = {
+                Column(
+                    modifier = Modifier
+                        .background(color = MaterialTheme.appColors.material.surface)
+                        .padding(
+                            all = dimensionResource(
+                                id = R.dimen.size_16dp
+                            )
+                        ),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                    CoilImage(
+                        src = teamLogo,
+                        modifier = Modifier
+                            .size(dimensionResource(id = R.dimen.size_160dp))
+                            .clip(CircleShape),
+                        isCrossFadeEnabled = false,
+                        onLoading = { Placeholder(R.drawable.ic_profile_placeholder) },
+                        onError = { Placeholder(R.drawable.ic_profile_placeholder) }
+                    )
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+
+                    AppText(
+                        text = stringResource(
+                            id = R.string.success_player_has_been_added_to_the_team,
+                            playerName,
+                            teamName
+                        ),
+                        fontSize = dimensionResource(id = R.dimen.txt_size_18).value.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        fontFamily = rubikFamily,
+                        textAlign = TextAlign.Center
+                    )
+
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+
+                    DialogButton(
+                        text = stringResource(R.string.invite_others_to_the_team),
+                        onClick = {
+                            onConfirmClick.invoke()
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        enabled = true,
+                        onlyBorder = false,
+                    )
                 }
             },
         )
