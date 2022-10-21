@@ -105,4 +105,5 @@ val ColorButtonGreen = Color(0xFF2ECC71)
 val ColorButtonRed = Color(0xFFE3584A)
 val GreenColor = Color(0xFF2ECC71)
 val BackgroundColor = Color(0x80FFFFFF)
+val SkipColor = Color(0xFF66FFFFFF)
 

@@ -437,6 +437,7 @@
     <string name="no_members_in_the_team_currently">No members are there in the selected team.</string>
     <string name="new_group_created_successfully">New group created successfully.</string>
     <string name="user_has_not_registered_with_chat">This user has not registered with chat facility yet.</string>
+    <string name="let_go">Let\'s Go </string>
     <string name="supporting_staff">Supporting Staff</string>
     <string name="mobile_number">Mobile Number</string>
     <string name="my_guardian_not_listed">My guardian is not listed</string>
@@ -446,4 +447,5 @@
     <string name="invite_others_to_the_team">Invite others to the team</string>
     <string name="success_player_has_been_added_to_the_team">Success! %1$s has been added to %2$s</string>
     <string name="invite_from_your_profile">Invite from your profile</string>
+
 </resources>

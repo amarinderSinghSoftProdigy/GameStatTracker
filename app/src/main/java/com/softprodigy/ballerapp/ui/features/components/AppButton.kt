@@ -15,9 +15,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.ui.theme.ButtonColor
@@ -411,8 +413,62 @@ fun TransparentButtonButton(
     }
 }
 
+@Composable
+fun RowScope.SingleWalkthroughButtonView(
+    text: String,
+    color: Color,
+    painter: Painter,
+    iconColor: Color,
+    onClick: () -> Unit,
+    backgroundColor: Color
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .weight(1F)
+            .height(dimensionResource(id = R.dimen.size_56dp))
+            .align(Alignment.CenterVertically)
+            .background(
+                color = backgroundColor, shape = RoundedCornerShape(
+                    dimensionResource(id = R.dimen.size_8dp)
+                )
+            )
+            .clickable {
+                onClick()
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            AppText(
+                text = text,
+                color = color,
+                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                fontWeight = FontWeight.W700,
+            )
+            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_20dp)))
+        }
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
 
 
+            Icon(
+                painter = painter,
+                modifier = Modifier
+                    .size(dimensionResource(R.dimen.size_20dp)),
+                contentDescription = null,
+                tint = iconColor
+            )
+            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_20dp)))
+        }
+    }
+}
 
 
 
