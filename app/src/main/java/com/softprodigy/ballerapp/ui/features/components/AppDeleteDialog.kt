@@ -1,5 +1,9 @@
 package com.softprodigy.ballerapp.ui.features.components
 
+import android.R.attr.phoneNumber
+import android.content.Intent
+import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
 import androidx.compose.foundation.layout.*
@@ -44,6 +48,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.content.ContextCompat.startActivity
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
@@ -56,6 +62,7 @@ import com.softprodigy.ballerapp.data.response.SwapUser
 import com.softprodigy.ballerapp.data.response.UserRoles
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
+import com.softprodigy.ballerapp.ui.features.home.HomeViewModel
 import com.softprodigy.ballerapp.ui.features.home.events.DivisionData
 import com.softprodigy.ballerapp.ui.features.home.events.NoteType
 import com.softprodigy.ballerapp.ui.features.profile.tabs.DetailItem
@@ -65,6 +72,7 @@ import com.togitech.ccp.component.TogiCountryCodePicker
 import com.togitech.ccp.data.utils.getDefaultLangCode
 import com.togitech.ccp.data.utils.getDefaultPhoneCode
 import com.togitech.ccp.data.utils.getLibCountries
+
 
 @Composable
 fun <T> DeleteDialog(
@@ -134,13 +142,16 @@ fun SelectTeamDialog(
     teams: ArrayList<Team>,
     onCreateTeamClick: () -> Unit,
     showCreateTeamButton: Boolean = false,
+    showBottomBar: (Boolean) -> Unit
 ) {
+    val homeViewModel: HomeViewModel = hiltViewModel()
     val teamId = remember {
         mutableStateOf(UserStorage.teamId)
     }
     val teamName = remember {
         mutableStateOf(UserStorage.teamName)
     }
+
     BallerAppMainTheme {
         AlertDialog(
             modifier = Modifier
@@ -199,6 +210,11 @@ fun SelectTeamDialog(
                         item {
                             teams.forEach {
                                 TeamListItem(team = it, selected = selected == it) { team ->
+                                    if (team.name == "Team Total Hoop") {
+                                        showBottomBar(true)
+                                    } else {
+                                        showBottomBar(false)
+                                    }
                                     onSelectionChange.invoke(team)
                                     teamId.value = team._id
                                     teamName.value = team.name
@@ -208,16 +224,16 @@ fun SelectTeamDialog(
                     }
                     //  Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
-                    if (showCreateTeamButton) {
-                        ButtonWithLeadingIcon(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = stringResource(id = R.string.create_new_team),
-                            onClick = { onCreateTeamClick.invoke() },
-                            painter = painterResource(id = R.drawable.ic_add_button),
-                            isTransParent = true
+                    /* if (showCreateTeamButton) {*/
+                    ButtonWithLeadingIcon(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(id = R.string.create_new_team),
+                        onClick = { onCreateTeamClick.invoke() },
+                        painter = painterResource(id = R.drawable.ic_add_button),
+                        isTransParent = true
 
-                        )
-                    }
+                    )
+                    /*   }*/
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -261,6 +277,7 @@ fun ShowParentDialog(
     onDismiss: () -> Unit,
     onConfirmClick: () -> Unit,
 ) {
+    val context = LocalContext.current
     BallerAppMainTheme {
         AlertDialog(
             modifier = Modifier
@@ -356,7 +373,17 @@ fun ShowParentDialog(
                     ) {
                         ButtonWithLeadingIconGrayed(
                             text = stringResource(R.string.message),
-                            onClick = onDismiss,
+                            onClick =  {
+                                val u = Uri.parse("sms:" + parentDetails.parent.phone)
+                                val i = Intent(Intent.ACTION_VIEW, u)
+                                try {
+                                    context.startActivity(i)
+                                } catch (s: SecurityException) {
+                                    Toast.makeText(context, "An error occurred", Toast.LENGTH_LONG)
+                                        .show()
+                                }
+                                onDismiss()
+                            },
                             modifier = Modifier
                                 .weight(1f),
                             painter = painterResource(id = R.drawable.ic_message),
@@ -365,6 +392,15 @@ fun ShowParentDialog(
                         ButtonWithLeadingIcon(
                             text = stringResource(R.string.call),
                             onClick = {
+
+                                val u = Uri.parse("tel:" + parentDetails.parent.phone)
+                                val i = Intent(Intent.ACTION_DIAL, u)
+                                try {
+                                    context.startActivity(i)
+                                } catch (s: SecurityException) {
+                                    Toast.makeText(context, "An error occurred", Toast.LENGTH_LONG)
+                                        .show()
+                                }
                                 onConfirmClick.invoke()
                             },
                             modifier = Modifier
@@ -1145,16 +1181,16 @@ fun SelectGuardianRoleDialog(
                     }
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
-                     DialogButton(
-                         text = if (selectedRole == "guardian") stringResource(R.string.child_not_listed) else stringResource(
-                             R.string.my_guardian_not_listed
-                         ),
-                         onClick = onChildNotListedCLick,
-                         modifier = Modifier.fillMaxWidth(),
-                         border = ButtonDefaults.outlinedBorder,
-                         onlyBorder = true,
-                         enabled = false
-                     )
+                    DialogButton(
+                        text = if (selectedRole == "guardian") stringResource(R.string.child_not_listed) else stringResource(
+                            R.string.my_guardian_not_listed
+                        ),
+                        onClick = onChildNotListedCLick,
+                        modifier = Modifier.fillMaxWidth(),
+                        border = ButtonDefaults.outlinedBorder,
+                        onlyBorder = true,
+                        enabled = false
+                    )
 
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
@@ -1658,7 +1694,7 @@ fun DeclineEventDialog(
     title: String,
     reason: String,
     onReasonChange: (String) -> Unit,
-    placeholderText : String = ""
+    placeholderText: String = ""
 ) {
 
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -1709,7 +1745,7 @@ fun DeclineEventDialog(
                         singleLine = true,
                         placeholder = {
                             Text(
-                                text = if(placeholderText.isEmpty()) stringResource(id = R.string.reason_not_going)  else placeholderText,
+                                text = if (placeholderText.isEmpty()) stringResource(id = R.string.reason_not_going) else placeholderText,
                                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                 textAlign = TextAlign.Start
                             )
