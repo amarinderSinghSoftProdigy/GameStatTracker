@@ -272,7 +272,6 @@ fun BoxScope.CommonTabView(
 
 @Composable
 fun PagerIndicator(size: Int, currentPage: Int) {
-
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
@@ -287,14 +286,14 @@ fun PagerIndicator(size: Int, currentPage: Int) {
 fun Indicator(isSelected: Boolean) {
     val width =
         if (isSelected) animateDpAsState(targetValue = dimensionResource(id = R.dimen.size_24dp)) else animateDpAsState(
-            targetValue = dimensionResource(id = R.dimen.size_10dp)
+            targetValue = dimensionResource(id = R.dimen.size_8dp)
         )
 
 
     Box(
         modifier = Modifier
             .padding(dimensionResource(id = R.dimen.size_3dp))
-            .height(dimensionResource(id = R.dimen.size_10dp))
+            .height(dimensionResource(id = R.dimen.size_8dp))
             .width(width = width.value)
             .clip(CircleShape)
             .background(if (isSelected) Color.White else ColorBWBlack.copy(0.3f))
