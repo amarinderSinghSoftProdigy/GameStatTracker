@@ -1,6 +1,5 @@
 package com.softprodigy.ballerapp.ui.features.game_zone
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
@@ -11,8 +10,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.unit.dp
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.ui.features.components.AddNewPlayerDialog
-import com.softprodigy.ballerapp.ui.features.components.GameSettingsDialog
 
 @Composable
 fun OverviewScreen (
