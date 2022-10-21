@@ -204,14 +204,14 @@ fun BoxScope.CommonTabView(
     //Add the checks where we want to display the icon on the right corner
     when (topBarData.topBar) {
         TopBar.TEAMS -> {
-            if (userRole.equals(UserType.COACH.key, ignoreCase = true)) icon =
+            icon =
                 painterResource(id = R.drawable.ic_settings)
         }
         TopBar.PROFILE -> {
             icon = painterResource(id = R.drawable.ic_edit)
         }
         TopBar.MY_EVENT -> {
-            if (userRole.equals(UserType.COACH.key, ignoreCase = true))
+
                 icon = painterResource(id = R.drawable.ic_top_add)
         }
         TopBar.EVENT_OPPORTUNITIES -> {
