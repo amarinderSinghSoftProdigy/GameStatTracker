@@ -108,13 +108,15 @@ class HomeActivity : FragmentActivity() {
             /* val userToken = dataStoreManager.userToken.collectAsState(initial = "")
              UserStorage.token = userToken.value
              */
-            val color = dataStoreManager.getColor.collectAsState(initial = AppConstants.DEFAULT_COLOR)
+            val color =
+                dataStoreManager.getColor.collectAsState(initial = AppConstants.DEFAULT_COLOR)
             val teamId = dataStoreManager.getId.collectAsState(initial = "")
             val teamName = dataStoreManager.getTeamName.collectAsState(initial = "")
             val role = dataStoreManager.getRole.collectAsState(initial = "")
             UserStorage.teamId = teamId.value
             UserStorage.teamName = teamName.value
-            AppConstants.SELECTED_COLOR = fromHex(color.value.ifEmpty { AppConstants.DEFAULT_COLOR })
+            AppConstants.SELECTED_COLOR =
+                fromHex(color.value.ifEmpty { AppConstants.DEFAULT_COLOR })
             homeViewModel.setColor(AppConstants.SELECTED_COLOR)
             homeViewModel.showBottomAppBar(true)
             BallerAppMainTheme(
@@ -307,9 +309,21 @@ fun NavControllerComposable(
     var url by rememberSaveable {
         mutableStateOf("")
     }
+    var showBottomBar by remember {
+        mutableStateOf(false)
+    }
+
     NavHost(navController, startDestination = Route.HOME_SCREEN) {
         composable(route = Route.HOME_SCREEN) {
             homeViewModel.setTopAppBar(false)
+
+            if (!showDialog && !showBottomBar) {
+                homeViewModel.showBottomAppBar(true)
+            }
+            if (showDialog && showBottomBar) {
+                homeViewModel.showBottomAppBar(false)
+            }
+
             //if (fromSplash)
             HomeScreen(
                 role,
@@ -322,7 +336,10 @@ fun NavControllerComposable(
                 logoClick = {
                     homeViewModel.setLogoutDialog(true)
                 },
-                onTeamNameClick = { homeViewModel.setDialog(true) },
+                onTeamNameClick = {
+                    showBottomBar = it
+                    homeViewModel.setDialog(true)
+                },
                 vm = homeViewModel,
                 gotToProfile = {
                     navController.navigate(Route.PROFILE_SCREEN)
@@ -355,7 +372,7 @@ fun NavControllerComposable(
                     )
                     navController.navigate(Route.ADD_MY_PLAYER_SCREEN + "/${UserStorage.teamId}")
                 },
-                setupTeamViewModelUpdated = setupTeamViewModelUpdated
+                setupTeamViewModelUpdated = setupTeamViewModelUpdated,
             )
             /* else {
                  HomeFirstTimeLoginScreen(onCreateTeamClick = {
@@ -465,9 +482,12 @@ fun NavControllerComposable(
                 )
             )
 
-            NewConversationScreen(cometChat = cometChat,teamVm = teamViewModel, onGroupCreateSuccess = {
-                navController.popBackStack()
-            })
+            NewConversationScreen(
+                cometChat = cometChat,
+                teamVm = teamViewModel,
+                onGroupCreateSuccess = {
+                    navController.popBackStack()
+                })
 
         }
 
@@ -608,14 +628,14 @@ fun NavControllerComposable(
                     topBar = TopBar.FILTER_EVENT,
                 )
             )
-           /* if (role.value == UserType.REFEREE.key)
-                RefereeFiltersScreen(eventViewModel) {
-                    navController.popBackStack()
-                }
-            else*/
-                FilterScreen(eventViewModel) {
-                    navController.popBackStack()
-                }
+            /* if (role.value == UserType.REFEREE.key)
+                 RefereeFiltersScreen(eventViewModel) {
+                     navController.popBackStack()
+                 }
+             else*/
+            FilterScreen(eventViewModel) {
+                navController.popBackStack()
+            }
         }
         composable(
             route = Route.EVENTS_DETAIL_SCREEN + "/{eventId}",
@@ -886,7 +906,7 @@ fun NavControllerComposable(
                     topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
-            SearchGameStaff(profileViewModel,onGameStaffClick = {
+            SearchGameStaff(profileViewModel, onGameStaffClick = {
                 navController.popBackStack()
             })
         }

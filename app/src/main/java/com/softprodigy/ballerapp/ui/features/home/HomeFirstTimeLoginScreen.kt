@@ -39,7 +39,7 @@ import com.softprodigy.ballerapp.ui.theme.appColors
 fun HomeFirstTimeLoginScreen(
     viewModel: HomeViewModel,
     teamVm: TeamViewModel,
-    onTeamNameClick: () -> Unit,
+    onTeamNameClick: (Boolean) -> Unit,
     onCreateTeamClick: () -> Unit
 ) {
     val state = viewModel.state.value
@@ -75,7 +75,7 @@ fun HomeFirstTimeLoginScreen(
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
 
             Column(modifier = Modifier.fillMaxWidth()) {
-                if (teamState.teams.isNotEmpty()) {
+               /* if (teamState.teams.isNotEmpty()) {*/
                     UserFlowBackground(
                         padding = 0.dp,
                         color = Color.White
@@ -84,7 +84,11 @@ fun HomeFirstTimeLoginScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    onTeamNameClick.invoke()
+                                    if(teamState.teamName.isEmpty()){
+                                        onTeamNameClick.invoke(true)
+                                    } else {
+                                        onTeamNameClick.invoke(false)
+                                    }
                                 }
                                 .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                             contentAlignment = Alignment.CenterStart
@@ -122,7 +126,7 @@ fun HomeFirstTimeLoginScreen(
                             )
                         }
                     }
-                }
+                /*  }*/
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                 FlowRow {
                     state.homeItemList.forEachIndexed { index, item ->

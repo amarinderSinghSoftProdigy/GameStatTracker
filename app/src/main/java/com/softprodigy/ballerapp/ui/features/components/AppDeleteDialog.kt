@@ -40,6 +40,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
@@ -50,6 +51,7 @@ import com.softprodigy.ballerapp.data.response.PlayerDetails
 import com.softprodigy.ballerapp.data.response.SwapUser
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
+import com.softprodigy.ballerapp.ui.features.home.HomeViewModel
 import com.softprodigy.ballerapp.ui.features.home.events.DivisionData
 import com.softprodigy.ballerapp.ui.features.home.events.NoteType
 import com.softprodigy.ballerapp.ui.features.profile.tabs.DetailItem
@@ -124,12 +126,14 @@ fun SelectTeamDialog(
     onCreateTeamClick: () -> Unit,
     showCreateTeamButton: Boolean = false,
 ) {
+    val homeViewModel : HomeViewModel = hiltViewModel()
     val teamId = remember {
         mutableStateOf(UserStorage.teamId)
     }
     val teamName = remember {
         mutableStateOf(UserStorage.teamName)
     }
+
     BallerAppMainTheme {
         AlertDialog(
             modifier = Modifier

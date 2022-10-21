@@ -58,7 +58,7 @@ fun HomeScreen(
     showDialog: Boolean,
     dismissDialog: (Boolean) -> Unit,
     onCreateTeamClick: (Team?) -> Unit,
-    onTeamNameClick: () -> Unit,
+    onTeamNameClick: (Boolean) -> Unit,
     onInviteClick: () -> Unit,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
 ) {
@@ -153,7 +153,7 @@ fun HomeScreen(
         }) {
         if (role == AppConstants.USER_TYPE_USER || role.isEmpty()) {
             HomeFirstTimeLoginScreen(vm, teamVm, {
-                onTeamNameClick()
+                onTeamNameClick(it)
             }, {
                 onCreateTeamClick(null)
             }
@@ -198,7 +198,11 @@ fun HomeScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clickable { /*logoClick()*/
-                                        onTeamNameClick.invoke()
+                                        if(teamState.teamName.isEmpty()){
+                                            onTeamNameClick.invoke(true)
+                                        } else {
+                                            onTeamNameClick.invoke(false)
+                                        }
                                     }
                                     .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                                 contentAlignment = Alignment.CenterStart
