@@ -1,225 +1,225 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:2:1-105:12
-INJECTED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:2:1-105:12
-INJECTED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:2:1-105:12
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:2:1-105:12
+INJECTED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:2:1-105:12
+INJECTED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:2:1-105:12
 	package
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:4:5-38
-		INJECTED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml
-		INJECTED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:4:5-38
+		INJECTED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml
+		INJECTED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml
 	xmlns:tools
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:3:5-51
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:3:5-51
 	xmlns:android
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:2:11-69
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:2:11-69
 uses-permission#android.permission.ACCESS_COARSE_LOCATION
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:6:5-81
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:6:5-81
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:6:22-78
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:6:22-78
 uses-permission#android.permission.ACCESS_FINE_LOCATION
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:7:5-79
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:7:5-79
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:7:22-76
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:7:22-76
 uses-permission#android.permission.ACCESS_NETWORK_STATE
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:8:5-79
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:8:5-79
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:8:22-76
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:8:22-76
 uses-permission#android.permission.INTERNET
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:9:5-66
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:9:5-66
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:9:22-64
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:9:22-64
 uses-permission#android.permission.CAMERA
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:10:5-64
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:10:5-64
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:10:22-62
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:10:22-62
 uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:11:5-80
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:11:5-80
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:11:22-78
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:11:22-78
 uses-permission#android.permission.READ_EXTERNAL_STORAGE
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:12:5-80
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:12:5-80
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:12:22-77
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:12:22-77
 uses-permission#android.permission.VIBRATE
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:13:5-66
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:13:5-66
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:13:22-63
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:13:22-63
 application
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:15:5-103:19
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:15:5-103:19
 	tools:node
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:19:9-27
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:19:9-27
 	android:requestLegacyExternalStorage
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:17:9-52
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:17:9-52
 	android:hardwareAccelerated
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:16:9-43
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:16:9-43
 	tools:targetApi
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:20:9-28
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:20:9-28
 	android:usesCleartextTraffic
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:18:9-44
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:18:9-44
 activity#com.cometchat.pro.uikit.ui_components.chats.CometChatStartConversation
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:22:9-84
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:22:9-84
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:22:19-81
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:22:19-81
 activity#com.cometchat.pro.uikit.ui_components.calls.call_manager.CometChatStartCallActivity
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:23:9-97
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:23:9-97
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:23:19-94
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:23:19-94
 activity#com.cometchat.pro.uikit.ui_components.messages.extensions.collaborative.CometChatCollaborativeActivity
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:24:9-116
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:24:9-116
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:24:19-113
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:24:19-113
 activity#com.cometchat.pro.uikit.ui_components.messages.extensions.message_reaction.CometChatReactionInfoActivity
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:25:9-118
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:25:9-118
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:25:19-115
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:25:19-115
 activity#com.cometchat.pro.uikit.ui_components.messages.message_information.CometChatMessageInfoScreenActivity
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:26:9-115
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:26:9-115
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:26:19-112
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:26:19-112
 activity#com.cometchat.pro.uikit.ui_components.groups.banned_members.CometChatBanMembersActivity
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:27:9-101
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:27:9-101
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:27:19-98
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:27:19-98
 activity#com.cometchat.pro.uikit.ui_components.calls.call_manager.CometChatCallActivity
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:28:9-31:56
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:28:9-31:56
 	android:screenOrientation
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:30:13-49
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:30:13-49
 	android:theme
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:31:13-53
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:31:13-53
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:29:13-83
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:29:13-83
 activity#com.cometchat.pro.uikit.ui_components.messages.threaded_message_list.CometChatThreadMessageListActivity
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:32:9-34:58
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:32:9-34:58
 	android:windowSoftInputMode
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:34:13-55
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:34:13-55
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:33:13-108
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:33:13-108
 activity#com.cometchat.pro.uikit.ui_components.calls.call_list.CometChatNewCallList
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:35:9-37:52
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:35:9-37:52
 	android:screenOrientation
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:37:13-49
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:37:13-49
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:36:13-79
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:36:13-79
 meta-data#com.cometchat.pro.uikit
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:39:9-41:48
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:39:9-41:48
 	android:value
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:41:13-45
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:41:13-45
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:40:13-51
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:40:13-51
 activity#com.cometchat.pro.uikit.ui_components.groups.create_group.CometChatCreateGroupActivity
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:43:9-46:55
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:43:9-46:55
 	android:screenOrientation
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:45:13-49
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:45:13-49
 	android:windowSoftInputMode
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:46:13-52
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:46:13-52
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:44:13-91
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:44:13-91
 activity#com.cometchat.pro.uikit.ui_components.userProfile.privacy_and_security.CometChatMorePrivacyActivity
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:47:9-49:52
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:47:9-49:52
 	android:screenOrientation
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:49:13-49
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:49:13-49
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:48:13-104
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:48:13-104
 activity#com.cometchat.pro.uikit.ui_components.users.blocked_users.CometChatBlockUserListActivity
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:50:9-52:52
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:50:9-52:52
 	android:screenOrientation
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:52:13-49
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:52:13-49
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:51:13-93
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:51:13-93
 activity#com.cometchat.pro.uikit.ui_components.groups.group_detail.CometChatGroupDetailActivity
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:53:9-55:52
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:53:9-55:52
 	android:screenOrientation
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:55:13-49
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:55:13-49
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:54:13-91
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:54:13-91
 activity#com.cometchat.pro.uikit.ui_components.groups.add_members.CometChatAddMembersActivity
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:56:9-58:52
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:56:9-58:52
 	android:screenOrientation
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:58:13-49
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:58:13-49
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:57:13-89
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:57:13-89
 activity#com.cometchat.pro.uikit.ui_components.groups.admin_moderator_list.CometChatAdminModeratorListActivity
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:59:9-61:52
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:59:9-61:52
 	android:screenOrientation
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:61:13-49
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:61:13-49
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:60:13-106
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:60:13-106
 activity#com.cometchat.pro.uikit.ui_components.messages.forward_message.CometChatForwardMessageActivity
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:62:9-77:20
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:62:9-77:20
 	android:screenOrientation
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:65:13-49
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:65:13-49
 	android:exported
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:64:13-37
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:64:13-37
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:63:13-99
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:63:13-99
 intent-filter#action:name:android.intent.action.SEND+category:name:android.intent.category.DEFAULT+data:mimeType:application/*+data:mimeType:audio/*+data:mimeType:image/*+data:mimeType:text/*+data:mimeType:video/*
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:66:13-76:29
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:66:13-76:29
 action#android.intent.action.SEND
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:67:17-69
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:67:17-69
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:67:25-66
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:67:25-66
 category#android.intent.category.DEFAULT
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:69:17-76
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:69:17-76
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:69:27-73
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:69:27-73
 data
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:71:17-51
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:71:17-51
 	android:mimeType
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:71:23-48
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:71:23-48
 activity#com.cometchat.pro.uikit.ui_components.groups.group_members.CometChatGroupMemberListActivity
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:78:9-80:52
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:78:9-80:52
 	android:screenOrientation
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:80:13-49
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:80:13-49
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:79:13-96
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:79:13-96
 activity#com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:81:9-84:58
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:81:9-84:58
 	android:screenOrientation
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:83:13-49
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:83:13-49
 	android:windowSoftInputMode
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:84:13-55
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:84:13-55
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:82:13-67
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:82:13-67
 activity#com.cometchat.pro.uikit.ui_components.users.user_details.CometChatUserDetailScreenActivity
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:85:9-88:58
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:85:9-88:58
 	android:screenOrientation
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:87:13-49
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:87:13-49
 	android:windowSoftInputMode
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:88:13-55
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:88:13-55
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:86:13-95
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:86:13-95
 activity#com.cometchat.pro.uikit.ui_components.messages.message_list.CometChatMessageListActivity
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:89:9-92:52
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:89:9-92:52
 	android:screenOrientation
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:92:13-49
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:92:13-49
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:90:13-93
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:90:13-93
 provider#androidx.core.content.FileProvider
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:94:9-102:20
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:94:9-102:20
 	android:grantUriPermissions
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:98:13-47
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:98:13-47
 	android:authorities
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:96:13-60
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:96:13-60
 	android:exported
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:97:13-37
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:97:13-37
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:95:13-62
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:95:13-62
 meta-data#android.support.FILE_PROVIDER_PATHS
-ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:99:13-101:57
+ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:99:13-101:57
 	android:resource
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:101:17-54
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:101:17-54
 	android:name
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml:100:17-67
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml:100:17-67
 uses-sdk
-INJECTED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml
-INJECTED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml
-INJECTED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml
-INJECTED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml
+INJECTED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml
+INJECTED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml
+INJECTED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml
+INJECTED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml
 	android:targetSdkVersion
-		INJECTED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml
-		INJECTED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml
+		INJECTED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml
+		INJECTED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml
-		ADDED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml
-		INJECTED from C:\Users\user\AndroidStudioProjects\BallerAndroidApp\uikit-kotlin\src\main\AndroidManifest.xml
+		INJECTED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml
+		ADDED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml
+		INJECTED from /home/user/softprodigy/baller-app/uikit-kotlin/src/main/AndroidManifest.xml
