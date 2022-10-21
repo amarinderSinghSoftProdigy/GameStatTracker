@@ -31,7 +31,11 @@ sealed class TeamSetupUIEventUpdated {
     data class OnInviteCountValueChange(val index: Int? = null, val addIntent: Boolean) :
         TeamSetupUIEventUpdated()
 
-    data class OnInviteTeamMembers(val teamId: String) : TeamSetupUIEventUpdated()
+    data class OnInviteTeamMembers(
+        val teamId: String,
+        val userType: String = "",
+        val type: String = ""
+    ) : TeamSetupUIEventUpdated()
     object OnBackButtonClickFromPlayerScreen : TeamSetupUIEventUpdated()
 
     data class OnTeamNameJerseyChange(val teamNameOnJersey: String) : TeamSetupUIEventUpdated()

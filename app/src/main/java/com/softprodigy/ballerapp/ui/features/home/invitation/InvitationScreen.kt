@@ -31,21 +31,27 @@ import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.apiToUIDateFormat
+import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
+import com.softprodigy.ballerapp.ui.features.home.HomeViewModel
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.*
 import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
 import com.softprodigy.ballerapp.ui.theme.ColorButtonRed
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun InvitationScreen(vmSetupTeam: SetupTeamViewModelUpdated,onNewProfileIntent:(countryCode:String,mobileNumber:String)-> Unit,
-                     onInvitationSuccess: () -> Unit
+fun InvitationScreen(
+    vmSetupTeam: SetupTeamViewModelUpdated,
+    homeVm: HomeViewModel,
+    onNewProfileIntent: (countryCode: String, mobileNumber: String) -> Unit,
+    onInvitationSuccess: () -> Unit
 ) {
     val vm: InvitationViewModel = hiltViewModel()
     val state = vm.invitationState.value
     val context = LocalContext.current
     val teamState = vmSetupTeam.teamSetupUiState.value
+    val homeState = homeVm.state.value
 
     LaunchedEffect(key1 = Unit) {
         vmSetupTeam.teamSetupChannel.collect { uiEvent ->
@@ -126,10 +132,15 @@ fun InvitationScreen(vmSetupTeam: SetupTeamViewModelUpdated,onNewProfileIntent:(
                 }
             },
             onSelectionChange = { vm.onEvent(InvitationEvent.OnRoleClick(roleKey = it)) },
-            title = stringResource(id = R.string.what_is_your_role),
+            title = stringResource(
+                id = R.string.what_is_your_role,
+                state.selectedInvitation.team.name
+            ),
             selected = state.selectedRoleKey,
             showLoading = state.showLoading,
-            roleList = state.roles
+            roleList = state.roles,
+            userName = "${homeState.user.firstName} ${homeState.user.lastName}",
+            userLogo = BuildConfig.IMAGE_SERVER + homeState.user.profileImage,
         )
     }
 
@@ -177,6 +188,7 @@ fun InvitationScreen(vmSetupTeam: SetupTeamViewModelUpdated,onNewProfileIntent:(
     }
 
     if (state.showAddPlayerDialog) {
+        vmSetupTeam.initialInviteCount(1)
         InviteTeamMembersDialog(
             onBack = {
                 vm.onEvent(InvitationEvent.OnRoleDialogClick(true))
@@ -185,7 +197,15 @@ fun InvitationScreen(vmSetupTeam: SetupTeamViewModelUpdated,onNewProfileIntent:(
             },
             onConfirmClick = {
                 if (state.selectedInvitation.team._id.isNotEmpty()) {
-                    vmSetupTeam.onEvent(TeamSetupUIEventUpdated.OnInviteTeamMembers(state.selectedInvitation.team._id))
+
+//                    if(homeState.user.phone.equals())
+                    vmSetupTeam.onEvent(
+                        TeamSetupUIEventUpdated.OnInviteTeamMembers(
+                            state.selectedInvitation.team._id,
+                            userType = state.selectedRoleKey,
+                            type = "acceptInvitation"
+                        )
+                    )
                 }
             },
             onIndexChange = { index ->
@@ -230,7 +250,8 @@ fun InvitationScreen(vmSetupTeam: SetupTeamViewModelUpdated,onNewProfileIntent:(
             },
             onInviteCountValueChange = { addIntent ->
                 vmSetupTeam.onEvent(TeamSetupUIEventUpdated.OnInviteCountValueChange(addIntent = true))
-            }, OnCountryValueChange = { index, code ->
+            },
+            OnCountryValueChange = { index, code ->
                 vmSetupTeam.onEvent(
                     TeamSetupUIEventUpdated.OnCountryValueChange(
                         index = index,
