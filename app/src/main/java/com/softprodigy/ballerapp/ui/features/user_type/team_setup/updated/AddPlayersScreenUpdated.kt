@@ -74,6 +74,7 @@ fun AddPlayersScreenUpdated(
 
     remember {
         vm.onEvent(TeamSetupUIEventUpdated.GetRoles)
+            vm.initialInviteCount(2)
         /*if (!teamId.isNullOrEmpty())
             vm.onEvent(TeamSetupUIEventUpdated.GetInvitedTeamPlayers(teamId))*/
     }
@@ -130,7 +131,7 @@ fun AddPlayersScreenUpdated(
             verticalArrangement = Arrangement.Top
         ) {
             UserFlowBackground(color = MaterialTheme.appColors.buttonColor.textEnabled) {
-               /* FoldableItem(
+                /*FoldableItem(
                     expanded = expanded.value,
                     headerBackground = MaterialTheme.appColors.material.surface,
                     headerBorder = BorderStroke(0.dp, Color.Transparent),
@@ -403,7 +404,7 @@ fun InviteItem(
                 cursorColor = Color.Black,
                 placeHolder = {
                     Text(
-                        text = stringResource(id = R.string.mobile_number),
+                        text = stringResource(id = R.string.phone_num),
                         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                         color = MaterialTheme.appColors.textField.label,
                     )

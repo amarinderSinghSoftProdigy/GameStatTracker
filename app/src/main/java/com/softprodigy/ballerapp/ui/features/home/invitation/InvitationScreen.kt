@@ -16,6 +16,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,12 +31,15 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.ApiConstants
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.apiToUIDateFormat
-import com.softprodigy.ballerapp.data.UserStorage
+import com.softprodigy.ballerapp.data.request.Members
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
+import com.softprodigy.ballerapp.ui.features.home.HomeChannel
 import com.softprodigy.ballerapp.ui.features.home.HomeViewModel
+import com.softprodigy.ballerapp.ui.features.home.home_screen.HomeScreenEvent
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.*
 import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
 import com.softprodigy.ballerapp.ui.theme.ColorButtonRed
@@ -45,13 +50,23 @@ fun InvitationScreen(
     vmSetupTeam: SetupTeamViewModelUpdated,
     homeVm: HomeViewModel,
     onNewProfileIntent: (countryCode: String, mobileNumber: String) -> Unit,
-    onInvitationSuccess: () -> Unit
-) {
+    onInvitationSuccess: () -> Unit,
+    addProfileClick: () -> Unit,
+
+    ) {
     val vm: InvitationViewModel = hiltViewModel()
     val state = vm.invitationState.value
     val context = LocalContext.current
     val teamState = vmSetupTeam.teamSetupUiState.value
     val homeState = homeVm.state.value
+
+    val showSwapDialog = rememberSaveable {
+        mutableStateOf(false)
+    }
+    val roleKey = rememberSaveable {
+        mutableStateOf("")
+    }
+
 
     LaunchedEffect(key1 = Unit) {
         vmSetupTeam.teamSetupChannel.collect { uiEvent ->
@@ -74,30 +89,29 @@ fun InvitationScreen(
         }
     }
 
-    LaunchedEffect(key1 = true) {
-        vm.invitationChannel.collect {
-            when (it) {
-                is InvitationChannel.ShowToast -> {
-                    Toast.makeText(context, it.message.asString(context), Toast.LENGTH_LONG)
-                        .show()
+
+    LaunchedEffect(key1 = Unit) {
+        homeVm.homeChannel.collect { uiEvent ->
+            when (uiEvent) {
+
+                is HomeChannel.OnSwapListSuccess -> {
+                    vm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
+
+                    showSwapDialog.value = true
                 }
-                is InvitationChannel.Success -> {
-                    Toast.makeText(context, it.message.asString(context), Toast.LENGTH_LONG)
-                        .show()
-                    vm.getAllInvitation()
-                }
+
             }
         }
     }
 
-    if(state.invitations.isNotEmpty()){
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
-        ) {
-            LazyColumn(Modifier.fillMaxWidth()) {
+    if (state.invitations.isNotEmpty()) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
+            ) {
+                LazyColumn(Modifier.fillMaxWidth()) {
                 items(state.invitations) { invitation ->
                     InvitationItem(invitation = invitation, onAcceptCLick = {
                         vm.onEvent(InvitationEvent.OnAcceptCLick(it))
@@ -123,11 +137,12 @@ fun InvitationScreen(
                 vm.onEvent(InvitationEvent.OnClearValues)
             },
             onConfirmClick = { /*vm.onEvent(InvitationEvent.OnRoleConfirmClick)*/
+
                 if (state.selectedRoleKey == "guardian" || (state.selectedRoleKey == "player")) {
                     vm.onEvent(InvitationEvent.OnRoleConfirmClick)
                     vm.onEvent(InvitationEvent.OnGuardianDialogClick(true))
                 } else {
-                    vm.onEvent(InvitationEvent.OnInvitationConfirm)
+                    vm.onEvent(InvitationEvent.OnInvitationConfirm(homeState.user.gender))
                     vm.onEvent(InvitationEvent.OnRoleDialogClick(false))
                 }
             },
@@ -152,7 +167,7 @@ fun InvitationScreen(
             vm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
         },
             onConfirmClick = {
-                vm.onEvent(InvitationEvent.OnInvitationConfirm)
+                vm.onEvent(InvitationEvent.OnInvitationConfirm(homeState.user.gender))
                 vm.onEvent(InvitationEvent.OnRoleDialogClick(false))
                 vm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
             },
@@ -196,16 +211,25 @@ fun InvitationScreen(
                 vm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
             },
             onConfirmClick = {
+//                vm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
+
                 if (state.selectedInvitation.team._id.isNotEmpty()) {
 
-//                    if(homeState.user.phone.equals())
-                    vmSetupTeam.onEvent(
-                        TeamSetupUIEventUpdated.OnInviteTeamMembers(
-                            state.selectedInvitation.team._id,
-                            userType = state.selectedRoleKey,
-                            type = "acceptInvitation"
-                        )
-                    )
+
+                    if (teamState.inviteList.isNotEmpty()) {
+                        /*Check if user is entering his own number or not*/
+                        if (homeState.user.phone != teamState.inviteList[0].countryCode + teamState.inviteList[0].contact) {
+                            vmSetupTeam.onEvent(
+                                TeamSetupUIEventUpdated.OnInviteTeamMembers(
+                                    teamId =state.selectedInvitation.team._id,
+                                    userType = state.selectedRoleKey,
+                                    type = AppConstants.TYPE_ACCEPT_INVITATION
+                                )
+                            )
+                        } else {
+                            homeVm.onEvent(HomeScreenEvent.OnSwapClick)
+                        }
+                    }
                 }
             },
             onIndexChange = { index ->
@@ -265,7 +289,39 @@ fun InvitationScreen(
                         role = role
                     )
                 )
+                roleKey.value = role.key
             }
+        )
+    }
+
+    if (showSwapDialog.value) {
+        SwapProfile(
+            title = stringResource(id = R.string.invite_from_your_profile),
+            actionButtonText = stringResource(id = R.string.invite),
+            users = homeState.swapUsers,
+            onDismiss = { showSwapDialog.value = false },
+            onConfirmClick = { swapUser ->
+                vmSetupTeam.onEvent(
+                    TeamSetupUIEventUpdated.OnInviteTeamMembers(
+                        state.selectedInvitation.team._id,
+                        userType = state.selectedRoleKey,
+                        type = AppConstants.TYPE_ACCEPT_INVITATION,
+                        profilesSelected = true,
+                        member = Members(
+                            name = swapUser.firstName,
+                            mobileNumber = swapUser._Id,
+                            role = roleKey.value
+                        )
+                    )
+                )
+
+                showSwapDialog.value = false
+            },
+            showLoading = homeState.isDataLoading,
+            onCreatePlayerClick = {
+                addProfileClick()
+            },
+            showCreatePlayerButton = true
         )
     }
 }

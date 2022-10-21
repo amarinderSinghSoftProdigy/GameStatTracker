@@ -17,5 +17,5 @@ sealed class InvitationEvent {
     object OnClearValues : InvitationEvent()
     object OnClearGuardianValues : InvitationEvent()
     data class OnValuesSelected(val playerDetails: PlayerDetails) : InvitationEvent()
-    object OnInvitationConfirm : InvitationEvent()
+    data class OnInvitationConfirm(val gender:String?) : InvitationEvent()
 }

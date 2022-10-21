@@ -1,6 +1,7 @@
 package com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated
 
 import com.softprodigy.ballerapp.data.request.Address
+import com.softprodigy.ballerapp.data.request.Members
 import com.softprodigy.ballerapp.data.response.UserRoles
 import com.softprodigy.ballerapp.data.response.team.Player
 
@@ -34,7 +35,9 @@ sealed class TeamSetupUIEventUpdated {
     data class OnInviteTeamMembers(
         val teamId: String,
         val userType: String = "",
-        val type: String = ""
+        val type: String = "",
+        val member: Members? = null,
+        val profilesSelected: Boolean = false,
     ) : TeamSetupUIEventUpdated()
     object OnBackButtonClickFromPlayerScreen : TeamSetupUIEventUpdated()
 

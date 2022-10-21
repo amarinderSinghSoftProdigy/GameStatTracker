@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import com.softprodigy.ballerapp.ui.theme.Yellow700
 
 object AppConstants {
+    const val TYPE_ACCEPT_INVITATION = "acceptInvitation"
     val REQUEST_CONTACT_CODE: Int = 1122
     const val ROLE = "role"
     const val TEAM_LOGO: String = "teamLogo"

@@ -779,7 +779,10 @@ fun NavControllerComposable(
 
             }, onInvitationSuccess = {
                 navController.popBackStack()
-            }, homeVm = homeViewModel)
+            }, homeVm = homeViewModel, addProfileClick = {
+                navController.navigate(Route.ADD_PROFILE_SCREEN)
+
+            })
         }
         composable(route = Route.TEAM_SETUP_SCREEN) { backStackEntry ->
 

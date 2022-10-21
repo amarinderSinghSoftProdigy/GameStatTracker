@@ -103,13 +103,13 @@ class TeamRepository @Inject constructor(
         invitationId: String,
         role: String,
         playerId: String,
-        playerGender: String
+        guardianGender: String
     ): ResultWrapper<BaseResponse<Any>> {
         val request: RequestBody = FormBody.Builder()
             .add("invitationId", invitationId)
             .add("role", role)
             .add("kidId", playerId)
-            .add("guardianGender", playerGender)
+            .add("guardianGender", guardianGender)
             .build()
         return safeApiCall(dispatcher) {
             service.acceptTeamInvitation(request)

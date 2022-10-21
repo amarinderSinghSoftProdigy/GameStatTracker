@@ -262,7 +262,13 @@ class SetupTeamViewModelUpdated @Inject constructor(
             }
             is TeamSetupUIEventUpdated.OnInviteTeamMembers -> {
                 viewModelScope.launch {
-                    invitePlayers(event.teamId, userType =event.userType, type =event.type)
+                    invitePlayers(
+                        event.teamId,
+                        userType = event.userType,
+                        type = event.type,
+                        profileSelected = event.profilesSelected,
+                        member = event.member
+                    )
                 }
             }
 
@@ -409,15 +415,31 @@ class SetupTeamViewModelUpdated @Inject constructor(
 
     }
 
-    private suspend fun invitePlayers(teamId: String, type: String, userType: String) {
-        val members = _teamSetupUiState.value.inviteList.mapIndexed { index, item ->
-            Members(
-                name = item.name,
-                mobileNumber = "${item.countryCode}${item.contact}",
-                role = item.role.key
-            )
-        }
-        val request = UpdateTeamRequest(teamID = teamId, members = members, type = type ,userType = userType)
+    private suspend fun invitePlayers(
+        teamId: String,
+        type: String,
+        userType: String,
+        profileSelected: Boolean,
+        member: Members?
+    ) {
+
+        val members = if (member != null)
+            listOf(member)
+        else
+            _teamSetupUiState.value.inviteList.mapIndexed { index, item ->
+                Members(
+                    name = item.name,
+                    mobileNumber = "${item.countryCode}${item.contact}",
+                    role = item.role.key
+                )
+            }
+        val request = UpdateTeamRequest(
+            teamID = teamId,
+            members = members,
+            type = type,
+            userType = userType,
+            profilesSelected = profileSelected
+        )
 
         _teamSetupUiState.value =
             _teamSetupUiState.value.copy(isLoading = true)

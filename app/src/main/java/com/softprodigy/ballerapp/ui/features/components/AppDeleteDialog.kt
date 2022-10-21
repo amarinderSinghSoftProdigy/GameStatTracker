@@ -942,7 +942,8 @@ fun SelectInvitationRoleDialog(
                         DialogButton(
                             text = stringResource(R.string.dialog_button_confirm),
                             onClick = {
-                                onConfirmClick.invoke()
+                                if ((selected ?: "").isNotEmpty())
+                                    onConfirmClick.invoke()
                                 /*onDismiss.invoke()*/
                             },
                             modifier = Modifier
@@ -1182,7 +1183,8 @@ fun SelectGuardianRoleDialog(
                         DialogButton(
                             text = stringResource(R.string.dialog_button_confirm),
                             onClick = {
-                                onConfirmClick.invoke()
+                                if ((selected ?: "").isNotEmpty())
+                                    onConfirmClick.invoke()
                             },
                             modifier = Modifier
                                 .weight(1f),
@@ -1769,8 +1771,10 @@ fun DeclineEventDialog(
 
 @Composable
 fun SwapProfile(
+    title: String = "",
+    actionButtonText: String = "",
     onDismiss: () -> Unit,
-    onConfirmClick: (String) -> Unit,
+    onConfirmClick: (SwapUser) -> Unit,
     showLoading: Boolean,
     users: List<SwapUser>,
     onCreatePlayerClick: () -> Unit,
@@ -1799,7 +1803,7 @@ fun SwapProfile(
                 ) {
                     Box(modifier = Modifier.fillMaxWidth()) {
                         Text(
-                            text = stringResource(id = R.string.swap_profiles),
+                            text = title.ifEmpty { stringResource(id = R.string.swap_profiles) },
                             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                             fontWeight = FontWeight.Bold,
                         )
@@ -1878,9 +1882,9 @@ fun SwapProfile(
                             enabled = false
                         )
                         DialogButton(
-                            text = stringResource(R.string.dialog_button_confirm),
+                            text = actionButtonText.ifEmpty { stringResource(R.string.dialog_button_confirm) },
                             onClick = {
-                                onConfirmClick.invoke(selectedUser.value._Id)
+                                onConfirmClick.invoke(selectedUser.value)
                                 onDismiss.invoke()
                             },
                             modifier = Modifier
@@ -2457,7 +2461,7 @@ fun InviteTeamMembersDialog(
                                             cursorColor = Color.Black,
                                             placeHolder = {
                                                 Text(
-                                                    text = stringResource(id = R.string.mobile_number),
+                                                    text = stringResource(id = R.string.phone_num),
                                                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                                     color = MaterialTheme.appColors.textField.label,
                                                 )
@@ -2477,6 +2481,7 @@ fun InviteTeamMembersDialog(
                                                 .clickable { onIndexChange.invoke(index) }
                                         )
                                     }
+
 
                                 }
                             }
@@ -2513,13 +2518,17 @@ fun InviteTeamMembersDialog(
                         DialogButton(
                             text = stringResource(R.string.invite),
                             onClick = {
-                                onConfirmClick.invoke()
+                                if (inviteList.isNotEmpty() &&
+                                    inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() && it.role.key.isNotEmpty() }
+                                ) {
+                                    onConfirmClick.invoke()
+                                }
                             },
                             modifier = Modifier
                                 .weight(1f),
                             border = ButtonDefaults.outlinedBorder,
                             enabled = inviteList.isNotEmpty() &&
-                                    inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() },
+                                    inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() && it.role.key.isNotEmpty() },
                             onlyBorder = false,
                         )
                     }

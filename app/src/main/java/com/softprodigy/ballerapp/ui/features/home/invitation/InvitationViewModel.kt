@@ -109,7 +109,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                     acceptTeamInvitation(
                         invitationId = invitationState.value.selectedInvitation.id,
                         role = invitationState.value.selectedRoleKey,
-                        playerGender = invitationState.value.selectedGender,
+                        guardianGender = event.gender ?: "",
                         playerId = invitationState.value.selectedPlayerId
                     )
                     invitationState.value = invitationState.value.copy(selectedRoleKey = "")
@@ -170,9 +170,9 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
         invitationId: String,
         role: String,
         playerId: String,
-        playerGender: String
+        guardianGender: String
     ) {
-        Timber.i("acceptTeamInvitation-- id--$invitationId role--$role")
+        Timber.i("acceptTeamInvitation-- id--$invitationId role--$role playerId--$playerId guardianGender--$guardianGender")
         invitationState.value =
             invitationState.value.copy(showLoading = true)
         val acceptInviteResponse =
@@ -180,7 +180,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                 invitationId = invitationId,
                 role = role,
                 playerId = playerId,
-                playerGender = playerGender
+                guardianGender = guardianGender.capitalize()
             )
         invitationState.value =
             invitationState.value.copy(showLoading = false)
@@ -206,6 +206,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
             }
             is ResultWrapper.Success -> {
                 acceptInviteResponse.value.let { response ->
+                    getAllInvitation()
                     _invitationChannel.send(
                         InvitationChannel.Success(
                             UiText.DynamicString(
@@ -214,6 +215,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                         )
                     )
                 }
+
             }
         }
     }
@@ -249,6 +251,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
             }
             is ResultWrapper.Success -> {
                 rejectInviteResponse.value.let { response ->
+                    getAllInvitation()
                     _invitationChannel.send(
                         InvitationChannel.Success(
                             UiText.DynamicString(
@@ -257,6 +260,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                         )
                     )
                 }
+
             }
         }
     }
