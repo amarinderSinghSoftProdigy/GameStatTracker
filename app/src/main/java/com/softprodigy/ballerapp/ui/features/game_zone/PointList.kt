@@ -1,6 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.game_zone
 
-import android.widget.Toast
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,19 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.CoilImage
-import com.softprodigy.ballerapp.ui.features.components.ImageButton
-import com.softprodigy.ballerapp.ui.features.components.Placeholder
+import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.theme.appColors
 import com.softprodigy.ballerapp.ui.theme.rubikFamily
 
@@ -60,7 +54,6 @@ fun PointList(
                     pointListItem(
                         index,
                         point = point,
-                        expanded = true
                     )
                 }
             }
@@ -72,12 +65,13 @@ fun PointList(
 fun pointListItem(
     index: Int,
     point: String,
-    expanded: Boolean = false,
+
 ) {
     val pointListMenuItems = stringArrayResource(id = R.array.game_point_list_menu_items)
     val disabledItem = 1
     val contextForToast = LocalContext.current.applicationContext
-    var expanded by remember { mutableStateOf(false) }
+    var expanded = remember { mutableStateOf(false) }
+    var selectedItemIndex = remember { mutableStateOf(-1) }
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier
@@ -178,21 +172,33 @@ fun pointListItem(
                     modifier = Modifier
                         .width(dimensionResource(id = R.dimen.size_16dp))
                         .height(dimensionResource(id = R.dimen.size_16dp)),
-                    onClick = { expanded = true }
+                    onClick = { expanded.value = true }
                 )
+                val context = LocalContext.current
                 // drop down menu
+
                 DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false },
-                    modifier = Modifier.background(colorResource(id = R.color.game_bg_color))
+                    expanded = expanded.value,
+                    onDismissRequest = { expanded.value = false },
+                    modifier = Modifier
+                        .background(colorResource(id = R.color.game_bg_color))
                         .clip(RoundedCornerShape(size = dimensionResource(id = R.dimen.size_8dp))),
                 ) {
                     // adding items
                     pointListMenuItems.forEachIndexed { itemIndex, itemValue ->
+
                         DropdownMenuItem(
                             onClick = {
-                                Toast.makeText(contextForToast, itemValue, Toast.LENGTH_SHORT).show()
-                                expanded = false
+                                expanded.value = false
+                                selectedItemIndex.value = itemIndex
+                                //if(itemValue.equals(context.applicationContext.resources.getString(R.string.add_new)))
+                                     /*AddNewPlayerDialog(
+                                        playerName = "Test",
+                                        jerseyNumber = "1",
+                                        onDismiss = { *//*TODO*//* },
+                                        onSaveClick = { *//*TODO*//* },
+                                    )*/
+                                    //menuItemClick(context = context, itemValue = itemValue)
                             },
                             enabled = (itemIndex != disabledItem),
                             modifier = Modifier.fillMaxWidth(),
@@ -227,34 +233,32 @@ fun pointListItem(
                 .background(colorResource(id = R.color.game_center_list_item_divider_color))
         )
     }
-}
 
-
-@Composable
-fun MenuItem(title: String) {
-    Column(modifier = Modifier.padding(6.dp)) {
-        Text(text = title, style = MaterialTheme.typography.subtitle1)
+    if(selectedItemIndex.value == 0) {
+        AddNewPlayerDialog(
+            playerName = "Test",
+            jerseyNumber = "1",
+            onDismiss = {
+                selectedItemIndex.value = -1
+                expanded.value = false
+            },
+            onSaveClick = { /*TODO*/ },
+            isEdit = true
+        )
     }
-}
+    else if(selectedItemIndex.value == 1) {
 
-@Composable
-fun PopupMenu(
-    menuItems: List<String>,
-    onClickCallbacks: List<() -> Unit>,
-    showMenu: Boolean,
-    onDismiss: () -> Unit,
-) {
-    DropdownMenu(
-        expanded = showMenu,
-        onDismissRequest = { onDismiss() },
-    ) {
-        menuItems.forEachIndexed { index, item ->
-            DropdownMenuItem(onClick = {
-                onDismiss()
-                onClickCallbacks[index]
-            }) {
-                Text(text = item)
-            }
-        }
+    }
+    else if(selectedItemIndex.value == 2) {
+        AddNewPlayerDialog(
+            playerName = "",
+            jerseyNumber = "",
+            onDismiss = {
+                selectedItemIndex.value = -1
+                expanded.value = false
+            },
+            onSaveClick = { /*TODO*/ },
+            isEdit = false
+        )
     }
 }

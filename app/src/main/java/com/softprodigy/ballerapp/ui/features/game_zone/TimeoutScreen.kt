@@ -35,7 +35,8 @@ fun TimeoutsScreen(
         Column(
             Modifier
                 .fillMaxHeight()
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .background(color = Color.Transparent),
         ) {
             gameTimeoutsNavigation(onTimeoutClose)
             Spacer(modifier = Modifier
@@ -94,7 +95,7 @@ private fun gameTimeoutsNavigation(onTimeoutClose:() -> Unit ) {
                 modifier = Modifier
                     .width(dimensionResource(id = R.dimen.size_24dp))
                     .height(dimensionResource(id = R.dimen.size_24dp)),
-                onClick = { },
+                onClick = { onTimeoutClose.invoke() },
             )
         }
     }

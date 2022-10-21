@@ -4,18 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -40,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalFocusManager
@@ -777,8 +767,9 @@ fun SelectInvitationRoleItem(
 fun AddNewPlayerDialog(
     onDismiss: () -> Unit,
     onSaveClick: () -> Unit,
-    playerName: String = "",
-    jerseyNumber: String = "",
+    playerName: String,
+    jerseyNumber: String,
+    isEdit: Boolean = false,
 ) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
@@ -807,7 +798,8 @@ fun AddNewPlayerDialog(
                                 text = stringResource(id = R.string.new_player),
                                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                                 fontWeight = FontWeight.W500,
-                                fontFamily = rubikFamily
+                                fontFamily = rubikFamily,
+                                color = Color.White
                             )
                             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
                         }
@@ -827,23 +819,33 @@ fun AddNewPlayerDialog(
                     AppSearchOutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .height(dimensionResource(id = R.dimen.size_44dp))
                             .focusRequester(focusRequester),
                         value = playerName!!,
                         onValueChange = {
                             //onSearchKeyChange.invoke(it)
                         },
+                        textStyle =  LocalTextStyle.current.copy(
+                            color = Color.White,
+                            fontSize = dimensionResource(id = R.dimen.size_12dp).value.sp
+                        ),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = colorResource(id = R.color.game_dialog_text_field_bg_color).copy(alpha = 0.1f),
-                            unfocusedBorderColor = colorResource(id = R.color.game_dialog_text_field_bg_color).copy(alpha = 0.1f),
+                            focusedBorderColor =  Color.White.copy(alpha = 0.2f),
+                            unfocusedBorderColor = Color.White.copy(alpha = 0.2f),
                             cursorColor = Color.White,
-                            backgroundColor = colorResource(id = R.color.game_dialog_text_field_bg_color)
+                            backgroundColor = colorResource(id = R.color.game_dialog_player_text_field_bg_color),
+                            textColor = colorResource(id = R.color.game_timeouts_slot_selected_text_color),
                         ),
                         placeholder = {
                             Text(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .fillMaxHeight(),
                                 text = stringResource(id = R.string.name),
                                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                 fontFamily = rubikFamily,
-                                fontWeight = FontWeight.W400
+                                fontWeight = FontWeight.W400,
+                                color = colorResource(id = R.color.game_timeouts_slot_selected_text_color),
                             )
                         },
                         singleLine = true
@@ -852,21 +854,31 @@ fun AddNewPlayerDialog(
                     AppSearchOutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .height(dimensionResource(id = R.dimen.size_44dp))
                             .focusRequester(focusRequester),
                         value = jerseyNumber!!,
                         onValueChange = {},
+                        textStyle =  LocalTextStyle.current.copy(
+                            color = Color.White,
+                            fontSize = dimensionResource(id = R.dimen.size_12dp).value.sp
+                        ),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = ColorBWGrayBorder,
-                            unfocusedBorderColor = ColorBWGrayBorder,
+                            focusedBorderColor =  Color.White.copy(alpha = 0.2f),
+                            unfocusedBorderColor = Color.White.copy(alpha = 0.2f),
                             cursorColor = Color.White,
-                            backgroundColor = colorResource(id = R.color.game_dialog_text_field_bg_color)
+                            backgroundColor = colorResource(id = R.color.game_dialog_player_text_field_bg_color),
+                            textColor = colorResource(id = R.color.game_timeouts_slot_selected_text_color),
                         ),
                         placeholder = {
                             Text(
                                 text = stringResource(id = R.string.jersey_number),
                                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                 fontFamily = rubikFamily,
-                                fontWeight = FontWeight.W400
+                                fontWeight = FontWeight.W400,
+                                color = colorResource(id = R.color.game_timeouts_slot_selected_text_color),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .fillMaxHeight()
                             )
                         },
                         singleLine = true
@@ -878,44 +890,46 @@ fun AddNewPlayerDialog(
                         .background(color = colorResource(id = R.color.game_dialog_bg_color))
                         .padding(all = dimensionResource(id = R.dimen.size_8dp))
                 ) {
-                    /*DialogButton(
-                        text = stringResource(R.string.dialog_button_cancel),
+                    AppButton(
                         onClick = {  },
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(all = dimensionResource(id = R.dimen.size_8dp)),
-                        border = BorderStroke(
-                            width = dimensionResource(id = R.dimen.size_1dp),
-                            color = colorResource(id = R.color.game_dialog_bg_color).copy(alpha = 0.1f)
-                        ),
-
-                        onlyBorder = true,
-                        enabled = false,
-                    )*/
-                    DialogButton(
                         text = stringResource(R.string.dialog_button_cancel),
-                        onClick = onDismiss,
+                        colors = ButtonColor(
+                            bckgroundEnabled = colorResource(id = R.color.game_dialog_player_text_field_bg_color),
+                            bckgroundDisabled = colorResource(id = R.color.game_dialog_player_text_field_bg_color),
+                            textEnabled = Color.White,
+                            textDisabled = Color.White
+                        ),
                         modifier = Modifier
                             .weight(1f)
-                            .background(color = colorResource(id = R.color.game_dialog_bg_color))
-                            .padding(all = dimensionResource(id = R.dimen.size_8dp)),
-                        border = ButtonDefaults.outlinedBorder,
-                        onlyBorder = true,
-                        enabled = false
+                            .height(dimensionResource(id = R.dimen.size_48dp))
+                            .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                            .border(
+                                width = dimensionResource(id = R.dimen.size_1dp),
+                                color = Color.White.copy(alpha = 0.2f),
+                                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+                            )
+                            .background(color = colorResource(id = R.color.game_dialog_player_text_field_bg_color))
                     )
-                    DialogButton(
+                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+                    AppButton(
+                        onClick = {  },
                         text = stringResource(R.string.save),
-                        onClick = {
-                           /* onSaveClick.invoke()
-                            onDismiss.invoke()*/
-                        },
+                        colors = ButtonColor(
+                            bckgroundEnabled = colorResource(id = R.color.game_dialog_player_text_field_bg_color),
+                            bckgroundDisabled = colorResource(id = R.color.game_dialog_player_text_field_bg_color),
+                            textEnabled = Color.White,
+                            textDisabled = Color.White
+                        ),
                         modifier = Modifier
                             .weight(1f)
-                            .background(color = colorResource(id = R.color.game_dialog_bg_color).copy(alpha = 0.1f))
-                            .padding(all = dimensionResource(id = R.dimen.size_8dp)),
-                        border = ButtonDefaults.outlinedBorder,
-                        onlyBorder = false,
-                        enabled = playerName.isNotEmpty() && jerseyNumber.isNotEmpty()
+                            .height(dimensionResource(id = R.dimen.size_48dp))
+                            .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                            .border(
+                                width = dimensionResource(id = R.dimen.size_1dp),
+                                color = Color.White.copy(alpha = 0.2f),
+                                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+                            )
+                            .background(color = Color.White.copy(alpha = 0.1f))
                     )
                 }
             },
@@ -928,10 +942,7 @@ fun AddNewPlayerDialog(
 fun GameSettingsDialog(
     onDismiss: () -> Unit,
 ) {
-    val focusRequester = remember { FocusRequester() }
-    val focusManager = LocalFocusManager.current
-    val keyboardController = LocalSoftwareKeyboardController.current
-
+    var isTwoHalvesSelected = remember { mutableStateOf(true) }
     BallerAppMainTheme {
         AlertDialog(
             modifier = Modifier
@@ -972,33 +983,60 @@ fun GameSettingsDialog(
                         )
                     }
                     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
-                    DialogButton(
-                        text = stringResource(R.string.two_halves),
-                        onClick = {
-                            /* onSaveClick.invoke()
-                             onDismiss.invoke()*/
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(color = colorResource(id = R.color.game_dialog_bg_color).copy(alpha = 0.1f))
-                            .padding(all = dimensionResource(id = R.dimen.size_8dp)),
-                        border = ButtonDefaults.outlinedBorder,
-                        onlyBorder = false,
-                    )
 
-                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
-                    DialogButton(
-                        text = stringResource(R.string.four_quarters),
-                        onClick = {
-                            /* onSaveClick.invoke()
-                             onDismiss.invoke()*/
-                        },
+                    var backgroundColor = if(isTwoHalvesSelected.value) colorResource(id = R.color.game_timeouts_slot_selected_bg_color) else Color.Transparent
+
+                    AppButton(
+                        onClick = { isTwoHalvesSelected.value = !isTwoHalvesSelected.value },
+                        text = stringResource(R.string.two_halves),
+                        colors = ButtonColor(
+                            bckgroundEnabled = backgroundColor,
+                            bckgroundDisabled = backgroundColor,
+                            textEnabled = Color.White,
+                            textDisabled = Color.White
+                        ),
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .background(color = colorResource(id = R.color.game_dialog_bg_color).copy(alpha = 0.1f))
-                            .padding(all = dimensionResource(id = R.dimen.size_8dp)),
-                        border = ButtonDefaults.outlinedBorder,
-                        onlyBorder = false,
+                            .width(dimensionResource(id = R.dimen.size_300dp))
+                            .height(
+                                dimensionResource(id = R.dimen.size_48dp)
+                            )
+                            .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                            .border(
+                                width = if (!isTwoHalvesSelected.value) 1.dp else 0.dp,
+                                if (isTwoHalvesSelected.value) Color.Red else Color.White,
+                                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+                            )
+                            .background(
+                                color =
+                                if (isTwoHalvesSelected.value) colorResource(id = R.color.game_timeouts_slot_selected_bg_color) else Color.Transparent
+                            )
+                            .clickable { }
+                    )
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
+                    AppButton(
+                        onClick = { isTwoHalvesSelected.value = !isTwoHalvesSelected.value },
+                        text = stringResource(R.string.four_quarters),
+                        colors = ButtonColor(
+                            bckgroundEnabled = backgroundColor,
+                            bckgroundDisabled = backgroundColor,
+                            textEnabled = Color.White,
+                            textDisabled = Color.White
+                        ),
+                        modifier = Modifier
+                            .width(dimensionResource(id = R.dimen.size_300dp))
+                            .height(
+                                dimensionResource(id = R.dimen.size_48dp)
+                            )
+                            .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                            .border(
+                                width = if (isTwoHalvesSelected.value) 1.dp else 0.dp,
+                                if (isTwoHalvesSelected.value) Color.White else colorResource(id = R.color.game_timeouts_slot_selected_bg_color),
+                                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+                            )
+                            .background(
+                                color =
+                                if (!isTwoHalvesSelected.value) colorResource(id = R.color.game_timeouts_slot_selected_bg_color) else Color.Transparent
+                            )
                     )
                 }
             },

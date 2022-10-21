@@ -3,12 +3,17 @@ package com.softprodigy.ballerapp.ui.features.game_zone
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
@@ -24,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.GameSettingsDialog
 import com.softprodigy.ballerapp.ui.features.components.ImageButton
 import com.softprodigy.ballerapp.ui.theme.appColors
 import com.softprodigy.ballerapp.ui.theme.rubikFamily
@@ -33,6 +39,7 @@ import com.softprodigy.ballerapp.ui.theme.rubikFamily
 fun GameSettingsScreen(
     onCloseSettings: () -> Unit
 )  {
+    var isPeriodSelected = remember { mutableStateOf(false) }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -50,7 +57,10 @@ fun GameSettingsScreen(
                 .height(dimensionResource(id = R.dimen.size_1dp))
                 .background(colorResource(id = R.color.game_settings_divider_color))
             )
-            gameSettingViews()
+            gameSettingViews(onPeriodListener = { isPeriodSelected.value = !isPeriodSelected.value })
+        }
+        if(isPeriodSelected.value) {
+            GameSettingsDialog(onDismiss = { isPeriodSelected.value = false })
         }
     }
 }
@@ -94,14 +104,14 @@ private fun gameSettingsNavigation(onCloseSettings: () -> Unit) {
                 modifier = Modifier
                     .width(dimensionResource(id = R.dimen.size_24dp))
                     .height(dimensionResource(id = R.dimen.size_24dp)),
-                onClick = { /*TODO*/ },
+                onClick = { onCloseSettings.invoke() },
             )
         }
     }
 }
 
 @Composable
-private fun gameSettingViews() {
+private fun gameSettingViews(onPeriodListener: () -> Unit) {
     Row(
         Modifier
             .fillMaxHeight()
@@ -119,7 +129,7 @@ private fun gameSettingViews() {
                 end = 0.dp,
                 bottom = 0.dp
             )) {
-            settingSubTitle(placeHolder = stringResource(id = R.string.periods), value = "4 Quarters", onValueChangeListener = { })
+            settingPeriod(placeHolder = stringResource(id = R.string.periods), value = "4 Quarters", onPeriodListener = onPeriodListener)
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_32dp)))
             settingSubTitle(placeHolder = stringResource(id = R.string.period_length), value = "12 min", onValueChangeListener = { })
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_32dp)))
@@ -175,6 +185,38 @@ private fun gameSettingViews() {
 }
 
 @Composable
+private fun settingPeriod(placeHolder:String? = "", value: String? = "", onPeriodListener: () -> Unit, ){
+    AppText(
+        text = placeHolder!!,
+        color = colorResource(id = R.color.game_settings_title_color),
+        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+        maxLines = 1,
+        fontFamily = rubikFamily,
+        fontWeight = FontWeight.W500,
+    )
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(dimensionResource(id = R.dimen.size_44dp))
+            .clip(RoundedCornerShape(size = dimensionResource(id = R.dimen.size_8dp)))
+            .background(color = colorResource(id = R.color.game_settings_input_field_bg_color))
+            .clickable { onPeriodListener.invoke() },
+        verticalArrangement = Arrangement.Center,
+    ) {
+        AppText(
+            text = placeHolder,
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.W500,
+            fontSize = dimensionResource(id = R.dimen.size_14dp).value.sp,
+            color = Color.White,
+            fontFamily = rubikFamily,
+            modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
+        )
+    }
+}
+
+@Composable
 private fun settingSubTitle(placeHolder:String? = "", value: String? = "", onValueChangeListener: (String) -> Unit, ){
     AppText(
         text = placeHolder!!,
@@ -188,7 +230,8 @@ private fun settingSubTitle(placeHolder:String? = "", value: String? = "", onVal
     AppOutlineTextField(
         value = value!!,
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .height(dimensionResource(id = R.dimen.size_44dp)),
         onValueChange = onValueChangeListener,
         placeholder = {},
         keyboardOptions = KeyboardOptions(
@@ -205,6 +248,11 @@ private fun settingSubTitle(placeHolder:String? = "", value: String? = "", onVal
             placeholderColor = MaterialTheme.appColors.textField.label,
             cursorColor = Color.White
         ),
+        textStyle = LocalTextStyle.current.copy(
+            color = Color.White,
+            fontSize = dimensionResource(id = R.dimen.size_14dp).value.sp
+        ),
         isError = (value.isNotEmpty() && value.isEmpty()),
+        maxLines = 1,
     )
 }

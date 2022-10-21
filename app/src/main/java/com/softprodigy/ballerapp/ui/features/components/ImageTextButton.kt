@@ -32,15 +32,15 @@ fun ImageTextButton(
     paddingTop: Dp? = 0.dp,
     paddingBottom: Dp? = 0.dp,
     letterSpacing: TextUnit? = TextUnit.Unspecified,
-    onClick: () -> Unit,
+    //onClick: () -> Unit,
 ) {
 
     Box(
         Modifier
             .fillMaxWidth()
-            .clickable {
+            /*.clickable {
                 onClick.invoke()
-            },
+            }*/,
         contentAlignment = Alignment.Center,
     ){
         Column(

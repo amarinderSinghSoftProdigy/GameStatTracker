@@ -64,7 +64,7 @@ fun GamePointController (
                                     dimensionResource(id = R.dimen.size_half_dp),
                                     colorResource(id = R.color.game_grid_border_color)
                                 )
-                                /*.clickable { onSettingClick.invoke(setting) }*/,
+                                .clickable { onSettingClick.invoke(setting) },
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center,
                         ) {
@@ -76,7 +76,7 @@ fun GamePointController (
                                 color = colorResource(id = R.color.game_grid_item_text_color),
                                 fontFamily = rubikFamily,
                                 fontWeight = FontWeight.W500,
-                                onClick = { onSettingClick.invoke(setting) }
+                                //onClick = { onSettingClick.invoke(setting) }
                             )
                         }
                     }
@@ -117,7 +117,7 @@ fun GamePointController (
                                 spacerBetween = R.dimen.size_12dp,
                                 color = colorResource(id = R.color.game_grid_item_text_color),
                                 fontWeight = FontWeight.W500,
-                                onClick = { onPointClick.invoke(point) }
+                                //onClick = { onPointClick.invoke(point) }
                             )
                         }
                     }

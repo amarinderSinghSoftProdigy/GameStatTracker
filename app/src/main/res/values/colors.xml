@@ -24,6 +24,7 @@
     <color name="game_period_background_color">#17191B</color>
     <color name="game_period_selection_background_color">#0177C1</color>
     <color name="game_period_list_pop_up_bg_color">#6617191B</color>
+    <color name="game_setting_item_selected_bg_color">#E3584A</color>
 
     <color name="game_bg_color">#BF17191B</color>
     <color name="game_add_roster_button_text_color">#FFFFFF</color>
@@ -45,7 +46,9 @@
     <color name="game_timeouts_slot_selected_text_color">#FFFFFF</color>
 
     <color name="game_dialog_bg_color">#E517191B</color>
-    <color name="game_dialog_text_field_bg_color">#17191B</color>
+    <color name="game_dialog_player_text_field_bg_color">#17191B</color>
+
+
 
 
 </resources>

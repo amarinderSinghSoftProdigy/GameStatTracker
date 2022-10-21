@@ -3,6 +3,7 @@ package com.softprodigy.ballerapp.ui.features.game_zone
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -24,6 +25,7 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppText
@@ -188,7 +190,13 @@ inline fun gameSettings() {
                         .border(
                             dimensionResource(id = R.dimen.size_half_dp),
                             colorResource(id = R.color.game_grid_border_color)
-                        ),
+                        )
+                        .background(
+                            color =
+                            if (expanded && point.title.equals(foul)) colorResource(id = R.color.game_setting_item_selected_bg_color) else Color.Transparent
+                        )
+                        .clickable { expanded = point.title.equals(foul) }
+                    ,
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -200,9 +208,7 @@ inline fun gameSettings() {
                         color = colorResource(id = R.color.game_grid_item_text_color),
                         fontFamily = rubikFamily,
                         fontWeight = FontWeight.W500,
-                        onClick = {
-                            expanded = point.title.equals(foul)
-                        }
+
                     )
 
                     // drop down menu
@@ -212,7 +218,7 @@ inline fun gameSettings() {
                             onDismissRequest = { expanded = false },
                             modifier = Modifier
                                 .background(colorResource(id = R.color.game_bg_color))
-                                .clip(RoundedCornerShape(size = dimensionResource(id = R.dimen.size_8dp))),
+                                //.clip(RoundedCornerShape(size = dimensionResource(id = R.dimen.size_8dp))),
                         ) {
                             // adding items
                             fouls.forEachIndexed { itemIndex, itemValue ->
@@ -220,17 +226,37 @@ inline fun gameSettings() {
                                     onClick = { expanded = false },
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .fillMaxHeight(),
+                                        .height(dimensionResource(id = R.dimen.size_40dp)),
                                 ) {
-                                    AppText(
-                                        text = itemValue,
-                                        modifier = Modifier.fillMaxWidth(),
-                                        textAlign = TextAlign.Center,
-                                        color = colorResource(id = R.color.game_point_list_item_text_color),
-                                        fontWeight = FontWeight.W400,
-                                        fontFamily = rubikFamily,
-                                        fontSize = dimensionResource(id = R.dimen.size_12dp).value.sp,
-                                    )
+                                    Column(modifier = Modifier
+                                        .fillMaxWidth().fillMaxHeight(),
+                                        verticalArrangement = Arrangement.Center
+                                    ) {
+                                        Column(
+                                            modifier = Modifier
+                                                .fillMaxWidth().height(39.dp),
+                                            verticalArrangement = Arrangement.Center
+                                        ) {
+                                            AppText(
+                                                text = itemValue,
+                                                modifier = Modifier.fillMaxWidth(),
+                                                textAlign = TextAlign.Center,
+                                                color = colorResource(id = R.color.game_point_list_item_text_color),
+                                                fontWeight = FontWeight.W400,
+                                                fontFamily = rubikFamily,
+                                                fontSize = dimensionResource(id = R.dimen.size_12dp).value.sp,
+                                            )
+                                        }
+
+
+                                        Spacer(
+                                            modifier = Modifier
+                                                .background(colorResource(id = R.color.game_grid_border_color))
+                                                .fillMaxWidth()
+                                                //.fillMaxHeight()
+                                                .height(dimensionResource(id = R.dimen.size_1dp))
+                                        )
+                                    }
                                 }
                             }
                         }

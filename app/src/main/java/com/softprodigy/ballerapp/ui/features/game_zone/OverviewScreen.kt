@@ -20,7 +20,7 @@ fun OverviewScreen (
     onPointClick: (GameSettingsState) -> Unit,
     onAddRosterClick: () -> Unit,
 ) {
-    var isTracking:Boolean = true
+    var isTracking:Boolean = false
     Box(
         modifier = Modifier
             .fillMaxSize()
