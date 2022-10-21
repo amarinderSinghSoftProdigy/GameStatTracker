@@ -374,6 +374,9 @@ fun NavControllerComposable(
                     navController.navigate(Route.ADD_MY_PLAYER_SCREEN + "/${UserStorage.teamId}")
                 },
                 setupTeamViewModelUpdated = setupTeamViewModelUpdated,
+                showBottomBar = {
+                    showBottomBar = it
+                }
             )
             /* else {
                  HomeFirstTimeLoginScreen(onCreateTeamClick = {

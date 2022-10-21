@@ -75,7 +75,7 @@ fun HomeFirstTimeLoginScreen(
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
 
             Column(modifier = Modifier.fillMaxWidth()) {
-               /* if (teamState.teams.isNotEmpty()) {*/
+                if (teamState.teams.isNotEmpty()) {
                     UserFlowBackground(
                         padding = 0.dp,
                         color = Color.White
@@ -84,7 +84,7 @@ fun HomeFirstTimeLoginScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    if(teamState.teamName.isEmpty()){
+                                    if(teamState.teamName == "Team Total Hoop"){
                                         onTeamNameClick.invoke(true)
                                     } else {
                                         onTeamNameClick.invoke(false)
@@ -126,7 +126,7 @@ fun HomeFirstTimeLoginScreen(
                             )
                         }
                     }
-                /*  }*/
+                  }
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                 FlowRow {
                     state.homeItemList.forEachIndexed { index, item ->
