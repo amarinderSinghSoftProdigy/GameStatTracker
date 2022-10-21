@@ -2,146 +2,134 @@ package com.softprodigy.ballerapp.ui.features.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.accompanist.flowlayout.FlowRow
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.response.HomeItemResponse
-import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.ButtonWithLeadingIcon
-import com.softprodigy.ballerapp.ui.features.components.CoachFlowBackground
+import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
 import com.softprodigy.ballerapp.ui.theme.appColors
 
 @Composable
-fun HomeFirstTimeLoginScreen(viewModel: HomeViewModel, onCreateTeamClick: () -> Unit) {
-
+fun HomeFirstTimeLoginScreen(
+    viewModel: HomeViewModel,
+    teamVm: TeamViewModel,
+    onTeamNameClick: () -> Unit,
+    onCreateTeamClick: () -> Unit
+) {
     val state = viewModel.state.value
-    val dataStoreManager = DataStoreManager(LocalContext.current)
-    val color = dataStoreManager.getColor.collectAsState(initial = "0177C1")
+    val context = LocalContext.current
+    val teamState = teamVm.teamUiState.value
     Box {
-        CoachFlowBackground(
-            colorCode = color.value.ifEmpty { "0177C1" },
-            teamLogo = BuildConfig.IMAGE_SERVER + state.user.profileImage
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+            verticalArrangement = Arrangement.Center
         ) {
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-                verticalArrangement = Arrangement.Center
-            ) {
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))
+            AppText(
+                text = stringResource(id = R.string.hey_label).replace(
+                    "name",
+                    state.user.firstName
+                ),
+                style = MaterialTheme.typography.h5,
+                fontWeight = FontWeight.W500,
+                color = ColorBWBlack
+            )
 
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
 
-                AppText(
-                    text = stringResource(id = R.string.hey_label).replace(
-                        "name",
-                        state.user.firstName
-                    ),
-                    style = MaterialTheme.typography.h5,
-                    fontWeight = FontWeight.W500,
-                    color = ColorBWBlack
-                )
+            AppText(
+                text = stringResource(id = R.string.welcome_to_total_hoop),
+                fontWeight = FontWeight.W600,
+                style = MaterialTheme.typography.subtitle1,
+                color = MaterialTheme.appColors.material.primaryVariant
+            )
 
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
 
-                AppText(
-                    text = stringResource(id = R.string.welcome_to_total_hoop),
-                    fontWeight = FontWeight.W600,
-                    style = MaterialTheme.typography.subtitle1,
-                    color = MaterialTheme.appColors.material.primaryVariant
-                )
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
-
-                Column(modifier = Modifier.fillMaxWidth()) {
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(
-                                color = Color.White,
-                                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
-                            ),
-
-                        ) {
-
-                        Row(
+            Column(modifier = Modifier.fillMaxWidth()) {
+                if (teamState.teams.isNotEmpty()) {
+                    UserFlowBackground(
+                        padding = 0.dp,
+                        color = Color.White
+                    ) {
+                        Box(
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .clickable {
+                                    onTeamNameClick.invoke()
+                                }
                                 .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-
+                            contentAlignment = Alignment.CenterStart
                         ) {
                             Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
+                                Modifier
+                                    .fillMaxWidth()
+                                    .align(Alignment.CenterStart),
+                                verticalAlignment = Alignment.CenterVertically,
 
-                                Image(
-                                    painter = painterResource(id = R.drawable.ic_ball),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_48dp))
+                                ) {
+                                CoilImage(
+                                    src = BuildConfig.IMAGE_SERVER + teamState.logo,
+                                    modifier = Modifier
+                                        .size(dimensionResource(id = R.dimen.size_48dp))
+                                        .clip(CircleShape),
+                                    isCrossFadeEnabled = false,
+                                    onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                                    onError = { Placeholder(R.drawable.ic_team_placeholder) },
+                                    contentScale = ContentScale.Crop
                                 )
-
-                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
-
-                                AppText(
-                                    text = stringResource(id = R.string.team_total_hoop),
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+                                Text(
+                                    text = teamState.teamName.ifEmpty { context.getString(R.string.team_total_hoop) },
                                     style = MaterialTheme.typography.h3,
                                     fontWeight = FontWeight.W700,
-                                    color = ColorBWBlack
+                                    modifier = Modifier.weight(1f)
                                 )
-
                             }
-
                             Icon(
+                                modifier = Modifier.align(Alignment.CenterEnd),
                                 imageVector = Icons.Default.KeyboardArrowDown,
                                 contentDescription = null,
                                 tint = ColorGreyLighter
                             )
                         }
                     }
-
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-
-                    LazyColumn {
-                        items(state.homeItemList) {
-                            HomeScreenItem(it)
-                        }
+                }
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                FlowRow {
+                    state.homeItemList.forEachIndexed { index, item ->
+                        HomeScreenItem(item)
                     }
-
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-
+                }
+                if (state.homeItemList.isNotEmpty())
                     ButtonWithLeadingIcon(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(id = R.string.create_new_team),
@@ -150,14 +138,6 @@ fun HomeFirstTimeLoginScreen(viewModel: HomeViewModel, onCreateTeamClick: () -> 
                         isTransParent = false,
                         iconSize = dimensionResource(id = R.dimen.size_20dp)
                     )
-                }
-            }
-
-            if (state.isDataLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center),
-                    color = MaterialTheme.appColors.material.primaryVariant
-                )
             }
         }
     }
@@ -165,61 +145,58 @@ fun HomeFirstTimeLoginScreen(viewModel: HomeViewModel, onCreateTeamClick: () -> 
 
 @Composable
 fun HomeScreenItem(data: HomeItemResponse) {
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(
-                color = Color.White,
-                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
-            ),
-
-        ) {
-
+    Column {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(dimensionResource(id = R.dimen.size_72dp))
-                .padding(
-                    start = dimensionResource(id = R.dimen.size_16dp),
-                    /*top = dimensionResource(id = R.dimen.size_16dp),
-                    bottom = dimensionResource(id = R.dimen.size_16dp),*/
-                    end = dimensionResource(id = R.dimen.size_24dp)
+                .background(
+                    color = Color.White,
+                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
                 ),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-
         ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(dimensionResource(id = R.dimen.size_72dp))
+                    .padding(
+                        start = dimensionResource(id = R.dimen.size_16dp),
+                        end = dimensionResource(id = R.dimen.size_24dp)
+                    ),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+
             ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
 
-                Image(
-                    painter = painterResource(id = data.image!!),
-                    contentDescription = null,
-                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)),
-                    colorFilter = ColorFilter.tint(MaterialTheme.appColors.material.primaryVariant)
-                )
+                    Image(
+                        painter = painterResource(id = data.image!!),
+                        contentDescription = null,
+                        modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)),
+                        colorFilter = ColorFilter.tint(MaterialTheme.appColors.material.primaryVariant)
+                    )
 
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
+                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
+
+                    AppText(
+                        text = stringResource(id = if (data.item != 0) data.item else R.string.opportunities),
+                        style = MaterialTheme.typography.h6,
+                        fontWeight = FontWeight.W700,
+                        color = ColorBWBlack
+                    )
+                }
 
                 AppText(
-                    text = data.item,
-                    style = MaterialTheme.typography.h6,
-                    fontWeight = FontWeight.W700,
-                    color = ColorBWBlack
+                    text = data.total,
+                    fontWeight = FontWeight.W300,
+                    fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
+                    color = ColorBWBlack,
+                    style = MaterialTheme.typography.h1,
                 )
             }
 
-            AppText(
-                text = data.total,
-                fontWeight = FontWeight.W300,
-                fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
-                color = ColorBWBlack,
-                style = MaterialTheme.typography.h1,
-            )
         }
-
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
     }
-    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 }

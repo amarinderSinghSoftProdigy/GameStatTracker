@@ -129,6 +129,14 @@ data class OpportunitiesDetail(
     @SerializedName("participation") val participation: Participation = Participation(),
     @SerializedName("registration") val registration: Boolean = false,
     @SerializedName("location") val location: Location = Location(),
+    @SerializedName("basePay") val basePay: ArrayList<BasePay> = arrayListOf(),
+    @SerializedName("staffDetails") val staffDetails: String = ""
+)
+
+data class BasePay(
+    @SerializedName("level") val level: String = "",
+    @SerializedName("cost") val cost: String = "",
+    @SerializedName("_id") val _id: String = ""
 )
 
 data class DaysOfPlay(
@@ -170,6 +178,12 @@ data class RegisterRequest(
     val sendPushNotification: Boolean = false,
     val termsAndCondition: Boolean = false,
     val privacy: Boolean = false,
+)
+
+data class GameStaffRegisterRequest(
+    val eventId: String = "",
+    val role: String = "",
+    val location: Location = Location()
 )
 
 data class Invites(

@@ -48,6 +48,8 @@ interface ITeamRepository {
 
     suspend fun inviteMembersByTeamId(updateTeamRequest: UpdateTeamRequest): ResultWrapper<BaseResponse<Any>>
 
+    suspend fun getInviteMembersByTeamId(teamId: String): ResultWrapper<BaseResponse<Any>>
+
     suspend fun getAllInvitation(
         page: Int = 1,
         limit: Int = 50,
@@ -67,7 +69,7 @@ interface ITeamRepository {
 
     suspend fun getHomePageDetails(): ResultWrapper<BaseResponse<HomePageCoachModel>>
 
-    suspend fun getUserRoles(): ResultWrapper<BaseResponse<ArrayList<String>>>
+    suspend fun getUserRoles(role:String): ResultWrapper<BaseResponse<ArrayList<String>>>
 
     suspend fun getPlayerById(id: String): ResultWrapper<BaseResponse<ArrayList<PlayerDetails>>>
 
@@ -96,4 +98,5 @@ interface ITeamRepository {
         sort: String = "",
         leagueId: String
     ): ResultWrapper<BaseResponse<VenuesResponse>>
+
 }

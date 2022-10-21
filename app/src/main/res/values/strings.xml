@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name">Baller</string>
     <string name="map_key">486006362864421</string>
     <string name="facebook_app_id">486006362864421</string>
@@ -105,6 +105,7 @@
     <string name="verify_number">Verify Phone Number</string>
     <string name="number_same_as_confirm">Verify Number must be same as Phone number</string>
     <string name="enter_number">Enter your phone number</string>
+    <string name="your_phone_number">Your Phone Number</string>
     <string name="verified">Verified</string>
     <string name="home_label">Home</string>
     <string name="events_label">Events</string>
@@ -232,7 +233,8 @@
     <string name="resend_code_in">Resend code in</string>
     <string name="pending_invitations">Pending Invitation</string>
     <string name="invite">Invite</string>
-    <string name="invite_members">Invite Members</string>
+    <string name="invited">Invited</string>
+    <string name="invite_members" translatable="false">Invite Members</string>
     <string name="please_add_players">Please invite players to the team.</string>
     <string name="practice">Practice</string>
     <string name="game">Game</string>
@@ -354,8 +356,9 @@
     <string name="regsitration_deadliine">Regsitration deadline</string>
     <string name="price">Price</string>
     <string name="skill_level">Skill Level</string>
-    <string name="event_desc">Event description</string>
+    <string name="event_desc">Event Description</string>
     <string name="contact_With_questions">Contact with questions</string>
+    <string name="question_contact">Questions? Contact:</string>
     <string name="days_play">Days of play</string>
     <string name="register">Register</string>
     <string name="registration_form">Registration Form</string>
@@ -374,6 +377,7 @@
     <string name="player_requirements">Player Requirements</string>
     <string name="swap_profiles">Swap Profiles</string>
     <string name="add_new_profile">Add New Profile</string>
+    <string name="add_from_contacts">Add From Contacts</string>
     <string name="add_profile">Add Profile</string>
     <string name="user_type">User Type</string>
     <string name="procced">Proceed</string>
@@ -420,4 +424,17 @@
     <string name="update">Update Dates</string>
     <string name="unavailable_dates">Unavailable Dates</string>
     <string name="settings">Settings</string>
+    <string name="select_role">Select Role</string>
+    <string name="select_role_first">Please select role</string>
+    <string name="staff_details">Staff Details</string>
+    <string name="referees">Referees</string>
+    <string name="stat_managers">Stat Managers</string>
+    <string name="clock_managers">Clock Managers</string>
+
+    <string name="verification_code">Verification Code</string>
+    <string name="new_chat">New Chat</string>
+    <string name="enter_group_name">Enter group name</string>
+    <string name="no_members_in_the_team_currently">No members are there in the selected team.</string>
+    <string name="new_group_created_successfully">New group created successfully.</string>
+    <string name="user_has_not_registered_with_chat">This user has not registered with chat facility yet.</string>
 </resources>

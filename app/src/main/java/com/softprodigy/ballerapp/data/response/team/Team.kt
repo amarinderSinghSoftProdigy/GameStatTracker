@@ -7,6 +7,8 @@ import com.softprodigy.ballerapp.data.request.Location
 data class TeamParent(
     @SerializedName("_id")
     val _id: String = "",
+    @SerializedName("role")
+    val role: String = "",
     @SerializedName("teamId")
     val teamId: Team = Team(),
 )
@@ -26,6 +28,8 @@ data class Team(
     val players: ArrayList<Player> = ArrayList(),
     @SerializedName("leaderboardPoints")
     val teamLeaderBoard: ArrayList<TeamLeaderBoard> = ArrayList(),
+    @SerializedName("teamChatGroups")
+    val teamChatGroups: ArrayList<TeamChatGroup> = ArrayList(),
 
     @SerializedName("teamNameOnJersey") val teamNameOnJersey: String = "",
     @SerializedName("teamNameOnTournaments") val teamNameOnTournaments: String = "",
@@ -35,4 +39,10 @@ data class Team(
     @SerializedName("nameOfVenue") val nameOfVenue: String = "",
     @SerializedName("location") val location: Location = Location(),
     @SerializedName("address") val address: Address = Address(),
+)
+
+data class TeamChatGroup(
+    @SerializedName("_id"     ) val Id      : String = "",
+    @SerializedName("teamId"  ) val teamId  : String = "",
+    @SerializedName("groupId" ) val groupId : String = ""
 )

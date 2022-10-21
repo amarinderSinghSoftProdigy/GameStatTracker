@@ -1,8 +1,10 @@
 package com.softprodigy.ballerapp.common
 
 import androidx.compose.ui.graphics.Color
+import com.softprodigy.ballerapp.ui.theme.Yellow700
 
 object AppConstants {
+    val REQUEST_CONTACT_CODE: Int = 1122
     const val ROLE = "role"
     const val TEAM_LOGO: String = "teamLogo"
     const val PROFILE_IMAGE: String = "profileImage"
@@ -26,8 +28,8 @@ object AppConstants {
     const val SKIP = "skip"
     const val PAGE = 1
     const val PAGE_LIMIT = 20
-    var DEFAULT_COLOR: Color = Color(0xFF0177C1)
-    var SELECTED_COLOR: Color = Color(0xFF0177C1)
+    var DEFAULT_COLOR = "FF923D"
+    var SELECTED_COLOR: Color = Yellow700
 }
 
 object Route {
@@ -45,12 +47,14 @@ object Route {
     const val GAME_DETAIL_SCREEN = "game_detail_screen"
     const val OPP_DETAIL_SCREEN = "opp_detail_screen"
     const val EVENT_REGISTRATION = "event_registration"
+    const val CREATE_NEW_CHAT_CONVO = "chat_create_new_conversation"
     const val EVENT_REGISTRATION_SUCCESS = "eventRegistrationSuccess"
     const val TEAMS_SCREEN = "teamsScreen"
     const val SPLASH_SCREEN = "splashScreen"
     const val SELECT_USER_TYPE = "selectUserTypeScreen"
     const val TEAM_SETUP_SCREEN = "teamSetupScreen"
     const val ADD_PLAYER_SCREEN = "addPlayerScreen"
+    const val ADD_MY_PLAYER_SCREEN = "addMyPlayerScreen"
     const val PROFILE_SETUP_SCREEN = "profileSetupScreen"
     const val ROASTER_SCREEN = "roasterScreen"
     const val MANAGED_TEAM_SCREEN = "managedTeamScreen"
@@ -61,11 +65,14 @@ object Route {
     const val ADD_PROFILE_SCREEN = "addProfileScreen"
     const val PROFILE_EDIT_SCREEN = "profileeditscreen"
     const val INVITATION_SCREEN = "invitationScreen"
+    const val GAME_STAFF_SCREEN = "gameStaffScreen"
     const val NEW_EVENT = "newEvent"
     const val MY_LEAGUE = "myLeague"
+    const val MY_CHAT_DETAIL = "myChatDetail"
     const val OPEN_VENUE = "openVenue"
     const val DIVISION_TAB = "divisionTab"
     const val TEAM_TAB = "teamTab"
+    const val WEB_VIEW = "webview"
 }
 
 object ApiConstants {
@@ -112,15 +119,20 @@ object ApiConstants {
     const val CONFIRM_PHONE = "v1/auth/confirmPhone"
     const val SWAP_PROFILE = "v1/auth/swapProfileList"
     const val SWAP_TOKEN = "v1/auth/swapProfileToken"
+    const val SWAP_INITIAL_TOKEN = "v1/auth/initialSwapProfileToken"
     const val ADD_PROFILE = "v1/auth/addUserProfile"
+
+    const val GET_CHATS = "v1/team/teamsChatDetails"
+    const val SAVE_CHAT_GROUP = "v1/team/saveChatGroup"
 
     const val RESET_PASS = "/reset/password/"
     const val RESEND_OTP = "/resendOtp"
 
     const val UPDATE_TEAM = "v1/team/update"
+    const val GET_TEAM_INVITED = "v1/team/getInvitedTeamMembers"
     const val GET_USER_DETAILS = "v1/auth/getUserProfile"
     const val GET_HOME_PAGE_DETAILS = "v1/coach/event/getHomePageDetails"
-    const val GET_USER_FULL_DETAILS = "v1/userDetails"
+    const val GET_USER_FULL_DETAILS = "v1/userDetails/"
     const val UPDATE_USER_FULL_DETAILS = "v1/userDetails"
     const val EVENT_GET_DIVISIONS = "v1/division/getAllDivisions"
     const val EVENT_TEAM_REGISTRATION = "v1/event/team/registration"
@@ -137,6 +149,9 @@ object ApiConstants {
     const val GET_OPPORTUNITY_ID = "v1/event/getEventRegisterById"
     const val GET_FILTERS = "v1/event/getFilterPreferences"
 
+    const val GET_SEARCH_GAME_STAFF = "v1/staff/searchGameStaff"
+    const val REGISTER_GAME_STAFF = "v1/staff/registerGameStaff"
+
     const val first_name = "first_name"
     const val last_name = "lastName"
     const val mobile = "mobile"
@@ -146,6 +161,9 @@ object ApiConstants {
     const val TWITTER = "twitter"
     const val email = "email"
     const val token = "token"
+
+
+    const val AUTH_REGISTER_MOBILE = "v1/auth/registerMobile"
 }
 
 
@@ -171,4 +189,9 @@ object RequestCode {
 
 object IntentData {
     const val FROM_SPLASH = "fromSplash"
+    const val ROLE = "role"
+}
+
+object CometChatErrorCodes {
+    const val ERR_UID_ALREADY_EXISTS = "ERR_UID_ALREADY_EXISTS"
 }

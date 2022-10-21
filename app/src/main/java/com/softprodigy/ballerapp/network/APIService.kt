@@ -61,7 +61,7 @@ open interface APIService {
     suspend fun verifyPhone(@Body verifyPhoneRequest: VerifyPhoneRequest): BaseResponse<Any>
 
     @POST(ApiConstants.CONFIRM_PHONE)
-    suspend fun confirmPhone(@Body confirmPhoneRequest: ConfirmPhoneRequest): BaseResponse<Any>
+    suspend fun confirmPhone(@Body confirmPhoneRequest: ConfirmPhoneRequest): BaseResponse<ProfileList>
 
     @POST(ApiConstants.SIGNUP)
     suspend fun signUp(@Body signUpData: SignUpData): BaseResponse<UserInfo>
@@ -70,7 +70,7 @@ open interface APIService {
     suspend fun forgotPassword(@Body forgotPasswordRequest: ForgotPasswordRequest): BaseResponse<Any>
 
     @PUT(ApiConstants.UPDATE_PROFILE)
-    suspend fun updateUserProfile(@Body userProfile: SignUpData): BaseResponse<UserInfo>
+    suspend fun updateUserProfile(@Body userProfile: SignUpPhoneData): BaseResponse<UserInfo>
 
     @GET(ApiConstants.GET_TEAM_STANDING)
     suspend fun getTeamStandings(
@@ -114,7 +114,7 @@ open interface APIService {
     suspend fun getHomePageDetails(): BaseResponse<HomePageCoachModel>
 
     @GET(ApiConstants.GET_USER_ROLE)
-    suspend fun getUserRoles(): BaseResponse<ArrayList<String>>
+    suspend fun getUserRoles(@Query("type") type: String): BaseResponse<ArrayList<String>>
 
     @GET(ApiConstants.GET_TEAM_PLAYER_BY_ID)
     suspend fun getTeamPlayerById(@Query("teamId") id: String): BaseResponse<ArrayList<PlayerDetails>>
@@ -245,7 +245,33 @@ open interface APIService {
     @GET(ApiConstants.SWAP_TOKEN)
     suspend fun updateProfileToken(@Query("userId") userId: String): BaseResponse<String>
 
+    @GET(ApiConstants.SWAP_INITIAL_TOKEN)
+    suspend fun updateInitialProfileToken(@Query("userId") userId: String): BaseResponse<String>
+
+    @GET(ApiConstants.GET_TEAM_INVITED)
+    suspend fun getInviteMembersByTeamId(@Query("teamId") teamId: String): BaseResponse<Any>
+
     @POST(ApiConstants.ADD_PROFILE)
-    suspend fun addProfile(@Body request: AddProfileRequest): BaseResponse<Any>
+    suspend fun addProfile(@Body request: AddProfileRequest): BaseResponse<UserInfo>
+
+    @GET(ApiConstants.GET_CHATS)
+    suspend fun getAllChats(
+        @Query("page") page: Int,
+        @Query("limit") limit: Int,
+        @Query("sort") sort: String,
+        @Query("userId") userId: String
+    ): BaseResponse<ArrayList<Team>>
+
+    @POST(ApiConstants.AUTH_REGISTER_MOBILE)
+    suspend fun registerMobile(@Body signUpData: SignUpPhoneData): BaseResponse<UserPhoneInfo>
+
+    @POST(ApiConstants.SAVE_CHAT_GROUP)
+    suspend fun saveChatGroup(@Body request: RequestBody):BaseResponse<Any>
+
+    @GET(ApiConstants.GET_SEARCH_GAME_STAFF)
+    suspend fun getSearchGameStaff(@Query("search") search: String): BaseResponse<List<GetSearchStaff>>
+
+    @POST(ApiConstants.REGISTER_GAME_STAFF)
+    suspend fun registerGameStaff(@Body gameStaffRegisterRequest: GameStaffRegisterRequest): BaseResponse<Any>
 
 }

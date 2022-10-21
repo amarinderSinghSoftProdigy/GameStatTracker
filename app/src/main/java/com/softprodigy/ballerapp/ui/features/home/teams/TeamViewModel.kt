@@ -266,16 +266,34 @@ class TeamViewModel @Inject constructor(
         }
     }
 
+    private suspend fun setDefaultTeam(team: Team) {
+        _teamUiState.value = _teamUiState.value.copy(
+            selectedTeam = team,
+            teams = ArrayList<Team>().apply { add(team) },
+            isLoading = false,
+            teamName = team.name,
+            teamColorPrimary = team.colorCode,
+            logo = team.logo,
+            teamColorSec = team.secondaryTeamColor,
+            teamColorThird = team.tertiaryTeamColor,
+        )
+        _teamChannel.send(
+            TeamChannel.OnTeamDetailsSuccess(team._id, team.name)
+        )
+        updateColorData(team.colorCode)
+    }
+
+
     suspend fun getTeamsUserId() {
         when (val teamResponse = teamRepo.getTeamsUserId(UserStorage.userId)) {
             is ResultWrapper.GenericError -> {
-               /* _teamChannel.send(
-                    TeamChannel.ShowToast(
-                        UiText.DynamicString(
-                            "${teamResponse.message}"
-                        )
-                    )
-                )*/
+                /* _teamChannel.send(
+                     TeamChannel.ShowToast(
+                         UiText.DynamicString(
+                             "${teamResponse.message}"
+                         )
+                     )
+                 )*/
                 _teamUiState.value =
                     _teamUiState.value.copy(
                         isLoading = false
@@ -297,7 +315,13 @@ class TeamViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 teamResponse.value.let { response ->
                     if (response.status) {
-                        if (/*_teamUiState.value.selectedTeam == null && */response.data.size > 0) {
+                        if (response.data.size > 0) {
+                            if (response.data.size == 1) {
+                                if (response.data[0].role == AppConstants.USER_TYPE_USER) {
+                                    setDefaultTeam(response.data[0].teamId)
+                                    return
+                                }
+                            }
                             var selectionTeam: Team? = null
                             val list = CommonUtils.getTeams(response.data)
                             list.toMutableList().forEach {
@@ -354,8 +378,8 @@ class TeamViewModel @Inject constructor(
         val newRoaster = arrayListOf<TeamRoaster>()
         _teamUiState.value.players.forEach {
             //val position = it.position.ifEmpty { it._id }
-            if (it.position.isNotEmpty())
-                newRoaster.add(TeamRoaster(it._id, ""))
+            /* if (it.position.isNotEmpty())*/
+            newRoaster.add(TeamRoaster(it._id, ""))
         }
         //Need to update the request object.
         val request = UpdateTeamDetailRequest(
@@ -555,7 +579,6 @@ class TeamViewModel @Inject constructor(
                         _teamChannel.send(
                             TeamChannel.OnTeamDetailsSuccess(response.data._id, response.data.name)
                         )
-
                         /*update Color code to db*/
                         updateColorData(response.data.colorCode)
 
@@ -575,12 +598,10 @@ class TeamViewModel @Inject constructor(
         }
     }
 
-    private suspend fun updateColorData(colorCode:String) {
-
-        // storing team color to DB
+    private suspend fun updateColorData(colorCode: String) {
         dataStoreManager.setColor(colorCode)
-        AppConstants.SELECTED_COLOR = fromHex(colorCode.replace("#","").ifEmpty{"0177C1"})
-
+        AppConstants.SELECTED_COLOR =
+            fromHex(colorCode.replace("#", "").ifEmpty { AppConstants.DEFAULT_COLOR })
     }
 
     private suspend fun getPlayerById(teamId: String) {

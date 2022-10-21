@@ -1,10 +1,13 @@
 package com.softprodigy.ballerapp
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
+import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -26,7 +29,6 @@ import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -37,6 +39,7 @@ import com.softprodigy.ballerapp.common.IntentData
 import com.softprodigy.ballerapp.common.Route.ADD_PLAYER_SCREEN
 import com.softprodigy.ballerapp.common.Route.FORGOT_PASSWORD_SCREEN
 import com.softprodigy.ballerapp.common.Route.LOGIN_SCREEN
+import com.softprodigy.ballerapp.common.Route.OTP_VERIFICATION_SCREEN
 import com.softprodigy.ballerapp.common.Route.PROFILE_SETUP_SCREEN
 import com.softprodigy.ballerapp.common.Route.SELECT_PROFILE
 import com.softprodigy.ballerapp.common.Route.SELECT_USER_TYPE
@@ -48,9 +51,9 @@ import com.softprodigy.ballerapp.common.Route.WELCOME_SCREEN
 import com.softprodigy.ballerapp.data.SocialUserModel
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.data.request.SignUpData
 import com.softprodigy.ballerapp.twitter_login.TwitterConstants
 import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.confirm_phone.OtpScreen
 import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordScreen
 import com.softprodigy.ballerapp.ui.features.home.HomeActivity
 import com.softprodigy.ballerapp.ui.features.login.LoginScreen
@@ -60,9 +63,7 @@ import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpViewModel
 import com.softprodigy.ballerapp.ui.features.splash.SplashScreen
 import com.softprodigy.ballerapp.ui.features.user_type.UserTypeScreen
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.AddPlayersScreenUpdated
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
-import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupScreenUpdated
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.*
 import com.softprodigy.ballerapp.ui.features.venue.VenueListScreen
 import com.softprodigy.ballerapp.ui.features.welcome.WelcomeScreen
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
@@ -97,15 +98,19 @@ class MainActivity : ComponentActivity() {
     private var accessToken = ""
     val twitterUser = mutableStateOf<SocialUserModel?>(SocialUserModel())
     val twitterUserRegister = mutableStateOf<SocialUserModel?>(SocialUserModel())
+    var setupTeamViewModelUpdated: SetupTeamViewModelUpdated? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, true)
+//        startActivity(Intent(this, CometChatUI::class.java))
+
         setContent {
             val mainViewModel: MainViewModel = hiltViewModel()
+            setupTeamViewModelUpdated = hiltViewModel()
             val state = mainViewModel.state.value
             BallerAppMainTheme(
-                customColor = state.color ?: MaterialTheme.appColors.material.primary
+                customColor = state.color ?: MaterialTheme.appColors.material.primaryVariant
             ) {
                 val navController = rememberNavController()
                 if (!state.showAppBar) {
@@ -116,7 +121,12 @@ class MainActivity : ComponentActivity() {
                         CompositionLocalProvider(
                             LocalFacebookCallbackManager provides callbackManager
                         ) {
-                            NavControllerComposable(this, mainViewModel, navController)
+                            NavControllerComposable(
+                                this,
+                                mainViewModel,
+                                navController,
+                                setupTeamViewModelUpdated ?: hiltViewModel()
+                            )
                         }
                     }
                 } else {
@@ -154,37 +164,14 @@ class MainActivity : ComponentActivity() {
                                     NavControllerComposable(
                                         this@MainActivity,
                                         mainViewModel,
-                                        navController
+                                        navController,
+                                        setupTeamViewModelUpdated ?: hiltViewModel()
                                     )
                                 }
-                                /*  com.softprodigy.ballerapp.ui.features.home.NavControllerComposable(
-                                      homeViewModel,
-                                      teamViewModel,
-                                      eventViewModel,
-                                      navController = navController,
-                                      showDialog = state.showDialog,
-                                      fromSplash = fromSplash
-                                  )*/
                             }
                         },
-                        /* bottomBar = {
-                             BottomNavigationBar(
-                                 state.bottomBar,
-                                 navController = navController,
-                                 selectionColor = state.color ?: Color.Black
-                             ) {
-                                 homeViewModel.setBottomNav(it)
-                                 if (it == BottomNavKey.HOME) {
-                                     homeViewModel.setAppBar(false)
-                                 } else {
-                                     homeViewModel.setAppBar(true)
-                                 }
-                             }
-                         },*/
                     )
                 }
-
-
             }
         }
     }
@@ -313,21 +300,61 @@ class MainActivity : ComponentActivity() {
         }
 
     }
+
+    // on below line we are calling on activity result method.
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode != Activity.RESULT_OK) return
+        if (requestCode == AppConstants.REQUEST_CONTACT_CODE && data != null) {
+            val contactData: Uri? = data.data
+            val cursor: Cursor = managedQuery(contactData, null, null, null, null)
+            cursor.moveToFirst()
+            val number: String =
+                cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER))
+            val name: String =
+                cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
+            setupTeamViewModelUpdated?.onEvent(
+                TeamSetupUIEventUpdated.OnContactAdded(
+                    InviteObject(
+                        name,
+                        number.replace(" ", "")
+                    )
+                )
+            )
+
+        }
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
+        startActivityForResult(
+            intent,
+            AppConstants.REQUEST_CONTACT_CODE,
+            null
+        )
+    }
 }
 
 @Composable
 fun NavControllerComposable(
     activity: MainActivity,
     mainViewModel: MainViewModel,
-    navController: NavHostController
+    navController: NavHostController,
+    setupTeamViewModelUpdated: SetupTeamViewModelUpdated
 ) {
-//    val navController = rememberNavController()
-    val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = viewModel()
     val signUpViewModel: SignUpViewModel = viewModel()
     val context = LocalContext.current
     val dataStoreManager = DataStoreManager(activity)
     val userToken = dataStoreManager.userToken.collectAsState(initial = "")
-    UserStorage.token = userToken.value
+    UserStorage.token= userToken.value
     val getRole = dataStoreManager.getRole.collectAsState(initial = "")
     val email = dataStoreManager.getEmail.collectAsState(initial = "")
     val scope = rememberCoroutineScope()
@@ -337,17 +364,7 @@ fun NavControllerComposable(
             SplashScreen {
                 scope.launch {
                     if (userToken.value.isNotEmpty()) {
-                        if (getRole.value.equals(AppConstants.USER_TYPE_USER, ignoreCase = true)) {
-                            signUpViewModel.signUpUiState.value.signUpData =
-//                                SignUpData(token = userToken.value)
-                                SignUpData(token = userToken.value, email = email.value)
-                        }
-                        checkRole(
-                            getRole.value.equals(AppConstants.USER_TYPE_USER, ignoreCase = true),
-                            navController,
-                            activity,
-                            fromSplash = true
-                        )
+                        moveToHome(activity, true)
                     } else if (color.value.isNotEmpty()) {
                         navController.popBackStack()
                         navController.navigate(LOGIN_SCREEN)
@@ -372,12 +389,12 @@ fun NavControllerComposable(
                 },
                 twitterUser = activity.twitterUserRegister.value,
                 onSocialLoginSuccess = { userInfo ->
-                    checkRole(
-                        userInfo.user.role.equals(
-                            AppConstants.USER_TYPE_USER,
-                            ignoreCase = true
-                        ), navController, activity
-                    )
+                    /* checkRole(
+                         userInfo.user.role.equals(
+                             AppConstants.USER_TYPE_USER,
+                             ignoreCase = true
+                         ), navController, activity
+                     )*/
                 }, onPreviousClick = {
                     navController.popBackStack()
                 },
@@ -397,46 +414,9 @@ fun NavControllerComposable(
 
         composable(route = LOGIN_SCREEN) {
             LoginScreen(
-                onLoginSuccess = {
-                    UserStorage.token = it?.token.toString()
-                    if (it?.user?.role.equals(AppConstants.USER_TYPE_USER, ignoreCase = true)) {
-                        signUpViewModel.signUpUiState.value.signUpData =
-                            SignUpData(
-                                token = UserStorage.token,
-                                email = it?.user?.email ?: "",
-                                firstName = it?.user?.firstName ?: "",
-                                lastName = it?.user?.lastName ?: "",
-                            )
-                        signUpViewModel.signUpUiState.value.isSocialUser = true
-                    }
-                    val check =
-                        it?.user?.role.equals(AppConstants.USER_TYPE_USER, ignoreCase = true)
-                    if (check) {
-                        checkRole(
-                            check,
-                            navController,
-                            activity
-                        )
-                    } else {
-                        navController.navigate(SELECT_PROFILE) {
-                            navController.popBackStack()
-                        }
-                    }
-                },
-                onRegister = {
-                    navController.navigate(SIGN_UP_SCREEN)
-                },
-                onForgetPasswordClick = {
-                    navController.navigate(FORGOT_PASSWORD_SCREEN)
-                },
-                onTwitterClick = {
-                    scope.launch {
-                        activity.getRequestToken("login")
-                    }
-                },
-                twitterUser = activity.twitterUser.value,
-                onLoginFail = {
-                    activity.twitterUser.value = null
+                signUpViewModel = signUpViewModel,
+                onSuccess = {
+                    navController.navigate(OTP_VERIFICATION_SCREEN)
                 }
             )
         }
@@ -456,13 +436,13 @@ fun NavControllerComposable(
             ProfileSetUpScreen(
                 signUpViewModel = signUpViewModel,
                 onNext = {
-                    if (UserStorage.role.equals(UserType.COACH.key, ignoreCase = true)) {
+                    /*if (UserStorage.role.equals(UserType.COACH.key, ignoreCase = true)) {
                         navController.navigate(TEAM_SETUP_SCREEN) {
                             navController.popBackStack()
                         }
-                    } else {
-                        moveToHome(activity)
-                    }
+                    } else {*/
+                    moveToHome(activity)
+                    //}
                 },
                 onBack = {
                     navController.popBackStack()
@@ -537,19 +517,20 @@ fun NavControllerComposable(
                 )
             )
             mainViewModel.onEvent(MainEvent.OnColorChanges(AppConstants.SELECTED_COLOR))
-
             AddPlayersScreenUpdated(
                 vm = setupTeamViewModelUpdated,
                 onBackClick = { navController.popBackStack() },
                 onNextClick = {
-                    moveToHome(activity)
+                    //moveToHome(activity)
                 }, onInvitationSuccess = {
 
                 })
         }
         composable(route = SELECT_PROFILE) {
             mainViewModel.onEvent(MainEvent.OnColorChanges(AppConstants.SELECTED_COLOR))
-            SelectProfileScreen(onNextClick = { moveToHome(activity) })
+            SelectProfileScreen(
+                vm = signUpViewModel,
+                onNextClick = { moveToHome(activity) })
         }
 
         composable(route = SELECT_VENUE) {
@@ -559,6 +540,20 @@ fun NavControllerComposable(
                     ?.set("venue", it)
                 navController.popBackStack()
             })
+        }
+
+        composable(route = OTP_VERIFICATION_SCREEN) {
+            OtpScreen(
+                viewModel = signUpViewModel,
+                onSuccess = {
+                    navController.popBackStack()
+                    if (it) {
+                        navController.navigate(PROFILE_SETUP_SCREEN)
+                    } else {
+                        navController.navigate(SELECT_PROFILE)
+                    }
+                }
+            )
         }
     }
 }
@@ -573,6 +568,7 @@ private fun moveToHome(activity: MainActivity, fromSplash: Boolean = false) {
     activity.finish()
 }
 
+/*
 private fun checkRole(
     check: Boolean,
     navController: NavController,
@@ -587,3 +583,4 @@ private fun checkRole(
         moveToHome(activity, fromSplash)
     }
 }
+*/
