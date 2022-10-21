@@ -123,7 +123,8 @@ class HomeViewModel @Inject constructor(
     }
 
     fun showBottomAppBar(showBottomAppBar: Boolean) {
-        _state.value = _state.value.copy(showBottomAppBar = showBottomAppBar)
+        if (_state.value.showBottomAppBar != showBottomAppBar)
+            _state.value = _state.value.copy(showBottomAppBar = showBottomAppBar)
     }
 
     fun clearToken() {
@@ -197,8 +198,8 @@ class HomeViewModel @Inject constructor(
                         }
 
                         _homeChannel.send(
-                                HomeChannel.OnUserIdUpdate
-                            )
+                            HomeChannel.OnUserIdUpdate
+                        )
                         /*Register newly updated user to cometchat*/
                         registerProfileToCometChat(
                             "${response.data.firstName} ${response.data.lastName}",

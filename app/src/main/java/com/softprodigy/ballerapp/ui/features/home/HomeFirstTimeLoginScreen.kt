@@ -40,7 +40,8 @@ fun HomeFirstTimeLoginScreen(
     viewModel: HomeViewModel,
     teamVm: TeamViewModel,
     onTeamNameClick: (Boolean) -> Unit,
-    onCreateTeamClick: () -> Unit
+    onCreateTeamClick: () -> Unit,
+    onInvitationCLick: () -> Unit
 ) {
     val state = viewModel.state.value
     val context = LocalContext.current
@@ -84,11 +85,7 @@ fun HomeFirstTimeLoginScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    if(teamState.teamName == "Team Total Hoop"){
-                                        onTeamNameClick.invoke(true)
-                                    } else {
-                                        onTeamNameClick.invoke(false)
-                                    }
+                                    onTeamNameClick.invoke(true)
                                 }
                                 .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                             contentAlignment = Alignment.CenterStart
@@ -126,8 +123,49 @@ fun HomeFirstTimeLoginScreen(
                             )
                         }
                     }
-                  }
+                }
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                if (state.homePageCoachModel.pendingInvitations > 0) {
+                    UserFlowBackground(
+                        padding = 0.dp,
+                        color = Color.White
+                    ) {
+                        Box(
+                            Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    onInvitationCLick.invoke()
+                                }
+                                .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Row(
+                                Modifier
+                                    .fillMaxSize(),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_invite),
+                                    contentDescription = "",
+                                    tint = MaterialTheme.appColors.material.primaryVariant,
+                                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
+                                )
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+                                Text(
+                                    text = stringResource(id = R.string.pending_invitations),
+                                    style = MaterialTheme.typography.h6,
+                                    modifier = Modifier.weight(1f),
+                                )
+                            }
+                            Text(
+                                text = state.homePageCoachModel.pendingInvitations.toString(),
+                                fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
+                                modifier = Modifier.align(Alignment.CenterEnd)
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                }
                 FlowRow {
                     state.homeItemList.forEachIndexed { index, item ->
                         HomeScreenItem(item)
@@ -140,7 +178,8 @@ fun HomeFirstTimeLoginScreen(
                         onClick = onCreateTeamClick,
                         painter = painterResource(id = R.drawable.ic_add_circle),
                         isTransParent = false,
-                        iconSize = dimensionResource(id = R.dimen.size_20dp)
+                        iconSize = dimensionResource(id = R.dimen.size_20dp),
+                        noTheme = true
                     )
             }
         }

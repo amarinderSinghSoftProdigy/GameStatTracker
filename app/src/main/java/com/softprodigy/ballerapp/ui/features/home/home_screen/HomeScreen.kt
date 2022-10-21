@@ -120,11 +120,11 @@ fun HomeScreen(
         teamVm.teamChannel.collect { uiEvent ->
             when (uiEvent) {
                 is TeamChannel.ShowToast -> {
-                   /* Toast.makeText(
-                        context,
-                        uiEvent.message.asString(context),
-                        Toast.LENGTH_LONG
-                    ).show()*/
+                    /* Toast.makeText(
+                         context,
+                         uiEvent.message.asString(context),
+                         Toast.LENGTH_LONG
+                     ).show()*/
                 }
                 is TeamChannel.OnTeamDetailsSuccess -> {
                     OnTeamDetailsSuccess.invoke(uiEvent.teamId, uiEvent.teamName)
@@ -160,6 +160,8 @@ fun HomeScreen(
                 onTeamNameClick(it)
             }, {
                 onCreateTeamClick(null)
+            }, {
+                onInvitationCLick()
             }
             )
         } else if (role.isNotEmpty()) {
@@ -202,12 +204,7 @@ fun HomeScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clickable { /*logoClick()*/
-                                        if (teamState.teamName == "Team Total Hoop") {
-                                            onTeamNameClick.invoke(true)
-                                        } else {
-                                            onTeamNameClick.invoke(false)
-                                        }
-                                        /* onTeamNameClick.invoke(showBottomBar)*/
+                                        onTeamNameClick.invoke(true)
                                     }
                                     .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                                 contentAlignment = Alignment.CenterStart

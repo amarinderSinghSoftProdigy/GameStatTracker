@@ -173,23 +173,26 @@ fun ButtonWithLeadingIcon(
     ),
     isTransParent: Boolean = false,
     iconSize: Dp = dimensionResource(id = R.dimen.size_10dp),
-    iconAllowed: Boolean = true
+    iconAllowed: Boolean = true,
+    noTheme: Boolean = false,
 ) {
     Row(
         modifier = modifier
             .clickable { onClick.invoke() }
             .border(
                 width = 1.dp,
-                color =
-                if (isTransParent)
+                color = if (noTheme) {
+                    MaterialTheme.appColors.material.onSurface
+                } else if (isTransParent)
                     MaterialTheme.appColors.editField.borderFocused else {
                     AppConstants.SELECTED_COLOR
                 },
                 shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_6dp))
             )
             .background(
-                color =
-                if (isTransParent) {
+                color = if (noTheme) {
+                    MaterialTheme.appColors.material.onSurface
+                } else if (isTransParent) {
                     MaterialTheme.appColors.material.surface
                 } else {
                     AppConstants.SELECTED_COLOR
