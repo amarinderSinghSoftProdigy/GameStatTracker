@@ -139,10 +139,6 @@ fun TeamsScreen(
                 selected = state.selectedTeam,
                 showLoading = state.isLoading,
                 onCreateTeamClick = { onCreateTeamClick(state.selectedTeam) },
-                showCreateTeamButton = UserStorage.role.equals(
-                    UserType.COACH.key,
-                    ignoreCase = true
-                )
             )
         }
     }

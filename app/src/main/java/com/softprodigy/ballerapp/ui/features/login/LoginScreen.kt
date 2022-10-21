@@ -2,36 +2,42 @@ package com.softprodigy.ballerapp.ui.features.login
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.validPhoneNumber
-import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.components.AppButton
+import com.softprodigy.ballerapp.ui.features.components.AppText
+import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpChannel
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpUIEvent
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpViewModel
 import com.softprodigy.ballerapp.ui.theme.appColors
+import com.togitech.ccp.component.TogiCountryCodePicker
+import com.togitech.ccp.data.utils.getDefaultLangCode
 import com.togitech.ccp.data.utils.getDefaultPhoneCode
+import com.togitech.ccp.data.utils.getLibCountries
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -42,8 +48,12 @@ fun LoginScreen(
     val state = signUpViewModel.signUpUiState.value
     val context = LocalContext.current
     val phone = rememberSaveable { mutableStateOf(false) }
-     val keyboardController = LocalSoftwareKeyboardController.current
+    val keyboardController = LocalSoftwareKeyboardController.current
     val maxEmailChar = 10
+    val focusRequester = remember { FocusRequester() }
+    val defaultCountryCode = remember { mutableStateOf(getDefaultPhoneCode(context)) }
+    var defaultLang by rememberSaveable { mutableStateOf(getDefaultLangCode(context)) }
+    //val getDefaultPhoneCode = getDefaultPhoneCode(context)
     LaunchedEffect(key1 = Unit) {
         signUpViewModel.signUpChannel.collect { uiEvent ->
             when (uiEvent) {
@@ -92,8 +102,73 @@ fun LoginScreen(
                 )
 
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = MaterialTheme.appColors.material.surface,
+                            shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+                        )
+                        .border(
+                            1.dp,
+                            color = MaterialTheme.appColors.editField.borderUnFocused,
+                            shape = RoundedCornerShape(
+                                dimensionResource(id = R.dimen.size_8dp)
+                            )
+                        )
+                        .padding(horizontal = dimensionResource(id = R.dimen.size_8dp)),
+                    verticalAlignment = Alignment.CenterVertically,
 
-                AppOutlineTextField(
+                    ) {
+                    TogiCountryCodePicker(
+                        modifier = Modifier
+                            .focusRequester(focusRequester),
+                        pickedCountry = {
+                            defaultCountryCode.value = it.countryPhoneCode
+                            defaultLang = it.countryCode
+                        },
+                        defaultCountry = getLibCountries().single { it.countryCode == defaultLang },
+                        focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
+                        unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
+                        dialogAppBarTextColor = Color.Black,
+                        showCountryFlag = false,
+                        dialogAppBarColor = Color.White,
+                        error = true,//!(phone.value || !validPhoneNumber(state.signUpData.phone) && state.signUpData.phone.isNotEmpty()),
+                        text = state.signUpData.phone,
+                        onValueChange = { it ->
+                            if (it.length <= maxEmailChar) {
+                                phone.value = false
+                                signUpViewModel.onEvent(
+                                    SignUpUIEvent.OnPhoneNumberChanged(
+                                        it
+                                    )
+                                )
+                            }
+                        },
+                        readOnly = false,
+                        cursorColor = Color.Black,
+                        placeHolder = {
+                            Text(
+                                text = stringResource(id = R.string.your_phone_number),
+                                fontSize = dimensionResource(
+                                    id =
+                                    R.dimen.txt_size_12
+                                ).value.sp,
+                                textAlign = TextAlign.Center,
+                                color = MaterialTheme.appColors.textField.label
+                            )
+                        },
+                        content = {
+                        },
+                        textStyle = TextStyle(
+                            textAlign = TextAlign.Start,
+                            color = Color.Black
+                        )
+                    )
+                }
+
+
+                /*AppOutlineTextField(
                     value = state.signUpData.phone,
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -135,7 +210,7 @@ fun LoginScreen(
                         keyboardController?.hide()
                     }),
                     visualTransformation = MaskTransformation(),
-                )
+                )*/
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
 
                 AppButton(
@@ -147,13 +222,13 @@ fun LoginScreen(
                         } else {
                             phone.value = false
                             signUpViewModel.onEvent(
-                                SignUpUIEvent.OnCountryCode(getDefaultPhoneCode(context))
+                                SignUpUIEvent.OnCountryCode(defaultCountryCode.value)
                             )
                             signUpViewModel.onEvent(
                                 SignUpUIEvent.OnVerifyNumber
                             )
                         }
-                     },
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(dimensionResource(id = R.dimen.size_56dp)),

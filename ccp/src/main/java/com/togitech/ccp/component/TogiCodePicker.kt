@@ -25,7 +25,6 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -48,6 +47,7 @@ class TogiCodePicker {
         padding: Dp = 15.dp,
         defaultSelectedCountry: CountryData = getLibCountries().first(),
         showCountryCode: Boolean = true,
+        showCountryFlag: Boolean = true,
         pickedCountry: (CountryData) -> Unit,
         dialogAppBarColor: Color = MaterialTheme.colors.primary,
         dialogAppBarTextColor: Color = Color.White,
@@ -67,26 +67,36 @@ class TogiCodePicker {
                     interactionSource = interactionSource,
                     indication = null
                 ) { isOpenDialog = true },
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
-                    modifier = modifier.width(24.dp),
-                    painter = painterResource(
-                        id = getFlags(
-                            isPickCountry.countryCode
-                        )
-                    ), contentDescription = null
-                )
+                if (showCountryFlag) {
+                    Image(
+                        modifier = modifier.width(24.dp),
+                        painter = painterResource(
+                            id = getFlags(
+                                isPickCountry.countryCode
+                            )
+                        ), contentDescription = null
+                    )
+                }
                 if (showCountryCode) {
                     Text(
                         text = isPickCountry.countryPhoneCode,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(start = 6.dp)
+                        modifier = Modifier.padding(start = 6.dp),
+                        color = Color.Black
                     )
-                    Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = null)
+                    if (!showCountryFlag) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowDropDown,
+                            contentDescription = null,
+                            tint = Color.Black
+                        )
+                    }
                 }
             }
         }

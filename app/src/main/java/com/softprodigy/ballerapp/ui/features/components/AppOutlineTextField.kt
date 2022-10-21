@@ -3,27 +3,13 @@ package com.softprodigy.ballerapp.ui.features.components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldColors
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
@@ -113,7 +99,7 @@ fun AppOutlineTextField(
                     .padding(4.dp)
                     .fillMaxWidth(0.95f),
 
-            )
+                )
         }
     }
 }
@@ -186,8 +172,9 @@ fun EditFields(
     errorMessage: String = "",
     enabled: Boolean = false,
     modifier: Modifier = Modifier,
+    textStyle: TextStyle = TextStyle(textAlign = TextAlign.End, color = ColorBWBlack),
     trailingIcon: @Composable (() -> Unit)? = null,
-    placeholder: @Composable (() -> Unit)?=null
+    placeholder: @Composable (() -> Unit)? = null
 ) {
     val customTextSelectionColors = TextSelectionColors(
         handleColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
@@ -220,19 +207,19 @@ fun EditFields(
                         unfocusedBorderColor = Color.Transparent,
                         cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                     ),
-                    textStyle = TextStyle(textAlign = TextAlign.End,color = ColorBWBlack),
+                    textStyle = textStyle,
                     singleLine = true,
                     keyboardActions = keyboardActions,
                     keyboardOptions = keyboardOptions,
                     readOnly = enabled,
-                    trailingIcon = trailingIcon ,
-                    placeholder=placeholder
+                    trailingIcon = trailingIcon,
+                    placeholder = placeholder
                 )
             }
         }
 
         if (isError) {
-            androidx.compose.material.Text(
+            Text(
                 text = errorMessage,
                 color = MaterialTheme.colors.error,
                 style = MaterialTheme.typography.caption,
@@ -258,10 +245,10 @@ fun EditProfileFields(
     readOnly: Boolean = false,
     modifier: Modifier = Modifier,
     trailingIcon: @Composable (() -> Unit)? = null,
-    placeholder: @Composable (() -> Unit)?=null,
+    placeholder: @Composable (() -> Unit)? = null,
     enabled: Boolean = true,
     fontWeight: FontWeight = FontWeight.W400
-    ) {
+) {
     val customTextSelectionColors = TextSelectionColors(
         handleColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
         backgroundColor = Color.Transparent
@@ -294,13 +281,17 @@ fun EditProfileFields(
                         cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                         disabledBorderColor = Color.Transparent
                     ),
-                    textStyle = TextStyle(textAlign = TextAlign.End,color = ColorBWBlack, fontWeight =fontWeight),
+                    textStyle = TextStyle(
+                        textAlign = TextAlign.End,
+                        color = ColorBWBlack,
+                        fontWeight = fontWeight
+                    ),
                     singleLine = true,
                     keyboardActions = keyboardActions,
                     keyboardOptions = keyboardOptions,
                     readOnly = readOnly,
-                    trailingIcon = trailingIcon ,
-                    placeholder=placeholder,
+                    trailingIcon = trailingIcon,
+                    placeholder = placeholder,
                     enabled = enabled,
                 )
             }

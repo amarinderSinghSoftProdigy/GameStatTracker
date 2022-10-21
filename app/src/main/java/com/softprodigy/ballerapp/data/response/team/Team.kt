@@ -3,6 +3,7 @@ package com.softprodigy.ballerapp.data.response.team
 import com.google.gson.annotations.SerializedName
 import com.softprodigy.ballerapp.data.request.Address
 import com.softprodigy.ballerapp.data.request.Location
+import com.softprodigy.ballerapp.data.response.SwapUser
 
 data class TeamParent(
     @SerializedName("_id")
@@ -26,6 +27,10 @@ data class Team(
     val name: String = "",
     @SerializedName("playerDetails")
     val players: ArrayList<Player> = ArrayList(),
+    @SerializedName("supportingCastDetails")
+    val supportingCastDetails: ArrayList<SwapUser> = ArrayList(),
+    @SerializedName("pendingAndDeclinedMembers")
+    val pendingAndDeclinedMembers: ArrayList<SwapUser> = ArrayList(),
     @SerializedName("leaderboardPoints")
     val teamLeaderBoard: ArrayList<TeamLeaderBoard> = ArrayList(),
     @SerializedName("teamChatGroups")

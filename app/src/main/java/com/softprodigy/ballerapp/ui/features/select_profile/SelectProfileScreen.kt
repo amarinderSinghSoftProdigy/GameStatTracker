@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
@@ -68,7 +70,7 @@ fun SelectProfileScreen(vm: SignUpViewModel, onNextClick: () -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxSize()
         ) {
-
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
             AppText(
                 text = stringResource(id = R.string.select_profile),
                 style = MaterialTheme.typography.h3,
@@ -79,18 +81,20 @@ fun SelectProfileScreen(vm: SignUpViewModel, onNextClick: () -> Unit) {
 
             Column(
                 modifier = Modifier
-                    .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
+                    .padding(horizontal = dimensionResource(id = R.dimen.size_16dp), vertical =dimensionResource(id = R.dimen.size_16dp) )
             ) {
-                state.profileList.forEachIndexed { index, item ->
-                    SelectProfileItems(
-                        size = state.profileList.size,
-                        index = index,
-                        users = item,
-                        isSelected = id.value._Id == item._Id,
-                        onConfirmClick = {
-                            id.value = item
-                        },
-                    )
+                LazyColumn(modifier = Modifier.height(dimensionResource(id = R.dimen.size_200dp))){
+                    itemsIndexed(state.profileList){ index, item ->
+                        SelectProfileItems(
+                            size = state.profileList.size,
+                            index = index,
+                            users = item,
+                            isSelected = id.value._Id == item._Id,
+                            onConfirmClick = {
+                                id.value = item
+                            },
+                        )
+                    }
                 }
             }
         }

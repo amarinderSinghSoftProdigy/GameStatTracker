@@ -2,19 +2,18 @@ package com.softprodigy.ballerapp.ui.features.profile
 
 
 import android.app.DatePickerDialog
+import android.net.Uri
 import android.widget.DatePicker
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -26,15 +25,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -46,20 +46,19 @@ import androidx.compose.ui.unit.toSize
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
-import com.softprodigy.ballerapp.common.apiToUIDateFormat2
-import com.softprodigy.ballerapp.common.isValidEmail
-import com.softprodigy.ballerapp.common.validName
-import com.softprodigy.ballerapp.common.validPhoneNumber
+import com.softprodigy.ballerapp.common.*
 import com.softprodigy.ballerapp.data.response.CheckBoxData
 import com.softprodigy.ballerapp.data.response.TeamDetails
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.appColors
 import com.softprodigy.ballerapp.ui.theme.error
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ProfileEditScreen(
     vm: ProfileViewModel = hiltViewModel(),
@@ -70,6 +69,29 @@ fun ProfileEditScreen(
     val maxChar = 30
     val maxEmailChar = 45
     val maxPhoneNumber = 13
+    var imageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+
+    val imagePicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri ->
+            imageUri = uri
+            uri?.let {
+                vm.onEvent(ProfileEvent.OnProfileImageSelected(imageUri.toString()))
+            }
+        }
+    )
+
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture(),
+        onResult = { success ->
+            if (success)
+                vm.onEvent(ProfileEvent.OnProfileImageSelected(imageUri.toString()))
+        }
+    )
+    val modalBottomSheetState =
+        rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
 
     val genderList =
@@ -117,7 +139,7 @@ fun ProfileEditScreen(
     remember {
         vm.onEvent(ProfileEvent.GetProfile)
     }
-
+    val scope = rememberCoroutineScope()
     LaunchedEffect(key1 = Unit) {
         vm.channel.collect {
             when (it) {
@@ -129,6 +151,11 @@ fun ProfileEditScreen(
                     ).show()
                     onUpdateSuccess.invoke()
                 }
+
+                is ProfileChannel.OnProfileImageUpload -> {
+                    vm.onEvent(ProfileEvent.OnSaveUserDetailsClick)
+                }
+
                 is ProfileChannel.ShowToast -> {
                     Toast.makeText(
                         context,
@@ -137,97 +164,258 @@ fun ProfileEditScreen(
                     ).show()
                 }
             }
-
         }
     }
+    ModalBottomSheetLayout(
+        sheetContent = {
 
-    Box(Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+            Spacer(modifier = Modifier.height(1.dp))
 
-            UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = dimensionResource(id = R.dimen.size_16dp)),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_32dp)))
+            ImagePickerBottomSheet(
+                title = stringResource(id = R.string.select_image_from),
+                onCameraClick = {
+                    val uri = ComposeFileProvider.getImageUri(context)
+                    imageUri = uri
+                    cameraLauncher.launch(uri)
+                },
+                onGalleryClick = {
+                    imagePicker.launch("image/*")
+                },
+                onDismiss = {
+                    scope.launch { modalBottomSheetState.animateTo(ModalBottomSheetValue.Hidden) }
+                })
+        },
+        sheetState = modalBottomSheetState,
+        sheetShape = RoundedCornerShape(
+            topStart = dimensionResource(id = R.dimen.size_16dp),
+            topEnd = dimensionResource(id = R.dimen.size_16dp)
+        ),
+        sheetBackgroundColor = colorResource(id = R.color.white),
+    ) {
+        Box(Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
 
-                    CoilImage(
-                        src = BuildConfig.IMAGE_SERVER + state.user.profileImage,
+                UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
+                    Column(
                         modifier = Modifier
-                            .size(dimensionResource(id = R.dimen.size_200dp))
-                            .clip(CircleShape),
-                        isCrossFadeEnabled = false,
-                        onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
-                        onError = { Placeholder(R.drawable.ic_user_profile_icon) }
-                    )
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_48dp)))
-                    DividerCommon()
-                    EditProfileFields(
-                        state.user.firstName,
-                        onValueChange = {
-                            if (it.length <= maxChar)
-                                vm.onEvent(ProfileEvent.OnFirstNameChange(it))
-                        },
-                        stringResource(id = R.string.first_name),
-                        errorMessage = stringResource(id = R.string.valid_first_name),
-                        keyboardOptions = KeyboardOptions(
-                            imeAction = ImeAction.Next,
-                            capitalization = KeyboardCapitalization.Sentences
-                        ),
-                        isError = !validName(state.user.firstName) && state.user.firstName.isNotEmpty() || state.user.firstName.length > 30,
+                            .fillMaxSize()
+                            .padding(top = dimensionResource(id = R.dimen.size_16dp)),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_32dp)))
 
+                        Box(contentAlignment = Alignment.TopEnd) {
+                            CoilImage(
+                                src = if (state.selectedImage.isEmpty()) BuildConfig.IMAGE_SERVER + state.user.profileImage else Uri.parse(
+                                    state.selectedImage
+                                ),
+                                modifier = Modifier
+                                    .size(dimensionResource(id = R.dimen.size_200dp))
+                                    .clip(CircleShape)
+                                    .align(Alignment.Center),
+                                isCrossFadeEnabled = false,
+                                onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
+                                onError = { Placeholder(R.drawable.ic_user_profile_icon) },
+                                contentScale = ContentScale.Fit
+                            )
+                            Box(modifier = Modifier
+                                .size(dimensionResource(id = R.dimen.size_50dp))
+                                .padding(
+                                    end = dimensionResource(id = R.dimen.size_20dp),
+                                    top = dimensionResource(
+                                        id = R.dimen.size_20dp
+                                    )
+                                )
+                                .background(
+                                    color = MaterialTheme.appColors.material.primaryVariant,
+                                    shape = CircleShape
+                                )
+                                .clickable {
+                                    scope.launch {
+                                        modalBottomSheetState.animateTo(
+                                            ModalBottomSheetValue.Expanded
+                                        )
+                                    }
+                                }) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_edit),
+                                    contentDescription = "",
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_48dp)))
+                        DividerCommon()
+                        EditProfileFields(
+                            state.user.firstName,
+                            onValueChange = {
+                                if (it.length <= maxChar)
+                                    vm.onEvent(ProfileEvent.OnFirstNameChange(it))
+                            },
+                            stringResource(id = R.string.first_name),
+                            errorMessage = stringResource(id = R.string.valid_first_name),
+                            keyboardOptions = KeyboardOptions(
+                                imeAction = ImeAction.Next,
+                                capitalization = KeyboardCapitalization.Sentences
+                            ),
+                            isError = !validName(state.user.firstName) && state.user.firstName.isNotEmpty() || state.user.firstName.length > 30,
+
+                            )
+                        DividerCommon()
+                        EditProfileFields(
+                            state.user.lastName,
+                            onValueChange = {
+                                if (it.length <= maxChar)
+                                    vm.onEvent(ProfileEvent.OnLastNameChange(it))
+                            },
+                            stringResource(id = R.string.last_name),
+                            errorMessage = stringResource(id = R.string.valid_last_name),
+                            keyboardOptions = KeyboardOptions(
+                                imeAction = ImeAction.Next,
+                                capitalization = KeyboardCapitalization.Sentences,
+                                keyboardType = KeyboardType.Email
+                            ),
+                            isError = !validName(state.user.lastName) && state.user.lastName.isNotEmpty() || state.user.lastName.length > 30,
                         )
-                    DividerCommon()
-                    EditProfileFields(
-                        state.user.lastName,
-                        onValueChange = {
-                            if (it.length <= maxChar)
-                                vm.onEvent(ProfileEvent.OnLastNameChange(it))
-                        },
-                        stringResource(id = R.string.last_name),
-                        errorMessage = stringResource(id = R.string.valid_last_name),
-                        keyboardOptions = KeyboardOptions(
-                            imeAction = ImeAction.Next,
-                            capitalization = KeyboardCapitalization.Sentences,
-                            keyboardType = KeyboardType.Email
-                        ),
-                        isError = !validName(state.user.lastName) && state.user.lastName.isNotEmpty() || state.user.lastName.length > 30,
-                    )
-                    DividerCommon()
-                    EditProfileFields(
-                        state.user.email,
-                        onValueChange = {
-                            if (it.length <= maxEmailChar)
-                                vm.onEvent(ProfileEvent.OnEmailChange(it))
+                        DividerCommon()
+                        EditProfileFields(
+                            state.user.email,
+                            onValueChange = {
+                                if (it.length <= maxEmailChar)
+                                    vm.onEvent(ProfileEvent.OnEmailChange(it))
 
-                        },
-                        stringResource(id = R.string.email),
-                        isError = (!state.user.email.isValidEmail() && state.user.email.isNotEmpty()),
-                        errorMessage = stringResource(id = R.string.enter_valid_email),
-                        keyboardOptions = KeyboardOptions(
-                            imeAction = ImeAction.Next,
-                            keyboardType = KeyboardType.Email
-                        ),
-                        readOnly = true
-                    )
-                    DividerCommon()
-                    EditProfileFields(
-                        state.user.phone,
-                        onValueChange = {
-                            if (it.length <= maxPhoneNumber)
-                                vm.onEvent(ProfileEvent.OnPhoneChange(it))
+                            },
+                            stringResource(id = R.string.email),
+                            isError = (!state.user.email.isValidEmail() && state.user.email.isNotEmpty()),
+                            errorMessage = stringResource(id = R.string.enter_valid_email),
+                            keyboardOptions = KeyboardOptions(
+                                imeAction = ImeAction.Next,
+                                keyboardType = KeyboardType.Email
+                            ),
+                            readOnly = true
+                        )
+                        DividerCommon()
+                        EditProfileFields(
+                            state.user.phone,
+                            onValueChange = {
+                                if (it.length <= maxPhoneNumber)
+                                    vm.onEvent(ProfileEvent.OnPhoneChange(it))
 
+                            },
+                            stringResource(id = R.string.phone_num),
+                            isError = validPhoneNumber(state.user.phone),
+                            errorMessage = stringResource(id = R.string.valid_phone_number),
+                            keyboardOptions = KeyboardOptions(
+                                imeAction = ImeAction.Next,
+                                capitalization = KeyboardCapitalization.Sentences,
+                                keyboardType = KeyboardType.Number
+                            ),
+                        )
+                        DividerCommon()
+                        EditProfileFields(
+                            data = if (state.user.birthdate != null) apiToUIDateFormat2(state.user.birthdate) else "",
+                            onValueChange = {
+                                vm.onEvent(ProfileEvent.OnBirthdayChange(it))
+
+                            },
+                            readOnly = true,
+                            head = stringResource(id = R.string.birthday),
+                            errorMessage = stringResource(id = R.string.valid_last_name),
+                            keyboardOptions = KeyboardOptions(
+                                imeAction = ImeAction.Next,
+                                capitalization = KeyboardCapitalization.Sentences
+                            ), enabled = false,
+                            modifier = Modifier.clickable {
+                                mDatePickerDialog.show()
+                            }
+                        )
+                        DividerCommon()
+
+                        EditProfileFields(
+                            state.user.userDetails.classOf,
+                            onValueChange = {
+                                if (it.length <= maxChar)
+                                    vm.onEvent(ProfileEvent.OnClassChange(it))
+
+                            },
+                            stringResource(id = R.string.classof),
+                            errorMessage = stringResource(id = R.string.valid_last_name),
+                            keyboardOptions = KeyboardOptions(
+                                imeAction = ImeAction.Next,
+                                capitalization = KeyboardCapitalization.Sentences
+                            ),
+                        )
+                        DividerCommon()
+                    }
+                }
+
+                AppText(
+                    text = stringResource(id = R.string.positons),
+                    style = MaterialTheme.typography.h2,
+                    color = ColorBWBlack,
+                    modifier = Modifier
+                        .padding(start = dimensionResource(id = R.dimen.size_16dp))
+                        .fillMaxWidth()
+                )
+
+                UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
+                    Row(modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp))) {
+                        state.positionPlayed.forEachIndexed { index, item ->
+                            CheckBoxItem(item = item, onCheckedChange = {
+                                vm.onEvent(ProfileEvent.OnPositionPlayedChanges(index, it))
+                            })
+                        }
+                    }
+                }
+
+                AppText(
+                    text = stringResource(id = R.string.teams_label),
+                    style = MaterialTheme.typography.h2,
+                    color = ColorBWBlack,
+                    modifier = Modifier
+                        .padding(start = dimensionResource(id = R.dimen.size_16dp))
+                        .fillMaxWidth(),
+                )
+                UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
+                    Teams(
+                        teams = state.user.teamDetails,
+                        onLeaveTeamClick = { index, teamId ->
+                            vm.onEvent(ProfileEvent.OnLeaveTeamCLick(index, teamId))
                         },
-                        stringResource(id = R.string.phone_num),
-                        isError = validPhoneNumber(state.user.phone),
-                        errorMessage = stringResource(id = R.string.valid_phone_number),
+                        onPositionChange = { index, position ->
+                            vm.onEvent(ProfileEvent.OnPositionChange(index, position))
+                        },
+                        onRoleChange = { index, role ->
+                            vm.onEvent(ProfileEvent.OnRoleChange(index, role))
+                        },
+                        onJerseyNumberChange = { index, number ->
+                            vm.onEvent(ProfileEvent.OnJerseyChange(index, number))
+                        }
+                    )
+                }
+
+                AppText(
+                    text = stringResource(id = R.string.jersey_pref),
+                    style = MaterialTheme.typography.h2,
+                    color = ColorBWBlack,
+                    modifier = Modifier
+                        .padding(start = dimensionResource(id = R.dimen.size_16dp))
+                        .fillMaxWidth()
+                )
+                UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
+                    EditProfileFields(
+                        data =
+                        state.jerseyNumerPerferences,
+                        onValueChange = {
+                            if (it.length <= 5)
+                                vm.onEvent(ProfileEvent.OnPrefJerseyNoChange(it))
+                        },
+                        stringResource(id = R.string.jersey_number),
+                        errorMessage = stringResource(id = R.string.valid_first_name),
                         keyboardOptions = KeyboardOptions(
                             imeAction = ImeAction.Next,
                             capitalization = KeyboardCapitalization.Sentences,
@@ -235,266 +423,159 @@ fun ProfileEditScreen(
                         ),
                     )
                     DividerCommon()
-                    EditProfileFields(
-                        data = if (state.user.birthdate != null) apiToUIDateFormat2(state.user.birthdate) else "",
-                        onValueChange = {
-                            vm.onEvent(ProfileEvent.OnBirthdayChange(it))
 
-                        },
-                        readOnly = true,
-                        head = stringResource(id = R.string.birthday),
-                        errorMessage = stringResource(id = R.string.valid_last_name),
-                        keyboardOptions = KeyboardOptions(
-                            imeAction = ImeAction.Next,
-                            capitalization = KeyboardCapitalization.Sentences
-                        ), enabled = false,
-                        modifier = Modifier.clickable {
-                            mDatePickerDialog.show()
+                    Column {
+                        EditProfileFields(
+                            state.user.gender,
+                            onValueChange = {
+                                vm.onEvent(ProfileEvent.OnGenderChange(it))
+                            },
+                            stringResource(id = R.string.gender),
+                            errorMessage = stringResource(id = R.string.valid_first_name),
+                            keyboardOptions = KeyboardOptions(
+                                imeAction = ImeAction.Next,
+                                capitalization = KeyboardCapitalization.Sentences
+                            ),
+                            modifier = Modifier
+                                .onGloballyPositioned {
+                                    textFieldSize = it.size.toSize()
+                                }
+                                .clickable { expanded = !expanded },
+                            readOnly = true,
+                            enabled = false,
+                        )
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false },
+                            modifier = Modifier
+                                .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+                                .background(MaterialTheme.colors.background)
+                        ) {
+                            genderList.forEach { label ->
+                                DropdownMenuItem(onClick = {
+                                    vm.onEvent(ProfileEvent.OnGenderChange(label))
+
+                                    expanded = false
+                                }) {
+                                    androidx.compose.material.Text(
+                                        text = label,
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+                            }
                         }
-                    )
+                    }
                     DividerCommon()
 
                     EditProfileFields(
-                        state.user.userDetails.classOf,
+                        state.shirtSize,
                         onValueChange = {
-                            if (it.length <= maxChar)
-                                vm.onEvent(ProfileEvent.OnClassChange(it))
+                            if (it.length <= 3)
+                                vm.onEvent(ProfileEvent.OnShirtChange(it))
 
                         },
-                        stringResource(id = R.string.classof),
-                        errorMessage = stringResource(id = R.string.valid_last_name),
-                        keyboardOptions = KeyboardOptions(
-                            imeAction = ImeAction.Next,
-                            capitalization = KeyboardCapitalization.Sentences
-                        ),
-                    )
-                    DividerCommon()
-                }
-            }
-
-            AppText(
-                text = stringResource(id = R.string.positons),
-                style = MaterialTheme.typography.h2,
-                color = ColorBWBlack,
-                modifier = Modifier
-                    .padding(start = dimensionResource(id = R.dimen.size_16dp))
-                    .fillMaxWidth()
-            )
-
-            UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
-                Row(modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp))) {
-                    state.positionPlayed.forEachIndexed { index, item ->
-                        CheckBoxItem(item = item, onCheckedChange = {
-                            vm.onEvent(ProfileEvent.OnPositionPlayedChanges(index, it))
-                        })
-                    }
-                }
-            }
-
-            AppText(
-                text = stringResource(id = R.string.teams_label),
-                style = MaterialTheme.typography.h2,
-                color = ColorBWBlack,
-                modifier = Modifier
-                    .padding(start = dimensionResource(id = R.dimen.size_16dp))
-                    .fillMaxWidth(),
-            )
-            UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
-                Teams(
-                    teams = state.user.teamDetails,
-                    onLeaveTeamClick = { index, teamId ->
-                        vm.onEvent(ProfileEvent.OnLeaveTeamCLick(index, teamId))
-                    },
-                    onPositionChange = { index, position ->
-                        vm.onEvent(ProfileEvent.OnPositionChange(index, position))
-                    },
-                    onRoleChange = { index, role ->
-                        vm.onEvent(ProfileEvent.OnRoleChange(index, role))
-                    },
-                    onJerseyNumberChange = { index, number ->
-                        vm.onEvent(ProfileEvent.OnJerseyChange(index, number))
-                    }
-                )
-            }
-
-            AppText(
-                text = stringResource(id = R.string.jersey_pref),
-                style = MaterialTheme.typography.h2,
-                color = ColorBWBlack,
-                modifier = Modifier
-                    .padding(start = dimensionResource(id = R.dimen.size_16dp))
-                    .fillMaxWidth()
-            )
-            UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
-                EditProfileFields(
-                    data =
-                    state.jerseyNumerPerferences,
-                    onValueChange = {
-                        if (it.length <= 5)
-                            vm.onEvent(ProfileEvent.OnPrefJerseyNoChange(it))
-                    },
-                    stringResource(id = R.string.jersey_number),
-                    errorMessage = stringResource(id = R.string.valid_first_name),
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                        capitalization = KeyboardCapitalization.Sentences,
-                        keyboardType = KeyboardType.Number
-                    ),
-                )
-                DividerCommon()
-
-                Column {
-                    EditProfileFields(
-                        state.user.gender,
-                        onValueChange = {
-                            vm.onEvent(ProfileEvent.OnGenderChange(it))
-                        },
-                        stringResource(id = R.string.gender),
+                        stringResource(id = R.string.shirt_size),
                         errorMessage = stringResource(id = R.string.valid_first_name),
                         keyboardOptions = KeyboardOptions(
                             imeAction = ImeAction.Next,
                             capitalization = KeyboardCapitalization.Sentences
                         ),
-                        modifier = Modifier
-                            .onGloballyPositioned {
-                                textFieldSize = it.size.toSize()
-                            }
-                            .clickable { expanded = !expanded },
-                        readOnly = true,
-                        enabled = false,
                     )
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false },
-                        modifier = Modifier
-                            .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
-                            .background(MaterialTheme.colors.background)
-                    ) {
-                        genderList.forEach { label ->
-                            DropdownMenuItem(onClick = {
-                                vm.onEvent(ProfileEvent.OnGenderChange(label))
+                    DividerCommon()
 
-                                expanded = false
-                            }) {
-                                androidx.compose.material.Text(
-                                    text = label,
-                                    textAlign = TextAlign.Center
-                                )
-                            }
-                        }
-                    }
+                    EditProfileFields(
+                        state.waistSize,
+                        onValueChange = {
+                            if (it.length <= 3)
+                                vm.onEvent(ProfileEvent.OnWaistChange(it))
+
+                        },
+                        stringResource(id = R.string.waist_size),
+                        errorMessage = stringResource(id = R.string.valid_first_name),
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                            capitalization = KeyboardCapitalization.Sentences,
+                            keyboardType = KeyboardType.Number
+                        ),
+                    )
                 }
-                DividerCommon()
-
-                EditProfileFields(
-                    state.shirtSize,
-                    onValueChange = {
-                        if (it.length <= 3)
-                            vm.onEvent(ProfileEvent.OnShirtChange(it))
-
-                    },
-                    stringResource(id = R.string.shirt_size),
-                    errorMessage = stringResource(id = R.string.valid_first_name),
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                        capitalization = KeyboardCapitalization.Sentences
-                    ),
+                AppText(
+                    text = stringResource(id = R.string.fun_facts),
+                    style = MaterialTheme.typography.h2,
+                    color = ColorBWBlack,
+                    modifier = Modifier
+                        .padding(start = dimensionResource(id = R.dimen.size_16dp))
+                        .fillMaxWidth(),
                 )
-                DividerCommon()
-
-                EditProfileFields(
-                    state.waistSize,
-                    onValueChange = {
-                        if (it.length <= 3)
-                            vm.onEvent(ProfileEvent.OnWaistChange(it))
-
-                    },
-                    stringResource(id = R.string.waist_size),
-                    errorMessage = stringResource(id = R.string.valid_first_name),
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                        capitalization = KeyboardCapitalization.Sentences,
-                        keyboardType = KeyboardType.Number
-                    ),
-                )
-            }
-            AppText(
-                text = stringResource(id = R.string.fun_facts),
-                style = MaterialTheme.typography.h2,
-                color = ColorBWBlack,
-                modifier = Modifier
-                    .padding(start = dimensionResource(id = R.dimen.size_16dp))
-                    .fillMaxWidth(),
-            )
-            UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
+                UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
 
 
-                EditProfileFields(
-                    state.favCollegeTeam,
-                    onValueChange = {
-                        if (it.length <= maxChar)
-                            vm.onEvent(ProfileEvent.OnCollegeTeamChange(it))
-                    },
-                    stringResource(id = R.string.favorite_college_team),
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                        capitalization = KeyboardCapitalization.Sentences,
-                        keyboardType = KeyboardType.Email
-                    ),
-                )
-                DividerCommon()
+                    EditProfileFields(
+                        state.favCollegeTeam,
+                        onValueChange = {
+                            if (it.length <= maxChar)
+                                vm.onEvent(ProfileEvent.OnCollegeTeamChange(it))
+                        },
+                        stringResource(id = R.string.favorite_college_team),
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                            capitalization = KeyboardCapitalization.Sentences,
+                            keyboardType = KeyboardType.Email
+                        ),
+                    )
+                    DividerCommon()
 
-                EditProfileFields(
-                    state.favProfessionalTeam,
-                    onValueChange = {
-                        if (it.length <= maxChar)
-                            vm.onEvent(ProfileEvent.OnNbaTeamChange(it))
-                    },
-                    stringResource(id = R.string.favorite_proff_team),
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                        capitalization = KeyboardCapitalization.Sentences,
-                        keyboardType = KeyboardType.Email
-                    ),
-                )
-                DividerCommon()
+                    EditProfileFields(
+                        state.favProfessionalTeam,
+                        onValueChange = {
+                            if (it.length <= maxChar)
+                                vm.onEvent(ProfileEvent.OnNbaTeamChange(it))
+                        },
+                        stringResource(id = R.string.favorite_proff_team),
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                            capitalization = KeyboardCapitalization.Sentences,
+                            keyboardType = KeyboardType.Email
+                        ),
+                    )
+                    DividerCommon()
 
-                EditProfileFields(
-                    state.favActivePlayer,
-                    onValueChange = {
-                        if (it.length <= maxChar)
-                            vm.onEvent(ProfileEvent.OnActivePlayerChange(it))
+                    EditProfileFields(
+                        state.favActivePlayer,
+                        onValueChange = {
+                            if (it.length <= maxChar)
+                                vm.onEvent(ProfileEvent.OnActivePlayerChange(it))
 
-                    },
-                    stringResource(id = R.string.favorite_active_player),
-                    errorMessage = stringResource(id = R.string.valid_first_name),
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                        capitalization = KeyboardCapitalization.Sentences,
-                        keyboardType = KeyboardType.Email
-                    ),
-                )
-                DividerCommon()
+                        },
+                        stringResource(id = R.string.favorite_active_player),
+                        errorMessage = stringResource(id = R.string.valid_first_name),
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                            capitalization = KeyboardCapitalization.Sentences,
+                            keyboardType = KeyboardType.Email
+                        ),
+                    )
+                    DividerCommon()
 
-                EditProfileFields(
-                    state.favAllTimePlayer,
-                    onValueChange = {
-                        if (it.length <= maxChar)
-                            vm.onEvent(ProfileEvent.OnAllTimeFavChange(it))
+                    EditProfileFields(
+                        state.favAllTimePlayer,
+                        onValueChange = {
+                            if (it.length <= maxChar)
+                                vm.onEvent(ProfileEvent.OnAllTimeFavChange(it))
 
-                    },
-                    stringResource(id = R.string.favoritea_all_time_tlayer),
-                    errorMessage = stringResource(id = R.string.valid_first_name),
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                        capitalization = KeyboardCapitalization.Sentences,
-                        keyboardType = KeyboardType.Email
-                    ),
-                )
-            }
+                        },
+                        stringResource(id = R.string.favoritea_all_time_tlayer),
+                        errorMessage = stringResource(id = R.string.valid_first_name),
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                            capitalization = KeyboardCapitalization.Sentences,
+                            keyboardType = KeyboardType.Email
+                        ),
+                    )
+                }
 
-            AppButton(
-                enabled = true /*validName(state.user.firstName)
+                AppButton(
+                    enabled = true /*validName(state.user.firstName)
                         && validName(state.user.lastName)
                         && state.user.email.isValidEmail()
                         && state.user.phone.isNotEmpty()
@@ -507,34 +588,35 @@ fun ProfileEditScreen(
                         && state.favProfessionalTeam.isNotEmpty()
                         && state.favActivePlayer.isNotEmpty()
                         && state.favAllTimePlayer.isNotEmpty()*/,
-                icon = null,
-                themed = true,
-                onClick = {
-                    vm.onEvent(ProfileEvent.OnSaveUserDetailsClick)
-                },
-                text = stringResource(id = R.string.save),
-                isForceEnableNeeded = true
-            )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
-        }
+                    icon = null,
+                    themed = true,
+                    onClick = {
+                        vm.onEvent(ProfileEvent.ProfileUpload)
+                    },
+                    text = stringResource(id = R.string.save),
+                    isForceEnableNeeded = true
+                )
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
+            }
 
-        if (state.isLoading) {
-            CommonProgressBar()
-        }
+            if (state.isLoading) {
+                CommonProgressBar()
+            }
 
-        if (state.showRemoveFromTeamDialog) {
-            DeleteDialog(
-                item = state.selectedTeamId,
-                message = stringResource(id = R.string.alert_remove_from_team),
-                onDismiss = {
-                    vm.onEvent(ProfileEvent.OnLeaveDialogClick(false))
-                },
-                onDelete = {
-                    if (state.selectedTeamId.isNotEmpty()) {
-                        vm.onEvent(ProfileEvent.OnLeaveConfirmClick(state.selectedTeamId))
+            if (state.showRemoveFromTeamDialog) {
+                DeleteDialog(
+                    item = state.selectedTeamId,
+                    message = stringResource(id = R.string.alert_remove_from_team),
+                    onDismiss = {
+                        vm.onEvent(ProfileEvent.OnLeaveDialogClick(false))
+                    },
+                    onDelete = {
+                        if (state.selectedTeamId.isNotEmpty()) {
+                            vm.onEvent(ProfileEvent.OnLeaveConfirmClick(state.selectedTeamId))
+                        }
                     }
-                }
-            )
+                )
+            }
         }
     }
 

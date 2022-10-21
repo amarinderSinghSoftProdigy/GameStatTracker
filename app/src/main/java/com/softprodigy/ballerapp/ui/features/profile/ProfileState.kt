@@ -33,5 +33,8 @@ data class ProfileState(
     val selectedTeamId: String = "",
     val selectedDocKey: String = "",
     val selectedTeamIndex: Int? = null,
-    val payData: ArrayList<PayResponse> = arrayListOf()
-    )
+    val payData: ArrayList<PayResponse> = arrayListOf(),
+    val searchGameStaff: String = "",
+    val searchGameStaffList: List<GetSearchStaff> = emptyList(),
+    val selectedImage: String = ""
+)

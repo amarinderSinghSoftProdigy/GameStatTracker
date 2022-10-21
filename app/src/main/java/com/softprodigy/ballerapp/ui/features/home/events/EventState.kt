@@ -26,9 +26,11 @@ data class EventState(
     val eventDivision: List<DivisionData> = mutableListOf(),
     val opportunitiesList: List<OpportunitiesItem> = mutableListOf(),
     val opportunitiesDetail: OpportunitiesDetail = OpportunitiesDetail(),
+    val location: com.softprodigy.ballerapp.data.request.Location = com.softprodigy.ballerapp.data.request.Location(),
     val divisionData: DivisionData = DivisionData(),
     val team: Team = Team(),
     val registerRequest: RegisterRequest = RegisterRequest(),
+    val registerGameStaff: GameStaffRegisterRequest = GameStaffRegisterRequest(),
     val declineReason: String = "",
     val myLeaguesList: ArrayList<MyLeagueResponse> = arrayListOf(),
     val divisions: ArrayList<DivisionResponse> = arrayListOf(),
@@ -56,4 +58,6 @@ data class EventState(
     val selectedFormat: String = "",
     val scheduleResponse: List<ScheduleResponse> = mutableListOf(),
     val price: String? = null,
+    val roles: List<UserRoles> = mutableListOf(),
+    val selectedRole:String = ""
 )

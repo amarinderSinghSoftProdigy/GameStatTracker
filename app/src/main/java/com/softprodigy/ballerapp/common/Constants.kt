@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import com.softprodigy.ballerapp.ui.theme.Yellow700
 
 object AppConstants {
+    const val TYPE_ACCEPT_INVITATION = "acceptInvitation"
     val REQUEST_CONTACT_CODE: Int = 1122
     const val ROLE = "role"
     const val TEAM_LOGO: String = "teamLogo"
@@ -54,6 +55,7 @@ object Route {
     const val SELECT_USER_TYPE = "selectUserTypeScreen"
     const val TEAM_SETUP_SCREEN = "teamSetupScreen"
     const val ADD_PLAYER_SCREEN = "addPlayerScreen"
+    const val ADD_MY_PLAYER_SCREEN = "addMyPlayerScreen"
     const val PROFILE_SETUP_SCREEN = "profileSetupScreen"
     const val ROASTER_SCREEN = "roasterScreen"
     const val MANAGED_TEAM_SCREEN = "managedTeamScreen"
@@ -64,6 +66,7 @@ object Route {
     const val ADD_PROFILE_SCREEN = "addProfileScreen"
     const val PROFILE_EDIT_SCREEN = "profileeditscreen"
     const val INVITATION_SCREEN = "invitationScreen"
+    const val GAME_STAFF_SCREEN = "gameStaffScreen"
     const val NEW_EVENT = "newEvent"
     const val MY_LEAGUE = "myLeague"
     const val MY_CHAT_DETAIL = "myChatDetail"
@@ -130,7 +133,7 @@ object ApiConstants {
     const val GET_TEAM_INVITED = "v1/team/getInvitedTeamMembers"
     const val GET_USER_DETAILS = "v1/auth/getUserProfile"
     const val GET_HOME_PAGE_DETAILS = "v1/coach/event/getHomePageDetails"
-    const val GET_USER_FULL_DETAILS = "v1/userDetails"
+    const val GET_USER_FULL_DETAILS = "v1/userDetails/"
     const val UPDATE_USER_FULL_DETAILS = "v1/userDetails"
     const val EVENT_GET_DIVISIONS = "v1/division/getAllDivisions"
     const val EVENT_TEAM_REGISTRATION = "v1/event/team/registration"
@@ -146,6 +149,9 @@ object ApiConstants {
     const val GET_ALL_OPPORTUNITIES = "v1/event/getOpportunitiesEvents"
     const val GET_OPPORTUNITY_ID = "v1/event/getEventRegisterById"
     const val GET_FILTERS = "v1/event/getFilterPreferences"
+
+    const val GET_SEARCH_GAME_STAFF = "v1/staff/searchGameStaff"
+    const val REGISTER_GAME_STAFF = "v1/staff/registerGameStaff"
 
     const val first_name = "first_name"
     const val last_name = "lastName"

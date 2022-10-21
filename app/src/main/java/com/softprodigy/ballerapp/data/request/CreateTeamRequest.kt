@@ -22,6 +22,9 @@ data class CreateTeamRequest(
 
 data class UpdateTeamRequest(
     @SerializedName("teamID") val teamID: String = "",
+    @SerializedName("userType") val userType: String = "",
+    @SerializedName("profilesSelected") val profilesSelected: Boolean = false,
+    @SerializedName("type") val type: String = "",
     @SerializedName("members") val members: List<Members> = arrayListOf(),
 )
 
@@ -45,6 +48,7 @@ data class UpdateTeamDetailRequest(
 
 
 data class Members(
-    @SerializedName("name") var name: String? = null,
-    @SerializedName("email") var email: String? = null
+    @SerializedName("name") var name: String = "",
+    @SerializedName("mobileNumber") var mobileNumber: String = "", /*need to send profile _id with mobileNumber field in case of invitation from select swap profile dialog */
+    @SerializedName("role") var role: String = "",
 )
