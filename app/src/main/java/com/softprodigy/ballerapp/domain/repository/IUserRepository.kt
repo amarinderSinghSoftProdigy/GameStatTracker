@@ -50,4 +50,6 @@ interface IUserRepository {
 
     suspend fun updateInitialProfileToken(userId: String): ResultWrapper<BaseResponse<String>>
 
+    suspend fun getSearchGameStaff(search: String): ResultWrapper<BaseResponse<List<GetSearchStaff>>>
+
 }

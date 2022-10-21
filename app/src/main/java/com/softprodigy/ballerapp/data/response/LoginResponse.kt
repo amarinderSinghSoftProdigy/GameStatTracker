@@ -1,6 +1,7 @@
 package com.softprodigy.ballerapp.data.response
 
 import com.google.gson.annotations.SerializedName
+
 data class UserInfo(
     @SerializedName("user") val user: User = User(),
     @SerializedName("updateUser") val updateUser: User = User(),

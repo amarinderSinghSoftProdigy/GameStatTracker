@@ -243,86 +243,86 @@ fun HomeScreen(
                             }
                         }
                     }
-                    if (role != UserType.REFEREE.key) {
-                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                        UserFlowBackground(
-                            padding = 0.dp,
-                            color = Color.White
-                        ) {
-                            Box(
-                                Modifier
-                                    .fillMaxWidth()
-                                    /*.clickable {
+                    /* if (role != UserType.REFEREE.key) {*/
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                    UserFlowBackground(
+                        padding = 0.dp,
+                        color = Color.White
+                    ) {
+                        Box(
+                            Modifier
+                                .fillMaxWidth()
+                                /*.clickable {
                                    onInvitationCLick.invoke()
                                }*/
-                                    .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Row(
-                                    Modifier
-                                        .fillMaxSize(),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                ) {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.ic_briefcase),
-                                        contentDescription = "",
-                                        tint = MaterialTheme.appColors.material.primaryVariant,
-                                        modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
-                                    )
-                                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
-                                    Text(
-                                        text = stringResource(id = R.string.opportunities_to_work),
-                                        style = MaterialTheme.typography.h6,
-                                        modifier = Modifier.weight(1f),
-                                    )
-                                }
-                                Text(
-                                    text = homeState.homePageCoachModel.opportunityToWork.toString(),
-                                    fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
-                                    modifier = Modifier.align(Alignment.CenterEnd)
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                        UserFlowBackground(
-                            padding = 0.dp,
-                            color = Color.White
+                                .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                            contentAlignment = Alignment.Center
                         ) {
-                            Box(
+                            Row(
                                 Modifier
-                                    .fillMaxWidth()
-                                    .clickable {
-                                        onInvitationCLick.invoke()
-                                    }
-                                    .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-                                contentAlignment = Alignment.Center
+                                    .fillMaxSize(),
+                                verticalAlignment = Alignment.CenterVertically,
                             ) {
-                                Row(
-                                    Modifier
-                                        .fillMaxSize(),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                ) {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.ic_invite),
-                                        contentDescription = "",
-                                        tint = MaterialTheme.appColors.material.primaryVariant,
-                                        modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
-                                    )
-                                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
-                                    Text(
-                                        text = stringResource(id = R.string.pending_invitations),
-                                        style = MaterialTheme.typography.h6,
-                                        modifier = Modifier.weight(1f),
-                                    )
-                                }
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_briefcase),
+                                    contentDescription = "",
+                                    tint = MaterialTheme.appColors.material.primaryVariant,
+                                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
+                                )
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
                                 Text(
-                                    text = homeState.homePageCoachModel.pendingInvitations.toString(),
-                                    fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
-                                    modifier = Modifier.align(Alignment.CenterEnd)
+                                    text = stringResource(id = R.string.opportunities_to_work),
+                                    style = MaterialTheme.typography.h6,
+                                    modifier = Modifier.weight(1f),
                                 )
                             }
+                            Text(
+                                text = homeState.homePageCoachModel.opportunityToWork.toString(),
+                                fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
+                                modifier = Modifier.align(Alignment.CenterEnd)
+                            )
                         }
                     }
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                    UserFlowBackground(
+                        padding = 0.dp,
+                        color = Color.White
+                    ) {
+                        Box(
+                            Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    onInvitationCLick.invoke()
+                                }
+                                .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Row(
+                                Modifier
+                                    .fillMaxSize(),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_invite),
+                                    contentDescription = "",
+                                    tint = MaterialTheme.appColors.material.primaryVariant,
+                                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
+                                )
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+                                Text(
+                                    text = stringResource(id = R.string.pending_invitations),
+                                    style = MaterialTheme.typography.h6,
+                                    modifier = Modifier.weight(1f),
+                                )
+                            }
+                            Text(
+                                text = homeState.homePageCoachModel.pendingInvitations.toString(),
+                                fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
+                                modifier = Modifier.align(Alignment.CenterEnd)
+                            )
+                        }
+                    }
+           /*     }*/
 
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                     /*UserFlowBackground(
@@ -334,8 +334,9 @@ fun HomeScreen(
 
                     Row {
                         EventItem(
-                            if (role != UserType.REFEREE.key)
-                                "my_events" else "my_shifts",
+                           /* if (role != UserType.REFEREE.key)*/
+                                "my_events"
+                            /*else "my_shifts",*/,
                             "events_label",
                             homeState.homePageCoachModel.myEvents.toString()
                         )
@@ -347,7 +348,7 @@ fun HomeScreen(
                         .weight(1F))*/
                     }
 
-                    if (role == UserType.REFEREE.key) {
+                /*    if (role == UserType.REFEREE.key) {
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                         UserFlowBackground(
                             padding = 0.dp,
@@ -356,9 +357,9 @@ fun HomeScreen(
                             Box(
                                 Modifier
                                     .fillMaxWidth()
-                                    /*.clickable {
+                                    *//*.clickable {
                                    onInvitationCLick.invoke()
-                               }*/
+                               }*//*
                                     .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                                 contentAlignment = Alignment.Center
                             ) {
@@ -387,9 +388,9 @@ fun HomeScreen(
                                 )
                             }
                         }
-                    }
+                    }*/
 
-                    if (role != UserType.REFEREE.key) {
+                    /*if (role != UserType.REFEREE.key) {*/
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                         UserFlowBackground(
                             padding = 0.dp,
@@ -426,7 +427,7 @@ fun HomeScreen(
                                 )
                             }
                         }
-                    }
+                  /*  }*/
 
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
@@ -439,19 +440,19 @@ fun HomeScreen(
                         )
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
 
-                        if (role == UserType.REFEREE.key) {
+                        /*if (role == UserType.REFEREE.key) {
                             EventItem(
                                 "", "", "", null, MaterialTheme.appColors.material.primary
                             )
-                        }
-                        if (role != UserType.REFEREE.key) {
+                        }*/
+                        /*if (role != UserType.REFEREE.key) {*/
                             EventItem(
                                 "all_leagues",
                                 "leagues",
                                 homeState.homePageCoachModel.allLeagues.toString(),
                                 R.drawable.ic_leagues
                             )
-                        }
+                     /*   }*/
                     }
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
                 }

@@ -8,6 +8,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -62,6 +63,12 @@ import com.softprodigy.ballerapp.ui.features.home.manage_team.MainManageTeamScre
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamsScreen
+import com.softprodigy.ballerapp.ui.features.home.webview.CommonWebView
+import com.softprodigy.ballerapp.ui.features.profile.*
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.AddPlayersScreenUpdated
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupScreenUpdated
+import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
 import com.softprodigy.ballerapp.ui.features.home.teams.chat.TeamsChatDetailScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.chat.NewConversationScreen
 import com.softprodigy.ballerapp.ui.features.profile.ProfileEditScreen
@@ -223,6 +230,13 @@ class HomeActivity : FragmentActivity() {
                             moveToLogin(this)
                         })
                 }
+                /*if (state.showAddProfile) {
+                    AddPlayer(
+                        onDismiss = { homeViewModel.setAddProfile(false) },
+                        onConfirmClick = {
+                        },
+                    )
+                }*/
             }
         }
     }
@@ -281,6 +295,8 @@ fun NavControllerComposable(
     cometChat: CometChatUI,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated
 ) {
+    val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = hiltViewModel()
+    val profileViewModel: ProfileViewModel = hiltViewModel()
     var eventTitle by rememberSaveable { mutableStateOf("") }
     var teamLogo by rememberSaveable {
         mutableStateOf("")
@@ -294,6 +310,7 @@ fun NavControllerComposable(
     NavHost(navController, startDestination = Route.HOME_SCREEN) {
         composable(route = Route.HOME_SCREEN) {
             homeViewModel.setTopAppBar(false)
+            //if (fromSplash)
             HomeScreen(
                 role,
                 onInvitationCLick = {
@@ -336,10 +353,15 @@ fun NavControllerComposable(
                         setupTeamViewModelUpdated,
                         teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
                     )
-                    navController.navigate(Route.ADD_PLAYER_SCREEN + "/${UserStorage.teamId}")
+                    navController.navigate(Route.ADD_MY_PLAYER_SCREEN + "/${UserStorage.teamId}")
                 },
                 setupTeamViewModelUpdated = setupTeamViewModelUpdated
             )
+            /* else {
+                 HomeFirstTimeLoginScreen(onCreateTeamClick = {
+                     navController.navigate(Route.TEAM_SETUP_SCREEN)
+                 }, viewModel = homeViewModel)
+             }*/
         }
         composable(route = Route.PROFILE_SCREEN) {
             homeViewModel.setTopBar(
@@ -347,7 +369,7 @@ fun NavControllerComposable(
                     topBar = TopBar.PROFILE,
                 )
             )
-            ProfileScreen(updateTopBar = { homeViewModel.setTopBar(it) })
+            ProfileScreen(updateTopBar = { homeViewModel.setTopBar(it) }, vm = profileViewModel)
         }
 
         composable(route = Route.ADD_PROFILE_SCREEN) {
@@ -375,8 +397,14 @@ fun NavControllerComposable(
                     topBar = TopBar.EDIT_PROFILE,
                 )
             )
-            if (role == UserType.REFEREE.key) {
-                RefereeEditScreen(onBackClick = { navController.popBackStack() }) {
+            if (UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
+                RefereeEditScreen(
+                    profileViewModel,
+                    onBackClick = { navController.popBackStack() },
+                    OnNextGameStaffClick = {
+                        navController.navigate(Route.GAME_STAFF_SCREEN)
+                    },
+                ) {
                     navController.popBackStack()
                 }
             } else {
@@ -411,6 +439,7 @@ fun NavControllerComposable(
                 },
                 onCreateTeamClick = {
                     navController.navigate(Route.TEAM_SETUP_SCREEN) {
+//                        navController.popBackStack()
                         setupTeamViewModelUpdated.onEvent(
                             TeamSetupUIEventUpdated.OnColorSelected(
                                 (it?.colorCode ?: "").replace(
@@ -579,11 +608,11 @@ fun NavControllerComposable(
                     topBar = TopBar.FILTER_EVENT,
                 )
             )
-            if (role == UserType.REFEREE.key)
+           /* if (role.value == UserType.REFEREE.key)
                 RefereeFiltersScreen(eventViewModel) {
                     navController.popBackStack()
                 }
-            else
+            else*/
                 FilterScreen(eventViewModel) {
                     navController.popBackStack()
                 }
@@ -630,7 +659,7 @@ fun NavControllerComposable(
                     setupTeamViewModelUpdated,
                     teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
                 )
-                navController.navigate(Route.ADD_PLAYER_SCREEN + "/${UserStorage.teamId}")
+                navController.navigate(Route.ADD_MY_PLAYER_SCREEN + "/${UserStorage.teamId}")
             }, venue = venue, onVenueClick = {
                 navController.navigate(Route.SELECT_VENUE)
             })
@@ -666,7 +695,7 @@ fun NavControllerComposable(
         }
 
         composable(
-            route = Route.ADD_PLAYER_SCREEN + "/{teamId}",
+            route = Route.ADD_MY_PLAYER_SCREEN + "/{teamId}",
             arguments = listOf(
                 navArgument("teamId") {
                     type = NavType.StringType
@@ -847,8 +876,19 @@ fun NavControllerComposable(
                     topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
-            //CommonWebView(url)
-//            CommonWebView(url)
+            CommonWebView(url)
+        }
+
+        composable(route = Route.GAME_STAFF_SCREEN) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = "",
+                    topBar = TopBar.SINGLE_LABEL_BACK,
+                )
+            )
+            SearchGameStaff(profileViewModel,onGameStaffClick = {
+                navController.popBackStack()
+            })
         }
     }
 
