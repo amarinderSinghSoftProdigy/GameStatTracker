@@ -9,6 +9,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,10 +32,9 @@ import com.softprodigy.ballerapp.ui.theme.rubikFamily
 
 @Composable
 fun TeamNavigationController (
-    isTracking: Boolean = false,
     onAddRosterClick: () -> Unit,
 ) {
-    var hasTracking = isTracking;
+    var hasMyTeamEnabled = remember { mutableStateOf(false) }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -43,11 +44,11 @@ fun TeamNavigationController (
             .fillMaxHeight()
             .fillMaxWidth()) {
             teamHandler(
-                onPreviousClick = { hasTracking = true },
-                onNextClick = { hasTracking = false }
+                onPreviousClick = { hasMyTeamEnabled.value = !hasMyTeamEnabled.value },
+                onNextClick = { hasMyTeamEnabled.value = !hasMyTeamEnabled.value }
             )
 
-            if(hasTracking)
+            if(hasMyTeamEnabled.value)
                 Tracking(
                     isTrackingEmpty = true,
                     onAddRosterClick = onAddRosterClick
@@ -120,7 +121,7 @@ fun teamHandler(onPreviousClick: () -> Unit, onNextClick: () -> Unit) {
                     modifier = Modifier
                         .width(dimensionResource(id = R.dimen.size_32dp))
                         .height(dimensionResource(id = R.dimen.size_32dp)),
-                    onClick = { /*TODO*/ }
+                    onClick = { onNextClick.invoke() }
                 )
             }
         }

@@ -17,7 +17,6 @@ fun OverviewScreen (
     onPointClick: (GameSettingsState) -> Unit,
     onAddRosterClick: () -> Unit,
 ) {
-    var isTracking:Boolean = false
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -60,7 +59,6 @@ fun OverviewScreen (
                     //.background(colorResource(id = R.color.game_center_background_color)),
             ) {
                 TeamNavigationController(
-                    isTracking = isTracking,
                     onAddRosterClick = onAddRosterClick
                 )
             }
