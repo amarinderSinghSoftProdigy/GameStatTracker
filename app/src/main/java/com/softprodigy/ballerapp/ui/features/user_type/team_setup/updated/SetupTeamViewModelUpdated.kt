@@ -43,13 +43,22 @@ class SetupTeamViewModelUpdated @Inject constructor(
     val teamSetupUiState: State<TeamSetupUIStateUpdated> = _teamSetupUiState
 
     init {
+        initialInviteCount()
+    }
+
+    fun initialInviteCount(size: Int = 2) {
+        _teamSetupUiState.value =
+            _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList.apply {
+                this.clear()
+            })
+
         _teamSetupUiState.value =
             _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList
                 .apply {
-                    add(InviteObject())
-                    add(InviteObject())
+                    for (i in 0 until size) {
+                        add(InviteObject())
+                    }
                 })
-
     }
 
     fun onEvent(event: TeamSetupUIEventUpdated) {
@@ -253,7 +262,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
             }
             is TeamSetupUIEventUpdated.OnInviteTeamMembers -> {
                 viewModelScope.launch {
-                    invitePlayers(event.teamId)
+                    invitePlayers(event.teamId, userType =event.userType, type =event.type)
                 }
             }
 
@@ -400,11 +409,15 @@ class SetupTeamViewModelUpdated @Inject constructor(
 
     }
 
-    private suspend fun invitePlayers(teamId: String) {
+    private suspend fun invitePlayers(teamId: String, type: String, userType: String) {
         val members = _teamSetupUiState.value.inviteList.mapIndexed { index, item ->
-            Members(name = item.name, mobileNumber = "${item.countryCode}${item.contact}", role = item.role.key)
+            Members(
+                name = item.name,
+                mobileNumber = "${item.countryCode}${item.contact}",
+                role = item.role.key
+            )
         }
-        val request = UpdateTeamRequest(teamID = teamId, members = members)
+        val request = UpdateTeamRequest(teamID = teamId, members = members, type = type ,userType = userType)
 
         _teamSetupUiState.value =
             _teamSetupUiState.value.copy(isLoading = true)

@@ -22,6 +22,8 @@ data class CreateTeamRequest(
 
 data class UpdateTeamRequest(
     @SerializedName("teamID") val teamID: String = "",
+    @SerializedName("userType") val userType: String = "",
+    @SerializedName("type") val type: String = "",
     @SerializedName("members") val members: List<Members> = arrayListOf(),
 )
 

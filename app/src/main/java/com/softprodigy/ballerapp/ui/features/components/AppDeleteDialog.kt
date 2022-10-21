@@ -800,7 +800,9 @@ fun SelectInvitationRoleDialog(
     title: String,
     selected: String?,
     showLoading: Boolean,
-    roleList: List<UserRoles>
+    roleList: List<UserRoles>,
+    userName: String,
+    userLogo: String,
 ) {
 
     BallerAppMainTheme {
@@ -825,7 +827,7 @@ fun SelectInvitationRoleDialog(
                             text = title,
                             style = MaterialTheme.typography.h5,
                             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                            fontWeight = FontWeight.W500
+                            fontWeight = FontWeight.W500,
                         )
 
                         Icon(
@@ -840,6 +842,58 @@ fun SelectInvitationRoleDialog(
                         )
                     }
                     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
+
+                    Row(
+                        modifier = Modifier
+                            .background(
+                                color = MaterialTheme.appColors.material.primary,
+                                shape = RoundedCornerShape(
+                                    dimensionResource(id = R.dimen.size_8dp)
+                                )
+                            )
+                            .padding(dimensionResource(id = R.dimen.size_12dp)),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        CoilImage(
+                            src = userLogo,
+                            modifier = Modifier
+                                .size(
+                                    dimensionResource(id = R.dimen.size_44dp)
+                                )
+                                .clip(CircleShape)
+                                .border(
+                                    dimensionResource(id = R.dimen.size_2dp),
+                                    MaterialTheme.colors.surface,
+                                    CircleShape,
+                                ),
+                            isCrossFadeEnabled = false,
+                            onLoading = { Placeholder(R.drawable.ic_profile_placeholder) },
+                            onError = { Placeholder(R.drawable.ic_profile_placeholder) }
+                        )
+                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+
+                        Column(
+                            verticalArrangement = Arrangement.Center,
+                        ) {
+                            AppText(
+                                text = userName,
+                                style = MaterialTheme.typography.h3,
+                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                            )
+
+                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
+
+                            AppText(
+                                text = stringResource(
+                                    R.string.select_your_role_on_specific_team
+                                ),
+                                style = MaterialTheme.typography.h6,
+                                color = ColorMainPrimary,
+                                textAlign = TextAlign.Start
+                            )
+                        }
+                    }
+
 
                     LazyColumn(
                         modifier = Modifier
@@ -2188,6 +2242,9 @@ fun InviteTeamMembersDialog(
 
             },
             buttons = {
+                val showInfoBox = remember {
+                    mutableStateOf(true)
+                }
                 Column(
                     modifier = Modifier
                         .background(color = Color.White)
@@ -2209,224 +2266,224 @@ fun InviteTeamMembersDialog(
                     }
                     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_18dp)))
 
-                    UserFlowBackground(color = MaterialTheme.appColors.buttonColor.textEnabled, modifier = Modifier
-                        .height(
-                            dimensionResource(id = R.dimen.size_400dp)
-                        )
-                        .fillMaxWidth()) {
-                        Column(modifier = Modifier
-                            .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
-                            .verticalScroll(
-                                rememberScrollState()
-                            )) {
-                                inviteList.forEachIndexed { index, item ->
-                                    val roleObject = remember { mutableStateOf(UserRoles()) }
-                                    var expanded by remember { mutableStateOf(false) }
-                                    var textFieldSize by remember { mutableStateOf(Size.Zero) }
-                                    var defaultLang by rememberSaveable {
-                                        mutableStateOf(
-                                            getDefaultLangCode(context)
+                    if (showInfoBox.value) {
+                        InfoBox(
+                            title = "Info box",
+                            content = stringResource(id = R.string.info_text),
+                            color = ColorMainPrimary,
+                            onCancelClick = {
+//                                showInfoBox.value = false
+                            })
+                    }
+
+                    UserFlowBackground(
+                        color = MaterialTheme.appColors.buttonColor.textEnabled, modifier = Modifier
+                            .height(
+                                dimensionResource(id = R.dimen.size_150dp)
+                            )
+                            .fillMaxWidth(), padding = 0.dp
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .verticalScroll(
+                                    rememberScrollState()
+                                )
+                        ) {
+                            inviteList.forEachIndexed { index, item ->
+                                val roleObject = remember { mutableStateOf(UserRoles()) }
+                                var expanded by remember { mutableStateOf(false) }
+                                var textFieldSize by remember { mutableStateOf(Size.Zero) }
+                                var defaultLang by rememberSaveable {
+                                    mutableStateOf(
+                                        getDefaultLangCode(context)
+                                    )
+                                }
+                                val getDefaultPhoneCode = getDefaultPhoneCode(context)
+
+
+                                LaunchedEffect(key1 = Unit) {
+                                    OnCountryValueChange.invoke(index, getDefaultPhoneCode)
+
+                                }
+
+
+                                Column(Modifier.fillMaxSize()) {
+                                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+                                    Row(
+                                        Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.Center,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        AppSearchOutlinedTextField(
+                                            modifier = Modifier
+                                                .weight(0.6f)
+                                                .focusRequester(focusRequester),
+                                            value = item.name,
+                                            onValueChange = { name ->
+                                                if (name.length <= 30)
+                                                    onNameValueChange.invoke(index, name)
+                                            },
+                                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                                focusedBorderColor = ColorBWGrayBorder,
+                                                unfocusedBorderColor = ColorBWGrayBorder,
+                                                cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                                backgroundColor = MaterialTheme.appColors.material.background
+                                            ),
+                                            placeholder = {
+                                                Text(
+                                                    text = stringResource(id = R.string.name),
+                                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                                    color = MaterialTheme.appColors.textField.label,
+                                                )
+                                            },
+                                            singleLine = true,
+                                            isError = !validName(item.name)
+                                                    && item.name.isNotEmpty(),
+                                            errorMessage = stringResource(id = R.string.valid_first_name),
                                         )
-                                    }
-                                    val getDefaultPhoneCode = getDefaultPhoneCode(context)
-
-
-                                    LaunchedEffect(key1 = Unit) {
-                                        OnCountryValueChange.invoke(index, getDefaultPhoneCode)
-
-                                    }
-
-
-                                    Column(Modifier.fillMaxSize()) {
-                                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
-                                        Row(
-                                            Modifier.fillMaxWidth(),
-                                            horizontalArrangement = Arrangement.Center,
-                                            verticalAlignment = Alignment.CenterVertically
+                                        Spacer(
+                                            modifier = Modifier.width(
+                                                dimensionResource(
+                                                    id = R.dimen.size_8dp
+                                                )
+                                            )
+                                        )
+                                        Column(
+                                            modifier = Modifier.weight(1f)
                                         ) {
-                                            AppSearchOutlinedTextField(
-                                                modifier = Modifier
-                                                    .weight(0.6f)
-                                                    .focusRequester(focusRequester),
-                                                value = item.name,
-                                                onValueChange = { name ->
-                                                    if (name.length <= 30)
-                                                        onNameValueChange.invoke(index, name)
-                                                },
-                                                colors = TextFieldDefaults.outlinedTextFieldColors(
-                                                    focusedBorderColor = ColorBWGrayBorder,
-                                                    unfocusedBorderColor = ColorBWGrayBorder,
-                                                    cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                                                    backgroundColor = MaterialTheme.appColors.material.background
+                                            EditFields(
+                                                roleObject.value.value,
+                                                textStyle = TextStyle().copy(textAlign = TextAlign.Start),
+                                                onValueChange = {},
+                                                head = "",
+                                                keyboardOptions = KeyboardOptions(
+                                                    imeAction = ImeAction.Next,
+                                                    keyboardType = KeyboardType.Text
                                                 ),
                                                 placeholder = {
                                                     Text(
-                                                        text = stringResource(id = R.string.name),
+                                                        text = stringResource(id = R.string.select_role),
                                                         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                                         color = MaterialTheme.appColors.textField.label,
                                                     )
                                                 },
-                                                singleLine = true,
-                                                isError = !validName(item.name)
-                                                        && item.name.isNotEmpty(),
-                                                errorMessage = stringResource(id = R.string.valid_first_name),
-                                            )
-                                            Spacer(
-                                                modifier = Modifier.width(
-                                                    dimensionResource(
-                                                        id = R.dimen.size_8dp
-                                                    )
-                                                )
-                                            )
-                                            Column(
-                                                modifier = Modifier.weight(1f)
-                                            ) {
-                                                EditFields(
-                                                    roleObject.value.value,
-                                                    textStyle = TextStyle().copy(textAlign = TextAlign.Start),
-                                                    onValueChange = {},
-                                                    head = "",
-                                                    keyboardOptions = KeyboardOptions(
-                                                        imeAction = ImeAction.Next,
-                                                        keyboardType = KeyboardType.Text
-                                                    ),
-                                                    placeholder = {
-                                                        Text(
-                                                            text = stringResource(id = R.string.select_role),
-                                                            fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                                                            color = MaterialTheme.appColors.textField.label,
-                                                        )
-                                                    },
-                                                    modifier = Modifier
-                                                        .onGloballyPositioned {
-                                                            textFieldSize = it.size.toSize()
-                                                        }
-                                                        .border(
-                                                            shape = RoundedCornerShape(
-                                                                dimensionResource(id = R.dimen.size_8dp)
-                                                            ),
-                                                            width = dimensionResource(id = R.dimen.size_1dp),
-                                                            color = ColorBWGrayBorder
+                                                modifier = Modifier
+                                                    .onGloballyPositioned {
+                                                        textFieldSize = it.size.toSize()
+                                                    }
+                                                    .border(
+                                                        shape = RoundedCornerShape(
+                                                            dimensionResource(id = R.dimen.size_8dp)
                                                         ),
-                                                    trailingIcon = {
-                                                        Icon(
-                                                            painterResource(id = R.drawable.ic_arrow_down),
-                                                            contentDescription = null,
-                                                            modifier = Modifier.clickable {
-                                                                expanded = !expanded
-                                                            })
-                                                    },
-                                                    enabled = true
-                                                )
-                                                DropdownMenu(
-                                                    expanded = expanded,
-                                                    onDismissRequest = { expanded = false },
-                                                    modifier = Modifier
-                                                        .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
-                                                        .background(MaterialTheme.colors.background)
-                                                ) {
-                                                    roles.forEach { label ->
-                                                        DropdownMenuItem(onClick = {
-                                                            roleObject.value = label
-                                                            onRoleValueChange.invoke(
-                                                                index,
-                                                                label
-                                                            )
-                                                            expanded = false
-                                                        }) {
-                                                            Text(
-                                                                text = label.value,
-                                                                textAlign = TextAlign.Center
-                                                            )
-                                                        }
+                                                        width = dimensionResource(id = R.dimen.size_1dp),
+                                                        color = ColorBWGrayBorder
+                                                    ),
+                                                trailingIcon = {
+                                                    Icon(
+                                                        painterResource(id = R.drawable.ic_arrow_down),
+                                                        contentDescription = null,
+                                                        modifier = Modifier.clickable {
+                                                            expanded = !expanded
+                                                        })
+                                                },
+                                                enabled = true
+                                            )
+                                            DropdownMenu(
+                                                expanded = expanded,
+                                                onDismissRequest = { expanded = false },
+                                                modifier = Modifier
+                                                    .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+                                                    .background(MaterialTheme.colors.background)
+                                            ) {
+                                                roles.forEach { label ->
+                                                    DropdownMenuItem(onClick = {
+                                                        roleObject.value = label
+                                                        onRoleValueChange.invoke(
+                                                            index,
+                                                            label
+                                                        )
+                                                        expanded = false
+                                                    }) {
+                                                        Text(
+                                                            text = label.value,
+                                                            textAlign = TextAlign.Center
+                                                        )
                                                     }
                                                 }
-
                                             }
+
                                         }
-
-                                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-
-                                        Row(
-                                            Modifier
-                                                .fillMaxWidth()
-                                                .border(
-                                                    1.dp,
-                                                    color = MaterialTheme.appColors.editField.borderUnFocused,
-                                                    shape = RoundedCornerShape(
-                                                        dimensionResource(id = R.dimen.size_8dp)
-                                                    )
-                                                )
-                                                .padding(horizontal = dimensionResource(id = R.dimen.size_8dp)),
-                                            verticalAlignment = Alignment.CenterVertically,
-
-                                            ) {
-
-                                            TogiCountryCodePicker(
-                                                modifier = Modifier
-                                                    .weight(1f)
-                                                    .focusRequester(focusRequester),
-                                                pickedCountry = {
-                                                    OnCountryValueChange(index, it.countryPhoneCode)
-                                                    defaultLang = it.countryCode
-                                                },
-                                                defaultCountry = getLibCountries().single { it.countryCode == defaultLang },
-                                                focusedBorderColor = Color.Transparent,
-                                                unfocusedBorderColor = Color.Transparent,
-                                                dialogAppBarTextColor = Color.Black,
-                                                showCountryFlag = false,
-                                                dialogAppBarColor = Color.White,
-                                                error = true,
-                                                text = item.contact,
-                                                onValueChange = { mobileNumber ->
-                                                    if (mobileNumber.length <= 10)
-                                                        onEmailValueChange(index, mobileNumber)
-
-                                                },
-                                                readOnly = false,
-                                                cursorColor = Color.Black,
-                                                placeHolder = {
-                                                    Text(
-                                                        text = stringResource(id = R.string.mobile_number),
-                                                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                                                        color = MaterialTheme.appColors.textField.label,
-                                                    )
-                                                },
-                                                content = {
-
-                                                },
-                                                textStyle = TextStyle(textAlign = TextAlign.Start)
-                                            )
-                                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
-
-                                            Icon(
-                                                painter = painterResource(id = R.drawable.ic_add),
-                                                contentDescription = "",
-                                                tint = Color.Unspecified,
-                                                modifier = Modifier
-                                                    .clickable { onIndexChange.invoke(index) }
-                                            )
-                                        }
-
                                     }
+
+                                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+
+                                    Row(
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .border(
+                                                1.dp,
+                                                color = MaterialTheme.appColors.editField.borderUnFocused,
+                                                shape = RoundedCornerShape(
+                                                    dimensionResource(id = R.dimen.size_8dp)
+                                                )
+                                            )
+                                            .padding(horizontal = dimensionResource(id = R.dimen.size_8dp)),
+                                        verticalAlignment = Alignment.CenterVertically,
+
+                                        ) {
+
+                                        TogiCountryCodePicker(
+                                            modifier = Modifier
+                                                .weight(1f)
+                                                .focusRequester(focusRequester),
+                                            pickedCountry = {
+                                                OnCountryValueChange(index, it.countryPhoneCode)
+                                                defaultLang = it.countryCode
+                                            },
+                                            defaultCountry = getLibCountries().single { it.countryCode == defaultLang },
+                                            focusedBorderColor = Color.Transparent,
+                                            unfocusedBorderColor = Color.Transparent,
+                                            dialogAppBarTextColor = Color.Black,
+                                            showCountryFlag = false,
+                                            dialogAppBarColor = Color.White,
+                                            error = true,
+                                            text = item.contact,
+                                            onValueChange = { mobileNumber ->
+                                                if (mobileNumber.length <= 10)
+                                                    onEmailValueChange(index, mobileNumber)
+
+                                            },
+                                            readOnly = false,
+                                            cursorColor = Color.Black,
+                                            placeHolder = {
+                                                Text(
+                                                    text = stringResource(id = R.string.mobile_number),
+                                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                                    color = MaterialTheme.appColors.textField.label,
+                                                )
+                                            },
+                                            content = {
+
+                                            },
+                                            textStyle = TextStyle(textAlign = TextAlign.Start)
+                                        )
+                                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
+
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.ic_add),
+                                            contentDescription = "",
+                                            tint = Color.Unspecified,
+                                            modifier = Modifier
+                                                .clickable { onIndexChange.invoke(index) }
+                                        )
+                                    }
+
                                 }
+                            }
 
                             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
 
 
-                            InviteTeamMemberButton(
-                                modifier = Modifier.fillMaxWidth(),
-                                text = stringResource(id = R.string.add),
-                                onClick = {
-                                    onInviteCountValueChange(true)
-                                },
-                                painter = painterResource(
-                                    id = R.drawable.ic_add_button
-                                ),
-                                isTransParent = true
-                            )
-                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-//                        }
                         }
 
                     }
@@ -2471,4 +2528,155 @@ fun InviteTeamMembersDialog(
     }
 }
 
+@Composable
+fun InfoBox(title: String, content: String, color: Color, onCancelClick: () -> Unit) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .border(
+                width = dimensionResource(id = R.dimen.size_1dp),
+                color = color,
+                shape = RoundedCornerShape(
+                    dimensionResource(id = R.dimen.size_8dp)
+                )
+            )
+            .background(
+                color = color.copy(0.1f),
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+            )
+            .padding(dimensionResource(id = R.dimen.size_16dp))
 
+    ) {
+        Row(
+            Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_info),
+                    contentDescription = "",
+                    modifier = Modifier.size(
+                        dimensionResource(id = R.dimen.size_18dp)
+                    ),
+                    tint = color
+                )
+
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
+
+                AppText(
+                    text = title,
+                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    fontFamily = rubikFamily
+                )
+
+            }
+
+
+            Icon(
+                painter = painterResource(id = R.drawable.ic_cross_1),
+                contentDescription = "",
+                modifier = Modifier
+                    .size(
+                        dimensionResource(id = R.dimen.size_12dp)
+                    )
+                    .clickable {
+                        onCancelClick.invoke()
+                    },
+                tint = color
+            )
+
+        }
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+        AppText(
+            text = content,
+            color = ColorBWGrayDark,
+            fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+            fontFamily = rubikFamily
+        )
+
+    }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun InvitationSuccessfullySentDialog(
+    onDismiss: () -> Unit,
+    onConfirmClick: () -> Unit,
+    teamLogo: String,
+    teamName: String,
+    playerName: String,
+) {
+/*   InvitationSuccessfullySentDialog(
+            onDismiss = { },
+            onConfirmClick = {
+
+            },
+            teamLogo = BuildConfig.IMAGE_SERVER + "teamLogo/1666259687828-IMG_20220805_120020_710.jpg",
+            teamName ="My name",
+            playerName ="My player"
+        )*/
+    val keyboardController = LocalSoftwareKeyboardController.current
+    BallerAppMainTheme {
+        AlertDialog(
+            modifier = Modifier
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+            onDismissRequest = {
+                onDismiss.invoke()
+            },
+            buttons = {
+                Column(
+                    modifier = Modifier
+                        .background(color = MaterialTheme.appColors.material.surface)
+                        .padding(
+                            all = dimensionResource(
+                                id = R.dimen.size_16dp
+                            )
+                        ),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                    CoilImage(
+                        src = teamLogo,
+                        modifier = Modifier
+                            .size(dimensionResource(id = R.dimen.size_160dp))
+                            .clip(CircleShape),
+                        isCrossFadeEnabled = false,
+                        onLoading = { Placeholder(R.drawable.ic_profile_placeholder) },
+                        onError = { Placeholder(R.drawable.ic_profile_placeholder) }
+                    )
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+
+                    AppText(
+                        text = stringResource(
+                            id = R.string.success_player_has_been_added_to_the_team,
+                            playerName,
+                            teamName
+                        ),
+                        fontSize = dimensionResource(id = R.dimen.txt_size_18).value.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        fontFamily = rubikFamily,
+                        textAlign = TextAlign.Center
+                    )
+
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+
+                    DialogButton(
+                        text = stringResource(R.string.invite_others_to_the_team),
+                        onClick = {
+                            onConfirmClick.invoke()
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        enabled = true,
+                        onlyBorder = false,
+                    )
+                }
+            },
+        )
+    }
+}
