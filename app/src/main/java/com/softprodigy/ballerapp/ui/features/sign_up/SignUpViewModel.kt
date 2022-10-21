@@ -670,6 +670,7 @@ class SignUpViewModel @Inject constructor(
                 updateProfileResp.value.let { response ->
                     if (response.status) {
                         setToken(
+//                            token = signUpUiState.value.signUpData.token ?: "",
                             token = response.data.token,
                             role = signUpUiState.value.signUpData.role ?: "",
                             email = signUpUiState.value.signUpData.email ?: "",

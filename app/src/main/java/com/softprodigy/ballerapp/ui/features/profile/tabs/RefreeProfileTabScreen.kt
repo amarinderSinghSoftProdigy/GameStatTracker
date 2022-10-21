@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
@@ -42,7 +43,7 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
     val configuration = LocalConfiguration.current
 
     remember {
-        vm.onEvent(ProfileEvent.GetReferee)
+        vm.onEvent(ProfileEvent.GetProfile)
     }
 
     Box(
@@ -82,7 +83,8 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
                             .clip(CircleShape),
                         isCrossFadeEnabled = false,
                         onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
-                        onError = { Placeholder(R.drawable.ic_user_profile_icon) }
+                        onError = { Placeholder(R.drawable.ic_user_profile_icon) },
+                        contentScale = ContentScale.Fit
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
                     AppText(
@@ -96,7 +98,7 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
                         modifier = Modifier
                     ) {
                         DetailItem(stringResource(id = R.string.email), state.user.email)
-                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_5dp)))
                         DetailItem(stringResource(id = R.string.number), state.user.phone)
                     }
 
@@ -166,7 +168,7 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                     Row {
                         AppText(
-                            text = state.user.userDetails.totalGames,
+                            text = state.user.totalGames.toString(),
                             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.weight(1F),
@@ -174,7 +176,7 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
                         )
 
                         AppText(
-                            text = state.user.userDetails.totalHoopsGames,
+                            text = state.user.totalHoopsGames.toString(),
                             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.weight(2F),
@@ -182,7 +184,7 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
                         )
 
                         AppText(
-                            text = state.user.userDetails.rating,
+                            text = state.user.rating.toString(),
                             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.weight(1F),
@@ -204,14 +206,17 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
                 state.user.userDetails.teamAgePerference
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-            ProfileItem(
-                stringResource(id = R.string.prefered_partner),
-                state.user.userDetails.perferredPartner, ""
-            )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+            state.user.userDetails.preferredPartner.let {
+                ProfileItem(
+                    stringResource(id = R.string.prefered_partner),
+                    it.name, imageUrl = it.profileImage
+                )
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+            }
+
             ProfileItem(
                 stringResource(id = R.string.refereeing_experience),
-                state.user.userDetails.refereeningExperience
+                if (state.user.userDetails.refereeningExperience.isNotEmpty()) state.user.userDetails.refereeningExperience + " years" else ""
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
@@ -226,8 +231,9 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
                 Column {
                     AppText(
                         text = stringResource(id = R.string.about_exp),
-                        style = MaterialTheme.typography.h6,
-                        color = ColorBWBlack
+                        style = MaterialTheme.typography.h5,
+                        color = ColorBWBlack,
+                        fontWeight = FontWeight.W500
                     )
 
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_14dp)))

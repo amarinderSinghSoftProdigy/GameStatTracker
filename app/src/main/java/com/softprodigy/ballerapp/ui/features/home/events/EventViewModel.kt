@@ -7,11 +7,13 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.core.util.UiText
+import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.response.Format
 import com.softprodigy.ballerapp.data.response.GenderList
 import com.softprodigy.ballerapp.domain.repository.IEventsRepository
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
+import com.softprodigy.ballerapp.ui.features.home.invitation.InvitationChannel
 import com.softprodigy.ballerapp.ui.utils.CommonUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -187,6 +189,11 @@ class EventViewModel @Inject constructor(
             is EvEvents.RegisterForEvent -> {
                 viewModelScope.launch {
                     registerForEvent()
+                }
+            }
+            is EvEvents.RegisterGameStaff -> {
+                viewModelScope.launch {
+                    registerGameStaffEvent()
                 }
             }
             is EvEvents.GetDivisions -> {
@@ -372,12 +379,20 @@ class EventViewModel @Inject constructor(
 
             is EvEvents.Format -> {
                 _state.value = _state.value.copy(selectedFormat = event.format)
-
             }
 
             is EvEvents.GetSchedule -> {
                 viewModelScope.launch {
                     getEventSchedule(event.eventId)
+                }
+            }
+            is EvEvents.OnRoleClick -> {
+                _state.value = _state.value.copy(selectedRole = event.role)
+            }
+
+            is EvEvents.GetRoles -> {
+                viewModelScope.launch {
+                    getUserRoles()
                 }
             }
         }
@@ -622,6 +637,62 @@ class EventViewModel @Inject constructor(
         }
     }
 
+    private suspend fun registerGameStaffEvent() {
+        _state.value = _state.value.copy(isLoading = true)
+
+        _state.value = _state.value.copy(
+            registerGameStaff = _state.value.registerGameStaff.copy(
+                eventId = _state.value.opportunitiesDetail.id,
+                role = _state.value.selectedRole,
+                location = _state.value.location
+            )
+        )
+
+        val userResponse = eventsRepo.registerGameStaff(_state.value.registerGameStaff)
+        _state.value = _state.value.copy(isLoading = false)
+
+        when (userResponse) {
+            is ResultWrapper.GenericError -> {
+                _channel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${userResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _channel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            userResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                userResponse.value.let { response ->
+                    if (response.status) {
+                        _channel.send(
+                            EventChannel.OnSuccess(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    } else {
+                        _channel.send(
+                            EventChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
 
     private suspend fun getOpportunityDetail(eventId: String) {
         _state.value = _state.value.copy(isLoading = true)
@@ -650,7 +721,11 @@ class EventViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
                     if (response.status) {
-                        _state.value = _state.value.copy(opportunitiesDetail = response.data, price = response.data.standardPrice)
+                        _state.value = _state.value.copy(
+                            opportunitiesDetail = response.data,
+                            price = response.data.standardPrice,
+                            location = response.data.location
+                        )
                     } else {
                         _channel.send(
                             EventChannel.ShowToast(
@@ -906,7 +981,7 @@ class EventViewModel @Inject constructor(
             teamRepo.getVenues(
                 leagueId = _state.value.leagueId
             )
-       /* _state.value = _state.value.copy(isLoading = false)*/
+        /* _state.value = _state.value.copy(isLoading = false)*/
 
         when (userResponse) {
             is ResultWrapper.GenericError -> {
@@ -1168,7 +1243,7 @@ class EventViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 eventResponse.value.let { response ->
                     if (response.data != null) {
-                        _state.value=_state.value.copy(scheduleResponse = response.data)
+                        _state.value = _state.value.copy(scheduleResponse = response.data)
                     } else {
                         _channel.send(
                             EventChannel.ShowEventDetailsToast(
@@ -1183,6 +1258,59 @@ class EventViewModel @Inject constructor(
         }
     }
 
+    private suspend fun getUserRoles() {
+        _state.value = _state.value.copy(showLoading = true)
+
+        when (val userRoles = UserStorage.role?.let { teamRepo.getUserRoles(it) }) {
+            is ResultWrapper.GenericError -> {
+                _state.value = _state.value.copy(showLoading = false)
+
+                _channel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${userRoles.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _state.value = _state.value.copy(showLoading = false)
+
+                _channel.send(
+                    EventChannel.ShowToast(
+                        UiText.DynamicString(
+                            userRoles.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                userRoles.value.let { response ->
+                    if (response.status) {
+                        _state.value =
+                            _state.value.copy(
+                                showLoading = false,
+                                roles = response.data
+                            )
+                    } else {
+
+                        _state.value =
+                            _state.value.copy(
+                                showLoading = false,
+                            )
+
+                        _channel.send(
+                            EventChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
 
     private fun getRefereeFilters() {
 

@@ -118,6 +118,7 @@ class EventsRepository @Inject constructor(
         }
     }
 
+
     override suspend fun updateFilters(request: FilterUpdateRequest): ResultWrapper<BaseResponse<Any>> {
         return safeApiCall(dispatcher) {
             service.updateFilters(request)
@@ -180,6 +181,9 @@ class EventsRepository @Inject constructor(
         }
     }
 
-
-
+    override suspend fun registerGameStaff(gameStaffRegisterRequest: GameStaffRegisterRequest): ResultWrapper<BaseResponse<Any>> {
+        return safeApiCall(dispatcher) {
+            service.registerGameStaff(gameStaffRegisterRequest)
+        }
+    }
 }

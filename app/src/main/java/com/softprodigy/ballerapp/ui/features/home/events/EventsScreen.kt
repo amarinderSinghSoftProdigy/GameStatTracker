@@ -31,7 +31,7 @@ import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
-import com.softprodigy.ballerapp.ui.features.home.events.opportunities.OpportunitieScreen
+import com.softprodigy.ballerapp.ui.features.home.events.opportunities.OpportunitiesScreen
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.theme.*
 import kotlinx.coroutines.launch
@@ -53,31 +53,23 @@ fun EventsScreen(
     val dataStoreManager = DataStoreManager(LocalContext.current)
     val role = dataStoreManager.getRole.collectAsState(initial = "")
     // on below line we are creating variable for pager state.
-    val pagerState = rememberPagerState(
-        pageCount = 3,
-        initialOffScreenLimit = 1,
-    ) // Add the count for number of pages
+     // Add the count for number of pages
 
     Box(Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            val list = if (role.value == UserType.REFEREE.key) {
-                listOf(
+            if (role.value == UserType.REFEREE.key) {
+                val list =  listOf(
                     TabItems.MyShifts,
                     TabItems.Opportunity,
                 )
-            } else {
-                listOf(
-                    TabItems.Events,
-                    TabItems.Leagues,
-                    TabItems.Opportunity,
+                val pagerState = rememberPagerState(
+                    pageCount = 2,
+                    initialOffScreenLimit = 1,
                 )
-            }
-            Tabs(pagerState = pagerState, list)
-
-            if (role.value == UserType.REFEREE.key) {
+                Tabs(pagerState = pagerState, list)
                 TabsContentForReferee(
                     pagerState = pagerState,
                     vm,
@@ -86,6 +78,16 @@ fun EventsScreen(
                     role
                 )
             } else {
+                val list =    listOf(
+                    TabItems.Events,
+                    TabItems.Leagues,
+                    TabItems.Opportunity,
+                )
+                val pagerState = rememberPagerState(
+                    pageCount = 3,
+                    initialOffScreenLimit = 1,
+                )
+                Tabs(pagerState = pagerState, list)
                 TabsContent(
                     pagerState = pagerState,
                     vm,
@@ -97,7 +99,6 @@ fun EventsScreen(
                     role
                 )
             }
-
         }
 
         if (showDialog) {
@@ -198,7 +199,7 @@ fun TabsContent(
             }
 
             2 -> {
-                OpportunitieScreen(vm, moveToOppDetails)
+                OpportunitiesScreen(vm, moveToOppDetails)
             }
 
         }
@@ -224,7 +225,7 @@ fun TabsContentForReferee(
             }
 
             1 -> {
-                OpportunitieScreen(vm, moveToOppDetails)
+                OpportunitiesScreen(vm, moveToOppDetails)
             }
 
         }
