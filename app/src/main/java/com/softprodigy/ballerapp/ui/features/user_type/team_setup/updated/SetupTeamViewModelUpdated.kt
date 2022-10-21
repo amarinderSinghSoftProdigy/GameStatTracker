@@ -262,7 +262,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
 
     private suspend fun getUserRoles() {
         _teamSetupUiState.value = _teamSetupUiState.value.copy(isLoading = true)
-        val userRoles = teamRepo.getUserRoles()
+        val userRoles = teamRepo.getUserRoles("")
         _teamSetupUiState.value = _teamSetupUiState.value.copy(isLoading = false)
         when (userRoles) {
             is ResultWrapper.GenericError -> {

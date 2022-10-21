@@ -36,7 +36,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import androidx.core.app.ActivityCompat
@@ -80,8 +79,8 @@ fun AddPlayersScreenUpdated(
 
     remember {
         vm.onEvent(TeamSetupUIEventUpdated.GetRoles)
-        if (!teamId.isNullOrEmpty())
-            vm.onEvent(TeamSetupUIEventUpdated.GetInvitedTeamPlayers(teamId))
+        /*if (!teamId.isNullOrEmpty())
+            vm.onEvent(TeamSetupUIEventUpdated.GetInvitedTeamPlayers(teamId))*/
     }
 
     BackHandler {
@@ -136,7 +135,7 @@ fun AddPlayersScreenUpdated(
             verticalArrangement = Arrangement.Top
         ) {
             UserFlowBackground(color = MaterialTheme.appColors.buttonColor.textEnabled) {
-                FoldableItem(
+               /* FoldableItem(
                     expanded = expanded.value,
                     headerBackground = MaterialTheme.appColors.material.surface,
                     headerBorder = BorderStroke(0.dp, Color.Transparent),
@@ -158,7 +157,7 @@ fun AddPlayersScreenUpdated(
                     }
                 )
 
-                AppDivider()
+                AppDivider()*/
 
                 Column(modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.size_16dp))) {
                     FlowRow {
