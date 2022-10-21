@@ -142,7 +142,8 @@ fun TeamsScreen(
                 showCreateTeamButton = UserStorage.role.equals(
                     UserType.COACH.key,
                     ignoreCase = true
-                )
+                ),
+                showBottomBar = {}
             )
         }
     }

@@ -24,7 +24,7 @@ data class User(
     @SerializedName("age") val age: Int? = null,
     @SerializedName("totalGames") val totalGames: Int? = 0,
     @SerializedName("totalHoopGames") val totalHoopsGames: Int? = 0,
-    @SerializedName("rating") val rating: Double? = 0.0
+    @SerializedName("rating") val rating: Double? = 0.0,
 )
 
 data class SaveUser(

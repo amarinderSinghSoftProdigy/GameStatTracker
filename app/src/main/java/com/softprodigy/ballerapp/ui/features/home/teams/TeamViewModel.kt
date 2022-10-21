@@ -365,7 +365,7 @@ class TeamViewModel @Inject constructor(
                                     selectedTeam = if (selectionTeam == null) response.data[0].teamId else selectionTeam,
                                     isLoading = false,
                                     localLogo = null,
-                                    loadFirstUi = false,
+                                    loadFirstUi = selectionTeam == null,
                                 )
                             if (selectionTeam == null) {
                                 setRole(response.data[0].role)
