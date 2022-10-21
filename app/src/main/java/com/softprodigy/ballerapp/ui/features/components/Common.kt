@@ -197,6 +197,7 @@ fun BoxScope.CommonTabView(
                 tint = Color.White
             )
         }
+
     }
 
     var icon: Painter? = null

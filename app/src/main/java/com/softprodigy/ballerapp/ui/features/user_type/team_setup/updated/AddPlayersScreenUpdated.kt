@@ -74,6 +74,8 @@ fun AddPlayersScreenUpdated(
 
     remember {
         vm.onEvent(TeamSetupUIEventUpdated.GetRoles)
+        /*if (!teamId.isNullOrEmpty())
+            vm.onEvent(TeamSetupUIEventUpdated.GetInvitedTeamPlayers(teamId))*/
     }
 
     BackHandler {
@@ -128,7 +130,7 @@ fun AddPlayersScreenUpdated(
             verticalArrangement = Arrangement.Top
         ) {
             UserFlowBackground(color = MaterialTheme.appColors.buttonColor.textEnabled) {
-                /*FoldableItem(
+               /* FoldableItem(
                     expanded = expanded.value,
                     headerBackground = MaterialTheme.appColors.material.surface,
                     headerBorder = BorderStroke(0.dp, Color.Transparent),

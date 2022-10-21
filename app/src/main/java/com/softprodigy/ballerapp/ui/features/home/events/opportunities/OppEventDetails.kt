@@ -26,7 +26,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.home.events.BasePay
 import com.softprodigy.ballerapp.ui.features.home.events.DaysOfPlay
 import com.softprodigy.ballerapp.ui.features.home.events.EvEvents
 import com.softprodigy.ballerapp.ui.features.home.events.EventViewModel
@@ -184,18 +186,53 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
         }
         AppDivider()
+        if (UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
+            ) {
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
+                Text(
+                    text = stringResource(id = R.string.staff_details),
+                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                Text(
+                    text = state.opportunitiesDetail.staffDetails,
+                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                )
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
+            }
+            AppDivider()
+        }
+
+
         Column(
             Modifier
                 .fillMaxSize()
                 .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
         ) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
-            Text(
-                text = stringResource(id = R.string.contact_With_questions),
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                fontWeight = FontWeight.Bold,
-            )
+            if (UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
+                Text(
+                    text = stringResource(id = R.string.question_contact),
+                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+            } else {
+                Text(
+                    text = stringResource(id = R.string.contact_With_questions),
+                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
+
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             Text(
                 text = state.opportunitiesDetail.userId.name.capitalize(),
@@ -216,7 +253,73 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
         }
+
         AppDivider()
+
+        if (UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
+            ) {
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
+                Text(
+                    text = stringResource(id = R.string.pay),
+                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                Text(
+                    text = stringResource(id = R.string.referees),
+                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+                RefereesLevels(state.opportunitiesDetail.basePay)
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+                Row(
+                    modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.size_12dp))
+                ) {
+                    Text(
+                        text =  stringResource(id = R.string.stat_managers),
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.weight(0.4f)
+                    )
+                    Text(
+                        text = "-",
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                        modifier = Modifier.weight(0.6f)
+                    )
+                }
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                Row(
+                    modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.size_12dp))
+                ) {
+                    Text(
+                        text =  stringResource(id = R.string.clock_managers),
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.weight(0.4f)
+                    )
+                    Text(
+                        text = "-",
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                        modifier = Modifier.weight(0.6f)
+                    )
+                }
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
+            }
+
+            AppDivider()
+        }
+
         Column(
             Modifier
                 .fillMaxSize()
@@ -329,6 +432,34 @@ fun DaysPlay(potentialDaysOfPlay: List<DaysOfPlay>) {
         }
     }
 }
+
+@Composable
+fun RefereesLevels(basePay: ArrayList<BasePay>) {
+    basePay.forEachIndexed { index, item ->
+
+        Row(
+            modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.size_12dp), horizontal = dimensionResource(
+                id = R.dimen.size_12dp
+            ))
+        ) {
+            Text(
+                text = item.level.capitalize(),
+                color = ColorBWGrayLight,
+                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.weight(0.4f)
+            )
+            Text(
+                text = "$" + item.cost + "/hr",
+                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                modifier = Modifier.weight(0.6f)
+            )
+        }
+
+    }
+}
+
 
 @Composable
 fun PlayerRequirements(req1: String, req2: String?) {

@@ -34,7 +34,7 @@ import com.softprodigy.ballerapp.ui.theme.appColors
 import com.softprodigy.ballerapp.ui.utils.CommonUtils
 
 @Composable
-fun OpportunitieScreen(vm: EventViewModel, moveToOppDetails: (String) -> Unit) {
+fun OpportunitiesScreen(vm: EventViewModel, moveToOppDetails: (String) -> Unit) {
 
     val state = vm.eventState.value
     remember {

@@ -32,12 +32,9 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun ProfileScreen(
-    vm: ProfileViewModel = hiltViewModel(),
+    vm: ProfileViewModel,
     updateTopBar: (TopBarData) -> Unit
 ) {
-    val dataStoreManager = DataStoreManager(LocalContext.current)
-    val role = dataStoreManager.getRole.collectAsState(initial = "")
-
     val state = vm.state.value
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         if (UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {

@@ -1,5 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.profile
 
+import com.softprodigy.ballerapp.data.response.GetSearchStaff
 import com.softprodigy.ballerapp.data.response.ParentDetails
 import com.softprodigy.ballerapp.data.response.UserDocType
 
@@ -35,9 +36,11 @@ sealed class ProfileEvent {
     data class OnPositionPlayedChanges(val index: Int, val isChecked: Boolean) : ProfileEvent()
     data class OnLeaveDialogClick(val showDialog: Boolean) : ProfileEvent()
     data class OnLeaveConfirmClick(val teamId: String) : ProfileEvent()
-
+    data class OnAgeRangeChanges(val ageRange: String) : ProfileEvent()
+    data class OnRefereeWithPartner(val refereeWithPartner: Boolean) : ProfileEvent()
+    data class OnReferringExperience(val refereeningExperience: String) : ProfileEvent()
     data class GetDocumentTypes(val teamId: String) : ProfileEvent()
-     object GetProfile : ProfileEvent()
+    object GetProfile : ProfileEvent()
     data class ShowDeleteDialog(val show: Boolean) : ProfileEvent()
     data class SetDeleteDocument(val docType: UserDocType) : ProfileEvent()
     data class DeleteDocument(val docType: UserDocType?) : ProfileEvent()
@@ -45,4 +48,8 @@ sealed class ProfileEvent {
     data class OnImageSelected(val docType: String, val teamImageUri: String) : ProfileEvent()
     data class SetUploadKey(val docType: String) : ProfileEvent()
     object GetReferee : ProfileEvent()
+    data class OnGameStaffChanges(val searchGameStaff: String) : ProfileEvent()
+    data class OnSelectedGameStaff(val getSearchStaff: GetSearchStaff) : ProfileEvent()
+    data class OnProfileImageSelected(val selectedImage: String) : ProfileEvent()
+    object ProfileUpload: ProfileEvent()
 }

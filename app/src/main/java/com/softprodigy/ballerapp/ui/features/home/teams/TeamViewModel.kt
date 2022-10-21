@@ -14,6 +14,7 @@ import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.Location
 import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
+import com.softprodigy.ballerapp.data.response.SwapUser
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.data.response.team.TeamRoaster
@@ -50,6 +51,8 @@ class TeamViewModel @Inject constructor(
     fun isRoasterDragEnabled(pos: ItemPosition) =
         _teamUiState.value.players.toMutableList().getOrNull(pos.index)?.locked != true
 
+    fun isUserDragEnabled(pos: ItemPosition) = true
+
     fun moveItem(from: ItemPosition, to: ItemPosition) {
         _teamUiState.value =
             _teamUiState.value.copy(
@@ -67,6 +70,16 @@ class TeamViewModel @Inject constructor(
                     .apply {
                         add(to.index, removeAt(from.index))
                     } as ArrayList<Player>
+            )
+    }
+
+    fun moveItemUser(from: ItemPosition, to: ItemPosition) {
+        _teamUiState.value =
+            _teamUiState.value.copy(
+                acceptPending = _teamUiState.value.acceptPending.toMutableList()
+                    .apply {
+                        add(to.index, removeAt(from.index))
+                    } as ArrayList<SwapUser>
             )
     }
 
@@ -590,6 +603,8 @@ class TeamViewModel @Inject constructor(
                         _teamUiState.value = _teamUiState.value.copy(
                             isLoading = false,
                             players = CommonUtils.getPlayerTabs(response.data.players),
+                            supportStaff = response.data.supportingCastDetails,
+                            acceptPending = response.data.pendingAndDeclinedMembers,
                             coaches = response.data.coaches,
                             teamName = response.data.name,
                             teamColorPrimary = response.data.colorCode,
