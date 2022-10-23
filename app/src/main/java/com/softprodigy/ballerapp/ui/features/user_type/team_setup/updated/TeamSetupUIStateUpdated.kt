@@ -3,6 +3,7 @@ package com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.softprodigy.ballerapp.data.request.Address
+import com.softprodigy.ballerapp.data.request.Members
 import com.softprodigy.ballerapp.data.response.UserRoles
 import com.softprodigy.ballerapp.data.response.team.Player
 
@@ -29,6 +30,7 @@ data class TeamSetupUIStateUpdated(
     //val inviteMemberEmail: ArrayList<String> = arrayListOf("", "", "", "", ""),
     //var inviteMemberCount: Int = 5,
     var inviteList: SnapshotStateList<InviteObject> = mutableStateListOf(),
+    var memberList: List<Members> = mutableListOf(),
 
     val teamNameOnJerseys: String = "",
     val teamNameOnTournaments: String = "",

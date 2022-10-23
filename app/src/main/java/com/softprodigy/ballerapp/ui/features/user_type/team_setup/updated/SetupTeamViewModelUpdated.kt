@@ -203,30 +203,30 @@ class SetupTeamViewModelUpdated @Inject constructor(
 
                 /* To achieve recomposition only*/
 
+                _teamSetupUiState.value =
+                    _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList
+                        .apply {
+                            add(InviteObject())
+                        })
+
+                event.index.let {
                     _teamSetupUiState.value =
                         _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList
                             .apply {
-                                add(InviteObject())
+                                removeAt(it + 1)
                             })
-
-                    event.index.let {
-                        _teamSetupUiState.value =
-                            _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList
-                                .apply {
-                                    removeAt(it+1)
-                                })
                 }
 
             }
 
-           is TeamSetupUIEventUpdated.OnCountryValueChange->{
-               _teamSetupUiState.value =
-                   _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList
-                       .apply {
-                           this[event.index].countryCode = event.code
-                       })
-           }
-            is TeamSetupUIEventUpdated.OnRoleValueChange->{
+            is TeamSetupUIEventUpdated.OnCountryValueChange -> {
+                _teamSetupUiState.value =
+                    _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList
+                        .apply {
+                            this[event.index].countryCode = event.code
+                        })
+            }
+            is TeamSetupUIEventUpdated.OnRoleValueChange -> {
                 _teamSetupUiState.value =
                     _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList
                         .apply {
@@ -396,8 +396,9 @@ class SetupTeamViewModelUpdated @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 inviteMemberResponse.value.let { response ->
-                    if (response.status) {
-
+                    if (response.data != null) {
+                        _teamSetupUiState.value =
+                            _teamSetupUiState.value.copy(memberList = response.data)
                     } else {
                         _teamSetupUiState.value =
                             _teamSetupUiState.value.copy(isLoading = false)
@@ -617,7 +618,11 @@ class SetupTeamViewModelUpdated @Inject constructor(
 
     private suspend fun createTeam() {
         val members = _teamSetupUiState.value.inviteList.mapIndexed { index, item ->
-            Members(name = item.name, mobileNumber = "${item.countryCode}${item.contact}", role = item.role.key)
+            Members(
+                name = item.name,
+                mobileNumber = "${item.countryCode}${item.contact}",
+                role = item.role.key
+            )
         }
         val location = Location(
             type = "Point",

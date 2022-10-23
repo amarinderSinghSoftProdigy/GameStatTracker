@@ -4,6 +4,7 @@ import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.common.safeApiCall
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.CreateTeamRequest
+import com.softprodigy.ballerapp.data.request.Members
 import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
 import com.softprodigy.ballerapp.data.request.UpdateTeamRequest
 import com.softprodigy.ballerapp.data.response.*
@@ -77,7 +78,7 @@ class TeamRepository @Inject constructor(
         return safeApiCall(dispatcher) { service.sendInvitation(updateTeamRequest = updateTeamRequest) }
     }
 
-    override suspend fun getInviteMembersByTeamId(teamId: String): ResultWrapper<BaseResponse<Any>> {
+    override suspend fun getInviteMembersByTeamId(teamId: String): ResultWrapper<BaseResponse<List<Members>>> {
         return safeApiCall(dispatcher) { service.getInviteMembersByTeamId(teamId = teamId) }
     }
 

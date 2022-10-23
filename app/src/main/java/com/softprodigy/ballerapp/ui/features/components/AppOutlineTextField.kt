@@ -91,7 +91,7 @@ fun AppOutlineTextField(
             )
         }
         if (isError) {
-            androidx.compose.material.Text(
+            Text(
                 text = errorMessage,
                 color = MaterialTheme.colors.error,
                 style = MaterialTheme.typography.caption,

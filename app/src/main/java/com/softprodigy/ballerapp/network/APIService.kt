@@ -249,7 +249,7 @@ open interface APIService {
     suspend fun updateInitialProfileToken(@Query("userId") userId: String): BaseResponse<String>
 
     @GET(ApiConstants.GET_TEAM_INVITED)
-    suspend fun getInviteMembersByTeamId(@Query("teamId") teamId: String): BaseResponse<Any>
+    suspend fun getInviteMembersByTeamId(@Query("teamId") teamId: String): BaseResponse<List<Members>>
 
     @POST(ApiConstants.ADD_PROFILE)
     suspend fun addProfile(@Body request: AddProfileRequest): BaseResponse<UserInfo>
@@ -266,7 +266,7 @@ open interface APIService {
     suspend fun registerMobile(@Body signUpData: SignUpPhoneData): BaseResponse<UserPhoneInfo>
 
     @POST(ApiConstants.SAVE_CHAT_GROUP)
-    suspend fun saveChatGroup(@Body request: RequestBody):BaseResponse<Any>
+    suspend fun saveChatGroup(@Body request: RequestBody): BaseResponse<Any>
 
     @GET(ApiConstants.GET_SEARCH_GAME_STAFF)
     suspend fun getSearchGameStaff(@Query("search") search: String): BaseResponse<List<GetSearchStaff>>

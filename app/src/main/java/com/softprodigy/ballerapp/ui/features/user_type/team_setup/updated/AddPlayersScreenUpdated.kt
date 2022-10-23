@@ -47,9 +47,10 @@ import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.common.validName
-import com.softprodigy.ballerapp.data.datastore.DataStoreManager
+import com.softprodigy.ballerapp.data.request.Members
 import com.softprodigy.ballerapp.data.response.UserRoles
 import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.theme.*
 import com.togitech.ccp.component.TogiCountryCodePicker
 import com.togitech.ccp.data.utils.getDefaultLangCode
@@ -61,6 +62,7 @@ val maxChar = 45
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun AddPlayersScreenUpdated(
+    teamData: TeamViewModel? = null,
     teamId: String? = "",
     vm: SetupTeamViewModelUpdated,
     onBackClick: () -> Unit,
@@ -68,15 +70,17 @@ fun AddPlayersScreenUpdated(
     onInvitationSuccess: () -> Unit
 ) {
     val context = LocalContext.current as Activity
+    val teamState = teamData?.teamUiState?.value
     val state = vm.teamSetupUiState.value
     val focusRequester = remember { FocusRequester() }
-
-
+    val expanded = remember {
+        mutableStateOf(false)
+    }
     remember {
         vm.onEvent(TeamSetupUIEventUpdated.GetRoles)
-            vm.initialInviteCount(2)
-        /*if (!teamId.isNullOrEmpty())
-            vm.onEvent(TeamSetupUIEventUpdated.GetInvitedTeamPlayers(teamId))*/
+        vm.initialInviteCount(2)
+        if (!teamId.isNullOrEmpty())
+            vm.onEvent(TeamSetupUIEventUpdated.GetInvitedTeamPlayers(teamId))
     }
 
     BackHandler {
@@ -131,29 +135,42 @@ fun AddPlayersScreenUpdated(
             verticalArrangement = Arrangement.Top
         ) {
             UserFlowBackground(color = MaterialTheme.appColors.buttonColor.textEnabled) {
-                /*FoldableItem(
-                    expanded = expanded.value,
-                    headerBackground = MaterialTheme.appColors.material.surface,
-                    headerBorder = BorderStroke(0.dp, Color.Transparent),
-                    header = { isExpanded ->
-                        TeamMemberItem("Springfield Bucks", "", "3", isExpanded, true)
-                    },
-                    childItems = state.teamInviteList,
-                    hasItemLeadingSpacing = false,
-                    hasItemTrailingSpacing = false,
-                    itemSpacing = 0.dp,
-                    itemHorizontalPadding = 0.dp,
-                    itemsBackground = MaterialTheme.appColors.material.primary,
-                    item = { match, index ->
-                        TeamMemberItem(
-                            "George",
-                            "",
-                            "Pending",
-                        )
-                    }
-                )
+                if (state.memberList.isNotEmpty() && teamData != null) {
+                    FoldableItem(
+                        expanded = expanded.value,
+                        headerBackground = MaterialTheme.appColors.material.surface,
+                        headerBorder = BorderStroke(0.dp, Color.Transparent),
+                        header = { isExpanded ->
+                            TeamMemberItem(
+                                state.memberList.size,
+                                Members(
+                                    teamId ?: "",
+                                    "",
+                                    teamState?.teamName ?: "",
+                                    profileImage = teamState?.logo ?: ""
+                                ),
+                                isExpanded,
+                                true
+                            )
+                        },
+                        childItems = state.memberList,
+                        hasItemLeadingSpacing = false,
+                        hasItemTrailingSpacing = false,
+                        itemSpacing = 0.dp,
+                        itemHorizontalPadding = 0.dp,
+                        itemsBackground = MaterialTheme.appColors.material.primary,
+                        item = { match, index ->
+                            TeamMemberItem(
+                                0,
+                                match,
+                                expanded.value,
+                                false,
+                            )
+                        }
+                    )
 
-                AppDivider()*/
+                    AppDivider()
+                }
 
                 Column(modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.size_16dp))) {
                     FlowRow {
@@ -557,9 +574,8 @@ fun AddRemoveButton(icon: Painter, teamColor: String, onItemClick: () -> Unit) {
 
 @Composable
 fun TeamMemberItem(
-    name: String,
-    url: String,
-    status: String,
+    count: Int,
+    data: Members,
     isExpanded: Boolean = false,
     header: Boolean = false
 ) {
@@ -578,7 +594,7 @@ fun TeamMemberItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             CoilImage(
-                src = BuildConfig.IMAGE_SERVER + url,
+                src = BuildConfig.IMAGE_SERVER + data.profileImage,
                 modifier = Modifier
                     .size(dimensionResource(id = R.dimen.size_32dp))
                     .clip(CircleShape)
@@ -593,7 +609,7 @@ fun TeamMemberItem(
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
             Text(
-                text = name,
+                text = data.name,
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                 style = MaterialTheme.typography.h5,
                 fontWeight = FontWeight.SemiBold
@@ -602,7 +618,7 @@ fun TeamMemberItem(
         Row(
             modifier = Modifier.align(Alignment.CenterEnd),
         ) {
-            val color = when (status) {
+            val color = when (data.status) {
                 "Pending" -> {
                     MaterialTheme.appColors.textField.labelDark
                 }
@@ -618,7 +634,7 @@ fun TeamMemberItem(
             }
 
             Text(
-                text = if (header) "${status} ${stringResource(id = R.string.invited)}" else status,
+                text = if (header) "$count ${stringResource(id = R.string.invited)}" else data.status,
                 color = color,
                 style = MaterialTheme.typography.body2,
                 fontWeight = FontWeight.SemiBold

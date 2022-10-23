@@ -52,7 +52,7 @@ fun CoachFlowBackground(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .absoluteOffset(
-                        x = dimensionResource(id = R.dimen.size_64dp),
+                        x = dimensionResource(id = R.dimen.size_80dp),
                         y = -dimensionResource(id = R.dimen.size_35dp)
                     )
             ) {
@@ -70,7 +70,7 @@ fun CoachFlowBackground(
                             start = dimensionResource(id = R.dimen.size_20dp),
                             top = dimensionResource(id = R.dimen.size_20dp)
                         )
-                        .size(dimensionResource(id = R.dimen.size_200dp))
+                        .size(dimensionResource(id = R.dimen.size_225dp))
                 ) {
                     Box(
                         modifier = Modifier
@@ -90,6 +90,9 @@ fun CoachFlowBackground(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
+                    .clickable {
+                        showOptions.value = false
+                    }
                     .verticalScroll(rememberScrollState())
             ) {
                 content()

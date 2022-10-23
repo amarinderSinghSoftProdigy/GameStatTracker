@@ -48,7 +48,10 @@ data class UpdateTeamDetailRequest(
 
 
 data class Members(
+    @SerializedName("_id") var _id: String = "",
+    @SerializedName("status") var status: String = "",
     @SerializedName("name") var name: String = "",
     @SerializedName("mobileNumber") var mobileNumber: String = "", /*need to send profile _id with mobileNumber field in case of invitation from select swap profile dialog */
     @SerializedName("role") var role: String = "",
+    @SerializedName("profileImage") var profileImage: String = "",
 )

@@ -2,11 +2,11 @@ package com.softprodigy.ballerapp.domain.repository
 
 import com.softprodigy.ballerapp.common.ResultWrapper
 import com.softprodigy.ballerapp.data.request.CreateTeamRequest
+import com.softprodigy.ballerapp.data.request.Members
 import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
 import com.softprodigy.ballerapp.data.request.UpdateTeamRequest
 import com.softprodigy.ballerapp.data.response.*
 import com.softprodigy.ballerapp.data.response.homepage.HomePageCoachModel
-import com.softprodigy.ballerapp.data.response.invitation.UserRoleModel
 import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
@@ -49,7 +49,7 @@ interface ITeamRepository {
 
     suspend fun inviteMembersByTeamId(updateTeamRequest: UpdateTeamRequest): ResultWrapper<BaseResponse<Any>>
 
-    suspend fun getInviteMembersByTeamId(teamId: String): ResultWrapper<BaseResponse<Any>>
+    suspend fun getInviteMembersByTeamId(teamId: String): ResultWrapper<BaseResponse<List<Members>>>
 
     suspend fun getAllInvitation(
         page: Int = 1,

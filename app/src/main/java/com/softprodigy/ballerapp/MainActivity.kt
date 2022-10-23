@@ -66,7 +66,7 @@ import com.softprodigy.ballerapp.ui.features.user_type.UserTypeScreen
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.*
 import com.softprodigy.ballerapp.ui.features.venue.VenueListScreen
 import com.softprodigy.ballerapp.ui.features.welcome.WelcomeScreen
-import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
+import com.softprodigy.ballerapp.ui.theme.BallerAppTheme
 import com.softprodigy.ballerapp.ui.theme.ColorPrimaryOrange
 import com.softprodigy.ballerapp.ui.theme.appColors
 import dagger.hilt.android.AndroidEntryPoint
@@ -109,9 +109,7 @@ class MainActivity : ComponentActivity() {
             val mainViewModel: MainViewModel = hiltViewModel()
             setupTeamViewModelUpdated = hiltViewModel()
             val state = mainViewModel.state.value
-            BallerAppMainTheme(
-                customColor = state.color ?: MaterialTheme.appColors.material.primaryVariant
-            ) {
+            BallerAppTheme {
                 val navController = rememberNavController()
                 if (!state.showAppBar) {
                     Surface(
@@ -354,7 +352,7 @@ fun NavControllerComposable(
     val context = LocalContext.current
     val dataStoreManager = DataStoreManager(activity)
     val userToken = dataStoreManager.userToken.collectAsState(initial = "")
-    UserStorage.token= userToken.value
+    UserStorage.token = userToken.value
     val getRole = dataStoreManager.getRole.collectAsState(initial = "")
     val email = dataStoreManager.getEmail.collectAsState(initial = "")
     val scope = rememberCoroutineScope()

@@ -2,14 +2,11 @@
 <resources>
 
     <style name="Theme.BallerApp" parent="Theme.MaterialComponents.Light.NoActionBar">
-<!--    <style name="Theme.BallerApp" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">-->
-
-        <!--        <item name="android:windowIsTranslucent">true</item>-->
-
-        <!--        <item name="android:statusBarColor">@color/purple_700</item>-->
-
+        <item name="colorAccent">@color/ball_color</item>
+        <item name="colorPrimary">@color/ball_color</item>
+        <item name="colorPrimaryDark">@color/ball_color</item>
+        <item name="android:statusBarColor">@color/ball_color</item>
         <item name="android:windowBackground">@drawable/splash_background</item>
-
     </style>
 
 </resources>

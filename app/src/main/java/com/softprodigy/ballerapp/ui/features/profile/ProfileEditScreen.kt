@@ -241,7 +241,9 @@ fun ProfileEditScreen(
                                             ModalBottomSheetValue.Expanded
                                         )
                                     }
-                                }) {
+                                },
+                                contentAlignment = Alignment.Center
+                            ) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.ic_edit),
                                     contentDescription = "",

@@ -43,16 +43,14 @@ import com.softprodigy.ballerapp.common.Route
 import com.softprodigy.ballerapp.common.Route.CREATE_NEW_CHAT_CONVO
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
+import com.softprodigy.ballerapp.data.request.Members
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.events.*
 import com.softprodigy.ballerapp.ui.features.home.events.division.divisionTab.DivisionScreenTab
 import com.softprodigy.ballerapp.ui.features.home.events.game.GameDetailsScreen
 import com.softprodigy.ballerapp.ui.features.home.events.game.GameRuleScreen
 import com.softprodigy.ballerapp.ui.features.home.events.new_event.NewEventScreen
-import com.softprodigy.ballerapp.ui.features.home.events.opportunities.EventRefereeRegistrationScreen
-import com.softprodigy.ballerapp.ui.features.home.events.opportunities.EventRegisterSuccessScreen
-import com.softprodigy.ballerapp.ui.features.home.events.opportunities.EventRegistraionDetails
-import com.softprodigy.ballerapp.ui.features.home.events.opportunities.OppEventDetails
+import com.softprodigy.ballerapp.ui.features.home.events.opportunities.*
 import com.softprodigy.ballerapp.ui.features.home.events.team.team_tabs.EventTeamTabs
 import com.softprodigy.ballerapp.ui.features.home.events.venues.openVenue.OpenVenueTopTabs
 import com.softprodigy.ballerapp.ui.features.home.home_screen.HomeScreen
@@ -304,6 +302,11 @@ fun NavControllerComposable(
             homeViewModel.setTopAppBar(false)
             HomeScreen(
                 role,
+                onOpportunityClick = {
+                    navController.navigate(Route.OPPORTUNITIES_SCREEN)
+                }, onLeagueClick = {
+                    navController.navigate(Route.MY_LEAGUE)
+                },
                 onInvitationCLick = {
                     navController.navigate(Route.INVITATION_SCREEN)
                 },
@@ -744,6 +747,7 @@ fun NavControllerComposable(
             }
             val teamId = it.arguments?.getString("teamId")
             AddPlayersScreenUpdated(
+                teamData = teamViewModel,
                 teamId,
                 vm = setupTeamViewModelUpdated,
                 onBackClick = {
@@ -930,6 +934,31 @@ fun NavControllerComposable(
             SearchGameStaff(profileViewModel, onGameStaffClick = {
                 navController.popBackStack()
             })
+        }
+
+        composable(route = Route.OPPORTUNITIES_SCREEN) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = stringResource(id = R.string.events_label),
+                    topBar = TopBar.SINGLE_LABEL_BACK,
+                )
+            )
+            OpportunitiesScreen(eventViewModel) {
+                navController.popBackStack()
+            }
+        }
+
+        composable(route = Route.MY_LEAGUE) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = stringResource(id = R.string.events_label),
+                    topBar = TopBar.SINGLE_LABEL_BACK,
+                )
+            )
+            MyLeagueScreen(eventViewModel) {
+                eventMainTitle = it
+                navController.navigate(Route.LEAGUE_DETAIL_SCREEN)
+            }
         }
     }
 

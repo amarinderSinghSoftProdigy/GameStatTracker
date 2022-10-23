@@ -39,6 +39,8 @@ import com.softprodigy.ballerapp.ui.theme.appColors
 fun HomeFirstTimeLoginScreen(
     viewModel: HomeViewModel,
     teamVm: TeamViewModel,
+    onLeagueClick: () -> Unit,
+    onOpportunityClick: () -> Unit,
     onTeamNameClick: (Boolean) -> Unit,
     onCreateTeamClick: () -> Unit,
     onInvitationCLick: () -> Unit
@@ -168,7 +170,19 @@ fun HomeFirstTimeLoginScreen(
                 }
                 FlowRow {
                     state.homeItemList.forEachIndexed { index, item ->
-                        HomeScreenItem(item)
+                        HomeScreenItem(item) {
+                            when (index) {
+                                0 -> {
+                                    onOpportunityClick()
+                                }
+                                1 -> {
+                                    onLeagueClick()
+                                }
+                                2 -> {
+                                    onOpportunityClick()
+                                }
+                            }
+                        }
                     }
                 }
                 if (state.homeItemList.isNotEmpty())
@@ -187,11 +201,14 @@ fun HomeFirstTimeLoginScreen(
 }
 
 @Composable
-fun HomeScreenItem(data: HomeItemResponse) {
+fun HomeScreenItem(data: HomeItemResponse, onClick: () -> Unit) {
     Column {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .clickable {
+                    onClick()
+                }
                 .background(
                     color = Color.White,
                     shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),

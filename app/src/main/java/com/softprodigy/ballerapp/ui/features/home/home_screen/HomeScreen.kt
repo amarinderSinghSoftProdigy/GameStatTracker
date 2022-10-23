@@ -60,6 +60,8 @@ fun HomeScreen(
     onCreateTeamClick: (Team?) -> Unit,
     onTeamNameClick: (Boolean) -> Unit,
     onInviteClick: () -> Unit,
+    onOpportunityClick: () -> Unit,
+    onLeagueClick: () -> Unit,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
     showBottomBar: (Boolean) -> Unit
 ) {
@@ -156,13 +158,18 @@ fun HomeScreen(
             }
         }) {
         if (!homeState.showBottomAppBar) {
-            HomeFirstTimeLoginScreen(vm, teamVm, {
-                onTeamNameClick(it)
-            }, {
-                onCreateTeamClick(null)
-            }, {
-                onInvitationCLick()
-            }
+            HomeFirstTimeLoginScreen(vm, teamVm,
+                {
+                    onLeagueClick()
+                }, {
+                    onOpportunityClick()
+                }, {
+                    onTeamNameClick(it)
+                }, {
+                    onCreateTeamClick(null)
+                }, {
+                    onInvitationCLick()
+                }
             )
         } else if (role.isNotEmpty()) {
             Box {
@@ -256,9 +263,9 @@ fun HomeScreen(
                         Box(
                             Modifier
                                 .fillMaxWidth()
-                                /*.clickable {
-                                   onInvitationCLick.invoke()
-                               }*/
+                                .clickable {
+                                   onOpportunityClick.invoke()
+                               }
                                 .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                             contentAlignment = Alignment.Center
                         ) {
@@ -326,21 +333,10 @@ fun HomeScreen(
                             )
                         }
                     }
-                    /*     }*/
-
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                    /*UserFlowBackground(
-                    padding = 0.dp,
-                ) {
-                    MessageComponent()
-                }
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))*/
-
                     Row {
                         EventItem(
-                            /* if (role != UserType.REFEREE.key)*/
-                            "my_events"
-                            /*else "my_shifts",*/,
+                            "my_events",
                             "events_label",
                             homeState.homePageCoachModel.myEvents.toString()
                         )
@@ -384,7 +380,6 @@ fun HomeScreen(
                             )
                         }
                     }
-                    /*  }*/
 
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 

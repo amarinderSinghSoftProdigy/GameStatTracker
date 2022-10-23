@@ -67,6 +67,7 @@ object Route {
     const val PROFILE_EDIT_SCREEN = "profileeditscreen"
     const val INVITATION_SCREEN = "invitationScreen"
     const val GAME_STAFF_SCREEN = "gameStaffScreen"
+    const val OPPORTUNITIES_SCREEN = "opportunitiesScreen"
     const val NEW_EVENT = "newEvent"
     const val MY_LEAGUE = "myLeague"
     const val MY_CHAT_DETAIL = "myChatDetail"

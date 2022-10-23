@@ -361,9 +361,7 @@ fun ProfileSetUpScreen(
                             EditFields(
                                 data = state.signUpData.email ?: "",
                                 onValueChange = {
-                                    if (it.length <= maxEmailChar && it.isNotEmpty())
-                                        signUpViewModel.onEvent(SignUpUIEvent.OnEmailChanged(it))
-
+                                    signUpViewModel.onEvent(SignUpUIEvent.OnEmailChanged(it))
                                 },
                                 stringResource(id = R.string.email),
                                 keyboardOptions = KeyboardOptions(
@@ -508,6 +506,7 @@ fun ProfileSetUpScreen(
                                             )
                                         )
                                         TogiCountryCodePicker(
+                                            showCountryFlag=false,
                                             pickedCountry = {
                                                 /*  state.phoneCode = it.countryPhoneCode*/
                                                 signUpViewModel.onEvent(

@@ -166,7 +166,17 @@ fun LoginScreen(
                         )
                     )
                 }
+                if ((phone.value || !validPhoneNumber(state.signUpData.phone) && state.signUpData.phone.isNotEmpty())) {
+                    Text(
+                        text = stringResource(id = R.string.valid_phone_number),
+                        color = MaterialTheme.colors.error,
+                        style = MaterialTheme.typography.caption,
+                        modifier = Modifier
+                            .padding(dimensionResource(id = R.dimen.size_4dp))
+                            .fillMaxWidth(0.95f),
 
+                        )
+                }
 
                 /*AppOutlineTextField(
                     value = state.signUpData.phone,
