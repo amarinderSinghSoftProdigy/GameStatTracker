@@ -32,7 +32,7 @@ import com.softprodigy.ballerapp.ui.theme.rubikFamily
 
 @Composable
 fun GameSettingsController (
-
+    isEditMode: Boolean,
 ) {
     Box(
         modifier =  Modifier.fillMaxSize()
@@ -47,30 +47,27 @@ fun GameSettingsController (
                 .fillMaxHeight()
             )
             Column(modifier = Modifier.fillMaxHeight()) {
-                periodSelection()
+                periodSelection(isEditMode)
                 Spacer(
                     modifier = Modifier
                         .background(colorResource(id = R.color.game_grid_border_color))
                         .fillMaxWidth()
                         .height(dimensionResource(id = R.dimen.size_half_dp))
                 )
-                gameSettings()
+                gameSettings(isEditMode)
             }
         }
     }
 }
 
 @Composable
-inline fun periodSelection() {
+inline fun periodSelection(isEditMode: Boolean) {
     var periods = stringArrayResource(id = R.array.game_periods)
     Column(
         Modifier
             .height(dimensionResource(id = R.dimen.size_46dp))
-            .padding(
-                horizontal = dimensionResource(
-                    id = R.dimen.size_8dp
-                )
-            ),
+            .background(if(isEditMode) colorResource(id = R.color.game_setting_edit_bg_disable_color) else Color.Transparent)
+            .padding(horizontal = dimensionResource(id = R.dimen.size_8dp)),
     verticalArrangement = Arrangement.Center) {
         LazyRow {
             itemsIndexed(periods) { index, period ->
@@ -107,8 +104,9 @@ fun periodListItem(index: Int, periodItem: String = "", selectedIndex: Int = 1) 
 }
 
 @Composable
-inline fun gameSettings() {
+inline fun gameSettings(isEditMode: Boolean) {
     Row(modifier = Modifier
+        .background(if (isEditMode) colorResource(id = R.color.game_setting_edit_bg_enable_color) else Color.Transparent)
         .fillMaxWidth()
         .fillMaxHeight()
     ){
@@ -227,12 +225,14 @@ inline fun gameSettings() {
                                         .height(dimensionResource(id = R.dimen.size_40dp)),
                                 ) {
                                     Column(modifier = Modifier
-                                        .fillMaxWidth().fillMaxHeight(),
+                                        .fillMaxWidth()
+                                        .fillMaxHeight(),
                                         verticalArrangement = Arrangement.Center
                                     ) {
                                         Column(
                                             modifier = Modifier
-                                                .fillMaxWidth().height(39.dp),
+                                                .fillMaxWidth()
+                                                .height(39.dp),
                                             verticalArrangement = Arrangement.Center
                                         ) {
                                             AppText(

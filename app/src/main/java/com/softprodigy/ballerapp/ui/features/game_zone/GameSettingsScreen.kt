@@ -131,9 +131,9 @@ private fun gameSettingViews(onPeriodListener: () -> Unit) {
             )) {
             settingPeriod(placeHolder = stringResource(id = R.string.periods), value = "4 Quarters", onPeriodListener = onPeriodListener)
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_32dp)))
-            settingSubTitle(placeHolder = stringResource(id = R.string.period_length), value = "12 min", onValueChangeListener = { })
+            settingSubTitle(placeHolder = stringResource(id = R.string.period_length), value = "12 min", "Error message", onValueChangeListener = { })
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_32dp)))
-            settingSubTitle(placeHolder = stringResource(id = R.string.free_throws), value = "Standard", onValueChangeListener = { })
+            settingSubTitle(placeHolder = stringResource(id = R.string.free_throws), value = "Standard", "Error message", onValueChangeListener = { })
 
         }
         Spacer(modifier = Modifier
@@ -152,11 +152,11 @@ private fun gameSettingViews(onPeriodListener: () -> Unit) {
                 end = 0.dp,
                 bottom = 0.dp
             )) {
-            settingSubTitle(placeHolder = stringResource(id = R.string.timeouts), value = "Per Half", onValueChangeListener = { })
+            settingSubTitle(placeHolder = stringResource(id = R.string.timeouts), value = "Per Half", "Error message", onValueChangeListener = { })
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_32dp)))
-            settingSubTitle(placeHolder = stringResource(id = R.string.full_timeouts_per), value = "12", onValueChangeListener = { })
+            settingSubTitle(placeHolder = stringResource(id = R.string.full_timeouts_per), value = "12", "Error message", onValueChangeListener = { })
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_32dp)))
-            settingSubTitle(placeHolder = stringResource(id = R.string.thirty_sec_timeouts_per), value = "7", onValueChangeListener = { })
+            settingSubTitle(placeHolder = stringResource(id = R.string.thirty_sec_timeouts_per), value = "7", "Error message", onValueChangeListener = { })
 
         }
         Spacer(modifier = Modifier
@@ -174,11 +174,11 @@ private fun gameSettingViews(onPeriodListener: () -> Unit) {
                 end = 0.dp,
                 bottom = 0.dp
             )) {
-            settingSubTitle(placeHolder = stringResource(id = R.string.halftime_length), value = "4 Mins", onValueChangeListener = { })
+            settingSubTitle(placeHolder = stringResource(id = R.string.halftime_length), value = "4 Mins", "Error message",onValueChangeListener = { })
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_32dp)))
-            settingSubTitle(placeHolder = stringResource(id = R.string.shot_clock), value = "12 s", onValueChangeListener = { })
+            settingSubTitle(placeHolder = stringResource(id = R.string.shot_clock), value = "12 s", "Error message",onValueChangeListener = { })
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_32dp)))
-            settingSubTitle(placeHolder = stringResource(id = R.string.fouling_out), value = "5", onValueChangeListener = { })
+            settingSubTitle(placeHolder = stringResource(id = R.string.fouling_out), value = "5", "Error message", onValueChangeListener = { })
 
         }
     }
@@ -217,7 +217,7 @@ private fun settingPeriod(placeHolder:String? = "", value: String? = "", onPerio
 }
 
 @Composable
-private fun settingSubTitle(placeHolder:String? = "", value: String? = "", onValueChangeListener: (String) -> Unit, ){
+private fun settingSubTitle(placeHolder:String? = "", value: String? = "", errorMessage: String, onValueChangeListener: (String) -> Unit){
     AppText(
         text = placeHolder!!,
         color = colorResource(id = R.color.game_settings_title_color),
@@ -239,7 +239,7 @@ private fun settingSubTitle(placeHolder:String? = "", value: String? = "", onVal
             keyboardType = KeyboardType.Text,
             capitalization = KeyboardCapitalization.Sentences
         ),
-        errorMessage = stringResource(id = R.string.address_error),
+        errorMessage = errorMessage,
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = colorResource(id = R.color.game_settings_input_field_bg_color),
             unfocusedBorderColor = colorResource(id = R.color.game_settings_input_field_bg_color),
@@ -250,9 +250,10 @@ private fun settingSubTitle(placeHolder:String? = "", value: String? = "", onVal
         ),
         textStyle = LocalTextStyle.current.copy(
             color = Color.White,
-            fontSize = dimensionResource(id = R.dimen.size_14dp).value.sp
+            fontSize = dimensionResource(id = R.dimen.size_14dp).value.sp,
+            fontFamily = rubikFamily,
+            fontWeight = FontWeight.W500,
         ),
         isError = (value.isNotEmpty() && value.isEmpty()),
-        maxLines = 1,
     )
 }

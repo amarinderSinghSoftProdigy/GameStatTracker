@@ -48,7 +48,8 @@
     <color name="game_dialog_bg_color">#E517191B</color>
     <color name="game_dialog_player_text_field_bg_color">#17191B</color>
 
-
-
+    <color name="game_setting_edit_bg_color">#3C4348</color>
+    <color name="game_setting_edit_bg_disable_color">#32373C</color>
+    <color name="game_setting_edit_bg_enable_color">#260177C1</color>
 
 </resources>

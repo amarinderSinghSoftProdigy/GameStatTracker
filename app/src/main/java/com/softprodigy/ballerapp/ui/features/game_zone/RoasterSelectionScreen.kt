@@ -42,14 +42,15 @@ fun RoasterSelectionScreen(
                     //.background(Color.Transparent.copy(alpha = .75f)),
 
             ) {
+                var profileImage = "https://images.unsplash.com/profile-1446404465118-3a53b909cc82?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&cs=tinysrgb&fit=crop&h=128&w=128&s=27a346c2362207494baa7b76f5d606e5"
                 var playerList: ArrayList<Player> = ArrayList();
-                playerList.add(Player(_id = "1", firstName = "Satish", position = "10"))
-                playerList.add(Player(_id = "2", firstName = "Satish", position = "10"))
-                playerList.add(Player(_id = "3", firstName = "Satish", position = "10"))
-                playerList.add(Player(_id = "4", firstName = "Satish"))
-                playerList.add(Player(_id = "5", firstName = "Satish", position = "10"))
-                playerList.add(Player(_id = "6", firstName = "Satish"))
-                playerList.add(Player(_id = "7", firstName = "Satish", position = "10"))
+                playerList.add(Player(_id = "1", firstName = "Satish", position = "10", profileImage = profileImage))
+                playerList.add(Player(_id = "2", firstName = "Satish", position = "10", profileImage = profileImage))
+                playerList.add(Player(_id = "3", firstName = "Satish", position = "10", profileImage = profileImage))
+                playerList.add(Player(_id = "4", firstName = "Satish", profileImage = profileImage))
+                playerList.add(Player(_id = "5", firstName = "Satish", position = "10", profileImage = profileImage))
+                playerList.add(Player(_id = "6", firstName = "Satish", profileImage = profileImage))
+                playerList.add(Player(_id = "7", firstName = "Satish", position = "10", profileImage = profileImage))
 
                 Column(modifier = Modifier.weight(1f)
                     .padding(

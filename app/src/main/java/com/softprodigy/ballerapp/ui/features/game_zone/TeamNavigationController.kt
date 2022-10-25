@@ -32,13 +32,15 @@ import com.softprodigy.ballerapp.ui.theme.rubikFamily
 
 @Composable
 fun TeamNavigationController (
+    isEditMode: Boolean,
     onAddRosterClick: () -> Unit,
+    onEditClick: () -> Unit,
 ) {
     var hasMyTeamEnabled = remember { mutableStateOf(false) }
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(id = R.color.game_period_background_color))
+            .background(if(isEditMode) colorResource(id = R.color.game_setting_edit_bg_disable_color) else colorResource(id = R.color.game_period_background_color))
     ) {
         Column(modifier = Modifier
             .fillMaxHeight()
@@ -53,8 +55,12 @@ fun TeamNavigationController (
                     isTrackingEmpty = true,
                     onAddRosterClick = onAddRosterClick
                 )
-            else
-                PointList()
+            else {
+                PointList(
+                    isEditMode = isEditMode,
+                    onEditClick = onEditClick
+                )
+            }
         }
     }
 }
@@ -104,7 +110,6 @@ fun teamHandler(onPreviousClick: () -> Unit, onNextClick: () -> Unit) {
                     modifier = Modifier
                         .width(dimensionResource(id = R.dimen.size_32dp))
                         .height(dimensionResource(id = R.dimen.size_32dp)),
-
                     onClick = { onPreviousClick.invoke() }
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))

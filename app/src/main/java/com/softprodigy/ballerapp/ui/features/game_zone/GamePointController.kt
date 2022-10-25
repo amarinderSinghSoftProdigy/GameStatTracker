@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -20,6 +21,7 @@ import com.softprodigy.ballerapp.ui.theme.rubikFamily
 
 @Composable
 fun GamePointController (
+    isEditMode: Boolean,
     onSettingClick: (GameSettingsState) -> Unit,
     onPointClick: (GameSettingsState) -> Unit,
 ) {
@@ -38,8 +40,7 @@ fun GamePointController (
 
             )
             Column(
-                Modifier.
-                        fillMaxSize(),
+                Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
@@ -51,8 +52,10 @@ fun GamePointController (
                 settingsList.add(GameSettingsState(3, stringResource(id = R.string.timeouts), R.drawable.ic_timeouts))
 
 
-                LazyVerticalGrid(columns = GridCells.Fixed(2), modifier = Modifier.height(
-                    dimensionResource(id = R.dimen.size_90dp)) ) {
+                LazyVerticalGrid(columns = GridCells.Fixed(2),
+                    modifier = Modifier.height(dimensionResource(id = R.dimen.size_90dp))
+                        .background(if(isEditMode) colorResource(id = R.color.game_setting_edit_bg_disable_color) else Color.Transparent),
+                ) {
                     itemsIndexed(settingsList) { index, setting ->
 
                         Column(
@@ -94,7 +97,10 @@ fun GamePointController (
                     .fillMaxWidth()
                     .height(dimensionResource(id = R.dimen.size_1dp))
                 )
-                LazyVerticalGrid(columns = GridCells.Fixed(2), ) {
+                LazyVerticalGrid(columns = GridCells.Fixed(2),
+                    modifier = Modifier
+                        .background(if(isEditMode) colorResource(id = R.color.game_setting_edit_bg_enable_color) else Color.Transparent),
+                    ) {
                     itemsIndexed(pointList) { index, point ->
                         Column(
                             Modifier

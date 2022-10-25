@@ -76,9 +76,7 @@ private fun gameTimeoutsNavigation(onTimeoutClose:() -> Unit ) {
                 textAlign = TextAlign.Center,
                 fontFamily = rubikFamily,
                 fontWeight = FontWeight.W500,
-                modifier = Modifier
-                    .fillMaxWidth()
-
+                modifier = Modifier.fillMaxWidth()
             )
         }
 

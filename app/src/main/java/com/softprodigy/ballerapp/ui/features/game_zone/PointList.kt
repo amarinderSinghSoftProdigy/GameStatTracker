@@ -1,6 +1,7 @@
 package com.softprodigy.ballerapp.ui.features.game_zone
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,25 +20,30 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.theme.ButtonColor
 import com.softprodigy.ballerapp.ui.theme.appColors
 import com.softprodigy.ballerapp.ui.theme.rubikFamily
 
 @Composable
 fun PointList(
+    isEditMode: Boolean,
+    onEditClick: () -> Unit,
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = colorResource(id = R.color.game_center_background_color))
+            .background(
+                color = if (isEditMode) colorResource(id = R.color.game_setting_edit_bg_disable_color) else colorResource(
+                    id = R.color.game_center_background_color
+                )
+            )
         //.background(Color.Red)
     ) {
 
@@ -57,9 +63,43 @@ fun PointList(
                     pointListItem(
                         index,
                         point = point,
+                        onEditClick = onEditClick
                     )
                 }
             }
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .padding(bottom = dimensionResource(id = R.dimen.size_16dp))
+                .clickable { },
+
+            verticalArrangement = Arrangement.Bottom
+        ) {
+            AppButton(
+                onClick = {  },
+                text = stringResource(R.string.dialog_button_cancel),
+                colors = ButtonColor(
+                    bckgroundEnabled = colorResource(id = R.color.game_box_score_list_item_bg_color),
+                    bckgroundDisabled = colorResource(id = R.color.game_box_score_list_item_bg_color),
+                    textEnabled = Color.White,
+                    textDisabled = Color.White
+                ),
+                modifier = Modifier
+                    .width(dimensionResource(id = R.dimen.size_150dp))
+                    .height(dimensionResource(id = R.dimen.size_48dp))
+                    .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                    .border(
+                        width = 1.dp,
+                        color = Color.White,
+                        shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+                    )
+                    .align(alignment = Alignment.CenterHorizontally)
+                    .background(colorResource(id = R.color.game_box_score_list_item_bg_color)),
+            )
         }
     }
 }
@@ -68,7 +108,7 @@ fun PointList(
 fun pointListItem(
     index: Int,
     point: String,
-
+    onEditClick: () -> Unit,
 ) {
     val pointListMenuItems = stringArrayResource(id = R.array.game_point_list_menu_items)
     val disabledItem = 1
@@ -194,14 +234,6 @@ fun pointListItem(
                             onClick = {
                                 expanded.value = false
                                 selectedItemIndex.value = itemIndex
-                                //if(itemValue.equals(context.applicationContext.resources.getString(R.string.add_new)))
-                                     /*AddNewPlayerDialog(
-                                        playerName = "Test",
-                                        jerseyNumber = "1",
-                                        onDismiss = { *//*TODO*//* },
-                                        onSaveClick = { *//*TODO*//* },
-                                    )*/
-                                    //menuItemClick(context = context, itemValue = itemValue)
                             },
                             enabled = (itemIndex != disabledItem),
                             modifier = Modifier.fillMaxWidth(),
@@ -250,7 +282,9 @@ fun pointListItem(
         )
     }
     else if(selectedItemIndex.value == 1) {
-
+        onEditClick.invoke()
+        selectedItemIndex.value = -1
+        expanded.value = false
     }
     else if(selectedItemIndex.value == 2) {
         AddNewPlayerDialog(

@@ -144,12 +144,12 @@ fun CoachListItem(
                 )
             ){
                 Column( modifier = Modifier
-                    .width(dimensionResource(id = R.dimen.size_14dp))
-                    .height(dimensionResource(id = R.dimen.size_14dp)),
+                    .width(dimensionResource(id = R.dimen.size_16dp))
+                    .height(dimensionResource(id = R.dimen.size_16dp)),
                     horizontalAlignment = Alignment.End,
 
                 ){
-                   Icon(painter = painterResource(id = R.drawable.ic_player_info),
+                   Icon(painter = painterResource(id = R.drawable.ic_info),
                         contentDescription = "",
                         tint = Color.Unspecified,
                    )
@@ -162,8 +162,7 @@ fun CoachListItem(
             modifier =
             Modifier
                 .background(
-                    //color = MaterialTheme.appColors.material.onSurface,
-                    color = Color.Red,
+                    color = MaterialTheme.appColors.material.onSurface,
                     shape = CircleShape
                 )
                 .size(dimensionResource(id = R.dimen.size_80dp))

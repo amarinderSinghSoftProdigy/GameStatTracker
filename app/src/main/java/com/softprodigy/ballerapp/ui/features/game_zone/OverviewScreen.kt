@@ -3,6 +3,8 @@ package com.softprodigy.ballerapp.ui.features.game_zone
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,10 +19,11 @@ fun OverviewScreen (
     onPointClick: (GameSettingsState) -> Unit,
     onAddRosterClick: () -> Unit,
 ) {
+    var isEditMode = remember { mutableStateOf( false )}
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .background(colorResource(id = R.color.game_setting_edit_bg_color))
     ) {
         Row(
             Modifier
@@ -43,6 +46,7 @@ fun OverviewScreen (
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 GamePointController(
+                    isEditMode.value,
                     onSettingClick = onSettingClick,
                     onPointClick = onPointClick
                 )
@@ -59,7 +63,9 @@ fun OverviewScreen (
                     //.background(colorResource(id = R.color.game_center_background_color)),
             ) {
                 TeamNavigationController(
-                    onAddRosterClick = onAddRosterClick
+                    isEditMode = isEditMode.value,
+                    onAddRosterClick = onAddRosterClick,
+                    onEditClick = { isEditMode.value = !isEditMode.value}
                 )
             }
             Column(
@@ -68,15 +74,8 @@ fun OverviewScreen (
                     //.padding(start = 0.dp, top = 0.dp, end = dimensionResource(id = R.dimen.size_20dp), bottom = 0.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                GameSettingsController()
+                GameSettingsController(isEditMode.value)
             }
         }
-        /*AddNewPlayerDialog(
-            onDismiss = {   },
-            onSaveClick = {   },
-            playerName = "Satish",
-            jerseyNumber = "02"
-        )*/
-        //GameSettingsDialog {}
     }
 }

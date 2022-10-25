@@ -876,9 +876,7 @@ fun AddNewPlayerDialog(
                                 fontFamily = rubikFamily,
                                 fontWeight = FontWeight.W400,
                                 color = colorResource(id = R.color.game_timeouts_slot_selected_text_color),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .fillMaxHeight()
+                                modifier = Modifier.fillMaxWidth().fillMaxHeight()
                             )
                         },
                         singleLine = true
