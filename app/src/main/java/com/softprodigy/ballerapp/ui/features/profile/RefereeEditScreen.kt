@@ -570,7 +570,11 @@ fun RefereeEditScreen(
                     icon = null,
                     themed = true,
                     onClick = {
-                        vm.onEvent(ProfileEvent.ProfileUpload)
+                        if (state.selectedImage.isNullOrEmpty()) {
+                            vm.onEvent(ProfileEvent.OnSaveUserDetailsClick)
+                        } else {
+                            vm.onEvent(ProfileEvent.ProfileUpload)
+                        }
                     },
                     text = stringResource(id = R.string.save_changes),
                     isForceEnableNeeded = true

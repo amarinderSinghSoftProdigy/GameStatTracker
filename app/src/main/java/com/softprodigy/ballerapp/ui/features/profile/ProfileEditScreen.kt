@@ -72,6 +72,7 @@ fun ProfileEditScreen(
     var imageUri by remember {
         mutableStateOf<Uri?>(null)
     }
+    var maxClassOf = 4
 
     val imagePicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
@@ -223,25 +224,26 @@ fun ProfileEditScreen(
                                 onError = { Placeholder(R.drawable.ic_user_profile_icon) },
                                 contentScale = ContentScale.Fit
                             )
-                            Box(modifier = Modifier
-                                .size(dimensionResource(id = R.dimen.size_50dp))
-                                .padding(
-                                    end = dimensionResource(id = R.dimen.size_20dp),
-                                    top = dimensionResource(
-                                        id = R.dimen.size_20dp
-                                    )
-                                )
-                                .background(
-                                    color = MaterialTheme.appColors.material.primaryVariant,
-                                    shape = CircleShape
-                                )
-                                .clickable {
-                                    scope.launch {
-                                        modalBottomSheetState.animateTo(
-                                            ModalBottomSheetValue.Expanded
+                            Box(
+                                modifier = Modifier
+                                    .size(dimensionResource(id = R.dimen.size_50dp))
+                                    .padding(
+                                        end = dimensionResource(id = R.dimen.size_20dp),
+                                        top = dimensionResource(
+                                            id = R.dimen.size_20dp
                                         )
-                                    }
-                                },
+                                    )
+                                    .background(
+                                        color = MaterialTheme.appColors.material.primaryVariant,
+                                        shape = CircleShape
+                                    )
+                                    .clickable {
+                                        scope.launch {
+                                            modalBottomSheetState.animateTo(
+                                                ModalBottomSheetValue.Expanded
+                                            )
+                                        }
+                                    },
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(
@@ -340,17 +342,17 @@ fun ProfileEditScreen(
                         EditProfileFields(
                             state.user.userDetails.classOf,
                             onValueChange = {
-                                if (it.length <= maxChar)
+                                if (it.length <= maxClassOf)
                                     vm.onEvent(ProfileEvent.OnClassChange(it))
-
                             },
                             stringResource(id = R.string.classof),
-                            errorMessage = stringResource(id = R.string.valid_last_name),
+                            errorMessage = stringResource(id = R.string.valid_class_of),
                             keyboardOptions = KeyboardOptions(
                                 imeAction = ImeAction.Next,
                                 capitalization = KeyboardCapitalization.Sentences
                             ),
-                        )
+                            isError = state.user.userDetails.classOf.length in 1..3,
+                            )
                         DividerCommon()
                     }
                 }
@@ -593,7 +595,11 @@ fun ProfileEditScreen(
                     icon = null,
                     themed = true,
                     onClick = {
-                        vm.onEvent(ProfileEvent.ProfileUpload)
+                        if (state.selectedImage.isNullOrEmpty()) {
+                            vm.onEvent(ProfileEvent.OnSaveUserDetailsClick)
+                        } else {
+                            vm.onEvent(ProfileEvent.ProfileUpload)
+                        }
                     },
                     text = stringResource(id = R.string.save),
                     isForceEnableNeeded = true
@@ -621,9 +627,7 @@ fun ProfileEditScreen(
             }
         }
     }
-
 }
-
 
 @Composable
 fun Teams(

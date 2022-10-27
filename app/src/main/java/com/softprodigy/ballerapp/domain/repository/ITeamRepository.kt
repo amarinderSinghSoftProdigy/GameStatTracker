@@ -32,7 +32,7 @@ interface ITeamRepository {
 
     suspend fun getTeamsUserId(
         coachId: String
-    ): ResultWrapper<BaseResponse<ArrayList<TeamParent>>>
+    ): ResultWrapper<BaseResponse<com.softprodigy.ballerapp.data.response.team.Result>>
 
     suspend fun getTeamsByTeamID(teamId: String): ResultWrapper<BaseResponse<Team>>
 

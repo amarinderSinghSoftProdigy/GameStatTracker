@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 import com.softprodigy.ballerapp.data.request.Address
 import com.softprodigy.ballerapp.data.request.Location
 import com.softprodigy.ballerapp.data.response.SwapUser
+import com.softprodigy.ballerapp.data.response.TeamId
 
 data class TeamParent(
     @SerializedName("_id")
@@ -13,6 +14,8 @@ data class TeamParent(
     @SerializedName("teamId")
     val teamId: Team = Team(),
 )
+
+data class Result(@SerializedName("result") val result: ArrayList<TeamParent> = arrayListOf())
 
 data class Team(
     @SerializedName("_id")
