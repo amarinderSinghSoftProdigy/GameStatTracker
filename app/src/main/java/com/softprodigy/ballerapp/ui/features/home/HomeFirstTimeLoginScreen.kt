@@ -34,6 +34,7 @@ import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.ColorGreyLighter
 import com.softprodigy.ballerapp.ui.theme.appColors
+import com.softprodigy.ballerapp.ui.theme.rubikFamily
 
 @Composable
 fun HomeFirstTimeLoginScreen(
@@ -69,8 +70,9 @@ fun HomeFirstTimeLoginScreen(
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
 
             AppText(
-                text = stringResource(id = R.string.welcome_to_total_hoop),
+                text = stringResource(id = R.string.welcome_to_all_ball),
                 fontWeight = FontWeight.W600,
+                fontFamily = rubikFamily,
                 style = MaterialTheme.typography.subtitle1,
                 color = MaterialTheme.appColors.material.primaryVariant
             )

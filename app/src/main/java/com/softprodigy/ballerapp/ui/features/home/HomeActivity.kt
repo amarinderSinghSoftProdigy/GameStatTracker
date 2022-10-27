@@ -89,6 +89,7 @@ class HomeActivity : FragmentActivity() {
         setContent {
             val fromSplash = intent.getBooleanExtra(IntentData.FROM_SPLASH, false)
             val homeViewModel: HomeViewModel = hiltViewModel()
+            val signUpViewModel: SignUpViewModel = hiltViewModel()
             val teamViewModel: TeamViewModel = hiltViewModel()
             val eventViewModel: EventViewModel = hiltViewModel()
             setupTeamViewModelUpdated = hiltViewModel()
@@ -186,6 +187,7 @@ class HomeActivity : FragmentActivity() {
                                 homeViewModel,
                                 teamViewModel,
                                 eventViewModel,
+                                signUpViewModel,
                                 navController = navController,
                                 showDialog = state.showDialog,
                                 role = role.value,
@@ -273,6 +275,7 @@ fun NavControllerComposable(
     homeViewModel: HomeViewModel,
     teamViewModel: TeamViewModel,
     eventViewModel: EventViewModel,
+    signUpViewModel: SignUpViewModel,
     showDialog: Boolean = false,
     navController: NavHostController = rememberNavController(),
     role: String = "",
@@ -355,7 +358,8 @@ fun NavControllerComposable(
                 setupTeamViewModelUpdated = setupTeamViewModelUpdated,
                 showBottomBar = {
                     showBottomBar = it
-                }
+                },
+                signUpVm = signUpViewModel
             )
         }
         composable(route = Route.PROFILE_SCREEN) {
@@ -374,7 +378,7 @@ fun NavControllerComposable(
                     topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
-            val signUpViewModel: SignUpViewModel = hiltViewModel()
+//            val signUpViewModel: SignUpViewModel = hiltViewModel()
             signUpViewModel.onEvent(SignUpUIEvent.SetRegister)
             ProfileSetUpScreen(
                 signUpViewModel = signUpViewModel,
@@ -405,7 +409,7 @@ fun NavControllerComposable(
                     topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
-            val signUpViewModel: SignUpViewModel = hiltViewModel()
+//            val signUpViewModel: SignUpViewModel = hiltViewModel()
             signUpViewModel.onEvent(SignUpUIEvent.SetRegister)
             ProfileSetUpScreen(
                 mobileNumber = mobileNumber,

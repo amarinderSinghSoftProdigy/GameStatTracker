@@ -140,7 +140,8 @@ fun CoachFlowBackground(
                     if (showOptions.value) {
                         Surface(
                             modifier = Modifier
-                                .align(Alignment.End),
+                                .align(Alignment.End)
+                                .offset(y = (-dimensionResource(id = R.dimen.size_12dp))),
                             elevation = dimensionResource(id = R.dimen.size_10dp),
                             color = Color.Transparent
                         ) {

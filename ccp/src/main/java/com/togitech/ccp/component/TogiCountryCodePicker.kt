@@ -94,7 +94,7 @@ fun TogiCountryCodePicker(
                         placeHolder
                     ,
                     keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.NumberPassword,
+                        keyboardType = KeyboardType.Number,
                         autoCorrect = true,
                     ),
                     textStyle = textStyle,
