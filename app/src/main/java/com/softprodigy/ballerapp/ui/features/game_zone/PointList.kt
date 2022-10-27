@@ -69,37 +69,40 @@ fun PointList(
             }
         }
 
-        Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-                .padding(bottom = dimensionResource(id = R.dimen.size_16dp))
-                .clickable { },
-
-            verticalArrangement = Arrangement.Bottom
-        ) {
-            AppButton(
-                onClick = {  },
-                text = stringResource(R.string.dialog_button_cancel),
-                colors = ButtonColor(
-                    bckgroundEnabled = colorResource(id = R.color.game_box_score_list_item_bg_color),
-                    bckgroundDisabled = colorResource(id = R.color.game_box_score_list_item_bg_color),
-                    textEnabled = Color.White,
-                    textDisabled = Color.White
-                ),
+        if(isEditMode) {
+            Column(
                 modifier = Modifier
-                    .width(dimensionResource(id = R.dimen.size_150dp))
-                    .height(dimensionResource(id = R.dimen.size_48dp))
-                    .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-                    .border(
-                        width = 1.dp,
-                        color = Color.White,
-                        shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
-                    )
-                    .align(alignment = Alignment.CenterHorizontally)
-                    .background(colorResource(id = R.color.game_box_score_list_item_bg_color)),
-            )
+                    .fillMaxHeight()
+                    .fillMaxWidth()
+                    .background(Color.Black.copy(alpha = .75f))
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = dimensionResource(id = R.dimen.size_16dp))
+                    .clickable { },
+
+                verticalArrangement = Arrangement.Bottom
+            ) {
+                AppButton(
+                    onClick = { onEditClick.invoke() },
+                    text = stringResource(R.string.dialog_button_cancel),
+                    colors = ButtonColor(
+                        bckgroundEnabled = colorResource(id = R.color.game_box_score_list_item_bg_color),
+                        bckgroundDisabled = colorResource(id = R.color.game_box_score_list_item_bg_color),
+                        textEnabled = Color.White.copy(alpha = .75f),
+                        textDisabled = Color.White.copy(alpha = .75f)
+                    ),
+                    modifier = Modifier
+                        .width(dimensionResource(id = R.dimen.size_147dp))
+                        .height(dimensionResource(id = R.dimen.size_48dp))
+                        .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                        .border(
+                            width = 1.dp,
+                            color = Color.White.copy(alpha = .1f),
+                            shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+                        )
+                        .align(alignment = Alignment.CenterHorizontally)
+                        .background(colorResource(id = R.color.game_box_score_list_item_bg_color)),
+                )
+            }
         }
     }
 }

@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringArrayResource
@@ -25,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.facebook.internal.Mutable
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.ImageTextButton
@@ -62,45 +64,53 @@ fun GameSettingsController (
 
 @Composable
 inline fun periodSelection(isEditMode: Boolean) {
+    var selectedPeriodIndex = remember { mutableStateOf(-1) }
     var periods = stringArrayResource(id = R.array.game_periods)
     Column(
         Modifier
             .height(dimensionResource(id = R.dimen.size_46dp))
-            .background(if(isEditMode) colorResource(id = R.color.game_setting_edit_bg_disable_color) else Color.Transparent)
+            .background(if (isEditMode) colorResource(id = R.color.game_setting_edit_bg_disable_color) else Color.Transparent)
             .padding(horizontal = dimensionResource(id = R.dimen.size_8dp)),
-    verticalArrangement = Arrangement.Center) {
+        verticalArrangement = Arrangement.Center)
+    {
         LazyRow {
             itemsIndexed(periods) { index, period ->
-                periodListItem(index, period)
+                periodListItem(index, period, selectedPeriodIndex)
             }
         }
     }
 }
 
 @Composable
-fun periodListItem(index: Int, periodItem: String = "", selectedIndex: Int = 1) {
+fun periodListItem(index: Int, periodItem: String = "", selectedPeriodIndex: MutableState<Int>) {
 
     Box(
-        modifier = Modifier
+        modifier = Modifier.padding(dimensionResource(id = R.dimen.size_4dp)),
+            contentAlignment = Alignment.Center)
+        {
+
+        Column(modifier = Modifier
             .width(dimensionResource(id = R.dimen.size_24dp))
             .height(dimensionResource(id = R.dimen.size_24dp))
             .clip(CircleShape)
             .background(
-                color = if (index == selectedIndex) colorResource(id = R.color.game_period_selection_background_color)
+                color = if (index == selectedPeriodIndex.value) colorResource(id = R.color.game_period_selection_background_color)
                 else colorResource(id = R.color.game_period_background_color)
             )
-            .padding(dimensionResource(id = R.dimen.size_4dp)),
-                contentAlignment = Alignment.Center
-            ) {
-                AppText(
-                    text = periodItem,
-                    textAlign = TextAlign.Center,
-                    color = colorResource(id = R.color.game_grid_item_text_color),
-                    fontSize = dimensionResource(id = R.dimen.txt_size_11).value.sp,
-                    fontFamily = rubikFamily,
-                    fontWeight = if (index == selectedIndex) FontWeight.W700 else FontWeight.W400,
-                )
-            }
+            .clickable { selectedPeriodIndex.value = index },
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            AppText(
+                text = periodItem,
+                textAlign = TextAlign.Center,
+                color = colorResource(id = R.color.game_grid_item_text_color),
+                fontSize = dimensionResource(id = R.dimen.txt_size_11).value.sp,
+                fontFamily = rubikFamily,
+                fontWeight = if (index == selectedPeriodIndex.value) FontWeight.W700 else FontWeight.W400,
+            )
+        }
+    }
 }
 
 @Composable
@@ -108,7 +118,7 @@ inline fun gameSettings(isEditMode: Boolean) {
     Row(modifier = Modifier
         .background(if (isEditMode) colorResource(id = R.color.game_setting_edit_bg_enable_color) else Color.Transparent)
         .fillMaxWidth()
-        .fillMaxHeight()
+        //.fillMaxHeight()
     ){
             // Game setting grid view
             var pointList = ArrayList<GameSettingsState>();
@@ -177,11 +187,18 @@ inline fun gameSettings(isEditMode: Boolean) {
         var expanded by remember { mutableStateOf(false) }
         var fouls = stringArrayResource(id = R.array.game_foul)
         var foul = stringResource(id = R.string.foul)
+        val configuration = LocalConfiguration.current
+        var screenHeight = configuration.screenHeightDp.dp
+        screenHeight -= dimensionResource(id = R.dimen.size_46dp)
+        screenHeight += dimensionResource(id = R.dimen.size_22dp)
+        var rowHeight = screenHeight / 4
+
         LazyVerticalGrid(columns = GridCells.Fixed(2),) {
             itemsIndexed(pointList) { index, point ->
                 Row(
                     Modifier
-                        .height(dimensionResource(id = R.dimen.size_82dp))
+                        //.height(dimensionResource(id = R.dimen.size_82dp))
+                        .height(rowHeight)
                         .width(dimensionResource(id = R.dimen.size_90dp))
                         .border(
                             dimensionResource(id = R.dimen.size_half_dp),

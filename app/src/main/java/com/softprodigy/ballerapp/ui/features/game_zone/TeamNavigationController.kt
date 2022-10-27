@@ -40,16 +40,17 @@ fun TeamNavigationController (
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(if(isEditMode) colorResource(id = R.color.game_setting_edit_bg_disable_color) else colorResource(id = R.color.game_period_background_color))
+            .background(if(isEditMode) colorResource(id = R.color.game_setting_edit_bg_disable_color)
+                 else colorResource(id = R.color.game_period_background_color))
     ) {
         Column(modifier = Modifier
             .fillMaxHeight()
             .fillMaxWidth()) {
             teamHandler(
+                isEditMode = isEditMode,
                 onPreviousClick = { hasMyTeamEnabled.value = !hasMyTeamEnabled.value },
                 onNextClick = { hasMyTeamEnabled.value = !hasMyTeamEnabled.value }
             )
-
             if(hasMyTeamEnabled.value)
                 Tracking(
                     isTrackingEmpty = true,
@@ -66,11 +67,10 @@ fun TeamNavigationController (
 }
 
 @Composable
-fun teamHandler(onPreviousClick: () -> Unit, onNextClick: () -> Unit) {
+fun teamHandler(isEditMode: Boolean, onPreviousClick: () -> Unit, onNextClick: () -> Unit) {
     Row(
         Modifier
             .fillMaxWidth()
-            //.background(colorResource(id = R.color.game_period_background_color))
             .height(dimensionResource(id = R.dimen.size_46dp))
             .padding(
                 horizontal = dimensionResource(id = R.dimen.size_12dp),
@@ -87,9 +87,9 @@ fun teamHandler(onPreviousClick: () -> Unit, onNextClick: () -> Unit) {
                 Modifier.fillMaxHeight(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                teamLogo();
+                teamLogo(isEditMode)
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                teamTitle(title ="My Team", modifier = Modifier.padding(start = 0.dp, top = 0.dp, end = dimensionResource(id = R.dimen.size_8dp), bottom = 0.dp));
+                teamTitle(isEditMode = isEditMode, title ="My Team", modifier = Modifier.padding(end = dimensionResource(id = R.dimen.size_8dp)))
             }
         }
 
@@ -110,23 +110,28 @@ fun teamHandler(onPreviousClick: () -> Unit, onNextClick: () -> Unit) {
                     modifier = Modifier
                         .width(dimensionResource(id = R.dimen.size_32dp))
                         .height(dimensionResource(id = R.dimen.size_32dp)),
-                    onClick = { onPreviousClick.invoke() }
+                    onClick = { onPreviousClick.invoke() },
+                    enabled = !isEditMode,
+                    colors = if(isEditMode) Color.Black.copy(alpha = .75f) else Color.Transparent,
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                teamScore("50")
+                teamScore(isEditMode= isEditMode, score = "50")
                 teamScore(
+                    isEditMode = isEditMode,
                     ":",
                     dimensionResource(id = R.dimen.size_8dp),
                     dimensionResource(id = R.dimen.size_8dp)
                 )
-                teamScore("100")
+                teamScore(isEditMode = isEditMode, score = "100")
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
                 ImageButton(
                     icon = painterResource(id = R.drawable.ic_possesion_next_arrow_selected),
                     modifier = Modifier
                         .width(dimensionResource(id = R.dimen.size_32dp))
                         .height(dimensionResource(id = R.dimen.size_32dp)),
-                    onClick = { onNextClick.invoke() }
+                    onClick = { onNextClick.invoke() },
+                    enabled = !isEditMode,
+                    colors = if(isEditMode) Color.Black.copy(alpha = .75f) else Color.Transparent,
                 )
             }
         }
@@ -140,7 +145,7 @@ fun teamHandler(onPreviousClick: () -> Unit, onNextClick: () -> Unit) {
                 Modifier.fillMaxHeight(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                teamTitle(title = "Other Team", modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_8dp), top = 0.dp, end = 0.dp, bottom = 0.dp))
+                teamTitle(isEditMode = isEditMode, title = "Other Team", modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_8dp)))
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
                 teamLogo(logoColor = Color.Blue);
             }
@@ -149,7 +154,7 @@ fun teamHandler(onPreviousClick: () -> Unit, onNextClick: () -> Unit) {
 }
 
 @Composable
-inline fun teamLogo(logoSource :String = "", logoColor: Color = Color.Red, alpha: Float = 1f) {
+inline fun teamLogo(isEditMode: Boolean = false, logoSource :String = "", logoColor: Color = Color.Red, alpha: Float = 1f) {
     if (logoSource != "") {
         CoilImage(
             src = "", //state.localLogo ?: (BuildConfig.IMAGE_SERVER + state.logo),
@@ -157,7 +162,7 @@ inline fun teamLogo(logoSource :String = "", logoColor: Color = Color.Red, alpha
                 .fillMaxSize()
                 .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
                 .background(
-                    color = Color.Transparent.copy(alpha = alpha),
+                    color = if(isEditMode) Color.Black.copy(alpha = .75f) else Color.Transparent.copy(alpha = alpha),
                     shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                 ),
             //.align(Alignment.Center),
@@ -171,16 +176,16 @@ inline fun teamLogo(logoSource :String = "", logoColor: Color = Color.Red, alpha
                 .width(dimensionResource(id = R.dimen.size_24dp))
                 .height(dimensionResource(id = R.dimen.size_24dp))
                 .clip(CircleShape)
-                .background(logoColor)
+                .background(if(isEditMode) logoColor.copy(alpha = .75f) else logoColor.copy(alpha = alpha))
         )
     }
 }
 
 @Composable
-inline fun teamTitle(title: String = "", modifier: Modifier = Modifier, alpha: Float? = 1f) {
+inline fun teamTitle(isEditMode:Boolean = false, title: String = "", modifier: Modifier = Modifier, alpha: Float? = 1f) {
     AppText(
         text = title,
-        color = colorResource(id = R.color.game_grid_item_text_color).copy(alpha = alpha!!),
+        color = if(isEditMode) Color.White.copy(alpha= .25f) else colorResource(id = R.color.game_grid_item_text_color).copy(alpha = alpha!!),
         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
         maxLines = 1,
         textAlign = TextAlign.Center,
@@ -192,10 +197,10 @@ inline fun teamTitle(title: String = "", modifier: Modifier = Modifier, alpha: F
 }
 
 @Composable
-inline fun teamScore(score: String = "", startPadding: Dp = 0.dp, endPadding: Dp = 0.dp) {
+inline fun teamScore(isEditMode: Boolean = false, score: String = "", startPadding: Dp = 0.dp, endPadding: Dp = 0.dp) {
     AppText(
         text = score,
-        color = colorResource(id = R.color.game_grid_item_text_color),
+        color = if(isEditMode) Color.White.copy(alpha = .25f) else colorResource(id = R.color.game_grid_item_text_color),
         fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
         style = MaterialTheme.typography.h4,
         maxLines = 1,

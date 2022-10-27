@@ -63,6 +63,7 @@
     <dimen name="size_120dp">120dp</dimen>
     <dimen name="size_130dp">130dp</dimen>
     <dimen name="size_140dp">140dp</dimen>
+    <dimen name="size_147dp">147.5dp</dimen>
     <dimen name="size_150dp">150dp</dimen>
     <dimen name="size_156dp">156dp</dimen>
     <dimen name="size_197dp">197.33dp</dimen>

@@ -31,12 +31,7 @@ fun ImageButton(
         modifier = modifier,
         enabled = enabled,
         shape = shape,
-        color =
-        if (enabled) {
-            colors
-        } else {
-            colors
-        }
+        color = colors
     ) {
         if (icon != null)
             Image(

@@ -1,5 +1,6 @@
 package com.softprodigy.ballerapp.ui.features.game_zone
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -11,10 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.ImageTextButton
 import com.softprodigy.ballerapp.ui.theme.rubikFamily
@@ -53,8 +56,9 @@ fun GamePointController (
 
 
                 LazyVerticalGrid(columns = GridCells.Fixed(2),
-                    modifier = Modifier.height(dimensionResource(id = R.dimen.size_90dp))
-                        .background(if(isEditMode) colorResource(id = R.color.game_setting_edit_bg_disable_color) else Color.Transparent),
+                    modifier = Modifier
+                        .height(dimensionResource(id = R.dimen.size_90dp))
+                        .background(if (isEditMode) colorResource(id = R.color.game_setting_edit_bg_disable_color) else Color.Transparent),
                 ) {
                     itemsIndexed(settingsList) { index, setting ->
 
@@ -97,14 +101,23 @@ fun GamePointController (
                     .fillMaxWidth()
                     .height(dimensionResource(id = R.dimen.size_1dp))
                 )
+
+                val configuration = LocalConfiguration.current
+
+                var screenHeight = configuration.screenHeightDp.dp
+                screenHeight -= dimensionResource(id = R.dimen.size_90dp)
+                screenHeight += dimensionResource(id = R.dimen.size_22dp)
+                var rowHeight = screenHeight / 3
+
                 LazyVerticalGrid(columns = GridCells.Fixed(2),
                     modifier = Modifier
-                        .background(if(isEditMode) colorResource(id = R.color.game_setting_edit_bg_enable_color) else Color.Transparent),
+                        .fillMaxHeight()
+                        .background(if (isEditMode) colorResource(id = R.color.game_setting_edit_bg_enable_color) else Color.Transparent),
                     ) {
                     itemsIndexed(pointList) { index, point ->
                         Column(
                             Modifier
-                                .height(dimensionResource(id = R.dimen.size_94dp))
+                                .height(rowHeight)
                                 .weight(1f)
                                 .border(
                                     dimensionResource(id = R.dimen.size_half_dp),
