@@ -547,6 +547,7 @@ fun NavControllerComposable(
                 onSuccess = { profilesCount, profileIdIFSingle->
                     when (profilesCount) {
                         0 -> {
+                            navController.popBackStack()
                             navController.navigate(PROFILE_SETUP_SCREEN)
                         }
                         1 -> {
@@ -555,10 +556,10 @@ fun NavControllerComposable(
                             }
                         }
                         else -> {
+                            navController.popBackStack()
                             navController.navigate(SELECT_PROFILE)
                         }
                     }
-//                    navController.popBackStack()
 
                 },
                 onTokenSelectionSuccess = {
