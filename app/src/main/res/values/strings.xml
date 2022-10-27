@@ -448,5 +448,6 @@
     <string name="success_player_has_been_added_to_the_team">Success! %1$s has been added to %2$s</string>
     <string name="invite_from_your_profile">Invite from your profile</string>
     <string name="valid_class_of">class should be of 4 characters</string>
+    <string name="number_already_exist">Number already exist</string>
 
 </resources>

@@ -8,7 +8,6 @@ plugins {
     // Add the Google services Gradle plugin
 //    id 'com.google.gms.google-services'
 
-
 }
 
 android {
@@ -74,7 +73,7 @@ android {
         create("develop") {
             dimension = "ballerapp"
             buildConfigField("String", "API_SERVER", "\"http://ballerapp-qa-v1.us-east-2.elasticbeanstalk.com/api/\"")
-//            buildConfigField("String", "API_SERVER", "\"http://ballerapp-staging-v1.us-east-2.elasticbeanstalk.com/api/\"")
+         //   buildConfigField("String", "API_SERVER", "\"http://ballerapp-staging-v1.us-east-2.elasticbeanstalk.com/api/\"")
             //buildConfigField("String", "API_SERVER", "\"https://ballerapi.softprodigy.in/api/\"")
             //buildConfigField("String", "API_SERVER", "\"https://ballerapi-qa.softprodigy.in/api/\"")
 

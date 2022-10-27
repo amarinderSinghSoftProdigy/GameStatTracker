@@ -249,7 +249,8 @@ fun EditProfileFields(
     placeholder: @Composable (() -> Unit)? = null,
     enabled: Boolean = true,
     fontWeight: FontWeight = FontWeight.W400,
-    height: Dp = dimensionResource(id = R.dimen.size_56dp)
+    height: Dp = dimensionResource(id = R.dimen.size_56dp),
+    visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     val customTextSelectionColors = TextSelectionColors(
         handleColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
@@ -295,6 +296,7 @@ fun EditProfileFields(
                     trailingIcon = trailingIcon,
                     placeholder = placeholder,
                     enabled = enabled,
+                    visualTransformation = visualTransformation
                 )
             }
         }

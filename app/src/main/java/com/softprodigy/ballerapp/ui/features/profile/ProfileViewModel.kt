@@ -387,7 +387,7 @@ class ProfileViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 leaveTeamResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         _state.value = _state.value.copy(
                             userDocTypes = response.data
                         )
@@ -434,7 +434,7 @@ class ProfileViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 leaveTeamResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         _state.value.selectedTeamIndex?.let {
                             _state.value.user.teamDetails.toMutableList().removeAt(index = it)
                         }
@@ -490,7 +490,7 @@ class ProfileViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         saveResponseToState(response.data)
                     } else {
                         _channel.send(
@@ -607,7 +607,7 @@ class ProfileViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         _state.value = _state.value.copy(isLoading = false)
                         onEvent(
                             ProfileEvent.UpdateUserDoc(
@@ -792,7 +792,7 @@ class ProfileViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 uploadLogoResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null)  {
                         _state.value =
                             _state.value.copy(
                                 isLoading = false,

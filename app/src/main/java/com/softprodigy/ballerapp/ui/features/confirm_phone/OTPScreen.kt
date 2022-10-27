@@ -59,10 +59,10 @@ fun OtpScreen(
     }
     // create variable for current time
     var currentTime by remember {
-        mutableStateOf(59L * 1000L)
+        mutableStateOf(60L * 1000L)
     }
 
-    val totalTime = 59L * 1000L
+    val totalTime = 60L * 1000L
     val context = LocalContext.current
     val (editValue, setEditValue) = remember { mutableStateOf("") }
     val otpLength = remember { 6 }
@@ -239,7 +239,7 @@ fun OtpScreen(
                                         SignUpUIEvent.OnVerifyNumber
                                     )
                                 }
-                                currentTime = 59L * 1000L
+                                currentTime = 60L * 1000L
                             },
                             style = MaterialTheme.typography.h6.copy(color = ColorBWGrayDark)
                         )

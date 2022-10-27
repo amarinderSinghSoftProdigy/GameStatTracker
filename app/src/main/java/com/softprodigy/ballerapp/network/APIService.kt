@@ -4,6 +4,7 @@ import com.softprodigy.ballerapp.common.ApiConstants
 import com.softprodigy.ballerapp.data.request.*
 import com.softprodigy.ballerapp.data.response.*
 import com.softprodigy.ballerapp.data.response.homepage.HomePageCoachModel
+import com.softprodigy.ballerapp.data.response.invitation.InvitationData
 import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.data.response.team.*
 import com.softprodigy.ballerapp.data.response.team.Team
@@ -82,7 +83,7 @@ open interface APIService {
     suspend fun getCoachPlayersByID(@Path("id") id: String): BaseResponse<RoasterResponse>
 
     @PUT(ApiConstants.SEND_INVITATION)
-    suspend fun sendInvitation(@Body updateTeamRequest: UpdateTeamRequest): BaseResponse<Any>
+    suspend fun sendInvitation(@Body updateTeamRequest: UpdateTeamRequest): BaseResponse<InvitationData>
 
     @GET(ApiConstants.GET_ALL_INVITATION)
     suspend fun getAllInvitation(
