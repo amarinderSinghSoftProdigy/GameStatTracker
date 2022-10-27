@@ -64,7 +64,7 @@ class EventViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 eventResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data.upcommingEvents.isNotEmpty()) {
                         _state.value =
                             _state.value.copy(
                                 currentEvents = response.data.upcommingEvents,
@@ -112,7 +112,7 @@ class EventViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 eventResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         _state.value =
                             _state.value.copy(
                                 event = response.data
@@ -476,7 +476,7 @@ class EventViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         _state.value =
                             _state.value.copy(
                                 filterPreference = response.data.filterPreferences,
@@ -720,7 +720,7 @@ class EventViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         _state.value = _state.value.copy(
                             opportunitiesDetail = response.data,
                             price = response.data.standardPrice,
@@ -767,7 +767,7 @@ class EventViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         _state.value = _state.value.copy(opportunitiesList = response.data)
                     } else {
                         _channel.send(
@@ -910,7 +910,7 @@ class EventViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 _state.value = _state.value.copy(isLoading = false)
                 userResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         _state.value = _state.value.copy(myLeaguesList = response.data)
                     } else {
                         /* _channel.send(
@@ -959,7 +959,7 @@ class EventViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 _state.value = _state.value.copy(isLoading = false)
                 userResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         _state.value = _state.value.copy(divisions = response.data)
                     } else {
                         _channel.send(
@@ -1007,7 +1007,7 @@ class EventViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 _state.value = _state.value.copy(isLoading = false)
                 userResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         _state.value = _state.value.copy(venuesList = response.data.event.venuesId)
                     } else {
                         _channel.send(
@@ -1053,7 +1053,7 @@ class EventViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 teamResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         _state.value = _state.value.copy(teamsByLeagueDivision = response.data)
                     } else {
                         _channel.send(
@@ -1098,7 +1098,7 @@ class EventViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 teamResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         _state.value = _state.value.copy(divisionWiseTeamResponse = response.data)
                     } else {
                         _channel.send(
@@ -1147,7 +1147,7 @@ class EventViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 standingResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         _state.value = _state.value.copy(
                             standingUIState = _state.value.standingUIState.copy(
                                 allTeam = response.data.allTeams,
@@ -1198,7 +1198,7 @@ class EventViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 venueResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         _state.value = _state.value.copy(venueDetails = response.data)
                     } else {
                         _channel.send(
@@ -1286,7 +1286,7 @@ class EventViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 userRoles.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         _state.value =
                             _state.value.copy(
                                 showLoading = false,

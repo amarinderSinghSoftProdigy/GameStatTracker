@@ -353,10 +353,20 @@ class TeamViewModel @Inject constructor(
                             }
                             var selectionTeam: Team? = null
                             response.data.result.toMutableList().forEach {
-                                if (UserStorage.teamId == it.teamId._id) {
-                                    selectionTeam = it.teamId
-                                    setRole(it.role)
+                                if (UserStorage.teamId.isEmpty()) {
+
+                                    if (response.data.teamId == it.teamId._id) {
+                                        selectionTeam = it.teamId
+                                        setRole(it.role)
+                                    }
+
+                                } else {
+                                    if (UserStorage.teamId == it.teamId._id) {
+                                        selectionTeam = it.teamId
+                                        setRole(it.role)
+                                    }
                                 }
+
                             }
                             val idToSearch =
                                 if (selectionTeam == null) response.data.result[0].teamId._id else selectionTeam?._id
@@ -367,6 +377,7 @@ class TeamViewModel @Inject constructor(
                                     isLoading = false,
                                     localLogo = null,
                                     loadFirstUi = selectionTeam == null,
+                                    teamId = response.data.teamId
                                 )
                             if (selectionTeam == null) {
                                 setRole(response.data.result[0].role)
@@ -466,7 +477,7 @@ class TeamViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 teamResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         _teamUiState.value =
                             _teamUiState.value.copy(
                                 isLoading = false,
@@ -541,7 +552,7 @@ class TeamViewModel @Inject constructor(
                 }
                 is ResultWrapper.Success -> {
                     uploadLogoResponse.value.let { response ->
-                        if (response.status) {
+                        if (response.status && response.data != null) {
                             _teamUiState.value =
                                 _teamUiState.value.copy(
                                     logo = uploadLogoResponse.value.data.data,
@@ -600,7 +611,7 @@ class TeamViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 teamResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         _teamUiState.value = _teamUiState.value.copy(
                             isLoading = false,
                             players = CommonUtils.getPlayerTabs(response.data.players),
@@ -682,7 +693,7 @@ class TeamViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 userRoles.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         _teamUiState.value =
                             _teamUiState.value.copy(
                                 isLoading = false,

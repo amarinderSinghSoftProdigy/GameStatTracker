@@ -113,7 +113,6 @@ fun NewEventScreen(
                     shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
                     color = Color.White
                 )
-
         ) {
             AppText(
                 text = stringResource(id = R.string.event_type),

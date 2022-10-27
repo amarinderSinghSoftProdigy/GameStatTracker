@@ -179,7 +179,7 @@ class HomeViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         _state.value =
                             _state.value.copy(
                                 user = response.data
@@ -246,7 +246,7 @@ class HomeViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         _state.value =
                             _state.value.copy(
                                 swapUsers = response.data
@@ -295,7 +295,7 @@ class HomeViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         setToken(response.data)
                         getUserInfo(true)
                     } else {
@@ -335,7 +335,7 @@ class HomeViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 homeResponse.value.let { baseResponse ->
-                    if (baseResponse.status) {
+                    if (baseResponse.status && baseResponse.data != null) {
                         _state.value =
                             _state.value.copy(homePageCoachModel = baseResponse.data)
                         getHomeList()

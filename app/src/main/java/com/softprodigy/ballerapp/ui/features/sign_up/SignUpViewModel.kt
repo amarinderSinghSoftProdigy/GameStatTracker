@@ -243,7 +243,7 @@ class SignUpViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         setToken(response.data, userId.role, "")
                         _signUpChannel.send(
                             SignUpChannel.OnProfileUpdateSuccess(
@@ -371,7 +371,7 @@ class SignUpViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 uploadLogoResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         _signUpUiState.value =
                             _signUpUiState.value.copy(
                                 isLoading = false,
@@ -421,7 +421,7 @@ class SignUpViewModel @Inject constructor(
 
                 is ResultWrapper.Success -> {
                     signUpResponse.value.let { response ->
-                        if (response.status) {
+                        if (response.status ) {
                             setToken(
                                 response.data.token,
                                 response.data.user.role,
@@ -672,7 +672,7 @@ class SignUpViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 updateProfileResp.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         setToken(
 //                            token = signUpUiState.value.signUpData.token ?: "",
                             token = "",
@@ -721,7 +721,7 @@ class SignUpViewModel @Inject constructor(
                 is ResultWrapper.Success -> {
                     verifyResponseResponse.value.let { response ->
 
-                        if (response.status) {
+                        if (response.status ) {
 
                             _signUpUiState.value = _signUpUiState.value.copy(
                                 isLoading = false,
@@ -785,7 +785,7 @@ class SignUpViewModel @Inject constructor(
                 is ResultWrapper.Success -> {
                     verifyResponseResponse.value.let { response ->
 
-                        if (response.status) {
+                        if (response.status ) {
                             _signUpUiState.value =
                                 _signUpUiState.value.copy(
                                     isLoading = false,

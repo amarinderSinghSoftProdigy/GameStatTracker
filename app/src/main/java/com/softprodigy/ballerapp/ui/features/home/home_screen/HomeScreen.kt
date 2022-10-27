@@ -422,6 +422,7 @@ fun HomeScreen(
             selected = teamState.selectedTeam,
             showLoading = teamState.isLoading,
             onCreateTeamClick = { onCreateTeamClick(teamState.selectedTeam) },
+            teamVm = teamVm
         )
     }
 

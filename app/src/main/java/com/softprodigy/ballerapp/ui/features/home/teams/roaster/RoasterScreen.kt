@@ -136,7 +136,7 @@ fun ParentItem(id: Int, count: Int, state: TeamUIState, type: User) {
             modifier = Modifier
                 .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
                 .height(
-                    dimensionResource(id = R.dimen.size_135dp) * (if (heightFactor == 0) {
+                    dimensionResource(id = R.dimen.size_150dp) * (if (heightFactor == 0) {
                         if (count == 0) 0 else 1
                     } else heightFactor)
                 ),

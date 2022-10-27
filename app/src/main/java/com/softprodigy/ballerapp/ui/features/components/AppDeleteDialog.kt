@@ -63,6 +63,7 @@ import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.ui.features.home.HomeViewModel
 import com.softprodigy.ballerapp.ui.features.home.events.DivisionData
 import com.softprodigy.ballerapp.ui.features.home.events.NoteType
+import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
 import com.softprodigy.ballerapp.ui.features.profile.tabs.DetailItem
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.InviteObject
 import com.softprodigy.ballerapp.ui.theme.*
@@ -139,10 +140,10 @@ fun SelectTeamDialog(
     showLoading: Boolean,
     teams: ArrayList<Team>,
     onCreateTeamClick: () -> Unit,
+    teamVm: TeamViewModel
 ) {
-    val homeViewModel: HomeViewModel = hiltViewModel()
     val teamId = remember {
-        mutableStateOf(UserStorage.teamId)
+        mutableStateOf(if (UserStorage.teamId.isEmpty()) teamVm.teamUiState.value.teamId else UserStorage.teamId)
     }
     val teamName = remember {
         mutableStateOf(UserStorage.teamName)
@@ -227,37 +228,37 @@ fun SelectTeamDialog(
 
                     )
                     /*   }*/
-                  /*  Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(color = Color.White)
-                            .padding(
-                                vertical = dimensionResource(id = R.dimen.size_16dp)
-                            ),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        DialogButton(
-                            text = stringResource(R.string.dialog_button_cancel),
-                            onClick = onDismiss,
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(end = dimensionResource(id = R.dimen.size_10dp)),
-                            border = ButtonDefaults.outlinedBorder,
-                            onlyBorder = true,
-                            enabled = false
-                        )
-                        DialogButton(
-                            text = stringResource(R.string.dialog_button_confirm),
-                            onClick = {
-                                onConfirmClick.invoke(teamId.value, teamName.value)
-                                onDismiss.invoke()
-                            },
-                            modifier = Modifier
-                                .weight(1f),
-                            enabled = (selected?.name ?: "").isNotEmpty(),
-                            onlyBorder = false,
-                        )
-                    }*/
+                    /*  Row(
+                          modifier = Modifier
+                              .fillMaxWidth()
+                              .background(color = Color.White)
+                              .padding(
+                                  vertical = dimensionResource(id = R.dimen.size_16dp)
+                              ),
+                          horizontalArrangement = Arrangement.SpaceBetween
+                      ) {
+                          DialogButton(
+                              text = stringResource(R.string.dialog_button_cancel),
+                              onClick = onDismiss,
+                              modifier = Modifier
+                                  .weight(1f)
+                                  .padding(end = dimensionResource(id = R.dimen.size_10dp)),
+                              border = ButtonDefaults.outlinedBorder,
+                              onlyBorder = true,
+                              enabled = false
+                          )
+                          DialogButton(
+                              text = stringResource(R.string.dialog_button_confirm),
+                              onClick = {
+                                  onConfirmClick.invoke(teamId.value, teamName.value)
+                                  onDismiss.invoke()
+                              },
+                              modifier = Modifier
+                                  .weight(1f),
+                              enabled = (selected?.name ?: "").isNotEmpty(),
+                              onlyBorder = false,
+                          )
+                      }*/
                 }
             },
         )
@@ -366,7 +367,7 @@ fun ShowParentDialog(
                     ) {
                         ButtonWithLeadingIconGrayed(
                             text = stringResource(R.string.message),
-                            onClick =  {
+                            onClick = {
                                 val u = Uri.parse("sms:" + parentDetails.parent.phone)
                                 val i = Intent(Intent.ACTION_VIEW, u)
                                 try {

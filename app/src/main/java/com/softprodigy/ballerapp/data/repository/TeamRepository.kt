@@ -9,6 +9,7 @@ import com.softprodigy.ballerapp.data.request.UpdateTeamDetailRequest
 import com.softprodigy.ballerapp.data.request.UpdateTeamRequest
 import com.softprodigy.ballerapp.data.response.*
 import com.softprodigy.ballerapp.data.response.homepage.HomePageCoachModel
+import com.softprodigy.ballerapp.data.response.invitation.InvitationData
 import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
@@ -74,7 +75,7 @@ class TeamRepository @Inject constructor(
         return safeApiCall(dispatcher) { service.updateTeamDetails(id) }
     }
 
-    override suspend fun inviteMembersByTeamId(updateTeamRequest: UpdateTeamRequest): ResultWrapper<BaseResponse<Any>> {
+    override suspend fun inviteMembersByTeamId(updateTeamRequest: UpdateTeamRequest): ResultWrapper<BaseResponse<InvitationData>> {
         return safeApiCall(dispatcher) { service.sendInvitation(updateTeamRequest = updateTeamRequest) }
     }
 

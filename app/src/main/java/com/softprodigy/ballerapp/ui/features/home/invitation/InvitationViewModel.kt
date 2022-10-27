@@ -150,7 +150,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
             }
             is ResultWrapper.Success -> {
                 inviteResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         invitationState.value =
                             invitationState.value.copy(
                                 invitations = response.data
@@ -210,6 +210,9 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
             }
             is ResultWrapper.Success -> {
                 acceptInviteResponse.value.let { response ->
+
+//                    if(response.)
+
                     getAllInvitation()
                     _invitationChannel.send(
                         InvitationChannel.Success(
@@ -264,7 +267,6 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                         )
                     )
                 }
-
             }
         }
     }
@@ -297,7 +299,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
             }
             is ResultWrapper.Success -> {
                 userRoles.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         invitationState.value =
                             invitationState.value.copy(
                                 showLoading = false,
@@ -351,7 +353,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
             }
             is ResultWrapper.Success -> {
                 userRoles.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         invitationState.value =
                             invitationState.value.copy(
                                 showLoading = false,

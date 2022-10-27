@@ -43,6 +43,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import androidx.core.text.isDigitsOnly
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
@@ -97,17 +98,30 @@ fun ProfileEditScreen(
 
     val genderList =
         listOf(stringResource(id = R.string.male), stringResource(id = R.string.female))
+
     var expanded by remember { mutableStateOf(false) }
+
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
 
-    val icon = if (expanded)
-        Icons.Filled.KeyboardArrowUp
-    else
-        Icons.Filled.KeyboardArrowDown
+    val size = arrayListOf<String>()
 
+    for (i in 30..50) {
+        size.add(i.toString())
+    }
+
+    var waistSizeExpanded by remember {
+        mutableStateOf(false)
+    }
+
+    var shirtSizeExpanded by remember {
+        mutableStateOf(false)
+    }
+
+    var waistFieldSize by remember { mutableStateOf(Size.Zero) }
+
+    var shirtFieldSize by remember { mutableStateOf(Size.Zero) }
 
     val context = LocalContext.current
-    val focusRequester = FocusRequester()
 
     // Declaring integer values
     // for year, month and day
@@ -349,10 +363,11 @@ fun ProfileEditScreen(
                             errorMessage = stringResource(id = R.string.valid_class_of),
                             keyboardOptions = KeyboardOptions(
                                 imeAction = ImeAction.Next,
-                                capitalization = KeyboardCapitalization.Sentences
+                                capitalization = KeyboardCapitalization.Sentences,
+                                keyboardType = KeyboardType.Number
                             ),
                             isError = state.user.userDetails.classOf.length in 1..3,
-                            )
+                        )
                         DividerCommon()
                     }
                 }
@@ -415,7 +430,7 @@ fun ProfileEditScreen(
                         data =
                         state.jerseyNumerPerferences,
                         onValueChange = {
-                            if (it.length <= 5)
+                            if (it.length <= 9 && it.length <= Long.MAX_VALUE.toString().length && it.isDigitsOnly())
                                 vm.onEvent(ProfileEvent.OnPrefJerseyNoChange(it))
                         },
                         stringResource(id = R.string.jersey_number),
@@ -425,6 +440,7 @@ fun ProfileEditScreen(
                             capitalization = KeyboardCapitalization.Sentences,
                             keyboardType = KeyboardType.Number
                         ),
+                        visualTransformation = NumberCommaTransformation()
                     )
                     DividerCommon()
 
@@ -458,7 +474,6 @@ fun ProfileEditScreen(
                             genderList.forEach { label ->
                                 DropdownMenuItem(onClick = {
                                     vm.onEvent(ProfileEvent.OnGenderChange(label))
-
                                     expanded = false
                                 }) {
                                     androidx.compose.material.Text(
@@ -470,38 +485,89 @@ fun ProfileEditScreen(
                         }
                     }
                     DividerCommon()
-
-                    EditProfileFields(
-                        state.shirtSize,
-                        onValueChange = {
-                            if (it.length <= 3)
+                    Column {
+                        EditProfileFields(
+                            state.shirtSize,
+                            onValueChange = {
                                 vm.onEvent(ProfileEvent.OnShirtChange(it))
-
-                        },
-                        stringResource(id = R.string.shirt_size),
-                        errorMessage = stringResource(id = R.string.valid_first_name),
-                        keyboardOptions = KeyboardOptions(
-                            imeAction = ImeAction.Next,
-                            capitalization = KeyboardCapitalization.Sentences
-                        ),
-                    )
+                            },
+                            stringResource(id = R.string.shirt_size),
+                            errorMessage = stringResource(id = R.string.valid_first_name),
+                            keyboardOptions = KeyboardOptions(
+                                imeAction = ImeAction.Next,
+                                capitalization = KeyboardCapitalization.Sentences
+                            ), modifier = Modifier
+                                .onGloballyPositioned {
+                                    shirtFieldSize = it.size.toSize()
+                                }
+                                .clickable { shirtSizeExpanded = !shirtSizeExpanded },
+                            readOnly = true,
+                            enabled = false
+                        )
+                        DropdownMenu(
+                            expanded = shirtSizeExpanded,
+                            onDismissRequest = { shirtSizeExpanded = false },
+                            modifier = Modifier
+                                .width(with(LocalDensity.current) { shirtFieldSize.width.toDp() })
+                                .background(MaterialTheme.colors.background)
+                        ) {
+                            size.forEach { label ->
+                                DropdownMenuItem(onClick = {
+                                    vm.onEvent(ProfileEvent.OnShirtChange(label))
+                                    shirtSizeExpanded = false
+                                }) {
+                                    Text(
+                                        text = label,
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+                            }
+                        }
+                    }
                     DividerCommon()
 
-                    EditProfileFields(
-                        state.waistSize,
-                        onValueChange = {
-                            if (it.length <= 3)
+                    Column() {
+                        EditProfileFields(
+                            state.waistSize,
+                            onValueChange = {
                                 vm.onEvent(ProfileEvent.OnWaistChange(it))
+                            },
+                            stringResource(id = R.string.waist_size),
+                            errorMessage = stringResource(id = R.string.valid_first_name),
+                            keyboardOptions = KeyboardOptions(
+                                imeAction = ImeAction.Next,
+                                capitalization = KeyboardCapitalization.Sentences,
+                                keyboardType = KeyboardType.Number
+                            ),
+                            modifier = Modifier
+                                .onGloballyPositioned {
+                                    waistFieldSize = it.size.toSize()
+                                }
+                                .clickable { waistSizeExpanded = !waistSizeExpanded },
+                            readOnly = true,
+                            enabled = false
+                        )
 
-                        },
-                        stringResource(id = R.string.waist_size),
-                        errorMessage = stringResource(id = R.string.valid_first_name),
-                        keyboardOptions = KeyboardOptions(
-                            imeAction = ImeAction.Next,
-                            capitalization = KeyboardCapitalization.Sentences,
-                            keyboardType = KeyboardType.Number
-                        ),
-                    )
+                        DropdownMenu(
+                            expanded = waistSizeExpanded,
+                            onDismissRequest = { waistSizeExpanded = false },
+                            modifier = Modifier
+                                .width(with(LocalDensity.current) { waistFieldSize.width.toDp() })
+                                .background(MaterialTheme.colors.background)
+                        ) {
+                            size.forEach { label ->
+                                DropdownMenuItem(onClick = {
+                                    vm.onEvent(ProfileEvent.OnWaistChange(label))
+                                    waistSizeExpanded = false
+                                }) {
+                                    Text(
+                                        text = label,
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
                 AppText(
                     text = stringResource(id = R.string.fun_facts),

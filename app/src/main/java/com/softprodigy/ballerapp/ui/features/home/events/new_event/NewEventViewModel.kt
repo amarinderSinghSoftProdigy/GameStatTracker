@@ -136,7 +136,7 @@ class NewEventViewModel @Inject constructor(val eventsRepository: IEventsReposit
             }
             is ResultWrapper.Success -> {
                 eventResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status ) {
                         _channel.send(
                             NewEventChannel.OnEventCreationSuccess(
                                 response.statusMessage
