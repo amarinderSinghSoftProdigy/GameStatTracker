@@ -384,6 +384,7 @@
     <string name="read_the_note">Read the note</string>
     <string name="wait_for_response">Wait for lorem ipsum to dolor sit amet.</string>
     <string name="child_not_listed">My child is not listed</string>
+    <string name="i_dont_have_child_on_this_team">I don\'t have child on this team</string>
     <string name="select_the_players_guardian">Select the player/s you\'re guardian of</string>
     <string name="search_venue_by_name">Search venue by name</string>
     <string name="cash">Cash</string>

@@ -43,7 +43,6 @@ import com.softprodigy.ballerapp.common.Route
 import com.softprodigy.ballerapp.common.Route.CREATE_NEW_CHAT_CONVO
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
-import com.softprodigy.ballerapp.data.request.Members
 import com.softprodigy.ballerapp.ui.features.components.*
 import com.softprodigy.ballerapp.ui.features.home.events.*
 import com.softprodigy.ballerapp.ui.features.home.events.division.divisionTab.DivisionScreenTab
@@ -382,6 +381,7 @@ fun NavControllerComposable(
             signUpViewModel.onEvent(SignUpUIEvent.SetRegister)
             ProfileSetUpScreen(
                 signUpViewModel = signUpViewModel,
+                isToAddProfile = true,
                 onNext = {
                     navController.popBackStack()
                 },
@@ -414,6 +414,7 @@ fun NavControllerComposable(
             ProfileSetUpScreen(
                 mobileNumber = mobileNumber,
                 countryCode = countryCode,
+                isToAddProfile = true,
                 signUpViewModel = signUpViewModel,
                 onNext = {
                     navController.popBackStack()
@@ -789,7 +790,7 @@ fun NavControllerComposable(
                 addProfileClick = {
                     navController.navigate(Route.ADD_PROFILE_SCREEN)
 
-                })
+                }, signUpViewModel = signUpViewModel)
         }
         composable(route = Route.TEAM_SETUP_SCREEN) { backStackEntry ->
 

@@ -1113,10 +1113,11 @@ fun SelectGuardianRoleDialog(
     onBack: () -> Unit,
     onConfirmClick: () -> Unit,
     onChildNotListedCLick: () -> Unit,
+    dontHaveChildClick: () -> Unit,
     onSelectionChange: (String) -> Unit,
     selected: String?,
     onDismiss: () -> Unit,
-    guardianList: ArrayList<PlayerDetails>,
+    guardianList: List<PlayerDetails>,
     onValueSelected: (PlayerDetails) -> Unit
 ) {
 
@@ -1139,7 +1140,7 @@ fun SelectGuardianRoleDialog(
                 ) {
                     Box(modifier = Modifier.fillMaxWidth()) {
                         Text(
-                            text = if (selectedRole == "guardian") stringResource(R.string.select_the_players_guardian) else stringResource(
+                            text = if (selectedRole == UserType.PARENT.key) stringResource(R.string.select_the_players_guardian) else stringResource(
                                 R.string.confirm_your_guardin
                             ),
 
@@ -1157,26 +1158,24 @@ fun SelectGuardianRoleDialog(
                             columns = GridCells.Fixed(3),
                             modifier = Modifier.height(dimensionResource(id = R.dimen.size_300dp)),
                             content = {
+                                    items (guardianList ){ member->
+                                        SelectGuardianRoleItem(
+                                            name = member.memberDetails.firstName,
+                                            profile = member.memberDetails.profileImage,
+                                            onItemClick = { guardian ->
+                                                onSelectionChange(guardian)
+                                                onValueSelected(member)
+                                            },
+                                            isSelected = selected == member.id,
+                                            id = member.id
+                                        )
+                                    } })
 
-                                items(guardianList) {
-
-                                    SelectGuardianRoleItem(
-                                        name = it.memberDetails!!.firstName,
-                                        profile = it.memberDetails.profileImage,
-                                        onItemClick = { guardian ->
-                                            onSelectionChange(guardian)
-                                            onValueSelected(it)
-                                        },
-                                        isSelected = selected == it.id,
-                                        id = it.id
-                                    )
-                                }
-                            })
                     }
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
                     DialogButton(
-                        text = if (selectedRole == "guardian") stringResource(R.string.child_not_listed) else stringResource(
+                        text = if (selectedRole == UserType.PARENT.key) stringResource(R.string.child_not_listed) else stringResource(
                             R.string.my_guardian_not_listed
                         ),
                         onClick = onChildNotListedCLick,
@@ -1187,6 +1186,16 @@ fun SelectGuardianRoleDialog(
                     )
 
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+
+                    if (selectedRole == UserType.PARENT.key)
+                        DialogButton(
+                            text = stringResource(R.string.i_dont_have_child_on_this_team),
+                            onClick = dontHaveChildClick,
+                            modifier = Modifier.fillMaxWidth(),
+                            border = ButtonDefaults.outlinedBorder,
+                            onlyBorder = true,
+                            enabled = false
+                        )
 
                     AppDivider()
 

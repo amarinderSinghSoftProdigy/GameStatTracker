@@ -59,7 +59,7 @@ import com.softprodigy.ballerapp.ui.features.home.HomeActivity
 import com.softprodigy.ballerapp.ui.features.login.LoginScreen
 import com.softprodigy.ballerapp.ui.features.select_profile.SelectProfileScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.ProfileSetUpScreen
-import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
+//import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpUIEvent
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpViewModel
 import com.softprodigy.ballerapp.ui.features.splash.SplashScreen
@@ -375,31 +375,6 @@ fun NavControllerComposable(
             }
         }
 
-        composable(route = SIGN_UP_SCREEN) {
-            SignUpScreen(vm = signUpViewModel, onLoginScreen = {
-                navController.popBackStack()
-            }, onSignUpSuccess = {
-                navController.navigate(SELECT_USER_TYPE)
-            },
-                onTwitterClick = {
-                    scope.launch {
-                        (context as MainActivity).getRequestToken("signup")
-                    }
-                },
-                twitterUser = activity.twitterUserRegister.value,
-                onSocialLoginSuccess = { userInfo ->
-                    /* checkRole(
-                         userInfo.user.role.equals(
-                             AppConstants.USER_TYPE_USER,
-                             ignoreCase = true
-                         ), navController, activity
-                     )*/
-                }, onPreviousClick = {
-                    navController.popBackStack()
-                },
-                onSocialLoginFailed = { activity.twitterUserRegister.value = null }
-            )
-        }
 
         composable(route = WELCOME_SCREEN) {
             WelcomeScreen {

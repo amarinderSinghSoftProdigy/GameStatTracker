@@ -63,6 +63,7 @@ import java.util.*
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun ProfileSetUpScreen(
+    isToAddProfile:Boolean=false,
     countryCode:String="",
     mobileNumber:String="",
     onNext: () -> Unit,
@@ -373,6 +374,7 @@ fun ProfileSetUpScreen(
                                 errorMessage = stringResource(id = R.string.email_error),
                                 enabled = false
                             )
+                            if(!isToAddProfile){
                             state.signUpData.token?.let { _ ->
                                 AppDivider()
 
@@ -474,7 +476,6 @@ fun ProfileSetUpScreen(
                                     }
                                 }
                             }
-
                             AppDivider()
                             Column {
                                 Row(verticalAlignment = Alignment.CenterVertically){
@@ -552,6 +553,8 @@ fun ProfileSetUpScreen(
                                     )
                                 }
                             }
+                            }
+
                             /*if (validPhoneNumber(state.signUpData.phone) && !state.signUpData.phoneVerified) {
 
                                 Column(
@@ -602,14 +605,14 @@ fun ProfileSetUpScreen(
                         onBackClick = { onBack() },
                         onNextClick = {
                             if (state.registered) {
-                                onNext()
+                                signUpViewModel.onEvent(SignUpUIEvent.OnAddProfile)
                             } else {
                                 signUpViewModel.onEvent(SignUpUIEvent.OnScreenNext)
                             }
                         },
                         enableState = validName(state.signUpData.firstName)
                                 && validName(state.signUpData.lastName)
-                                && validPhoneNumber(state.signUpData.phone),
+                                && if(isToAddProfile) true else validPhoneNumber(state.signUpData.phone),
                                 //&& (state.signUpData.email ?: "".isValidEmail()) != true
                                 //&& state.signUpData.profileImageUri != null
                                 //&& state.signUpData.phoneVerified

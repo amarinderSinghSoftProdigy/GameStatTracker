@@ -123,14 +123,19 @@ class SignUpViewModel @Inject constructor(
                     }
                 }
             }
+            is SignUpUIEvent.OnAddProfile -> {
+                viewModelScope.launch {
+                        imageUpload()
+                }
+            }
 
             is SignUpUIEvent.OnSignUpDataSelected -> {
-                _signUpUiState.value =
+                /*_signUpUiState.value =
                     _signUpUiState.value.copy(signUpData = event.signUpData, registered = false)
 
                 viewModelScope.launch {
                     _signUpChannel.send(SignUpChannel.OnSignUpSelected)
-                }
+                }*/
             }
             is SignUpUIEvent.SetRegister -> {
                 _signUpUiState.value =
@@ -569,13 +574,13 @@ class SignUpViewModel @Inject constructor(
             firstName = _signUpUiState.value.signUpData.firstName,
             lastName = _signUpUiState.value.signUpData.lastName,
             profileImage = _signUpUiState.value.signUpData.profileImage,
-            city = "",
-            state = "",
-            zip = "",
-            address = _signUpUiState.value.signUpData.address,
-            gender = _signUpUiState.value.signUpData.gender,
-            birthdate = _signUpUiState.value.signUpData.birthdate,
-            role = _signUpUiState.value.signUpData.role
+//            city = "",
+//            state = "",
+//            zip = "",
+//            address = _signUpUiState.value.signUpData.address,
+//            gender = _signUpUiState.value.signUpData.gender,
+//            birthdate = _signUpUiState.value.signUpData.birthdate,
+//            role = _signUpUiState.value.signUpData.role
         )
         when (val response = IUserRepository.addProfile(request)) {
             is ResultWrapper.Success -> {

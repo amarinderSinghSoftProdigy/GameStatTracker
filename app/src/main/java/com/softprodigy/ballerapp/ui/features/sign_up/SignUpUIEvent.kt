@@ -8,6 +8,7 @@ sealed class SignUpUIEvent {
     data class OnImageSelected(val profileImageUri: String) : SignUpUIEvent()
     data class OnImageUploadSuccess(val fromNewProfile: Boolean = false) : SignUpUIEvent()
     object OnScreenNext : SignUpUIEvent()
+    object OnAddProfile : SignUpUIEvent()
     data class OnSignUpDataSelected(val signUpData: SignUpData) : SignUpUIEvent()
     object SetRegister : SignUpUIEvent()
     object OnVerifyNumber : SignUpUIEvent()
