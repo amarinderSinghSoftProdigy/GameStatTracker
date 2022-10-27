@@ -128,7 +128,7 @@ fun GameDetailsTab(vm: EventViewModel, moveToGameRules: () -> Unit) {
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
                 CoilImage(
-                    src = R.drawable.rectangle,
+                    src = R.drawable.ic_ball,
                     modifier = Modifier
                         .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
                         .background(

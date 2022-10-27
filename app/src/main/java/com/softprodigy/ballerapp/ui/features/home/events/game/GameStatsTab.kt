@@ -135,7 +135,7 @@ fun GameStatsTab() {
                             )
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Image(
-                                    painter = painterResource(id = R.drawable.user_demo),
+                                    painter = painterResource(id = R.drawable.ic_ball),
                                     contentDescription = null,
                                     modifier = Modifier
                                         .size(40.dp)
@@ -223,7 +223,7 @@ fun GameStatsTab() {
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Image(
-                        painter = painterResource(id = R.drawable.user_demo),
+                        painter = painterResource(id = R.drawable.ic_ball),
                         contentDescription = null,
                         modifier = Modifier
                             .size(dimensionResource(id = R.dimen.size_60dp))

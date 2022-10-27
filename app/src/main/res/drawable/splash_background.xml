@@ -6,8 +6,8 @@
 
     <item
         android:width="@dimen/size_160dp"
-        android:height="@dimen/size_95dp"
-        android:drawable="@drawable/app_logo"
+        android:height="@dimen/size_120dp"
+        android:drawable="@drawable/ic_all_ball_logo"
         android:gravity="center" />
 
 </layer-list>
