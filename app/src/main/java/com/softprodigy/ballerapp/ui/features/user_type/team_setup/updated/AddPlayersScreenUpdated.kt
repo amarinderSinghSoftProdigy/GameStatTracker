@@ -209,9 +209,8 @@ fun AddPlayersScreenUpdated(
                         vm.onEvent(TeamSetupUIEventUpdated.OnInviteTeamMembers(teamId))
                     }
                 },
-                enableState = true,
-                /*state.inviteList.isNotEmpty() &&
-                        state.inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() },*/
+                enableState = state.inviteList.isNotEmpty() &&
+                        state.inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() },
                 themed = true,
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))

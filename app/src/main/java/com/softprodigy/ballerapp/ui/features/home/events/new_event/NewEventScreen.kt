@@ -52,10 +52,8 @@ import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.*
 import com.softprodigy.ballerapp.data.request.Address
-import com.softprodigy.ballerapp.ui.features.components.AppButton
-import com.softprodigy.ballerapp.ui.features.components.AppText
-import com.softprodigy.ballerapp.ui.features.components.AppTextField
-import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
+import com.softprodigy.ballerapp.ui.features.components.*
+import com.softprodigy.ballerapp.ui.features.profile.ProfileEvent
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
 import com.softprodigy.ballerapp.ui.theme.appColors
 import kotlinx.coroutines.launch
@@ -154,12 +152,13 @@ fun NewEventScreen(
                     && state.selectedStartTime.isNotEmpty()
                     && state.selectedEndTime.isNotEmpty()
                     && state.selectedVenueName.isNotEmpty()
-                    && state.selectedAddress.street.isNotEmpty(),
+                    && state.selectedAddress.street.isNotEmpty() && state.pre_practice_prep.isNotEmpty(),
 
             singleButton = true,
             themed = true,
             isForceEnableNeeded = true
         )
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
     }
     if (state.isLoading) {
         CommonProgressBar()
@@ -305,13 +304,10 @@ fun PracticeScreen(
                         val cityName: String = addresses?.get(0)?.locality ?: ""
                         val countryName: String = addresses?.get(0)?.countryName ?: ""
                         val zip: String = addresses?.get(0)?.postalCode ?: ""
-
                         addressReq.state = stateName
                         addressReq.city = cityName
                         addressReq.country = countryName
                         addressReq.zip = zip
-
-
                     } catch (e: IOException) {
                         e.printStackTrace()
                     }
@@ -444,6 +440,45 @@ fun PracticeScreen(
 
             Divider(color = MaterialTheme.appColors.material.primary)
 
+            AppText(
+                text = stringResource(id = R.string.pre_practive_head),
+                style = MaterialTheme.typography.h6,
+                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                modifier = Modifier.padding(dimensionResource(id = R.dimen.size_16dp)),
+            )
+
+            AppOutlineTextField(
+                value = state.pre_practice_prep,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(dimensionResource(id = R.dimen.size_16dp))
+                    .height(dimensionResource(id = R.dimen.size_80dp)),
+                onValueChange = {
+                    vm.onEvent(NewEvEvent.OnPrePracticeChange(it))
+                },
+                placeholder = {
+
+                },
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next,
+                    keyboardType = KeyboardType.Email
+                ),
+                isError = false,
+                errorMessage = stringResource(id = R.string.email_error),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
+                    unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
+                    backgroundColor = MaterialTheme.appColors.material.background,
+                    textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    placeholderColor = MaterialTheme.appColors.textField.label,
+                    cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                ),
+                singleLine = false,
+                maxLines = 6
+            )
+
+            Divider(color = MaterialTheme.appColors.material.primary)
+
             PracticeItem(
                 stringResource(R.string.send_push_notification),
                 onlyIcon = true,
@@ -453,7 +488,6 @@ fun PracticeScreen(
                 },
                 onNotificationChange = {
                     vm.onEvent(NewEvEvent.OnNotificationChange(it))
-
                 })
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))

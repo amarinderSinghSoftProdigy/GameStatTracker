@@ -66,6 +66,11 @@ class NewEventViewModel @Inject constructor(val eventsRepository: IEventsReposit
                 _state.value =
                     _state.value.copy(selectedAddress = event.address)
             }
+
+            is NewEvEvent.OnPrePracticeChange -> {
+                _state.value = _state.value.copy(pre_practice_prep = event.prePracticePrep)
+            }
+
             NewEvEvent.OnSaveButtonClick -> {
                 viewModelScope.launch {
                     createEvent()
@@ -102,8 +107,8 @@ class NewEventViewModel @Inject constructor(val eventsRepository: IEventsReposit
             landmarkLocation = state.value.selectedVenueName,
             location = location,
             address = state.value.selectedAddress,
-            pushNotification = state.value.showNotification
-
+            pushNotification = state.value.showNotification,
+            prePractice = state.value.pre_practice_prep
         )
         val eventResponse = eventsRepository.createEvent(request)
         _state.value =

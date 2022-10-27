@@ -345,32 +345,32 @@ class TeamViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 teamResponse.value.let { response ->
                     if (response.status) {
-                        if (response.data.size > 0) {
-                            if (response.data.size == 1) {
-                                setRole(response.data[0].role)
-                                setDefaultTeam(response.data[0].teamId)
+                        if (response.data.result.size > 0) {
+                            if (response.data.result.size == 1) {
+                                setRole(response.data.result[0].role)
+                                setDefaultTeam(response.data.result[0].teamId)
                                 return
                             }
                             var selectionTeam: Team? = null
-                            response.data.toMutableList().forEach {
+                            response.data.result.toMutableList().forEach {
                                 if (UserStorage.teamId == it.teamId._id) {
                                     selectionTeam = it.teamId
                                     setRole(it.role)
                                 }
                             }
                             val idToSearch =
-                                if (selectionTeam == null) response.data[0].teamId._id else selectionTeam?._id
+                                if (selectionTeam == null) response.data.result[0].teamId._id else selectionTeam?._id
                             _teamUiState.value =
                                 _teamUiState.value.copy(
-                                    teams = CommonUtils.getTeams(response.data),
-                                    selectedTeam = if (selectionTeam == null) response.data[0].teamId else selectionTeam,
+                                    teams = CommonUtils.getTeams(response.data.result),
+                                    selectedTeam = if (selectionTeam == null) response.data.result[0].teamId else selectionTeam,
                                     isLoading = false,
                                     localLogo = null,
                                     loadFirstUi = selectionTeam == null,
                                 )
                             if (selectionTeam == null) {
-                                setRole(response.data[0].role)
-                                setDefaultData(response.data[0].teamId)
+                                setRole(response.data.result[0].role)
+                                setDefaultData(response.data.result[0].teamId)
                             } else {
                                 viewModelScope.launch {
                                     if (!idToSearch.isNullOrEmpty()) {

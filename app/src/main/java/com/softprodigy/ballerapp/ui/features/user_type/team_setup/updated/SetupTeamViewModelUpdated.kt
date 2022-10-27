@@ -627,8 +627,8 @@ class SetupTeamViewModelUpdated @Inject constructor(
         val location = Location(
             type = "Point",
             coordinates = arrayListOf(
+                _teamSetupUiState.value.selectedAddress.long,
                 _teamSetupUiState.value.selectedAddress.lat,
-                _teamSetupUiState.value.selectedAddress.long
             )
         )
         val request = CreateTeamRequest(

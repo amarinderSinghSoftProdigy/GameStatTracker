@@ -209,6 +209,8 @@ fun SelectTeamDialog(
                                     onSelectionChange.invoke(team)
                                     teamId.value = team._id
                                     teamName.value = team.name
+                                    onConfirmClick.invoke(teamId.value, teamName.value)
+                                    onDismiss.invoke()
                                 }
                             }
                         }
@@ -225,7 +227,7 @@ fun SelectTeamDialog(
 
                     )
                     /*   }*/
-                    Row(
+                  /*  Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(color = Color.White)
@@ -255,7 +257,7 @@ fun SelectTeamDialog(
                             enabled = (selected?.name ?: "").isNotEmpty(),
                             onlyBorder = false,
                         )
-                    }
+                    }*/
                 }
             },
         )

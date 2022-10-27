@@ -45,7 +45,7 @@ open interface APIService {
     @GET(ApiConstants.GET_TEAMS_BY_USER_ID)
     suspend fun getTeamsUser(
         @Query("userId") coachId: String,
-    ): BaseResponse<ArrayList<TeamParent>>
+    ): BaseResponse<Result>
 
     @GET(ApiConstants.GET_TEAM_BY_ID)
     suspend fun getTeamsByTeamId(
