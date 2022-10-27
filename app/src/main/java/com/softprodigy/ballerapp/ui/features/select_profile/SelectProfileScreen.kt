@@ -206,9 +206,10 @@ fun SelectProfileItems(
                 )
 
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                val name = CommonUtils.getRole(users.role)
+//                val name = CommonUtils.getRole(users.role)
                 AppText(
-                    text = stringResourceByName(name = name.ifEmpty { "user_type" }),
+//                    text = stringResourceByName(name = name.ifEmpty { "user_type" }),
+                    text = users.phone,
                     style = MaterialTheme.typography.h6,
                     color = ColorMainPrimary,
                     textAlign = TextAlign.Start

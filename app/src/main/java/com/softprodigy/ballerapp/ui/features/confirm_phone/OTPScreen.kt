@@ -33,6 +33,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.data.response.SwapUser
 import com.softprodigy.ballerapp.ui.features.components.AppOutlineTextField
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.CommonProgressBar
@@ -49,7 +50,8 @@ import kotlinx.coroutines.delay
 @Composable
 fun OtpScreen(
     viewModel: SignUpViewModel,
-    onSuccess: (Boolean) -> Unit
+    onSuccess: (profilesCount:Int,profileUserIFSingle:SwapUser?) -> Unit,
+    onTokenSelectionSuccess:()->Unit
 ) {
     // create variable for value
     var value by remember {
@@ -85,12 +87,17 @@ fun OtpScreen(
                         .show()
                 }
                 is SignUpChannel.OnSuccess -> {
-                    onSuccess(uiEvent.count == 0)
+                    onSuccess(uiEvent.count,uiEvent.profileIdIfSingle)
                 }
-                else -> Unit
+                is SignUpChannel.OnProfileUpdateSuccess -> {
+                    onTokenSelectionSuccess.invoke()
+                }
+                    else -> Unit
             }
         }
     }
+
+
     Box(
         modifier = Modifier
             .fillMaxSize(),

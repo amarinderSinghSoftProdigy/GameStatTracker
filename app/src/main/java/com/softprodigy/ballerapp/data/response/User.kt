@@ -52,6 +52,7 @@ data class SwapUser(
     @SerializedName("firstName") val firstName: String = "",
     @SerializedName("lastName") val lastName: String = "",
     @SerializedName("role") val role: String = "",
+    @SerializedName("phone") val phone: String = "",
     @SerializedName("profileImage") val profileImage: String = "",
     @SerializedName("status") val status: String = "",
 )

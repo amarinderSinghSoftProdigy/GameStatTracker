@@ -60,6 +60,7 @@ import com.softprodigy.ballerapp.ui.features.login.LoginScreen
 import com.softprodigy.ballerapp.ui.features.select_profile.SelectProfileScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.ProfileSetUpScreen
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpScreen
+import com.softprodigy.ballerapp.ui.features.sign_up.SignUpUIEvent
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpViewModel
 import com.softprodigy.ballerapp.ui.features.splash.SplashScreen
 import com.softprodigy.ballerapp.ui.features.user_type.UserTypeScreen
@@ -543,13 +544,26 @@ fun NavControllerComposable(
         composable(route = OTP_VERIFICATION_SCREEN) {
             OtpScreen(
                 viewModel = signUpViewModel,
-                onSuccess = {
-                    navController.popBackStack()
-                    if (it) {
-                        navController.navigate(PROFILE_SETUP_SCREEN)
-                    } else {
-                        navController.navigate(SELECT_PROFILE)
+                onSuccess = { profilesCount, profileIdIFSingle->
+                    when (profilesCount) {
+                        0 -> {
+                            navController.popBackStack()
+                            navController.navigate(PROFILE_SETUP_SCREEN)
+                        }
+                        1 -> {
+                            profileIdIFSingle?.let {
+                                signUpViewModel.onEvent(SignUpUIEvent.OnSwapUpdate(it))
+                            }
+                        }
+                        else -> {
+                            navController.popBackStack()
+                            navController.navigate(SELECT_PROFILE)
+                        }
                     }
+
+                },
+                onTokenSelectionSuccess = {
+                    moveToHome(activity)
                 }
             )
         }

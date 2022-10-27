@@ -261,6 +261,7 @@ class ProfileViewModel @Inject constructor(
             }
             is ProfileEvent.ProfileUpload -> {
                viewModelScope.launch {
+                  if(_state.value.selectedImage.isNotEmpty())
                    imageUpload()
                }
             }
