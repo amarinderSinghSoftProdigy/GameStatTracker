@@ -670,7 +670,7 @@ class SignUpViewModel @Inject constructor(
                     if (response.status) {
                         setToken(
 //                            token = signUpUiState.value.signUpData.token ?: "",
-                            token = response.data.token,
+                            token = "",
                             role = signUpUiState.value.signUpData.role ?: "",
                             email = signUpUiState.value.signUpData.email ?: "",
                         )
@@ -796,7 +796,8 @@ class SignUpViewModel @Inject constructor(
                                     UiText.DynamicString(
                                         response.statusMessage,
                                     ),
-                                    response.data.profiles.size
+                                    count = response.data.profiles.size,
+                                    profileIdIfSingle = if (response.data.profiles.size == 1) response.data.profiles[0] else null
                                 )
                             )
 
@@ -871,7 +872,8 @@ sealed class SignUpChannel {
     data class ShowToast(val message: UiText) : SignUpChannel()
     object OnProfileImageUpload : SignUpChannel()
     data class OnProfileUpdateSuccess(val message: UiText) : SignUpChannel()
-    data class OnSuccess(val message: UiText, val count: Int) : SignUpChannel()
+    data class OnSuccess(val message: UiText, val count: Int, val profileIdIfSingle: SwapUser?) :
+        SignUpChannel()
     object OnOTPScreen : SignUpChannel()
     object OnSignUpSelected : SignUpChannel()
     data class OnLoginSuccess(val loginResponse: UserInfo) : SignUpChannel()

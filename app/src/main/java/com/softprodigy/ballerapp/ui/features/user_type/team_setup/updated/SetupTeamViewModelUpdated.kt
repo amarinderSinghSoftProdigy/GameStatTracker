@@ -157,9 +157,23 @@ class SetupTeamViewModelUpdated @Inject constructor(
                 _teamSetupUiState.value =
                     _teamSetupUiState.value.copy(
                         inviteList = _teamSetupUiState.value.inviteList.apply {
-                            this[_teamSetupUiState.value.index] = event.data
+                            this[_teamSetupUiState.value.index].name = event.data.name
+                            this[_teamSetupUiState.value.index].contact = event.data.contact.takeLast(10)
                         }
                     )
+                /* To achieve recomposition only*/
+
+                _teamSetupUiState.value =
+                    _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList
+                        .apply {
+                            add(InviteObject())
+                        })
+
+                    _teamSetupUiState.value =
+                        _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList
+                            .apply {
+                                removeLast()
+                            })
             }
 
             is TeamSetupUIEventUpdated.OnIndexChange -> {
@@ -213,7 +227,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
                     _teamSetupUiState.value =
                         _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList
                             .apply {
-                                removeAt(it + 1)
+                                removeLast()
                             })
                 }
 

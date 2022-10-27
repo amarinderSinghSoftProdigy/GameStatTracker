@@ -38,6 +38,8 @@ import com.softprodigy.ballerapp.ui.features.home.HomeViewModel
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamChannel
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
+import com.softprodigy.ballerapp.ui.features.sign_up.SignUpChannel
+import com.softprodigy.ballerapp.ui.features.sign_up.SignUpViewModel
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
 import com.softprodigy.ballerapp.ui.theme.ColorBWBlack
@@ -63,7 +65,8 @@ fun HomeScreen(
     onOpportunityClick: () -> Unit,
     onLeagueClick: () -> Unit,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
-    showBottomBar: (Boolean) -> Unit
+    showBottomBar: (Boolean) -> Unit,
+    signUpVm:SignUpViewModel
 ) {
     val dataStoreManager = DataStoreManager(LocalContext.current)
     val color = dataStoreManager.getColor.collectAsState(initial = AppConstants.DEFAULT_COLOR)
