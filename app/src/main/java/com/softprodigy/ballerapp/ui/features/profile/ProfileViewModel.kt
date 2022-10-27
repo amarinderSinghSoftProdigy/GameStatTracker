@@ -122,7 +122,6 @@ class ProfileViewModel @Inject constructor(
                         userDetails = _state.value.user.userDetails.copy(aboutExperience = event.exp)
                     )
                 )
-
             }
 
             is ProfileEvent.OnPositionChange -> {

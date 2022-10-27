@@ -69,8 +69,6 @@ data class TeamDetails(
     @SerializedName("position") val position: String = "",
     @SerializedName("jersey") val jersey: String = "",
     @SerializedName("role") val role: String = ""
-
-
 )
 
 data class UserDetails(
@@ -111,7 +109,6 @@ data class FunFacts(
     @SerializedName("favProfessionalTeam") val favProfessionalTeam: String = "",
     @SerializedName("favActivePlayer") val favActivePlayer: String = "",
     @SerializedName("favAllTimePlayer") val favAllTimePlayer: String = ""
-
 )
 
 data class JerseyPerferences(
@@ -127,8 +124,10 @@ data class TeamId(
 
     @SerializedName("_id") val Id: String = "",
     @SerializedName("name") val name: String = "",
-    @SerializedName("logo") val logo: String = ""
-
+    @SerializedName("logo") val logo: String = "",
+    @SerializedName("primaryTeamColor") val primaryTeamColor: String = "",
+    @SerializedName("secondaryTeamColor") val secondaryTeamColor: String = "",
+    @SerializedName("tertiaryTeamColor") val tertiaryTeamColor: String = ""
 
 )
 

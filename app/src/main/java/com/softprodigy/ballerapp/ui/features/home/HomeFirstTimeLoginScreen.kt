@@ -99,7 +99,6 @@ fun HomeFirstTimeLoginScreen(
                                     .fillMaxWidth()
                                     .align(Alignment.CenterStart),
                                 verticalAlignment = Alignment.CenterVertically,
-
                                 ) {
                                 CoilImage(
                                     src = BuildConfig.IMAGE_SERVER + teamState.logo,

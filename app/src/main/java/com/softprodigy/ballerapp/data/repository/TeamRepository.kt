@@ -52,7 +52,7 @@ class TeamRepository @Inject constructor(
 
     override suspend fun getTeamsUserId(
         coachId: String
-    ): ResultWrapper<BaseResponse<ArrayList<TeamParent>>> {
+    ): ResultWrapper<BaseResponse<com.softprodigy.ballerapp.data.response.team.Result>> {
         return safeApiCall(dispatcher) { service.getTeamsUser(coachId = coachId) }
     }
 
