@@ -84,7 +84,7 @@ class LoginViewModel @Inject constructor(
             when (loginResponse) {
                 is ResultWrapper.Success -> {
                     loginResponse.value.let { response ->
-                        if (response.status) {
+                        if (response.status && response.data != null) {
                             setToken(
                                 response.data.token,
                                 response.data.user.role,

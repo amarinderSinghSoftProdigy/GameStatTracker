@@ -141,7 +141,7 @@ class LeaderBoardViewModel @Inject constructor(
                 }
                 is ResultWrapper.Success -> {
                     leaderReponse.value.let { response ->
-                        if (response.status) {
+                        if (response.status && response.data != null) {
                             _leaderUiState.value =
                                 _leaderUiState.value.copy(
                                     players = response.data.players,

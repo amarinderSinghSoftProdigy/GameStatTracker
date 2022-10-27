@@ -155,7 +155,7 @@ fun LoginScreen(
                                     R.dimen.txt_size_12
                                 ).value.sp,
                                 textAlign = TextAlign.Center,
-                                color = MaterialTheme.appColors.textField.label
+                                color = MaterialTheme.appColors.textField.labelDark
                             )
                         },
                         content = {

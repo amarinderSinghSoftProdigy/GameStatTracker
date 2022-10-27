@@ -139,6 +139,7 @@ fun TeamsScreen(
                 selected = state.selectedTeam,
                 showLoading = state.isLoading,
                 onCreateTeamClick = { onCreateTeamClick(state.selectedTeam) },
+                teamVm = vm
             )
         }
     }

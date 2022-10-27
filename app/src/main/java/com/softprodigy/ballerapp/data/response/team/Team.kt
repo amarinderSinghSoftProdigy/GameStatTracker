@@ -15,7 +15,7 @@ data class TeamParent(
     val teamId: Team = Team(),
 )
 
-data class Result(@SerializedName("result") val result: ArrayList<TeamParent> = arrayListOf())
+data class Result(@SerializedName("result") val result: ArrayList<TeamParent> = arrayListOf(), @SerializedName("teamId") val teamId:String ="")
 
 data class Team(
     @SerializedName("_id")

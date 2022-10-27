@@ -1,11 +1,13 @@
 package com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated
 
 import android.app.Application
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.R
@@ -41,8 +43,10 @@ class SetupTeamViewModelUpdated @Inject constructor(
 
     private val _teamSetupUiState = mutableStateOf(TeamSetupUIStateUpdated())
     val teamSetupUiState: State<TeamSetupUIStateUpdated> = _teamSetupUiState
+    lateinit var context: Context
 
     init {
+        context = application.applicationContext
         initialInviteCount()
     }
 
@@ -158,7 +162,8 @@ class SetupTeamViewModelUpdated @Inject constructor(
                     _teamSetupUiState.value.copy(
                         inviteList = _teamSetupUiState.value.inviteList.apply {
                             this[_teamSetupUiState.value.index].name = event.data.name
-                            this[_teamSetupUiState.value.index].contact = event.data.contact.takeLast(10)
+                            this[_teamSetupUiState.value.index].contact =
+                                event.data.contact.takeLast(10)
                         }
                     )
                 /* To achieve recomposition only*/
@@ -169,11 +174,11 @@ class SetupTeamViewModelUpdated @Inject constructor(
                             add(InviteObject())
                         })
 
-                    _teamSetupUiState.value =
-                        _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList
-                            .apply {
-                                removeLast()
-                            })
+                _teamSetupUiState.value =
+                    _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList
+                        .apply {
+                            removeLast()
+                        })
             }
 
             is TeamSetupUIEventUpdated.OnIndexChange -> {
@@ -281,7 +286,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
                         userType = event.userType,
                         type = event.type,
                         profileSelected = event.profilesSelected,
-                        member = event.member
+                        member = event.member,
                     )
                 }
             }
@@ -351,7 +356,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 userRoles.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         _teamSetupUiState.value =
                             _teamSetupUiState.value.copy(
                                 roles = response.data
@@ -438,6 +443,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
         member: Members?
     ) {
 
+
         val members = if (member != null)
             listOf(member)
         else
@@ -484,7 +490,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 inviteMemberResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data.failedMobileNumber.isEmpty()) {
                         _teamSetupChannel.send(
                             TeamSetupChannel.OnInvitationSuccess(
                                 UiText.DynamicString(
@@ -501,7 +507,15 @@ class SetupTeamViewModelUpdated @Inject constructor(
                                 )
                             )
                         )
-
+                    } else if (response.data.failedMobileNumber.isNotEmpty()) {
+                        _teamSetupChannel.send(
+                            TeamSetupChannel.ShowToast(
+                                UiText.DynamicString(
+                                    context.getString(R.string.number_already_exist) + " " + response.data.failedMobileNumber.toString()
+                                        .replace("[", "").replace("]", "")
+                                )
+                            )
+                        )
                     } else {
                         _teamSetupUiState.value =
                             _teamSetupUiState.value.copy(isLoading = false)
@@ -542,7 +556,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 playersResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         _teamSetupUiState.value =
                             _teamSetupUiState.value.copy(
                                 players = response.data,
@@ -605,7 +619,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 uploadLogoResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         _teamSetupUiState.value =
                             _teamSetupUiState.value.copy(
                                 isLoading = false,
@@ -689,7 +703,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 createTeamResponse.value.let { response ->
-                    if (response.status) {
+                    if (response.status && response.data != null) {
                         _teamSetupUiState.value = _teamSetupUiState.value.copy(isLoading = false)
                         _teamSetupChannel.send(
                             TeamSetupChannel.OnTeamCreate(response.statusMessage)
