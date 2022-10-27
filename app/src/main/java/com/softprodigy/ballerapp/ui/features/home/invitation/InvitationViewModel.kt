@@ -88,6 +88,10 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                 invitationState.value =
                     invitationState.value.copy(showAddPlayerDialog = event.showAddPlayerDialog)
             }
+            is InvitationEvent.OnPlayerAddedSuccessDialog -> {
+                invitationState.value =
+                    invitationState.value.copy(showPlayerAddedSuccessDialog = event.showPlayerAddedDialog)
+            }
 
             InvitationEvent.OnClearGuardianValues -> {
                 invitationState.value =

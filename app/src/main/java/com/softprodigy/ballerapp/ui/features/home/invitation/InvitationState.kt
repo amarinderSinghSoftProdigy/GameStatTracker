@@ -13,6 +13,7 @@ data class InvitationState(
     val selectedInvitation: Invitation = Invitation(),
     val showGuardianDialog: Boolean = false,
     val showAddPlayerDialog: Boolean = false,
+    val showPlayerAddedSuccessDialog: Boolean = false,
     val selectedGuardian: String = "",
     val teamId: String = "",
     val playerDetails: ArrayList<PlayerDetails> = arrayListOf(),

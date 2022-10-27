@@ -58,6 +58,7 @@ import com.softprodigy.ballerapp.ui.theme.appColors
 import com.softprodigy.ballerapp.ui.theme.spacing
 import timber.log.Timber
 import java.util.*
+/*
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -113,8 +114,10 @@ fun SignUpScreen(
 
     val mDate = remember { mutableStateOf("") }
 
-    /*  Declaring DatePickerDialog and setting
-      initial values as current values (present year, month and day)*/
+    */
+/*  Declaring DatePickerDialog and setting
+      initial values as current values (present year, month and day)*//*
+
 
     val mDatePickerDialog = DatePickerDialog(
         context,
@@ -189,11 +192,13 @@ fun SignUpScreen(
                     )
                    // vm.onEvent(SignUpUIEvent.OnGoogleClick(googleUser))
                 } else {
-                    /* Toast.makeText(
+                    */
+/* Toast.makeText(
                          context,
                          context.resources.getString(R.string.something_went_wrong),
                          Toast.LENGTH_SHORT
-                     ).show()*/
+                     ).show()*//*
+
                 }
 
             } catch (e: ApiException) {
@@ -674,3 +679,4 @@ object ClearRippleTheme : RippleTheme {
     )
 }
 
+*/

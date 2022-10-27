@@ -9,6 +9,7 @@ sealed class InvitationEvent {
     data class OnRoleClick(val roleKey: String) : InvitationEvent()
     data class OnRoleDialogClick(val showRoleDialog: Boolean) : InvitationEvent()
     data class OnDeleteDialogClick(val showDeleteDialog: Boolean) : InvitationEvent()
+    data class OnPlayerAddedSuccessDialog(val showPlayerAddedDialog: Boolean) : InvitationEvent()
     object OnRoleConfirmClick : InvitationEvent()
     data class OnDeclineConfirmClick(val invitation: Invitation) : InvitationEvent()
     data class OnGuardianClick(val guardian: String) : InvitationEvent()
