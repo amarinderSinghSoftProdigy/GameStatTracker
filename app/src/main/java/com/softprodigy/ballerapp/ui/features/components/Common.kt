@@ -149,12 +149,14 @@ fun BoxScope.CommonTabView(
             .padding(all = dimensionResource(id = R.dimen.size_16dp)),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        val label = if (topBarData.topBar.stringId.isEmpty()) {
-            if (!topBarData.label.isNullOrEmpty()) topBarData.label
-            else stringResource(id = R.string.app_name)
-        } else {
-            stringResourceByName(name = topBarData.topBar.stringId)
-        }
+        val label =
+            if (!topBarData.label.isNullOrEmpty()) {
+                topBarData.label
+            } else if (topBarData.topBar.stringId.isEmpty()) {
+                stringResourceByName(name = topBarData.topBar.stringId)
+            } else {
+                stringResource(id = R.string.app_name)
+            }
 
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -213,7 +215,7 @@ fun BoxScope.CommonTabView(
         }
         TopBar.MY_EVENT -> {
 
-                icon = painterResource(id = R.drawable.ic_top_add)
+            icon = painterResource(id = R.drawable.ic_top_add)
         }
         TopBar.EVENT_OPPORTUNITIES -> {
             icon = painterResource(id = R.drawable.ic_filter)

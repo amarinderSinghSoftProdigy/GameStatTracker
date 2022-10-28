@@ -454,7 +454,7 @@ fun NavControllerComposable(
         composable(route = Route.TEAMS_SCREEN) {
             homeViewModel.setTopBar(
                 TopBarData(
-                    label = stringResource(id = R.string.teams_label),
+                    label = teamViewModel.teamUiState.value.teamName,
                     topBar = TopBar.TEAMS,
                 )
             )
@@ -790,7 +790,8 @@ fun NavControllerComposable(
                 addProfileClick = {
                     navController.navigate(Route.ADD_PROFILE_SCREEN)
 
-                }, signUpViewModel = signUpViewModel)
+                }, signUpViewModel = signUpViewModel
+            )
         }
         composable(route = Route.TEAM_SETUP_SCREEN) { backStackEntry ->
 
