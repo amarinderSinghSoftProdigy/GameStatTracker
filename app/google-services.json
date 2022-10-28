@@ -7,6 +7,35 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:646727699118:android:635c9ef8796c864b747b3f",
+        "android_client_info": {
+          "package_name": "com.android.allballapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "646727699118-94b38pairkk4jja49kkemuf9q19n9r3v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9n2k0FSPHG8xU0B6LWuuy68c6T0gthvw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "646727699118-94b38pairkk4jja49kkemuf9q19n9r3v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:646727699118:android:ce6af2636ebe7255747b3f",
         "android_client_info": {
           "package_name": "com.softprodigy.ballerapp"

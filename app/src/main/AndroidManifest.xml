@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.softprodigy.ballerapp">
+    package="com.allballapp.android">
 
     <uses-permission
         android:name="com.google.android.gms.permission.AD_ID"
@@ -14,7 +14,7 @@
         tools:targetApi="o" />
 
     <application
-        android:name="com.softprodigy.ballerapp.BallerApp"
+        android:name="com.allballapp.android.BallerApp"
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -26,7 +26,7 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
         <provider
-            android:name=".common.ComposeFileProvider"
+            android:name="com.allballapp.android.common.ComposeFileProvider"
             android:authorities="${applicationId}.provider"
             android:exported="false"
             android:grantUriPermissions="true"
@@ -38,7 +38,7 @@
         </provider>
 
         <activity
-            android:name="com.softprodigy.ballerapp.MainActivity"
+            android:name="com.allballapp.android.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.BallerApp"
             android:windowSoftInputMode="adjustPan">
@@ -49,19 +49,8 @@
             </intent-filter>
         </activity>
 
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
-        <meta-data
-            android:name="com.facebook.sdk.ClientToken"
-            android:value="@string/facebook_client_token" />
-
         <activity
-            android:name="com.facebook.FacebookActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation" />
-
-        <activity
-            android:name=".ui.features.home.HomeActivity"
+            android:name="com.allballapp.android.ui.features.home.HomeActivity"
             android:exported="true"
             android:theme="@style/Theme.BallerApp"
             android:windowSoftInputMode="adjustPan">
@@ -69,18 +58,6 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.facebook.CustomTabActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
 

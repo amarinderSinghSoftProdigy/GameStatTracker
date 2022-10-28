@@ -17,7 +17,7 @@ android {
         enabled = true
     }
     defaultConfig {
-        applicationId "com.softprodigy.ballerapp"
+        applicationId "com.allballapp.android"
         minSdk 24
         targetSdk 33
         versionCode 1
@@ -58,17 +58,14 @@ android {
 
     flavorDimensions.add("ballerapp")
     productFlavors {
-        create("demo") {
+        create("prod") {
             dimension = "ballerapp"
-            buildConfigField("String", "API_SERVER", "\"http://staging.allballapp.com/api/\"")
-            ///buildConfigField("String", "API_SERVER", "\"https://ballerapi.softprodigy.in/api/\"")
-//            buildConfigField("String", "API_SERVER", "\"https://ballerapi-qa.softprodigy.in/api/\"")
+            buildConfigField("String", "API_SERVER", "\"https://api.allballapp.com/api/\"")
             buildConfigField("String", "SERVER", "\"http://baller-app.softprodigyphp.in\"")
             buildConfigField("String", "IMAGE_SERVER", "\"http://ballerapp.s3.us-east-2.amazonaws.com/\"")
             buildConfigField("Integer", "CONNECT_TIMEOUT", "120")
             buildConfigField("Integer", "WRITE_TIMEOUT", "120")
             buildConfigField("Integer", "READ_TIMEOUT", "120")
-            applicationIdSuffix = ".demo"
         }
         create("develop") {
             dimension = "ballerapp"

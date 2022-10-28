@@ -107,7 +107,7 @@ fun TogiCountryCodePicker(
                             cursorColor = cursorColor
                         ),
                         singleLine = true,
-                        visualTransformation = VisualTransformation.None,
+                        visualTransformation = MaskTransformation(),
                         /* MaskTransformation(),*///PhoneNumberTransformation(defaultCountry.countryCode.uppercase()),
                         placeholder = placeHolder,
                         keyboardOptions = KeyboardOptions.Default.copy(
@@ -117,16 +117,6 @@ fun TogiCountryCodePicker(
                         textStyle = textStyle,
                         keyboardActions = KeyboardActions(onDone = { keyboardController?.hideSoftwareKeyboard() }),
                         readOnly = readOnly
-                        /* leadingIcon = {
-
-                },*/
-                        /*trailingIcon = {
-                    if (!error)
-                        Icon(
-                            imageVector = Icons.Filled.Warning, contentDescription = "Error",
-                            tint = MaterialTheme.colors.error
-                        )
-                }*/
                     )
                 }
             }

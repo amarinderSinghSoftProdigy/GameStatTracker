@@ -1,6 +1,6 @@
 package com.ballerapp.core.util
 
-import com.softprodigy.ballerapp.core.util.HashUtils
+import com.allballapp.android.core.util.HashUtils
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
