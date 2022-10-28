@@ -16,7 +16,7 @@
     <string name="email">Email</string>
     <string name="your_email">Your email</string>
     <string name="enter_your_email">Enter your email</string>
-    <string name="enter_valid_email">Please enter a valid e-mail</string>
+    <string name="enter_valid_email">Please enter a valid e-mail.</string>
     <string name="password">Password</string>
     <string name="create_password">Create Password</string>
     <string name="forgot_password">Forgot Password?</string>
@@ -38,7 +38,7 @@
     <string name="send">Send</string>
     <string name="back_to_login">Back To Login</string>
     <string name="otp_verifcation" translatable="false">OTP Verification</string>
-    <string name="please_enter_4_digit_code">Please enter the 6 digit code sent to %1$s </string>
+    <string name="please_enter_4_digit_code">Please enter the 6 digit code sent to %1$s. </string>
     <string name="verify">Verify</string>
     <string name="resend_code">Resend Code</string>
     <string name="create_new_password">Create New Password</string>
@@ -47,7 +47,7 @@
     <string name="new_password">New Password</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="re_enter_password">Re-enter Password</string>
-    <string name="please_accept_tems">Please accept our terms and policies</string>
+    <string name="please_accept_tems">Please accept our terms and policies.</string>
     <string name="next">Next</string>
     <string name="setup_your_team">Set up your team</string>
     <string name="team_logo">Team Logo</string>
@@ -87,11 +87,11 @@
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="phone_num">Phone Number</string>
-    <string name="valid_first_name">Please enter the valid first-name.</string>
+    <string name="valid_first_name">Please enter the valid first name.</string>
     <string name="valid_event_name">Please enter the valid event name.</string>
-    <string name="valid_last_name">Please enter the valid last-name.</string>
+    <string name="valid_last_name">Please enter the valid last name.</string>
     <string name="valid_phone_number">Please enter a valid phone number.</string>
-    <string name="valid_image">Please select an image</string>
+    <string name="valid_image">Please select an image.</string>
     <string name="valid_team_name">Team name must contain alphanumeric character and use only these special character @ and $</string>
     <string name="valid_venue_name">Venue name must contain alphanumeric character and use only these special character @ and $</string>
     <string name="valid_search">Invalid Keyword</string>
@@ -100,7 +100,7 @@
     <string name="alert_going_event_confirm">Are you sure that you are going to this event?</string>
     <string name="alert_delete_document">Are you sure you delete this document?</string>
     <string name="alert_remove_from_team">Are you sure you want to leave this team?</string>
-    <string name="enter_valid_full_name">Please enter a valid name</string>
+    <string name="enter_valid_full_name">Please enter a valid name.</string>
     <string name="enter_full_name">Enter Full Name</string>
     <string name="verify_number">Verify Phone Number</string>
     <string name="number_same_as_confirm">Verify Number must be same as Phone number</string>
@@ -389,7 +389,7 @@
     <string name="select_the_players_guardian">Select the player/s you\'re guardian of</string>
     <string name="search_venue_by_name">Search venue by name</string>
     <string name="cash">Cash</string>
-    <string name="cash_message">Please enter cash value</string>
+    <string name="cash_message">Please enter cash value.</string>
     <string name="dollar">$</string>
     <string name="choose_team">Choose Team</string>
     <string name="please_select_division">Please select division.</string>
@@ -402,7 +402,7 @@
     <string name="add_note">Add note</string>
     <string name="add_pre_note">Add Pre-practice prep &amp; agenda note</string>
     <string name="add_post_note">Add Post-practice note</string>
-    <string name="no_players_change_selection">No players in selected team, Please try with other team</string>
+    <string name="no_players_change_selection">No players in selected team, Please try with other team.</string>
     <string name="my_shifts">My Shifts</string>
     <string name="select_address">Select Address</string>
     <string name="register_as">Register as</string>

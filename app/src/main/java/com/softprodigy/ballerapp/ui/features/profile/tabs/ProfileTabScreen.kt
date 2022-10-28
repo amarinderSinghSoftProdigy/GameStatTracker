@@ -136,7 +136,7 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
-            if (state.user.parentDetails.isNotEmpty())
+            if (!state.user.parentDetails.isNullOrEmpty())
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -155,18 +155,21 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
                         FlowRow {
                             state.user.parentDetails.forEachIndexed { index, item ->
-                                ParentItem(
-                                    width,
-                                    item.parentType,
-                                    "${item.parent.firstName} ${item.parent.lastName}",
-                                    item.parent.profileImage
-                                ) {
-                                    vm.onEvent(
-                                        ProfileEvent.OnParentDialogChange(true)
-                                    )
-                                    vm.onEvent(
-                                        ProfileEvent.OnParentClick(item)
-                                    )
+
+                                if (item.parent != null) {
+                                    ParentItem(
+                                        width,
+                                        item.parentType,
+                                        "${item.parent?.firstName} ${item.parent?.lastName}",
+                                        item.parent.profileImage
+                                    ) {
+                                        vm.onEvent(
+                                            ProfileEvent.OnParentDialogChange(true)
+                                        )
+                                        vm.onEvent(
+                                            ProfileEvent.OnParentClick(item)
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -494,8 +497,9 @@ private fun PreferenceItem(
                 AppText(
                     text = firstValue,
                     style = MaterialTheme.typography.h5,
-                    color = ColorBWBlack
-                )
+                    color = ColorBWBlack,
+
+                    )
 
             }
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_5dp)))

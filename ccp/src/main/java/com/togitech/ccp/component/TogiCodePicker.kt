@@ -48,6 +48,7 @@ class TogiCodePicker {
         defaultSelectedCountry: CountryData = getLibCountries().first(),
         showCountryCode: Boolean = true,
         showCountryFlag: Boolean = true,
+        showDialog: Boolean = true,
         pickedCountry: (CountryData) -> Unit,
         dialogAppBarColor: Color = MaterialTheme.colors.primary,
         dialogAppBarTextColor: Color = Color.White,
@@ -66,7 +67,11 @@ class TogiCodePicker {
                 .clickable(
                     interactionSource = interactionSource,
                     indication = null
-                ) { isOpenDialog = true },
+                ) {
+                    if (showDialog) {
+                        isOpenDialog = true
+                    }
+                },
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

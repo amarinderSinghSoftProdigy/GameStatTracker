@@ -4,6 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.LocalTextSelectionColors
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -42,11 +44,19 @@ fun TogiCountryCodePicker(
     rowPadding: Modifier = modifier.padding(vertical = 0.dp, horizontal = 0.dp),
     content: @Composable () -> Unit,
     placeHolder: (@Composable () -> Unit)? = null,
-    textStyle:TextStyle = TextStyle(textAlign = TextAlign.End)
+    textStyle: TextStyle = TextStyle(textAlign = TextAlign.End),
+    showDialog:Boolean = true
 ) {
     var textFieldValueState by remember { mutableStateOf(TextFieldValue(text = text)) }
     val textFieldValue = textFieldValueState.copy(text = text)
     val keyboardController = LocalTextInputService.current
+    val pattern = remember { Regex("^\\d+\$") }
+
+    val customTextSelectionColors = TextSelectionColors(
+        handleColor = Color.Black,
+        backgroundColor = Color.Transparent
+    )
+
     Row(
         modifier = modifier
             .background(color = Color.Transparent)
@@ -60,57 +70,65 @@ fun TogiCountryCodePicker(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
                 Box(
                 ) {
                     val dialog = TogiCodePicker()
                     dialog.TogiCodeDialog(
-                        padding=0.dp,
+                        padding = 0.dp,
                         pickedCountry = pickedCountry,
                         defaultSelectedCountry = defaultCountry,
                         dialogAppBarColor = dialogAppBarColor,
                         showCountryCode = showCountryCode,
                         showCountryFlag = showCountryFlag,
-                        dialogAppBarTextColor = dialogAppBarTextColor
+                        dialogAppBarTextColor = dialogAppBarTextColor,
+                        showDialog = showDialog,
                     )
                 }
-                TextField(
-                    modifier = Modifier.weight(1F),
-                    value = textFieldValue,
-                    onValueChange = {
-                        textFieldValueState = it
-                        if (text != it.text) {
-                            onValueChange(it.text)
-                        }
-                    },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = focusedBorderColor,
-                        unfocusedBorderColor = unfocusedBorderColor,
-                        cursorColor = cursorColor
-                    ),
-                    singleLine = true,
-                    visualTransformation = MaskTransformation(),//PhoneNumberTransformation(defaultCountry.countryCode.uppercase()),
-                    placeholder =
-                        placeHolder
-                    ,
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Number,
-                        autoCorrect = true,
-                    ),
-                    textStyle = textStyle,
-                    keyboardActions = KeyboardActions(onDone = { keyboardController?.hideSoftwareKeyboard() }),
-                    readOnly = readOnly
-                    /* leadingIcon = {
+                CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
+
+                    TextField(
+                        modifier = Modifier.weight(1F),
+                        value = textFieldValue,
+                        onValueChange = {
+                            if (it.text.matches(pattern) || it.text.isEmpty()) {
+                                textFieldValueState = it
+                                if (text != it.text) {
+                                    onValueChange(it.text)
+                                }
+                            }
+                        },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = focusedBorderColor,
+                            unfocusedBorderColor = unfocusedBorderColor,
+                            cursorColor = cursorColor
+                        ),
+                        singleLine = true,
+                        visualTransformation = VisualTransformation.None,
+                        /* MaskTransformation(),*///PhoneNumberTransformation(defaultCountry.countryCode.uppercase()),
+                        placeholder = placeHolder,
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Number,
+                            autoCorrect = true,
+                        ),
+                        textStyle = textStyle,
+                        keyboardActions = KeyboardActions(onDone = { keyboardController?.hideSoftwareKeyboard() }),
+                        readOnly = readOnly
+                        /* leadingIcon = {
 
                 },*/
-                    /*trailingIcon = {
+                        /*trailingIcon = {
                     if (!error)
                         Icon(
                             imageVector = Icons.Filled.Warning, contentDescription = "Error",
                             tint = MaterialTheme.colors.error
                         )
                 }*/
-                )
+                    )
+                }
             }
             if (!error)
                 Text(

@@ -209,7 +209,8 @@ fun OptionItem(label: String, resource: Int, click: () -> Unit) {
     Row(
         modifier = Modifier
             .padding(all = dimensionResource(id = R.dimen.size_16dp))
-            .clickable { click() }) {
+            .clickable { click() }, verticalAlignment = Alignment.CenterVertically
+    ) {
         Icon(
             tint = ColorGreyLighter,
             painter = painterResource(id = resource),
