@@ -47,7 +47,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.window.DialogProperties
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.common.AppConstants
@@ -60,7 +59,6 @@ import com.softprodigy.ballerapp.data.response.SwapUser
 import com.softprodigy.ballerapp.data.response.UserRoles
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
-import com.softprodigy.ballerapp.ui.features.home.HomeViewModel
 import com.softprodigy.ballerapp.ui.features.home.events.DivisionData
 import com.softprodigy.ballerapp.ui.features.home.events.NoteType
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
@@ -415,7 +413,8 @@ fun ShowParentDialog(
 
 
 @Composable
-fun LogoutDialog(
+fun ConfirmDialog(
+    title:String,
     onDismiss: () -> Unit,
     onConfirmClick: () -> Unit,
 ) {
@@ -430,7 +429,7 @@ fun LogoutDialog(
                         .padding(all = dimensionResource(id = R.dimen.size_16dp))
                 ) {
                     Text(
-                        text = stringResource(id = R.string.logout_message),
+                        text = title,
                         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                         fontWeight = FontWeight.W600,
                     )
@@ -2661,16 +2660,6 @@ fun InvitationSuccessfullySentDialog(
     teamName: String,
     playerName: String,
 ) {
-/*   InvitationSuccessfullySentDialog(
-            onDismiss = { },
-            onConfirmClick = {
-
-            },
-            teamLogo = BuildConfig.IMAGE_SERVER + "teamLogo/1666259687828-IMG_20220805_120020_710.jpg",
-            teamName ="My name",
-            playerName ="My player"
-        )*/
-    val keyboardController = LocalSoftwareKeyboardController.current
     BallerAppMainTheme {
         AlertDialog(
             modifier = Modifier
@@ -2690,17 +2679,30 @@ fun InvitationSuccessfullySentDialog(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-                    CoilImage(
-                        src = teamLogo,
-                        modifier = Modifier
-                            .size(dimensionResource(id = R.dimen.size_160dp))
-                            .clip(CircleShape),
-                        isCrossFadeEnabled = false,
-                        onLoading = { Placeholder(R.drawable.ic_profile_placeholder) },
-                        onError = { Placeholder(R.drawable.ic_profile_placeholder) }
-                    )
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        CoilImage(
+                            src = teamLogo,
+                            modifier = Modifier
+                                .size(dimensionResource(id = R.dimen.size_160dp))
+                                .clip(CircleShape).align(Alignment.Center),
+                            isCrossFadeEnabled = false,
+                            onLoading = { Placeholder(R.drawable.ic_profile_placeholder) },
+                            onError = { Placeholder(R.drawable.ic_profile_placeholder) }
+                        )
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_cross_1),
+                            contentDescription = "",
+                            tint = ColorGreyLighter,
+                            modifier = Modifier
+                                .size(dimensionResource(id = R.dimen.size_12dp))
+                                .align(Alignment.TopEnd)
+                                .clickable {
+                                    onDismiss()
+                                }
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
 
                     AppText(
                         text = stringResource(
@@ -2716,6 +2718,24 @@ fun InvitationSuccessfullySentDialog(
                     )
 
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+
+                    AppText(
+                        text = stringResource(
+                            id = R.string.best_time_to_invite
+                        ),
+                        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                        fontWeight = FontWeight.W400,
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        fontFamily = rubikFamily,
+                        textAlign = TextAlign.Center
+                    )
+
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+
+                    AppDivider()
+
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+
 
                     DialogButton(
                         text = stringResource(R.string.invite_others_to_the_team),

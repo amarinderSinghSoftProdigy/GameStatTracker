@@ -8,6 +8,7 @@ data class InvitationState(
     val roles: List<UserRoles> = mutableListOf(),
     val showRoleDialog: Boolean = false,
     val showDeclineDialog: Boolean = false,
+    val showGuardianOnlyConfirmDialog: Boolean = false,
     val showLoading: Boolean = false,
     val selectedRoleKey: String = "",
     val selectedInvitation: Invitation = Invitation(),
