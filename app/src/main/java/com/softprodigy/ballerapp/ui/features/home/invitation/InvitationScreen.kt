@@ -95,7 +95,6 @@ fun InvitationScreen(
                     vm.onEvent(InvitationEvent.OnRoleDialogClick(true))
                 vm.onEvent(InvitationEvent.OnGuardianDialogClick(true))
                 vm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
-                vm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(true))
 
 
                 }
@@ -252,6 +251,7 @@ fun InvitationScreen(
 
     if (state.showAddPlayerDialog) {
         vmSetupTeam.initialInviteCount(1)
+
         InviteTeamMembersDialog(
             onBack = {
                 vm.onEvent(InvitationEvent.OnRoleDialogClick(true))
@@ -373,7 +373,7 @@ fun InvitationScreen(
         )
     }
 
-    if(state.showPlayerAddedSuccessDialog){
+   /* if(state.showPlayerAddedSuccessDialog){
         InvitationSuccessfullySentDialog(
             onDismiss = {
                 vm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
@@ -389,7 +389,7 @@ fun InvitationScreen(
             teamName = state.selectedInvitation.team.name,
             playerName = if (teamState.inviteList.isNotEmpty()) teamState.inviteList[0].name else ""
         )
-    }
+    }*/
 }
 
 

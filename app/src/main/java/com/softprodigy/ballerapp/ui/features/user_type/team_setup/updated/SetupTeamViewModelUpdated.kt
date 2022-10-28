@@ -498,7 +498,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 inviteMemberResponse.value.let { response ->
-                    if (response.status && response.data.failedMobileNumber.isEmpty()) {
+                    if (response.status && response.data.failedMobileNumber.isEmpty() && response.data.failedProfiles.isEmpty() ) {
                         _teamSetupChannel.send(
                             TeamSetupChannel.OnInvitationSuccess(
                                 UiText.DynamicString(
@@ -515,11 +515,11 @@ class SetupTeamViewModelUpdated @Inject constructor(
                                 )
                             )
                         )
-                    } else if (response.data.failedMobileNumber.isNotEmpty()) {
+                    } else if (response.data.failedMobileNumber.isNotEmpty() || response.data.failedProfiles.isNotEmpty()) {
                         _teamSetupChannel.send(
                             TeamSetupChannel.ShowToast(
                                 UiText.DynamicString(
-                                    context.getString(R.string.number_already_exist) + " " + response.data.failedMobileNumber.toString()
+                                    context.getString(R.string.number_already_exist) + " " + response.data.failedMobileNumber.toString() + response.data.failedProfiles.toString()
                                         .replace("[", "").replace("]", "")
                                 )
                             )
