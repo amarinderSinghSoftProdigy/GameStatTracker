@@ -13,7 +13,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,25 +39,25 @@ import com.softprodigy.ballerapp.ui.features.home.EmptyScreen
 import com.softprodigy.ballerapp.ui.features.home.HomeChannel
 import com.softprodigy.ballerapp.ui.features.home.HomeViewModel
 import com.softprodigy.ballerapp.ui.features.home.home_screen.HomeScreenEvent
-import com.softprodigy.ballerapp.ui.features.sign_up.BottomSheetType
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpChannel
-import com.softprodigy.ballerapp.ui.features.sign_up.SignUpUIEvent
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpViewModel
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.*
 import com.softprodigy.ballerapp.ui.theme.ColorButtonGreen
 import com.softprodigy.ballerapp.ui.theme.ColorButtonRed
 import com.softprodigy.ballerapp.ui.theme.appColors
-import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @Composable
 fun InvitationScreen(
+    refreshProfileList: String,
     vmSetupTeam: SetupTeamViewModelUpdated,
     homeVm: HomeViewModel,
-    signUpViewModel:SignUpViewModel,
+    signUpViewModel: SignUpViewModel,
     onNewProfileIntent: (countryCode: String, mobileNumber: String) -> Unit,
     onInvitationSuccess: () -> Unit,
     addProfileClick: () -> Unit,
+    onInviteClick:(teamId:String)->Unit,
+
 
     ) {
     val vm: InvitationViewModel = hiltViewModel()
@@ -74,8 +73,15 @@ fun InvitationScreen(
         mutableStateOf("")
     }
 
-    if(vmSetupTeam.teamSetupUiState.value.isLoading){
+    if (vmSetupTeam.teamSetupUiState.value.isLoading) {
         CommonProgressBar()
+    }
+
+    if (refreshProfileList == true.toString()) {
+        LaunchedEffect(key1 = refreshProfileList, block = {
+            homeVm.onEvent(HomeScreenEvent.OnSwapClick)
+
+        })
     }
     LaunchedEffect(key1 = Unit) {
         vmSetupTeam.teamSetupChannel.collect { uiEvent ->
@@ -86,7 +92,7 @@ fun InvitationScreen(
                 }
                 is TeamSetupChannel.OnInvitationSuccess -> {
                     vm.onEvent(InvitationEvent.OnRoleConfirmClick)
-                vm.onEvent(InvitationEvent.OnRoleDialogClick(true))
+                    vm.onEvent(InvitationEvent.OnRoleDialogClick(true))
                 vm.onEvent(InvitationEvent.OnGuardianDialogClick(true))
                 vm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
                 vm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(true))
@@ -99,7 +105,6 @@ fun InvitationScreen(
     }
 
     LaunchedEffect(key1 = Unit) {
-
         signUpViewModel.signUpChannel.collect { uiEvent ->
             when (uiEvent) {
                 is SignUpChannel.OnProfileUpdateSuccess -> {
@@ -210,11 +215,23 @@ fun InvitationScreen(
                 vm.onEvent(InvitationEvent.OnAddPlayerDialogClick(true))
             },
             dontHaveChildClick = {
-                vm.onEvent(InvitationEvent.OnInvitationConfirm(homeState.user.gender))
-//                vm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(true))
+                vm.onEvent(InvitationEvent.ConfirmGuardianWithoutChildAlert(true))
 
             }
         )
+    }
+
+    if (state.showGuardianOnlyConfirmDialog) {
+        ConfirmDialog(
+            title = stringResource(id = R.string.join_team_without_child_selection), onDismiss = {
+                vm.onEvent(InvitationEvent.ConfirmGuardianWithoutChildAlert(false))
+            },
+            onConfirmClick = {
+                vm.onEvent(InvitationEvent.OnInvitationConfirm(homeState.user.gender))
+                vm.onEvent(InvitationEvent.ConfirmGuardianWithoutChildAlert(false))
+                vm.onEvent(InvitationEvent.OnRoleDialogClick(false))
+                vm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
+            })
     }
 
 
@@ -257,6 +274,7 @@ fun InvitationScreen(
                                 )
                             )
                         } else {
+                            /* show option to select his own profile*/
                             homeVm.onEvent(HomeScreenEvent.OnSwapClick)
                         }
                     }
@@ -361,11 +379,15 @@ fun InvitationScreen(
                 vm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
             },
             onConfirmClick = {
+                onInviteClick.invoke(state.selectedInvitation.team._id)
                 vm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
+                vm.onEvent(InvitationEvent.OnRoleDialogClick(false))
+                vm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
+
             },
             teamLogo = BuildConfig.IMAGE_SERVER + state.selectedInvitation.team.logo,
             teamName = state.selectedInvitation.team.name,
-            playerName = "Member"
+            playerName = if (teamState.inviteList.isNotEmpty()) teamState.inviteList[0].name else ""
         )
     }
 }
