@@ -242,6 +242,7 @@ class ChatViewModel @Inject constructor(
             mergedMembers.addAll(chatUiState.value.selectedPlayersForNewGroup.map { playerIdsList -> playerIdsList })
             mergedMembers.addAll(chatUiState.value.selectedCoachesForNewGroup.map { coachIdsList -> coachIdsList })
 
+            // TODO: Need to confirm with IOS team for null password check
             val group = Group(randomUid, groupName, CometChatConstants.GROUP_TYPE_PRIVATE, null)
             val groupMembers: MutableList<GroupMember> = ArrayList()
             mergedMembers.map { memberId ->
