@@ -6,7 +6,7 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.parcelize'
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
     // Add the Google services Gradle plugin
-    id 'com.google.gms.google-services'
+//    id 'com.google.gms.google-services'
 
 }
 
@@ -21,7 +21,7 @@ android {
         minSdk 24
         targetSdk 33
         versionCode 1
-        versionName "1.3"
+        versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -72,10 +72,10 @@ android {
         }
         create("develop") {
             dimension = "ballerapp"
-       //     buildConfigField("String", "API_SERVER", "\"http://staging.allballapp.com/api/\"")
+            buildConfigField("String", "API_SERVER", "\"http://staging.allballapp.com/api/\"")
             //buildConfigField("String", "API_SERVER", "\"http://ballerapp-staging-v1.us-east-2.elasticbeanstalk.com/api/\"")
             //buildConfigField("String", "API_SERVER", "\"https://ballerapi.softprodigy.in/api/\"")
-            buildConfigField("String", "API_SERVER", "\"https://ballerapi-qa.softprodigy.in/api/\"")
+            //buildConfigField("String", "API_SERVER", "\"https://ballerapi-qa.softprodigy.in/api/\"")
 
             buildConfigField("String", "SERVER", "\"http://baller-app.softprodigyphp.in\"")
             buildConfigField("String", "IMAGE_SERVER", "\"http://ballerapp.s3.us-east-2.amazonaws.com/\"")
