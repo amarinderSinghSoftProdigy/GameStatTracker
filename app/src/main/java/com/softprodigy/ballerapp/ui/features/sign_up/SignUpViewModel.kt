@@ -125,7 +125,7 @@ class SignUpViewModel @Inject constructor(
             }
             is SignUpUIEvent.OnAddProfile -> {
                 viewModelScope.launch {
-                        imageUpload()
+                    imageUpload()
                 }
             }
 
@@ -330,6 +330,12 @@ class SignUpViewModel @Inject constructor(
     }*/
 
     private suspend fun imageUpload() {
+        if (_signUpUiState.value.registered && _signUpUiState.value.signUpData.profileImageUri == null) {
+            _signUpChannel.send(
+                SignUpChannel.OnProfileImageUpload
+            )
+            return
+        }
         _signUpUiState.value =
             _signUpUiState.value.copy(isLoading = true)
 
@@ -421,7 +427,7 @@ class SignUpViewModel @Inject constructor(
 
                 is ResultWrapper.Success -> {
                     signUpResponse.value.let { response ->
-                        if (response.status ) {
+                        if (response.status) {
                             setToken(
                                 response.data.token,
                                 response.data.user.role,
@@ -721,7 +727,7 @@ class SignUpViewModel @Inject constructor(
                 is ResultWrapper.Success -> {
                     verifyResponseResponse.value.let { response ->
 
-                        if (response.status ) {
+                        if (response.status) {
 
                             _signUpUiState.value = _signUpUiState.value.copy(
                                 isLoading = false,
@@ -785,7 +791,7 @@ class SignUpViewModel @Inject constructor(
                 is ResultWrapper.Success -> {
                     verifyResponseResponse.value.let { response ->
 
-                        if (response.status ) {
+                        if (response.status) {
                             _signUpUiState.value =
                                 _signUpUiState.value.copy(
                                     isLoading = false,
@@ -879,6 +885,7 @@ sealed class SignUpChannel {
     data class OnProfileUpdateSuccess(val message: UiText) : SignUpChannel()
     data class OnSuccess(val message: UiText, val count: Int, val profileIdIfSingle: SwapUser?) :
         SignUpChannel()
+
     object OnOTPScreen : SignUpChannel()
     object OnSignUpSelected : SignUpChannel()
     data class OnLoginSuccess(val loginResponse: UserInfo) : SignUpChannel()

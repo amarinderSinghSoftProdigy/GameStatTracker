@@ -7,7 +7,6 @@ import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.softprodigy.ballerapp.R
@@ -446,14 +445,23 @@ class SetupTeamViewModelUpdated @Inject constructor(
 
         val members = if (member != null)
             listOf(member)
-        else
-            _teamSetupUiState.value.inviteList.mapIndexed { index, item ->
+        else {
+            val list = _teamSetupUiState.value.inviteList
+            for (item in list) {
+                if (item.contact.isEmpty()) {
+                    list.remove(item)
+                }
+            }
+            list.mapIndexed { index, item ->
                 Members(
                     name = item.name,
                     mobileNumber = "${item.countryCode}${item.contact}",
                     role = item.role.key
                 )
             }
+        }
+
+
         val request = UpdateTeamRequest(
             teamID = teamId,
             members = members,
