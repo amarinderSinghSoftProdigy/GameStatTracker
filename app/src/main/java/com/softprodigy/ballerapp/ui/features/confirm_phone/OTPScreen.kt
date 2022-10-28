@@ -77,7 +77,9 @@ fun OtpScreen(
             delay(100L)
             currentTime -= 100L
             value = currentTime / totalTime.toFloat()
+
         }
+
     }
     LaunchedEffect(key1 = Unit) {
         viewModel.signUpChannel.collect { uiEvent ->
@@ -111,7 +113,6 @@ fun OtpScreen(
                 .padding(top = dimensionResource(id = R.dimen.size_120dp))
                 .size(dimensionResource(id = R.dimen.size_130dp)),
         )
-
 
         Box(
             modifier = Modifier
@@ -190,6 +191,7 @@ fun OtpScreen(
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_48dp)))
 
                 Box(modifier = Modifier.fillMaxWidth()) {
+
                     AppText(
                         style = MaterialTheme.typography.h6,
                         text = stringResource(id = R.string.did_not_recieve_sms),

@@ -100,7 +100,7 @@ fun AppTabLikeViewPager(
     onClick: () -> Unit,
 ) {
     Tab(modifier = modifier, selected = selected, onClick = onClick, text = {
-        Row {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 painter = painter,
                 contentDescription = null,

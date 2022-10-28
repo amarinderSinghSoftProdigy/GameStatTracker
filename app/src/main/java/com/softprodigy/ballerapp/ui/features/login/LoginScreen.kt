@@ -174,7 +174,6 @@ fun LoginScreen(
                         modifier = Modifier
                             .padding(dimensionResource(id = R.dimen.size_4dp))
                             .fillMaxWidth(0.95f),
-
                         )
                 }
 

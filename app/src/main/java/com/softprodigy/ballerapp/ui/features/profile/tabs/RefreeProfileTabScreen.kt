@@ -206,7 +206,7 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
                 state.user.userDetails.teamAgePerference
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-            state.user.userDetails.preferredPartner.let {
+            state.user.userDetails.preferredPartner?.let {
                 ProfileItem(
                     stringResource(id = R.string.prefered_partner),
                     it.name, imageUrl = it.profileImage

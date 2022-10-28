@@ -82,7 +82,7 @@ data class UserDetails(
     @SerializedName("funFacts") val funFacts: ArrayList<FunFacts> = arrayListOf(),
     @SerializedName("grade") val grade: String = "",
     @SerializedName("jerseyPerferences") val jerseyPerferences: SnapshotStateList<JerseyPerferences> = mutableStateListOf(),
-    @SerializedName("perferredPartner") val preferredPartner: PerferredPartner = PerferredPartner(),
+    @SerializedName("perferredPartner") val preferredPartner: PerferredPartner ?= null,
     @SerializedName("positionPlayed") val positionPlayed: ArrayList<String> = arrayListOf(),
     @SerializedName("refereeWithPartner") val refereeWithPartner: Boolean = false,
     @SerializedName("refereeningExperience") val refereeningExperience: String = "",
@@ -145,7 +145,7 @@ data class UserDocType(
 data class ParentDetails(
 
     @SerializedName("_id") val Id: String = "",
-    @SerializedName("parent") val parent: Parent = Parent(),
+    @SerializedName("parent") val parent: Parent ?= null,
     @SerializedName("parentType") val parentType: String = ""
 
 )

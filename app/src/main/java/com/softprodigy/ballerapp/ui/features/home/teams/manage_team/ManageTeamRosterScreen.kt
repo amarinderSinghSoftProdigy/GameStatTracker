@@ -301,7 +301,7 @@ fun TeamUserListItem(
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
                 val url = "" + data.profileImage
                 CoilImage(
-                    src = BuildConfig.IMAGE_SERVER + url,
+                    src = BuildConfig.IMAGE_SERVER + data.profileImage,
                     modifier =
                     Modifier
                         .background(
