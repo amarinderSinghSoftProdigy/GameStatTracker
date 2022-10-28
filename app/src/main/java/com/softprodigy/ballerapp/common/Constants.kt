@@ -113,6 +113,7 @@ object ApiConstants {
     const val GET_VENUE_DETAILS_BY_ID = "v1/event/getMyLeague/venueById"
     const val GET_EVENT_SCHEDULE = "v1/event/getMyLeagueSchedule"
 
+    const val SEARCH_VENUE = "v1/venue/searchVenue"
     const val SOCIAL_LOGIN = "/social_login"
     const val SIGNUP = "v1/auth/register"
     const val FORGOT_PASSWORD = "v1/auth/forgotPassword"
@@ -154,9 +155,7 @@ object ApiConstants {
     const val GET_SEARCH_GAME_STAFF = "v1/staff/searchGameStaff"
     const val REGISTER_GAME_STAFF = "v1/staff/registerGameStaff"
 
-    const val first_name = "first_name"
-    const val last_name = "lastName"
-    const val mobile = "mobile"
+
     const val EMAIL = "email"
     const val FACEBOOK = "facebook"
     const val GOOGLE = "google"

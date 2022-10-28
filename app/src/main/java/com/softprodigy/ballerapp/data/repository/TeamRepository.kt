@@ -13,12 +13,12 @@ import com.softprodigy.ballerapp.data.response.invitation.InvitationData
 import com.softprodigy.ballerapp.data.response.roaster.RoasterResponse
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.Team
-import com.softprodigy.ballerapp.data.response.team.TeamParent
 import com.softprodigy.ballerapp.domain.BaseResponse
 import com.softprodigy.ballerapp.domain.repository.ITeamRepository
 import com.softprodigy.ballerapp.network.APIService
 import com.softprodigy.ballerapp.ui.features.home.invitation.Invitation
 import com.softprodigy.ballerapp.ui.features.venue.Venue
+import com.softprodigy.ballerapp.ui.features.venue.VenueDetails
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import okhttp3.FormBody
@@ -146,11 +146,12 @@ class TeamRepository @Inject constructor(
     }
 
     override suspend fun getAllVenue(
+        search: String,
         page: Int,
         limit: Int
-    ): ResultWrapper<BaseResponse<ArrayList<Venue>>> {
+    ): ResultWrapper<BaseResponse<ArrayList<VenueDetails>>> {
         return safeApiCall(dispatcher) {
-            service.getAllVenue(page = page, limit = limit)
+            service.getAllVenue(search = search, page = page, limit = limit)
         }
     }
 

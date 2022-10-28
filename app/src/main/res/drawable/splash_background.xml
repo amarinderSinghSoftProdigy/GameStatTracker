@@ -5,8 +5,8 @@
     <item android:drawable="@drawable/splash_background_color" />
 
     <item
-        android:width="@dimen/size_160dp"
-        android:height="@dimen/size_95dp"
+        android:width="@dimen/size_95dp"
+        android:height="@dimen/size_90dp"
         android:drawable="@drawable/ic_all_ball_logo"
         android:gravity="center" />
 

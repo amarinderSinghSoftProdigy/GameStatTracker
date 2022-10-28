@@ -28,15 +28,15 @@ class VenueSearchVIewModel @Inject constructor(val teamRepository: ITeamReposito
                 _state.value = _state.value.copy(searchVenue = event.venue)
                 viewModelScope.launch {
                     if (_state.value.searchVenue.length > 1)
-                        getAllVenue()
+                        getAllVenue(event.venue)
                 }
             }
         }
     }
 
-    private suspend fun getAllVenue() {
+    private suspend fun getAllVenue(venue: String) {
         _state.value = _state.value.copy(isLoading = true)
-        val venueResponse = teamRepository.getAllVenue()
+        val venueResponse = teamRepository.getAllVenue(search = venue)
         _state.value = _state.value.copy(isLoading = false)
 
         when (venueResponse) {

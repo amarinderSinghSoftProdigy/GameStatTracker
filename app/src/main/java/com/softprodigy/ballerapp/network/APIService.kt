@@ -11,7 +11,6 @@ import com.softprodigy.ballerapp.data.response.team.Team
 import com.softprodigy.ballerapp.domain.BaseResponse
 import com.softprodigy.ballerapp.ui.features.home.events.*
 import com.softprodigy.ballerapp.ui.features.home.invitation.Invitation
-import com.softprodigy.ballerapp.ui.features.venue.Venue
 import com.softprodigy.ballerapp.ui.features.venue.VenueDetails
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -138,11 +137,12 @@ open interface APIService {
     @PUT(ApiConstants.UPDATE_DOC)
     suspend fun updateUserDoc(@Body request: RequestBody): BaseResponse<Any>
 
-    @GET(ApiConstants.GET_ALL_VENUE)
+    @GET(ApiConstants.SEARCH_VENUE)
     suspend fun getAllVenue(
+        @Query("search") search: String,
         @Query("page") page: Int,
         @Query("limit") limit: Int,
-    ): BaseResponse<ArrayList<Venue>>
+    ): BaseResponse<ArrayList<VenueDetails>>
 
     @GET(ApiConstants.GET_ALL_OPPORTUNITIES)
     suspend fun getAllOpportunities(): BaseResponse<List<OpportunitiesItem>>

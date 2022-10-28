@@ -152,7 +152,7 @@ fun BoxScope.CommonTabView(
         val label =
             if (!topBarData.label.isNullOrEmpty()) {
                 topBarData.label
-            } else if (topBarData.topBar.stringId.isEmpty()) {
+            } else if (topBarData.topBar.stringId.isNotEmpty()) {
                 stringResourceByName(name = topBarData.topBar.stringId)
             } else {
                 stringResource(id = R.string.app_name)

@@ -711,6 +711,7 @@ fun TeamSetupScreenUpdated(
                             && state.teamNameOnJerseys.isNotEmpty()
                             && state.teamNameOnTournaments.isNotEmpty()
                             && validTeamName(state.venueName)
+                            && state.venueName.isNotEmpty()
                             && state.selectedAddress.street.isNotEmpty()
                             && state.selectedAddress.street.length >= 4
                 BottomButtons(
@@ -730,8 +731,7 @@ fun TeamSetupScreenUpdated(
                     BackHandler {}
                 }
             }
-        } //column
-//        }
+        }
     }
 }
 

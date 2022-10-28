@@ -23,6 +23,7 @@ data class Location(
 )
 
 data class Address(
+    @SerializedName("address") var address: String = "",
     @SerializedName("street") var street: String = "",
     @SerializedName("state") var state: String = "",
     @SerializedName("city") var city: String = "",

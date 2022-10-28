@@ -7,7 +7,6 @@ import android.provider.Settings
 import com.cometchat.pro.core.AppSettings
 import com.cometchat.pro.core.CometChat
 import com.cometchat.pro.exceptions.CometChatException
-import com.cometchat.pro.models.User
 import com.softprodigy.ballerapp.data.UserStorage
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
@@ -20,7 +19,7 @@ class BallerApp : Application() {
             Timber.plant(Timber.DebugTree())
         }
         getPhoneInfo()
-        initChat()
+        //initChat()
     }
     @SuppressLint("HardwareIds")
     private fun getPhoneInfo() {
