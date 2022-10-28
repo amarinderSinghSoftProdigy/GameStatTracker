@@ -494,7 +494,8 @@ private fun PreferenceItem(
                 AppText(
                     text = firstValue,
                     style = MaterialTheme.typography.h5,
-                    color = ColorBWBlack
+                    color = ColorBWBlack,
+
                 )
 
             }

@@ -535,7 +535,8 @@ fun ProfileSetUpScreen(
                                             readOnly = state.signUpData.phoneVerified,
                                             cursorColor = Color.Black,
                                             content = {
-                                            }
+                                            },
+                                            showDialog = false
                                         )
                                     }
                                 }
