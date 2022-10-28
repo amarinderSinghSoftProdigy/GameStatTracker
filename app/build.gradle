@@ -72,8 +72,8 @@ android {
         }
         create("develop") {
             dimension = "ballerapp"
-            //buildConfigField("String", "API_SERVER", "\"http://ballerapp-qa-v1.us-east-2.elasticbeanstalk.com/api/\"")
-            buildConfigField("String", "API_SERVER", "\"http://ballerapp-staging-v1.us-east-2.elasticbeanstalk.com/api/\"")
+            buildConfigField("String", "API_SERVER", "\"http://staging.allballapp.com/api/\"")
+            //buildConfigField("String", "API_SERVER", "\"http://ballerapp-staging-v1.us-east-2.elasticbeanstalk.com/api/\"")
             //buildConfigField("String", "API_SERVER", "\"https://ballerapi.softprodigy.in/api/\"")
             //buildConfigField("String", "API_SERVER", "\"https://ballerapi-qa.softprodigy.in/api/\"")
 
@@ -85,14 +85,13 @@ android {
         }
         create("qa") {
             dimension = "ballerapp"
-            buildConfigField("String", "API_SERVER", "\"http://ballerapp-qa-v1.us-east-2.elasticbeanstalk.com/api/\"")
+            buildConfigField("String", "API_SERVER", "\"http://qa.allballapp.com/api/\"")
             //buildConfigField("String", "API_SERVER", "\"https://ballerapi.softprodigy.in/api/\"")
             //buildConfigField("String", "SERVER", "\"http://baller-app.softprodigyphp.in\"")
             buildConfigField("String", "IMAGE_SERVER", "\"http://ballerapp.s3.us-east-2.amazonaws.com/\"")
             buildConfigField("Integer", "CONNECT_TIMEOUT", "120")
             buildConfigField("Integer", "WRITE_TIMEOUT", "120")
             buildConfigField("Integer", "READ_TIMEOUT", "120")
-            applicationIdSuffix = ".qa"
         }
     }
 }
