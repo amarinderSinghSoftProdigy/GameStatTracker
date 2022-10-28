@@ -503,7 +503,7 @@ fun RefereeEditScreen(
                                 OnNextGameStaffClick()
                             }) {
 
-                            state.user.userDetails.preferredPartner.let {
+                            state.user.userDetails.preferredPartner?.let {
                                 if (it.name.isNotEmpty()) {
                                     AppText(
                                         text = it.name,

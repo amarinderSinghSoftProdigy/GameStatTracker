@@ -320,7 +320,7 @@ fun ShowParentDialog(
                     ) {
 
                         CoilImage(
-                            src = BuildConfig.IMAGE_SERVER + parentDetails.parent.profileImage,
+                            src = BuildConfig.IMAGE_SERVER + parentDetails.parent?.profileImage,
                             modifier = Modifier
                                 .size(dimensionResource(id = R.dimen.size_200dp))
                                 .clip(CircleShape),
@@ -330,7 +330,7 @@ fun ShowParentDialog(
                         )
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
                         AppText(
-                            text = "${parentDetails.parent.firstName} ${parentDetails.parent.lastName}",
+                            text = "${parentDetails.parent?.firstName} ${parentDetails.parent?.lastName}",
                             style = MaterialTheme.typography.h6,
                             color = ColorBWBlack,
                             fontSize = dimensionResource(id = R.dimen.txt_size_20).value.sp
@@ -346,15 +346,19 @@ fun ShowParentDialog(
                         Row(
                             modifier = Modifier
                         ) {
-                            DetailItem(
-                                stringResource(id = R.string.email),
-                                parentDetails.parent.email
-                            )
+                            parentDetails.parent?.let {
+                                DetailItem(
+                                    stringResource(id = R.string.email),
+                                    it.email
+                                )
+                            }
                             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                            DetailItem(
-                                stringResource(id = R.string.number),
-                                parentDetails.parent.phone
-                            )
+                            parentDetails.parent?.phone?.let {
+                                DetailItem(
+                                    stringResource(id = R.string.number),
+                                    it
+                                )
+                            }
                         }
 
                     }
@@ -368,7 +372,7 @@ fun ShowParentDialog(
                         ButtonWithLeadingIconGrayed(
                             text = stringResource(R.string.message),
                             onClick = {
-                                val u = Uri.parse("sms:" + parentDetails.parent.phone)
+                                val u = Uri.parse("sms:" + parentDetails.parent?.phone)
                                 val i = Intent(Intent.ACTION_VIEW, u)
                                 try {
                                     context.startActivity(i)
@@ -387,7 +391,7 @@ fun ShowParentDialog(
                             text = stringResource(R.string.call),
                             onClick = {
 
-                                val u = Uri.parse("tel:" + parentDetails.parent.phone)
+                                val u = Uri.parse("tel:" + parentDetails.parent?.phone)
                                 val i = Intent(Intent.ACTION_DIAL, u)
                                 try {
                                     context.startActivity(i)
