@@ -458,7 +458,7 @@ fun NavControllerComposable(
         composable(route = Route.TEAMS_SCREEN) {
             homeViewModel.setTopBar(
                 TopBarData(
-                    label = stringResource(id = R.string.teams_label),
+                    label = teamViewModel.teamUiState.value.teamName,
                     topBar = TopBar.TEAMS,
                 )
             )

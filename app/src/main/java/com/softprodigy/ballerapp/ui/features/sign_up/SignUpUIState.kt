@@ -9,9 +9,6 @@ data class SignUpUIState(
     var successMessage: String? = null,
     var signUpData: SignUpData = SignUpData(),
     var profileList: ArrayList<SwapUser> = ArrayList(),
-//    val token: String? = null,
     var phoneCode: String? = null,
     var registered: Boolean = false,
-    //var isSocialUser: Boolean = false,
-    //var status: Boolean = false
 )

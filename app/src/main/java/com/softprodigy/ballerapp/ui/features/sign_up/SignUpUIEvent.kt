@@ -20,12 +20,7 @@ sealed class SignUpUIEvent {
     data class OnPhoneNumberChanged(val phoneNumber: String) : SignUpUIEvent()
     data class OnBirthdayChanged(val birthday: String) : SignUpUIEvent()
     data class OnAddressChanged(val address: String) : SignUpUIEvent()
-    //object OnAddProfileClicked : SignUpUIEvent()
     data class OnSwapUpdate(val user : SwapUser)  : SignUpUIEvent()
-
-    //data class OnFacebookClick(val socialUser: SocialUserModel) : SignUpUIEvent()
-    //data class OnGoogleClick(val socialUser: SocialUserModel) : SignUpUIEvent()
-    //data class OnTwitterClick(val socialUser: SocialUserModel) : SignUpUIEvent()
     data class OnGenderChange(val gender: String) : SignUpUIEvent()
     data class OnCountryCode(val countryCode: String) : SignUpUIEvent()
 

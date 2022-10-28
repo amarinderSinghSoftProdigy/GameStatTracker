@@ -38,7 +38,6 @@ import com.softprodigy.ballerapp.ui.features.home.HomeViewModel
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamChannel
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamUIEvent
 import com.softprodigy.ballerapp.ui.features.home.teams.TeamViewModel
-import com.softprodigy.ballerapp.ui.features.sign_up.SignUpChannel
 import com.softprodigy.ballerapp.ui.features.sign_up.SignUpViewModel
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
 import com.softprodigy.ballerapp.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
@@ -595,7 +594,7 @@ fun MessageComponent() {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.user_demo),
+                    painter = painterResource(id = R.drawable.ic_ball),
                     contentDescription = "",
                     modifier = Modifier
                         .size(dimensionResource(id = R.dimen.size_48dp))

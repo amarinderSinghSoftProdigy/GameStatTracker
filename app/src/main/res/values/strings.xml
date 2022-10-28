@@ -216,7 +216,7 @@
     <string name="create_a_team">Create a Team</string>
     <string name="add">Add</string>
     <string name="welcome_to_all_ball">Welcome to All Ball</string>
-    <string name="team_total_hoop">Team Total Hoop</string>
+    <string name="team_total_hoop">Team All Ball</string>
     <string name="opportunities_to_play">Opportunities To Play</string>
     <string name="opportunities_to_work">Opportunities To Work</string>
     <string name="four">4</string>
@@ -409,7 +409,7 @@
     <string name="pay">Pay</string>
     <string name="mailing_address">Mailing Address</string>
     <string name="total_games">Total Games</string>
-    <string name="total_hoop_games">Total Hoops Games</string>
+    <string name="total_hoop_games">All Ball Games</string>
     <string name="rating">Rating</string>
     <string name="team_age_preference">Team Age Preference</string>
     <string name="prefered_partner">Preferred Partner</string>
