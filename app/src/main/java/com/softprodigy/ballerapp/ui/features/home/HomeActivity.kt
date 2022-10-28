@@ -215,8 +215,9 @@ class HomeActivity : FragmentActivity() {
                 )
                 //}
                 if (state.showLogout) {
-                    LogoutDialog(
-                        onDismiss = { homeViewModel.setLogoutDialog(false) },
+                    ConfirmDialog(
+                        title = stringResource(id = R.string.logout_message)
+                        ,onDismiss = { homeViewModel.setLogoutDialog(false) },
                         onConfirmClick = {
                             homeViewModel.clearToken()
                             moveToLogin(this)
@@ -370,7 +371,7 @@ fun NavControllerComposable(
             ProfileScreen(updateTopBar = { homeViewModel.setTopBar(it) }, vm = profileViewModel)
         }
 
-        composable(route = Route.ADD_PROFILE_SCREEN) {
+        composable(route = Route.ADD_PROFILE_SCREEN) { backStackEntry->
             homeViewModel.setTopBar(
                 TopBarData(
                     label = stringResource(id = R.string.add_new_profile),
@@ -383,6 +384,9 @@ fun NavControllerComposable(
                 signUpViewModel = signUpViewModel,
                 isToAddProfile = true,
                 onNext = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("refreshProfileList", "true")
                     navController.popBackStack()
                 },
                 onBack = {
@@ -766,7 +770,10 @@ fun NavControllerComposable(
                 })
         }
 
-        composable(route = Route.INVITATION_SCREEN) {
+        composable(route = Route.INVITATION_SCREEN) {backStackEntry->
+
+            val refreshProfileList: String = backStackEntry
+                .savedStateHandle.get<String>("refreshProfileList") ?: ""
             homeViewModel.setTopBar(
                 TopBarData(
                     label = stringResource(id = R.string.invitation),
@@ -778,7 +785,8 @@ fun NavControllerComposable(
                 navController.popBackStack()
             }
             InvitationScreen(
-                setupTeamViewModelUpdated,
+                refreshProfileList = refreshProfileList,
+               vmSetupTeam = setupTeamViewModelUpdated,
                 onNewProfileIntent = { countryCode, mobileNumber ->
                     navController.navigate(Route.ADD_PROFILE_SCREEN + "/$countryCode/$mobileNumber")
 
@@ -790,8 +798,14 @@ fun NavControllerComposable(
                 addProfileClick = {
                     navController.navigate(Route.ADD_PROFILE_SCREEN)
 
-                }, signUpViewModel = signUpViewModel
-            )
+                }, signUpViewModel = signUpViewModel,
+                onInviteClick = { teamId->
+                    /*setColorUpdate(
+                        setupTeamViewModelUpdated,
+                        teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
+                    )*/
+                    navController.navigate(Route.ADD_MY_PLAYER_SCREEN + "/${teamId}")
+                })
         }
         composable(route = Route.TEAM_SETUP_SCREEN) { backStackEntry ->
 

@@ -119,6 +119,10 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                     invitationState.value = invitationState.value.copy(selectedRoleKey = "")
                 }
             }
+            is InvitationEvent.ConfirmGuardianWithoutChildAlert -> {
+                invitationState.value =
+                    invitationState.value.copy(showGuardianOnlyConfirmDialog = event.showConfirmDialog)
+            }
         }
     }
 

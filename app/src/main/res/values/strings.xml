@@ -155,6 +155,7 @@
     <string name="gallery">Gallery</string>
     <string name="select_image_from">Select image from</string>
     <string name="logout_message">Are you sure you want to logout?</string>
+    <string name="join_team_without_child_selection">Are you sure you want to join this team without any child?</string>
     <string name="submit">Submit</string>
     <string name="standings">Standings</string>
     <string name="chat">Chat</string>
@@ -447,6 +448,7 @@
     <string name="info_text">"At ultrices adipiscing convallis sed elit tellus sollicitun sit. Ac non eu sed congue ipsum, suscipit diam molestie. Mauris arcu dolor aliquet sed sit. "</string>
     <string name="invite_others_to_the_team">Invite others to the team</string>
     <string name="success_player_has_been_added_to_the_team">Success! %1$s has been added to %2$s</string>
+    <string name="best_time_to_invite">Now is the best time to invite anyone else that needs to be a part of this team.</string>
     <string name="invite_from_your_profile">Invite from your profile</string>
     <string name="valid_class_of">class should be of 4 characters</string>
     <string name="number_already_exist">Number already exist</string>

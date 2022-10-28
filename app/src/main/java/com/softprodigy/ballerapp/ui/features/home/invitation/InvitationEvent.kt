@@ -15,6 +15,7 @@ sealed class InvitationEvent {
     data class OnGuardianClick(val guardian: String) : InvitationEvent()
     data class OnGuardianDialogClick(val showGuardianDialog: Boolean) : InvitationEvent()
     data class OnAddPlayerDialogClick(val showAddPlayerDialog: Boolean) : InvitationEvent()
+    data class ConfirmGuardianWithoutChildAlert(val showConfirmDialog: Boolean) : InvitationEvent()
     object OnClearValues : InvitationEvent()
     object OnClearGuardianValues : InvitationEvent()
     data class OnValuesSelected(val playerDetails: PlayerDetails) : InvitationEvent()
