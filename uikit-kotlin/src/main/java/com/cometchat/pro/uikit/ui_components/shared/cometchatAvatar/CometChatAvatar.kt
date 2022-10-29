@@ -17,7 +17,6 @@ import com.cometchat.pro.models.Group
 import com.cometchat.pro.models.User
 import com.cometchat.pro.uikit.R
 import com.cometchat.pro.uikit.ui_resources.utils.Utils
-import com.cometchat.pro.uikit.ui_settings.FeatureRestriction
 import com.cometchat.pro.uikit.ui_settings.UIKitSettings
 
 
@@ -77,7 +76,7 @@ class CometChatAvatar : AppCompatImageView {
     var avatarUrl: String? = null
 
     /*
-     * Image width and height (both are same and constant, defined in dimens.xml
+     * Image width and height (both are same and constant, defined in dimen.xml
      * We cache them in this field
      * */
     private var imageSize = 0

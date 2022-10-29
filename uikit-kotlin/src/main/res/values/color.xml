@@ -9,7 +9,7 @@
     <color name="secondaryTextColor">#6b000000</color>
     <color name="light_grey">#EEEEEE</color>
     <color name="message_bubble_grey">#e0e0e0</color>
-    <color name="menu_background_grey">#40bdbdbd</color>
+    <color name="menu_background_grey">#F1F6FA</color>
     <color name="online_green">#E64CAF50</color>
     <color name="red">#eecc0000</color>
     <color name="file_icon">#B1AEAE</color>
@@ -30,4 +30,8 @@
     <color name="orange_200">#FFA500</color>
     <color name="green">#43FA36</color>
     <color name="optionsColor">#808080</color>
+
+    <color name="text_color">#808A9BA8</color>
+    <color name="textColorDark">#000000</color>
+
 </resources>

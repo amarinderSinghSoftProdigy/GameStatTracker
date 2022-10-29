@@ -10,17 +10,17 @@ public class FontUtils {
     companion object {
         private var _instance: FontUtils? = null
 
-        val robotoMedium = "Roboto-Medium.ttf"
+        val robotoMedium = "rubik_medium_500.ttf"
 
-        val robotoBlack = "Roboto-Regular.ttf"
+        val robotoBlack = "rubik_black_900.ttf"
 
-        val robotoRegular = "Roboto-Regular.ttf"
+        val robotoRegular = "rubik_regular_400.ttf"
 
-        val robotoBold = "Roboto-Bold.ttf"
+        val robotoBold = "rubik_bold_700.ttf"
 
-        val robotoLight = "Roboto-Light.ttf"
+        val robotoLight = "rubik_light_300.ttf"
 
-        val robotoThin = "Roboto-Thin.ttf"
+        val robotoThin = "rubik_light_300.ttf"
 
 //         var context: Context? = null
 

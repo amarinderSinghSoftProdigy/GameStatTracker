@@ -6,6 +6,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
         android:layout_height="wrap_content">
 
         <ImageView
@@ -14,7 +16,8 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:src="@drawable/ic_close_24dp"
-            android:tint="@color/colorPrimary"
+            android:tint="@color/textColorWhite"
+            android:padding="8dp"
             android:visibility="gone"
             tools:visibility="visible"/>
 
@@ -23,16 +26,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
+            android:padding="8dp"
             android:src="@drawable/ic_back"
-            android:tint="@color/colorPrimary"/>
+            android:tint="@color/textColorWhite" />
 
         <com.cometchat.pro.uikit.ui_components.shared.cometchatAvatar.CometChatAvatar
             android:id="@+id/iv_chat_avatar"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_centerVertical="true"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="8dp"
@@ -76,9 +79,9 @@
                 android:ellipsize="end"
                 android:maxWidth="200dp"
                 android:maxLines="1"
+                android:textColor="@color/green"
                 android:textSize="12sp"
-                tools:text="online"
-                android:textColor="@color/colorPrimary"/>
+                tools:text="online" />
         </RelativeLayout>
 
         <LinearLayout
@@ -88,6 +91,7 @@
             android:layout_alignTop="@id/iv_chat_avatar"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
+            android:visibility="gone"
             android:layout_marginEnd="5dp"
             android:orientation="horizontal">
 

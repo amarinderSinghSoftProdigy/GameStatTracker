@@ -30,16 +30,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.cometchat.pro.constants.CometChatConstants
-import com.cometchat.pro.models.Conversation
-import com.cometchat.pro.models.Group
-import com.cometchat.pro.models.User
-import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
 import com.allballapp.android.MainActivity
+import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.IntentData
 import com.allballapp.android.common.Route
-import com.allballapp.android.common.Route.CREATE_NEW_CHAT_CONVO
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.ui.features.components.*
@@ -68,9 +63,13 @@ import com.allballapp.android.ui.features.user_type.team_setup.updated.*
 import com.allballapp.android.ui.features.venue.VenueListScreen
 import com.allballapp.android.ui.theme.BallerAppMainTheme
 import com.allballapp.android.ui.theme.appColors
+import com.cometchat.pro.constants.CometChatConstants
+import com.cometchat.pro.models.Conversation
+import com.cometchat.pro.models.Group
+import com.cometchat.pro.models.User
+import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import com.allballapp.android.R
 @AndroidEntryPoint
 class HomeActivity : FragmentActivity() {
 
@@ -489,7 +488,7 @@ fun NavControllerComposable(
                     //navController.navigate(Route.MY_CHAT_DETAIL)
 
                 }, onCreateNewConversationClick = {
-                    navController.navigate(CREATE_NEW_CHAT_CONVO)
+                    navController.navigate(Route.CREATE_NEW_CHAT_CONVO)
                 })
         }
 

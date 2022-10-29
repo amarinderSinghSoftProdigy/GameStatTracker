@@ -1,16 +1,21 @@
 package com.cometchat.pro.uikit.ui_components.shared.cometchatComposeBox
 
 import android.Manifest
-import android.Manifest.permission
 import android.Manifest.permission.*
+import android.annotation.TargetApi
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.media.MediaRecorder
+import android.net.Uri
 import android.os.*
+import android.os.Build.VERSION.SDK_INT
+import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
@@ -18,8 +23,11 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.app.ActivityCompat.requestPermissions
+import androidx.core.app.ActivityCompat.startActivityForResult
+import androidx.core.content.ContextCompat
 import androidx.core.view.inputmethod.InputContentInfoCompat
 import com.cometchat.pro.uikit.R
 import com.cometchat.pro.uikit.ui_components.shared.cometchatComposeBox.CometChatComposeBoxActions.ComposeBoxActionListener
@@ -33,26 +41,6 @@ import com.cometchat.pro.uikit.ui_settings.UIKitSettings
 import java.io.File
 import java.io.IOException
 import java.util.*
-import android.annotation.TargetApi
-
-import androidx.core.app.ActivityCompat
-
-import androidx.core.app.ActivityCompat.startActivityForResult
-
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
-
-import android.os.Build
-import android.os.Build.VERSION
-
-import android.os.Build.VERSION.SDK_INT
-import android.provider.Settings
-import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat.requestPermissions
-import androidx.core.content.ContextCompat
-import com.cometchat.pro.uikit.ui_components.messages.message_list.CometChatMessageListActivity
-import org.webrtc.ContextUtils.getApplicationContext
 
 
 class CometChatComposeBox : RelativeLayout, View.OnClickListener {
@@ -137,7 +125,7 @@ class CometChatComposeBox : RelativeLayout, View.OnClickListener {
         btnLiveReaction = findViewById(R.id.btn_live_reaction)
         FeatureRestriction.isLiveReactionsEnabled(object : FeatureRestriction.OnSuccessListener{
             override fun onSuccess(p0: Boolean) {
-                if (p0) btnLiveReaction?.visibility = View.VISIBLE else btnLiveReaction?.visibility = View.GONE
+                if (p0) btnLiveReaction?.visibility = View.GONE else btnLiveReaction?.visibility = View.GONE
             }
         })
         composeBox = findViewById(R.id.message_box)
@@ -257,7 +245,7 @@ class CometChatComposeBox : RelativeLayout, View.OnClickListener {
             composeBox!!.setBackgroundColor(resources.getColor(R.color.darkModeBackground))
             ivAudio!!.imageTintList = ColorStateList.valueOf(resources.getColor(R.color.textColorWhite))
 //            ivMic!!.setImageDrawable(resources.getDrawable(R.drawable.ic_mic_white_24dp))
-            flBox!!.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.textColorWhite))
+            flBox!!.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.menu_background_grey))
             etComposeBox!!.setTextColor(resources.getColor(R.color.textColorWhite))
 //            ivArrow!!.imageTintList = ColorStateList.valueOf(resources.getColor(R.color.textColorWhite))
 //            ivSend!!.imageTintList = ColorStateList.valueOf(resources.getColor(R.color.textColorWhite))
@@ -268,9 +256,9 @@ class CometChatComposeBox : RelativeLayout, View.OnClickListener {
             composeBox!!.setBackgroundColor(resources.getColor(R.color.textColorWhite))
             ivAudio!!.imageTintList = ColorStateList.valueOf(resources.getColor(R.color.colorPrimary))
 //            ivMic!!.setImageDrawable(resources.getDrawable(R.drawable.ic_mic_grey_24dp))
-            etComposeBox!!.setTextColor(resources.getColor(R.color.primaryTextColor))
+            etComposeBox!!.setTextColor(resources.getColor(R.color.textColorDark))
 //            ivSend!!.imageTintList = ColorStateList.valueOf(resources.getColor(R.color.colorPrimary))
-            flBox!!.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.grey))
+            flBox!!.backgroundTintList = ColorStateList.valueOf(resources.getColor(R.color.menu_background_grey))
 //            ivArrow!!.imageTintList = ColorStateList.valueOf(resources.getColor(R.color.grey))
             ivCamera!!.imageTintList = ColorStateList.valueOf(resources.getColor(R.color.colorPrimary))
             ivFile!!.imageTintList = ColorStateList.valueOf(resources.getColor(R.color.colorPrimary))
@@ -357,7 +345,7 @@ class CometChatComposeBox : RelativeLayout, View.OnClickListener {
         ivCamera!!.imageTintList = ColorStateList.valueOf(color)
         ivGallery!!.imageTintList = ColorStateList.valueOf(color)
         ivFile!!.imageTintList = ColorStateList.valueOf(color)
-        ivArrow!!.imageTintList = ColorStateList.valueOf(color)
+        //ivArrow!!.imageTintList = ColorStateList.valueOf(color)
     }
 
     fun setComposeBoxListener(composeActionListener: ComposeActionListener) {
@@ -374,9 +362,9 @@ class CometChatComposeBox : RelativeLayout, View.OnClickListener {
             stopPlayingAudio()
             voiceMessageLayout?.visibility = View.GONE
             etComposeBox?.visibility = View.VISIBLE
-            ivArrow?.visibility = View.VISIBLE
-            ivMic?.visibility = View.VISIBLE
-            ivMic?.setImageDrawable(resources.getDrawable(R.drawable.ic_microphone_circle))
+            //ivArrow?.visibility = View.VISIBLE
+            //ivMic?.visibility = View.VISIBLE
+            //ivMic?.setImageDrawable(resources.getDrawable(R.drawable.ic_microphone_circle))
             isPlaying = false
             isRecording = false
             voiceMessage = false
@@ -398,13 +386,13 @@ class CometChatComposeBox : RelativeLayout, View.OnClickListener {
                 voiceMessageLayout!!.visibility = View.GONE
                 etComposeBox!!.visibility = View.VISIBLE
                 ivDelete!!.visibility = GONE
-                ivSend!!.visibility = View.GONE
-                ivArrow!!.visibility = View.VISIBLE
-                ivMic!!.visibility = View.VISIBLE
+                //ivSend!!.visibility = View.GONE
+                //ivArrow!!.visibility = View.VISIBLE
+                //ivMic!!.visibility = View.VISIBLE
                 isRecording = false
                 isPlaying = false
                 voiceMessage = false
-                ivMic!!.setImageResource(R.drawable.ic_microphone_circle)
+                //ivMic!!.setImageResource(R.drawable.ic_microphone_circle)
             }
         }
         if (view.id == R.id.ivAudio) {
