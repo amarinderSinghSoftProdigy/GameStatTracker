@@ -71,6 +71,8 @@ import com.allballapp.android.ui.theme.appColors
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import com.allballapp.android.R
+import com.allballapp.android.common.Route.HOME_SCREEN
+
 @AndroidEntryPoint
 class HomeActivity : FragmentActivity() {
 
@@ -490,6 +492,8 @@ fun NavControllerComposable(
 
                 }, onCreateNewConversationClick = {
                     navController.navigate(CREATE_NEW_CHAT_CONVO)
+                }, onHomeClick = {
+                    navController.navigate(HOME_SCREEN)
                 })
         }
 

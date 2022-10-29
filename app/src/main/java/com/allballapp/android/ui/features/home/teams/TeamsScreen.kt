@@ -38,7 +38,8 @@ fun TeamsScreen(
     OnTeamDetailsSuccess: (String, String) -> Unit,
     onCreateTeamClick: (Team?) -> Unit,
     onCreateNewConversationClick: () -> Unit,
-    onTeamItemClick: () -> Unit
+    onTeamItemClick: () -> Unit,
+    onHomeClick: () -> Unit
 ) {
     //val dataStoreManager = DataStoreManager(LocalContext.current)
     //val role = dataStoreManager.getRole.collectAsState(initial = "")
@@ -118,7 +119,10 @@ fun TeamsScreen(
             )
         } else {
             RefereeTeamsTopTabs(pagerState = pagerState, tabData = tabData)
-            TeamsChatScreen(onTeamItemClick = onTeamItemClick, onCreateNewConversationClick = onCreateNewConversationClick)
+            TeamsChatScreen(
+                onTeamItemClick = onTeamItemClick,
+                onCreateNewConversationClick = onCreateNewConversationClick
+            )
             //EmptyScreen(singleText = true, heading = stringResource(id = R.string.coming_soon))
         }
     }
@@ -133,6 +137,9 @@ fun TeamsScreen(
                     if (UserStorage.teamId != teamId) {
                         onTeamSelectionConfirmed(state.selectedTeam)
                         vm.onEvent(TeamUIEvent.OnConfirmTeamClick(teamId, teamName))
+                        if(teamName == context.getString(R.string.team_total_hoop)) {
+                            onHomeClick()
+                        }
                     }
                 },
                 onSelectionChange = onTeamSelectionChange,
@@ -162,7 +169,10 @@ fun TeamsContent(
     ) { index ->
         when (index) {
             0 -> StandingScreen()
-            1 -> TeamsChatScreen(onTeamItemClick = onTeamItemClick, onCreateNewConversationClick = onCreateNewConversationClick)
+            1 -> TeamsChatScreen(
+                onTeamItemClick = onTeamItemClick,
+                onCreateNewConversationClick = onCreateNewConversationClick
+            )
             2 -> RoasterScreen(viewModel)
             3 -> LeaderBoardScreen()
         }

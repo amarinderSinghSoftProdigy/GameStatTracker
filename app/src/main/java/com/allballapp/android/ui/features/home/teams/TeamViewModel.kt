@@ -193,7 +193,6 @@ class TeamViewModel @Inject constructor(
             }
         }
     }
-
     private suspend fun showToast(message: String) {
         _teamChannel.send(
             TeamChannel.ShowToast(
@@ -312,7 +311,6 @@ class TeamViewModel @Inject constructor(
         )
         updateColorData(team.colorCode)
     }
-
 
     suspend fun getTeamsUserId() {
         when (val teamResponse = teamRepo.getTeamsUserId(UserStorage.userId)) {
