@@ -1,11 +1,14 @@
 package com.allballapp.android.ui.features.home.events
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -15,25 +18,21 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.accompanist.flowlayout.FlowRow
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
-import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.allballapp.android.R
 import com.allballapp.android.common.apiToUIDateFormat
-import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.home.EmptyScreen
 import com.allballapp.android.ui.features.home.events.opportunities.OpportunitiesScreen
 import com.allballapp.android.ui.features.home.teams.TeamViewModel
 import com.allballapp.android.ui.theme.*
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.PagerState
+import com.google.accompanist.pager.pagerTabIndicatorOffset
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
@@ -256,7 +255,7 @@ fun SetTopBar(
 }
 
 
-// on below line we are creating a Tab Content
+/*// on below line we are creating a Tab Content
 // Screen for displaying a simple text message.
 @Composable
 fun BoxScope.MyEvents(
@@ -410,7 +409,7 @@ fun BoxScope.MyEvents(
     if (state.showLoading) {
         CommonProgressBar()
     }
-}
+}*/
 
 @Composable
 fun EventItem(

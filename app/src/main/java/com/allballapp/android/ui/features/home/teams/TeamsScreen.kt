@@ -37,7 +37,8 @@ fun TeamsScreen(
     OnTeamDetailsSuccess: (String, String) -> Unit,
     onCreateTeamClick: (Team?) -> Unit,
     onCreateNewConversationClick: () -> Unit,
-    onTeamItemClick: () -> Unit
+    onTeamItemClick: () -> Unit,
+    onAddPlayerClick: () -> Unit
 ) {
     //val dataStoreManager = DataStoreManager(LocalContext.current)
     //val role = dataStoreManager.getRole.collectAsState(initial = "")
@@ -111,9 +112,10 @@ fun TeamsScreen(
             TeamsTopTabs(pagerState = pagerState, tabData = tabData)
             TeamsContent(
                 pagerState = pagerState,
-                onTeamItemClick,
+                onTeamItemClick = onTeamItemClick,
                 onCreateNewConversationClick = onCreateNewConversationClick,
-                vm
+                viewModel = vm,
+                onAddPlayerClick = onAddPlayerClick
             )
         } else {
             RefereeTeamsTopTabs(pagerState = pagerState, tabData = tabData)
@@ -157,6 +159,7 @@ fun TeamsContent(
     pagerState: PagerState,
     onTeamItemClick: () -> Unit,
     onCreateNewConversationClick: () -> Unit,
+    onAddPlayerClick: () -> Unit,
     viewModel: TeamViewModel
 ) {
     HorizontalPager(
@@ -170,7 +173,7 @@ fun TeamsContent(
                 onTeamItemClick = onTeamItemClick,
                 onCreateNewConversationClick = onCreateNewConversationClick
             )
-            2 -> RoasterScreen(viewModel)
+            2 -> RoasterScreen(viewModel, onAddPlayerClick, true)
             3 -> LeaderBoardScreen()
         }
     }

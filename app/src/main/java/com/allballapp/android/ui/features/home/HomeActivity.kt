@@ -70,6 +70,7 @@ import com.cometchat.pro.models.User
 import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+
 @AndroidEntryPoint
 class HomeActivity : FragmentActivity() {
 
@@ -305,7 +306,11 @@ fun NavControllerComposable(
                 role,
                 onOpportunityClick = {
                     navController.navigate(Route.OPPORTUNITIES_SCREEN)
-                }, onLeagueClick = {
+                },
+                onEventsClick = {
+                    navController.navigate(Route.MY_EVENTS)
+                },
+                onLeagueClick = {
                     navController.navigate(Route.MY_LEAGUE)
                 },
                 onInvitationCLick = {
@@ -489,6 +494,13 @@ fun NavControllerComposable(
 
                 }, onCreateNewConversationClick = {
                     navController.navigate(Route.CREATE_NEW_CHAT_CONVO)
+                },
+                onAddPlayerClick = {
+                    setColorUpdate(
+                        setupTeamViewModelUpdated,
+                        teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
+                    )
+                    navController.navigate(Route.ADD_MY_PLAYER_SCREEN + "/${UserStorage.teamId}")
                 })
         }
 
@@ -977,6 +989,24 @@ fun NavControllerComposable(
                 eventMainTitle = it
                 navController.navigate(Route.LEAGUE_DETAIL_SCREEN)
             }
+        }
+
+        composable(route = Route.MY_EVENTS) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = stringResource(id = R.string.events_label),
+                    topBar = TopBar.SINGLE_LABEL_BACK,
+                )
+            )
+            MyEvents(eventViewModel,
+                moveToPracticeDetail = { eventId, eventName ->
+                    eventTitle = eventName
+                    navController.navigate(Route.EVENTS_DETAIL_SCREEN + "/$eventId")
+                },
+                moveToGameDetail = {
+                    eventTitle = it
+                    navController.navigate(Route.GAME_DETAIL_SCREEN)
+                })
         }
     }
 

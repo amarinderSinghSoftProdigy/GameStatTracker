@@ -15,14 +15,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.flowlayout.FlowRow
-import com.allballapp.android.BuildConfig
+import com.allballapp.android.R
 import com.allballapp.android.data.response.SwapUser
 import com.allballapp.android.data.response.team.Coach
 import com.allballapp.android.data.response.team.Player
@@ -31,10 +31,11 @@ import com.allballapp.android.ui.features.home.teams.TeamUIState
 import com.allballapp.android.ui.features.home.teams.TeamViewModel
 import com.allballapp.android.ui.theme.ColorBWBlack
 import com.allballapp.android.ui.theme.appColors
+import com.google.accompanist.flowlayout.FlowRow
 import kotlin.math.ceil
-import com.allballapp.android.R
+
 @Composable
-fun RoasterScreen(vm: TeamViewModel = hiltViewModel()) {
+fun RoasterScreen(vm: TeamViewModel, onAddPlayerClick: () -> Unit, showAddButton: Boolean = false) {
 
     val state = vm.teamUiState.value
 
@@ -44,7 +45,7 @@ fun RoasterScreen(vm: TeamViewModel = hiltViewModel()) {
     ) {
         if (state.isLoading) {
             CommonProgressBar()
-        } else
+        } else {
             if (state.coaches.isEmpty() && state.players.isEmpty() && state.supportStaff.isEmpty() && state.acceptPending.isEmpty()) {
                 Column(modifier = Modifier.align(Alignment.Center)) {
                     AppText(
@@ -92,10 +93,36 @@ fun RoasterScreen(vm: TeamViewModel = hiltViewModel()) {
                                 state = state,
                                 User.User
                             )
+                            Spacer(
+                                modifier = Modifier.height(
+                                    if (showAddButton) dimensionResource(
+                                        id = R.dimen.size_72dp
+                                    ) else 0.dp
+                                )
+                            )
                         }
                     }
                 }
             }
+        }
+        if (showAddButton) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .background(MaterialTheme.appColors.material.surface.copy(alpha = .97f))
+                    .height(dimensionResource(id = R.dimen.size_72dp))
+            ) {
+                ButtonWithLeadingIcon(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(id = R.string.invite_team_member),
+                    onClick = {
+                        onAddPlayerClick()
+                    },
+                    painter = painterResource(id = R.drawable.ic_add_button),
+                )
+            }
+        }
     }
 }
 

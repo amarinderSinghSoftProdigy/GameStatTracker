@@ -1,18 +1,8 @@
 package com.allballapp.android.ui.features.home.events.team.team_tabs
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
-import androidx.compose.material.TabRowDefaults
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -25,11 +15,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
-import com.google.accompanist.pager.pagerTabIndicatorOffset
-import com.google.accompanist.pager.rememberPagerState
 import com.allballapp.android.R
 import com.allballapp.android.ui.features.components.stringResourceByName
 import com.allballapp.android.ui.features.home.events.schedule.EventScheduleChildScreen
@@ -37,6 +22,7 @@ import com.allballapp.android.ui.features.home.teams.TeamViewModel
 import com.allballapp.android.ui.features.home.teams.roaster.RoasterScreen
 import com.allballapp.android.ui.features.home.teams.standing.StandingScreen
 import com.allballapp.android.ui.theme.appColors
+import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
@@ -126,7 +112,7 @@ fun TeamTabsContent(pagerState: PagerState, vm: TeamViewModel) {
         when (page) {
             0 -> StandingScreen()
             1 -> EventScheduleChildScreen(moveToOpenDetails = {})
-            2 -> RoasterScreen(vm)
+            2 -> RoasterScreen(vm, {})
         }
     }
 }
