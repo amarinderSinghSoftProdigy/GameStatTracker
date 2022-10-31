@@ -889,7 +889,7 @@ fun AddNewPlayerDialog(
                         .padding(all = dimensionResource(id = R.dimen.size_8dp))
                 ) {
                     AppButton(
-                        onClick = {  },
+                        onClick = { onDismiss.invoke() },
                         text = stringResource(R.string.dialog_button_cancel),
                         colors = ButtonColor(
                             bckgroundEnabled = colorResource(id = R.color.game_dialog_player_text_field_bg_color),
@@ -910,7 +910,7 @@ fun AddNewPlayerDialog(
                     )
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
                     AppButton(
-                        onClick = {  },
+                        onClick = { onSaveClick.invoke() },
                         text = stringResource(R.string.save),
                         colors = ButtonColor(
                             bckgroundEnabled = colorResource(id = R.color.game_dialog_player_text_field_bg_color),
@@ -1022,9 +1022,7 @@ fun GameSettingsDialog(
                         ),
                         modifier = Modifier
                             .width(dimensionResource(id = R.dimen.size_300dp))
-                            .height(
-                                dimensionResource(id = R.dimen.size_48dp)
-                            )
+                            .height(dimensionResource(id = R.dimen.size_48dp))
                             .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
                             .border(
                                 width = if (isTwoHalvesSelected.value) 1.dp else 0.dp,

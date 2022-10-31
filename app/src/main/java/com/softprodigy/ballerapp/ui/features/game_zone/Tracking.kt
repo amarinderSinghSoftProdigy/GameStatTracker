@@ -30,7 +30,7 @@ fun Tracking (
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = colorResource(id = R.color.game_center_background_color))
+            .background(color = Color.Black.copy(alpha = .75f))
 
     ) {
 

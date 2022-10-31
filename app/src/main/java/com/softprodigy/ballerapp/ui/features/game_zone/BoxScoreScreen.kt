@@ -2,12 +2,16 @@ package com.softprodigy.ballerapp.ui.features.game_zone
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,11 +26,11 @@ import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.ImageButton
 import com.softprodigy.ballerapp.ui.theme.rubikFamily
 
-
 @Composable
 fun BoxScoreScreen(
     onBoxScoreClose: () -> Unit
 )  {
+    var selectedTimeSlotIndex = remember { mutableStateOf( 2) } // ToDo Have set default 'All' time slot
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -63,8 +67,7 @@ fun BoxScoreScreen(
                     icon = painterResource(id = R.drawable.ic_wrong_white),
                     modifier = Modifier
                         .width(dimensionResource(id = R.dimen.size_24dp))
-                        .height(dimensionResource(id = R.dimen.size_24dp))
-                        ,
+                        .height(dimensionResource(id = R.dimen.size_24dp)),
                     onClick = { onBoxScoreClose.invoke() },
                 )
             }
@@ -90,7 +93,7 @@ fun BoxScoreScreen(
                 ) {
                     teamLogo();
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
-                    teamTitle(title = "My Team name", modifier = Modifier.padding(start = 0.dp, top = 0.dp, end = dimensionResource(id = R.dimen.size_8dp), bottom = 0.dp))
+                    teamTitle(title = "My Team name", modifier = Modifier.padding(end = dimensionResource(id = R.dimen.size_8dp)))
                 }
 
                 Row(
@@ -100,7 +103,7 @@ fun BoxScoreScreen(
                     var periods = stringArrayResource(id = R.array.game_box_periods);
                     LazyRow {
                         itemsIndexed(periods) { index, period ->
-                            boxPeriodListItem(index, period, 1) // ToDo Need to pass selected item index
+                            boxPeriodListItem(index, period, selectedTimeSlotIndex)
                         }
                     }
                 }
@@ -109,8 +112,7 @@ fun BoxScoreScreen(
                     Modifier.fillMaxHeight(),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    teamTitle(title = "Other Team name", modifier = Modifier.padding(start = 0.dp, top = 0.dp, end = dimensionResource(id = R.dimen.size_8dp), bottom = 0.dp)
-                    )
+                    teamTitle(title = "Other Team name", modifier = Modifier.padding(start = 0.dp, top = 0.dp, end = dimensionResource(id = R.dimen.size_8dp), bottom = 0.dp))
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
                     teamLogo();
                 }
@@ -129,7 +131,7 @@ fun BoxScoreScreen(
 }
 
 @Composable
-fun boxPeriodListItem(index: Int, period:String, selectedIndex: Int, ){
+fun boxPeriodListItem(index: Int, period:String, selectedTimeSlotIndex: MutableState<Int>, ){
     Box(
         modifier = Modifier
             .padding(horizontal = dimensionResource(id = R.dimen.size_6dp)),
@@ -140,9 +142,10 @@ fun boxPeriodListItem(index: Int, period:String, selectedIndex: Int, ){
             .height(dimensionResource(id = R.dimen.size_24dp))
             .clip(CircleShape)
             .background(
-                color = if (index == selectedIndex) colorResource(id = R.color.game_period_selection_background_color)
+                color = if (index == selectedTimeSlotIndex.value) colorResource(id = R.color.game_period_selection_background_color)
                 else colorResource(id = R.color.game_box_period_bg_color)
-            ),
+            )
+            .clickable { selectedTimeSlotIndex.value = index },
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -150,9 +153,9 @@ fun boxPeriodListItem(index: Int, period:String, selectedIndex: Int, ){
                 text = period,
                 textAlign = TextAlign.Center,
                 color = colorResource(id = R.color.game_point_list_item_text_color),
-                fontSize = dimensionResource(id = if (index == selectedIndex) R.dimen.txt_size_12 else R.dimen.txt_size_11).value.sp,
+                fontSize = dimensionResource(id = if (index == selectedTimeSlotIndex.value) R.dimen.txt_size_12 else R.dimen.txt_size_11).value.sp,
                 fontFamily = rubikFamily,
-                fontWeight = if (index == selectedIndex) FontWeight.W700 else FontWeight.W400,
+                fontWeight = if (index == selectedTimeSlotIndex.value) FontWeight.W700 else FontWeight.W400,
             )
         }
     }
@@ -182,14 +185,10 @@ private fun pointListHeader(hasMyTeamScore:Boolean) {
         .height(dimensionResource(id = R.dimen.size_32dp))
         .background(colorResource(id = R.color.game_box_point_header_bg_color))
         .padding(
-            start = if (hasMyTeamScore) dimensionResource(id = R.dimen.size_16dp) else dimensionResource(
-                id = R.dimen.size_8dp
-            ),
-            top = 0.dp,
-            end = if (hasMyTeamScore) dimensionResource(id = R.dimen.size_8dp) else dimensionResource(
-                id = R.dimen.size_16dp
-            ),
-            bottom = 0.dp
+            start =
+            if (hasMyTeamScore) dimensionResource(id = R.dimen.size_16dp) else dimensionResource(id = R.dimen.size_8dp),
+            end =
+            if (hasMyTeamScore) dimensionResource(id = R.dimen.size_8dp) else dimensionResource(id = R.dimen.size_16dp),
         ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -274,16 +273,20 @@ private fun pointListItem(index: Int, hasMyTeamScore: Boolean, point: String) {
         modifier = Modifier
             .fillMaxWidth()
             .height(dimensionResource(id = R.dimen.size_32dp))
-            .background(if (index % 2 == 0) Color.Transparent.copy(alpha = 0.4f) else colorResource(id = R.color.game_box_score_list_item_bg_color))
+            .background(
+                if (index % 2 == 0) Color.Transparent.copy(alpha = 0.4f) else colorResource(
+                    id = R.color.game_box_score_list_item_bg_color
+                )
+            )
             .padding(
-                start = if (hasMyTeamScore) dimensionResource(id = R.dimen.size_16dp) else dimensionResource(
+                start =
+                if (hasMyTeamScore) dimensionResource(id = R.dimen.size_16dp) else dimensionResource(
                     id = R.dimen.size_8dp
                 ),
-                top = 0.dp,
-                end = if (hasMyTeamScore) dimensionResource(id = R.dimen.size_8dp) else dimensionResource(
+                end =
+                if (hasMyTeamScore) dimensionResource(id = R.dimen.size_8dp) else dimensionResource(
                     id = R.dimen.size_16dp
                 ),
-                bottom = 0.dp
             ),
         verticalAlignment = Alignment.CenterVertically,
     ) {

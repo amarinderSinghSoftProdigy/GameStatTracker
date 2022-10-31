@@ -98,9 +98,7 @@ fun RoasterSelectionScreen(
                 modifier = Modifier
                     .width(dimensionResource(id = R.dimen.size_24dp))
                     .height(dimensionResource(id = R.dimen.size_24dp)),
-                onClick = { //onRoasterSelectionClose.invoke()
-
-                    },
+                onClick = { onRoasterSelectionClose.invoke() },
             )
         }
     }

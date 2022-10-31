@@ -46,17 +46,13 @@ fun PointList(
     ) {
 
         Column(
-            Modifier
-                .fillMaxHeight()
-                //.background(colorResource(id = R.color.game_setting_bg_color))
-                //.background(colorResource(id = R.color.game_center_list_item_bg_color))
+            Modifier.fillMaxHeight()
         ) {
             var items = stringArrayResource(id = R.array.game_periods);
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color.Black.copy(alpha = .8f))
-                    //.background(color = colorResource(id = R.color.game_center_background_color))
+                    .background(color = Color.Black.copy(alpha = .75f))
             ) {
                 itemsIndexed(items) { index, point ->
                     pointListItem(
@@ -280,7 +276,7 @@ fun pointListItem(
                 selectedItemIndex.value = -1
                 expanded.value = false
             },
-            onSaveClick = { /*TODO*/ },
+            onSaveClick = {  expanded.value = false },
             isEdit = true
         )
     }
