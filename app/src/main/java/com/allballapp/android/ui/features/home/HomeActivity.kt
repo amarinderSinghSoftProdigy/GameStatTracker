@@ -70,8 +70,6 @@ import com.cometchat.pro.models.User
 import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import com.allballapp.android.R
-import com.allballapp.android.common.Route.HOME_SCREEN
 
 @AndroidEntryPoint
 class HomeActivity : FragmentActivity() {
@@ -503,9 +501,8 @@ fun NavControllerComposable(
                         teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
                     )
                     navController.navigate(Route.ADD_MY_PLAYER_SCREEN + "/${UserStorage.teamId}")
-                    navController.navigate(CREATE_NEW_CHAT_CONVO)
                 }, onHomeClick = {
-                    navController.navigate(HOME_SCREEN)
+                    navController.navigate(Route.HOME_SCREEN)
                 })
         }
 
