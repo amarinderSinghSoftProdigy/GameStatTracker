@@ -71,7 +71,6 @@ fun VenueListScreen(vm: VenueSearchVIewModel = hiltViewModel(), onVenueClick: (S
                 })
             }
         }
-
     }
 }
 
