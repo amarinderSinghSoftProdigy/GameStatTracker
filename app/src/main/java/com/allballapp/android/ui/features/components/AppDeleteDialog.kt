@@ -2,6 +2,7 @@ package com.allballapp.android.ui.features.components
 
 import android.content.Intent
 import android.net.Uri
+import android.widget.NumberPicker
 import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
@@ -46,8 +47,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.DialogProperties
-import com.allballapp.android.BuildConfig
 import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.argbToHexString
@@ -69,6 +70,7 @@ import com.togitech.ccp.component.TogiCountryCodePicker
 import com.togitech.ccp.data.utils.getDefaultLangCode
 import com.togitech.ccp.data.utils.getDefaultPhoneCode
 import com.togitech.ccp.data.utils.getLibCountries
+import java.util.*
 
 
 @Composable
@@ -414,7 +416,7 @@ fun ShowParentDialog(
 
 @Composable
 fun ConfirmDialog(
-    title:String,
+    title: String,
     onDismiss: () -> Unit,
     onConfirmClick: () -> Unit,
 ) {
@@ -1162,18 +1164,19 @@ fun SelectGuardianRoleDialog(
                             columns = GridCells.Fixed(3),
                             modifier = Modifier.height(dimensionResource(id = R.dimen.size_300dp)),
                             content = {
-                                    items (guardianList ){ member->
-                                        SelectGuardianRoleItem(
-                                            name = member.memberDetails.firstName,
-                                            profile = member.memberDetails.profileImage,
-                                            onItemClick = { guardian ->
-                                                onSelectionChange(guardian)
-                                                onValueSelected(member)
-                                            },
-                                            isSelected = selected == member.id,
-                                            id = member.id
-                                        )
-                                    } })
+                                items(guardianList) { member ->
+                                    SelectGuardianRoleItem(
+                                        name = member.memberDetails.firstName,
+                                        profile = member.memberDetails.profileImage,
+                                        onItemClick = { guardian ->
+                                            onSelectionChange(guardian)
+                                            onValueSelected(member)
+                                        },
+                                        isSelected = selected == member.id,
+                                        id = member.id
+                                    )
+                                }
+                            })
 
                     }
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
@@ -2685,7 +2688,8 @@ fun InvitationSuccessfullySentDialog(
                             src = teamLogo,
                             modifier = Modifier
                                 .size(dimensionResource(id = R.dimen.size_160dp))
-                                .clip(CircleShape).align(Alignment.Center),
+                                .clip(CircleShape)
+                                .align(Alignment.Center),
                             isCrossFadeEnabled = false,
                             onLoading = { Placeholder(R.drawable.ic_profile_placeholder) },
                             onError = { Placeholder(R.drawable.ic_profile_placeholder) }
@@ -2747,6 +2751,99 @@ fun InvitationSuccessfullySentDialog(
                         enabled = true,
                         onlyBorder = false,
                     )
+                }
+            },
+        )
+    }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun NumberPickerDialog(
+    onDismiss: () -> Unit,
+    onConfirmClick: (String) -> Unit,
+) {
+    val mCalendar = Calendar.getInstance()
+    val mYear = mCalendar.get(Calendar.YEAR)
+    val selection = remember { mutableStateOf(mYear.toString()) }
+
+    BallerAppMainTheme {
+        AlertDialog(
+            modifier = Modifier
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+            onDismissRequest = {
+                onDismiss.invoke()
+            },
+            buttons = {
+                Column(
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(
+                            all = dimensionResource(
+                                id = R.dimen.size_16dp
+                            )
+                        ),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_close_color_picker),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(dimensionResource(id = R.dimen.size_12dp))
+                                .align(Alignment.TopEnd)
+                                .clickable {
+                                    onDismiss.invoke()
+                                }
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
+                    AndroidView(
+                        modifier = Modifier.fillMaxWidth(),
+                        factory = { context ->
+                            NumberPicker(context).apply {
+                                setOnValueChangedListener { numberPicker, i, i2 ->
+                                    selection.value = i2.toString()
+                                }
+                                minValue = mYear - 100
+                                maxValue = mYear
+                                value = mYear
+                            }
+                        }
+                    )
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(color = Color.White),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        DialogButton(
+                            text = stringResource(R.string.dialog_button_cancel),
+                            onClick = {
+                                onDismiss.invoke()
+                            },
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = dimensionResource(id = R.dimen.size_10dp)),
+                            border = ButtonDefaults.outlinedBorder,
+                            onlyBorder = true,
+                            enabled = false
+                        )
+                        DialogButton(
+                            text = stringResource(R.string.dialog_button_confirm),
+                            onClick = {
+                                onConfirmClick.invoke(selection.value)
+                                onDismiss.invoke()
+                            },
+                            modifier = Modifier
+                                .weight(1f),
+                            border = ButtonDefaults.outlinedBorder,
+                            onlyBorder = false,
+                            enabled = true
+                        )
+                    }
                 }
             },
         )

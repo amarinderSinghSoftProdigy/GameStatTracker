@@ -452,5 +452,6 @@
     <string name="invite_from_your_profile">Invite from your profile</string>
     <string name="valid_class_of">class should be of 4 characters</string>
     <string name="number_already_exist">Member already exist</string>
+    <string name="aau_card_number">AAU Card Number</string>
 
 </resources>

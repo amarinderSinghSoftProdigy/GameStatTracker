@@ -9,7 +9,7 @@ sealed class ProfileEvent {
     data class OnParentClick(val selectedParentDetails: ParentDetails) : ProfileEvent()
 
     data class OnFirstNameChange(val firstName: String) : ProfileEvent()
-    data class OnLastNameChange(val lastName: String) : ProfileEvent()
+   data class OnLastNameChange(val lastName: String) : ProfileEvent()
     data class OnEmailChange(val email: String) : ProfileEvent()
     data class OnPhoneChange(val phone: String) : ProfileEvent()
     data class OnAddressChange(val address: String) : ProfileEvent()
@@ -21,6 +21,7 @@ sealed class ProfileEvent {
     data class OnRoleChange(val index: Int, val role: String) : ProfileEvent()
     data class OnPositionChange(val index: Int, val position: String) : ProfileEvent()
     data class OnJerseyChange(val index: Int, val jerseyNumber: String) : ProfileEvent()
+    data class OnAAuNumChange(val cardNumber: String) : ProfileEvent()
 
     data class OnPrefJerseyNoChange(val prefJerseyNumber: String) : ProfileEvent()
     data class OnGenderChange(val gender: String) : ProfileEvent()

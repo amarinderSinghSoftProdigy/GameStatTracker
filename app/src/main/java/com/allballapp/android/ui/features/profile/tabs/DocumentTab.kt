@@ -20,21 +20,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import com.allballapp.android.BuildConfig
+import com.allballapp.android.R
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.data.response.UserDocType
 import com.allballapp.android.ui.features.components.AppText
 import com.allballapp.android.ui.features.components.CoilImage
 import com.allballapp.android.ui.features.components.DeleteDialog
-import com.allballapp.android.ui.features.components.*
+import com.allballapp.android.ui.features.components.UserType
 import com.allballapp.android.ui.features.profile.ProfileEvent
 import com.allballapp.android.ui.features.profile.ProfileViewModel
 import com.allballapp.android.ui.theme.ColorBWBlack
 import com.allballapp.android.ui.theme.appColors
-import com.allballapp.android.R
 @Composable
 fun DocumentTab(vm: ProfileViewModel) {
     val context = LocalContext.current
@@ -97,6 +97,7 @@ fun DocumentTab(vm: ProfileViewModel) {
 
 @Composable
 fun DocumentItem(item: UserDocType, onImageClick: (String) -> Unit, onDeleteClick: () -> Unit) {
+    val uriHandler = LocalUriHandler.current
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -132,6 +133,7 @@ fun DocumentItem(item: UserDocType, onImageClick: (String) -> Unit, onDeleteClic
                             modifier = Modifier
                                 .align(Alignment.Center)
                                 .clickable {
+                                    //uriHandler.openUri("https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg")
                                     onImageClick(item.key)
                                 },
                         )
@@ -147,7 +149,7 @@ fun DocumentItem(item: UserDocType, onImageClick: (String) -> Unit, onDeleteClic
                                     shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                                 )
                                 .clickable {
-                                    onImageClick(item.key)
+                                    uriHandler.openUri(item.url)
                                 },
                             onLoading = {
                                 Box {
