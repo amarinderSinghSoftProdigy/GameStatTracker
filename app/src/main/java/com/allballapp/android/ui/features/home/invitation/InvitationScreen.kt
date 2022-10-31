@@ -446,26 +446,23 @@ fun InvitationItem(
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
-                Text(
-                    text = " ${stringResource(id = R.string.sent_by)} ${invitation.createdBy.name}",
-                    color = MaterialTheme.appColors.textField.label,
-                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                    fontWeight = FontWeight.W500,
-                )
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text(
+                        text = " ${stringResource(id = R.string.sent_by)} ${invitation.createdBy.name}",
+                        color = MaterialTheme.appColors.textField.label,
+                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                        fontWeight = FontWeight.W500,
+                    )
+
+                    Text(
+                        text = apiToUIDateFormat(invitation.createdAt),
+                        color = MaterialTheme.appColors.textField.label,
+                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                        fontWeight = FontWeight.W500,
+                    )
+                }
             }
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
-            Box(
-                modifier = Modifier
-                    .height(dimensionResource(id = R.dimen.size_44dp))
-            ) {
-                Text(
-                    text = apiToUIDateFormat(invitation.createdAt),
-                    color = MaterialTheme.appColors.textField.label,
-                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                    fontWeight = FontWeight.W500,
-                    modifier = Modifier.align(Alignment.BottomStart)
-                )
-            }
         }
         if (invitation.status.equals(InvitationStatus.PENDING.status, ignoreCase = true)) {
             Row(

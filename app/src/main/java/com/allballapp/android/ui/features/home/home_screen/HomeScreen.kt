@@ -65,7 +65,7 @@ fun HomeScreen(
     onLeagueClick: () -> Unit,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
     showBottomBar: (Boolean) -> Unit,
-    signUpVm:SignUpViewModel
+    signUpVm: SignUpViewModel
 ) {
     val dataStoreManager = DataStoreManager(LocalContext.current)
     val color = dataStoreManager.getColor.collectAsState(initial = AppConstants.DEFAULT_COLOR)
@@ -120,6 +120,7 @@ fun HomeScreen(
             }
         }
     }
+
     LaunchedEffect(key1 = Unit) {
         teamVm.teamChannel.collect { uiEvent ->
             when (uiEvent) {
@@ -140,7 +141,8 @@ fun HomeScreen(
 
     CoachFlowBackground(
         colorCode = color.value.ifEmpty { AppConstants.DEFAULT_COLOR },
-        teamLogo = com.allballapp.android.BuildConfig.IMAGE_SERVER + homeState.user.profileImage, click = {
+        teamLogo = com.allballapp.android.BuildConfig.IMAGE_SERVER + homeState.user.profileImage,
+        click = {
             when (it) {
                 Options.PROFILE -> {
                     gotToProfile()
@@ -173,7 +175,8 @@ fun HomeScreen(
                     onInvitationCLick()
                 }
             )
-        } else if (role.isNotEmpty()) {
+        }
+        else if (role.isNotEmpty()) {
             Box {
                 Column(
                     Modifier
@@ -266,11 +269,12 @@ fun HomeScreen(
                             Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                   onOpportunityClick.invoke()
-                               }
+                                    onOpportunityClick.invoke()
+                                }
                                 .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                             contentAlignment = Alignment.Center
                         ) {
+
                             Row(
                                 Modifier
                                     .fillMaxSize(),
@@ -289,6 +293,7 @@ fun HomeScreen(
                                     modifier = Modifier.weight(1f),
                                 )
                             }
+
                             Text(
                                 text = homeState.homePageCoachModel.opportunityToWork.toString(),
                                 fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,

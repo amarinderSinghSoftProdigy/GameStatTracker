@@ -1,5 +1,7 @@
 package com.allballapp.android.ui.features.confirm_phone
 
+import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -50,8 +52,8 @@ import kotlinx.coroutines.delay
 @Composable
 fun OtpScreen(
     viewModel: SignUpViewModel,
-    onSuccess: (profilesCount:Int,profileUserIFSingle:SwapUser?) -> Unit,
-    onTokenSelectionSuccess:()->Unit
+    onSuccess: (profilesCount: Int, profileUserIFSingle: SwapUser?) -> Unit,
+    onTokenSelectionSuccess: () -> Unit
 ) {
     // create variable for value
     var value by remember {
@@ -77,10 +79,9 @@ fun OtpScreen(
             delay(100L)
             currentTime -= 100L
             value = currentTime / totalTime.toFloat()
-
         }
-
     }
+
     LaunchedEffect(key1 = Unit) {
         viewModel.signUpChannel.collect { uiEvent ->
             when (uiEvent) {
@@ -89,12 +90,12 @@ fun OtpScreen(
                         .show()
                 }
                 is SignUpChannel.OnSuccess -> {
-                    onSuccess(uiEvent.count,uiEvent.profileIdIfSingle)
+                    onSuccess(uiEvent.count, uiEvent.profileIdIfSingle)
                 }
                 is SignUpChannel.OnProfileUpdateSuccess -> {
                     onTokenSelectionSuccess.invoke()
                 }
-                    else -> Unit
+                else -> Unit
             }
         }
     }
@@ -117,7 +118,7 @@ fun OtpScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = dimensionResource(id = R.dimen.size_16dp)),
+                .padding(horizontal = dimensionResource(id = R.dimen.size_32dp)),
             contentAlignment = Alignment.Center
         ) {
 
@@ -164,7 +165,7 @@ fun OtpScreen(
                     (0 until otpLength).map { index ->
                         OtpCell(
                             modifier = Modifier
-                                .height(dimensionResource(id = R.dimen.size_45dp))
+                                .height(dimensionResource(id = R.dimen.size_50dp))
                                 .weight(1f)
                                 .clickable {
                                     focusRequester.requestFocus()
@@ -172,7 +173,7 @@ fun OtpScreen(
                                 }
                                 .border(
                                     width = dimensionResource(id = R.dimen.size_1dp),
-                                    color = Color.LightGray,
+                                    color = if (editValue.length == index) MaterialTheme.appColors.material.primaryVariant else MaterialTheme.appColors.editField.borderUnFocused,
                                     RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp))
                                 )
                                 .graphicsLayer {
@@ -194,7 +195,7 @@ fun OtpScreen(
 
                     AppText(
                         style = MaterialTheme.typography.h6,
-                        text = stringResource(id = R.string.did_not_recieve_sms),
+                        text = stringResource(id = R.string.did_not_recieve_code),
                         modifier = Modifier.align(Alignment.CenterStart),
                         color = ColorBWGrayLight
                     )
@@ -211,7 +212,7 @@ fun OtpScreen(
                                 textDecoration = TextDecoration.Underline
                             )
                         ) {
-                            append(stringResource(id = R.string.code))
+                            append(stringResource(id = R.string.resend_it))
                         }
 
                         pop()
