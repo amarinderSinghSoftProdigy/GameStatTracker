@@ -32,6 +32,7 @@ import com.allballapp.android.ui.features.home.events.OpportunitiesItem
 import com.allballapp.android.ui.theme.appColors
 import com.allballapp.android.ui.utils.CommonUtils
 import com.allballapp.android.R
+
 @Composable
 fun OpportunitiesScreen(vm: EventViewModel, moveToOppDetails: (String) -> Unit) {
 
@@ -124,6 +125,7 @@ fun OpportunitiesItem(league: OpportunitiesItem, showLabel: Boolean, OnNextClick
                 onLoading = { PlaceholderRect(R.drawable.ic_events_placeholder) },
                 onError = { PlaceholderRect(R.drawable.ic_events_placeholder) }
             )
+
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
 
             Column(
@@ -132,12 +134,36 @@ fun OpportunitiesItem(league: OpportunitiesItem, showLabel: Boolean, OnNextClick
                     .fillMaxHeight(),
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(
-                    text = league.name,
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                    fontWeight = FontWeight.Bold,
-                )
+                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = league.name,
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.weight(2F)
+                    )
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                            .background(MaterialTheme.appColors.material.primaryVariant)
+                            .padding(
+                                horizontal = dimensionResource(id = R.dimen.size_12dp),
+                                vertical = dimensionResource(
+                                    id = R.dimen.size_6dp
+                                )
+                            ).weight(1F),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = league.eventType,
+                            color = Color.White,
+                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
+
+                }
+
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_6dp)))
                 Text(
                     modifier = Modifier.padding(end = dimensionResource(id = R.dimen.size_100dp)),
@@ -149,12 +175,12 @@ fun OpportunitiesItem(league: OpportunitiesItem, showLabel: Boolean, OnNextClick
                     fontWeight = FontWeight.W400,
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_6dp)))
-
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
+
                     Text(
                         text = CommonUtils.formatDate(league.startDate, league.endDate),
                         color = MaterialTheme.appColors.textField.label,
@@ -174,30 +200,5 @@ fun OpportunitiesItem(league: OpportunitiesItem, showLabel: Boolean, OnNextClick
             }
         }
 
-        Row(
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(all = dimensionResource(id = R.dimen.size_12dp))
-        ) {
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-                    .background(MaterialTheme.appColors.material.primaryVariant)
-                    .padding(
-                        horizontal = dimensionResource(id = R.dimen.size_12dp),
-                        vertical = dimensionResource(
-                            id = R.dimen.size_6dp
-                        )
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = league.eventType,
-                    color = Color.White,
-                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                    fontWeight = FontWeight.Bold,
-                )
-            }
-        }
     }
 }

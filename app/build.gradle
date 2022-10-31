@@ -69,7 +69,7 @@ android {
         }
         create("develop") {
             dimension = "ballerapp"
-            buildConfigField("String", "API_SERVER", "\"http://staging.allballapp.com/api/\"")
+            buildConfigField("String", "API_SERVER", "\"https://staging.allballapp.com/api/\"")
             //buildConfigField("String", "API_SERVER", "\"http://ballerapp-staging-v1.us-east-2.elasticbeanstalk.com/api/\"")
             //buildConfigField("String", "API_SERVER", "\"https://ballerapi.softprodigy.in/api/\"")
             //buildConfigField("String", "API_SERVER", "\"https://ballerapi-qa.softprodigy.in/api/\"")

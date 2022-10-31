@@ -9,6 +9,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.selection.LocalTextSelectionColors
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -125,27 +127,34 @@ class TogiCodePicker {
                                         modifier = modifier.fillMaxWidth()
                                     )
                                 } else {
-                                    SearchTextField(
-                                        value = searchValue,
-                                        onValueChange = { searchValue = it },
-                                        textColor = dialogAppBarTextColor,
-                                        leadingIcon = {
-                                            Icon(
-                                                Icons.Filled.Search,
-                                                null,
-                                                tint = dialogAppBarTextColor,
-                                                modifier = Modifier.padding(horizontal = 3.dp),
-                                            )
-                                        },
-                                        trailingIcon = null,
-                                        modifier = Modifier
-                                            .background(
-                                                dialogAppBarColor.copy(0.6f),
-                                            )
-                                            .clip(RoundedCornerShape(50))
-                                            .height(40.dp),
-                                        fontSize = 16.sp,
+                                    val customTextSelectionColors = TextSelectionColors(
+                                        handleColor = Color.Black,
+                                        backgroundColor = Color.Transparent
                                     )
+                                    CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
+
+                                        SearchTextField(
+                                            value = searchValue,
+                                            onValueChange = { searchValue = it },
+                                            textColor = dialogAppBarTextColor,
+                                            leadingIcon = {
+                                                Icon(
+                                                    Icons.Filled.Search,
+                                                    null,
+                                                    tint = dialogAppBarTextColor,
+                                                    modifier = Modifier.padding(horizontal = 3.dp),
+                                                )
+                                            },
+                                            trailingIcon = null,
+                                            modifier = Modifier
+                                                .background(
+                                                    dialogAppBarColor.copy(0.6f),
+                                                )
+                                                .clip(RoundedCornerShape(50))
+                                                .height(40.dp),
+                                            fontSize = 16.sp,
+                                        )
+                                    }
                                 }
                             },
                             navigationIcon = {
@@ -255,7 +264,6 @@ class TogiCodePicker {
             value = value,
             onValueChange = onValueChange,
             singleLine = true,
-            cursorBrush = SolidColor(MaterialTheme.colors.primary),
             textStyle = LocalTextStyle.current.copy(
                 color = textColor,
                 fontSize = fontSize

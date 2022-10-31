@@ -38,7 +38,8 @@ fun TeamsScreen(
     onCreateTeamClick: (Team?) -> Unit,
     onCreateNewConversationClick: () -> Unit,
     onTeamItemClick: () -> Unit,
-    onAddPlayerClick: () -> Unit
+    onAddPlayerClick: () -> Unit,
+    onHomeClick: () -> Unit
 ) {
     //val dataStoreManager = DataStoreManager(LocalContext.current)
     //val role = dataStoreManager.getRole.collectAsState(initial = "")
@@ -138,6 +139,9 @@ fun TeamsScreen(
                     if (UserStorage.teamId != teamId) {
                         onTeamSelectionConfirmed(state.selectedTeam)
                         vm.onEvent(TeamUIEvent.OnConfirmTeamClick(teamId, teamName))
+                        if(teamName == context.getString(R.string.team_total_hoop)) {
+                            onHomeClick()
+                        }
                     }
                 },
                 onSelectionChange = onTeamSelectionChange,

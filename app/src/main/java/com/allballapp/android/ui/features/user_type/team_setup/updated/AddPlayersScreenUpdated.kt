@@ -206,10 +206,12 @@ fun AddPlayersScreenUpdated(
                     vm.onEvent(TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen)
                 },
                 onNextClick = {
-                    if (teamId.isNullOrEmpty()) {
-                        vm.onEvent(TeamSetupUIEventUpdated.OnAddPlayerScreenNext)
-                    } else {
-                        vm.onEvent(TeamSetupUIEventUpdated.OnInviteTeamMembers(teamId))
+                    if(!state.isLoading){
+                        if (teamId.isNullOrEmpty()) {
+                            vm.onEvent(TeamSetupUIEventUpdated.OnAddPlayerScreenNext)
+                        } else {
+                            vm.onEvent(TeamSetupUIEventUpdated.OnInviteTeamMembers(teamId))
+                        }
                     }
                 },
                 enableState = true,/*state.inviteList.isNotEmpty() &&

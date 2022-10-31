@@ -120,6 +120,7 @@ fun HomeScreen(
             }
         }
     }
+
     LaunchedEffect(key1 = Unit) {
         teamVm.teamChannel.collect { uiEvent ->
             when (uiEvent) {
@@ -174,7 +175,8 @@ fun HomeScreen(
                     onInvitationCLick()
                 }
             )
-        } else if (role.isNotEmpty()) {
+        }
+        else if (role.isNotEmpty()) {
             Box {
                 Column(
                     Modifier
@@ -272,6 +274,7 @@ fun HomeScreen(
                                 .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                             contentAlignment = Alignment.Center
                         ) {
+
                             Row(
                                 Modifier
                                     .fillMaxSize(),
@@ -290,6 +293,7 @@ fun HomeScreen(
                                     modifier = Modifier.weight(1f),
                                 )
                             }
+
                             Text(
                                 text = homeState.homePageCoachModel.opportunityToWork.toString(),
                                 fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
