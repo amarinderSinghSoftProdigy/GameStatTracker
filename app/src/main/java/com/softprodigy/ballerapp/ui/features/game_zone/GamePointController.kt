@@ -61,7 +61,6 @@ fun GamePointController (
                         .background(if (isEditMode) colorResource(id = R.color.game_setting_edit_bg_disable_color) else Color.Transparent),
                 ) {
                     itemsIndexed(settingsList) { index, setting ->
-
                         Column(
                             Modifier
                                 .height(dimensionResource(id = R.dimen.size_46dp))

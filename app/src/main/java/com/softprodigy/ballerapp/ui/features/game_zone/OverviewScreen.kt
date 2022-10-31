@@ -23,7 +23,7 @@ fun OverviewScreen (
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(colorResource(id = R.color.game_setting_edit_bg_color))
+            //.background(colorResource(id = R.color.game_setting_edit_bg_color))
     ) {
         Row(
             Modifier
@@ -36,13 +36,8 @@ fun OverviewScreen (
             Column(
                 Modifier
                     .width(dimensionResource(id = R.dimen.size_180dp))
-                    .padding(
-                        start = dimensionResource(id = R.dimen.size_20dp),
-                        top = 0.dp,
-                        end = 0.dp,
-                        bottom = 0.dp
-                    ),
-
+                    .background(colorResource(id = R.color.game_period_background_color))
+                    .padding(start = dimensionResource(id = R.dimen.size_20dp),),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 GamePointController(
@@ -69,9 +64,8 @@ fun OverviewScreen (
                 )
             }
             Column(
-                Modifier
-                    .width(dimensionResource(id = R.dimen.size_180dp)),
-                    //.padding(start = 0.dp, top = 0.dp, end = dimensionResource(id = R.dimen.size_20dp), bottom = 0.dp),
+                Modifier.width(dimensionResource(id = R.dimen.size_180dp))
+                    .background(colorResource(id = R.color.game_period_background_color)),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 GameSettingsController(isEditMode.value)

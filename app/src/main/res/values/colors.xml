@@ -13,6 +13,7 @@
     <color name="ball_color">#FF923D</color>
     <color name="background_color">#F1F6FA</color>
 
+    <color name="game_setting_bg_color">#3C4348</color>
     <color name="game_grid_item_text_color">#FFFFFF</color>
     <color name="game_grid_border_color">#32373C</color>
     <color name="game_point_list_item_text_color">#BFFFFFFF</color>
@@ -21,10 +22,12 @@
     <color name="game_center_list_item_bg_color">#3317191B</color>
     <color name="game_center_list_item_divider_color">#0DFFFFFF</color>
     <color name="game_point_list_item_name_text_color">#FFFFFF</color>
+    <color name="game_period_bg_color">#32373C</color>
     <color name="game_period_background_color">#17191B</color>
     <color name="game_period_selection_background_color">#0177C1</color>
     <color name="game_period_list_pop_up_bg_color">#6617191B</color>
     <color name="game_setting_item_selected_bg_color">#E3584A</color>
+    <color name="game_setting_background_color">#32373C</color>
 
     <color name="game_bg_color">#BF17191B</color>
     <color name="game_add_roster_button_text_color">#FFFFFF</color>

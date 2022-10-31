@@ -69,7 +69,7 @@ inline fun periodSelection(isEditMode: Boolean) {
     Column(
         Modifier
             .height(dimensionResource(id = R.dimen.size_46dp))
-            .background(if (isEditMode) colorResource(id = R.color.game_setting_edit_bg_disable_color) else Color.Transparent)
+            .background(if (isEditMode) colorResource(id = R.color.game_setting_edit_bg_enable_color) else  /*Color.Black.copy(alpha = .75f))*/colorResource(id = R.color.game_bg_color))
             .padding(horizontal = dimensionResource(id = R.dimen.size_8dp)),
         verticalArrangement = Arrangement.Center)
     {
@@ -85,7 +85,9 @@ inline fun periodSelection(isEditMode: Boolean) {
 fun periodListItem(index: Int, periodItem: String = "", selectedPeriodIndex: MutableState<Int>) {
 
     Box(
-        modifier = Modifier.padding(dimensionResource(id = R.dimen.size_4dp)),
+        modifier = Modifier
+            .padding(dimensionResource(id = R.dimen.size_4dp))
+            .background(Color.Transparent),
             contentAlignment = Alignment.Center)
         {
 
@@ -116,7 +118,11 @@ fun periodListItem(index: Int, periodItem: String = "", selectedPeriodIndex: Mut
 @Composable
 inline fun gameSettings(isEditMode: Boolean) {
     Row(modifier = Modifier
-        .background(if (isEditMode) colorResource(id = R.color.game_setting_edit_bg_enable_color) else Color.Transparent)
+        .background(
+            if (isEditMode) colorResource(id = R.color.game_setting_edit_bg_enable_color) else colorResource(
+                id = R.color.game_period_background_color
+            )
+        )
         .fillMaxWidth()
         //.fillMaxHeight()
     ){
@@ -205,11 +211,9 @@ inline fun gameSettings(isEditMode: Boolean) {
                             colorResource(id = R.color.game_grid_border_color)
                         )
                         .background(
-                            color =
-                            if (expanded && point.title.equals(foul)) colorResource(id = R.color.game_setting_item_selected_bg_color) else Color.Transparent
+                            color = if (expanded && point.title.equals(foul)) colorResource(id = R.color.game_setting_item_selected_bg_color) else Color.Transparent
                         )
-                        .clickable { expanded = point.title.equals(foul) }
-                    ,
+                        .clickable { expanded = point.title.equals(foul) },
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -221,7 +225,6 @@ inline fun gameSettings(isEditMode: Boolean) {
                         color = colorResource(id = R.color.game_grid_item_text_color),
                         fontFamily = rubikFamily,
                         fontWeight = FontWeight.W500,
-
                     )
 
                     // drop down menu
@@ -278,15 +281,6 @@ inline fun gameSettings(isEditMode: Boolean) {
                     }
                 }
             }
-
-        /*Spacer(
-            modifier = Modifier
-                //.background(colorResource(id = R.color.game_grid_border_color))
-                .background(Color.Red)
-                .width(dimensionResource(id = R.dimen.size_2dp))
-                .fillMaxHeight()
-        )*/
-
     }
         Spacer(
             modifier = Modifier

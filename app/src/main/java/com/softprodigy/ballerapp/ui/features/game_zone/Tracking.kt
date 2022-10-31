@@ -30,13 +30,12 @@ fun Tracking (
     Box(
         modifier = Modifier
             .fillMaxSize()
-            //.background(color = colorResource(id = R.color.game_center_background_color))
-            .background(Color.White.copy(alpha = 0.6f))
+            .background(color = colorResource(id = R.color.game_center_background_color))
+
     ) {
 
         Column(
-            Modifier
-                .fillMaxHeight()
+            Modifier.fillMaxHeight().background(colorResource(id = R.color.game_center_background_color))
         ) {
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_110dp)))

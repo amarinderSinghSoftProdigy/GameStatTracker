@@ -40,9 +40,7 @@ fun PointList(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                color = if (isEditMode) colorResource(id = R.color.game_setting_edit_bg_disable_color) else colorResource(
-                    id = R.color.game_center_background_color
-                )
+                color = if (isEditMode) colorResource(id = R.color.game_setting_edit_bg_disable_color) else colorResource(id = R.color.game_center_background_color)
             )
         //.background(Color.Red)
     ) {
@@ -50,13 +48,14 @@ fun PointList(
         Column(
             Modifier
                 .fillMaxHeight()
+                //.background(colorResource(id = R.color.game_setting_bg_color))
                 //.background(colorResource(id = R.color.game_center_list_item_bg_color))
         ) {
             var items = stringArrayResource(id = R.array.game_periods);
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.Transparent)
+                    .background(color = Color.Black.copy(alpha = .8f))
                     //.background(color = colorResource(id = R.color.game_center_background_color))
             ) {
                 itemsIndexed(items) { index, point ->
@@ -122,7 +121,8 @@ fun pointListItem(
         Row(
             modifier = Modifier
                 .height(dimensionResource(id = R.dimen.size_46dp))
-                .background(colorResource(id = R.color.game_center_list_item_bg_color))
+                //.background(colorResource(id = R.color.game_center_list_item_bg_color))
+                .background(Color.Transparent)
                 .clickable { },
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -134,7 +134,8 @@ fun pointListItem(
                             dimensionResource(id = R.dimen.size_12dp),
                             dimensionResource(id = R.dimen.size_12dp)
                         )
-                    ), verticalAlignment = Alignment.CenterVertically
+                    ),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
                 AppText(
@@ -146,7 +147,6 @@ fun pointListItem(
                     modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp))
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-
                 CoilImage(
                     //src = BuildConfig.IMAGE_SERVER + "URL.........",
                     src = "https://images.unsplash.com/profile-1446404465118-3a53b909cc82?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&cs=tinysrgb&fit=crop&h=128&w=128&s=27a346c2362207494baa7b76f5d606e5",

@@ -40,8 +40,8 @@ fun TeamNavigationController (
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(if(isEditMode) colorResource(id = R.color.game_setting_edit_bg_disable_color)
-                 else colorResource(id = R.color.game_period_background_color))
+            /*.background(if(isEditMode) colorResource(id = R.color.game_setting_edit_bg_disable_color)
+                 else colorResource(id = R.color.game_period_background_color))*/
     ) {
         Column(modifier = Modifier
             .fillMaxHeight()
@@ -72,6 +72,8 @@ fun teamHandler(isEditMode: Boolean, onPreviousClick: () -> Unit, onNextClick: (
         Modifier
             .fillMaxWidth()
             .height(dimensionResource(id = R.dimen.size_46dp))
+            .background(if(isEditMode) colorResource(id = R.color.game_setting_edit_bg_disable_color)
+                else colorResource(id = R.color.game_period_background_color))
             .padding(
                 horizontal = dimensionResource(id = R.dimen.size_12dp),
                 vertical = dimensionResource(id = R.dimen.size_7dp)
