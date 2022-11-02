@@ -332,7 +332,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
     private suspend fun getPlayerById() {
         invitationState.value = invitationState.value.copy(showLoading = true)
 
-        when (val userRoles = teamRepo.getPlayerById(invitationState.value.teamId)) {
+        when (val userRoles = teamRepo.getPlayerById(invitationState.value.teamId, "")) {
             is ResultWrapper.GenericError -> {
                 invitationState.value = invitationState.value.copy(showLoading = false)
 

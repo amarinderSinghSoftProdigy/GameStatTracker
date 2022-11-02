@@ -71,7 +71,10 @@ interface ITeamRepository {
 
     suspend fun getUserRoles(role: String): ResultWrapper<BaseResponse<List<UserRoles>>>
 
-    suspend fun getPlayerById(id: String): ResultWrapper<BaseResponse<ArrayList<PlayerDetails>>>
+    suspend fun getPlayerById(
+        id: String,
+        eventRegistration: String
+    ): ResultWrapper<BaseResponse<ArrayList<PlayerDetails>>>
 
     suspend fun getAllVenue(
         search: String = "",

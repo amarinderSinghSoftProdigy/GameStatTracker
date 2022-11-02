@@ -11,7 +11,8 @@ sealed class EvEvents {
     data class onCancel(val showGoingDialog: Boolean) : EvEvents()
     data class onCancelDeclineDialog(val showDeclineDialog: Boolean) : EvEvents()
     object OnRoleConfirmClick : EvEvents()
-    object GetRoles: EvEvents()
+    object GetRoles : EvEvents()
+
     //Opportunities
     object GetFilters : EvEvents()
     object GetRefereeFilters : EvEvents()
@@ -59,7 +60,7 @@ sealed class EvEvents {
     object GetMyLeagues : EvEvents()
 
     object GetDivision : EvEvents()
-    data class GetLeagueId(val id: String,val eventId: String) : EvEvents()
+    data class GetLeagueId(val id: String, val eventId: String) : EvEvents()
     data class GetGender(val gender: String) : EvEvents()
 
     object GetVenues : EvEvents()
@@ -73,6 +74,8 @@ sealed class EvEvents {
     data class Format(val format: String) : EvEvents()
 
     data class GetSchedule(val eventId: String) : EvEvents()
+    object ClearRequest : EvEvents()
+    object ClearTeam : EvEvents()
     //data class Format(val format: String) : EvEvents()
     //data class Format(val format: String) : EvEvents()
 }

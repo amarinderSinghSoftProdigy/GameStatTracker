@@ -66,11 +66,11 @@ fun EventRegistraionDetails(
         vm.eventChannel.collect { uiEvent ->
             when (uiEvent) {
                 is EventChannel.ShowToast -> {
-                    /* Toast.makeText(
+                     Toast.makeText(
                          context,
                          uiEvent.message.asString(context),
                          Toast.LENGTH_LONG
-                     ).show()*/
+                     ).show()
                 }
                 is EventChannel.OnSuccess -> {
                     Toast.makeText(
