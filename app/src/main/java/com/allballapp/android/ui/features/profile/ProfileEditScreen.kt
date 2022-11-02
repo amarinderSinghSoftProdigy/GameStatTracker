@@ -150,6 +150,7 @@ fun ProfileEditScreen(
     remember {
         vm.onEvent(ProfileEvent.GetProfile)
     }
+
     val scope = rememberCoroutineScope()
     LaunchedEffect(key1 = Unit) {
         vm.channel.collect {

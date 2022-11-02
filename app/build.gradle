@@ -183,4 +183,5 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:1.4.1"
     implementation "io.coil-kt:coil-svg:2.0.0"
 
+    implementation 'com.google.accompanist:accompanist-permissions:0.24.9-beta'
 }

@@ -5,6 +5,7 @@ import android.app.DatePickerDialog
 import android.net.Uri
 import android.widget.DatePicker
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -63,9 +64,9 @@ import java.util.*
 @OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun ProfileSetUpScreen(
-    isToAddProfile:Boolean=false,
-    countryCode:String="",
-    mobileNumber:String="",
+    isToAddProfile: Boolean = false,
+    countryCode: String = "",
+    mobileNumber: String = "",
     onNext: () -> Unit,
     onBack: () -> Unit,
     signUpViewModel: SignUpViewModel
@@ -76,6 +77,10 @@ fun ProfileSetUpScreen(
 
     var currentBottomSheet: BottomSheetType? by remember {
         mutableStateOf(null)
+    }
+
+    BackHandler {
+        signUpViewModel.onEvent(SignUpUIEvent.ClearPhoneField)
     }
 
     val maxChar = 30
@@ -152,19 +157,20 @@ fun ProfileSetUpScreen(
 
     LaunchedEffect(key1 = mobileNumber, key2 = countryCode) {
 
-        if(mobileNumber.isNotEmpty()){
-        signUpViewModel.onEvent(
-            SignUpUIEvent.OnPhoneNumberChanged(
-                mobileNumber
+        if (mobileNumber.isNotEmpty()) {
+            signUpViewModel.onEvent(
+                SignUpUIEvent.OnPhoneNumberChanged(
+                    mobileNumber
+                )
             )
-        )}
+        }
 
-        if(countryCode.isNotEmpty()){
-        signUpViewModel.onEvent(
-            SignUpUIEvent.OnCountryCode(
-                countryCode
+        if (countryCode.isNotEmpty()) {
+            signUpViewModel.onEvent(
+                SignUpUIEvent.OnCountryCode(
+                    countryCode
+                )
             )
-        )
         }
     }
     LaunchedEffect(key1 = Unit) {
@@ -322,7 +328,7 @@ fun ProfileSetUpScreen(
                             AppDivider()
 
                             EditFields(
-                               data = state.signUpData.firstName,
+                                data = state.signUpData.firstName,
                                 onValueChange = {
                                     if (it.length <= maxChar)
                                         signUpViewModel.onEvent(
@@ -331,7 +337,7 @@ fun ProfileSetUpScreen(
                                             )
                                         )
                                 },
-                               head = stringResource(id = R.string.first_name),
+                                head = stringResource(id = R.string.first_name),
                                 isError = !validName(state.signUpData.firstName) && state.signUpData.firstName.isNotEmpty() || state.signUpData.firstName.length > 30,
                                 errorMessage = stringResource(id = R.string.valid_first_name),
                                 keyboardOptions = KeyboardOptions(
@@ -374,186 +380,194 @@ fun ProfileSetUpScreen(
                                 errorMessage = stringResource(id = R.string.email_error),
                                 enabled = false
                             )
-                            if(!isToAddProfile){
-                            state.signUpData.token?.let { _ ->
-                                AppDivider()
+                            if (!isToAddProfile) {
+                                state.signUpData.token?.let { _ ->
+                                    AppDivider()
 
-                                EditFields(
-                                    state.signUpData.address,
-                                    onValueChange = {
-                                        signUpViewModel.onEvent(SignUpUIEvent.OnAddressChanged(it))
-                                    },
-                                    stringResource(id = R.string.address),
-                                    KeyboardOptions(
-                                        imeAction = ImeAction.Next,
-                                        keyboardType = KeyboardType.Text,
-                                        capitalization = KeyboardCapitalization.Sentences
-                                    ),
-                                    isError = (state.signUpData.address.isNotEmpty() && state.signUpData.address.length <= 4),
-                                    errorMessage = stringResource(id = R.string.address_error),
-                                )
-                                AppDivider()
-
-                                Column {
                                     EditFields(
-                                        state.signUpData.gender,
+                                        state.signUpData.address,
                                         onValueChange = {
-                                            signUpViewModel.onEvent(SignUpUIEvent.OnGenderChange(it))
+                                            signUpViewModel.onEvent(
+                                                SignUpUIEvent.OnAddressChanged(
+                                                    it
+                                                )
+                                            )
                                         },
-                                        stringResource(id = R.string.gender),
+                                        stringResource(id = R.string.address),
                                         KeyboardOptions(
                                             imeAction = ImeAction.Next,
-                                            keyboardType = KeyboardType.Text
+                                            keyboardType = KeyboardType.Text,
+                                            capitalization = KeyboardCapitalization.Sentences
                                         ),
-                                        modifier = Modifier.onGloballyPositioned {
-                                            textFieldSize = it.size.toSize()
-                                        },
-                                        trailingIcon = {
-                                            Icon(
-                                                icon,
-                                                contentDescription = null,
-                                                modifier = Modifier.clickable {
-                                                    expanded = !expanded
-                                                })
-                                        },
-                                        enabled = true
+                                        isError = (state.signUpData.address.isNotEmpty() && state.signUpData.address.length <= 4),
+                                        errorMessage = stringResource(id = R.string.address_error),
                                     )
-                                    DropdownMenu(
-                                        expanded = expanded,
-                                        onDismissRequest = { expanded = false },
-                                        modifier = Modifier
-                                            .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
-                                            .background(MaterialTheme.colors.background)
-                                    ) {
-                                        genderList.forEach { label ->
-                                            DropdownMenuItem(onClick = {
+                                    AppDivider()
+
+                                    Column {
+                                        EditFields(
+                                            state.signUpData.gender,
+                                            onValueChange = {
                                                 signUpViewModel.onEvent(
                                                     SignUpUIEvent.OnGenderChange(
-                                                        label
+                                                        it
                                                     )
                                                 )
-                                                expanded = false
-                                            }) {
-                                                Text(text = label, textAlign = TextAlign.Center)
+                                            },
+                                            stringResource(id = R.string.gender),
+                                            KeyboardOptions(
+                                                imeAction = ImeAction.Next,
+                                                keyboardType = KeyboardType.Text
+                                            ),
+                                            modifier = Modifier.onGloballyPositioned {
+                                                textFieldSize = it.size.toSize()
+                                            },
+                                            trailingIcon = {
+                                                Icon(
+                                                    icon,
+                                                    contentDescription = null,
+                                                    modifier = Modifier.clickable {
+                                                        expanded = !expanded
+                                                    })
+                                            },
+                                            enabled = true
+                                        )
+                                        DropdownMenu(
+                                            expanded = expanded,
+                                            onDismissRequest = { expanded = false },
+                                            modifier = Modifier
+                                                .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+                                                .background(MaterialTheme.colors.background)
+                                        ) {
+                                            genderList.forEach { label ->
+                                                DropdownMenuItem(onClick = {
+                                                    signUpViewModel.onEvent(
+                                                        SignUpUIEvent.OnGenderChange(
+                                                            label
+                                                        )
+                                                    )
+                                                    expanded = false
+                                                }) {
+                                                    Text(text = label, textAlign = TextAlign.Center)
+                                                }
                                             }
+                                        }
+                                    }
+                                    AppDivider()
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(
+                                                start = dimensionResource(id = R.dimen.size_16dp),
+                                                end = dimensionResource(id = R.dimen.size_16dp)
+                                            )
+                                            .height(dimensionResource(id = R.dimen.size_56dp))
+                                    ) {
+                                        AppText(
+                                            text = stringResource(id = R.string.birthdate),
+                                            style = MaterialTheme.typography.h6,
+                                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                            modifier = Modifier
+                                                .align(Alignment.CenterStart)
+                                                .padding(start = dimensionResource(id = R.dimen.size_3dp)),
+                                            textAlign = TextAlign.Start
+                                        )
+                                        Row(
+                                            modifier = Modifier
+                                                .align(Alignment.CenterEnd)
+                                                .clickable { mDatePickerDialog.show() },
+                                            verticalAlignment = Alignment.CenterVertically,
+                                        ) {
+                                            Text(
+                                                text = state.signUpData.birthdate,
+                                            )
+                                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_5dp)))
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.ic_baseline_calendar_month_24),
+                                                contentDescription = null,
+                                                modifier = Modifier.size(dimensionResource(id = R.dimen.size_24dp))
+                                            )
                                         }
                                     }
                                 }
                                 AppDivider()
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(
-                                            start = dimensionResource(id = R.dimen.size_16dp),
-                                            end = dimensionResource(id = R.dimen.size_16dp)
+                                Column {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        AppText(
+                                            text = stringResource(id = R.string.phone_num),
+                                            style = MaterialTheme.typography.h6,
+                                            color = ColorBWBlack,
+                                            modifier = Modifier
+                                                .padding(start = dimensionResource(id = R.dimen.size_16dp))
                                         )
-                                        .height(dimensionResource(id = R.dimen.size_56dp))
-                                ) {
-                                    AppText(
-                                        text = stringResource(id = R.string.birthdate),
-                                        style = MaterialTheme.typography.h6,
-                                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                                        modifier = Modifier
-                                            .align(Alignment.CenterStart)
-                                            .padding(start = dimensionResource(id = R.dimen.size_3dp)),
-                                        textAlign = TextAlign.Start
-                                    )
-                                    Row(
-                                        modifier = Modifier
-                                            .align(Alignment.CenterEnd)
-                                            .clickable { mDatePickerDialog.show() },
-                                        verticalAlignment = Alignment.CenterVertically,
-                                    ) {
-                                        Text(
-                                            text = state.signUpData.birthdate,
-                                        )
-                                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_5dp)))
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.ic_baseline_calendar_month_24),
-                                            contentDescription = null,
-                                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_24dp))
-                                        )
-                                    }
-                                }
-                            }
-                            AppDivider()
-                            Column {
-                                Row(verticalAlignment = Alignment.CenterVertically){
-                                    AppText(
-                                        text = stringResource(id = R.string.phone_num),
-                                        style = MaterialTheme.typography.h6,
-                                        color = ColorBWBlack,
-                                        modifier = Modifier
-                                            .padding(start = dimensionResource(id = R.dimen.size_16dp))
-                                    )
-                                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(IntrinsicSize.Min),
-                                    /* verticalAlignment = Alignment.CenterVertically,
-                                     horizontalArrangement = Arrangement.SpaceBetween*/
-                                ) {
+                                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(IntrinsicSize.Min),
+                                            /* verticalAlignment = Alignment.CenterVertically,
+                                             horizontalArrangement = Arrangement.SpaceBetween*/
+                                        ) {
 
-                                    val customTextSelectionColors = TextSelectionColors(
-                                        handleColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                                        backgroundColor = Color.Transparent
-                                    )
-                                    CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
-                                        /* state.phoneCode = getDefaultPhoneCode*/
-                                        signUpViewModel.onEvent(
-                                            SignUpUIEvent.OnCountryCode(
-                                                getDefaultPhoneCode
+                                            val customTextSelectionColors = TextSelectionColors(
+                                                handleColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                                backgroundColor = Color.Transparent
                                             )
-                                        )
-                                        TogiCountryCodePicker(
-                                            showCountryFlag=false,
-                                            pickedCountry = {
-                                                /*  state.phoneCode = it.countryPhoneCode*/
+                                            CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
+                                                /* state.phoneCode = getDefaultPhoneCode*/
                                                 signUpViewModel.onEvent(
                                                     SignUpUIEvent.OnCountryCode(
-                                                        it.countryCode
+                                                        getDefaultPhoneCode
                                                     )
                                                 )
-                                                defaultLang = it.countryCode
-                                            },
-                                            defaultCountry = getLibCountries().single { it.countryCode == defaultLang },
-                                            focusedBorderColor = Color.Transparent,
-                                            unfocusedBorderColor = Color.Transparent,
-                                            dialogAppBarTextColor = Color.Black,
-                                            dialogAppBarColor = Color.White,
-                                            error = true,
-                                            text = state.signUpData.phone,
-                                            onValueChange = {
-                                                if (it.length <= maxPhoneNumber)
-                                                    signUpViewModel.onEvent(
-                                                        SignUpUIEvent.OnPhoneNumberChanged(
-                                                            it
+                                                TogiCountryCodePicker(
+                                                    showCountryFlag = false,
+                                                    pickedCountry = {
+                                                        /*  state.phoneCode = it.countryPhoneCode*/
+                                                        signUpViewModel.onEvent(
+                                                            SignUpUIEvent.OnCountryCode(
+                                                                it.countryCode
+                                                            )
                                                         )
-                                                    )
-                                            },
-                                            readOnly = state.signUpData.phoneVerified,
-                                            cursorColor = Color.Black,
-                                            content = {
-                                            },
-                                            showDialog = false
+                                                        defaultLang = it.countryCode
+                                                    },
+                                                    defaultCountry = getLibCountries().single { it.countryCode == defaultLang },
+                                                    focusedBorderColor = Color.Transparent,
+                                                    unfocusedBorderColor = Color.Transparent,
+                                                    dialogAppBarTextColor = Color.Black,
+                                                    dialogAppBarColor = Color.White,
+                                                    error = true,
+                                                    text = state.signUpData.phone,
+                                                    onValueChange = {
+                                                        if (it.length <= maxPhoneNumber)
+                                                            signUpViewModel.onEvent(
+                                                                SignUpUIEvent.OnPhoneNumberChanged(
+                                                                    it
+                                                                )
+                                                            )
+                                                    },
+                                                    readOnly = state.signUpData.phoneVerified,
+                                                    cursorColor = Color.Black,
+                                                    content = {
+                                                    },
+                                                    showDialog = false
+                                                )
+                                            }
+                                        }
+                                    }
+
+                                    if ((!validPhoneNumber(state.signUpData.phone) && state.signUpData.phone.isNotEmpty())) {
+                                        Text(
+                                            text = stringResource(id = R.string.valid_phone_number),
+                                            color = MaterialTheme.colors.error,
+                                            style = MaterialTheme.typography.caption,
+                                            modifier = Modifier
+                                                .padding(4.dp)
+                                                .fillMaxWidth(),
+                                            textAlign = TextAlign.End
                                         )
                                     }
                                 }
-                                }
-
-                                if ((!validPhoneNumber(state.signUpData.phone) && state.signUpData.phone.isNotEmpty())) {
-                                    Text(
-                                        text = stringResource(id = R.string.valid_phone_number),
-                                        color = MaterialTheme.colors.error,
-                                        style = MaterialTheme.typography.caption,
-                                        modifier = Modifier
-                                            .padding(4.dp)
-                                            .fillMaxWidth(),
-                                        textAlign = TextAlign.End
-                                    )
-                                }
-                            }
                             }
 
                             /*if (validPhoneNumber(state.signUpData.phone) && !state.signUpData.phoneVerified) {
@@ -603,7 +617,10 @@ fun ProfileSetUpScreen(
                                 && state.signUpData.gender.isNotEmpty()
                     } ?: true
                     BottomButtons(
-                        onBackClick = { onBack() },
+                        onBackClick = {
+                            signUpViewModel.onEvent(SignUpUIEvent.ClearPhoneField)
+                            onBack()
+                        },
                         onNextClick = {
                             if (state.registered) {
                                 signUpViewModel.onEvent(SignUpUIEvent.OnAddProfile)
@@ -613,11 +630,11 @@ fun ProfileSetUpScreen(
                         },
                         enableState = validName(state.signUpData.firstName)
                                 && validName(state.signUpData.lastName)
-                                && if(isToAddProfile) true else validPhoneNumber(state.signUpData.phone),
-                                //&& (state.signUpData.email ?: "".isValidEmail()) != true
-                                //&& state.signUpData.profileImageUri != null
-                                //&& state.signUpData.phoneVerified
-                                //&& check,
+                                && if (isToAddProfile) true else validPhoneNumber(state.signUpData.phone),
+                        //&& (state.signUpData.email ?: "".isValidEmail()) != true
+                        //&& state.signUpData.profileImageUri != null
+                        //&& state.signUpData.phoneVerified
+                        //&& check,
                         firstText = stringResource(id = R.string.back),
                         secondText = stringResource(id = R.string.next)
                     )

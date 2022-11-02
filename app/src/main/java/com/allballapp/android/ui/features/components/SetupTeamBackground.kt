@@ -1,6 +1,7 @@
 package com.allballapp.android.ui.features.components
 
 import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,6 +37,8 @@ fun CoachFlowBackground(
     val showOptions = remember {
         mutableStateOf(false)
     }
+    val interactionSource = remember { MutableInteractionSource() }
+
     Surface(color = Color.Transparent) {
         Box(
             modifier = Modifier
@@ -86,11 +89,13 @@ fun CoachFlowBackground(
                 }
             }
 
-
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clickable {
+                    .clickable(
+                        interactionSource = interactionSource,
+                        indication = null
+                    ) {
                         showOptions.value = false
                     }
                     .verticalScroll(rememberScrollState())

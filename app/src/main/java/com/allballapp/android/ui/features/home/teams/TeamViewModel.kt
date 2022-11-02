@@ -193,6 +193,7 @@ class TeamViewModel @Inject constructor(
             }
         }
     }
+
     private suspend fun showToast(message: String) {
         _teamChannel.send(
             TeamChannel.ShowToast(
@@ -352,12 +353,10 @@ class TeamViewModel @Inject constructor(
                             var selectionTeam: Team? = null
                             response.data.result.toMutableList().forEach {
                                 if (UserStorage.teamId.isEmpty()) {
-
                                     if (response.data.teamId == it.teamId._id) {
                                         selectionTeam = it.teamId
                                         setRole(it.role)
                                     }
-
                                 } else {
                                     if (UserStorage.teamId == it.teamId._id) {
                                         selectionTeam = it.teamId
@@ -425,6 +424,7 @@ class TeamViewModel @Inject constructor(
             /* if (it.position.isNotEmpty())*/
             newRoaster.add(TeamRoaster(it._id, ""))
         }
+        _teamUiState.value = _teamUiState.value.copy(newTeamId = UserStorage.teamId)
         //Need to update the request object.
         val request = UpdateTeamDetailRequest(
             id = UserStorage.teamId,

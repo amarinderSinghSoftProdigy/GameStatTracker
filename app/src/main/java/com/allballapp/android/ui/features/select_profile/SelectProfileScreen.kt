@@ -1,6 +1,7 @@
 package com.allballapp.android.ui.features.select_profile
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -40,6 +41,8 @@ fun SelectProfileScreen(vm: SignUpViewModel, onNextClick: () -> Unit) {
     val id = remember {
         mutableStateOf(SwapUser())
     }
+
+
 
     /*remember {
        vm.onEvent(HomeScreenEvent.OnSwapClick)
@@ -110,7 +113,7 @@ fun SelectProfileScreen(vm: SignUpViewModel, onNextClick: () -> Unit) {
             BottomButtons(
                 firstText = stringResource(id = R.string.back),
                 secondText = stringResource(id = R.string.next),
-                onBackClick = { },
+                onBackClick = {  },
                 onNextClick = {
                     vm.onEvent(SignUpUIEvent.OnSwapUpdate(id.value))
                 },

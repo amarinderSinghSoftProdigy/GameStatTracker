@@ -39,5 +39,6 @@ data class TeamUIState(
     val venueName: String = "",
     val selectedAddress: Address = Address(),
     val loadFirstUi: Boolean = false,
-    val teamId:String = ""
+    val teamId:String = "",
+    val newTeamId: String = ""
     )

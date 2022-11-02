@@ -17,6 +17,7 @@ import com.allballapp.android.common.getFileFromUri
 import com.allballapp.android.core.util.UiText
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
+import com.allballapp.android.data.request.SignUpData
 import com.allballapp.android.data.request.SignUpPhoneData
 import com.allballapp.android.data.response.AddProfileRequest
 import com.allballapp.android.data.response.SwapUser
@@ -213,6 +214,13 @@ class SignUpViewModel @Inject constructor(
 
             is SignUpUIEvent.OnCountryCode -> {
                 _signUpUiState.value = _signUpUiState.value.copy(phoneCode = event.countryCode)
+            }
+
+            is SignUpUIEvent.ClearPhoneField -> {
+                _signUpUiState.value =
+                    _signUpUiState.value.copy(
+                        signUpData = SignUpData()
+                    )
             }
         }
     }
