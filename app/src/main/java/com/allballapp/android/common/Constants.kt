@@ -84,6 +84,7 @@ object ApiConstants {
     //Auth
     const val LOGIN = "v1/auth/login"
     const val SIGNUP = "v1/auth/register"
+    const val AUTHORIZE_GUARDIAN = "v1/auth/sendSmsToGuardian"
     const val FORGOT_PASSWORD = "v1/auth/forgotPassword"
     const val UPDATE_PROFILE = "v1/auth/updateUserProfile"
     const val VERIFY_PHONE = "v1/auth/verifyPhone"

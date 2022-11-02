@@ -13,3 +13,8 @@ data class LoginRequest(
     @SerializedName("firstName") val firstName: String? = null,
     @SerializedName("lastName") val lastName: String? = null
 )
+
+data class AuthorizeRequest(
+    @SerializedName("childPhone") val childPhone: String? = null,
+    @SerializedName("gaurdianPhone") val gaurdianPhone: String? = null,
+)

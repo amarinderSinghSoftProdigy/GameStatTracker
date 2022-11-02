@@ -20,8 +20,10 @@ sealed class TeamSetupUIEventUpdated {
     data class OnRemovePlayerConfirmClick(val player: Player) : TeamSetupUIEventUpdated()
     data class OnDismissDialogCLick(val showDialog: Boolean) : TeamSetupUIEventUpdated()
     object OnAddPlayerScreenNext : TeamSetupUIEventUpdated()
+    data class OnRole(val role: String) : TeamSetupUIEventUpdated()
     object OnLogoUploadSuccess : TeamSetupUIEventUpdated()
     object GetRoles : TeamSetupUIEventUpdated()
+    data class MoveBack(val check: Boolean = false) : TeamSetupUIEventUpdated()
 
     data class OnContactAdded(val data: InviteObject) : TeamSetupUIEventUpdated()
     data class OnIndexChange(val index: Int) : TeamSetupUIEventUpdated()
@@ -39,6 +41,7 @@ sealed class TeamSetupUIEventUpdated {
         val member: Members? = null,
         val profilesSelected: Boolean = false,
     ) : TeamSetupUIEventUpdated()
+
     object OnBackButtonClickFromPlayerScreen : TeamSetupUIEventUpdated()
 
     data class OnTeamNameJerseyChange(val teamNameOnJersey: String) : TeamSetupUIEventUpdated()

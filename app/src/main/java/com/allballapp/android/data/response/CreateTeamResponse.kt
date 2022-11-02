@@ -3,6 +3,11 @@ package com.allballapp.android.data.response
 import com.google.gson.annotations.SerializedName
 
 data class CreateTeamResponse(
+    @SerializedName("team") val team: TeamData = TeamData(),
+    @SerializedName("failedMobileNumbers") val failedMobileNumbers: ArrayList<String> = arrayListOf(),
+)
+
+data class TeamData(
     @SerializedName("name") val name: String = "",
     @SerializedName("divisions") val divisions: ArrayList<String> = arrayListOf(),
     @SerializedName("events") var events: ArrayList<String> = arrayListOf(),

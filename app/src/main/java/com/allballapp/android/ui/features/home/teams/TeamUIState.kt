@@ -2,6 +2,7 @@ package com.allballapp.android.ui.features.home.teams
 
 import com.allballapp.android.data.request.Address
 import com.allballapp.android.data.request.UpdateTeamDetailRequest
+import com.allballapp.android.data.response.AllUser
 import com.allballapp.android.data.response.PlayerDetails
 import com.allballapp.android.data.response.SwapUser
 import com.allballapp.android.data.response.team.*
@@ -16,6 +17,7 @@ data class TeamUIState(
     val acceptPending: ArrayList<SwapUser> = ArrayList(),
     val playersList: ArrayList<PlayerDetails> = ArrayList(),
     val coaches: ArrayList<Coach> = ArrayList(),
+    val allUsers: ArrayList<AllUser> = ArrayList(),
     val leaderBoard: List<TeamLeaderBoard> = emptyList(),
     //val roasterTabs: List<Player> = emptyList(),
     val roaster: List<TeamRoaster> = emptyList(),

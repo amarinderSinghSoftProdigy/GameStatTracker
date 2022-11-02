@@ -64,8 +64,6 @@ fun HomeScreen(
     onLeagueClick: () -> Unit,
     onEventsClick: () -> Unit,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
-    showBottomBar: (Boolean) -> Unit,
-    signUpVm: SignUpViewModel
 ) {
     val dataStoreManager = DataStoreManager(LocalContext.current)
     val color = dataStoreManager.getColor.collectAsState(initial = AppConstants.DEFAULT_COLOR)

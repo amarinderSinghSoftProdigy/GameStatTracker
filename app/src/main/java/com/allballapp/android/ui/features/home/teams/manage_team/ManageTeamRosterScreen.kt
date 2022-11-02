@@ -13,8 +13,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,28 +24,23 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.accompanist.flowlayout.FlowRow
-import com.allballapp.android.BuildConfig
-import com.allballapp.android.data.response.SwapUser
-import com.allballapp.android.data.response.team.Coach
-import com.allballapp.android.data.response.team.Player
+import com.allballapp.android.R
+import com.allballapp.android.data.response.AllUser
 import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.home.teams.TeamViewModel
-import com.allballapp.android.ui.features.home.teams.roaster.User
 import com.allballapp.android.ui.theme.ColorBWBlack
 import com.allballapp.android.ui.theme.ColorBWGrayStatus
 import com.allballapp.android.ui.theme.appColors
+import com.allballapp.android.ui.utils.CommonUtils
 import com.allballapp.android.ui.utils.dragDrop.ReorderableItem
 import com.allballapp.android.ui.utils.dragDrop.detectReorderAfterLongPress
 import com.allballapp.android.ui.utils.dragDrop.rememberReorderableLazyListState
 import com.allballapp.android.ui.utils.dragDrop.reorderable
-import com.allballapp.android.R
+import com.google.accompanist.flowlayout.FlowRow
+
 @Composable
 fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
     val state = vm.teamUiState.value
-    val scroll = remember {
-        mutableStateOf(false)
-    }
     val recordState =
         rememberReorderableLazyListState(
             onMove = vm::moveItemRoaster,
@@ -72,7 +65,9 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
             ) {
                 FlowRow {
                     Column {
-                        if (state.coaches.isNotEmpty()) {
+                        val list =
+                            CommonUtils.getUsersList(state.allUsers, UserType.COACH)
+                        if (list.isNotEmpty()) {
                             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
                             Text(
                                 text = stringResource(id = R.string.coaches),
@@ -84,14 +79,15 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                             LazyColumn(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(dimensionResource(id = R.dimen.size_56dp) * state.coaches.size)
+                                    .height(dimensionResource(id = R.dimen.size_56dp) * list.size)
                             ) {
-                                items(state.coaches) {
-                                    MangeTeamDataHeaderItem(coaches = it)
+                                items(list) {
+                                    MangeTeamDataHeaderItem(data = it)
                                 }
                             }
                         }
-                        if (state.players.isNotEmpty()) {
+                        val listplayers = CommonUtils.getUsersList(state.allUsers, UserType.PLAYER)
+                        if (listplayers.isNotEmpty()) {
                             Column {
                                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
                                 Text(
@@ -106,31 +102,32 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                                 state = recordState.listState,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(dimensionResource(id = R.dimen.size_56dp) * state.players.size)
+                                    .height(dimensionResource(id = R.dimen.size_56dp) * listplayers.size)
                                     .then(
                                         Modifier
                                             .reorderable(recordState)
                                             .detectReorderAfterLongPress(recordState)
                                     ),
                             ) {
-                                items(state.players, key = { item -> item.uniqueId }) { item ->
+                                items(listplayers, key = { item -> item._id }) { item ->
                                     ReorderableItem(
                                         reorderableState = recordState,
-                                        key = item.uniqueId,
+                                        key = item._id,
                                     ) { dragging ->
                                         val elevation =
                                             animateDpAsState(if (dragging) dimensionResource(id = R.dimen.size_10dp) else 0.dp)
                                         MangeTeamDataHeaderItem(
                                             modifier = Modifier
                                                 .shadow(elevation.value),
-                                            players = item
+                                            item
                                         )
                                     }
 
                                 }
                             }
                         }
-                        if (state.acceptPending.isNotEmpty()) {
+                        val listuser = CommonUtils.getUsersList(state.allUsers, UserType.PARENT)
+                        if (listuser.isNotEmpty()) {
                             Column {
                                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
                                 Text(
@@ -145,24 +142,24 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                                 state = recordStatePending.listState,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(dimensionResource(id = R.dimen.size_56dp) * state.acceptPending.size)
+                                    .height(dimensionResource(id = R.dimen.size_56dp) * listuser.size)
                                     .then(
                                         Modifier
                                             .reorderable(recordStatePending)
                                             .detectReorderAfterLongPress(recordStatePending)
                                     ),
                             ) {
-                                items(state.acceptPending, key = { item -> item._Id }) { item ->
+                                items(listuser, key = { item -> item._id }) { item ->
                                     ReorderableItem(
                                         reorderableState = recordStatePending,
-                                        key = item._Id,
+                                        key = item._id,
                                     ) { dragging ->
                                         val elevation =
                                             animateDpAsState(if (dragging) dimensionResource(id = R.dimen.size_10dp) else 0.dp)
                                         MangeTeamDataHeaderItem(
                                             modifier = Modifier
                                                 .shadow(elevation.value),
-                                            user = item
+                                            item
                                         )
                                     }
 
@@ -229,55 +226,18 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
 @Composable
 fun MangeTeamDataHeaderItem(
     modifier: Modifier = Modifier,
-    coaches: Coach? = null,
-    players: Player? = null,
-    user: SwapUser? = null,
+    data: AllUser,
 ) {
     Column(modifier = modifier) {
-        if (coaches != null) {
-            TeamUserListItem(coachUser = coaches, type = User.Coach)
-        } else if (players != null) {
-            TeamUserListItem(modifier, teamUser = players, type = User.Player)
-        } else if (user != null) {
-            TeamUserListItem(modifier, user = user, type = User.User)
-        }
+        TeamUserListItem(modifier, data = data)
     }
 }
 
 @Composable
 fun TeamUserListItem(
     modifier: Modifier = Modifier,
-    user: SwapUser? = null,
-    teamUser: Player? = null,
-    coachUser: Coach? = null,
-    type: User,
+    data: AllUser
 ) {
-    val data: SwapUser = when (type) {
-        User.Coach -> {
-            SwapUser(
-                coachUser?._id ?: "",
-                coachUser?.firstName ?: "",
-                coachUser?.lastName ?: "",
-                coachUser?.role ?: "",
-                coachUser?.profileImage ?: "",
-                ""
-            )
-        }
-        User.Player -> {
-            SwapUser(
-                teamUser?._id ?: "",
-                teamUser?.firstName ?: "",
-                teamUser?.lastName ?: "",
-                teamUser?.role ?: "",
-                teamUser?.profileImage ?: "",
-                teamUser?.status ?: ""
-            )
-        }
-        User.User, User.Staff -> {
-            user ?: SwapUser()
-        }
-    }
-
     Column {
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
         Box(
@@ -300,7 +260,7 @@ fun TeamUserListItem(
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
                 val url = "" + data.profileImage
                 CoilImage(
-                    src = com.allballapp.android.BuildConfig.IMAGE_SERVER + data.profileImage,
+                    src = com.allballapp.android.BuildConfig.IMAGE_SERVER + url,
                     modifier =
                     Modifier
                         .background(
@@ -328,17 +288,17 @@ fun TeamUserListItem(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = if (User.Coach == type) coachUser?.coachPosition
-                        ?: "" else if (User.Player == type) teamUser?.jerseyNumber
-                        ?: "" else "",
+                    text = if (UserType.COACH.key == data.role) data.position
+                    else if (UserType.PLAYER.key == data.role) data.jersey
+                    else "",
                     fontWeight = FontWeight.Bold,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                     color = MaterialTheme.appColors.material.primaryVariant
                 )
-                if (User.Player == type) {
+                if (UserType.PLAYER.key == data.role) {
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                     Text(
-                        text = teamUser?.position ?: "",
+                        text = data.position,
                         fontWeight = FontWeight.Bold,
                         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                         color = MaterialTheme.appColors.textField.label.copy(alpha = 1f)

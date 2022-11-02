@@ -29,6 +29,9 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
 
     fun onEvent(event: InvitationEvent) {
         when (event) {
+            is InvitationEvent.SetTeamId -> {
+                invitationState.value = invitationState.value.copy(teamId = event.teamId)
+            }
             is InvitationEvent.OnAcceptCLick -> {
                 invitationState.value = invitationState.value.copy(
                     showRoleDialog = true,
@@ -70,7 +73,6 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
             }
             is InvitationEvent.OnRoleConfirmClick -> {
                 viewModelScope.launch {
-
                     getPlayerById()
                 }
             }
@@ -122,6 +124,12 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
             is InvitationEvent.ConfirmGuardianWithoutChildAlert -> {
                 invitationState.value =
                     invitationState.value.copy(showGuardianOnlyConfirmDialog = event.showConfirmDialog)
+            }
+
+            is InvitationEvent.GetRoles -> {
+                viewModelScope.launch {
+                    getUserRoles()
+                }
             }
         }
     }
@@ -275,7 +283,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
         }
     }
 
-    private suspend fun getUserRoles() {
+    suspend fun getUserRoles() {
         invitationState.value = invitationState.value.copy(showLoading = true)
 
         when (val userRoles = teamRepo.getUserRoles("")) {

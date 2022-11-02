@@ -4,19 +4,20 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import com.google.android.gms.maps.model.LatLng
 import com.allballapp.android.R
+import com.allballapp.android.data.response.AllUser
 import com.allballapp.android.data.response.team.Player
 import com.allballapp.android.data.response.team.Team
 import com.allballapp.android.data.response.team.TeamLeaderBoard
 import com.allballapp.android.data.response.team.TeamParent
+import com.allballapp.android.ui.features.components.UserType
 import com.allballapp.android.ui.features.components.getRoleList
 import com.allballapp.android.ui.features.home.events.FilterPreference
 import com.allballapp.android.ui.features.home.events.Participation
+import com.google.android.gms.maps.model.LatLng
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.LinkedHashMap
 
 
 class CommonUtils {
@@ -28,6 +29,24 @@ class CommonUtils {
                 count += 1
             }
             return list
+        }
+
+        fun getUsersList(list: ArrayList<AllUser>, key: UserType): ArrayList<AllUser> {
+            val listing = arrayListOf<AllUser>()
+            if (key == UserType.PARENT) {
+                for (item in list) {
+                    if (UserType.PROGRAM_STAFF.key != item.role && UserType.COACH.key != item.role && UserType.PLAYER.key != item.role) {
+                        listing.add(item)
+                    }
+                }
+            } else {
+                for (item in list) {
+                    if (key.key == item.role) {
+                        listing.add(item)
+                    }
+                }
+            }
+            return listing
         }
 
         fun getSelectedList(teamLeaderBoard: List<TeamLeaderBoard>): Boolean {

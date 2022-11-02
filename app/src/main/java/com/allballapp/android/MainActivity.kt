@@ -6,9 +6,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
-import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -31,19 +29,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.IntentData
-import com.allballapp.android.common.Route.ADD_PLAYER_SCREEN
 import com.allballapp.android.common.Route.LOGIN_SCREEN
 import com.allballapp.android.common.Route.OTP_VERIFICATION_SCREEN
 import com.allballapp.android.common.Route.PROFILE_SETUP_SCREEN
 import com.allballapp.android.common.Route.SELECT_PROFILE
-import com.allballapp.android.common.Route.SELECT_USER_TYPE
 import com.allballapp.android.common.Route.SELECT_VENUE
 import com.allballapp.android.common.Route.SPLASH_SCREEN
-import com.allballapp.android.common.Route.TEAM_SETUP_SCREEN
 import com.allballapp.android.common.Route.WELCOME_SCREEN
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
-import com.allballapp.android.ui.features.components.*
+import com.allballapp.android.ui.features.components.CommonTabView
+import com.allballapp.android.ui.features.components.TabBar
 import com.allballapp.android.ui.features.confirm_phone.OtpScreen
 import com.allballapp.android.ui.features.home.HomeActivity
 import com.allballapp.android.ui.features.login.LoginScreen
@@ -52,12 +48,12 @@ import com.allballapp.android.ui.features.sign_up.ProfileSetUpScreen
 import com.allballapp.android.ui.features.sign_up.SignUpUIEvent
 import com.allballapp.android.ui.features.sign_up.SignUpViewModel
 import com.allballapp.android.ui.features.splash.SplashScreen
-import com.allballapp.android.ui.features.user_type.UserTypeScreen
-import com.allballapp.android.ui.features.user_type.team_setup.updated.*
+import com.allballapp.android.ui.features.user_type.team_setup.updated.InviteObject
+import com.allballapp.android.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
+import com.allballapp.android.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
 import com.allballapp.android.ui.features.venue.VenueListScreen
 import com.allballapp.android.ui.features.welcome.WelcomeScreen
 import com.allballapp.android.ui.theme.BallerAppTheme
-import com.allballapp.android.ui.theme.ColorPrimaryOrange
 import com.allballapp.android.ui.theme.appColors
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -84,13 +80,13 @@ class MainActivity : ComponentActivity() {
                         color = MaterialTheme.appColors.material.primary
                     ) {
 
-                            NavControllerComposable(
-                                this,
-                                mainViewModel,
-                                navController,
-                                setupTeamViewModelUpdated ?: hiltViewModel()
-                            )
-                        }
+                        NavControllerComposable(
+                            this,
+                            mainViewModel,
+                            navController,
+                            setupTeamViewModelUpdated ?: hiltViewModel()
+                        )
+                    }
 
                 } else {
                     Scaffold(
@@ -122,13 +118,13 @@ class MainActivity : ComponentActivity() {
                                     )
                             ) {
 
-                                    NavControllerComposable(
-                                        this@MainActivity,
-                                        mainViewModel,
-                                        navController,
-                                        setupTeamViewModelUpdated ?: hiltViewModel()
-                                    )
-                                }
+                                NavControllerComposable(
+                                    this@MainActivity,
+                                    mainViewModel,
+                                    navController,
+                                    setupTeamViewModelUpdated ?: hiltViewModel()
+                                )
+                            }
 
                         },
                     )
@@ -247,83 +243,6 @@ fun NavControllerComposable(
                 })
         }
 
-        composable(route = SELECT_USER_TYPE) {
-            mainViewModel.onEvent(MainEvent.OnShowTopBar(showAppBar = false))
-
-            BackHandler {}
-
-            UserTypeScreen(
-                signUpvm = signUpViewModel,
-                onNextClick = { userType ->
-                    UserStorage.role = userType
-
-                    if (userType.equals(UserType.COACH.key, ignoreCase = true)
-                        || userType.equals(
-                            UserType.PLAYER.key,
-                            ignoreCase = true
-                        ) || userType.equals(UserType.REFEREE.key, ignoreCase = true)
-                    ) {
-                        navController.navigate(PROFILE_SETUP_SCREEN)
-                    } else {
-                        Toast.makeText(context, "Coming soon", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            )
-        }
-
-        composable(route = TEAM_SETUP_SCREEN) { backStackEntry ->
-
-            // get data passed back from next stack
-            val venue: String = backStackEntry
-                .savedStateHandle.get<String>("venue") ?: ""
-
-            mainViewModel.onEvent(
-                MainEvent.OnTopBarChanges(
-                    showAppBar = true, TopBarData(
-                        topBar = TopBar.CREATE_TEAM,
-                    )
-                )
-            )
-            mainViewModel.onEvent(MainEvent.OnColorChanges(ColorPrimaryOrange))
-
-            BackHandler {
-                mainViewModel.onEvent(MainEvent.OnShowTopBar(showAppBar = false))
-                navController.popBackStack()
-            }
-
-            TeamSetupScreenUpdated(
-                venue = venue,
-                vm = setupTeamViewModelUpdated,
-                onBackClick = {
-                    mainViewModel.onEvent(MainEvent.OnShowTopBar(showAppBar = false))
-                    navController.popBackStack()
-                },
-                onNextClick = {
-                    navController.navigate(ADD_PLAYER_SCREEN)
-                }, onVenueClick = {
-                    navController.navigate(SELECT_VENUE)
-
-                })
-        }
-
-        composable(route = ADD_PLAYER_SCREEN) {
-            mainViewModel.onEvent(
-                MainEvent.OnTopBarChanges(
-                    showAppBar = true, TopBarData(
-                        topBar = TopBar.INVITE_TEAM_MEMBERS,
-                    )
-                )
-            )
-            mainViewModel.onEvent(MainEvent.OnColorChanges(AppConstants.SELECTED_COLOR))
-            AddPlayersScreenUpdated(
-                vm = setupTeamViewModelUpdated,
-                onBackClick = { navController.popBackStack() },
-                onNextClick = {
-                    //moveToHome(activity)
-                }, onInvitationSuccess = {
-
-                })
-        }
         composable(route = SELECT_PROFILE) {
             mainViewModel.onEvent(MainEvent.OnColorChanges(AppConstants.SELECTED_COLOR))
             SelectProfileScreen(
@@ -343,7 +262,7 @@ fun NavControllerComposable(
         composable(route = OTP_VERIFICATION_SCREEN) {
             OtpScreen(
                 viewModel = signUpViewModel,
-                onSuccess = { profilesCount, profileIdIFSingle->
+                onSuccess = { profilesCount, profileIdIFSingle ->
                     when (profilesCount) {
                         0 -> {
                             navController.popBackStack()
@@ -363,6 +282,8 @@ fun NavControllerComposable(
                 },
                 onTokenSelectionSuccess = {
                     moveToHome(activity)
+                }, onAuthorize = {
+                    navController.popBackStack()
                 }
             )
         }

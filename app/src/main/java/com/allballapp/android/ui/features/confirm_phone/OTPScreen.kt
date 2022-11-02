@@ -1,7 +1,5 @@
 package com.allballapp.android.ui.features.confirm_phone
 
-import android.os.Handler
-import android.os.Looper
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,7 +18,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -36,10 +33,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.allballapp.android.R
 import com.allballapp.android.data.response.SwapUser
-import com.allballapp.android.ui.features.components.AppOutlineTextField
-import com.allballapp.android.ui.features.components.AppText
-import com.allballapp.android.ui.features.components.CommonProgressBar
-import com.allballapp.android.ui.features.components.Text
+import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.sign_up.SignUpChannel
 import com.allballapp.android.ui.features.sign_up.SignUpUIEvent
 import com.allballapp.android.ui.features.sign_up.SignUpViewModel
@@ -53,7 +47,8 @@ import kotlinx.coroutines.delay
 fun OtpScreen(
     viewModel: SignUpViewModel,
     onSuccess: (profilesCount: Int, profileUserIFSingle: SwapUser?) -> Unit,
-    onTokenSelectionSuccess: () -> Unit
+    onTokenSelectionSuccess: () -> Unit,
+    onAuthorize: () -> Unit
 ) {
     // create variable for value
     var value by remember {
@@ -62,6 +57,13 @@ fun OtpScreen(
     // create variable for current time
     var currentTime by remember {
         mutableStateOf(60L * 1000L)
+    }
+
+    val showAgeDialog = remember {
+        mutableStateOf(false)
+    }
+    val showGuardianDialog = remember {
+        mutableStateOf(false)
     }
 
     val totalTime = 60L * 1000L
@@ -88,6 +90,14 @@ fun OtpScreen(
                 is SignUpChannel.ShowToast -> {
                     Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
                         .show()
+                }
+                is SignUpChannel.OnAuthorizeSuccess -> {
+                    Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
+                        .show()
+                    onAuthorize()
+                }
+                is SignUpChannel.OnAuthorize -> {
+                    showAgeDialog.value = true
                 }
                 is SignUpChannel.OnSuccess -> {
                     onSuccess(uiEvent.count, uiEvent.profileIdIfSingle)
@@ -260,6 +270,34 @@ fun OtpScreen(
             }
         }
 
+        if (showAgeDialog.value) {
+            AgeConfirmDialog(
+                onDismiss = {
+                    showAgeDialog.value = false
+                },
+                onConfirmClick = {
+                    if (it == 0) {
+                        showGuardianDialog.value = true
+                    } else {
+                        onSuccess(0, null)
+                    }
+                })
+        }
+
+        if (showGuardianDialog.value) {
+            GuardianAuthorizeDialog(
+                onDismiss = {
+                    showGuardianDialog.value = false
+                },
+                onConfirmClick = {
+                    viewModel.onEvent(
+                        SignUpUIEvent.AuthorizeUser(
+                            phone = state.phoneCode + state.signUpData.phone,
+                            parentPhone = it
+                        )
+                    )
+                })
+        }
         if (state.isLoading) {
             CommonProgressBar()
         }

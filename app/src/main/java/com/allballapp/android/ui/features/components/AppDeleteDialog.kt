@@ -53,6 +53,7 @@ import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.argbToHexString
 import com.allballapp.android.common.validName
+import com.allballapp.android.common.validPhoneNumber
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.response.ParentDetails
 import com.allballapp.android.data.response.PlayerDetails
@@ -416,6 +417,7 @@ fun ShowParentDialog(
 
 @Composable
 fun ConfirmDialog(
+    heading: String = "",
     title: String,
     onDismiss: () -> Unit,
     onConfirmClick: () -> Unit,
@@ -430,6 +432,14 @@ fun ConfirmDialog(
                         .background(color = Color.White)
                         .padding(all = dimensionResource(id = R.dimen.size_16dp))
                 ) {
+                    if (heading.isNotEmpty()) {
+                        Text(
+                            text = heading,
+                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                            fontWeight = FontWeight.Bold,
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
                     Text(
                         text = title,
                         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
@@ -2258,6 +2268,218 @@ fun AddNoteDialog(
                             enabled = note.length > 4
                         )
                     }
+                }
+            },
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun AgeConfirmDialog(
+    onDismiss: () -> Unit,
+    onConfirmClick: (Int) -> Unit,
+) {
+    val selected = remember {
+        mutableStateOf(-1)
+    }
+    BallerAppMainTheme {
+        AlertDialog(
+            modifier = Modifier
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+            onDismissRequest = {
+                onDismiss.invoke()
+            },
+            buttons = {
+                Column(
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(
+                            all = dimensionResource(
+                                id = R.dimen.size_16dp
+                            )
+                        ),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                            fontWeight = FontWeight.Bold,
+                            text = stringResource(id = R.string.age_conformation),
+                            modifier = Modifier
+                                .align(Alignment.CenterStart),
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
+                    Surface(
+                        onClick = {
+                            selected.value = 0
+                        },
+                        shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_10dp)),
+                        elevation = if (selected.value == 0) dimensionResource(id = R.dimen.size_10dp) else 0.dp,
+                        color = if (selected.value == 0) MaterialTheme.appColors.material.primaryVariant else Color.Transparent,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = dimensionResource(id = R.dimen.size_16dp))
+                    ) {
+                        Text(
+                            style = MaterialTheme.typography.h6,
+                            color = if (selected.value == 0) Color.White else  MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            text = stringResource(id = R.string.age_zero),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(all = dimensionResource(id = R.dimen.size_16dp))
+                        )
+                    }
+                    Surface(
+                        onClick = {
+                            selected.value = 1
+                        },
+                        shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_10dp)),
+                        elevation = if (selected.value == 1) dimensionResource(id = R.dimen.size_10dp) else 0.dp,
+                        color = if (selected.value == 1) MaterialTheme.appColors.material.primaryVariant else Color.Transparent,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = dimensionResource(id = R.dimen.size_16dp))
+                    ) {
+                        Text(
+                            style = MaterialTheme.typography.h6,
+                            color = if (selected.value == 1) Color.White else  MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            text = stringResource(id = R.string.age_ok),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(all = dimensionResource(id = R.dimen.size_16dp))
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                    DialogButton(
+                        text = stringResource(R.string.dialog_button_confirm),
+                        onClick = {
+                            onConfirmClick(selected.value)
+                            onDismiss()
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        border = ButtonDefaults.outlinedBorder,
+                        onlyBorder = false,
+                        enabled = true
+                    )
+                }
+            },
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun GuardianAuthorizeDialog(
+    onDismiss: () -> Unit,
+    onConfirmClick: (String) -> Unit,
+) {
+    val context = LocalContext.current
+    val focusRequester = remember { FocusRequester() }
+    val defaultCountryCode = remember { mutableStateOf(getDefaultPhoneCode(context)) }
+    var defaultLang by rememberSaveable { mutableStateOf(getDefaultLangCode(context)) }
+    var phone = remember { mutableStateOf("") }
+    BallerAppMainTheme {
+        AlertDialog(
+            modifier = Modifier
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+            onDismissRequest = {
+                onDismiss.invoke()
+            },
+            buttons = {
+                Column(
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(
+                            all = dimensionResource(
+                                id = R.dimen.size_16dp
+                            )
+                        ),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        style = MaterialTheme.typography.h6,
+                        color =  MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        text = stringResource(id = R.string.authorize_message),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { }
+                    )
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .background(
+                                color = MaterialTheme.appColors.material.surface,
+                                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+                            )
+                            .border(
+                                1.dp,
+                                color = MaterialTheme.appColors.editField.borderUnFocused,
+                                shape = RoundedCornerShape(
+                                    dimensionResource(id = R.dimen.size_8dp)
+                                )
+                            )
+                            .padding(horizontal = dimensionResource(id = R.dimen.size_8dp)),
+                        verticalAlignment = Alignment.CenterVertically,
+
+                        ) {
+                        TogiCountryCodePicker(
+                            modifier = Modifier
+                                .focusRequester(focusRequester),
+                            pickedCountry = {
+                                defaultCountryCode.value = it.countryPhoneCode
+                                defaultLang = it.countryCode
+                            },
+                            defaultCountry = getLibCountries().single { it.countryCode == defaultLang },
+                            focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
+                            unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
+                            dialogAppBarTextColor = Color.Black,
+                            showCountryFlag = false,
+                            dialogAppBarColor = Color.White,
+                            error = true,
+                            text = phone.value,
+                            onValueChange = {
+                                phone.value = it
+                            },
+                            readOnly = false,
+                            cursorColor = Color.Black,
+                            placeHolder = {
+                                Text(
+                                    text = stringResource(id = R.string.your_phone_number),
+                                    fontSize = dimensionResource(
+                                        id =
+                                        R.dimen.txt_size_12
+                                    ).value.sp,
+                                    textAlign = TextAlign.Center,
+                                    color = MaterialTheme.appColors.textField.labelDark
+                                )
+                            },
+                            content = {
+                            },
+                            textStyle = TextStyle(
+                                textAlign = TextAlign.Start,
+                                color = Color.Black
+                            )
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                    DialogButton(
+                        text = stringResource(R.string.dialog_button_confirm),
+                        onClick = {
+                            onConfirmClick(defaultCountryCode.value + phone.value)
+                            onDismiss()
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        border = ButtonDefaults.outlinedBorder,
+                        onlyBorder = false,
+                        enabled = validPhoneNumber(phone.value) && phone.value.length == 10 && phone.value.isNotEmpty()
+                    )
                 }
             },
         )

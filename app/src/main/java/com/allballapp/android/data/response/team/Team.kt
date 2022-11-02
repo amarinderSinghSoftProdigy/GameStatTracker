@@ -1,9 +1,10 @@
 package com.allballapp.android.data.response.team
 
-import com.google.gson.annotations.SerializedName
 import com.allballapp.android.data.request.Address
 import com.allballapp.android.data.request.Location
+import com.allballapp.android.data.response.AllUser
 import com.allballapp.android.data.response.SwapUser
+import com.google.gson.annotations.SerializedName
 
 data class TeamParent(
     @SerializedName("_id")
@@ -29,6 +30,8 @@ data class Team(
     val name: String = "",
     @SerializedName("playerDetails")
     val players: ArrayList<Player> = ArrayList(),
+    @SerializedName("allMembers")
+    val allMembers: ArrayList<AllUser> = ArrayList(),
     @SerializedName("supportingCastDetails")
     val supportingCastDetails: ArrayList<SwapUser> = ArrayList(),
     @SerializedName("pendingAndDeclinedMembers")
