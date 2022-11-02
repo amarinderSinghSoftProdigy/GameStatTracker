@@ -139,29 +139,32 @@ fun LeagueItem(league: MyLeagueResponse, OnNextClick: () -> Unit) {
                         color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.weight(2F)
+                        modifier = Modifier.weight(1F)
                     )
 
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-                            .background(MaterialTheme.appColors.material.primaryVariant)
-                            .padding(
-                                horizontal = dimensionResource(id = R.dimen.size_12dp),
-                                vertical = dimensionResource(
-                                    id = R.dimen.size_6dp
-                                )
+                    Row(modifier = Modifier.weight(1.8F), horizontalArrangement = Arrangement.End) {
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                                .background(MaterialTheme.appColors.material.primaryVariant)
+                                .padding(
+                                    horizontal = dimensionResource(id = R.dimen.size_12dp),
+                                    vertical = dimensionResource(
+                                        id = R.dimen.size_6dp
+                                    )
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = league.eventDetail.eventType.capitalize(),
+                                color = Color.White,
+                                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                fontWeight = FontWeight.Bold,
                             )
-                            .weight(1F),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = league.eventDetail.eventType,
-                            color = Color.White,
-                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                            fontWeight = FontWeight.Bold,
-                        )
+                        }
                     }
+
+
                 }
 
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_6dp)))

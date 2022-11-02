@@ -224,12 +224,15 @@ data class EventDetail(
 )
 
 data class Matches(
-    @SerializedName("pairs") val pairs: List<List<Pairs>> = mutableListOf(),
+    @SerializedName("pairs") val pairs: List<ScheduleTeam> = mutableListOf(),
     @SerializedName("timeSlot") val timeSlot: String = "",
 )
+
+data class ScheduleTeam(@SerializedName("teams") val teams: List<Pairs> = mutableListOf())
 
 data class Pairs(
     @SerializedName("_id") val _id: String = "",
     @SerializedName("name") val name: String = "",
-    @SerializedName("logo") val logo: String = ""
+    @SerializedName("logo") val logo: String = "",
+    @SerializedName("scheduleId") val scheduleId: String = ""
 )

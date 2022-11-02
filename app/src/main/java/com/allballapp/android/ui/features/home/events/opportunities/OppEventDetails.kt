@@ -36,6 +36,7 @@ import com.allballapp.android.ui.theme.ColorBWGrayLight
 import com.allballapp.android.ui.theme.appColors
 import com.allballapp.android.ui.utils.CommonUtils
 import com.allballapp.android.R
+
 @Composable
 fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
     val context = LocalContext.current
@@ -282,7 +283,7 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
                     modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.size_12dp))
                 ) {
                     Text(
-                        text =  stringResource(id = R.string.stat_managers),
+                        text = stringResource(id = R.string.stat_managers),
                         color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                         fontWeight = FontWeight.Bold,
@@ -300,7 +301,7 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
                     modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.size_12dp))
                 ) {
                     Text(
-                        text =  stringResource(id = R.string.clock_managers),
+                        text = stringResource(id = R.string.clock_managers),
                         color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                         fontWeight = FontWeight.Bold,
@@ -361,7 +362,10 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
                     enabled = true,
                     icon = null,
                     themed = true,
-                    onClick = { moveToRegistration() },
+                    onClick = {
+                        moveToRegistration()
+                        vm.onEvent(EvEvents.ClearRequest)
+                    },
                     text = stringResource(id = R.string.register),
                     isForceEnableNeeded = true,
                     modifier = Modifier.fillMaxWidth()
@@ -437,9 +441,12 @@ fun RefereesLevels(basePay: ArrayList<BasePay>) {
     basePay.forEachIndexed { index, item ->
 
         Row(
-            modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.size_12dp), horizontal = dimensionResource(
-                id = R.dimen.size_12dp
-            ))
+            modifier = Modifier.padding(
+                vertical = dimensionResource(id = R.dimen.size_12dp),
+                horizontal = dimensionResource(
+                    id = R.dimen.size_12dp
+                )
+            )
         ) {
             Text(
                 text = item.level.capitalize(),

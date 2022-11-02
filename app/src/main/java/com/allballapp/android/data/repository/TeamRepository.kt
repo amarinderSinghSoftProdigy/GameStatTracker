@@ -138,9 +138,9 @@ class TeamRepository @Inject constructor(
         }
     }
 
-    override suspend fun getPlayerById(id: String): ResultWrapper<BaseResponse<ArrayList<PlayerDetails>>> {
+    override suspend fun getPlayerById(id: String, eventRegistration :String): ResultWrapper<BaseResponse<ArrayList<PlayerDetails>>> {
         return safeApiCall(dispatcher) {
-            service.getTeamPlayerById(id)
+            service.getTeamPlayerById(id, eventRegistration)
         }
     }
 
