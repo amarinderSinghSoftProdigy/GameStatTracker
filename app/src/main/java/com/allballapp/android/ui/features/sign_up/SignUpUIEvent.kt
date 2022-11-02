@@ -25,4 +25,5 @@ sealed class SignUpUIEvent {
     data class OnCountryCode(val countryCode: String) : SignUpUIEvent()
     data class AuthorizeUser(val phone: String,val parentPhone: String) : SignUpUIEvent()
 
+    object ClearPhoneField : SignUpUIEvent()
 }

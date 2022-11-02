@@ -211,6 +211,7 @@ class EventViewModel @Inject constructor(
                 )
             }
             is EvEvents.GetOpportunityDetail -> {
+
                 viewModelScope.launch {
                     getOpportunityDetail(_state.value.selectedEventId)
                 }
@@ -338,7 +339,9 @@ class EventViewModel @Inject constructor(
             }
 
             is EvEvents.RefreshTeamsByLeagueAndDivision -> {
+                _state.value = _state.value.copy(teamsByLeagueDivision = emptyList())
                 viewModelScope.launch { getTeamsByLeagueAndDivision(divisionId = event.divisionId) }
+
             }
 
             is EvEvents.RefreshTeamsByDivision -> {
@@ -394,6 +397,15 @@ class EventViewModel @Inject constructor(
                     getUserRoles()
                 }
             }
+
+            is EvEvents.ClearRequest -> {
+                _state.value = _state.value.copy(registerRequest = RegisterRequest())
+            }
+
+            is EvEvents.ClearTeam -> {
+                _state.value = _state.value.copy(teamsByLeagueDivision = emptyList())
+            }
+
         }
     }
 
@@ -622,6 +634,8 @@ class EventViewModel @Inject constructor(
                                 )
                             )
                         )
+                        _state.value = _state.value.copy(registerRequest = RegisterRequest())
+
                     } else {
                         _channel.send(
                             EventChannel.ShowToast(

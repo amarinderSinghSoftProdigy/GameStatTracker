@@ -120,7 +120,10 @@ open interface APIService {
     suspend fun getUserRoles(@Query("type") type: String): BaseResponse<List<UserRoles>>
 
     @GET(ApiConstants.GET_TEAM_PLAYER_BY_ID)
-    suspend fun getTeamPlayerById(@Query("teamId") id: String): BaseResponse<ArrayList<PlayerDetails>>
+    suspend fun getTeamPlayerById(
+        @Query("teamId") id: String,
+        @Query("eventRegistration") eventRegistration: String
+    ): BaseResponse<ArrayList<PlayerDetails>>
 
     @GET(ApiConstants.GET_USER_FULL_DETAILS)
     suspend fun getUserFullDetails(): BaseResponse<User>
@@ -168,7 +171,6 @@ open interface APIService {
 
     @PUT(ApiConstants.EVENT_UPDATE_FILTERS)
     suspend fun updateFilters(@Body request: FilterUpdateRequest): BaseResponse<Any>
-
 
     @POST(ApiConstants.CREATE_NEW_EVENT)
     suspend fun createNewEvent(@Body createEventReq: CreateEventReq): BaseResponse<Any>

@@ -50,6 +50,11 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import com.allballapp.android.BuildConfig
+import com.allballapp.android.common.validTeamName
+import com.allballapp.android.data.UserStorage
+import com.allballapp.android.ui.features.components.*
+import com.allballapp.android.ui.theme.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.IOException

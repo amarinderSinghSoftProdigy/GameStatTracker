@@ -14,6 +14,7 @@ import com.allballapp.android.core.util.UiText
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.data.request.AuthorizeRequest
+import com.allballapp.android.data.request.SignUpData
 import com.allballapp.android.data.request.SignUpPhoneData
 import com.allballapp.android.data.response.AddProfileRequest
 import com.allballapp.android.data.response.SwapUser
@@ -219,6 +220,12 @@ class SignUpViewModel @Inject constructor(
                 viewModelScope.launch {
                     authorizeUser(event.phone, event.parentPhone)
                 }
+            }
+            is SignUpUIEvent.ClearPhoneField -> {
+                _signUpUiState.value =
+                    _signUpUiState.value.copy(
+                        signUpData = SignUpData()
+                    )
             }
         }
     }

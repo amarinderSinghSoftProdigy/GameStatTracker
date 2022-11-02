@@ -39,6 +39,8 @@ import com.allballapp.android.ui.theme.ColorGreyLighter
 import com.allballapp.android.ui.theme.appColors
 import com.allballapp.android.ui.utils.CommonUtils
 import com.allballapp.android.R
+import com.allballapp.android.ui.features.home.EmptyScreen
+
 @Composable
 fun EventScheduleScreen(
     vm: EventViewModel,
@@ -56,33 +58,39 @@ fun EventScheduleScreen(
             .fillMaxSize()
             .background(color = MaterialTheme.appColors.material.primary)
     ) {
-        LazyColumn(Modifier.fillMaxWidth()) {
-            items(state.scheduleResponse) { item ->
-                FoldableItem(
-                    expanded = expand,
-                    headerBackground = MaterialTheme.appColors.material.surface,
-                    headerBorder = BorderStroke(0.dp, Color.Transparent),
-                    header = { isExpanded ->
-                        EventScheduleHeaderItem(
-                            isExpanded = isExpanded,
-                            date = CommonUtils.formatDateSingle(item._id),
-                            gamesCount = item.totalgames
-                        )
-                    },
-                    childItems = item.matches,
-                    hasItemLeadingSpacing = false,
-                    hasItemTrailingSpacing = false,
-                    itemSpacing = 0.dp,
-                    itemHorizontalPadding = 0.dp,
-                    itemsBackground = MaterialTheme.appColors.material.primary,
-                    item = { match, index ->
-                        EventScheduleSubItem(match, item.event, index) {
-                            //moveToOpenDetails(match.divisions)
+        if (state.scheduleResponse.isEmpty()) {
+            EmptyScreen(singleText = true, stringResource(id = R.string.no_data_found))
+        } else {
+            LazyColumn(Modifier.fillMaxWidth()) {
+                items(state.scheduleResponse) { item ->
+                    FoldableItem(
+                        expanded = expand,
+                        headerBackground = MaterialTheme.appColors.material.surface,
+                        headerBorder = BorderStroke(0.dp, Color.Transparent),
+                        header = { isExpanded ->
+                            EventScheduleHeaderItem(
+                                isExpanded = isExpanded,
+                                date = CommonUtils.formatDateSingle(item._id),
+                                gamesCount = item.totalgames
+                            )
+                        },
+                        childItems = item.matches,
+                        hasItemLeadingSpacing = false,
+                        hasItemTrailingSpacing = false,
+                        itemSpacing = 0.dp,
+                        itemHorizontalPadding = 0.dp,
+                        itemsBackground = MaterialTheme.appColors.material.primary,
+                        item = { match, index ->
+                            EventScheduleSubItem(match, item.event, index) {
+                                //moveToOpenDetails(match.divisions)
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
         }
+
+
     }
 
     if (state.showLoading) {
@@ -164,15 +172,15 @@ fun EventScheduleSubItem(
             .fillMaxWidth()
             .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
     ) {
-            Text(
-                text = match.timeSlot,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                fontWeight = FontWeight.Bold,
-                fontSize = dimensionResource(
-                    id = R.dimen.txt_size_12
-                ).value.sp
-            )
-            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.size_8dp)))
+        Text(
+            text = match.timeSlot,
+            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            fontWeight = FontWeight.Bold,
+            fontSize = dimensionResource(
+                id = R.dimen.txt_size_12
+            ).value.sp
+        )
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.size_8dp)))
 
         Column(
             Modifier
@@ -199,7 +207,7 @@ fun EventScheduleSubItem(
                     horizontalArrangement = Arrangement.End
                 ) {
                     Text(
-                        text = match.pairs[0][0].name,
+                        text = match.pairs[index].teams[0].name,
                         color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                         fontWeight = FontWeight.Bold,
                         fontSize = dimensionResource(
@@ -207,7 +215,7 @@ fun EventScheduleSubItem(
                         ).value.sp
                     )
                     Spacer(modifier = Modifier.width(dimensionResource(R.dimen.size_12dp)))
-                    CoilImage(src = com.allballapp.android.BuildConfig.IMAGE_SERVER + match.pairs[0][0].logo,
+                    CoilImage(src = com.allballapp.android.BuildConfig.IMAGE_SERVER + match.pairs[index].teams[0].logo,
                         modifier = Modifier
                             .size(dimensionResource(id = R.dimen.size_32dp))
                             .clip(CircleShape),
@@ -232,7 +240,7 @@ fun EventScheduleSubItem(
                 ) {
                     Spacer(modifier = Modifier.width(dimensionResource(R.dimen.size_12dp)))
 
-                    CoilImage(src = com.allballapp.android.BuildConfig.IMAGE_SERVER + match.pairs[0][1].logo,
+                    CoilImage(src = com.allballapp.android.BuildConfig.IMAGE_SERVER + match.pairs[index].teams[1].logo,
                         modifier = Modifier
                             .size(dimensionResource(id = R.dimen.size_32dp))
                             .clip(CircleShape),
@@ -241,7 +249,7 @@ fun EventScheduleSubItem(
                         onError = { Placeholder(R.drawable.ic_team_placeholder) })
                     Spacer(modifier = Modifier.width(dimensionResource(R.dimen.size_12dp)))
                     Text(
-                        text = match.pairs[0][1].name,
+                        text = match.pairs[index].teams[1].name,
                         color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                         fontWeight = FontWeight.Bold,
                         fontSize = dimensionResource(

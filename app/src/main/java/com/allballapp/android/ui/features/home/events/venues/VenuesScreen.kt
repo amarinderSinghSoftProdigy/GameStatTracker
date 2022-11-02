@@ -68,6 +68,7 @@ fun VenuesScreen(moveToOpenVenues: (String, String) -> Unit, eventViewModel: Eve
                     itemsIndexed(state.venuesList) { index, item ->
                         VenuesItem(item) {
                             moveToOpenVenues(item.venueName, item._id)
+                            eventViewModel.onEvent(EvEvents.ClearTeam)
                         }
                     }
                 }

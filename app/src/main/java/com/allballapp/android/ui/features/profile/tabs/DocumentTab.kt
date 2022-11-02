@@ -1,5 +1,8 @@
 package com.allballapp.android.ui.features.profile.tabs
 
+import android.Manifest
+import android.app.Activity
+import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -13,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -21,10 +25,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.allballapp.android.R
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import com.allballapp.android.BuildConfig
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.data.response.UserDocType
 import com.allballapp.android.ui.features.components.AppText
@@ -35,12 +45,18 @@ import com.allballapp.android.ui.features.profile.ProfileEvent
 import com.allballapp.android.ui.features.profile.ProfileViewModel
 import com.allballapp.android.ui.theme.ColorBWBlack
 import com.allballapp.android.ui.theme.appColors
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionStatus
+import com.google.accompanist.permissions.rememberPermissionState
+
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun DocumentTab(vm: ProfileViewModel) {
     val context = LocalContext.current
     val state = vm.state.value
     val dataStoreManager = DataStoreManager(LocalContext.current)
     val role = dataStoreManager.getRole.collectAsState(initial = "")
+
     remember {
         if (role.value != UserType.REFEREE.key)
             vm.onEvent(ProfileEvent.GetDocumentTypes(state.selectedTeamId))
@@ -50,6 +66,7 @@ fun DocumentTab(vm: ProfileViewModel) {
             if (uri != null)
                 vm.onEvent(ProfileEvent.OnImageSelected(state.selectedDocKey, uri.toString()))
         }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -61,8 +78,14 @@ fun DocumentTab(vm: ProfileViewModel) {
                 }
                 itemsIndexed(state.userDocTypes) { index, item ->
                     DocumentItem(item, {
-                        vm.onEvent(ProfileEvent.SetUploadKey(it))
-                        launcher.launch("*/*")
+
+                        if (hasFileManagerPermission(context)) {
+                            launcher.launch("*/*")
+                            vm.onEvent(ProfileEvent.SetUploadKey(it))
+                        } else {
+                            requestFileManagerPermission(context, context as Activity)
+                        }
+
                     }) {
                         vm.onEvent(ProfileEvent.SetDeleteDocument(item))
                         vm.onEvent(ProfileEvent.ShowDeleteDialog(true))
@@ -88,9 +111,9 @@ fun DocumentTab(vm: ProfileViewModel) {
             )
         }
 
-       /* if (state.isLoading) {
-            CommonProgressBar()
-        }*/
+        /* if (state.isLoading) {
+             CommonProgressBar()
+         }*/
     }
 }
 

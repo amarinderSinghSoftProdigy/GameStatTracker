@@ -331,7 +331,8 @@ fun ManageTeamScreen(
 
 
                         CoilImage(
-                            src = state.localLogo ?: (com.allballapp.android.BuildConfig.IMAGE_SERVER + state.logo),
+                            src = state.localLogo
+                                ?: (com.allballapp.android.BuildConfig.IMAGE_SERVER + state.logo),
                             modifier =
                             Modifier
                                 .fillMaxSize()
@@ -483,7 +484,11 @@ fun ManageTeamScreen(
                                     modifier = Modifier.align(Alignment.Center),
                                     textAlign = TextAlign.Center,
                                     text = if (state.teamColorSec.isNotEmpty()) {
-                                        "#" + state.teamColorSec
+                                        if (state.teamColorSec.substring(0, 1) == "#") {
+                                            state.teamColorSec
+                                        } else {
+                                            "#" + state.teamColorSec
+                                        }
                                     } else {
                                         ""
                                     },
