@@ -183,8 +183,8 @@ fun HomeScreen(
                         .fillMaxWidth()
                         .padding(
                             top = dimensionResource(id = R.dimen.size_16dp),
-                            end = dimensionResource(id = R.dimen.size_16dp),
-                            start = dimensionResource(id = R.dimen.size_16dp)
+                            end = dimensionResource(id = R.dimen.size_20dp),
+                            start = dimensionResource(id = R.dimen.size_20dp)
                         ),
                     verticalArrangement = Arrangement.Center
                 ) {

@@ -581,7 +581,7 @@ fun PracticeItem(
                                     singleLine = true,
                                     keyboardOptions = KeyboardOptions(
                                         imeAction = ImeAction.Done,
-                                        keyboardType = KeyboardType.Text,
+                                        keyboardType = KeyboardType.Email,
                                         capitalization = KeyboardCapitalization.Sentences
                                     ),
                                     keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),

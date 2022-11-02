@@ -971,6 +971,19 @@ fun requestContactPermission(context: Context, activity: Activity) {
     }
 }
 
+fun hasFileManagerPermission(context: Context): Boolean {
+    return ContextCompat.checkSelfPermission(
+        context,
+        Manifest.permission.READ_EXTERNAL_STORAGE
+    ) == PackageManager.PERMISSION_GRANTED
+}
+
+fun requestFileManagerPermission(context: Context, activity: Activity) {
+    if (!hasFileManagerPermission(context)) {
+        ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),1)
+    }
+}
+
 fun hasCameraPermission(context: Context): Boolean {
     // on below line checking if permission is present or not.
     return ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) ==

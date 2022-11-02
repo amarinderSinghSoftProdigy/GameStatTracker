@@ -52,7 +52,7 @@ fun HomeFirstTimeLoginScreen(
         Column(
             Modifier
                 .fillMaxWidth()
-                .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                .padding(all = dimensionResource(id = R.dimen.size_20dp)),
             verticalArrangement = Arrangement.Center
         ) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))
