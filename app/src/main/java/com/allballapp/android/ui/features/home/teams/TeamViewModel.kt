@@ -363,8 +363,8 @@ class TeamViewModel @Inject constructor(
                                         setRole(it.role)
                                     }
                                 }
-
                             }
+
                             val idToSearch =
                                 if (selectionTeam == null) response.data.result[0].teamId._id else selectionTeam?._id
                             _teamUiState.value =

@@ -104,7 +104,7 @@ fun CoachFlowBackground(
                 Column(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        .padding(end = dimensionResource(id = R.dimen.size_16dp)),
+                        .padding(end = dimensionResource(id = R.dimen.size_10dp)),
                     horizontalAlignment = Alignment.End
                 ) {
                     if (teamLogo!!.isNotEmpty()) {
