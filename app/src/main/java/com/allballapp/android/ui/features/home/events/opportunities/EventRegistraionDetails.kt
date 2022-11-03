@@ -1,11 +1,14 @@
 package com.allballapp.android.ui.features.home.events.opportunities
 
 import android.widget.Toast
-import androidx.compose.foundation.*
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,7 +27,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.allballapp.android.BuildConfig
 import com.allballapp.android.R
 import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.home.events.EvEvents
@@ -362,7 +364,7 @@ fun EventRegistraionDetails(
     if (showDialog.value) {
         SwitchTeamDialog(
             teamSelect = state.team,
-            teams = teamVm.teamUiState.value.teams,
+            teams = teamVm.teamUiState.value.teams.apply { removeAt(0) },
             title = stringResource(id = R.string.select_team),
             onDismiss = {
                 showDialog.value = false

@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.provider.ContactsContract
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -26,20 +27,12 @@ import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.cometchat.pro.constants.CometChatConstants
-import com.cometchat.pro.models.Conversation
-import com.cometchat.pro.models.Group
-import com.cometchat.pro.models.User
-import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
 import com.allballapp.android.MainActivity
+import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.IntentData
 import com.allballapp.android.common.Route
-import com.allballapp.android.common.Route.CREATE_NEW_CHAT_CONVO
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.ui.features.components.*
@@ -68,10 +61,21 @@ import com.allballapp.android.ui.features.user_type.team_setup.updated.*
 import com.allballapp.android.ui.features.venue.VenueListScreen
 import com.allballapp.android.ui.theme.BallerAppMainTheme
 import com.allballapp.android.ui.theme.appColors
+import com.allballapp.android.ui.utils.anims.exitTransition
+import com.allballapp.android.ui.utils.anims.slideInHorizont
+import com.allballapp.android.ui.utils.anims.slideOutHorizont
+import com.cometchat.pro.constants.CometChatConstants
+import com.cometchat.pro.models.Conversation
+import com.cometchat.pro.models.Group
+import com.cometchat.pro.models.User
+import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import com.allballapp.android.R
-import com.allballapp.android.common.Route.HOME_SCREEN
+
+val animeDuration = 750
 
 @AndroidEntryPoint
 class HomeActivity : FragmentActivity() {
@@ -80,6 +84,7 @@ class HomeActivity : FragmentActivity() {
     val cometChat = CometChatUI()
     var setupTeamViewModelUpdated: SetupTeamViewModelUpdated? = null
 
+    @OptIn(ExperimentalAnimationApi::class)
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,25 +117,7 @@ class HomeActivity : FragmentActivity() {
             BallerAppMainTheme(
                 customColor = state.color ?: MaterialTheme.appColors.material.primaryVariant
             ) {
-                val navController = rememberNavController()
-                cometChat.click = {
-                    //navController.navigate(Route.MY_CHAT_DETAIL)
-                }
-                /*if (state.screen) {
-                    Surface(
-                        color = MaterialTheme.appColors.material.primary
-                    ) {
-                        NavControllerComposable(
-                            homeViewModel,
-                            teamViewModel,
-                            eventViewModel,
-                            navController = navController,
-                            role = role.value,
-                            cometChat = cometChat,
-                            setupTeamViewModelUpdated = setupTeamViewModelUpdated ?: hiltViewModel()
-                        )
-                    }
-                } else {*/
+                val navController = rememberAnimatedNavController()
                 Scaffold(
                     backgroundColor = MaterialTheme.appColors.material.primary,
                     topBar = {
@@ -271,6 +258,7 @@ class HomeActivity : FragmentActivity() {
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun NavControllerComposable(
     homeViewModel: HomeViewModel,
@@ -278,7 +266,7 @@ fun NavControllerComposable(
     eventViewModel: EventViewModel,
     signUpViewModel: SignUpViewModel,
     showDialog: Boolean = false,
-    navController: NavHostController = rememberNavController(),
+    navController: NavHostController = rememberAnimatedNavController(),
     role: String = "",
     cometChat: CometChatUI,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated
@@ -297,18 +285,19 @@ fun NavControllerComposable(
     var url by rememberSaveable {
         mutableStateOf("")
     }
-    var showBottomBar by remember {
-        mutableStateOf(false)
-    }
 
-    NavHost(navController, startDestination = Route.HOME_SCREEN) {
+    AnimatedNavHost(navController, startDestination = Route.HOME_SCREEN) {
         composable(route = Route.HOME_SCREEN) {
             homeViewModel.setTopAppBar(false)
             HomeScreen(
                 role,
                 onOpportunityClick = {
                     navController.navigate(Route.OPPORTUNITIES_SCREEN)
-                }, onLeagueClick = {
+                },
+                onEventsClick = {
+                    navController.navigate(Route.MY_EVENTS)
+                },
+                onLeagueClick = {
                     navController.navigate(Route.MY_LEAGUE)
                 },
                 onInvitationCLick = {
@@ -321,7 +310,6 @@ fun NavControllerComposable(
                     homeViewModel.setLogoutDialog(true)
                 },
                 onTeamNameClick = {
-                    showBottomBar = it
                     homeViewModel.setDialog(true)
                 },
                 vm = homeViewModel,
@@ -357,10 +345,6 @@ fun NavControllerComposable(
                     navController.navigate(Route.ADD_MY_PLAYER_SCREEN + "/${UserStorage.teamId}")
                 },
                 setupTeamViewModelUpdated = setupTeamViewModelUpdated,
-                showBottomBar = {
-                    showBottomBar = it
-                },
-                signUpVm = signUpViewModel
             )
         }
         composable(route = Route.PROFILE_SCREEN) {
@@ -491,9 +475,16 @@ fun NavControllerComposable(
                     //navController.navigate(Route.MY_CHAT_DETAIL)
 
                 }, onCreateNewConversationClick = {
-                    navController.navigate(CREATE_NEW_CHAT_CONVO)
+                    navController.navigate(Route.CREATE_NEW_CHAT_CONVO)
+                },
+                onAddPlayerClick = {
+                    setColorUpdate(
+                        setupTeamViewModelUpdated,
+                        teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
+                    )
+                    navController.navigate(Route.ADD_MY_PLAYER_SCREEN + "/${UserStorage.teamId}")
                 }, onHomeClick = {
-                    navController.navigate(HOME_SCREEN)
+                    navController.navigate(Route.HOME_SCREEN)
                 })
         }
 
@@ -773,7 +764,11 @@ fun NavControllerComposable(
                 })
         }
 
-        composable(route = Route.INVITATION_SCREEN) { backStackEntry ->
+        composable(route = Route.INVITATION_SCREEN,
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+        ) { backStackEntry ->
 
             val refreshProfileList: String = backStackEntry
                 .savedStateHandle.get<String>("refreshProfileList") ?: ""
@@ -832,8 +827,13 @@ fun NavControllerComposable(
                 )
             }
             TeamSetupScreenUpdated(
+                homeVm=homeViewModel,
                 venue = venue,
                 vm = setupTeamViewModelUpdated,
+                addProfileClick = {
+                    navController.navigate(Route.ADD_PROFILE_SCREEN)
+
+                },
                 onBackClick = {
                     setColorToOriginalOnBack(
                         navController,
@@ -843,13 +843,11 @@ fun NavControllerComposable(
                     )
                 },
                 onNextClick = {
-                    navController.navigate(Route.ADD_PLAYER_SCREEN)
+                              navController.popBackStack()
+                    //navController.navigate(Route.ADD_PLAYER_SCREEN)
                 }, onVenueClick = {
                     navController.navigate(Route.SELECT_VENUE)
-
                 })
-
-
         }
 
         composable(route = Route.NEW_EVENT) { backStackEntry ->
@@ -982,6 +980,24 @@ fun NavControllerComposable(
                 eventMainTitle = it
                 navController.navigate(Route.LEAGUE_DETAIL_SCREEN)
             }
+        }
+
+        composable(route = Route.MY_EVENTS) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = stringResource(id = R.string.events_label),
+                    topBar = TopBar.SINGLE_LABEL_BACK,
+                )
+            )
+            MyEvents(eventViewModel,
+                moveToPracticeDetail = { eventId, eventName ->
+                    eventTitle = eventName
+                    navController.navigate(Route.EVENTS_DETAIL_SCREEN + "/$eventId")
+                },
+                moveToGameDetail = {
+                    eventTitle = it
+                    navController.navigate(Route.GAME_DETAIL_SCREEN)
+                })
         }
     }
 

@@ -376,4 +376,15 @@
     <string name="transfer">转移”</string>
     <string name="leave_group_message">你确定要离开这组吗？”</string>
     <string name="transfer_ownership_message">您是群组所有者，请在离开群组之前将所有权转移给会员。</string>
+    <string name="reply_privately">Reply Privately</string>
+    <string name="share_location_alert">Are you sure you want to share your location?</string>
+    <string name="select_user">Select User</string>
+    <string name="select_group">Select Group</string>
+    <string name="background_location_permission_title">Allow Background Location Permission</string>
+    <string name="deny">deny</string>
+    <string name="camera_permission">"Allow CometChat to access the camera? "</string>
+    <string name="camera_permission_denied">Please allow access to camera to use camera feature</string>
+    <string name="allow">Allow</string>
+    <string name="setting">Setting</string>
+
 </resources>

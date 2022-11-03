@@ -5,6 +5,8 @@
     <string name="groups">समूह</string>
     <string name="conversation">बातचीत</string>
     <string name="more">अधिक</string>
+    <string name="group_member_kicked_successfully">Group member kicked successfully</string>
+    <string name="add_member_to_group_failed">Add member to group failed</string>
     <string name="sending">भेजा जा रहा है...</string>
     <string name="this_message_deleted">⚠️ यह संदेश मिटाया गया था</string>
     <string name="you_deleted_this_message">⚠️ आपने यह संदेश हटा दिया है</string>
@@ -372,4 +374,16 @@
     <string name="transfer">स्थानांतरण”</string>
     <string name="leave_group_message">क्या आप निश्चित हैं कि आप इस समूह को छोड़ना चाहते हैं?”</string>
     <string name="transfer_ownership_message">आप समूह के मालिक हैं, कृपया समूह छोड़ने से पहले किसी सदस्य को स्वामित्व स्थानांतरित करें।</string>
+
+    <string name="reply_privately">Reply Privately</string>
+    <string name="share_location_alert">Are you sure you want to share your location?</string>
+    <string name="select_user">Select User</string>
+    <string name="select_group">Select Group</string>
+    <string name="background_location_permission_title">Allow Background Location Permission</string>
+    <string name="deny">deny</string>
+    <string name="camera_permission">"Allow CometChat to access the camera? "</string>
+    <string name="camera_permission_denied">Please allow access to camera to use camera feature</string>
+    <string name="allow">Allow</string>
+    <string name="setting">Setting</string>
+
 </resources>

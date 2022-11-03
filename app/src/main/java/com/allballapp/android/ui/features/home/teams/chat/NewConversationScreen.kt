@@ -20,7 +20,6 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -28,7 +27,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.allballapp.android.R
@@ -42,6 +40,7 @@ import com.allballapp.android.ui.theme.appColors
 import com.allballapp.android.ui.theme.rubikFamily
 import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
 import timber.log.Timber
+
 @Composable
 fun NewConversationScreen(
     teamVm: TeamViewModel,
@@ -87,143 +86,107 @@ fun NewConversationScreen(
         }
     }
 
-    Box(Modifier.fillMaxSize()) {
+    Box(
+        Modifier
+            .fillMaxSize()
+            .padding(all = dimensionResource(id = R.dimen.size_16dp))
+    ) {
         if (teamState.coaches.isNotEmpty() || teamState.players.isNotEmpty()) {
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(
-                        start = dimensionResource(id = R.dimen.size_16dp),
-                        end = dimensionResource(id = R.dimen.size_16dp),
+                    .fillMaxWidth()
+                    .background(
+                        color = MaterialTheme.appColors.material.surface,
+                        shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                     )
-
-
             ) {
                 if (teamState.coaches.isNotEmpty()) {
-
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(
-                                MaterialTheme.appColors.material.surface,
-                                shape = RoundedCornerShape(
-                                    topStart = dimensionResource(
-                                        id = R.dimen.size_8dp
-                                    ),
-                                    topEnd = dimensionResource(
-                                        id = R.dimen.size_8dp
-                                    )
-                                )
-                            )
-                    ) {
-
-
-                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
-
-                        val coachSize = buildAnnotatedString {
-                            append(stringResource(id = R.string.coaches))
-                            val startIndex = length
-                            append(" ( ")
-                            append("" + teamState.coaches.size)
-                            append(" )")
-                            addStyle(
-                                SpanStyle(
-                                    color = MaterialTheme.appColors.textField.label,
-                                    fontFamily = rubikFamily,
-                                    fontWeight = FontWeight.W400
-                                ),
-                                startIndex,
-                                length,
-                            )
-                        }
-                        Text(
-                            text = coachSize,
-                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                            fontWeight = FontWeight.W600,
-                            modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
+                    val coachSize = buildAnnotatedString {
+                        append(stringResource(id = R.string.coaches))
+                        val startIndex = length
+                        append(" ( ")
+                        append("" + teamState.coaches.size)
+                        append(" )")
+                        addStyle(
+                            SpanStyle(
+                                color = MaterialTheme.appColors.textField.label,
+                                fontFamily = rubikFamily,
+                                fontWeight = FontWeight.W400
+                            ),
+                            startIndex,
+                            length,
                         )
-                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                    }
+                    Text(
+                        text = coachSize,
+                        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        fontWeight = FontWeight.W600,
+                        modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
+                    )
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                    LazyColumn {
+                        items(teamState.coaches) { coach ->
+                            TeamUserListCheckbox(
+                                isCoach = true,
+                                coachUser = coach,
+                                selectedTeamMembers = chatState.selectedCoachesForNewGroup
+                            ) {
+                                chatVM.onEvent(ChatUIEvent.OnCoachChange(selectedCoaches = it))
+                                Log.i("selectedCoach", "NewConversationScreen: $it")
 
-                        LazyColumn() {
-                            items(teamState.coaches) { coach ->
-                                TeamUserListCheckbox(
-                                    isCoach = true,
-                                    coachUser = coach,
-                                    selectedTeamMembers = chatState.selectedCoachesForNewGroup
-                                ) {
-                                    chatVM.onEvent(ChatUIEvent.OnCoachChange(selectedCoaches = it))
-                                    Log.i("selectedCoach", "NewConversationScreen: $it")
-
-                                }
                             }
                         }
                     }
-
                 }
                 if (teamState.players.isNotEmpty()) {
                     AppDivider()
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(
-                                MaterialTheme.appColors.material.surface,
-                            )
-                    ) {
-                        Column {
-                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
-
-                            val playersSize = buildAnnotatedString {
-                                append(stringResource(id = R.string.players))
-                                val startIndex = length
-                                append(" ( ")
-                                append("" + teamState.players.size)
-                                append(" )")
-                                addStyle(
-                                    SpanStyle(
-                                        color = MaterialTheme.appColors.textField.label,
-                                        fontFamily = rubikFamily,
-                                        fontWeight = FontWeight.W400
-                                    ),
-                                    startIndex,
-                                    length,
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+                    val playersSize = buildAnnotatedString {
+                        append(stringResource(id = R.string.players))
+                        val startIndex = length
+                        append(" ( ")
+                        append("" + teamState.players.size)
+                        append(" )")
+                        addStyle(
+                            SpanStyle(
+                                color = MaterialTheme.appColors.textField.label,
+                                fontFamily = rubikFamily,
+                                fontWeight = FontWeight.W400
+                            ),
+                            startIndex,
+                            length,
+                        )
+                    }
+                    Text(
+                        text = playersSize,
+                        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        fontWeight = FontWeight.W600,
+                        modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
+                    )
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+                    LazyColumn {
+                        items(teamState.players) { player ->
+                            TeamUserListCheckbox(
+                                isCoach = false,
+                                teamUser = player,
+                                selectedTeamMembers = chatState.selectedPlayersForNewGroup
+                            ) {
+                                chatVM.onEvent(ChatUIEvent.OnPlayerChange(selectedPlayers = it))
+                                Timber.i(
+                                    "selectedPlayers NewConversationScreen: ${
+                                        it.map { playerId ->
+                                            playerId
+                                        }
+                                    }"
                                 )
                             }
-                            Text(
-                                text = playersSize,
-                                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                                fontWeight = FontWeight.W600,
-                                modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
-                            )
-
-                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
-
                         }
-                        LazyColumn() {
-                            items(teamState.players) { player ->
-                                TeamUserListCheckbox(
-                                    isCoach = false,
-                                    teamUser = player,
-                                    selectedTeamMembers = chatState.selectedPlayersForNewGroup
-                                ) {
-                                    chatVM.onEvent(ChatUIEvent.OnPlayerChange(selectedPlayers = it))
-                                    Timber.i(
-                                        "selectedPlayers NewConversationScreen: ${
-                                            it.map { playerId ->
-                                                playerId
-                                            }
-                                        }"
-                                    )
-                                }
-                            }
-                        }
-
                     }
                 }
             }
-
         } else {
             EmptyScreen(
                 singleText = true,
@@ -232,10 +195,8 @@ fun NewConversationScreen(
         }
         IconButton(
             modifier = Modifier
-                .offset((-20).dp, (-20).dp)
                 .size(dimensionResource(id = R.dimen.size_44dp))
                 .background(
-
                     color = if (chatState.selectedPlayersForNewGroup.isNotEmpty() || chatState.selectedCoachesForNewGroup.isNotEmpty())
                         MaterialTheme.appColors.material.primaryVariant
                     else MaterialTheme.appColors.buttonColor.bckgroundDisabled,
@@ -249,7 +210,6 @@ fun NewConversationScreen(
                 else {
                     chatVM.onEvent(ChatUIEvent.OnInitiateNewConversation)
                 }
-
             }
         ) {
             Icon(
@@ -308,12 +268,7 @@ fun TeamUserListCheckbox(
         AppDivider()
         Box(
             modifier = modifier
-                .fillMaxWidth()
-                .background(
-                    color = Color.White,
-                )
-                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-                .background(color = MaterialTheme.appColors.material.surface),
+                .fillMaxWidth(),
         ) {
             Row(
                 modifier = Modifier

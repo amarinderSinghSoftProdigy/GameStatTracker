@@ -332,4 +332,6 @@
     <string name="camera_permission_denied">Kérjük, engedélyezze a kamerához való hozzáférést a fényképezőgép funkció használatához</string>
     <string name="allow">Engedélyezze</string>
     <string name="setting">Beállítás</string>
+    <string name="everybody">الجميع</string>
+
 </resources>

@@ -37,7 +37,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
-import com.allballapp.android.BuildConfig
 import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.validName
@@ -171,7 +170,16 @@ fun AddPlayersScreenUpdated(
                     FlowRow {
                         state.inviteList.forEachIndexed { index, item ->
                             Column {
-                                InviteItem(item, index, vm, focusRequester, context, state.roles)
+                                InviteItem(
+                                    item,
+                                    index,
+                                    vm,
+                                    focusRequester,
+                                    context,
+                                    state.roles,
+                                ) { it, it1 ->
+                                    updateItem(it, it1)
+                                }
                             }
                         }
                     }
@@ -206,8 +214,8 @@ fun AddPlayersScreenUpdated(
                         }
                     }
                 },
-                enableState = true/*state.inviteList.isNotEmpty() &&
-                        state.inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() }*/,
+                enableState = true,/*state.inviteList.isNotEmpty() &&
+                        state.inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() }*/
                 themed = true,
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
@@ -242,8 +250,8 @@ fun InviteItem(
     focusRequester: FocusRequester,
     context: Activity,
     roles: List<UserRoles>,
-
-    ) {
+    updateItem: (Int, Boolean) -> Unit
+) {
     val roleObject = remember { mutableStateOf(UserRoles()) }
     var expanded by remember { mutableStateOf(false) }
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
@@ -299,70 +307,86 @@ fun InviteItem(
                 errorMessage = stringResource(id = R.string.valid_first_name),
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                EditFields(
-                    roleObject.value.value,
-                    textStyle = TextStyle().copy(textAlign = TextAlign.Start),
-                    onValueChange = {},
-                    head = "",
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                        keyboardType = KeyboardType.Text
-                    ),
-                    placeholder = {
-                        Text(
-                            text = stringResource(id = R.string.select_role),
-                            fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                            color = MaterialTheme.appColors.textField.label,
-                        )
-                    },
-                    modifier = Modifier
-                        .onGloballyPositioned {
-                            textFieldSize = it.size.toSize()
-                        }
-                        .border(
-                            shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
-                            width = dimensionResource(id = R.dimen.size_1dp),
-                            color = ColorBWGrayBorder
+            Box(modifier = Modifier.weight(1f)) {
+                Column {
+                    EditFields(
+                        roleObject.value.value,
+                        textStyle = TextStyle().copy(textAlign = TextAlign.Start),
+                        onValueChange = {},
+                        head = "",
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                            keyboardType = KeyboardType.Text
                         ),
-                    trailingIcon = {
-                        Icon(
-                            painterResource(id = R.drawable.ic_arrow_down),
-                            contentDescription = null,
-                            modifier = Modifier.clickable {
-                                expanded = !expanded
-                            })
-                    },
-                    enabled = true
-                )
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false },
-                    modifier = Modifier
-                        .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
-                        .background(MaterialTheme.colors.background)
-                ) {
-                    roles.forEach { label ->
-                        DropdownMenuItem(onClick = {
-                            roleObject.value = label
-
-                            vm.onEvent(
-                                TeamSetupUIEventUpdated.OnRoleValueChange(
-                                    index = index,
-                                    role = label
-                                )
-                            )
-                            expanded = false
-                        }) {
+                        placeholder = {
                             Text(
-                                text = label.value,
-                                textAlign = TextAlign.Center
+                                text = stringResource(id = R.string.select_role),
+                                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                color = MaterialTheme.appColors.textField.label,
                             )
+                        },
+                        modifier = Modifier
+                            .onGloballyPositioned {
+                                textFieldSize = it.size.toSize()
+                            }
+                            .border(
+                                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
+                                width = dimensionResource(id = R.dimen.size_1dp),
+                                color = ColorBWGrayBorder
+                            ),
+                        trailingIcon = {
+                            Icon(
+                                painterResource(id = R.drawable.ic_arrow_down),
+                                contentDescription = null,
+                                modifier = Modifier.clickable {
+                                    expanded = !expanded
+                                })
+                        },
+                        enabled = true
+                    )
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false },
+                        modifier = Modifier
+                            .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+                            .background(MaterialTheme.colors.background)
+                    ) {
+                        roles.forEach { label ->
+                            DropdownMenuItem(onClick = {
+                                roleObject.value = label
+
+                                vm.onEvent(
+                                    TeamSetupUIEventUpdated.OnRoleValueChange(
+                                        index = index,
+                                        role = label
+                                    )
+                                )
+                                expanded = false
+                            }) {
+                                Text(
+                                    text = label.value,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
                         }
                     }
                 }
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_remove),
+                    contentDescription = "",
+                    tint = Color.Unspecified,
+                    modifier = Modifier
+                        .offset((10).dp, (-10).dp)
+                        .align(Alignment.TopEnd)
+                        .background(
+                            AppConstants.SELECTED_COLOR,
+                            shape = RoundedCornerShape(50)
+                        )
+                        .padding(dimensionResource(id = R.dimen.size_2dp))
+                        .clickable {
+                            updateItem(index, false)
+                        }
+                )
             }
 
         }
@@ -457,94 +481,6 @@ fun InviteItem(
         }
     }
 }
-/*@Composable
-fun PlayerListUI(
-  players: List<Player>,
-  modifier: Modifier = Modifier,
-  onPlayerClick: (Player) -> Unit,
-  searchedText: String,
-  teamColor: String
-) {
-  var filteredCountries: ArrayList<Player>
-  LazyColumn(modifier = modifier) {
-      filteredCountries = if (searchedText.isEmpty()) {
-          ArrayList()
-      } else {
-          val resultList = ArrayList<Player>()
-          for (player in players) {
-              if (player.name.lowercase()
-                      .contains(searchedText.lowercase())
-                  || player.email!!.lowercase()
-                      .contains(searchedText.lowercase())
-              ) {
-                  resultList.add(player)
-              }
-          }
-          resultList
-      }
-      items(filteredCountries) { filteredCountry ->
-          PlayerListItem(
-              painterResource(id = R.drawable.ic_add_player),
-              player = filteredCountry,
-              teamColor = teamColor,
-              onItemClick = { selectedPlayer ->
-                  onPlayerClick.invoke(selectedPlayer)
-              },
-              showBackground = false
-          )
-      }
-  }
-}*/
-
-/*
-@Composable
-fun PlayerListItem(
-    icon: Painter,
-    player: Player,
-    teamColor: String,
-    onItemClick: (Player) -> Unit,
-    showBackground: Boolean
-) {
-    Row(
-        modifier = Modifier
-            .height(dimensionResource(id = R.dimen.size_48dp))
-            .fillMaxWidth()
-            .background(
-                color = if (showBackground) {
-                    MaterialTheme.appColors.material.primary
-                } else {
-                    Color.White
-                },
-                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
-            ),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.user_demo),
-                contentDescription = "",
-                modifier = Modifier
-                    .size(dimensionResource(id = R.dimen.size_32dp))
-                    .clip(androidx.compose.foundation.shape.CircleShape),
-            )
-            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
-            Text(
-                text = player.name,
-                style = MaterialTheme.typography.h6,
-                modifier = Modifier.weight(1f)
-            )
-            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
-            AddRemoveButton(icon, teamColor = teamColor) { onItemClick(player) }
-        }
-    }
-    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
-}
-*/
 
 @Composable
 fun AddRemoveButton(icon: Painter, teamColor: String, onItemClick: () -> Unit) {

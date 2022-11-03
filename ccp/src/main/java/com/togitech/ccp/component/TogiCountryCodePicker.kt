@@ -107,7 +107,7 @@ fun TogiCountryCodePicker(
                             cursorColor = cursorColor
                         ),
                         singleLine = true,
-                        visualTransformation = VisualTransformation.None,
+                        visualTransformation = MaskTransformation(),
                         /* MaskTransformation(),*///PhoneNumberTransformation(defaultCountry.countryCode.uppercase()),
                         placeholder = placeHolder,
                         keyboardOptions = KeyboardOptions.Default.copy(

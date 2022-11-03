@@ -21,7 +21,7 @@
 
 
     <!--ComposeBox-->
-    <string name="message">Write a message</string>
+    <string name="message">Type something...</string>
     <string name="tap_to_start_conversation">Tap to start conversation</string>
     <string name="edit_message">Edit Message</string>
 
@@ -126,7 +126,7 @@
     <string name="only_group_owner_removes_admin">You don\'t have permission to remove admin from the group..</string>
     <string name="removed_from_admin">%1$s is removed from admin privilege</string>
     <string name="update_group_member_error">Unable to update Group Member</string>
-    <string name="admin_list_retrieve_error" >Admin list retrieval failed</string>
+    <string name="admin_list_retrieve_error">Admin list retrieval failed</string>
     <string name="create_group_error">Unable to create a group</string>
     <string name="update_scope_error">Operation failed on %1$s</string>
     <string name="group_member_list_error">Error : Not able to load group member list</string>
@@ -373,6 +373,7 @@
     <string name="camera_permission_denied">Please allow access to camera to use camera feature</string>
     <string name="allow">Allow</string>
     <string name="setting">Setting</string>
+    <string name="everybody">Everybody</string>
 
     <!--    ______________-->
 </resources>

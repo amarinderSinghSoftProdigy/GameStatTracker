@@ -5,6 +5,7 @@
     <string name="replytxt">atsakymas</string>
     <string name="call">Kvietimas</string>
     <string name="basemessage">BaseMessage</string>
+    <string name="privacy">Privacy</string>
     <string name="sticker">lipdukas</string>
     <string name="more">Daugiau</string>
     <string name="users">Vartotojai</string>
@@ -319,4 +320,17 @@
     <string name="transfer">perdavimas”</string>
     <string name="leave_group_message">Ar tikrai norite palikti šią grupę?”</string>
     <string name="transfer_ownership_message">Jūs esate grupės savininkas, Prašome perduoti nuosavybės teisę nariui prieš išvykstant iš grupės.</string>
+
+    <string name="reply_privately">Reply Privately</string>
+    <string name="share_location_alert">Are you sure you want to share your location?</string>
+    <string name="select_user">Select User</string>
+    <string name="select_group">Select Group</string>
+    <string name="background_location_permission_title">Allow Background Location Permission</string>
+    <string name="deny">deny</string>
+    <string name="camera_permission">"Allow CometChat to access the camera? "</string>
+    <string name="camera_permission_denied">Please allow access to camera to use camera feature</string>
+    <string name="allow">Allow</string>
+    <string name="setting">Setting</string>
+    <string name="everybody">الجميع</string>
+
 </resources>

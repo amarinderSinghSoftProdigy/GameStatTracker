@@ -142,4 +142,10 @@ class UserRepository @Inject constructor(
             service.getSearchGameStaff(search)
         }
     }
+
+    override suspend fun authorizeGuardian(request: AuthorizeRequest): ResultWrapper<BaseResponse<Any>> {
+        return safeApiCall(dispatcher = dispatcher) {
+            service.authorizeGuardian(request)
+        }
+    }
 }

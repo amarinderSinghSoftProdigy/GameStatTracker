@@ -13,12 +13,8 @@ import com.allballapp.android.common.getFileFromUriWithoutCompress
 import com.allballapp.android.core.util.UiText
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
-import com.allballapp.android.data.request.FunFactsReq
-import com.allballapp.android.data.request.JerseyPerferencesReq
-import com.allballapp.android.data.request.TeamDetailsReq
-import com.allballapp.android.data.request.UpdateUserDetailsReq
-import com.allballapp.android.data.request.UserDetailsReq
-import com.allballapp.android.data.response.*
+import com.allballapp.android.data.request.*
+import com.allballapp.android.data.response.PayResponse
 import com.allballapp.android.data.response.User
 import com.allballapp.android.data.response.UserDocType
 import com.allballapp.android.domain.repository.IImageUploadRepo
@@ -45,8 +41,24 @@ class ProfileViewModel @Inject constructor(
 
     private val _channel = Channel<ProfileChannel>()
     val channel = _channel.receiveAsFlow()
+    val waistSize = arrayListOf<String>()
+    val size = arrayListOf(
+        "YouthXS",
+        "YouthS",
+        "YouthM",
+        "YouthL",
+        "YouthXL",
+        "AdultS",
+        "AdultM",
+        "AdultL",
+        "AdultXL"
+    )
+
 
     init {
+        for (i in 30..50) {
+            waistSize.add(i.toString())
+        }
         viewModelScope.launch {
             dataStoreManager.getRole.collect {
                 if (it == UserType.REFEREE.key) {
@@ -55,6 +67,7 @@ class ProfileViewModel @Inject constructor(
             }
         }
     }
+
 
     fun onEvent(event: ProfileEvent) {
         when (event) {
@@ -92,6 +105,16 @@ class ProfileViewModel @Inject constructor(
             is ProfileEvent.OnLastNameChange -> {
                 _state.value =
                     _state.value.copy(user = _state.value.user.copy(lastName = event.lastName))
+            }
+            is ProfileEvent.OnAAuNumChange -> {
+                _state.value =
+                    _state.value.copy(
+                        user = _state.value.user.copy(
+                            userDetails = _state.value.user.userDetails.copy(
+                                auuCardNumber = event.cardNumber
+                            )
+                        )
+                    )
             }
             is ProfileEvent.OnLeaveTeamCLick -> {
                 _state.value = _state.value.copy(
@@ -252,10 +275,10 @@ class ProfileViewModel @Inject constructor(
                 _state.value = _state.value.copy(selectedImage = event.selectedImage)
             }
             is ProfileEvent.ProfileUpload -> {
-               viewModelScope.launch {
-                  if(_state.value.selectedImage.isNotEmpty())
-                   imageUpload()
-               }
+                viewModelScope.launch {
+                    if (_state.value.selectedImage.isNotEmpty())
+                        imageUpload()
+                }
             }
         }
     }
@@ -684,11 +707,10 @@ class ProfileViewModel @Inject constructor(
             gradeVerfication = _state.value.user.userDetails.gradeVerfication,
             permissionSlip = _state.value.user.userDetails.permissionSlip,
             auuCard = _state.value.user.userDetails.auuCard,
+            auuCardNumber = _state.value.user.userDetails.auuCardNumber,
             waiver = _state.value.user.userDetails.waiver,
             vaccineCard = _state.value.user.userDetails.vaccineCard,
-
-            )
-
+        )
 
         return UpdateUserDetailsReq(
             profileImage = _state.value.user.profileImage,
@@ -784,7 +806,7 @@ class ProfileViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 uploadLogoResponse.value.let { response ->
-                    if (response.status && response.data != null)  {
+                    if (response.status && response.data != null) {
                         _state.value =
                             _state.value.copy(
                                 isLoading = false,

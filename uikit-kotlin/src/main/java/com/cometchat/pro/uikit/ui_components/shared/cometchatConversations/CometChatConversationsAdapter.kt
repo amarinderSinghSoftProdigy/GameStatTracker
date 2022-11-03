@@ -158,7 +158,7 @@ class CometChatConversationsAdapter(context: Context?) : RecyclerView.Adapter<Co
             conversationViewHolder.conversationListRowBinding.txtUserName.setTextColor(context!!.resources.getColor(R.color.textColorWhite))
             conversationViewHolder.conversationListRowBinding.tvSeprator.setBackgroundColor(context!!.resources.getColor(R.color.grey))
         } else {
-            conversationViewHolder.conversationListRowBinding.txtUserName.setTextColor(context!!.resources.getColor(R.color.primaryTextColor))
+            conversationViewHolder.conversationListRowBinding.txtUserName.setTextColor(context!!.resources.getColor(R.color.textColorDark))
             conversationViewHolder.conversationListRowBinding.tvSeprator.setBackgroundColor(context!!.resources.getColor(R.color.light_grey))
         }
         conversationViewHolder.conversationListRowBinding.root.setTag(R.string.conversation, conversation)

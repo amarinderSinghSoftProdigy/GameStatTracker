@@ -1,8 +1,11 @@
 package com.allballapp.android.ui.features.user_type.team_setup.updated
 
 import android.app.Activity
+import android.content.Intent
 import android.location.Geocoder
 import android.net.Uri
+import android.provider.ContactsContract
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -12,6 +15,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,6 +28,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.allballapp.android.R
+import com.allballapp.android.common.AppConstants
+import com.allballapp.android.common.validTeamName
+import com.allballapp.android.data.request.Address
+import com.allballapp.android.data.request.Members
+import com.allballapp.android.ui.features.components.*
+import com.allballapp.android.ui.features.home.HomeViewModel
+import com.allballapp.android.ui.features.home.home_screen.HomeScreenEvent
+import com.allballapp.android.ui.features.home.invitation.Invitation
+import com.allballapp.android.ui.features.home.invitation.InvitationEvent
+import com.allballapp.android.ui.features.home.invitation.InvitationViewModel
+import com.allballapp.android.ui.theme.*
 import com.github.skydoves.colorpicker.compose.ColorEnvelope
 import com.github.skydoves.colorpicker.compose.ColorPickerController
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
@@ -34,11 +51,8 @@ import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.allballapp.android.BuildConfig
-import com.allballapp.android.R
-import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.validTeamName
 import com.allballapp.android.data.UserStorage
-import com.allballapp.android.data.request.Address
 import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.theme.*
 import kotlinx.coroutines.launch
@@ -54,7 +68,10 @@ fun TeamSetupScreenUpdated(
     onBackClick: () -> Unit,
     onNextClick: () -> Unit,
     onVenueClick: () -> Unit,
-    vm: SetupTeamViewModelUpdated
+    addProfileClick: () -> Unit,
+    vm: SetupTeamViewModelUpdated,
+    homeVm: HomeViewModel,
+    inviteVm: InvitationViewModel = hiltViewModel()
 ) {
 
     val maxTeamChar = 30
@@ -64,8 +81,27 @@ fun TeamSetupScreenUpdated(
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
+    val showSwapDialog = rememberSaveable {
+        mutableStateOf(false)
+    }
+    val roleKey = rememberSaveable {
+        mutableStateOf("")
+    }
 
     val state = vm.teamSetupUiState.value
+    val homeState = homeVm.state.value
+    val inviteState = inviteVm.invitationState.value
+    remember {
+        inviteVm.onEvent(InvitationEvent.GetRoles)
+    }
+
+    val role = remember {
+        mutableStateOf("")
+    }
+
+    val teamId = remember {
+        mutableStateOf("")
+    }
 
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -135,6 +171,242 @@ fun TeamSetupScreenUpdated(
 
         }
     )
+
+
+    LaunchedEffect(key1 = Unit) {
+        vm.teamSetupChannel.collect { uiEvent ->
+            when (uiEvent) {
+                is TeamSetupChannel.ShowToast -> {
+                    Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
+                        .show()
+                }
+                is TeamSetupChannel.OnLogoUpload -> {
+                    vm.onEvent(TeamSetupUIEventUpdated.OnLogoUploadSuccess)
+                }
+                is TeamSetupChannel.OnTeamCreate -> {
+                    teamId.value = uiEvent.id
+                    Toast.makeText(context, uiEvent.message, Toast.LENGTH_LONG)
+                        .show()
+                    if (role.value == UserType.PARENT.key || role.value == UserType.PLAYER.key) {
+                        inviteVm.onEvent(InvitationEvent.OnRoleDialogClick(false))
+                        inviteVm.onEvent(InvitationEvent.OnRoleConfirmClick)
+                        inviteVm.onEvent(InvitationEvent.OnGuardianDialogClick(true))
+                    } else {
+                        onNextClick.invoke()
+                    }
+                    //onNextClick.invoke()
+                }
+                is TeamSetupChannel.OnInvitationSuccess -> {
+                    inviteVm.onEvent(InvitationEvent.SetTeamId(teamId.value))
+                    inviteVm.onEvent(InvitationEvent.OnRoleConfirmClick)
+                    inviteVm.onEvent(InvitationEvent.OnGuardianDialogClick(true))
+                    inviteVm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
+                }
+                is TeamSetupChannel.OnInvitationDone -> {
+                    if (uiEvent.showToast)
+                        Toast.makeText(
+                            context,
+                            uiEvent.message.asString(context),
+                            Toast.LENGTH_LONG
+                        )
+                            .show()
+                    onNextClick.invoke()
+                }
+                else -> Unit
+            }
+        }
+    }
+    if (inviteState.showRoleDialog) {
+        SelectInvitationRoleDialog(
+            onDismiss = {
+                inviteVm.onEvent(InvitationEvent.OnRoleDialogClick(false))
+                inviteVm.onEvent(InvitationEvent.OnClearValues)
+            },
+            onConfirmClick = {
+                vm.onEvent(TeamSetupUIEventUpdated.OnRole(inviteState.selectedRoleKey))
+                role.value = inviteState.selectedRoleKey
+                vm.onEvent(TeamSetupUIEventUpdated.OnAddPlayerScreenNext)
+                inviteVm.onEvent(InvitationEvent.OnRoleDialogClick(false))
+            },
+            onSelectionChange = { inviteVm.onEvent(InvitationEvent.OnRoleClick(roleKey = it)) },
+            title = stringResource(
+                id = R.string.what_is_your_role,
+                inviteState.selectedInvitation.team.name
+            ),
+            selected = inviteState.selectedRoleKey,
+            showLoading = inviteState.showLoading,
+            roleList = inviteState.roles,
+            userName = "${homeState.user.firstName} ${homeState.user.lastName}",
+            userLogo = com.allballapp.android.BuildConfig.IMAGE_SERVER + homeState.user.profileImage,
+        )
+    }
+
+    if (inviteState.showGuardianDialog) {
+        SelectGuardianRoleDialog(
+            inviteState.selectedRoleKey,
+            onBack = {
+                inviteVm.onEvent(InvitationEvent.OnRoleDialogClick(true))
+                inviteVm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
+                vm.onEvent(TeamSetupUIEventUpdated.MoveBack(false))
+            },
+            onConfirmClick = {
+                //inviteVm.onEvent(InvitationEvent.OnInvitationConfirm(homeState.user.gender))
+                inviteVm.onEvent(InvitationEvent.OnRoleDialogClick(false))
+                inviteVm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
+                vm.onEvent(TeamSetupUIEventUpdated.MoveBack(true))
+            },
+            onSelectionChange = { inviteVm.onEvent(InvitationEvent.OnGuardianClick(guardian = it)) },
+            selected = inviteState.selectedGuardian,
+            guardianList = if (inviteState.selectedRoleKey == UserType.PARENT.key)
+                inviteState.playerDetails.filter { member -> member.role == UserType.PLAYER.key }
+            else inviteState.playerDetails.filter { member -> member.role != UserType.PLAYER.key },
+            onValueSelected = {
+                inviteVm.onEvent(InvitationEvent.OnValuesSelected(it))
+            },
+            onDismiss = {
+                inviteVm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
+                inviteVm.onEvent(InvitationEvent.OnClearGuardianValues)
+            },
+            onChildNotListedCLick = {
+                inviteVm.onEvent(InvitationEvent.OnAddPlayerDialogClick(true))
+            },
+            dontHaveChildClick = {
+                inviteVm.onEvent(InvitationEvent.ConfirmGuardianWithoutChildAlert(true))
+            }
+        )
+    }
+
+    if (inviteState.showGuardianOnlyConfirmDialog) {
+        ConfirmDialog(
+            title = stringResource(id = R.string.join_team_without_child_selection), onDismiss = {
+                inviteVm.onEvent(InvitationEvent.ConfirmGuardianWithoutChildAlert(false))
+            },
+            onConfirmClick = { //inviteVm.onEvent(InvitationEvent.OnInvitationConfirm(homeState.user.gender))
+                inviteVm.onEvent(InvitationEvent.ConfirmGuardianWithoutChildAlert(false))
+                inviteVm.onEvent(InvitationEvent.OnRoleDialogClick(false))
+                inviteVm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
+                vm.onEvent(TeamSetupUIEventUpdated.MoveBack(false))
+            })
+    }
+    if (inviteState.showAddPlayerDialog) {
+        vm.initialInviteCount(1)
+        InviteTeamMembersDialog(
+            onBack = {
+                //inviteVm.onEvent(InvitationEvent.OnRoleDialogClick(true))
+                inviteVm.onEvent(InvitationEvent.OnGuardianDialogClick(true))
+                inviteVm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
+            },
+            onConfirmClick = {
+                if (teamId.value.isNotEmpty()) {
+                    if (state.inviteList.isNotEmpty()) {
+                        if (homeState.user.phone != state.inviteList[0].countryCode + state.inviteList[0].contact) {
+                            vm.onEvent(
+                                TeamSetupUIEventUpdated.OnInviteTeamMembers(
+                                    teamId = teamId.value,
+                                    userType = role.value,
+                                    type = AppConstants.TYPE_ACCEPT_INVITATION
+                                )
+                            )
+                        } else {
+                            homeVm.onEvent(HomeScreenEvent.OnSwapClick)
+                        }
+                    }
+                }
+            },
+            onIndexChange = { index ->
+                vm.onEvent(
+                    TeamSetupUIEventUpdated.OnIndexChange(
+                        index = index
+                    )
+                )
+
+                if (hasContactPermission(context)) {
+                    val intent =
+                        Intent(Intent.ACTION_GET_CONTENT)
+                    intent.type =
+                        ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
+                    (context as Activity).startActivityForResult(
+                        intent,
+                        AppConstants.REQUEST_CONTACT_CODE,
+                        null
+                    )
+                } else {
+                    requestContactPermission(context, (context as Activity))
+                }
+            },
+            inviteList = state.inviteList,
+            onNameValueChange = { index, name ->
+                vm.onEvent(
+                    TeamSetupUIEventUpdated.OnNameValueChange(
+                        index = index,
+                        name
+                    )
+                )
+
+            },
+            onEmailValueChange = { index, email ->
+                vm.onEvent(
+                    TeamSetupUIEventUpdated.OnEmailValueChange(
+                        index = index,
+                        email
+                    )
+                )
+
+            },
+            onInviteCountValueChange = { addIntent ->
+                vm.onEvent(TeamSetupUIEventUpdated.OnInviteCountValueChange(addIntent = true))
+            },
+            OnCountryValueChange = { index, code ->
+                vm.onEvent(
+                    TeamSetupUIEventUpdated.OnCountryValueChange(
+                        index = index,
+                        code = code
+                    )
+                )
+            }, roles = inviteState.roles, onRoleValueChange = { index, role ->
+                vm.onEvent(
+                    TeamSetupUIEventUpdated.OnRoleValueChange(
+                        index = index,
+                        role = role
+                    )
+                )
+                roleKey.value = role.key
+            }
+        )
+    }
+
+    if (showSwapDialog.value) {
+        SwapProfile(
+            title = stringResource(id = R.string.invite_from_your_profile),
+            actionButtonText = stringResource(id = R.string.invite),
+            users = homeState.swapUsers,
+            onDismiss = { showSwapDialog.value = false },
+            onConfirmClick = { swapUser ->
+                vm.onEvent(
+                    TeamSetupUIEventUpdated.OnInviteTeamMembers(
+                        inviteState.selectedInvitation.team._id,
+                        userType = role.value,
+                        type = AppConstants.TYPE_ACCEPT_INVITATION,
+                        profilesSelected = true,
+                        member = Members(
+                            name = swapUser.firstName,
+                            mobileNumber = swapUser._Id,
+                            role = roleKey.value
+                        )
+                    )
+                )
+
+                showSwapDialog.value = false
+            },
+            showLoading = homeState.isDataLoading,
+            onCreatePlayerClick = {
+                addProfileClick()
+            },
+            showCreatePlayerButton = true
+        )
+    }
+
+
     ModalBottomSheetLayout(
         sheetContent = {
             ColorPickerBottomSheet(controller, colorEnvelope = { colorEnvelope ->
@@ -720,7 +992,8 @@ fun TeamSetupScreenUpdated(
                     secondText = stringResource(id = R.string.next),
                     onBackClick = onBackClick,
                     onNextClick = {
-                        onNextClick.invoke()
+                        inviteVm.onEvent(InvitationEvent.OnAcceptCLick(Invitation()))
+                        //onNextClick.invoke()
                     },
                     enableState = enable,
                     showOnlyNext = true,
@@ -733,6 +1006,9 @@ fun TeamSetupScreenUpdated(
                 }
             }
         }
+    }
+    if (state.isLoading) {
+        CommonProgressBar()
     }
 }
 

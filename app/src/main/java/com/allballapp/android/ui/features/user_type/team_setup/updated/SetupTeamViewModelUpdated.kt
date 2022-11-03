@@ -66,6 +66,10 @@ class SetupTeamViewModelUpdated @Inject constructor(
 
     fun onEvent(event: TeamSetupUIEventUpdated) {
         when (event) {
+            is TeamSetupUIEventUpdated.OnRole -> {
+                _teamSetupUiState.value =
+                    _teamSetupUiState.value.copy(role = event.role)
+            }
             is TeamSetupUIEventUpdated.GetRoles -> {
                 viewModelScope.launch {
                     getUserRoles()
@@ -324,6 +328,18 @@ class SetupTeamViewModelUpdated @Inject constructor(
                 _teamSetupUiState.value =
                     _teamSetupUiState.value.copy(selectedAddress = event.addressReq)
             }
+            is TeamSetupUIEventUpdated.MoveBack -> {
+                viewModelScope.launch {
+                    _teamSetupChannel.send(
+                        TeamSetupChannel.OnInvitationDone(
+                            UiText.StringResource(
+                                R.string.invite_done_message
+                            ),
+                            event.check
+                        )
+                    )
+                }
+            }
         }
 
 
@@ -467,7 +483,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
             members = members,
             type = type,
             userType = userType,
-            profilesSelected = profileSelected
+            profilesSelected = profileSelected.toString()
         )
 
         _teamSetupUiState.value =
@@ -498,7 +514,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 inviteMemberResponse.value.let { response ->
-                    if (response.status && response.data.failedMobileNumber.isEmpty() && response.data.failedProfiles.isEmpty() ) {
+                    if (response.status && response.data.failedMobileNumber.isEmpty() && response.data.failedProfiles.isEmpty()) {
                         _teamSetupChannel.send(
                             TeamSetupChannel.OnInvitationSuccess(
                                 UiText.DynamicString(
@@ -597,6 +613,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
             val size = Integer.parseInt((file.length() / 1024).toString())
             Timber.i("Filesize compressed --> $size")
         }
+        _teamSetupUiState.value = _teamSetupUiState.value.copy(isLoading = true)
 
         val uploadLogoResponse = imageUploadRepo.uploadSingleImage(
             type = AppConstants.TEAM_LOGO,
@@ -680,6 +697,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
             tertiaryTeamColor = "#" + _teamSetupUiState.value.teamColorThird,
             logo = _teamSetupUiState.value.teamImageServerUrl,
             members = members,
+            myRole = _teamSetupUiState.value.role
         )
 
         _teamSetupUiState.value = _teamSetupUiState.value.copy(isLoading = true)
@@ -714,7 +732,10 @@ class SetupTeamViewModelUpdated @Inject constructor(
                     if (response.status && response.data != null) {
                         _teamSetupUiState.value = _teamSetupUiState.value.copy(isLoading = false)
                         _teamSetupChannel.send(
-                            TeamSetupChannel.OnTeamCreate(response.statusMessage)
+                            TeamSetupChannel.OnTeamCreate(
+                                response.statusMessage,
+                                response.data.team.Id
+                            )
                         )
                         inItToDefaultData()
                     } else {
@@ -751,9 +772,10 @@ class SetupTeamViewModelUpdated @Inject constructor(
 sealed class TeamSetupChannel {
     data class ShowToast(val message: UiText) : TeamSetupChannel()
     data class OnInvitationSuccess(val message: UiText) : TeamSetupChannel()
+    data class OnInvitationDone(val message: UiText, val showToast: Boolean) : TeamSetupChannel()
     object OnTeamSetupNextClick : TeamSetupChannel()
     object OnLogoUpload : TeamSetupChannel()
-    data class OnTeamCreate(val message: String) : TeamSetupChannel()
+    data class OnTeamCreate(val message: String, val id: String = "") : TeamSetupChannel()
 
 }
 

@@ -23,9 +23,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.allballapp.android.BuildConfig
 import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.data.UserStorage
@@ -44,6 +41,8 @@ import com.allballapp.android.ui.features.user_type.team_setup.updated.TeamSetup
 import com.allballapp.android.ui.theme.ColorBWBlack
 import com.allballapp.android.ui.theme.ColorGreyLighter
 import com.allballapp.android.ui.theme.appColors
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
 import kotlinx.coroutines.launch
 
 @Composable
@@ -63,9 +62,8 @@ fun HomeScreen(
     onInviteClick: () -> Unit,
     onOpportunityClick: () -> Unit,
     onLeagueClick: () -> Unit,
+    onEventsClick: () -> Unit,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
-    showBottomBar: (Boolean) -> Unit,
-    signUpVm: SignUpViewModel
 ) {
     val dataStoreManager = DataStoreManager(LocalContext.current)
     val color = dataStoreManager.getColor.collectAsState(initial = AppConstants.DEFAULT_COLOR)
@@ -346,7 +344,7 @@ fun HomeScreen(
                             "my_events",
                             "events_label",
                             homeState.homePageCoachModel.myEvents.toString()
-                        )
+                        ) { onEventsClick() }
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
                         EventInviteItem("invite_members", onInviteClick = onInviteClick)
                     }
@@ -359,6 +357,7 @@ fun HomeScreen(
                         Box(
                             Modifier
                                 .fillMaxWidth()
+                                .clickable { onOpportunityClick() }
                                 .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                             contentAlignment = Alignment.Center
                         ) {
@@ -396,7 +395,9 @@ fun HomeScreen(
                             "leagues",
                             homeState.homePageCoachModel.myLeagues.toString(),
                             R.drawable.ic_leagues
-                        )
+                        ) {
+
+                        }
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
 
                         EventItem(
@@ -404,7 +405,9 @@ fun HomeScreen(
                             "leagues",
                             homeState.homePageCoachModel.allLeagues.toString(),
                             R.drawable.ic_leagues
-                        )
+                        ) {
+                            onLeagueClick()
+                        }
 
                     }
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
@@ -459,7 +462,8 @@ fun RowScope.EventItem(
     stringId: String,
     value: String,
     painter: Int? = R.drawable.ic_events,
-    color: Color = Color.White
+    color: Color = Color.White,
+    click: () -> Unit
 ) {
     UserFlowBackground(
         padding = 0.dp,
@@ -471,7 +475,9 @@ fun RowScope.EventItem(
 
     ) {
         Column(
-            modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp)),
+            modifier = Modifier
+                .padding(all = dimensionResource(id = R.dimen.size_16dp))
+                .clickable { click() },
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(

@@ -41,7 +41,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import androidx.core.text.isDigitsOnly
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.allballapp.android.BuildConfig
 import com.allballapp.android.R
 import com.allballapp.android.common.*
 import com.allballapp.android.data.response.CheckBoxData
@@ -96,14 +95,10 @@ fun ProfileEditScreen(
         listOf(stringResource(id = R.string.male), stringResource(id = R.string.female))
 
     var expanded by remember { mutableStateOf(false) }
+    var picker = remember { mutableStateOf(false) }
 
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
 
-    val size = arrayListOf<String>()
-
-    for (i in 30..50) {
-        size.add(i.toString())
-    }
 
     var waistSizeExpanded by remember {
         mutableStateOf(false)
@@ -332,10 +327,24 @@ fun ProfileEditScreen(
                         )
                         DividerCommon()
                         EditProfileFields(
+                            state.user.userDetails.auuCardNumber,
+                            onValueChange = {
+                                vm.onEvent(ProfileEvent.OnAAuNumChange(it))
+                            },
+                            stringResource(id = R.string.aau_card_number),
+                            errorMessage = "",
+                            keyboardOptions = KeyboardOptions(
+                                imeAction = ImeAction.Next,
+                                capitalization = KeyboardCapitalization.Sentences,
+                                keyboardType = KeyboardType.Number
+                            ),
+                            isError = false,
+                        )
+                        DividerCommon()
+                        EditProfileFields(
                             data = if (state.user.birthdate != null) apiToUIDateFormat2(state.user.birthdate) else "",
                             onValueChange = {
                                 vm.onEvent(ProfileEvent.OnBirthdayChange(it))
-
                             },
                             readOnly = true,
                             head = stringResource(id = R.string.birthday),
@@ -351,18 +360,18 @@ fun ProfileEditScreen(
                         DividerCommon()
 
                         EditProfileFields(
-                            state.user.userDetails.classOf,
-                            onValueChange = {
-                                if (it.length <= maxClassOf)
-                                    vm.onEvent(ProfileEvent.OnClassChange(it))
-                            },
-                            stringResource(id = R.string.classof),
+                            data = state.user.userDetails.classOf,
+                            onValueChange = {},
+                            head = stringResource(id = R.string.classof),
                             errorMessage = stringResource(id = R.string.valid_class_of),
                             keyboardOptions = KeyboardOptions(
                                 imeAction = ImeAction.Next,
                                 capitalization = KeyboardCapitalization.Sentences,
-                                keyboardType = KeyboardType.Number
                             ),
+                            enabled = false,
+                            modifier = Modifier.clickable {
+                                picker.value = true
+                            },
                             isError = state.user.userDetails.classOf.length in 1..3,
                         )
                         DividerCommon()
@@ -508,7 +517,7 @@ fun ProfileEditScreen(
                                 .width(with(LocalDensity.current) { shirtFieldSize.width.toDp() })
                                 .background(MaterialTheme.colors.background)
                         ) {
-                            size.forEach { label ->
+                            vm.size.forEach { label ->
                                 DropdownMenuItem(onClick = {
                                     vm.onEvent(ProfileEvent.OnShirtChange(label))
                                     shirtSizeExpanded = false
@@ -552,7 +561,7 @@ fun ProfileEditScreen(
                                 .width(with(LocalDensity.current) { waistFieldSize.width.toDp() })
                                 .background(MaterialTheme.colors.background)
                         ) {
-                            size.forEach { label ->
+                            vm.waistSize.forEach { label ->
                                 DropdownMenuItem(onClick = {
                                     vm.onEvent(ProfileEvent.OnWaistChange(label))
                                     waistSizeExpanded = false
@@ -685,6 +694,15 @@ fun ProfileEditScreen(
                         if (state.selectedTeamId.isNotEmpty()) {
                             vm.onEvent(ProfileEvent.OnLeaveConfirmClick(state.selectedTeamId))
                         }
+                    }
+                )
+            }
+            if (picker.value) {
+                NumberPickerDialog(
+                    onDismiss = {
+                        picker.value = false
+                    }, onConfirmClick = {
+                        vm.onEvent(ProfileEvent.OnClassChange(it))
                     }
                 )
             }

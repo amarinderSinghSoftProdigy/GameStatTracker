@@ -616,6 +616,7 @@ class TeamViewModel @Inject constructor(
                             supportStaff = response.data.supportingCastDetails,
                             acceptPending = response.data.pendingAndDeclinedMembers,
                             coaches = response.data.coaches,
+                            allUsers = response.data.allMembers,
                             teamName = response.data.name,
                             teamColorPrimary = response.data.colorCode,
                             logo = response.data.logo,

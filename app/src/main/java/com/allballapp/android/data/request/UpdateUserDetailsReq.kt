@@ -35,6 +35,7 @@ data class UserDetailsReq(
     @SerializedName("gradeVerfication") val gradeVerfication: String = "",
     @SerializedName("permissionSlip") val permissionSlip: String = "",
     @SerializedName("auuCard") val auuCard: String = "",
+    @SerializedName("auuCardNumber") val auuCardNumber: String = "",
     @SerializedName("waiver") val waiver: String = "",
     @SerializedName("vaccineCard") val vaccineCard: String = "",
     @SerializedName("aboutExperience") val aboutExperience: String = "",

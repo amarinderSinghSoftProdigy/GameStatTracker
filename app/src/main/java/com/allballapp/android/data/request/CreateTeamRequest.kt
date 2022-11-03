@@ -1,8 +1,8 @@
 package com.allballapp.android.data.request
 
-import com.google.gson.annotations.SerializedName
 import com.allballapp.android.data.response.team.TeamLeaderBoard
 import com.allballapp.android.data.response.team.TeamRoaster
+import com.google.gson.annotations.SerializedName
 
 data class CreateTeamRequest(
 
@@ -18,12 +18,13 @@ data class CreateTeamRequest(
     @SerializedName("tertiaryTeamColor") val tertiaryTeamColor: String = "",
     @SerializedName("members") val members: List<Members> = arrayListOf(),
     @SerializedName("logo") val logo: String? = null,
+    @SerializedName("myRole") val myRole: String? = null,
 )
 
 data class UpdateTeamRequest(
     @SerializedName("teamID") val teamID: String = "",
     @SerializedName("userType") val userType: String = "",
-    @SerializedName("profilesSelected") val profilesSelected: Boolean = false,
+    @SerializedName("profilesSelected") val profilesSelected: String = "",
     @SerializedName("type") val type: String = "",
     @SerializedName("members") val members: List<Members> = arrayListOf(),
 )

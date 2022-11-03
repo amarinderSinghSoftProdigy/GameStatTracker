@@ -264,7 +264,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
      * This method is used to handle arguments passed to this fragment.
      */
     private fun handleArguments() {
-        Log.e("arguments"," ")
+        Log.e("arguments", " ")
         if (arguments != null) {
             Id = arguments?.getString(UIKitConstants.IntentStrings.UID).toString()
             avatarUrl = arguments?.getString(UIKitConstants.IntentStrings.AVATAR)
@@ -286,7 +286,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
                 groupType = arguments?.getString(UIKitConstants.IntentStrings.GROUP_TYPE)
             }
         } else if (CometChatUI.convo != null) {
-            Log.e("arguments data "," "+CometChatUI.convo)
+            Log.e("arguments data ", " " + CometChatUI.convo)
             if (CometChatUI.convo?.conversationType == CometChatConstants.CONVERSATION_TYPE_GROUP) {
                 val group = CometChatUI.convo?.conversationWith as Group
                 Id = group.guid.toString()
@@ -470,11 +470,9 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
         ivUserInfo?.setOnClickListener(this)
         ivBackArrow = view?.findViewById(R.id.iv_back_arrow)
         ivBackArrow?.setOnClickListener(this)
+        if (CometChatMessageListActivity.toolbarColor.isNotEmpty())
+            toolbar?.setBackgroundColor(Color.parseColor(CometChatMessageListActivity.toolbarColor))
 
-
-        userAvatar = view?.findViewById(R.id.iv_chat_avatar)
-        toolbar = view?.findViewById(R.id.chatList_toolbar)
-        toolbar?.setOnClickListener(this)
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         tvName?.typeface = fontUtils?.getTypeFace(FontUtils.robotoMedium)
         tvName?.text = name
@@ -485,21 +483,21 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
 //        (activity as AppCompatActivity?)!!.setSupportActionBar(toolbar)
 //        (activity as AppCompatActivity?)!!.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         if (Utils.isDarkMode(requireContext())) {
-            toolbar?.setBackgroundColor(resources.getColor(R.color.grey))
+            //toolbar?.setBackgroundColor(resources.getColor(R.color.grey))
             editMessageLayout?.background = resources.getDrawable(R.drawable.left_border_dark)
             composeBox?.setBackgroundColor(resources.getColor(R.color.darkModeBackground))
-            rvChatListView?.setBackgroundColor(resources.getColor(R.color.darkModeBackground))
+            //rvChatListView?.setBackgroundColor(resources.getColor(R.color.darkModeBackground))
             replyMessageLayout?.background = resources.getDrawable(R.drawable.left_border_dark)
 //            rlMessageAction?.setBackgroundColor(resources.getColor(R.color.darkModeBackground))
             tvName?.setTextColor(resources.getColor(R.color.textColorWhite))
         } else {
-            toolbar?.setBackgroundColor(resources.getColor(R.color.textColorWhite))
+            //toolbar?.setBackgroundColor(resources.getColor(R.color.textColorWhite))
             editMessageLayout?.background = resources.getDrawable(R.drawable.left_border)
             composeBox?.setBackgroundColor(resources.getColor(R.color.textColorWhite))
-            rvChatListView?.setBackgroundColor(resources.getColor(R.color.textColorWhite))
+            //rvChatListView?.setBackgroundColor(resources.getColor(R.color.textColorWhite))
             replyMessageLayout?.background = resources.getDrawable(R.drawable.left_border)
 //            rlMessageAction!!.setBackgroundColor(resources.getColor(R.color.textColorWhite))
-            tvName?.setTextColor(resources.getColor(R.color.primaryTextColor))
+            tvName?.setTextColor(resources.getColor(R.color.textColorDark))
         }
         KeyBoardUtils.setKeyboardVisibilityListener(
             requireActivity(),
@@ -512,14 +510,14 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
                         composeBox?.btnLiveReaction?.visibility = View.GONE
                         composeBox?.ivSend?.visibility = View.VISIBLE
                     } else {
-                        composeBox?.ivSend?.visibility = View.GONE
-                        composeBox?.btnLiveReaction?.visibility = View.VISIBLE
-                        composeBox?.ivMic?.visibility = View.VISIBLE
+                        composeBox?.ivSend?.visibility = View.VISIBLE
+                        composeBox?.btnLiveReaction?.visibility = View.GONE
+                        composeBox?.ivMic?.visibility = View.GONE
                         FeatureRestriction.isVoiceNotesEnabled(object :
                             FeatureRestriction.OnSuccessListener {
                             override fun onSuccess(p0: Boolean) {
                                 if (p0) {
-                                    composeBox!!.ivMic!!.visibility = View.VISIBLE
+                                    composeBox!!.ivMic!!.visibility = View.GONE
                                 } else {
                                     composeBox!!.ivMic!!.visibility = View.GONE
                                     composeBox!!.ivSend!!.visibility = View.VISIBLE

@@ -21,6 +21,9 @@ open interface APIService {
     @POST(ApiConstants.LOGIN)
     suspend fun userLogin(@Body loginRequest: LoginRequest): BaseResponse<UserInfo>
 
+    @POST(ApiConstants.AUTHORIZE_GUARDIAN)
+    suspend fun authorizeGuardian(@Body request: AuthorizeRequest): BaseResponse<Any>
+
     @GET(ApiConstants.GET_ALL_PLAYERS)
     suspend fun getAllPlayers(
         @Query("page") page: Int,

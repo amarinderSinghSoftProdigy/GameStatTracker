@@ -9,24 +9,30 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.viewinterop.AndroidViewBinding
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.cometchat.pro.uikit.ui_components.chats.CometChatConversationList
+import com.allballapp.android.R
+import com.allballapp.android.data.response.team.Team
+import com.allballapp.android.databinding.FragmentConversationBinding
 import com.allballapp.android.ui.features.components.AppTab
 import com.allballapp.android.ui.features.components.CommonProgressBar
 import com.allballapp.android.ui.features.home.EmptyScreen
 import com.allballapp.android.ui.theme.appColors
-import com.allballapp.android.R
+import com.cometchat.pro.uikit.ui_components.chats.CometChatConversationList
+import com.cometchat.pro.uikit.ui_components.messages.message_list.CometChatMessageListActivity
+
 @Composable
 fun TeamsChatScreen(
+    color: String = "",
     vm: ChatViewModel = hiltViewModel(),
     onTeamItemClick: () -> Unit,
     onCreateNewConversationClick: () -> Unit
@@ -34,11 +40,10 @@ fun TeamsChatScreen(
 
     val state = vm.chatUiState.value
     val selected = rememberSaveable {
-        mutableStateOf(0)
+        mutableStateOf(-1)
     }
-    var key = remember { mutableStateOf("selected") }
+    val key = remember { mutableStateOf("selected") }
     Box(modifier = Modifier.fillMaxSize()) {
-
         Column {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             LazyRow {
@@ -49,25 +54,8 @@ fun TeamsChatScreen(
                             title = item.name,
                             selected = index == selected.value,
                             onClick = {
-                                val mergedIds = mutableListOf<String>()
-                                val playerIds = item.players.map {
-                                    it._id
-                                }
-                                val coachIds = item.coaches.map {
-                                    it._id
-                                }
-
-                                val groupId = item.teamChatGroups.map {
-                                    it.groupId
-                                }
-                                mergedIds.addAll(playerIds)
-                                mergedIds.addAll(coachIds)
-                                mergedIds.addAll(groupId)
-
-//                                userIds = mergedIds
+                                addChatIds(item)
                                 selected.value = index
-
-                                CometChatConversationList.memberIds = mergedIds
                                 key.value = index.toString()
                             })
                     }
@@ -75,18 +63,29 @@ fun TeamsChatScreen(
             }
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-
-            EmptyScreen(singleText = true)
-            //key(key.value) {
-               /* AndroidViewBinding(FragmentConversationBinding::inflate) {
-                    converstionContainer.getFragment<CometChatConversationList>()
-
-                }*/
-           // }
+            if (selected.value != -1) {
+                key(key.value) {
+                    AndroidViewBinding(FragmentConversationBinding::inflate) {
+                        CometChatMessageListActivity.toolbarColor =
+                            if (color.startsWith("#")) color else "#" + color
+                        converstionContainer.getFragment<CometChatConversationList>()
+                    }
+                }
+            } else if (state.teams.isNotEmpty()) {
+                addChatIds(state.teams[0])
+                key.value = 0.toString()
+                selected.value = 0
+            } else {
+                EmptyScreen(
+                    singleText = false,
+                    icon = com.cometchat.pro.uikit.R.drawable.ic_chat_placeholder,
+                    heading = stringResource(id = com.cometchat.pro.uikit.R.string.no_conversations)
+                )
+            }
         }
         IconButton(
             modifier = Modifier
-                .offset((-20).dp, (-20).dp)
+                .padding(all = dimensionResource(id = R.dimen.size_16dp))
                 .size(dimensionResource(id = R.dimen.size_44dp))
                 .background(
                     MaterialTheme.appColors.material.primaryVariant,
@@ -97,14 +96,13 @@ fun TeamsChatScreen(
             onClick = { onCreateNewConversationClick.invoke() }
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_cross_1),
+                painter = painterResource(id = R.drawable.ic_add_button),
                 "",
                 tint = MaterialTheme.appColors.buttonColor.textEnabled,
                 modifier = Modifier
                     .width(
                         dimensionResource(id = R.dimen.size_16dp)
                     )
-                    .rotate(45f)
             )
         }
         if (state.isLoading) {
@@ -115,3 +113,19 @@ fun TeamsChatScreen(
 
 }
 
+fun addChatIds(item: Team) {
+    val mergedIds = mutableListOf<String>()
+    val playerIds = item.players.map {
+        it._id
+    }
+    val coachIds = item.coaches.map {
+        it._id
+    }
+    val groupId = item.teamChatGroups.map {
+        it.groupId
+    }
+    mergedIds.addAll(playerIds)
+    mergedIds.addAll(coachIds)
+    mergedIds.addAll(groupId)
+    CometChatConversationList.memberIds = mergedIds
+}

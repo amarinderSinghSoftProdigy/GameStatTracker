@@ -71,6 +71,7 @@ object Route {
     const val OPPORTUNITIES_SCREEN = "opportunitiesScreen"
     const val NEW_EVENT = "newEvent"
     const val MY_LEAGUE = "myLeague"
+    const val MY_EVENTS = "myEvents"
     const val MY_CHAT_DETAIL = "myChatDetail"
     const val OPEN_VENUE = "openVenue"
     const val DIVISION_TAB = "divisionTab"
@@ -80,9 +81,23 @@ object Route {
 
 object ApiConstants {
     const val BASE_URL = "http://baller-app.softprodigyphp.in"
+    //Auth
     const val LOGIN = "v1/auth/login"
+    const val SIGNUP = "v1/auth/register"
+    const val AUTHORIZE_GUARDIAN = "v1/auth/sendSmsToGuardian"
+    const val FORGOT_PASSWORD = "v1/auth/forgotPassword"
+    const val UPDATE_PROFILE = "v1/auth/updateUserProfile"
+    const val VERIFY_PHONE = "v1/auth/verifyPhone"
+    const val CONFIRM_PHONE = "v1/auth/confirmPhone"
+    const val SWAP_PROFILE = "v1/auth/swapProfileList"
+    const val SWAP_TOKEN = "v1/auth/swapProfileToken"
+
+    //Utils
     const val GET_ALL_PLAYERS = "v1/player/getAllPlayers"
     const val UPLOAD_SINGLE_IMAGE = "v1/upload/single"
+    const val SEARCH_VENUE = "v1/venue/searchVenue"
+
+    //Team
     const val CREATE_TEAM = "v1/team"
     const val GET_TEAMS_BY_COACH_ID = "v1/team/coach"
     const val GET_TEAMS_BY_USER_ID = "v1/team/getMyTeams"
@@ -92,13 +107,20 @@ object ApiConstants {
     const val GET_TEAM_STANDING = "v1/team/standings"
     const val SEND_INVITATION = "v1/team/inviteTeamMembers"
     const val GET_ALL_INVITATION = "v1/team/getAllTeamsInvitations"
-    const val GET_ALL_EVENTS = "v1/coach/event/getAllEvents"
     const val ACCEPT_TEAM_INVITATION = "v1/team/acceptTeamInvitation"
     const val REJECT_TEAM_INVITATION = "v1/team/rejectTeamInvitation"
     const val GET_USER_ROLE = "v1/team/getUserRoles"
     const val GET_TEAM_PLAYER_BY_ID = "v1/team/getTeamPlayersById"
+    const val GET_CHATS = "v1/team/teamsChatDetails"
+    const val SAVE_CHAT_GROUP = "v1/team/saveChatGroup"
+    const val UPDATE_TEAM = "v1/team/update"
+    const val GET_TEAM_INVITED = "v1/team/getInvitedTeamMembers"
+
+
+    const val GET_HOME_PAGE_DETAILS = "v1/coach/event/getHomePageDetails"
 
     //Events
+    const val GET_ALL_EVENTS = "v1/coach/event/getAllEvents"
     const val CREATE_NEW_EVENT = "v1/coach/event/addEvent"
     const val ACCEPT_COACH_EVENT = "v1/coach/event/acceptCoachEvent"
     const val DECLINE_COACH_EVENT = "v1/coach/event/rejectCoachEvent"
@@ -109,38 +131,27 @@ object ApiConstants {
     const val GET_VENUES = "v1/event/getMyLeague/venues"
     const val GET_ALL_TEAMS_BY_DIVISION_AND_LEAGUES = "v1/event/getMyLeague/allTeams/byDivisionId"
     const val GET_ALL_TEAMS_BY_LEAGUE_ID_All_DIVISIONS = "v1/event/getMyLeague/allTeams/byDivisions"
-    const val GET_ALL_TEAMS_STANDING_BY_LEAGUE_AND_DIVISION =
-        "v1/event/getMyLeague/allTeamsStanding/byDivisionId"
+    const val GET_ALL_TEAMS_STANDING_BY_LEAGUE_AND_DIVISION = "v1/event/getMyLeague/allTeamsStanding/byDivisionId"
     const val GET_VENUE_DETAILS_BY_ID = "v1/event/getMyLeague/venueById"
     const val GET_EVENT_SCHEDULE = "v1/event/getMyLeagueSchedule"
+    const val EVENT_GET_DIVISIONS = "v1/division/getAllDivisions"
+    const val EVENT_TEAM_REGISTRATION = "v1/event/team/registration"
+    const val EVENT_UPDATE_FILTERS = "v1/event/updateFilterPreferences"
+    const val GET_ALL_OPPORTUNITIES = "v1/event/getOpportunitiesEvents"
+    const val GET_OPPORTUNITY_ID = "v1/event/getEventRegisterById"
+    const val GET_FILTERS = "v1/event/getFilterPreferences"
 
-    const val SEARCH_VENUE = "v1/venue/searchVenue"
     const val SOCIAL_LOGIN = "/social_login"
-    const val SIGNUP = "v1/auth/register"
-    const val FORGOT_PASSWORD = "v1/auth/forgotPassword"
-    const val UPDATE_PROFILE = "v1/auth/updateUserProfile"
-    const val VERIFY_PHONE = "v1/auth/verifyPhone"
-    const val CONFIRM_PHONE = "v1/auth/confirmPhone"
-    const val SWAP_PROFILE = "v1/auth/swapProfileList"
-    const val SWAP_TOKEN = "v1/auth/swapProfileToken"
     const val SWAP_INITIAL_TOKEN = "v1/auth/initialSwapProfileToken"
     const val ADD_PROFILE = "v1/auth/addUserProfile"
 
-    const val GET_CHATS = "v1/team/teamsChatDetails"
-    const val SAVE_CHAT_GROUP = "v1/team/saveChatGroup"
 
     const val RESET_PASS = "/reset/password/"
     const val RESEND_OTP = "/resendOtp"
 
-    const val UPDATE_TEAM = "v1/team/update"
-    const val GET_TEAM_INVITED = "v1/team/getInvitedTeamMembers"
     const val GET_USER_DETAILS = "v1/auth/getUserProfile"
-    const val GET_HOME_PAGE_DETAILS = "v1/coach/event/getHomePageDetails"
-    const val GET_USER_FULL_DETAILS = "v1/userDetails/"
+     const val GET_USER_FULL_DETAILS = "v1/userDetails/"
     const val UPDATE_USER_FULL_DETAILS = "v1/userDetails"
-    const val EVENT_GET_DIVISIONS = "v1/division/getAllDivisions"
-    const val EVENT_TEAM_REGISTRATION = "v1/event/team/registration"
-    const val EVENT_UPDATE_FILTERS = "v1/event/updateFilterPreferences"
 
     const val LEAVE_TEAM = "v1/userDetails/leaveTeam"
     const val DOC_TYPES = "v1/userDetails/getUserDocuments"
@@ -148,11 +159,6 @@ object ApiConstants {
     const val UPDATE_DOC = "v1/userDetails/updateDocument"
 
     const val GET_ALL_VENUE = "v1/venue/getAllVenues"
-
-    const val GET_ALL_OPPORTUNITIES = "v1/event/getOpportunitiesEvents"
-    const val GET_OPPORTUNITY_ID = "v1/event/getEventRegisterById"
-    const val GET_FILTERS = "v1/event/getFilterPreferences"
-
     const val GET_SEARCH_GAME_STAFF = "v1/staff/searchGameStaff"
     const val REGISTER_GAME_STAFF = "v1/staff/registerGameStaff"
 

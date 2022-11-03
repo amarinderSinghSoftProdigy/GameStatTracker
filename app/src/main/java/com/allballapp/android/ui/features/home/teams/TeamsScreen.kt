@@ -12,10 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
 import com.allballapp.android.R
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.response.team.Team
@@ -26,12 +22,15 @@ import com.allballapp.android.ui.features.home.teams.roaster.RoasterScreen
 import com.allballapp.android.ui.features.home.teams.standing.StandingScreen
 import com.allballapp.android.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
 import com.allballapp.android.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.PagerState
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun TeamsScreen(
-    vm: TeamViewModel = hiltViewModel(),
+    vm: TeamViewModel,
     showDialog: Boolean,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
     dismissDialog: (Boolean) -> Unit,
@@ -39,6 +38,7 @@ fun TeamsScreen(
     onCreateTeamClick: (Team?) -> Unit,
     onCreateNewConversationClick: () -> Unit,
     onTeamItemClick: () -> Unit,
+    onAddPlayerClick: () -> Unit,
     onHomeClick: () -> Unit
 ) {
     //val dataStoreManager = DataStoreManager(LocalContext.current)
@@ -113,13 +113,15 @@ fun TeamsScreen(
             TeamsTopTabs(pagerState = pagerState, tabData = tabData)
             TeamsContent(
                 pagerState = pagerState,
-                onTeamItemClick,
+                onTeamItemClick = onTeamItemClick,
                 onCreateNewConversationClick = onCreateNewConversationClick,
-                vm
+                viewModel = vm,
+                onAddPlayerClick = onAddPlayerClick
             )
         } else {
             RefereeTeamsTopTabs(pagerState = pagerState, tabData = tabData)
             TeamsChatScreen(
+                vm.teamUiState.value.teamColorPrimary,
                 onTeamItemClick = onTeamItemClick,
                 onCreateNewConversationClick = onCreateNewConversationClick
             )
@@ -161,6 +163,7 @@ fun TeamsContent(
     pagerState: PagerState,
     onTeamItemClick: () -> Unit,
     onCreateNewConversationClick: () -> Unit,
+    onAddPlayerClick: () -> Unit,
     viewModel: TeamViewModel
 ) {
     HorizontalPager(
@@ -170,10 +173,11 @@ fun TeamsContent(
         when (index) {
             0 -> StandingScreen()
             1 -> TeamsChatScreen(
+                viewModel.teamUiState.value.teamColorPrimary,
                 onTeamItemClick = onTeamItemClick,
                 onCreateNewConversationClick = onCreateNewConversationClick
             )
-            2 -> RoasterScreen(viewModel)
+            2 -> RoasterScreen(viewModel, onAddPlayerClick, true)
             3 -> LeaderBoardScreen()
         }
     }

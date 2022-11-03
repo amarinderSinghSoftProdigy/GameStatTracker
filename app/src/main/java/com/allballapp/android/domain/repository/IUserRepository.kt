@@ -1,10 +1,7 @@
 package com.allballapp.android.domain.repository
 
 import com.allballapp.android.common.ResultWrapper
-import com.allballapp.android.data.request.LoginRequest
-import com.allballapp.android.data.request.SignUpData
-import com.allballapp.android.data.request.SignUpPhoneData
-import com.allballapp.android.data.request.UpdateUserDetailsReq
+import com.allballapp.android.data.request.*
 import com.allballapp.android.data.response.*
 import com.allballapp.android.domain.BaseResponse
 import javax.inject.Singleton
@@ -51,5 +48,7 @@ interface IUserRepository {
     suspend fun updateInitialProfileToken(userId: String): ResultWrapper<BaseResponse<String>>
 
     suspend fun getSearchGameStaff(search: String): ResultWrapper<BaseResponse<List<GetSearchStaff>>>
+
+    suspend fun authorizeGuardian(request: AuthorizeRequest): ResultWrapper<BaseResponse<Any>>
 
 }

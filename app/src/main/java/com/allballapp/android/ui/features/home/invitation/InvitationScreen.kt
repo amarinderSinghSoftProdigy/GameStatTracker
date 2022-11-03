@@ -29,7 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.allballapp.android.BuildConfig
+import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.apiToUIDateFormat
 import com.allballapp.android.data.request.Members
@@ -40,12 +40,14 @@ import com.allballapp.android.ui.features.home.HomeViewModel
 import com.allballapp.android.ui.features.home.home_screen.HomeScreenEvent
 import com.allballapp.android.ui.features.sign_up.SignUpChannel
 import com.allballapp.android.ui.features.sign_up.SignUpViewModel
-import com.allballapp.android.ui.features.user_type.team_setup.updated.*
+import com.allballapp.android.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
+import com.allballapp.android.ui.features.user_type.team_setup.updated.TeamSetupChannel
+import com.allballapp.android.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
 import com.allballapp.android.ui.theme.ColorButtonGreen
 import com.allballapp.android.ui.theme.ColorButtonRed
 import com.allballapp.android.ui.theme.appColors
 import timber.log.Timber
-import com.allballapp.android.R
+
 @Composable
 fun InvitationScreen(
     refreshProfileList: String,
@@ -55,10 +57,8 @@ fun InvitationScreen(
     onNewProfileIntent: (countryCode: String, mobileNumber: String) -> Unit,
     onInvitationSuccess: () -> Unit,
     addProfileClick: () -> Unit,
-    onInviteClick:(teamId:String)->Unit,
-
-
-    ) {
+    onInviteClick: (teamId: String) -> Unit,
+) {
     val vm: InvitationViewModel = hiltViewModel()
     val state = vm.invitationState.value
     val context = LocalContext.current
@@ -92,8 +92,8 @@ fun InvitationScreen(
                 is TeamSetupChannel.OnInvitationSuccess -> {
                     vm.onEvent(InvitationEvent.OnRoleConfirmClick)
                     vm.onEvent(InvitationEvent.OnRoleDialogClick(true))
-                vm.onEvent(InvitationEvent.OnGuardianDialogClick(true))
-                vm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
+                    vm.onEvent(InvitationEvent.OnGuardianDialogClick(true))
+                    vm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
 
 
                 }
@@ -138,18 +138,19 @@ fun InvitationScreen(
                     .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
             ) {
                 LazyColumn(Modifier.fillMaxWidth()) {
-                items(state.invitations) { invitation ->
-                    InvitationItem(invitation = invitation, onAcceptCLick = {
-                        vm.onEvent(InvitationEvent.OnAcceptCLick(it))
-                    }, onDeclineCLick = {
-                        vm.onEvent(InvitationEvent.OnDeclineCLick(it))
-                    })
+                    items(state.invitations) { invitation ->
+                        InvitationItem(invitation = invitation, onAcceptCLick = {
+                            vm.onEvent(InvitationEvent.OnRoleClick(roleKey = it.role))
+                            vm.onEvent(InvitationEvent.OnAcceptCLick(it))
+                        }, onDeclineCLick = {
+                            vm.onEvent(InvitationEvent.OnDeclineCLick(it))
+                        })
+                    }
                 }
             }
-        }
 
-    }
-} else if(!state.showLoading){
+        }
+    } else if (!state.showLoading) {
         EmptyScreen(singleText = true, stringResource(id = R.string.no_data_found))
 
     }
@@ -267,7 +268,7 @@ fun InvitationScreen(
                         if (homeState.user.phone != teamState.inviteList[0].countryCode + teamState.inviteList[0].contact) {
                             vmSetupTeam.onEvent(
                                 TeamSetupUIEventUpdated.OnInviteTeamMembers(
-                                    teamId =state.selectedInvitation.team._id,
+                                    teamId = state.selectedInvitation.team._id,
                                     userType = state.selectedRoleKey,
                                     type = AppConstants.TYPE_ACCEPT_INVITATION
                                 )
@@ -372,23 +373,23 @@ fun InvitationScreen(
         )
     }
 
-   /* if(state.showPlayerAddedSuccessDialog){
-        InvitationSuccessfullySentDialog(
-            onDismiss = {
-                vm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
-            },
-            onConfirmClick = {
-                onInviteClick.invoke(state.selectedInvitation.team._id)
-                vm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
-                vm.onEvent(InvitationEvent.OnRoleDialogClick(false))
-                vm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
+    /* if(state.showPlayerAddedSuccessDialog){
+         InvitationSuccessfullySentDialog(
+             onDismiss = {
+                 vm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
+             },
+             onConfirmClick = {
+                 onInviteClick.invoke(state.selectedInvitation.team._id)
+                 vm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
+                 vm.onEvent(InvitationEvent.OnRoleDialogClick(false))
+                 vm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
 
-            },
-            teamLogo = BuildConfig.IMAGE_SERVER + state.selectedInvitation.team.logo,
-            teamName = state.selectedInvitation.team.name,
-            playerName = if (teamState.inviteList.isNotEmpty()) teamState.inviteList[0].name else ""
-        )
-    }*/
+             },
+             teamLogo = BuildConfig.IMAGE_SERVER + state.selectedInvitation.team.logo,
+             teamName = state.selectedInvitation.team.name,
+             playerName = if (teamState.inviteList.isNotEmpty()) teamState.inviteList[0].name else ""
+         )
+     }*/
 }
 
 
@@ -446,7 +447,10 @@ fun InvitationItem(
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
                     Text(
                         text = " ${stringResource(id = R.string.sent_by)} ${invitation.createdBy.name}",
                         color = MaterialTheme.appColors.textField.label,

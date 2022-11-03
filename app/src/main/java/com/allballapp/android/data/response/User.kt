@@ -59,6 +59,7 @@ data class SwapUser(
 
 data class ProfileList(
     @SerializedName("profiles") val profiles: ArrayList<SwapUser> = ArrayList(),
+    @SerializedName("isAuthorised") val isAuthorised: Boolean = false,
 )
 
 data class TeamDetails(
@@ -82,7 +83,7 @@ data class UserDetails(
     @SerializedName("funFacts") val funFacts: ArrayList<FunFacts> = arrayListOf(),
     @SerializedName("grade") val grade: String = "",
     @SerializedName("jerseyPerferences") val jerseyPerferences: SnapshotStateList<JerseyPerferences> = mutableStateListOf(),
-    @SerializedName("perferredPartner") val preferredPartner: PerferredPartner ?= null,
+    @SerializedName("perferredPartner") val preferredPartner: PerferredPartner? = null,
     @SerializedName("positionPlayed") val positionPlayed: ArrayList<String> = arrayListOf(),
     @SerializedName("refereeWithPartner") val refereeWithPartner: Boolean = false,
     @SerializedName("refereeningExperience") val refereeningExperience: String = "",
@@ -145,7 +146,7 @@ data class UserDocType(
 data class ParentDetails(
 
     @SerializedName("_id") val Id: String = "",
-    @SerializedName("parent") val parent: Parent ?= null,
+    @SerializedName("parent") val parent: Parent? = null,
     @SerializedName("parentType") val parentType: String = ""
 
 )
@@ -161,6 +162,17 @@ data class Parent(
     @SerializedName("name") val name: String = "",
     @SerializedName("id") val id: String = ""
 
+)
+
+data class AllUser(
+    @SerializedName("_id") val _id: String = "",
+    @SerializedName("status") val status: String = "",
+    @SerializedName("firstName") val firstName: String = "",
+    @SerializedName("lastName") val lastName: String = "",
+    @SerializedName("profileImage") val profileImage: String = "",
+    @SerializedName("role") val role: String = "",
+    @SerializedName("position") val position: String = "",
+    @SerializedName("jersey") val jersey: String = ""
 )
 
 

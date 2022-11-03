@@ -15,26 +15,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.accompanist.flowlayout.FlowRow
-import com.allballapp.android.BuildConfig
-import com.allballapp.android.data.response.SwapUser
-import com.allballapp.android.data.response.team.Coach
-import com.allballapp.android.data.response.team.Player
+import com.allballapp.android.R
+import com.allballapp.android.data.response.AllUser
 import com.allballapp.android.ui.features.components.*
-import com.allballapp.android.ui.features.home.teams.TeamUIState
 import com.allballapp.android.ui.features.home.teams.TeamViewModel
 import com.allballapp.android.ui.theme.ColorBWBlack
 import com.allballapp.android.ui.theme.appColors
+import com.allballapp.android.ui.utils.CommonUtils
+import com.google.accompanist.flowlayout.FlowRow
 import kotlin.math.ceil
-import com.allballapp.android.R
+
 @Composable
-fun RoasterScreen(vm: TeamViewModel = hiltViewModel()) {
+fun RoasterScreen(vm: TeamViewModel, onAddPlayerClick: () -> Unit, showAddButton: Boolean = false) {
 
     val state = vm.teamUiState.value
 
@@ -44,7 +43,7 @@ fun RoasterScreen(vm: TeamViewModel = hiltViewModel()) {
     ) {
         if (state.isLoading) {
             CommonProgressBar()
-        } else
+        } else {
             if (state.coaches.isEmpty() && state.players.isEmpty() && state.supportStaff.isEmpty() && state.acceptPending.isEmpty()) {
                 Column(modifier = Modifier.align(Alignment.Center)) {
                     AppText(
@@ -68,64 +67,70 @@ fun RoasterScreen(vm: TeamViewModel = hiltViewModel()) {
                 ) {
                     FlowRow {
                         Column {
+                            var list =
+                                CommonUtils.getUsersList(state.allUsers, UserType.COACH)
                             ParentItem(
                                 id = R.string.coaches,
-                                count = state.coaches.size,
-                                state = state,
-                                User.Coach
+                                count = list.size,
+                                list
                             )
+                            list = CommonUtils.getUsersList(state.allUsers, UserType.PLAYER)
                             ParentItem(
                                 id = R.string.players,
-                                count = state.players.size,
-                                state = state,
-                                User.Player
+                                count = list.size,
+                                list
                             )
+                            list = CommonUtils.getUsersList(state.allUsers, UserType.PARENT)
                             ParentItem(
                                 id = R.string.supporting_staff,
-                                count = state.supportStaff.size,
-                                state = state,
-                                User.Staff
+                                count = list.size,
+                                list
                             )
-                            ParentItem(
+                            /*ParentItem(
                                 id = R.string.invited,
                                 count = state.acceptPending.size,
-                                state = state,
-                                User.User
+
+                                )*/
+                            Spacer(
+                                modifier = Modifier.height(
+                                    if (showAddButton) dimensionResource(
+                                        id = R.dimen.size_72dp
+                                    ) else 0.dp
+                                )
                             )
                         }
                     }
                 }
             }
+        }
+        if (showAddButton) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .background(MaterialTheme.appColors.material.surface.copy(alpha = .97f))
+                    .height(dimensionResource(id = R.dimen.size_72dp))
+            ) {
+                ButtonWithLeadingIcon(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(id = R.string.invite_team_member),
+                    onClick = {
+                        onAddPlayerClick()
+                    },
+                    painter = painterResource(id = R.drawable.ic_add_button),
+                )
+            }
+        }
     }
 }
 
-enum class User {
-    Coach, Player, Staff, User
-}
-
-
 @Composable
-fun ParentItem(id: Int, count: Int, state: TeamUIState, type: User) {
+fun ParentItem(id: Int, count: Int, listing: List<AllUser>) {
     Column {
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
         ShowHeading(id, count.toString())
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
         val gridCount = 3
-        val listing = when (type) {
-            User.Coach -> {
-                state.coaches
-            }
-            User.Player -> {
-                state.players
-            }
-            User.User -> {
-                state.acceptPending
-            }
-            User.Staff -> {
-                state.supportStaff
-            }
-
-        }
         val heightFactor = ceil(listing.size.toDouble() / gridCount)
 
         LazyVerticalGrid(
@@ -141,15 +146,12 @@ fun ParentItem(id: Int, count: Int, state: TeamUIState, type: User) {
             content = {
                 items(listing) {
                     CoachListItem(
-                        type = type,
-                        coach = if (type == User.Coach) it as Coach else null,
-                        player = if (type == User.Player) it as Player else null,
-                        user = if (type == User.Staff || type == User.User) it as SwapUser else null,
                         modifier = Modifier.padding(
                             bottom = dimensionResource(
                                 id = R.dimen.size_16dp
                             )
-                        )
+                        ),
+                        it,
                     )
                 }
             })
@@ -186,38 +188,8 @@ fun ShowHeading(id: Int, count: String) {
 @Composable
 fun CoachListItem(
     modifier: Modifier = Modifier,
-    coach: Coach? = null,
-    player: Player? = null,
-    user: SwapUser? = null,
-    type: User,
+    data: AllUser,
 ) {
-    val data: SwapUser = when (type) {
-        User.Coach -> {
-            SwapUser(
-                coach?._id ?: "",
-                coach?.firstName ?: "",
-                coach?.lastName ?: "",
-                coach?.role ?: "",
-                coach?.profileImage ?: "",
-                ""
-            )
-        }
-        User.Player -> {
-            SwapUser(
-                player?._id ?: "",
-                player?.firstName ?: "",
-                player?.lastName ?: "",
-                player?.role ?: "",
-                player?.profileImage ?: "",
-                player?.status ?: ""
-            )
-        }
-        User.User, User.Staff -> {
-            user ?: SwapUser()
-        }
-    }
-
-
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Center,
@@ -253,21 +225,28 @@ fun CoachListItem(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            if (data.role != UserType.PLAYER.key) {
+                AppText(
+                    text = stringResourceByName(name = CommonUtils.getRole(data.role)),
+                    color = MaterialTheme.appColors.material.primaryVariant,
+                    style = MaterialTheme.typography.h6
+                )
+            }
 
-            AppText(
-                text = if (type == User.Coach || type == User.Player) data.role else data.status,
-                color = if (type == User.Coach || type == User.Player) MaterialTheme.appColors.material.primaryVariant else MaterialTheme.appColors.textField.label,
-                style = MaterialTheme.typography.h6
-            )
-
-            if (type == User.Player) {
+            if (data.role == UserType.PLAYER.key) {
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                 AppText(
-                    text = player?.jerseyNumber ?: "",
+                    text = data.jersey + " " + data.position,
                     color = MaterialTheme.appColors.textField.label,
                     style = MaterialTheme.typography.h6
                 )
             }
         }
+        if (data.status.equals("pending", true))
+            AppText(
+                text = data.status,
+                color = MaterialTheme.appColors.textField.label,
+                style = MaterialTheme.typography.h6
+            )
     }
 }

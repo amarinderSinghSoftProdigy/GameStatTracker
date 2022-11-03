@@ -1,8 +1,6 @@
 package com.allballapp.android.ui.features.profile.tabs
 
-import android.Manifest
 import android.app.Activity
-import android.content.pm.PackageManager
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -16,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -24,31 +21,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import com.allballapp.android.BuildConfig
+import com.allballapp.android.R
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.data.response.UserDocType
-import com.allballapp.android.ui.features.components.AppText
-import com.allballapp.android.ui.features.components.CoilImage
-import com.allballapp.android.ui.features.components.DeleteDialog
 import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.profile.ProfileEvent
 import com.allballapp.android.ui.features.profile.ProfileViewModel
 import com.allballapp.android.ui.theme.ColorBWBlack
 import com.allballapp.android.ui.theme.appColors
-import com.allballapp.android.R
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionStatus
-import com.google.accompanist.permissions.rememberPermissionState
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun DocumentTab(vm: ProfileViewModel) {
     val context = LocalContext.current
@@ -77,14 +62,12 @@ fun DocumentTab(vm: ProfileViewModel) {
                 }
                 itemsIndexed(state.userDocTypes) { index, item ->
                     DocumentItem(item, {
-
                         if (hasFileManagerPermission(context)) {
                             launcher.launch("*/*")
                             vm.onEvent(ProfileEvent.SetUploadKey(it))
                         } else {
                             requestFileManagerPermission(context, context as Activity)
                         }
-
                     }) {
                         vm.onEvent(ProfileEvent.SetDeleteDocument(item))
                         vm.onEvent(ProfileEvent.ShowDeleteDialog(true))
@@ -119,6 +102,7 @@ fun DocumentTab(vm: ProfileViewModel) {
 
 @Composable
 fun DocumentItem(item: UserDocType, onImageClick: (String) -> Unit, onDeleteClick: () -> Unit) {
+    val uriHandler = LocalUriHandler.current
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -154,6 +138,7 @@ fun DocumentItem(item: UserDocType, onImageClick: (String) -> Unit, onDeleteClic
                             modifier = Modifier
                                 .align(Alignment.Center)
                                 .clickable {
+                                    //uriHandler.openUri("https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_960_720.jpg")
                                     onImageClick(item.key)
                                 },
                         )
@@ -169,7 +154,7 @@ fun DocumentItem(item: UserDocType, onImageClick: (String) -> Unit, onDeleteClic
                                     shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                                 )
                                 .clickable {
-                                    onImageClick(item.key)
+                                    uriHandler.openUri(item.url)
                                 },
                             onLoading = {
                                 Box {

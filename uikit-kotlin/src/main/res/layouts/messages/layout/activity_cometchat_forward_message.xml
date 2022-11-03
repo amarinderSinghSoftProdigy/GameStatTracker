@@ -81,11 +81,11 @@
         <!--Conversation_List - It is used to display ConversationList-->
         <com.cometchat.pro.uikit.ui_components.shared.cometchatConversations.CometChatConversation
             android:id="@+id/rv_conversation_list"
-            android:layout_below="@+id/selected_view"
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/selected_view"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/cometchat_user_list_item"
-            android:layout_height="match_parent"/>
+            tools:listitem="@layout/cometchat_user_list_item" />
         <!--End of Conversation_List-->
 
 

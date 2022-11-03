@@ -7,16 +7,13 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.cometchat.pro.core.CometChat
-import com.cometchat.pro.exceptions.CometChatException
-import com.cometchat.pro.models.User
-import com.allballapp.android.BuildConfig
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.ResultWrapper
 import com.allballapp.android.common.getFileFromUri
 import com.allballapp.android.core.util.UiText
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
+import com.allballapp.android.data.request.AuthorizeRequest
 import com.allballapp.android.data.request.SignUpData
 import com.allballapp.android.data.request.SignUpPhoneData
 import com.allballapp.android.data.response.AddProfileRequest
@@ -24,6 +21,9 @@ import com.allballapp.android.data.response.SwapUser
 import com.allballapp.android.data.response.UserInfo
 import com.allballapp.android.domain.repository.IImageUploadRepo
 import com.allballapp.android.domain.repository.IUserRepository
+import com.cometchat.pro.core.CometChat
+import com.cometchat.pro.exceptions.CometChatException
+import com.cometchat.pro.models.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -216,6 +216,11 @@ class SignUpViewModel @Inject constructor(
                 _signUpUiState.value = _signUpUiState.value.copy(phoneCode = event.countryCode)
             }
 
+            is SignUpUIEvent.AuthorizeUser -> {
+                viewModelScope.launch {
+                    authorizeUser(event.phone, event.parentPhone)
+                }
+            }
             is SignUpUIEvent.ClearPhoneField -> {
                 _signUpUiState.value =
                     _signUpUiState.value.copy(
@@ -723,6 +728,51 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
+    private fun authorizeUser(phone: String, parent: String) {
+        viewModelScope.launch {
+            _signUpUiState.value = _signUpUiState.value.copy(isLoading = true)
+
+            val verifyResponseResponse =
+                IUserRepository.authorizeGuardian(AuthorizeRequest(phone, parent))
+
+            when (verifyResponseResponse) {
+
+                is ResultWrapper.Success -> {
+                    verifyResponseResponse.value.let { response ->
+                        _signUpUiState.value = _signUpUiState.value.copy(isLoading = false)
+                        _signUpChannel.send(
+                            SignUpChannel.OnAuthorizeSuccess(
+                                UiText.DynamicString(response.statusMessage)
+                            )
+                        )
+                    }
+                }
+                is ResultWrapper.GenericError -> {
+                    _signUpUiState.value = _signUpUiState.value.copy(
+                        isLoading = false,
+                        errorMessage = "${verifyResponseResponse.message}"
+                    )
+                    _signUpChannel.send(SignUpChannel.ShowToast(UiText.DynamicString("${verifyResponseResponse.message}")))
+
+                }
+                is ResultWrapper.NetworkError -> {
+                    _signUpUiState.value =
+                        _signUpUiState.value.copy(
+                            errorMessage = verifyResponseResponse.message,
+                            isLoading = false
+                        )
+                    _signUpChannel.send(
+                        SignUpChannel.ShowToast(
+                            UiText.DynamicString(
+                                verifyResponseResponse.message
+                            )
+                        )
+                    )
+                }
+            }
+        }
+    }
+
     private fun verifyPhone() {
         viewModelScope.launch {
             _signUpUiState.value = _signUpUiState.value.copy(isLoading = true)
@@ -810,16 +860,21 @@ class SignUpViewModel @Inject constructor(
                                         phoneVerified = response.status,
                                     )
                                 )
-                            _signUpChannel.send(
-                                SignUpChannel.OnSuccess(
-                                    UiText.DynamicString(
-                                        response.statusMessage,
-                                    ),
-                                    count = response.data.profiles.size,
-                                    profileIdIfSingle = if (response.data.profiles.size == 1) response.data.profiles[0] else null
+                            if (response.data.isAuthorised || response.data.profiles.isNotEmpty()) {
+                                _signUpChannel.send(
+                                    SignUpChannel.OnSuccess(
+                                        UiText.DynamicString(
+                                            response.statusMessage,
+                                        ),
+                                        count = response.data.profiles.size,
+                                        profileIdIfSingle = if (response.data.profiles.size == 1) response.data.profiles[0] else null
+                                    )
                                 )
-                            )
-
+                            } else {
+                                _signUpChannel.send(
+                                    SignUpChannel.OnAuthorize
+                                )
+                            }
                         } else {
                             _signUpUiState.value = _signUpUiState.value.copy(
                                 errorMessage = response.statusMessage,
@@ -893,6 +948,9 @@ sealed class SignUpChannel {
     data class OnProfileUpdateSuccess(val message: UiText) : SignUpChannel()
     data class OnSuccess(val message: UiText, val count: Int, val profileIdIfSingle: SwapUser?) :
         SignUpChannel()
+
+    object OnAuthorize : SignUpChannel()
+    data class OnAuthorizeSuccess(val message: UiText) : SignUpChannel()
 
     object OnOTPScreen : SignUpChannel()
     object OnSignUpSelected : SignUpChannel()
