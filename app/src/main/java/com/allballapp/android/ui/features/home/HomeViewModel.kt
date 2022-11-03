@@ -1,6 +1,7 @@
 package com.allballapp.android.ui.features.home
 
 import android.app.Application
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
@@ -363,6 +364,75 @@ class HomeViewModel @Inject constructor(
             dataStoreManager.setEmail(email)
         }
     }
+
+    fun getUnreadMessageCount() {
+        CometChat.getUnreadMessageCount(object :
+            CometChat.CallbackListener<HashMap<String?, HashMap<String?, Int?>?>?>() {
+
+            override fun onError(e: CometChatException) {
+            }
+
+            override fun onSuccess(stringHashMapHashMap: HashMap<String?, HashMap<String?, Int?>?>?) {
+
+                val count = (stringHashMapHashMap?.get("user")?.keys?.size ?: 0).plus(
+                    stringHashMapHashMap?.get("group")?.keys?.size ?: 0
+                )
+                _state.value =
+                    _state.value.copy(unReadMessageCount = count)
+                Timber.i(
+                    "CometChatUI onSuccess: unread count $count -- stringHashMapHashMap$stringHashMapHashMap"
+                )
+
+            }
+        })
+
+    }
+
+    /*Register newly updated user to cometchat*/
+    private fun registerProfileToCometChat(name: String, uid: String) {
+        val authKey = com.allballapp.android.BuildConfig.COMET_CHAT_AUTH_KEY
+        val user = User()
+        user.uid = uid
+        user.name = name
+
+        CometChat.createUser(user, authKey, object : CometChat.CallbackListener<User>() {
+            override fun onSuccess(user: User) {
+                Timber.i("CometChat- createUser $user")
+                /*It means user registered successfully so let's login  */
+                loginToCometChat(uid)
+            }
+
+            override fun onError(e: CometChatException) {
+                Timber.e("CometChat- createUser ${e.message}")
+                if (e.code.equals(CometChatErrorCodes.ERR_UID_ALREADY_EXISTS)) {
+
+                    /*It means user already registered so login to his profile */
+                    loginToCometChat(uid)
+
+
+                }
+            }
+        })
+    }
+
+    /*Login registered user */
+    private fun loginToCometChat(uid: String) {
+
+        CometChat.login(
+            uid,
+            com.allballapp.android.BuildConfig.COMET_CHAT_AUTH_KEY,
+            object : CometChat.CallbackListener<User?>() {
+                override fun onSuccess(user: User?) {
+                    Timber.i(" CometChat- Login Successful : " + user.toString())
+                    getUnreadMessageCount()
+
+                }
+
+                override fun onError(e: CometChatException) {
+                    Timber.e("CometChat- Login failed with exception:  ${e.message} ${e.code}");
+                }
+            })
+    }
 }
 
 sealed class HomeChannel {
@@ -371,46 +441,4 @@ sealed class HomeChannel {
     object OnUserIdUpdate : HomeChannel()
 }
 
-/*Register newly updated user to cometchat*/
-private fun registerProfileToCometChat(name: String, uid: String) {
-    val authKey = com.allballapp.android.BuildConfig.COMET_CHAT_AUTH_KEY
-    val user = User()
-    user.uid = uid
-    user.name = name
 
-    CometChat.createUser(user, authKey, object : CometChat.CallbackListener<User>() {
-        override fun onSuccess(user: User) {
-            Timber.i("CometChat- createUser $user")
-            /*It means user registered successfully so let's login  */
-            loginToCometChat(uid)
-        }
-
-        override fun onError(e: CometChatException) {
-            Timber.e("CometChat- createUser ${e.message}")
-            if (e.code.equals(CometChatErrorCodes.ERR_UID_ALREADY_EXISTS)) {
-
-                /*It means user already registered so login to his profile */
-                loginToCometChat(uid)
-
-
-            }
-        }
-    })
-}
-
-/*Login registered user */
-private fun loginToCometChat(uid: String) {
-
-    CometChat.login(
-        uid,
-        com.allballapp.android.BuildConfig.COMET_CHAT_AUTH_KEY,
-        object : CometChat.CallbackListener<User?>() {
-            override fun onSuccess(user: User?) {
-                Timber.i(" CometChat- Login Successful : " + user.toString())
-            }
-
-            override fun onError(e: CometChatException) {
-                Timber.e("CometChat- Login failed with exception:  ${e.message} ${e.code}");
-            }
-        })
-}

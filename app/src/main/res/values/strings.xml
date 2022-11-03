@@ -465,5 +465,6 @@
     <string name="age_zero">I\'m 0–12 years</string>
     <string name="age_conformation">To begin, Please select your age</string>
     <string name="authorize_message">Awesome! We need your parents help to get started.Enter either of your parent\'s phone number below and we\'ll send them a message to help you get started.</string>
+    <string name="team_chat">Team Chat</string>
 
 </resources>
