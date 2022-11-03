@@ -73,6 +73,7 @@ object Route {
     const val MY_LEAGUE = "myLeague"
     const val MY_EVENTS = "myEvents"
     const val MY_CHAT_DETAIL = "myChatDetail"
+    const val TEAMS_CHAT_SCREEN = "teamsChatScreen"
     const val OPEN_VENUE = "openVenue"
     const val DIVISION_TAB = "divisionTab"
     const val TEAM_TAB = "teamTab"

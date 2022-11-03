@@ -5,6 +5,7 @@ import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -17,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -27,9 +29,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.allballapp.android.R
+import com.allballapp.android.common.AppConstants
 import com.allballapp.android.ui.theme.ColorBWGrayLight
 import com.allballapp.android.ui.theme.ColorGreyLighter
 import com.allballapp.android.ui.theme.appColors
+import com.allballapp.android.ui.theme.rubikFamily
 
 
 /**
@@ -38,10 +42,11 @@ import com.allballapp.android.ui.theme.appColors
 @Composable
 fun BottomNavigationBar(
     navKey: BottomNavKey,
+    badgeCount: Int = 0,
     navController: NavController,
     height: Dp = dimensionResource(id = R.dimen.size_64dp),
     selectionColor: Color = MaterialTheme.appColors.material.primaryVariant,
-    selectedValue: (BottomNavKey) -> Unit
+    selectedValue: (BottomNavKey) -> Unit,
 ) {
     val selected: MutableState<BottomNavKey> = remember { mutableStateOf(navKey) }
     Surface(
@@ -66,19 +71,19 @@ fun BottomNavigationBar(
                     modifier = Modifier
                         .weight(1f)
                         .height(height)
+                        .clickable {
+                            selected.value = item.key
+                            selectedValue(item.key)
+                            navController.navigate(item.key.route)
+                        }
                 ) {
                     Box(
                         modifier = Modifier
                             .height(height)
                             .align(Alignment.CenterHorizontally)
-                            .clickable {
-                                selected.value = item.key
-                                selectedValue(item.key)
-                                navController.navigate(item.key.route)
-                            },
+                            .width(dimensionResource(id = R.dimen.size_50dp)),
                         contentAlignment = Alignment.Center
                     ) {
-
                         Column {
                             Icon(
                                 modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -97,6 +102,31 @@ fun BottomNavigationBar(
                                 fontWeight = FontWeight.W700
                             )
                         }
+                        if (item.key == BottomNavKey.TEAMS && badgeCount > 0) {
+                            Box(
+                                modifier = Modifier
+                                    .offset(y = (dimensionResource(id = R.dimen.size_5dp)))
+                                    .background(
+                                        shape = RoundedCornerShape(50),
+                                        color = AppConstants.SELECTED_COLOR
+                                    )
+                                    .clip(CircleShape)
+                                    .align(Alignment.TopEnd)
+
+                                    .padding(
+                                        horizontal = dimensionResource(id = R.dimen.size_6dp),
+                                        vertical = dimensionResource(id = R.dimen.size_2dp)
+                                    )
+                            ) {
+                                AppText(
+                                    text = badgeCount.toString(),
+                                    fontFamily = rubikFamily,
+                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                    color = MaterialTheme.appColors.material.surface
+                                )
+                            }
+                        }
+
                     }
                 }
             }
