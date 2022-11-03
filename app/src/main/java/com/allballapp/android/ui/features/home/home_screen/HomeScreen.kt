@@ -35,7 +35,6 @@ import com.allballapp.android.ui.features.home.HomeViewModel
 import com.allballapp.android.ui.features.home.teams.TeamChannel
 import com.allballapp.android.ui.features.home.teams.TeamUIEvent
 import com.allballapp.android.ui.features.home.teams.TeamViewModel
-import com.allballapp.android.ui.features.sign_up.SignUpViewModel
 import com.allballapp.android.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
 import com.allballapp.android.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
 import com.allballapp.android.ui.theme.ColorBWBlack
@@ -53,6 +52,7 @@ fun HomeScreen(
     addProfileClick: () -> Unit,
     logoClick: () -> Unit,
     onInvitationCLick: () -> Unit,
+    onChatCLick: () -> Unit,
     gotToProfile: () -> Unit,
     OnTeamDetailsSuccess: (String, String) -> Unit,
     showDialog: Boolean,
@@ -84,6 +84,7 @@ fun HomeScreen(
         coroutineScope.launch {
             if (UserStorage.token.isNotEmpty()) {
                 vm.getHomePageDetails()
+                vm.getUnreadMessageCount()
             }
         }
     }
@@ -259,6 +260,86 @@ fun HomeScreen(
                     }
                     /* if (role != UserType.REFEREE.key) {*/
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                    if (homeState.unReadMessageCount > 0) {
+                        UserFlowBackground(
+                            padding = 0.dp,
+                            color = Color.White
+                        ) {
+                            Box(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        onChatCLick.invoke()
+                                    }
+                                    .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Row(
+                                    Modifier
+                                        .fillMaxSize(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_chat),
+                                        contentDescription = "",
+                                        tint = MaterialTheme.appColors.material.primaryVariant,
+                                        modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
+                                    )
+                                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+                                    Text(
+                                        text = stringResource(id = R.string.team_chat),
+                                        style = MaterialTheme.typography.h6,
+                                        modifier = Modifier.weight(1f),
+                                    )
+                                }
+                                Text(
+                                    text = homeState.unReadMessageCount.toString(),
+                                    fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
+                                    modifier = Modifier.align(Alignment.CenterEnd)
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                    }
+                    UserFlowBackground(
+                        padding = 0.dp,
+                        color = Color.White
+                    ) {
+                        Box(
+                            Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    onInvitationCLick.invoke()
+                                }
+                                .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Row(
+                                Modifier
+                                    .fillMaxSize(),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_invite),
+                                    contentDescription = "",
+                                    tint = MaterialTheme.appColors.material.primaryVariant,
+                                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
+                                )
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+                                Text(
+                                    text = stringResource(id = R.string.pending_invitations),
+                                    style = MaterialTheme.typography.h6,
+                                    modifier = Modifier.weight(1f),
+                                )
+                            }
+                            Text(
+                                text = homeState.homePageCoachModel.pendingInvitations.toString(),
+                                fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
+                                modifier = Modifier.align(Alignment.CenterEnd)
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                     UserFlowBackground(
                         padding = 0.dp,
                         color = Color.White
@@ -299,46 +380,9 @@ fun HomeScreen(
                             )
                         }
                     }
+
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                    UserFlowBackground(
-                        padding = 0.dp,
-                        color = Color.White
-                    ) {
-                        Box(
-                            Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    onInvitationCLick.invoke()
-                                }
-                                .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Row(
-                                Modifier
-                                    .fillMaxSize(),
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.ic_invite),
-                                    contentDescription = "",
-                                    tint = MaterialTheme.appColors.material.primaryVariant,
-                                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
-                                )
-                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
-                                Text(
-                                    text = stringResource(id = R.string.pending_invitations),
-                                    style = MaterialTheme.typography.h6,
-                                    modifier = Modifier.weight(1f),
-                                )
-                            }
-                            Text(
-                                text = homeState.homePageCoachModel.pendingInvitations.toString(),
-                                fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
-                                modifier = Modifier.align(Alignment.CenterEnd)
-                            )
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+
                     Row {
                         EventItem(
                             "my_events",

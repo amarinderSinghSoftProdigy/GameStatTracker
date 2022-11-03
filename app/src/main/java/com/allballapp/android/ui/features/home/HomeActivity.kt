@@ -52,6 +52,7 @@ import com.allballapp.android.ui.features.home.teams.TeamViewModel
 import com.allballapp.android.ui.features.home.teams.TeamsScreen
 import com.allballapp.android.ui.features.home.teams.chat.NewConversationScreen
 import com.allballapp.android.ui.features.home.teams.chat.TeamsChatDetailScreen
+import com.allballapp.android.ui.features.home.teams.chat.TeamsChatScreen
 import com.allballapp.android.ui.features.home.webview.CommonWebView
 import com.allballapp.android.ui.features.profile.*
 import com.allballapp.android.ui.features.sign_up.ProfileSetUpScreen
@@ -189,7 +190,8 @@ class HomeActivity : FragmentActivity() {
                             BottomNavigationBar(
                                 state.bottomBar,
                                 navController = navController,
-                                selectionColor = state.color ?: Color.Black
+                                selectionColor = state.color ?: Color.Black,
+                                badgeCount = state.unReadMessageCount
                             ) {
                                 homeViewModel.setBottomNav(it)
                                 if (it == BottomNavKey.HOME) {
@@ -345,6 +347,9 @@ fun NavControllerComposable(
                     navController.navigate(Route.ADD_MY_PLAYER_SCREEN + "/${UserStorage.teamId}")
                 },
                 setupTeamViewModelUpdated = setupTeamViewModelUpdated,
+                onChatCLick = {
+                    navController.navigate(Route.TEAMS_CHAT_SCREEN)
+                }
             )
         }
         composable(route = Route.PROFILE_SCREEN) {
@@ -485,7 +490,7 @@ fun NavControllerComposable(
                     navController.navigate(Route.ADD_MY_PLAYER_SCREEN + "/${UserStorage.teamId}")
                 }, onHomeClick = {
                     navController.navigate(Route.HOME_SCREEN)
-                })
+                }, homeVm = homeViewModel)
         }
 
         composable(route = Route.CREATE_NEW_CHAT_CONVO) {
@@ -919,6 +924,18 @@ fun NavControllerComposable(
         composable(route = Route.MY_CHAT_DETAIL) {
             Timber.e("data " + CometChatUI.convo)
             TeamsChatDetailScreen()
+        }
+        composable(route = Route.TEAMS_CHAT_SCREEN) {
+            TeamsChatScreen(
+                "",
+                homeVm = homeViewModel,
+                onTeamItemClick = {
+
+                },
+                onCreateNewConversationClick = {
+                    navController.navigate(Route.CREATE_NEW_CHAT_CONVO)
+                }
+            )
         }
         composable(route = Route.SELECT_VENUE) {
             homeViewModel.setTopBar(
