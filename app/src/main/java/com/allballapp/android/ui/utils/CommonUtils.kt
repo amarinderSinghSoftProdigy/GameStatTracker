@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import com.allballapp.android.R
 import com.allballapp.android.data.response.AllUser
+import com.allballapp.android.data.response.UserRoles
 import com.allballapp.android.data.response.team.Player
 import com.allballapp.android.data.response.team.Team
 import com.allballapp.android.data.response.team.TeamLeaderBoard
@@ -176,6 +177,15 @@ class CommonUtils {
                 }
             }
             return "user_type"
+        }
+
+        fun getUserRole(role: String,list:List<UserRoles>): UserRoles {
+            for (item in list) {
+                if (item.key == role) {
+                    return item
+                }
+            }
+            return UserRoles()
         }
 
         fun openMaps(context: Context, location: LatLng) {

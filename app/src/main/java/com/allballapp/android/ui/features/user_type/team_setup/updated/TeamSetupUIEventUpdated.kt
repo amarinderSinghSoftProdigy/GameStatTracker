@@ -21,6 +21,7 @@ sealed class TeamSetupUIEventUpdated {
     data class OnDismissDialogCLick(val showDialog: Boolean) : TeamSetupUIEventUpdated()
     object OnAddPlayerScreenNext : TeamSetupUIEventUpdated()
     data class OnRole(val role: String) : TeamSetupUIEventUpdated()
+    data class SetRequestData(val role: String,val teamId: String) : TeamSetupUIEventUpdated()
     object OnLogoUploadSuccess : TeamSetupUIEventUpdated()
     object GetRoles : TeamSetupUIEventUpdated()
     data class MoveBack(val check: Boolean = false) : TeamSetupUIEventUpdated()

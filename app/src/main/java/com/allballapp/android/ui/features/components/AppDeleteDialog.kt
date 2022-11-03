@@ -67,6 +67,7 @@ import com.allballapp.android.ui.features.home.teams.TeamViewModel
 import com.allballapp.android.ui.features.profile.tabs.DetailItem
 import com.allballapp.android.ui.features.user_type.team_setup.updated.InviteObject
 import com.allballapp.android.ui.theme.*
+import com.allballapp.android.ui.utils.CommonUtils
 import com.togitech.ccp.component.TogiCountryCodePicker
 import com.togitech.ccp.data.utils.getDefaultLangCode
 import com.togitech.ccp.data.utils.getDefaultPhoneCode
@@ -207,13 +208,14 @@ fun SelectTeamDialog(
                         }
                         item {
                             teams.forEach {
-                                TeamListItem(team = it, selected = selected == it) { team ->
-                                    onSelectionChange.invoke(team)
-                                    teamId.value = team._id
-                                    teamName.value = team.name
-                                    onConfirmClick.invoke(teamId.value, teamName.value)
-                                    onDismiss.invoke()
-                                }
+                                if (it != null)
+                                    TeamListItem(team = it, selected = selected == it) { team ->
+                                        onSelectionChange.invoke(team)
+                                        teamId.value = team._id
+                                        teamName.value = team.name
+                                        onConfirmClick.invoke(teamId.value, teamName.value)
+                                        onDismiss.invoke()
+                                    }
                             }
                         }
                     }
@@ -438,12 +440,13 @@ fun ConfirmDialog(
                             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                             fontWeight = FontWeight.Bold,
                         )
+                        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
                     }
-                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
                     Text(
                         text = title,
                         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                         fontWeight = FontWeight.W600,
+                        textAlign = TextAlign.Center
                     )
                     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
                     Row(
@@ -939,7 +942,7 @@ fun SelectInvitationRoleDialog(
                         }
                     }
 
-
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
                     LazyColumn(
                         modifier = Modifier
                             .height(dimensionResource(id = R.dimen.size_300dp)),
@@ -1156,7 +1159,7 @@ fun SelectGuardianRoleDialog(
                 ) {
                     Box(modifier = Modifier.fillMaxWidth()) {
                         Text(
-                            text = if (selectedRole == UserType.PARENT.key) stringResource(R.string.select_the_players_guardian) else stringResource(
+                            text = if (selectedRole != UserType.PLAYER.key) stringResource(R.string.select_the_players_guardian) else stringResource(
                                 R.string.confirm_your_guardin
                             ),
 
@@ -1192,7 +1195,7 @@ fun SelectGuardianRoleDialog(
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
                     DialogButton(
-                        text = if (selectedRole == UserType.PARENT.key) stringResource(R.string.child_not_listed) else stringResource(
+                        text = if (selectedRole != UserType.PLAYER.key) stringResource(R.string.child_not_listed) else stringResource(
                             R.string.my_guardian_not_listed
                         ),
                         onClick = onChildNotListedCLick,
@@ -1204,7 +1207,7 @@ fun SelectGuardianRoleDialog(
 
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
-                    if (selectedRole == UserType.PARENT.key)
+                    if (selectedRole != UserType.PLAYER.key)
                         DialogButton(
                             text = stringResource(R.string.i_dont_have_child_on_this_team),
                             onClick = dontHaveChildClick,
@@ -2325,7 +2328,7 @@ fun AgeConfirmDialog(
                     ) {
                         Text(
                             style = MaterialTheme.typography.h6,
-                            color = if (selected.value == 0) Color.White else  MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            color = if (selected.value == 0) Color.White else MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                             text = stringResource(id = R.string.age_zero),
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -2345,7 +2348,7 @@ fun AgeConfirmDialog(
                     ) {
                         Text(
                             style = MaterialTheme.typography.h6,
-                            color = if (selected.value == 1) Color.White else  MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            color = if (selected.value == 1) Color.White else MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                             text = stringResource(id = R.string.age_ok),
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -2402,7 +2405,7 @@ fun GuardianAuthorizeDialog(
                 ) {
                     Text(
                         style = MaterialTheme.typography.h6,
-                        color =  MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                         text = stringResource(id = R.string.authorize_message),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -2488,6 +2491,7 @@ fun GuardianAuthorizeDialog(
 
 @Composable
 fun InviteTeamMembersDialog(
+    role: String = "",
     onBack: () -> Unit,
     onConfirmClick: () -> Unit,
     onIndexChange: (Int) -> Unit,
@@ -2561,7 +2565,21 @@ fun InviteTeamMembersDialog(
                                 )
                         ) {
                             inviteList.forEachIndexed { index, item ->
-                                val roleObject = remember { mutableStateOf(UserRoles()) }
+                                val roleObject =
+                                    remember {
+                                        mutableStateOf(
+                                            CommonUtils.getUserRole(
+                                                role,
+                                                roles
+                                            )
+                                        )
+                                    }
+
+                                remember {
+                                    if (role.isNotEmpty()) {
+                                        onRoleValueChange(0, roleObject.value)
+                                    }
+                                }
                                 var expanded by remember { mutableStateOf(false) }
                                 var textFieldSize by remember { mutableStateOf(Size.Zero) }
                                 var defaultLang by rememberSaveable {
@@ -2929,12 +2947,13 @@ fun InvitationSuccessfullySentDialog(
                         )
                     }
                     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
-
+                    val team = stringResource(id = R.string.team)
+                    val user = stringResource(id = R.string.user)
                     AppText(
                         text = stringResource(
                             id = R.string.success_player_has_been_added_to_the_team,
-                            playerName,
-                            teamName
+                            playerName.ifEmpty { user },
+                            teamName.ifEmpty { team }
                         ),
                         fontSize = dimensionResource(id = R.dimen.txt_size_18).value.sp,
                         fontWeight = FontWeight.Bold,

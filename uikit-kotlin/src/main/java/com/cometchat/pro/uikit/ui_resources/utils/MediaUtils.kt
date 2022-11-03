@@ -1,13 +1,11 @@
 package com.cometchat.pro.uikit.ui_resources.utils
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.*
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.hardware.Camera
 import android.hardware.Camera.CameraInfo
 import android.media.AudioManager
@@ -23,10 +21,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
-import androidx.loader.content.CursorLoader
-import com.cometchat.pro.constants.CometChatConstants
 import com.cometchat.pro.uikit.BuildConfig
-import com.cometchat.pro.uikit.R
 import com.cometchat.pro.uikit.ui_resources.utils.Utils.Companion.generateFileName
 import com.cometchat.pro.uikit.ui_resources.utils.Utils.Companion.getDocumentCacheDir
 import com.cometchat.pro.uikit.ui_resources.utils.Utils.Companion.getFileName
@@ -311,7 +306,7 @@ import kotlin.math.min
                 //int bufferSize = 1024;
                 val bufferSize = min(bytesAvailable, maxBufferSize)
                 val buffers = ByteArray(bufferSize)
-                while (inputStream?.read(buffers).also { read = it } != -1) {
+                while (inputStream?.read(buffers).also { read = it!! } != -1) {
                     outputStream.write(buffers, 0, read)
                 }
                 Log.e("File Size", "Size " + file.length())

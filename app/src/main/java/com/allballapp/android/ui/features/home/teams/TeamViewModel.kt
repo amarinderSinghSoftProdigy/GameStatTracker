@@ -13,6 +13,7 @@ import com.allballapp.android.core.util.UiText
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.data.request.Location
+import com.allballapp.android.data.request.Members
 import com.allballapp.android.data.request.UpdateTeamDetailRequest
 import com.allballapp.android.data.response.SwapUser
 import com.allballapp.android.data.response.team.Player
@@ -113,6 +114,11 @@ class TeamViewModel @Inject constructor(
 
     fun onEvent(event: TeamUIEvent) {
         when (event) {
+            is TeamUIEvent.GetTeam -> {
+                viewModelScope.launch {
+                    getTeamByTeamIdForCount(event.teamId)
+                }
+            }
             is TeamUIEvent.OnTeamIdSelected -> {
                 viewModelScope.launch {
                     getPlayerById(event.teamId)
@@ -352,15 +358,17 @@ class TeamViewModel @Inject constructor(
                             }
                             var selectionTeam: Team? = null
                             response.data.result.toMutableList().forEach {
-                                if (UserStorage.teamId.isEmpty()) {
-                                    if (response.data.teamId == it.teamId._id) {
-                                        selectionTeam = it.teamId
-                                        setRole(it.role)
-                                    }
-                                } else {
-                                    if (UserStorage.teamId == it.teamId._id) {
-                                        selectionTeam = it.teamId
-                                        setRole(it.role)
+                                if (it.teamId != null) {
+                                    if (UserStorage.teamId.isEmpty()) {
+                                        if (response.data.teamId == it.teamId._id) {
+                                            selectionTeam = it.teamId
+                                            setRole(it.role)
+                                        }
+                                    } else {
+                                        if (UserStorage.teamId == it.teamId._id) {
+                                            selectionTeam = it.teamId
+                                            setRole(it.role)
+                                        }
                                     }
                                 }
                             }
@@ -576,6 +584,52 @@ class TeamViewModel @Inject constructor(
         }
     }
 
+    private suspend fun getTeamByTeamIdForCount(userId: String) {
+        _teamUiState.value =
+            _teamUiState.value.copy(isLoading = true)
+        val teamResponse = teamRepo.getTeamsByTeamID(userId)
+        _teamUiState.value =
+            _teamUiState.value.copy(isLoading = false)
+        when (teamResponse) {
+            is ResultWrapper.GenericError -> {
+                _teamChannel.send(
+                    TeamChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${teamResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _teamChannel.send(
+                    TeamChannel.ShowToast(
+                        UiText.DynamicString(
+                            teamResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                _teamUiState.value =
+                    _teamUiState.value.copy(isLoading = false)
+                teamResponse.value.let { response ->
+                    if (response.status && response.data != null) {
+                        _teamUiState.value = _teamUiState.value.copy(
+                            member = Members(_id=userId,name=response.data.name, profileImage = response.data.logo),
+                        )
+                    } else {
+                       _teamChannel.send(
+                            TeamChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
     private suspend fun getTeamByTeamId(userId: String) {
         _teamUiState.value =
             _teamUiState.value.copy(isLoading = true)

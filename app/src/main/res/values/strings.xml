@@ -222,6 +222,7 @@
     <string name="opportunities_to_play">Opportunities To Play</string>
     <string name="opportunities_to_work">Opportunities To Work</string>
     <string name="four">4</string>
+    <string name="user">User</string>
     <string name="team">Team</string>
     <string name="manage_team">Manage Team</string>
     <string name="coming_soon">Coming Soon!</string>
@@ -456,12 +457,13 @@
     <string name="number_already_exist">Member already exist</string>
     <string name="aau_card_number">AAU Card Number</string>
     <string name="assistance_coach">Assistance Coach</string>
-    <string name="invite_done_message">Player invited to the team.</string>
+    <string name="invite_done_message">Success! No player has been added to the team.</string>
+    <string name="no_player">No player</string>
     <string name="yes_label">Yes</string>
     <string name="no_label">No</string>
     <string name="age_ok">I\'m 13 years or older</string>
     <string name="age_zero">I\'m 0–12 years</string>
-    <string name="age_conformation">Age Verification</string>
+    <string name="age_conformation">To begin, Please select your age</string>
     <string name="authorize_message">Awesome! We need your parents help to get started.Enter either of your parent\'s phone number below and we\'ll send them a message to help you get started.</string>
 
 </resources>

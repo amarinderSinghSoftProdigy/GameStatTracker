@@ -5,6 +5,7 @@ import com.allballapp.android.ui.theme.Yellow700
 
 object AppConstants {
     const val TYPE_ACCEPT_INVITATION = "acceptInvitation"
+    const val TYPE_CREATE_TEAM = "createTeam"
     val REQUEST_CONTACT_CODE: Int = 1122
     val REQUEST_CAMERA_CODE: Int = 1123
     const val ROLE = "role"

@@ -6,10 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.cometchat.pro.core.CometChat
-import com.cometchat.pro.exceptions.CometChatException
-import com.cometchat.pro.models.User
-import com.allballapp.android.BuildConfig
 import com.allballapp.android.R
 import com.allballapp.android.common.CometChatErrorCodes
 import com.allballapp.android.common.ResultWrapper
@@ -22,6 +18,9 @@ import com.allballapp.android.domain.repository.IUserRepository
 import com.allballapp.android.ui.features.components.BottomNavKey
 import com.allballapp.android.ui.features.components.TopBarData
 import com.allballapp.android.ui.features.home.home_screen.HomeScreenEvent
+import com.cometchat.pro.core.CometChat
+import com.cometchat.pro.exceptions.CometChatException
+import com.cometchat.pro.models.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -144,6 +143,9 @@ class HomeViewModel @Inject constructor(
                 viewModelScope.launch {
                     getSwapProfiles()
                 }
+            }
+            is HomeScreenEvent.HideSwap -> {
+                setSwapProfile(event.check)
             }
             is HomeScreenEvent.OnSwapUpdate -> {
                 viewModelScope.launch {

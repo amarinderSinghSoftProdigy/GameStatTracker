@@ -45,6 +45,7 @@ import com.allballapp.android.ui.features.home.events.opportunities.*
 import com.allballapp.android.ui.features.home.events.team.team_tabs.EventTeamTabs
 import com.allballapp.android.ui.features.home.events.venues.openVenue.OpenVenueTopTabs
 import com.allballapp.android.ui.features.home.home_screen.HomeScreen
+import com.allballapp.android.ui.features.home.home_screen.HomeScreenEvent
 import com.allballapp.android.ui.features.home.invitation.InvitationScreen
 import com.allballapp.android.ui.features.home.manage_team.MainManageTeamScreen
 import com.allballapp.android.ui.features.home.teams.TeamUIEvent
@@ -326,6 +327,7 @@ fun NavControllerComposable(
                     homeViewModel.setDialog(it)
                 },
                 onCreateTeamClick = {
+                    homeViewModel.setDialog(false)
                     navController.navigate(Route.TEAM_SETUP_SCREEN) {
                         if (it != null)
                             setupTeamViewModelUpdated.onEvent(
@@ -406,6 +408,9 @@ fun NavControllerComposable(
                 isToAddProfile = true,
                 signUpViewModel = signUpViewModel,
                 onNext = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("refreshProfileList", "true")
                     navController.popBackStack()
                 },
                 onBack = {
@@ -810,6 +815,8 @@ fun NavControllerComposable(
             // get data passed back from next stack
             val venue: String = backStackEntry
                 .savedStateHandle.get<String>("venue") ?: ""
+            val refreshProfileList: String = backStackEntry
+                .savedStateHandle.get<String>("refreshProfileList") ?: ""
 
             homeViewModel.setTopAppBar(true)
             //homeViewModel.showBottomAppBar(false)
@@ -827,7 +834,8 @@ fun NavControllerComposable(
                 )
             }
             TeamSetupScreenUpdated(
-                homeVm=homeViewModel,
+                refreshProfileList,
+                homeVm = homeViewModel,
                 venue = venue,
                 vm = setupTeamViewModelUpdated,
                 addProfileClick = {
@@ -843,8 +851,20 @@ fun NavControllerComposable(
                     )
                 },
                 onNextClick = {
-                              navController.popBackStack()
-                    //navController.navigate(Route.ADD_PLAYER_SCREEN)
+                    setColorUpdate(
+                        setupTeamViewModelUpdated,
+                        teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
+                    )
+                    homeViewModel.onEvent(HomeScreenEvent.HideSwap(false))
+                    if (it.isNullOrEmpty()) {
+                        navController.navigate(Route.ADD_PLAYER_SCREEN) {
+                            navController.popBackStack()
+                        }
+                    } else {
+                        navController.navigate(Route.ADD_MY_PLAYER_SCREEN + "/${it}") {
+                            navController.popBackStack()
+                        }
+                    }
                 }, onVenueClick = {
                     navController.navigate(Route.SELECT_VENUE)
                 })

@@ -21,7 +21,7 @@ android {
         minSdk 24
         targetSdk 33
         versionCode 1
-        versionName "1.2"
+        versionName "1.13"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -69,11 +69,11 @@ android {
         }
         create("develop") {
             dimension = "ballerapp"
-            // buildConfigField("String", "API_SERVER", "\"http://staging.allballapp.com/api/\"")
+             buildConfigField("String", "API_SERVER", "\"http://staging.allballapp.com/api/\"")
             //buildConfigField("String", "API_SERVER", "\"http://ballerapp-staging-v1.us-east-2.elasticbeanstalk.com/api/\"")
             //buildConfigField("String", "API_SERVER", "\"https://ballerapi.softprodigy.in/api/\"")
             //   buildConfigField("String", "API_SERVER", "\"https://ballerapi-qa.softprodigy.in/api/\"")
-            buildConfigField("String", "API_SERVER", "\"http://qa.allballapp.com/api/\"")
+            //buildConfigField("String", "API_SERVER", "\"http://qa.allballapp.com/api/\"")
 
             buildConfigField("String", "SERVER", "\"http://baller-app.softprodigyphp.in\"")
             buildConfigField("String", "IMAGE_SERVER", "\"http://ballerapp.s3.us-east-2.amazonaws.com/\"")
@@ -187,5 +187,6 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:1.4.1"
     implementation "io.coil-kt:coil-svg:2.0.0"
 
-    implementation 'com.google.accompanist:accompanist-permissions:0.24.9-beta'
+    implementation "com.google.accompanist:accompanist-permissions:0.24.9-beta"
+    //implementation "com.google.accompanist:accompanist-swiperefresh:0.27.0"
 }

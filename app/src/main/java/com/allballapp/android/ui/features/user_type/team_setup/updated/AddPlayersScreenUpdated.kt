@@ -43,6 +43,7 @@ import com.allballapp.android.common.validName
 import com.allballapp.android.data.request.Members
 import com.allballapp.android.data.response.UserRoles
 import com.allballapp.android.ui.features.components.*
+import com.allballapp.android.ui.features.home.teams.TeamUIEvent
 import com.allballapp.android.ui.features.home.teams.TeamViewModel
 import com.allballapp.android.ui.theme.*
 import com.google.accompanist.flowlayout.FlowRow
@@ -73,8 +74,12 @@ fun AddPlayersScreenUpdated(
     remember {
         vm.onEvent(TeamSetupUIEventUpdated.GetRoles)
         vm.initialInviteCount(2)
-        if (!teamId.isNullOrEmpty())
+        if (!teamId.isNullOrEmpty()) {
+            if (teamData != null) {
+                teamData.onEvent(TeamUIEvent.GetTeam(teamId))
+            }
             vm.onEvent(TeamSetupUIEventUpdated.GetInvitedTeamPlayers(teamId))
+        }
     }
 
     BackHandler {
@@ -137,7 +142,7 @@ fun AddPlayersScreenUpdated(
                         header = { isExpanded ->
                             TeamMemberItem(
                                 state.memberList.size,
-                                Members(
+                                teamState?.member ?: Members(
                                     teamId ?: "",
                                     "",
                                     teamState?.teamName ?: "",
@@ -206,7 +211,7 @@ fun AddPlayersScreenUpdated(
                     vm.onEvent(TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen)
                 },
                 onNextClick = {
-                    if(!state.isLoading){
+                    if (!state.isLoading) {
                         if (teamId.isNullOrEmpty()) {
                             vm.onEvent(TeamSetupUIEventUpdated.OnAddPlayerScreenNext)
                         } else {
