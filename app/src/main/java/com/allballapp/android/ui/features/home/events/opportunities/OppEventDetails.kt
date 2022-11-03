@@ -1,5 +1,6 @@
 package com.allballapp.android.ui.features.home.events.opportunities
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -42,8 +43,10 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
     val context = LocalContext.current
     val state = vm.eventState.value
     remember {
+        vm.onEvent(EvEvents.ClearOpportunities)
         vm.onEvent(EvEvents.GetOpportunityDetail)
     }
+
     Column(
         modifier = Modifier
             .fillMaxSize()

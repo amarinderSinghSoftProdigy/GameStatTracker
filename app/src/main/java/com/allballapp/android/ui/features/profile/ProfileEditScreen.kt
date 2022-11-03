@@ -61,6 +61,7 @@ fun ProfileEditScreen(
     onBackClick: () -> Unit,
     onUpdateSuccess: () -> Unit
 ) {
+
     val state = vm.state.value
     val maxChar = 30
     val maxEmailChar = 45
@@ -68,6 +69,7 @@ fun ProfileEditScreen(
     var imageUri by remember {
         mutableStateOf<Uri?>(null)
     }
+
     var maxClassOf = 4
 
     val imagePicker = rememberLauncherForActivityResult(
@@ -95,6 +97,7 @@ fun ProfileEditScreen(
         listOf(stringResource(id = R.string.male), stringResource(id = R.string.female))
 
     var expanded by remember { mutableStateOf(false) }
+
     var picker = remember { mutableStateOf(false) }
 
     var textFieldSize by remember { mutableStateOf(Size.Zero) }
@@ -448,6 +451,7 @@ fun ProfileEditScreen(
                         ),
                         visualTransformation = NumberCommaTransformation()
                     )
+
                     DividerCommon()
 
                     Column {
