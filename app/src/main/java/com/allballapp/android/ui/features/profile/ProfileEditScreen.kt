@@ -89,6 +89,7 @@ fun ProfileEditScreen(
                 vm.onEvent(ProfileEvent.OnProfileImageSelected(imageUri.toString()))
         }
     )
+
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
