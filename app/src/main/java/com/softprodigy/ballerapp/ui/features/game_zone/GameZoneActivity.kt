@@ -3,9 +3,7 @@ package com.softprodigy.ballerapp.ui.features.game_zone
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
-import android.view.View
 import android.view.WindowInsets
-import android.view.WindowInsetsController
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -86,6 +84,7 @@ fun NavControllerComposable(
     navController: NavHostController = rememberNavController(),
     fromSplash: Boolean = false
 ) {
+    var isAddRoaster = false
 
     NavHost(navController, startDestination = Route.OVERVIEW_SCREEN) {
         composable(route = Route.OVERVIEW_SCREEN) {
@@ -101,12 +100,24 @@ fun NavControllerComposable(
                     }
                 },
                 onPointClick = {},
-                onAddRosterClick= { navController.navigate(Route.ROASTER_SELECTION_SCREEN) }
+                onPointsCategoryClick = {
+                    when(it.id){
+                        7->{
+                            isAddRoaster = false
+                            navController.navigate(Route.ROASTER_SELECTION_SCREEN)
+                        }
+                    }
+                },
+                onAddRosterClick= {
+                    isAddRoaster = true
+                    navController.navigate(Route.ROASTER_SELECTION_SCREEN)
+                }
             )
         }
 
         composable(route = Route.ROASTER_SELECTION_SCREEN) {
             RoasterSelectionScreen(
+                isAddRoaster = isAddRoaster,
                 onRoasterSelectionClose = { navController.popBackStack() }
             )
         }

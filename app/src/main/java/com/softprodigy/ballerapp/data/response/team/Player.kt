@@ -120,7 +120,9 @@ data class Player(
     @SerializedName("thirdPoint")
     val thirdPoint: String? = "",
 
-    var locked: Boolean = false
+    var locked: Boolean = false,
+
+    var substitutionType : Int = 0,
 
 ) {
     override fun toString(): String {

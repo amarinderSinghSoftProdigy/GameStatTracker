@@ -1,12 +1,16 @@
 package com.softprodigy.ballerapp.ui.features.game_zone
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,13 +19,17 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.AppConstants
+
 import com.softprodigy.ballerapp.data.response.team.Player
+import com.softprodigy.ballerapp.ui.features.components.ConfirmSubstitutionDialog
 import com.softprodigy.ballerapp.ui.features.components.ImageButton
 import com.softprodigy.ballerapp.ui.features.home.teams.roaster.CoachListItem
 
 
 @Composable
 fun RoasterSelectionScreen(
+    isAddRoaster : Boolean,
     onRoasterSelectionClose: () -> Unit
 )  {
     Box(
@@ -52,14 +60,15 @@ fun RoasterSelectionScreen(
                 playerList.add(Player(_id = "6", firstName = "Satish", profileImage = profileImage))
                 playerList.add(Player(_id = "7", firstName = "Satish", position = "10", profileImage = profileImage))
 
-                Column(modifier = Modifier.weight(1f)
+                Column(modifier = Modifier
+                    .weight(1f)
                     .padding(
                         start = dimensionResource(id = R.dimen.size_32dp),
                         top = dimensionResource(id = R.dimen.size_24dp),
                         end = 0.dp,
                         bottom = 0.dp,
                     )) {
-                    roasterGridView(players = playerList)
+                    RoasterGridView(players = playerList,  isAddRoaster = isAddRoaster)
                 }
                 Spacer(modifier = Modifier
                     .width(dimensionResource(id = R.dimen.size_1dp))
@@ -67,14 +76,15 @@ fun RoasterSelectionScreen(
                     .background(
                         colorResource(id = R.color.game_roaster_divider_bg_color)
                     ))
-                Column(modifier = Modifier.weight(1f)
+                Column(modifier = Modifier
+                    .weight(1f)
                     .padding(
                         start = 0.dp,
                         top = dimensionResource(id = R.dimen.size_24dp),
                         end = dimensionResource(id = R.dimen.size_32dp),
                         bottom = 0.dp,
                     )) {
-                    roasterGridView(players = playerList)
+                    RoasterGridView(players = playerList, isAddRoaster = isAddRoaster)
                 }
             }
         }
@@ -105,22 +115,70 @@ fun RoasterSelectionScreen(
 }
 
 @Composable
-private fun roasterGridView(players: ArrayList<Player>) {
+private fun RoasterGridView(players: MutableList<Player> , isAddRoaster : Boolean) {
+
+
+    var itemClick by remember {
+        mutableStateOf(false)
+    }
+
+    var selectedIndex by remember {
+        mutableStateOf(-1)
+    }
+
+    if(itemClick){
+        ConfirmSubstitutionDialog(
+            onDismissClick = {
+                itemClick = false
+            },
+            onInPlayerClick = {
+                players.forEachIndexed { index, player ->
+                    if(index == selectedIndex){
+                        player.substitutionType = AppConstants.PLAYER_IN
+                    }else if(player.substitutionType == AppConstants.PLAYER_IN){
+                        player.substitutionType = 0
+                    }
+                }
+                itemClick = false
+            },
+            onOutPlayerClick = {
+                players.forEachIndexed { index, player ->
+                    if(index == selectedIndex){
+                        player.substitutionType = AppConstants.PLAYER_OUT
+                    }else if(player.substitutionType == AppConstants.PLAYER_OUT){
+                        player.substitutionType = 0
+                    }
+                }
+                itemClick = false
+            },
+        )
+    }
+
+
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
         modifier = Modifier.fillMaxSize(),
         content = {
-            items(players) {
+            itemsIndexed(players) { index , player ->
                 CoachListItem(
                     isCoach = false,
                     isRoasterSelection = true,
-                    player = it, modifier = Modifier.padding(
+                    player = player, modifier = Modifier.padding(
                         bottom = dimensionResource(
                             id = R.dimen.size_16dp
                         )
-                    )
+                    ),
+                    onItemClick = {
+                         if(isAddRoaster){
+
+                         }else{
+                             selectedIndex = index
+                             itemClick = true
+                         }
+                    }
                 )
             }
         }
     )
 }
+

@@ -23,6 +23,8 @@ object AppConstants {
     const val PUBLIC_PROFILE = "public_profile"
     const val EMAIL = "email"
     const val SKIP = "skip"
+    const val PLAYER_IN = 1
+    const val PLAYER_OUT = 2
     var SELECTED_COLOR: Color = Color(0xFF0177C1)
 }
 

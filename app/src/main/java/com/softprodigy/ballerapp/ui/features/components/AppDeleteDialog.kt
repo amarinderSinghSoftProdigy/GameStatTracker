@@ -876,7 +876,9 @@ fun AddNewPlayerDialog(
                                 fontFamily = rubikFamily,
                                 fontWeight = FontWeight.W400,
                                 color = colorResource(id = R.color.game_timeouts_slot_selected_text_color),
-                                modifier = Modifier.fillMaxWidth().fillMaxHeight()
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .fillMaxHeight()
                             )
                         },
                         singleLine = true
@@ -934,6 +936,114 @@ fun AddNewPlayerDialog(
         )
     }
 }
+
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun ConfirmSubstitutionDialog(
+    onDismissClick: () -> Unit,
+    onOutPlayerClick: () -> Unit,
+    onInPlayerClick: () -> Unit
+) {
+    val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    BallerAppMainTheme {
+        AlertDialog(
+            modifier = Modifier
+                .background(color = colorResource(id = R.color.game_dialog_bg_color))
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+            onDismissRequest = {  },
+            buttons = {
+                Column(
+                    modifier = Modifier
+                        .background(color = colorResource(id = R.color.game_dialog_bg_color))
+                        .padding(all = dimensionResource(id = R.dimen.size_16dp))
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+
+                        Row() {
+                            Text(
+                                text = stringResource(id = R.string.player_subs),
+                                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                                fontWeight = FontWeight.W500,
+                                fontFamily = rubikFamily,
+                                color = Color.White
+                            )
+                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+                        }
+
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_wrong_white),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .width(dimensionResource(id = R.dimen.size_24dp))
+                                .height(dimensionResource(id = R.dimen.size_24dp))
+                                .clickable { onDismissClick.invoke() },
+                            tint = Color.White.copy(alpha = 0.6f)
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_16dp)))
+
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = colorResource(id = R.color.game_dialog_bg_color))
+                        .padding(all = dimensionResource(id = R.dimen.size_8dp))
+                ) {
+                    AppButton(
+                        onClick = { onOutPlayerClick.invoke() },
+                        text = stringResource(R.string.player_out),
+                        colors = ButtonColor(
+                            bckgroundEnabled = colorResource(id = R.color.game_dialog_player_text_field_bg_color),
+                            bckgroundDisabled = colorResource(id = R.color.game_dialog_player_text_field_bg_color),
+                            textEnabled = Color.White,
+                            textDisabled = Color.White
+                        ),
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(dimensionResource(id = R.dimen.size_48dp))
+                            .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                            .border(
+                                width = dimensionResource(id = R.dimen.size_1dp),
+                                color = Color.White.copy(alpha = 0.2f),
+                                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+                            )
+                            .background(color = colorResource(id = R.color.game_dialog_player_text_field_bg_color))
+                    )
+                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+                    AppButton(
+                        onClick = { onInPlayerClick.invoke() },
+                        text = stringResource(R.string.player_in),
+                        colors = ButtonColor(
+                            bckgroundEnabled = colorResource(id = R.color.game_dialog_player_text_field_bg_color),
+                            bckgroundDisabled = colorResource(id = R.color.game_dialog_player_text_field_bg_color),
+                            textEnabled = Color.White,
+                            textDisabled = Color.White
+                        ),
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(dimensionResource(id = R.dimen.size_48dp))
+                            .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                            .border(
+                                width = dimensionResource(id = R.dimen.size_1dp),
+                                color = Color.White.copy(alpha = 0.2f),
+                                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+                            )
+                            .background(color = Color.White.copy(alpha = 0.1f))
+                    )
+                }
+            },
+        )
+    }
+}
+
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable

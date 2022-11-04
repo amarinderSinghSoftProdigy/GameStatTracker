@@ -26,7 +26,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.facebook.internal.Mutable
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.ImageTextButton
@@ -35,6 +34,7 @@ import com.softprodigy.ballerapp.ui.theme.rubikFamily
 @Composable
 fun GameSettingsController (
     isEditMode: Boolean,
+    onPointsCategoryClick : (GameSettingsState) -> Unit
 ) {
     Box(
         modifier =  Modifier.fillMaxSize()
@@ -49,21 +49,21 @@ fun GameSettingsController (
                 .fillMaxHeight()
             )
             Column(modifier = Modifier.fillMaxHeight()) {
-                periodSelection(isEditMode)
+                PeriodSelection(isEditMode)
                 Spacer(
                     modifier = Modifier
                         .background(colorResource(id = R.color.game_grid_border_color))
                         .fillMaxWidth()
                         .height(dimensionResource(id = R.dimen.size_half_dp))
                 )
-                gameSettings(isEditMode)
+                GameSettings(isEditMode , onPointsCategoryClick = onPointsCategoryClick)
             }
         }
     }
 }
 
 @Composable
-inline fun periodSelection(isEditMode: Boolean) {
+inline fun PeriodSelection(isEditMode: Boolean) {
     var selectedPeriodIndex = remember { mutableStateOf(-1) }
     var periods = stringArrayResource(id = R.array.game_periods)
     Column(
@@ -75,14 +75,14 @@ inline fun periodSelection(isEditMode: Boolean) {
     {
         LazyRow {
             itemsIndexed(periods) { index, period ->
-                periodListItem(index, period, selectedPeriodIndex)
+                PeriodListItem(index, period, selectedPeriodIndex)
             }
         }
     }
 }
 
 @Composable
-fun periodListItem(index: Int, periodItem: String = "", selectedPeriodIndex: MutableState<Int>) {
+fun PeriodListItem(index: Int, periodItem: String = "", selectedPeriodIndex: MutableState<Int>) {
 
     Box(
         modifier = Modifier
@@ -116,7 +116,7 @@ fun periodListItem(index: Int, periodItem: String = "", selectedPeriodIndex: Mut
 }
 
 @Composable
-inline fun gameSettings(isEditMode: Boolean) {
+inline fun GameSettings(isEditMode: Boolean , crossinline onPointsCategoryClick : (GameSettingsState) -> Unit) {
     Row(modifier = Modifier
         .background(
             if (isEditMode) colorResource(id = R.color.game_setting_edit_bg_enable_color) else colorResource(
@@ -127,7 +127,7 @@ inline fun gameSettings(isEditMode: Boolean) {
         //.fillMaxHeight()
     ){
             // Game setting grid view
-            var pointList = ArrayList<GameSettingsState>();
+            val pointList = ArrayList<GameSettingsState>();
             pointList.add(
                 GameSettingsState(
                     0,
@@ -191,13 +191,13 @@ inline fun gameSettings(isEditMode: Boolean) {
                 .width(dimensionResource(id = R.dimen.size_half_dp))
         )
         var expanded by remember { mutableStateOf(false) }
-        var fouls = stringArrayResource(id = R.array.game_foul)
-        var foul = stringResource(id = R.string.foul)
+        val fouls = stringArrayResource(id = R.array.game_foul)
+        val foul = stringResource(id = R.string.foul)
         val configuration = LocalConfiguration.current
         var screenHeight = configuration.screenHeightDp.dp
         screenHeight -= dimensionResource(id = R.dimen.size_46dp)
         screenHeight += dimensionResource(id = R.dimen.size_22dp)
-        var rowHeight = screenHeight / 4
+        val rowHeight = screenHeight / 4
 
         LazyVerticalGrid(columns = GridCells.Fixed(2),) {
             itemsIndexed(pointList) { index, point ->
@@ -213,7 +213,11 @@ inline fun gameSettings(isEditMode: Boolean) {
                         .background(
                             color = if (expanded && point.title.equals(foul)) colorResource(id = R.color.game_setting_item_selected_bg_color) else Color.Transparent
                         )
-                        .clickable { expanded = point.title.equals(foul) },
+                        .clickable {
+                            if(point.id == 6)
+                              expanded = point.title.equals(foul)
+                            else { onPointsCategoryClick.invoke(point) }
+                        },
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {

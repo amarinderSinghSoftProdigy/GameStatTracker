@@ -17,6 +17,7 @@ import com.softprodigy.ballerapp.R
 fun OverviewScreen (
     onSettingClick: (GameSettingsState) -> Unit,
     onPointClick: (GameSettingsState) -> Unit,
+    onPointsCategoryClick: (GameSettingsState) -> Unit,
     onAddRosterClick: () -> Unit,
 ) {
     var isEditMode = remember { mutableStateOf( false )}
@@ -68,7 +69,7 @@ fun OverviewScreen (
                     .background(colorResource(id = R.color.game_period_background_color)),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                GameSettingsController(isEditMode.value)
+                GameSettingsController(isEditMode.value, onPointsCategoryClick = onPointsCategoryClick)
             }
         }
     }

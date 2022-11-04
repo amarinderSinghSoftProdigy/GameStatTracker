@@ -41,6 +41,8 @@
     <string name="create_new_password">Create New Password</string>
     <string name="new_password_must_be_different">Your new password must be different from previously used password</string>
     <string name="save">Save</string>
+    <string name="player_in">In</string>
+    <string name="player_out">Out</string>
     <string name="new_password">New Password</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="re_enter_password">Re-enter Password</string>
@@ -250,6 +252,7 @@
     <string name="thirty_sec">30s</string>
 
     <string name="new_player">New Player</string>
+    <string name="player_subs">Player Substitution</string>
     <string name="jersey_number">Jersey Number</string>
     <string name="two_halves">2 Halves</string>
     <string name="four_quarters">4 Quarters</string>

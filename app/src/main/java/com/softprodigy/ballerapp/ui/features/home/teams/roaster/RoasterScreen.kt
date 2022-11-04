@@ -1,7 +1,9 @@
 package com.softprodigy.ballerapp.ui.features.home.teams.roaster
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +20,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -36,6 +39,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.BuildConfig
 import com.softprodigy.ballerapp.R
+import com.softprodigy.ballerapp.common.AppConstants
 import com.softprodigy.ballerapp.data.response.team.Coach
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.ui.features.components.*
@@ -89,7 +93,8 @@ fun RoasterScreen(vm: TeamViewModel) {
                                         id = R.dimen.size_16dp
                                     )
                                 ),
-                            isCoach = true
+                            isCoach = true,
+                            onItemClick = {}
                         )
                     }
                 }
@@ -107,7 +112,8 @@ fun RoasterScreen(vm: TeamViewModel) {
                                         bottom = dimensionResource(
                                             id = R.dimen.size_16dp
                                         )
-                                    )
+                                    ),
+                                    onItemClick = {}
                                 )
                             }
                         })
@@ -127,6 +133,7 @@ fun CoachListItem(
     isRoasterSelection:Boolean = false,
     coach: Coach? = null,
     player: Player? = null,
+    onItemClick : (Player) -> Unit
 ) {
 
     Column(
@@ -157,20 +164,36 @@ fun CoachListItem(
             }
 
         val url = "" + if (isCoach) coach?.profileImage else player?.profileImage
-        CoilImage(
-            src = if (url.contains("http")) url else BuildConfig.IMAGE_SERVER + url,
-            modifier =
-            Modifier
-                .background(
-                    color = MaterialTheme.appColors.material.onSurface,
-                    shape = CircleShape
-                )
-                .size(dimensionResource(id = R.dimen.size_80dp))
-                .clip(CircleShape),
-            isCrossFadeEnabled = false,
-            onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
-            onError = { Placeholder(R.drawable.ic_user_profile_icon) }
-        )
+        Card(
+            border = BorderStroke(dimensionResource(id = R.dimen.size_4dp),
+                when (player?.substitutionType) {
+                    AppConstants.PLAYER_IN -> colorResource(id = R.color.player_in_color)
+                    AppConstants.PLAYER_OUT -> colorResource(id = R.color.player_out_color)
+                    else -> colorResource(id = R.color.game_setting_bg_color)
+                }
+            ),
+            shape = CircleShape,
+            modifier = Modifier.clickable {
+                onItemClick.invoke(player!!)
+            }
+        ) {
+            CoilImage(
+                src = if (url.contains("http")) url else BuildConfig.IMAGE_SERVER + url,
+                modifier =
+                Modifier
+                    .background(
+                        color = MaterialTheme.appColors.material.onSurface,
+                        shape = CircleShape
+                    )
+                    .size(dimensionResource(id = R.dimen.size_80dp))
+                    //.clip(CircleShape)
+                ,
+                isCrossFadeEnabled = false,
+                onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
+                onError = { Placeholder(R.drawable.ic_user_profile_icon) }
+            )
+        }
+
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
         AppText(
