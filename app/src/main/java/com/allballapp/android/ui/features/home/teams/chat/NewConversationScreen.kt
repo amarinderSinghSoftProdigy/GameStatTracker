@@ -94,9 +94,11 @@ fun NewConversationScreen(
             .padding(all = dimensionResource(id = R.dimen.size_16dp))
     ) {
         if ((chatState.teams[chatState.teamIndex].coaches.isNotEmpty()
-                    || chatState.teams[chatState.teamIndex].players.isNotEmpty())
+                    || chatState.teams[chatState.teamIndex].players.isNotEmpty()
+                    || chatState.teams[chatState.teamIndex].supportingCastDetails.isNotEmpty())
             && (chatState.teams[chatState.teamIndex].coaches.any { coach -> coach._id != UserStorage.userId }
-                    || chatState.teams[chatState.teamIndex].players.any { coach -> coach._id != UserStorage.userId })
+                    || chatState.teams[chatState.teamIndex].players.any { coach -> coach._id != UserStorage.userId }
+                    || chatState.teams[chatState.teamIndex].supportingCastDetails.any { coach -> coach._Id != UserStorage.userId })
         ) {
             Column(
                 modifier = Modifier
@@ -106,7 +108,9 @@ fun NewConversationScreen(
                         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                     )
             ) {
-                if (chatState.teams[chatState.teamIndex].coaches.isNotEmpty() && chatState.teams[chatState.teamIndex].coaches.any { coach -> coach._id != UserStorage.userId }) {
+                if (chatState.teams[chatState.teamIndex].coaches.isNotEmpty()
+                    && chatState.teams[chatState.teamIndex].coaches.any { coach -> coach._id != UserStorage.userId }
+                ) {
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
                     val coachSize = buildAnnotatedString {
                         append(stringResource(id = R.string.coaches))
@@ -146,7 +150,8 @@ fun NewConversationScreen(
                         }
                     }
                 }
-                if (chatState.teams[chatState.teamIndex].players.isNotEmpty() && chatState.teams[chatState.teamIndex].players.any { coach -> coach._id != UserStorage.userId }) {
+                if (chatState.teams[chatState.teamIndex].players.isNotEmpty()
+                    && chatState.teams[chatState.teamIndex].players.any { coach -> coach._id != UserStorage.userId }) {
                     AppDivider()
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
                     val playersSize = buildAnnotatedString {
@@ -192,6 +197,60 @@ fun NewConversationScreen(
                         }
                     }
                 }
+
+
+
+
+
+
+                if (chatState.teams[chatState.teamIndex].supportingCastDetails.isNotEmpty()
+                    && chatState.teams[chatState.teamIndex].supportingCastDetails.any { coach -> coach._Id != UserStorage.userId }) {
+                    AppDivider()
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+                    val supportingStaffSize = buildAnnotatedString {
+                        append(stringResource(id = R.string.supporting_staff))
+                        val startIndex = length
+                        append(" ( ")
+                        append("" + chatState.teams[chatState.teamIndex].supportingCastDetails.size)
+                        append(" )")
+                        addStyle(
+                            SpanStyle(
+                                color = MaterialTheme.appColors.textField.label,
+                                fontFamily = rubikFamily,
+                                fontWeight = FontWeight.W400
+                            ),
+                            startIndex,
+                            length,
+                        )
+                    }
+                    Text(
+                        text = supportingStaffSize,
+                        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        fontWeight = FontWeight.W600,
+                        modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
+                    )
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+                    LazyColumn {
+                        items(chatState.teams[chatState.teamIndex].supportingCastDetails) { staff ->
+                            TeamUserListCheckbox(
+                                isCoach = false,
+//                                teamUser = player,
+                                teamUser = Player(_id = staff._Id, firstName = staff.firstName, lastName = staff.lastName, profileImage = staff.profileImage),
+                                selectedTeamMembers = chatState.selectedPlayersForNewGroup
+                            ) {
+                                chatVM.onEvent(ChatUIEvent.OnPlayerChange(selectedPlayers = it))
+                                Timber.i(
+                                    "selectedPlayers NewConversationScreen: ${
+                                        it.map { playerId ->
+                                            playerId
+                                        }
+                                    }"
+                                )
+                            }
+                        }
+                    }
+                }
             }
         } else {
             if (!chatState.isLoading) {
@@ -205,7 +264,9 @@ fun NewConversationScreen(
             modifier = Modifier
                 .size(dimensionResource(id = R.dimen.size_44dp))
                 .background(
-                    color = if (chatState.selectedPlayersForNewGroup.isNotEmpty() || chatState.selectedCoachesForNewGroup.isNotEmpty())
+                    color = if (chatState.selectedPlayersForNewGroup.isNotEmpty()
+                        || chatState.selectedCoachesForNewGroup.isNotEmpty()
+                    )
                         MaterialTheme.appColors.material.primaryVariant
                     else MaterialTheme.appColors.buttonColor.bckgroundDisabled,
                     RoundedCornerShape(50)
