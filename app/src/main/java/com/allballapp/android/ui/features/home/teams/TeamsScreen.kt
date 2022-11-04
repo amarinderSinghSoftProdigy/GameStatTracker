@@ -38,7 +38,7 @@ fun TeamsScreen(
     dismissDialog: (Boolean) -> Unit,
     OnTeamDetailsSuccess: (String, String) -> Unit,
     onCreateTeamClick: (Team?) -> Unit,
-    onCreateNewConversationClick: () -> Unit,
+    onCreateNewConversationClick: (teamId:String) -> Unit,
     onTeamItemClick: () -> Unit,
     onAddPlayerClick: () -> Unit,
     onHomeClick: () -> Unit
@@ -166,7 +166,7 @@ fun TeamsScreen(
 fun TeamsContent(
     pagerState: PagerState,
     onTeamItemClick: () -> Unit,
-    onCreateNewConversationClick: () -> Unit,
+    onCreateNewConversationClick: (teamId:String) -> Unit,
     onAddPlayerClick: () -> Unit,
     viewModel: TeamViewModel,
     homeVm : HomeViewModel

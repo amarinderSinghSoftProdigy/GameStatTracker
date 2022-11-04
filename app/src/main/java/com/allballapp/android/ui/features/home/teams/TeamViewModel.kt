@@ -580,6 +580,7 @@ class TeamViewModel @Inject constructor(
         _teamUiState.value =
             _teamUiState.value.copy(isLoading = true)
         val teamResponse = teamRepo.getTeamsByTeamID(userId)
+        Timber.i("getTeamByTeamId--teamViewModel")
         _teamUiState.value =
             _teamUiState.value.copy(isLoading = false)
         when (teamResponse) {

@@ -7,12 +7,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.cometchat.pro.constants.CometChatConstants
-import com.cometchat.pro.core.CometChat
-import com.cometchat.pro.exceptions.CometChatException
-import com.cometchat.pro.models.Group
-import com.cometchat.pro.models.GroupMember
-import com.cometchat.pro.models.User
 import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.ResultWrapper
@@ -22,6 +16,14 @@ import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.domain.repository.IChatRepository
 import com.allballapp.android.domain.repository.IImageUploadRepo
+import com.allballapp.android.domain.repository.ITeamRepository
+import com.allballapp.android.ui.utils.CommonUtils
+import com.cometchat.pro.constants.CometChatConstants
+import com.cometchat.pro.core.CometChat
+import com.cometchat.pro.exceptions.CometChatException
+import com.cometchat.pro.models.Group
+import com.cometchat.pro.models.GroupMember
+import com.cometchat.pro.models.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -35,6 +37,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     private val chatRepo: IChatRepository,
+    private val teamRepo: ITeamRepository,
     private val imageUploadRepo: IImageUploadRepo,
     private val dataStoreManager: DataStoreManager,
     application: Application
@@ -78,6 +81,11 @@ class ChatViewModel @Inject constructor(
                 _chatUiState.value =
                     _chatUiState.value.copy(selectedPlayersForNewGroup = event.selectedPlayers)
 
+            }
+            is ChatUIEvent.GetAllMembers -> {
+                viewModelScope.launch {
+                    getTeamByTeamId(event.teamId)
+                }
             }
         }
     }
@@ -329,6 +337,72 @@ class ChatViewModel @Inject constructor(
             }
 
         }
+
+    private suspend fun getTeamByTeamId(teamsId: String) {
+        _chatUiState.value =
+            _chatUiState.value.copy(isLoading = true)
+        val teamResponse = teamRepo.getTeamsByTeamID(teamsId)
+        Timber.i("getTeamByTeamId--chatViewModel")
+        _chatUiState.value =
+            _chatUiState.value.copy(isLoading = false)
+        when (teamResponse) {
+            is ResultWrapper.GenericError -> {
+                _chatChannel.send(
+                    ChatChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${teamResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _chatChannel.send(
+                    ChatChannel.ShowToast(
+                        UiText.DynamicString(
+                            teamResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                teamResponse.value.let { response ->
+                    if (response.status && response.data != null) {
+                        _chatUiState.value = _chatUiState.value.copy(
+                            isLoading = false,
+                            players = CommonUtils.getPlayerTabs(response.data.players),
+//                            supportStaff = response.data.supportingCastDetails,
+//                            acceptPending = response.data.pendingAndDeclinedMembers,
+                            coaches = response.data.coaches,
+//                            allUsers = response.data.allMembers,
+                            teamName = response.data.name,
+                            teamColorPrimary = response.data.colorCode,
+                            logo = response.data.logo,
+                            leaderBoard = response.data.teamLeaderBoard,
+                            all = CommonUtils.getSelectedList(response.data.teamLeaderBoard),
+                            teamColorSec = response.data.secondaryTeamColor,
+                            teamColorThird = response.data.tertiaryTeamColor,
+                            teamNameOnJerseys = response.data.teamNameOnJersey,
+                            teamNameOnTournaments = response.data.teamNameOnTournaments,
+                            venueName = response.data.nameOfVenue,
+                            selectedAddress = response.data.address,
+                        )
+
+                    } else {
+                        _chatUiState.value =
+                            _chatUiState.value.copy(isLoading = false)
+                        _chatChannel.send(
+                            ChatChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+    }
+
 }
 
 sealed class ChatChannel {

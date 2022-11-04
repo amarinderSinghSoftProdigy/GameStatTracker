@@ -10,4 +10,6 @@ sealed class ChatUIEvent {
   data class ShowDialog(val showDialog: Boolean):ChatUIEvent()
   data class OnGroupNameChange(val groupName: String):ChatUIEvent()
   object OnInitiateNewConversation:ChatUIEvent()
+  data class GetAllMembers(val teamId: String):ChatUIEvent()
+
 }
