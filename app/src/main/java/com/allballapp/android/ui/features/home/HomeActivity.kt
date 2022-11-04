@@ -484,8 +484,8 @@ fun NavControllerComposable(
                 onTeamItemClick = {
                     //navController.navigate(Route.MY_CHAT_DETAIL)
 
-                }, onCreateNewConversationClick = {
-                    navController.navigate(Route.CREATE_NEW_CHAT_CONVO)
+                }, onCreateNewConversationClick = { teamId ->
+                    navController.navigate(Route.CREATE_NEW_CHAT_CONVO + "/$teamId")
                 },
                 onAddPlayerClick = {
                     setColorUpdate(
@@ -495,10 +495,20 @@ fun NavControllerComposable(
                     navController.navigate(Route.ADD_MY_PLAYER_SCREEN + "/${UserStorage.teamId}")
                 }, onHomeClick = {
                     navController.navigate(Route.HOME_SCREEN)
-                }, homeVm = homeViewModel)
+                }, homeVm = homeViewModel
+            )
         }
 
-        composable(route = Route.CREATE_NEW_CHAT_CONVO) {
+        composable(
+            route = Route.CREATE_NEW_CHAT_CONVO + "/{teamId}",
+            arguments = listOf(
+                navArgument("teamId") {
+                    type = NavType.StringType
+                })
+        ) {
+
+            val teamId = it.arguments?.getString("teamId") ?: ""
+
             homeViewModel.setTopBar(
                 TopBarData(
                     label = stringResource(id = R.string.new_chat),
@@ -508,7 +518,7 @@ fun NavControllerComposable(
 
             NewConversationScreen(
                 cometChat = cometChat,
-                teamVm = teamViewModel,
+                teamId = teamId,
                 onGroupCreateSuccess = {
                     navController.popBackStack()
                 })
@@ -952,8 +962,8 @@ fun NavControllerComposable(
                 onTeamItemClick = {
 
                 },
-                onCreateNewConversationClick = {
-                    navController.navigate(Route.CREATE_NEW_CHAT_CONVO)
+                onCreateNewConversationClick = { teamId ->
+                    navController.navigate(Route.CREATE_NEW_CHAT_CONVO + "/$teamId")
                 }
             )
         }

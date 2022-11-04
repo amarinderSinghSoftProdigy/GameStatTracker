@@ -33,7 +33,7 @@ data class EventState(
     val registerGameStaff: GameStaffRegisterRequest = GameStaffRegisterRequest(),
     val declineReason: String = "",
     val myLeaguesList: ArrayList<MyLeagueResponse> = arrayListOf(),
-    val divisions: ArrayList<DivisionResponse> = arrayListOf(),
+    val divisions: MutableList<DivisionResponse> = arrayListOf(),
     val leagueId: String = "",
     val eventId: String = "",
     val gender: String = "",

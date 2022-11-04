@@ -37,7 +37,7 @@ fun TeamsChatScreen(
     homeVm:HomeViewModel,
     vm: ChatViewModel = hiltViewModel(),
     onTeamItemClick: () -> Unit,
-    onCreateNewConversationClick: () -> Unit
+    onCreateNewConversationClick: (teamId: String) -> Unit
 ) {
 
     val state = vm.chatUiState.value
@@ -45,9 +45,10 @@ fun TeamsChatScreen(
         mutableStateOf(-1)
     }
     val key = remember { mutableStateOf("selected") }
-     remember {
-         homeVm.getUnreadMessageCount()
-     }
+
+    remember {
+        homeVm.getUnreadMessageCount()
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column {
@@ -99,7 +100,10 @@ fun TeamsChatScreen(
                 )
                 .align(Alignment.BottomEnd),
             enabled = true,
-            onClick = { onCreateNewConversationClick.invoke() }
+            onClick = {
+                if (selected.value != -1)
+                    onCreateNewConversationClick.invoke(state.teams[selected.value]._id)
+            }
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_add_button),

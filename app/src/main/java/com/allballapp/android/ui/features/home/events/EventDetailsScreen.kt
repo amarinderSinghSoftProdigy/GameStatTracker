@@ -361,7 +361,6 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
         AppDivider(color = MaterialTheme.appColors.material.primary)
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
 
-
         Column(
             Modifier
                 .padding(
