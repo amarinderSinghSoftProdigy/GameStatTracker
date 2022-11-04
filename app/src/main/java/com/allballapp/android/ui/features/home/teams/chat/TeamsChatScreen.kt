@@ -26,6 +26,7 @@ import com.allballapp.android.databinding.FragmentConversationBinding
 import com.allballapp.android.ui.features.components.AppTab
 import com.allballapp.android.ui.features.components.CommonProgressBar
 import com.allballapp.android.ui.features.home.EmptyScreen
+import com.allballapp.android.ui.features.home.HomeViewModel
 import com.allballapp.android.ui.theme.appColors
 import com.cometchat.pro.uikit.ui_components.chats.CometChatConversationList
 import com.cometchat.pro.uikit.ui_components.messages.message_list.CometChatMessageListActivity
@@ -33,6 +34,7 @@ import com.cometchat.pro.uikit.ui_components.messages.message_list.CometChatMess
 @Composable
 fun TeamsChatScreen(
     color: String = "",
+    homeVm:HomeViewModel,
     vm: ChatViewModel = hiltViewModel(),
     onTeamItemClick: () -> Unit,
     onCreateNewConversationClick: () -> Unit
@@ -43,6 +45,10 @@ fun TeamsChatScreen(
         mutableStateOf(-1)
     }
     val key = remember { mutableStateOf("selected") }
+     remember {
+         homeVm.getUnreadMessageCount()
+     }
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))

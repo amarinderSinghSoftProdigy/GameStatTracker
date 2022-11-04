@@ -16,6 +16,7 @@ import com.allballapp.android.R
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.response.team.Team
 import com.allballapp.android.ui.features.components.*
+import com.allballapp.android.ui.features.home.HomeViewModel
 import com.allballapp.android.ui.features.home.teams.chat.TeamsChatScreen
 import com.allballapp.android.ui.features.home.teams.leaderboard.LeaderBoardScreen
 import com.allballapp.android.ui.features.home.teams.roaster.RoasterScreen
@@ -31,6 +32,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun TeamsScreen(
     vm: TeamViewModel,
+    homeVm: HomeViewModel,
     showDialog: Boolean,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
     dismissDialog: (Boolean) -> Unit,
@@ -116,14 +118,16 @@ fun TeamsScreen(
                 onTeamItemClick = onTeamItemClick,
                 onCreateNewConversationClick = onCreateNewConversationClick,
                 viewModel = vm,
-                onAddPlayerClick = onAddPlayerClick
+                onAddPlayerClick = onAddPlayerClick,
+                homeVm = homeVm
             )
         } else {
             RefereeTeamsTopTabs(pagerState = pagerState, tabData = tabData)
             TeamsChatScreen(
                 vm.teamUiState.value.teamColorPrimary,
                 onTeamItemClick = onTeamItemClick,
-                onCreateNewConversationClick = onCreateNewConversationClick
+                onCreateNewConversationClick = onCreateNewConversationClick,
+                homeVm = homeVm
             )
             //EmptyScreen(singleText = true, heading = stringResource(id = R.string.coming_soon))
         }
@@ -164,7 +168,8 @@ fun TeamsContent(
     onTeamItemClick: () -> Unit,
     onCreateNewConversationClick: () -> Unit,
     onAddPlayerClick: () -> Unit,
-    viewModel: TeamViewModel
+    viewModel: TeamViewModel,
+    homeVm : HomeViewModel
 ) {
     HorizontalPager(
         state = pagerState,
@@ -174,6 +179,7 @@ fun TeamsContent(
             0 -> StandingScreen()
             1 -> TeamsChatScreen(
                 viewModel.teamUiState.value.teamColorPrimary,
+                homeVm = homeVm,
                 onTeamItemClick = onTeamItemClick,
                 onCreateNewConversationClick = onCreateNewConversationClick
             )
