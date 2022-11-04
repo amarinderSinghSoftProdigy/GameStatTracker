@@ -345,7 +345,8 @@ fun EventRegistraionDetails(
                     showError.value = true
                 } else if (!state.registerRequest.termsAndCondition || !state.registerRequest.privacy) {
                     message = context.getString(R.string.please_accept_tems)
-                }
+                } else if(state.registerRequest.payment < state.opportunitiesDetail.standardPrice) {
+                    message = context.getString(R.string.valid_cash_message) }
                 if (message.isNotEmpty()) {
                     vm.onEvent(EvEvents.ShowToast(message))
                 } else if (!showError.value) {
