@@ -730,7 +730,6 @@ fun NavControllerComposable(
             )
             BackHandler {
                 homeViewModel.setTopAppBar(false)
-                homeViewModel.onEvent(HomeScreenEvent.HideSwap(false))
                 navController.popBackStack()
             }
             AddPlayersScreenUpdated(
@@ -768,7 +767,7 @@ fun NavControllerComposable(
             )
             BackHandler {
                 homeViewModel.setTopAppBar(true)
-                homeViewModel.onEvent(HomeScreenEvent.HideSwap(false)) //homeViewModel.showBottomAppBar(true)
+                //homeViewModel.showBottomAppBar(true)
                 moveBackFromAddPlayer(homeViewModel, navController)
             }
             val teamId = it.arguments?.getString("teamId")
@@ -1094,6 +1093,7 @@ fun setColorUpdate(
 
 fun moveBackFromAddPlayer(homeViewModel: HomeViewModel, navController: NavHostController) {
     navController.popBackStack()
+    homeViewModel.onEvent(HomeScreenEvent.HideSwap(false))
     homeViewModel.setScreen(false)
 }
 

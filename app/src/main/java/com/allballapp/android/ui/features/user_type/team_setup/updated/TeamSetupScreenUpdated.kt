@@ -104,7 +104,7 @@ fun TeamSetupScreenUpdated(
     }
     if (refreshProfileList == true.toString()) {
         LaunchedEffect(key1 = refreshProfileList, block = {
-            homeVm.onEvent(HomeScreenEvent.OnSwapClick)
+            homeVm.onEvent(HomeScreenEvent.OnSwapClick())
         })
     }
     val launcher =
@@ -314,7 +314,7 @@ fun TeamSetupScreenUpdated(
                             )
                         } else {
                             showSwapDialog.value = true
-                            homeVm.onEvent(HomeScreenEvent.OnSwapClick)
+                            homeVm.onEvent(HomeScreenEvent.OnSwapClick())
                         }
                     }
                 }

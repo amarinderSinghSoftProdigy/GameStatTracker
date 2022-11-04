@@ -79,7 +79,7 @@ fun InvitationScreen(
 
     if (refreshProfileList == true.toString()) {
         LaunchedEffect(key1 = refreshProfileList, block = {
-            homeVm.onEvent(HomeScreenEvent.OnSwapClick)
+            homeVm.onEvent(HomeScreenEvent.OnSwapClick())
 
         })
     }
@@ -105,7 +105,7 @@ fun InvitationScreen(
         signUpViewModel.signUpChannel.collect { uiEvent ->
             when (uiEvent) {
                 is SignUpChannel.OnProfileUpdateSuccess -> {
-                    homeVm.onEvent(HomeScreenEvent.OnSwapClick)
+                    homeVm.onEvent(HomeScreenEvent.OnSwapClick())
                     Timber.i("HomeChannel.OnProfileUpdateSuccess")
 
                 }
@@ -284,7 +284,7 @@ fun InvitationScreen(
                             )
                         } else {
                             /* show option to select his own profile*/
-                            homeVm.onEvent(HomeScreenEvent.OnSwapClick)
+                            homeVm.onEvent(HomeScreenEvent.OnSwapClick())
                         }
                     }
                 }

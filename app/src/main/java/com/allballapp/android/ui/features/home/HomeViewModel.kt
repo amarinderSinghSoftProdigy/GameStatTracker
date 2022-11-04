@@ -1,7 +1,6 @@
 package com.allballapp.android.ui.features.home
 
 import android.app.Application
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
@@ -142,7 +141,7 @@ class HomeViewModel @Inject constructor(
         when (event) {
             is HomeScreenEvent.OnSwapClick -> {
                 viewModelScope.launch {
-                    getSwapProfiles()
+                    getSwapProfiles(event.check)
                 }
             }
             is HomeScreenEvent.HideSwap -> {
@@ -223,7 +222,7 @@ class HomeViewModel @Inject constructor(
 
     }
 
-    private suspend fun getSwapProfiles() {
+    private suspend fun getSwapProfiles(check: Boolean) {
         _state.value = _state.value.copy(isDataLoading = true)
         val userResponse = userRepo.getSwapProfiles()
         _state.value = _state.value.copy(isDataLoading = false)
@@ -254,9 +253,10 @@ class HomeViewModel @Inject constructor(
                             _state.value.copy(
                                 swapUsers = response.data
                             )
-                        _homeChannel.send(
-                            HomeChannel.OnSwapListSuccess
-                        )
+                        if (check)
+                            _homeChannel.send(
+                                HomeChannel.OnSwapListSuccess
+                            )
                     } else {
                         _homeChannel.send(
                             HomeChannel.ShowToast(

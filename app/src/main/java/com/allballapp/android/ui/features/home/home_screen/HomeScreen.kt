@@ -157,7 +157,7 @@ fun HomeScreen(
                     logoClick()
                 }
                 Options.SWAP_PROFILES -> {
-                    vm.onEvent(HomeScreenEvent.OnSwapClick)
+                    vm.onEvent(HomeScreenEvent.OnSwapClick(true))
                 }
                 Options.INVITE -> {
                     onInviteClick()

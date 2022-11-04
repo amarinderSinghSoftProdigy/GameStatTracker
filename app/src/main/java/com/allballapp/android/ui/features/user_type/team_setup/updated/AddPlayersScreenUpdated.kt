@@ -92,9 +92,7 @@ fun AddPlayersScreenUpdated(
             }
             vm.onEvent(TeamSetupUIEventUpdated.GetInvitedTeamPlayers(teamId))
         }
-    }
-    remember {
-        homeVm.onEvent(HomeScreenEvent.OnSwapClick)
+        homeVm.onEvent(HomeScreenEvent.OnSwapClick())
     }
     BackHandler {
         onBackClick.invoke()
@@ -241,12 +239,12 @@ fun AddPlayersScreenUpdated(
                                     )
                                 )
                                 showSwapDialog.value = true
-                                homeVm.onEvent(HomeScreenEvent.OnSwapClick)
+                                homeVm.onEvent(HomeScreenEvent.OnSwapClick())
                             }
                         }
                     }
                 },
-                enableState = true,/*state.inviteList.isNotEmpty() &&
+                enableState = state.inviteList.isNotEmpty(), /*&&
                         state.inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() }*/
                 themed = true,
             )
@@ -434,7 +432,7 @@ fun InviteItem(
                         }
                     }
                 }
-                Icon(
+                /*Icon(
                     painter = painterResource(id = R.drawable.ic_remove),
                     contentDescription = "",
                     tint = Color.Unspecified,
@@ -449,7 +447,7 @@ fun InviteItem(
                         .clickable {
                             updateItem(index, false)
                         }
-                )
+                )*/
             }
 
         }

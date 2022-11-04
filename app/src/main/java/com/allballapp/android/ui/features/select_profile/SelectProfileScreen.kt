@@ -1,7 +1,6 @@
 package com.allballapp.android.ui.features.select_profile
 
 import android.widget.Toast
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -24,7 +23,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import com.allballapp.android.BuildConfig
+import com.allballapp.android.R
 import com.allballapp.android.data.response.SwapUser
 import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.sign_up.SignUpChannel
@@ -32,7 +31,7 @@ import com.allballapp.android.ui.features.sign_up.SignUpUIEvent
 import com.allballapp.android.ui.features.sign_up.SignUpViewModel
 import com.allballapp.android.ui.theme.ColorMainPrimary
 import com.allballapp.android.ui.theme.appColors
-import com.allballapp.android.R
+
 @Composable
 fun SelectProfileScreen(vm: SignUpViewModel, onNextClick: () -> Unit) {
 
@@ -41,7 +40,6 @@ fun SelectProfileScreen(vm: SignUpViewModel, onNextClick: () -> Unit) {
     val id = remember {
         mutableStateOf(SwapUser())
     }
-
 
 
     /*remember {
@@ -69,9 +67,11 @@ fun SelectProfileScreen(vm: SignUpViewModel, onNextClick: () -> Unit) {
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = dimensionResource(id = R.dimen.size_100dp))
         ) {
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_64dp)))
             AppText(
                 text = stringResource(id = R.string.select_profile),
                 style = MaterialTheme.typography.h3,
@@ -85,9 +85,10 @@ fun SelectProfileScreen(vm: SignUpViewModel, onNextClick: () -> Unit) {
                     .padding(
                         horizontal = dimensionResource(id = R.dimen.size_16dp),
                         vertical = dimensionResource(id = R.dimen.size_16dp)
-                    )
+                    ),
+                verticalArrangement = Arrangement.Center
             ) {
-                LazyColumn(modifier = Modifier.height(dimensionResource(id = R.dimen.size_200dp))) {
+                 LazyColumn {
                     itemsIndexed(state.profileList) { index, item ->
                         SelectProfileItems(
                             size = state.profileList.size,
@@ -113,7 +114,7 @@ fun SelectProfileScreen(vm: SignUpViewModel, onNextClick: () -> Unit) {
             BottomButtons(
                 firstText = stringResource(id = R.string.back),
                 secondText = stringResource(id = R.string.next),
-                onBackClick = {  },
+                onBackClick = { },
                 onNextClick = {
                     vm.onEvent(SignUpUIEvent.OnSwapUpdate(id.value))
                 },
@@ -169,8 +170,6 @@ fun SelectProfileItems(
                         RectangleShape
                     }
                 })
-
-
             )
             .clickable {
                 onConfirmClick()
