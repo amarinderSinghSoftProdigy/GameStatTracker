@@ -164,7 +164,8 @@ class CommonUtils {
         fun getTeams(data: ArrayList<TeamParent>): ArrayList<Team> {
             val result: ArrayList<Team> = ArrayList()
             for (item in data) {
-                result.add(item.teamId)
+                if (item.teamId != null)
+                    result.add(item.teamId)
             }
             return result
         }
@@ -179,7 +180,7 @@ class CommonUtils {
             return "user_type"
         }
 
-        fun getUserRole(role: String,list:List<UserRoles>): UserRoles {
+        fun getUserRole(role: String, list: List<UserRoles>): UserRoles {
             for (item in list) {
                 if (item.key == role) {
                     return item
