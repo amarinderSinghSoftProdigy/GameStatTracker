@@ -41,7 +41,10 @@ import com.allballapp.android.ui.features.sign_up.SignUpViewModel
 import com.allballapp.android.ui.theme.ColorBWGrayDark
 import com.allballapp.android.ui.theme.ColorBWGrayLight
 import com.allballapp.android.ui.theme.appColors
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -77,11 +80,15 @@ fun OtpScreen(
     val keyboardController = LocalSoftwareKeyboardController.current
     val state = viewModel.signUpUiState.value
 
-    LaunchedEffect(key1 = currentTime) {
-        if (currentTime > 0) {
-            delay(100L)
-            currentTime -= 100L
-            value = currentTime / totalTime.toFloat()
+    LaunchedEffect(key1 = true) {
+        CoroutineScope(Dispatchers.IO).launch {
+            while (true) {
+                if (currentTime > 0) {
+                    delay(100L)
+                    currentTime -= 100L
+                    value = currentTime / totalTime.toFloat()
+                }
+            }
         }
     }
 
