@@ -30,11 +30,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.allballapp.android.R
+import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.response.team.Coach
 import com.allballapp.android.data.response.team.Player
 import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.home.EmptyScreen
-import com.allballapp.android.ui.features.home.teams.TeamViewModel
 import com.allballapp.android.ui.theme.ColorBWGrayStatus
 import com.allballapp.android.ui.theme.appColors
 import com.allballapp.android.ui.theme.rubikFamily
@@ -43,15 +43,17 @@ import timber.log.Timber
 
 @Composable
 fun NewConversationScreen(
-    teamVm: TeamViewModel,
+    teamId: String,
     chatVM: ChatViewModel = hiltViewModel(),
     cometChat: CometChatUI,
     onGroupCreateSuccess: () -> Unit
 ) {
-    val teamState = teamVm.teamUiState.value
     val chatState = chatVM.chatUiState.value
     val context = LocalContext.current
 
+    remember {
+        chatVM.onEvent(ChatUIEvent.GetAllMembers(teamId))
+    }
 
     LaunchedEffect(key1 = Unit) {
         chatVM.chatChannel.collect { chatChannel ->
@@ -91,7 +93,7 @@ fun NewConversationScreen(
             .fillMaxSize()
             .padding(all = dimensionResource(id = R.dimen.size_16dp))
     ) {
-        if (teamState.coaches.isNotEmpty() || teamState.players.isNotEmpty()) {
+        if ((chatState.coaches.isNotEmpty() || chatState.players.isNotEmpty()) && (chatState.coaches.any { coach -> coach._id != UserStorage.userId } || chatState.players.any { coach -> coach._id != UserStorage.userId })) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -100,13 +102,13 @@ fun NewConversationScreen(
                         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                     )
             ) {
-                if (teamState.coaches.isNotEmpty()) {
+                if (chatState.coaches.isNotEmpty() && chatState.coaches.any { coach -> coach._id != UserStorage.userId }) {
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
                     val coachSize = buildAnnotatedString {
                         append(stringResource(id = R.string.coaches))
                         val startIndex = length
                         append(" ( ")
-                        append("" + teamState.coaches.size)
+                        append("" + chatState.coaches.size)
                         append(" )")
                         addStyle(
                             SpanStyle(
@@ -127,7 +129,7 @@ fun NewConversationScreen(
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                     LazyColumn {
-                        items(teamState.coaches) { coach ->
+                        items(chatState.coaches) { coach ->
                             TeamUserListCheckbox(
                                 isCoach = true,
                                 coachUser = coach,
@@ -140,14 +142,14 @@ fun NewConversationScreen(
                         }
                     }
                 }
-                if (teamState.players.isNotEmpty()) {
+                if (chatState.players.isNotEmpty() && chatState.players.any { coach -> coach._id != UserStorage.userId }) {
                     AppDivider()
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
                     val playersSize = buildAnnotatedString {
                         append(stringResource(id = R.string.players))
                         val startIndex = length
                         append(" ( ")
-                        append("" + teamState.players.size)
+                        append("" + chatState.players.size)
                         append(" )")
                         addStyle(
                             SpanStyle(
@@ -168,7 +170,7 @@ fun NewConversationScreen(
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
                     LazyColumn {
-                        items(teamState.players) { player ->
+                        items(chatState.players) { player ->
                             TeamUserListCheckbox(
                                 isCoach = false,
                                 teamUser = player,
@@ -188,10 +190,12 @@ fun NewConversationScreen(
                 }
             }
         } else {
-            EmptyScreen(
-                singleText = true,
-                stringResource(id = R.string.no_members_in_the_team_currently)
-            )
+            if (!chatState.isLoading) {
+                EmptyScreen(
+                    singleText = true,
+                    stringResource(id = R.string.no_members_in_the_team_currently)
+                )
+            }
         }
         IconButton(
             modifier = Modifier
@@ -220,7 +224,7 @@ fun NewConversationScreen(
                 )
             )
         }
-        if (teamState.isLoading) {
+        if (chatState.isLoading) {
             CommonProgressBar()
         }
 
