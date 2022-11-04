@@ -1,5 +1,12 @@
 package com.softprodigy.ballerapp.ui.utils
 
+import android.app.Activity
+import android.content.Context
+import android.os.Build
+import android.view.View
+import android.view.WindowInsets
+import android.view.WindowManager
+import androidx.core.view.WindowCompat
 import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.data.response.team.TeamLeaderBoard
 
@@ -23,5 +30,6 @@ class CommonUtils {
             }
             return count == teamLeaderBoard.size
         }
+
     }
 }

@@ -14,6 +14,7 @@
     <color name="background_color">#F1F6FA</color>
 
     <color name="game_setting_bg_color">#3C4348</color>
+    <color name="buttons_background_color">#33FFFFFF</color>
     <color name="game_grid_item_text_color">#FFFFFF</color>
     <color name="game_grid_border_color">#32373C</color>
     <color name="game_point_list_item_text_color">#BFFFFFFF</color>

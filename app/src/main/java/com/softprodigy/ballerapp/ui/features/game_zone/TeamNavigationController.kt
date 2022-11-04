@@ -108,7 +108,7 @@ fun teamHandler(isEditMode: Boolean, onPreviousClick: () -> Unit, onNextClick: (
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 ImageButton(
-                    icon = painterResource(id = R.drawable.ic_possesion_next_arrow_selected),
+                    icon = painterResource(id = R.drawable.ic_posession_arrow_prev_selected),
                     modifier = Modifier
                         .width(dimensionResource(id = R.dimen.size_32dp))
                         .height(dimensionResource(id = R.dimen.size_32dp)),

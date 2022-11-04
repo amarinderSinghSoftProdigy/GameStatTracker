@@ -6,7 +6,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.BottomEnd
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -16,10 +19,13 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.softprodigy.ballerapp.R
 import com.softprodigy.ballerapp.ui.features.components.AppText
 import com.softprodigy.ballerapp.ui.features.components.ImageButton
+import com.softprodigy.ballerapp.ui.theme.Buttons_background_color
+import com.softprodigy.ballerapp.ui.theme.ColorButtonRed
 import com.softprodigy.ballerapp.ui.theme.rubikFamily
 
 @Composable
@@ -30,15 +36,17 @@ fun Tracking (
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.Black.copy(alpha = .75f))
+           .background(color = colorResource(id = R.color.game_setting_edit_bg_disable_color))
 
     ) {
 
         Column(
-            Modifier.fillMaxHeight().background(colorResource(id = R.color.game_center_background_color))
+            Modifier
+                .fillMaxHeight()
+//                .background(colorResource(id = R.color.buttons_background_color))
         ) {
 
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_110dp)))
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_70dp)))
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -48,7 +56,8 @@ fun Tracking (
                     .clip(RectangleShape)
                     .background(
                         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
-                        color = Color.Black.copy(alpha = if(isTrackingEmpty) 1.0f else 0.6f))
+                        color = Color.Black.copy(alpha = if (isTrackingEmpty) 1.0f else 0.6f)
+                    )
                     .clickable { onAddRosterClick.invoke() },
 
                 verticalArrangement = Arrangement.Center,
@@ -70,7 +79,7 @@ fun Tracking (
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(dimensionResource(id = R.dimen.size_86dp))
+                    .height(dimensionResource(id = R.dimen.size_100dp))
                     .padding(
                         horizontal = dimensionResource(id = R.dimen.size_16dp),
                     ),
@@ -90,11 +99,13 @@ fun Tracking (
 
                 Row(
                     modifier = Modifier
+                        .padding( vertical =  dimensionResource(id = R.dimen.size_10dp))
                         .fillMaxWidth()
                         .clip(RectangleShape)
                         .background(
                             shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
-                            color = Color.Black.copy(alpha = if(isTrackingEmpty) 0.6f else 1.0f)),
+                            color = Color.Black.copy(alpha = if (isTrackingEmpty) 0.6f else 1.0f)
+                        ),
                     verticalAlignment = CenterVertically,
                 ) {
                     Row(
@@ -109,29 +120,34 @@ fun Tracking (
                         teamLogo(alpha = if(isTrackingEmpty) 0.6f else 1.0f)
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
                         teamTitle(title = stringResource(id = R.string.my_team), alpha = if(isTrackingEmpty) 0.6f else 1.0f)
-
+                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
                         Row(
                             Modifier
                                 .fillMaxWidth()
                                 .align(CenterVertically)
                                 //.clip(RectangleShape)
-                                /*.background(
-                                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
-                                    color = Color.Black.copy(alpha = if(isTrackingEmpty) 0.6f else 1.0f))*/,
+                               ,
                             verticalAlignment = CenterVertically,
                             horizontalArrangement = Arrangement.End,
                         ) {
                             ImageButton(
-                                icon = painterResource(id = R.drawable.ic_possesion_next_arrow_selected),
+                                icon = painterResource(id = R.drawable.ic_arrow_prev_selected),
                                 modifier = Modifier
-                                    .width(dimensionResource(id = R.dimen.size_46dp))
-                                    .height(dimensionResource(id = R.dimen.size_46dp)),
+                                    .width(dimensionResource(id = R.dimen.size_56dp))
+                                    .height(dimensionResource(id = R.dimen.size_56dp))
+                                    .background(
+                                        shape = RoundedCornerShape(
+                                            topStart = dimensionResource(id = R.dimen.size_46dp) ,
+                                            bottomStart = dimensionResource(id = R.dimen.size_46dp)),
+                                        color = colorResource(id = R.color.game_setting_edit_bg_disable_color))
+                                ,
 
                                 onClick = { /*TODO*/ }
                             )
                         }
                     }
-                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+
+//                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_2dp)))
 
                     Row(
                         Modifier
@@ -141,13 +157,28 @@ fun Tracking (
                         verticalAlignment = CenterVertically,
                         horizontalArrangement = Arrangement.End,
                     ) {
-                        ImageButton(
-                            icon = painterResource(id = R.drawable.ic_possesion_next_arrow_selected),
-                            modifier = Modifier
-                                .width(dimensionResource(id = R.dimen.size_46dp))
-                                .height(dimensionResource(id = R.dimen.size_46dp)),
-                            onClick = { /*TODO*/ }
-                        )
+                        Row(
+                            Modifier
+                                .align(CenterVertically),
+                            verticalAlignment = CenterVertically,
+                            horizontalArrangement = Arrangement.End,
+                        ) {
+                            ImageButton(
+                                icon = painterResource(id = R.drawable.ic_next_arrow_selected),
+                                modifier = Modifier
+                                    .width(dimensionResource(id = R.dimen.size_56dp))
+                                    .height(dimensionResource(id = R.dimen.size_56dp))
+                                    .background(
+                                        shape = RoundedCornerShape(
+                                            topEnd = dimensionResource(id = R.dimen.size_46dp),
+                                            bottomEnd = dimensionResource(id = R.dimen.size_46dp)
+                                        ),
+                                        color = colorResource(id = R.color.game_setting_edit_bg_disable_color)
+                                    ),
+
+                                onClick = { /*TODO*/ }
+                            )
+                        }
                         Row(
                             Modifier
                                 .align(CenterVertically)
