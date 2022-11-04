@@ -720,9 +720,8 @@ fun NavControllerComposable(
         }
 
 
-        composable(route = Route.ADD_PLAYER_SCREEN) {
+        composable(route = Route.ADD_PLAYER_SCREEN) { backStackEntry ->
             homeViewModel.setTopAppBar(true)
-            //homeViewModel.showBottomAppBar(false)
             homeViewModel.setTopBar(
                 TopBarData(
                     label = stringResource(id = R.string.invite_team_member),
@@ -731,10 +730,14 @@ fun NavControllerComposable(
             )
             BackHandler {
                 homeViewModel.setTopAppBar(false)
-                //homeViewModel.showBottomAppBar(true)
+                homeViewModel.onEvent(HomeScreenEvent.HideSwap(false))
                 navController.popBackStack()
             }
             AddPlayersScreenUpdated(
+                homeVm = homeViewModel,
+                addProfileClick = {
+                    navController.navigate(Route.ADD_PROFILE_SCREEN)
+                },
                 vm = setupTeamViewModelUpdated,
                 onBackClick = { navController.popBackStack() },
                 onNextClick = {
@@ -765,13 +768,14 @@ fun NavControllerComposable(
             )
             BackHandler {
                 homeViewModel.setTopAppBar(true)
-                //homeViewModel.showBottomAppBar(true)
+                homeViewModel.onEvent(HomeScreenEvent.HideSwap(false)) //homeViewModel.showBottomAppBar(true)
                 moveBackFromAddPlayer(homeViewModel, navController)
             }
             val teamId = it.arguments?.getString("teamId")
             AddPlayersScreenUpdated(
+                homeVm = homeViewModel,
                 teamData = teamViewModel,
-                teamId,
+                teamId = teamId,
                 vm = setupTeamViewModelUpdated,
                 onBackClick = {
                     moveBackFromAddPlayer(homeViewModel, navController)
@@ -779,9 +783,15 @@ fun NavControllerComposable(
                 onNextClick = {
                     moveBackFromAddPlayer(homeViewModel, navController)
                     //navController.navigate(TEAMS_SCREEN)
-                }, onInvitationSuccess = {
+                },
+                onInvitationSuccess = {
                     moveBackFromAddPlayer(homeViewModel, navController)
-                })
+                },
+                addProfileClick = {
+                    navController.navigate(Route.ADD_PROFILE_SCREEN)
+
+                },
+            )
         }
 
         composable(route = Route.INVITATION_SCREEN,

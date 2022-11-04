@@ -40,9 +40,12 @@ import androidx.compose.ui.unit.toSize
 import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.validName
+import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.request.Members
 import com.allballapp.android.data.response.UserRoles
 import com.allballapp.android.ui.features.components.*
+import com.allballapp.android.ui.features.home.HomeViewModel
+import com.allballapp.android.ui.features.home.home_screen.HomeScreenEvent
 import com.allballapp.android.ui.features.home.teams.TeamUIEvent
 import com.allballapp.android.ui.features.home.teams.TeamViewModel
 import com.allballapp.android.ui.theme.*
@@ -60,20 +63,29 @@ fun AddPlayersScreenUpdated(
     teamData: TeamViewModel? = null,
     teamId: String? = "",
     vm: SetupTeamViewModelUpdated,
+    homeVm: HomeViewModel,
     onBackClick: () -> Unit,
     onNextClick: (String) -> Unit,
-    onInvitationSuccess: () -> Unit
+    onInvitationSuccess: () -> Unit,
+    addProfileClick: () -> Unit,
 ) {
     val context = LocalContext.current as Activity
     val teamState = teamData?.teamUiState?.value
+    val homeState = homeVm.state.value
     val state = vm.teamSetupUiState.value
     val focusRequester = remember { FocusRequester() }
+    val showSwapDialog = rememberSaveable {
+        mutableStateOf(false)
+    }
     val expanded = remember {
         mutableStateOf(false)
     }
+    val roleKey = rememberSaveable {
+        mutableStateOf("")
+    }
     remember {
         vm.onEvent(TeamSetupUIEventUpdated.GetRoles)
-        vm.initialInviteCount(2)
+        vm.initialInviteCount(1)
         if (!teamId.isNullOrEmpty()) {
             if (teamData != null) {
                 teamData.onEvent(TeamUIEvent.GetTeam(teamId))
@@ -81,7 +93,9 @@ fun AddPlayersScreenUpdated(
             vm.onEvent(TeamSetupUIEventUpdated.GetInvitedTeamPlayers(teamId))
         }
     }
-
+    remember {
+        homeVm.onEvent(HomeScreenEvent.OnSwapClick)
+    }
     BackHandler {
         onBackClick.invoke()
         vm.onEvent(TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen)
@@ -189,18 +203,19 @@ fun AddPlayersScreenUpdated(
                         }
                     }
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
-                    InviteTeamMemberButton(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(id = R.string.add),
-                        onClick = {
-                            updateItem(addIntent = true)
-                        },
-                        painter = painterResource(
-                            id = R.drawable.ic_add_button
-                        ),
-                        isTransParent = true
-                    )
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                    //Add New Row Button - Commented as per the client.
+                    /* InviteTeamMemberButton(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(id = R.string.add),
+                            onClick = {
+                                updateItem(addIntent = true)
+                            },
+                            painter = painterResource(
+                                id = R.drawable.ic_add_button
+                            ),
+                            isTransParent = true
+                        )
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))*/
                 }
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
@@ -215,7 +230,19 @@ fun AddPlayersScreenUpdated(
                         if (teamId.isNullOrEmpty()) {
                             vm.onEvent(TeamSetupUIEventUpdated.OnAddPlayerScreenNext)
                         } else {
-                            vm.onEvent(TeamSetupUIEventUpdated.OnInviteTeamMembers(teamId))
+                            if (homeState.user.phone != state.inviteList[0].countryCode + state.inviteList[0].contact) {
+                                vm.onEvent(TeamSetupUIEventUpdated.OnInviteTeamMembers(teamId))
+                            } else {
+                                roleKey.value = state.inviteList[0].role.key
+                                vm.onEvent(
+                                    TeamSetupUIEventUpdated.SetRequestData(
+                                        roleKey.value,
+                                        teamId.ifEmpty { UserStorage.teamId }
+                                    )
+                                )
+                                showSwapDialog.value = true
+                                homeVm.onEvent(HomeScreenEvent.OnSwapClick)
+                            }
                         }
                     }
                 },
@@ -241,6 +268,37 @@ fun AddPlayersScreenUpdated(
             }
         )
     }
+    if (showSwapDialog.value) {
+        SwapProfile(
+            title = stringResource(id = R.string.invite_from_your_profile),
+            actionButtonText = stringResource(id = R.string.invite),
+            users = homeState.swapUsers,
+            onDismiss = { showSwapDialog.value = false },
+            onConfirmClick = { swapUser ->
+                vm.onEvent(
+                    TeamSetupUIEventUpdated.OnInviteTeamMembers(
+                        state.teamId,
+                        userType = state.role,
+                        type = AppConstants.TYPE_CREATE_TEAM,
+                        profilesSelected = true,
+                        member = Members(
+                            name = swapUser.firstName,
+                            mobileNumber = swapUser._Id,
+                            role = roleKey.value
+                        )
+                    )
+                )
+                showSwapDialog.value = false
+                homeVm.onEvent(HomeScreenEvent.HideSwap(false))
+            },
+            showLoading = homeState.isDataLoading,
+            onCreatePlayerClick = {
+                addProfileClick()
+            },
+            showCreatePlayerButton = true
+        )
+    }
+
     if (state.isLoading) {
         CommonProgressBar()
     }
