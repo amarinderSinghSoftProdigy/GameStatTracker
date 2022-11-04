@@ -28,7 +28,6 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.allballapp.android.R
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.response.team.Coach
@@ -44,7 +43,7 @@ import timber.log.Timber
 @Composable
 fun NewConversationScreen(
     teamId: String,
-    chatVM: ChatViewModel = hiltViewModel(),
+    chatVM: ChatViewModel,
     cometChat: CometChatUI,
     onGroupCreateSuccess: () -> Unit
 ) {
@@ -52,8 +51,9 @@ fun NewConversationScreen(
     val context = LocalContext.current
 
     remember {
-        chatVM.onEvent(ChatUIEvent.GetAllMembers(teamId))
+//        chatVM.onEvent(ChatUIEvent.GetAllMembers(teamId))
     }
+
 
     LaunchedEffect(key1 = Unit) {
         chatVM.chatChannel.collect { chatChannel ->
@@ -93,7 +93,11 @@ fun NewConversationScreen(
             .fillMaxSize()
             .padding(all = dimensionResource(id = R.dimen.size_16dp))
     ) {
-        if ((chatState.coaches.isNotEmpty() || chatState.players.isNotEmpty()) && (chatState.coaches.any { coach -> coach._id != UserStorage.userId } || chatState.players.any { coach -> coach._id != UserStorage.userId })) {
+        if ((chatState.teams[chatState.teamIndex].coaches.isNotEmpty()
+                    || chatState.teams[chatState.teamIndex].players.isNotEmpty())
+            && (chatState.teams[chatState.teamIndex].coaches.any { coach -> coach._id != UserStorage.userId }
+                    || chatState.teams[chatState.teamIndex].players.any { coach -> coach._id != UserStorage.userId })
+        ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -102,13 +106,13 @@ fun NewConversationScreen(
                         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                     )
             ) {
-                if (chatState.coaches.isNotEmpty() && chatState.coaches.any { coach -> coach._id != UserStorage.userId }) {
+                if (chatState.teams[chatState.teamIndex].coaches.isNotEmpty() && chatState.teams[chatState.teamIndex].coaches.any { coach -> coach._id != UserStorage.userId }) {
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
                     val coachSize = buildAnnotatedString {
                         append(stringResource(id = R.string.coaches))
                         val startIndex = length
                         append(" ( ")
-                        append("" + chatState.coaches.size)
+                        append("" + chatState.teams[chatState.teamIndex].coaches.size)
                         append(" )")
                         addStyle(
                             SpanStyle(
@@ -129,7 +133,7 @@ fun NewConversationScreen(
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                     LazyColumn {
-                        items(chatState.coaches) { coach ->
+                        items(chatState.teams[chatState.teamIndex].coaches) { coach ->
                             TeamUserListCheckbox(
                                 isCoach = true,
                                 coachUser = coach,
@@ -142,14 +146,14 @@ fun NewConversationScreen(
                         }
                     }
                 }
-                if (chatState.players.isNotEmpty() && chatState.players.any { coach -> coach._id != UserStorage.userId }) {
+                if (chatState.teams[chatState.teamIndex].players.isNotEmpty() && chatState.teams[chatState.teamIndex].players.any { coach -> coach._id != UserStorage.userId }) {
                     AppDivider()
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
                     val playersSize = buildAnnotatedString {
                         append(stringResource(id = R.string.players))
                         val startIndex = length
                         append(" ( ")
-                        append("" + chatState.players.size)
+                        append("" + chatState.teams[chatState.teamIndex].players.size)
                         append(" )")
                         addStyle(
                             SpanStyle(
@@ -170,7 +174,7 @@ fun NewConversationScreen(
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
                     LazyColumn {
-                        items(chatState.players) { player ->
+                        items(chatState.teams[chatState.teamIndex].players) { player ->
                             TeamUserListCheckbox(
                                 isCoach = false,
                                 teamUser = player,

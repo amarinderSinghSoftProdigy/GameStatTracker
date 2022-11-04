@@ -8,10 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,7 +16,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidViewBinding
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.allballapp.android.R
 import com.allballapp.android.data.response.team.Team
 import com.allballapp.android.databinding.FragmentConversationBinding
@@ -34,8 +30,8 @@ import com.cometchat.pro.uikit.ui_components.messages.message_list.CometChatMess
 @Composable
 fun TeamsChatScreen(
     color: String = "",
-    homeVm:HomeViewModel,
-    vm: ChatViewModel = hiltViewModel(),
+    homeVm: HomeViewModel,
+    vm: ChatViewModel,
     onTeamItemClick: () -> Unit,
     onCreateNewConversationClick: (teamId: String) -> Unit
 ) {
@@ -48,6 +44,13 @@ fun TeamsChatScreen(
 
     remember {
         homeVm.getUnreadMessageCount()
+        vm.onEvent(ChatUIEvent.GetChatListing)
+    }
+    LaunchedEffect(key1 = selected.value, block = {
+        vm.onEvent(ChatUIEvent.TeamSelectionChange(selected.value))
+    })
+    LaunchedEffect(key1 = Unit) {
+        vm.onEvent(ChatUIEvent.ClearData)
     }
 
     Box(modifier = Modifier.fillMaxSize()) {

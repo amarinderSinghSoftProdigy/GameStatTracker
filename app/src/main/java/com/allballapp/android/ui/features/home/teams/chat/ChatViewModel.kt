@@ -4,6 +4,7 @@ import android.app.Application
 import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -50,13 +51,6 @@ class ChatViewModel @Inject constructor(
     val chatUiState: State<ChatUIState> = _chatUiState
 
 
-    init {
-        viewModelScope.launch {
-            getChatListings()
-        }
-    }
-
-
     fun onEvent(event: ChatUIEvent) {
         when (event) {
 
@@ -84,9 +78,26 @@ class ChatViewModel @Inject constructor(
             }
             is ChatUIEvent.GetAllMembers -> {
                 viewModelScope.launch {
-                    getTeamByTeamId(event.teamId)
+//                    getTeamByTeamId(event.teamId)
                 }
             }
+            is ChatUIEvent.TeamSelectionChange -> {
+                _chatUiState.value =
+                    _chatUiState.value.copy(teamIndex = event.teamIndex)
+            }
+            ChatUIEvent.GetChatListing -> {
+                viewModelScope.launch {
+                    getChatListings()
+                }
+            }
+            ChatUIEvent.ClearData -> {
+                _chatUiState.value =
+                    _chatUiState.value.copy(selectedPlayersForNewGroup = mutableStateListOf())
+                _chatUiState.value =
+                    _chatUiState.value.copy(selectedCoachesForNewGroup = mutableStateListOf())
+            }
+
+
         }
     }
 
@@ -369,10 +380,10 @@ class ChatViewModel @Inject constructor(
                     if (response.status && response.data != null) {
                         _chatUiState.value = _chatUiState.value.copy(
                             isLoading = false,
-                            players = CommonUtils.getPlayerTabs(response.data.players),
+                            selectedPlayers = CommonUtils.getPlayerTabs(response.data.players),
 //                            supportStaff = response.data.supportingCastDetails,
 //                            acceptPending = response.data.pendingAndDeclinedMembers,
-                            coaches = response.data.coaches,
+                            selectedCoaches = response.data.coaches,
 //                            allUsers = response.data.allMembers,
                             teamName = response.data.name,
                             teamColorPrimary = response.data.colorCode,

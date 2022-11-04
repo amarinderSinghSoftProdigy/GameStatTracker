@@ -17,6 +17,7 @@ import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.response.team.Team
 import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.home.HomeViewModel
+import com.allballapp.android.ui.features.home.teams.chat.ChatViewModel
 import com.allballapp.android.ui.features.home.teams.chat.TeamsChatScreen
 import com.allballapp.android.ui.features.home.teams.leaderboard.LeaderBoardScreen
 import com.allballapp.android.ui.features.home.teams.roaster.RoasterScreen
@@ -33,12 +34,13 @@ import kotlinx.coroutines.launch
 fun TeamsScreen(
     vm: TeamViewModel,
     homeVm: HomeViewModel,
+    chatViewModel: ChatViewModel,
     showDialog: Boolean,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
     dismissDialog: (Boolean) -> Unit,
     OnTeamDetailsSuccess: (String, String) -> Unit,
     onCreateTeamClick: (Team?) -> Unit,
-    onCreateNewConversationClick: (teamId:String) -> Unit,
+    onCreateNewConversationClick: (teamId: String) -> Unit,
     onTeamItemClick: () -> Unit,
     onAddPlayerClick: () -> Unit,
     onHomeClick: () -> Unit
@@ -119,7 +121,8 @@ fun TeamsScreen(
                 onCreateNewConversationClick = onCreateNewConversationClick,
                 viewModel = vm,
                 onAddPlayerClick = onAddPlayerClick,
-                homeVm = homeVm
+                homeVm = homeVm,
+                chatViewModel = chatViewModel
             )
         } else {
             RefereeTeamsTopTabs(pagerState = pagerState, tabData = tabData)
@@ -127,7 +130,8 @@ fun TeamsScreen(
                 vm.teamUiState.value.teamColorPrimary,
                 onTeamItemClick = onTeamItemClick,
                 onCreateNewConversationClick = onCreateNewConversationClick,
-                homeVm = homeVm
+                homeVm = homeVm,
+                vm = chatViewModel
             )
             //EmptyScreen(singleText = true, heading = stringResource(id = R.string.coming_soon))
         }
@@ -166,10 +170,11 @@ fun TeamsScreen(
 fun TeamsContent(
     pagerState: PagerState,
     onTeamItemClick: () -> Unit,
-    onCreateNewConversationClick: (teamId:String) -> Unit,
+    onCreateNewConversationClick: (teamId: String) -> Unit,
     onAddPlayerClick: () -> Unit,
     viewModel: TeamViewModel,
-    homeVm : HomeViewModel
+    homeVm: HomeViewModel,
+    chatViewModel: ChatViewModel
 ) {
     HorizontalPager(
         state = pagerState,
@@ -181,7 +186,8 @@ fun TeamsContent(
                 viewModel.teamUiState.value.teamColorPrimary,
                 homeVm = homeVm,
                 onTeamItemClick = onTeamItemClick,
-                onCreateNewConversationClick = onCreateNewConversationClick
+                onCreateNewConversationClick = onCreateNewConversationClick,
+                vm = chatViewModel
             )
             2 -> RoasterScreen(viewModel, onAddPlayerClick, true)
             3 -> LeaderBoardScreen()

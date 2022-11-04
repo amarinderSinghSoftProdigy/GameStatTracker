@@ -9,12 +9,13 @@ import com.allballapp.android.data.response.team.*
 
 
 data class ChatUIState(
-    val userRole:String="",
+    val selectedPlayers: ArrayList<Player> = ArrayList(),
+    val selectedCoaches: ArrayList<Coach> = ArrayList(),
+    val teamIndex: Int = 0,
+    val userRole: String = "",
     val isLoading: Boolean = false,
     val teams: ArrayList<Team> = ArrayList(),
-    val players: ArrayList<Player> = ArrayList(),
     val playersList: ArrayList<PlayerDetails> = ArrayList(),
-    val coaches: ArrayList<Coach> = ArrayList(),
     val leaderBoard: List<TeamLeaderBoard> = emptyList(),
     //val roasterTabs: List<Player> = emptyList(),
     val roaster: List<TeamRoaster> = emptyList(),
@@ -37,7 +38,6 @@ data class ChatUIState(
     val teamNameOnTournaments: String = "",
     val venueName: String = "",
     val selectedAddress: Address = Address(),
-
 
 
     /*New conversation states*/

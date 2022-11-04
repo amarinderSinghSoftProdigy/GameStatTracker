@@ -50,6 +50,7 @@ import com.allballapp.android.ui.features.home.manage_team.MainManageTeamScreen
 import com.allballapp.android.ui.features.home.teams.TeamUIEvent
 import com.allballapp.android.ui.features.home.teams.TeamViewModel
 import com.allballapp.android.ui.features.home.teams.TeamsScreen
+import com.allballapp.android.ui.features.home.teams.chat.ChatViewModel
 import com.allballapp.android.ui.features.home.teams.chat.NewConversationScreen
 import com.allballapp.android.ui.features.home.teams.chat.TeamsChatDetailScreen
 import com.allballapp.android.ui.features.home.teams.chat.TeamsChatScreen
@@ -277,6 +278,7 @@ fun NavControllerComposable(
 
     //val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = hiltViewModel()
     val profileViewModel: ProfileViewModel = hiltViewModel()
+    val chatViewModel: ChatViewModel = hiltViewModel()
     var eventTitle by rememberSaveable { mutableStateOf("") }
     var teamLogo by rememberSaveable {
         mutableStateOf("")
@@ -490,7 +492,8 @@ fun NavControllerComposable(
                     navController.navigate(Route.ADD_MY_PLAYER_SCREEN + "/${UserStorage.teamId}")
                 }, onHomeClick = {
                     navController.navigate(Route.HOME_SCREEN)
-                }, homeVm = homeViewModel
+                }, homeVm = homeViewModel,
+                chatViewModel = chatViewModel
             )
         }
 
@@ -516,7 +519,8 @@ fun NavControllerComposable(
                 teamId = teamId,
                 onGroupCreateSuccess = {
                     navController.popBackStack()
-                })
+                }, chatVM = chatViewModel
+            )
 
         }
 
@@ -938,6 +942,7 @@ fun NavControllerComposable(
         composable(route = Route.TEAMS_CHAT_SCREEN) {
             TeamsChatScreen(
                 "",
+                vm = chatViewModel,
                 homeVm = homeViewModel,
                 onTeamItemClick = {
 
