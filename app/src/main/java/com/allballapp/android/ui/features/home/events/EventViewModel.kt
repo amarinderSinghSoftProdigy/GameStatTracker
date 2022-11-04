@@ -405,6 +405,9 @@ class EventViewModel @Inject constructor(
             is EvEvents.ClearTeam -> {
                 _state.value = _state.value.copy(teamsByLeagueDivision = emptyList())
             }
+            is EvEvents.ClearOpportunities -> {
+                _state.value = _state.value.copy(opportunitiesDetail = OpportunitiesDetail())
+            }
 
         }
     }

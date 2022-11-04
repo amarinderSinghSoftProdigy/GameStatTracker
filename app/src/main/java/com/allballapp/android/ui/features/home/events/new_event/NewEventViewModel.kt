@@ -10,6 +10,8 @@ import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.request.CreateEventReq
 import com.allballapp.android.data.request.Location
 import com.allballapp.android.domain.repository.IEventsRepository
+import com.allballapp.android.ui.features.home.events.EvEvents
+import com.allballapp.android.ui.features.home.events.EventChannel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -79,6 +81,17 @@ class NewEventViewModel @Inject constructor(val eventsRepository: IEventsReposit
             is NewEvEvent.OnNotificationChange -> {
                 _state.value =
                     _state.value.copy(showNotification = event.showNotification)
+            }
+            is NewEvEvent.ShowToast -> {
+                viewModelScope.launch {
+                    _channel.send(
+                        NewEventChannel.ShowToast(
+                            UiText.DynamicString(
+                                event.message
+                            )
+                        )
+                    )
+                }
             }
         }
     }
