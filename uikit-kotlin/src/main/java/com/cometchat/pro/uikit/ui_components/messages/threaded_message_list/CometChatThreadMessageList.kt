@@ -872,7 +872,7 @@ class CometChatThreadMessageList : Fragment(), View.OnClickListener, OnMessageLo
         val mapView = view.findViewById<ImageView>(R.id.map_vw)
         val mapUrl = UIKitConstants.MapUrl.MAPS_URL + LATITUDE + "," + LONGITUDE + "&key=" +
                 UIKitConstants.MapUrl.MAP_ACCESS_KEY
-        Glide.with(this)
+        Glide.with(requireContext())
                 .load(mapUrl)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(mapView)
