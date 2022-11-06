@@ -50,6 +50,8 @@ import com.allballapp.android.R
 import com.allballapp.android.common.*
 import com.allballapp.android.data.request.Address
 import com.allballapp.android.ui.features.components.*
+import com.allballapp.android.ui.features.home.events.EvEvents
+import com.allballapp.android.ui.features.home.events.EventChannel
 import com.allballapp.android.ui.theme.appColors
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -74,20 +76,14 @@ fun NewEventScreen(
             when (uiEvent) {
                 is NewEventChannel.OnEventCreationSuccess -> {
                     Toast.makeText(
-                        context,
-                        uiEvent.message,
-                        Toast.LENGTH_LONG
-                    )
-                        .show()
+                        context, uiEvent.message, Toast.LENGTH_LONG
+                    ).show()
                     onEventCreationSuccess.invoke()
                 }
                 is NewEventChannel.ShowToast -> {
                     Toast.makeText(
-                        context,
-                        uiEvent.message.asString(context),
-                        Toast.LENGTH_LONG
-                    )
-                        .show()
+                        context, uiEvent.message.asString(context), Toast.LENGTH_LONG
+                    ).show()
                 }
             }
         }
@@ -122,9 +118,7 @@ fun NewEventScreen(
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
             PracticeScreen(
-                venue,
-                vm,
-                onVenueClick = onVenueClick
+                venue, vm, onVenueClick = onVenueClick
             )
         }
 
@@ -133,20 +127,12 @@ fun NewEventScreen(
             onClick = {
                 vm.onEvent(NewEvEvent.OnSaveButtonClick)
             },
-            modifier = Modifier
-                .width(
-                    dimensionResource(
-                        id = R.dimen.size_140dp
-                    )
-                ),
-            enabled = state.eventName.isNotEmpty()
-                    && validEventName(state.eventName)
-                    && state.selectedDate.isNotEmpty()
-                    && state.selectedArrivalTime.isNotEmpty()
-                    && state.selectedStartTime.isNotEmpty()
-                    && state.selectedEndTime.isNotEmpty()
-                    && state.selectedVenueName.isNotEmpty()
-                    && state.selectedAddress.street.isNotEmpty() && state.pre_practice_prep.isNotEmpty(),
+            modifier = Modifier.width(
+                dimensionResource(
+                    id = R.dimen.size_140dp
+                )
+            ),
+            enabled = state.eventName.isNotEmpty() && validEventName(state.eventName) && state.selectedDate.isNotEmpty() && state.selectedArrivalTime.isNotEmpty() && state.selectedStartTime.isNotEmpty() && state.selectedEndTime.isNotEmpty() && state.selectedVenueName.isNotEmpty() && state.selectedAddress.street.isNotEmpty() && state.pre_practice_prep.isNotEmpty(),
 
             singleButton = true,
             themed = true,
@@ -173,34 +159,26 @@ fun EventTabs(pagerState: PagerState, onSelectionChange: (String) -> Unit) {
         modifier = Modifier
             .width(width)
             .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_6dp))),
-        indicator = {}
-    ) {
+        indicator = {}) {
 
         list.forEachIndexed { index, text ->
             val selected = pagerState.currentPage == index
-            Tab(
-                modifier = Modifier
-                    .height(dimensionResource(id = R.dimen.size_32dp))
-                    .width(dimensionResource(id = R.dimen.size_100dp))
-                    .background(
-                        if (selected)
-                            MaterialTheme.appColors.material.primaryVariant
-                        else
-                            MaterialTheme.appColors.material.primary
-                    ),
-                selected = selected,
-                onClick = {
-                    scope.launch {
-                        pagerState.animateScrollToPage(index)
-                    }
-                },
-                text = {
-                    Text(
-                        text = text.name,
-                        color = if (selected) Color.White else MaterialTheme.appColors.textField.label
-                    )
+            Tab(modifier = Modifier
+                .height(dimensionResource(id = R.dimen.size_32dp))
+                .width(dimensionResource(id = R.dimen.size_100dp))
+                .background(
+                    if (selected) MaterialTheme.appColors.material.primaryVariant
+                    else MaterialTheme.appColors.material.primary
+                ), selected = selected, onClick = {
+                scope.launch {
+                    pagerState.animateScrollToPage(index)
                 }
-            )
+            }, text = {
+                Text(
+                    text = text.name,
+                    color = if (selected) Color.White else MaterialTheme.appColors.textField.label
+                )
+            })
         }
         onSelectionChange.invoke(list[pagerState.currentPage].stringId)
 
@@ -208,17 +186,13 @@ fun EventTabs(pagerState: PagerState, onSelectionChange: (String) -> Unit) {
 }
 
 enum class EventTabItems(val stringId: String) {
-    Practice(stringId = "practice"),
-    Game(stringId = "game"),
-    Activity(stringId = "activity")
+    Practice(stringId = "practice"), Game(stringId = "game"), Activity(stringId = "activity")
 }
 
 @SuppressLint("SimpleDateFormat")
 @Composable
 fun PracticeScreen(
-    venue: String,
-    vm: NewEventViewModel,
-    onVenueClick: () -> Unit
+    venue: String, vm: NewEventViewModel, onVenueClick: () -> Unit
 ) {
 
     val state = vm.state.value
@@ -230,172 +204,197 @@ fun PracticeScreen(
     val mDay: Int = mCalendar.get(Calendar.DAY_OF_MONTH)
     val mHour = mCalendar[Calendar.HOUR_OF_DAY]
     val mMinute = mCalendar[Calendar.MINUTE]
-
+    val formatter = SimpleDateFormat("dd/M/yyyy h:mm")
+    var arrivalTime by remember {
+        mutableStateOf("")
+    }
+    var startTime by remember {
+        mutableStateOf("")
+    }
+    var dateString = ""
     val mDatePickerDialog = DatePickerDialog(
-        context,
-        { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
+        context, { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
             val calendar = Calendar.getInstance()
             calendar[year, month] = dayOfMonth
             val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-            val dateString: String = format.format(calendar.time)
+            dateString = format.format(calendar.time)
             vm.onEvent(NewEvEvent.OnDateChanged(dateString))
         }, mYear, mMonth, mDay
     )
     mDatePickerDialog.datePicker.minDate = System.currentTimeMillis()
 
-
     val mArrivalPickerDialog = TimePickerDialog(
-        context,
-        { _, mHour: Int, mMinute: Int ->
+        context, { _, mHour: Int, mMinute: Int ->
+            arrivalTime = "$mHour:$mMinute"
             vm.onEvent(NewEvEvent.OnArrivalTimeChanged(get24HoursTimeWithAMPM("$mHour:$mMinute")))
         }, mHour, mMinute, false
     )
 
     val mStartTimePickerDialog = TimePickerDialog(
-        context,
-        { _, mHour: Int, mMinute: Int ->
-
-            vm.onEvent(NewEvEvent.OnStartTimeChanged(get24HoursTimeWithAMPM("$mHour:$mMinute")))
-
+        context, { _, mHour: Int, mMinute: Int ->
+            if (arrivalTime.isEmpty()) {
+                vm.onEvent(NewEvEvent.ShowToast("Enter Arrival Time"))
+            } else if (checkTimings(arrivalTime, "$mHour:$mMinute")) {
+                vm.onEvent(NewEvEvent.OnStartTimeChanged(get24HoursTimeWithAMPM("$mHour:$mMinute")))
+                startTime = "$mHour:$mMinute"
+            } else {
+                vm.onEvent(NewEvEvent.ShowToast("Enter valid Time"))
+            }
         }, mHour, mMinute, false
     )
 
     val mEndTimePickerDialog = TimePickerDialog(
-        context,
-        { _, mHour: Int, mMinute: Int ->
-            vm.onEvent(NewEvEvent.OnEndTimeChanged(get24HoursTimeWithAMPM("$mHour:$mMinute")))
+        context, { _, mHour: Int, mMinute: Int ->
+            if (startTime.isEmpty()) {
+                vm.onEvent(NewEvEvent.ShowToast("Enter start Time"))
+            } else if (checkTimings(startTime, "$mHour:$mMinute")) {
+                vm.onEvent(NewEvEvent.OnEndTimeChanged(get24HoursTimeWithAMPM("$mHour:$mMinute")))
+            } else {
+                vm.onEvent(NewEvEvent.ShowToast("Enter valid Time"))
+            }
         }, mHour, mMinute, false
     )
     LaunchedEffect(key1 = venue, block = {
         vm.onEvent(NewEvEvent.OnLocationVenueChange(venue))
     })
 
-    val placePicker = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult(),
-        onResult = { activityResult ->
-            val addressReq = Address()
-
-            if (activityResult.resultCode == Activity.RESULT_OK) {
-                activityResult.data?.let {
-                    val place = activityResult.data?.let { data ->
-                        Autocomplete.getPlaceFromIntent(
-                            data
-                        )
-                    }
-                    val address = place?.address ?: ""
-                    val latLng = place?.latLng
-                    val lat = latLng?.latitude ?: 0.0
-                    val long = latLng?.longitude ?: 0.0
-
-                    addressReq.street = address
-                    addressReq.lat = lat
-                    addressReq.long = long
-
-                    val geocoder = Geocoder(context, Locale.getDefault())
-                    try {
-                        val addresses = geocoder.getFromLocation(lat, long, 1)
-                        val stateName: String = addresses?.get(0)?.adminArea ?: ""
-                        val cityName: String = addresses?.get(0)?.locality ?: ""
-                        val countryName: String = addresses?.get(0)?.countryName ?: ""
-                        val zip: String = addresses?.get(0)?.postalCode ?: ""
-                        addressReq.state = stateName
-                        addressReq.city = cityName
-                        addressReq.country = countryName
-                        addressReq.zip = zip
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                    }
+    LaunchedEffect(Unit) {
+        vm.channel.collect { uiEvent ->
+            when (uiEvent) {
+                is NewEventChannel.ShowToast -> {
+                    Toast.makeText(
+                        context, uiEvent.message.asString(context), Toast.LENGTH_LONG
+                    ).show()
                 }
             }
-            if (addressReq.street.isNotEmpty()) {
-                vm.onEvent(NewEvEvent.OnAddressChanged(addressReq))
-            }
-            if (activityResult.resultCode == RESULT_ERROR) {
-                activityResult.let {
-                    val status = it.data?.let { it1 -> Autocomplete.getStatusFromIntent(it1) }
-                    Log.i("statusMessage--", status?.statusMessage ?: "and ${status}")
-                    Timber.i("RESULT_ERROR", status?.statusMessage ?: "and ${status}")
-                }
-            }
-
         }
-    )
+    }
+    val placePicker =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult(),
+            onResult = { activityResult ->
+                val addressReq = Address()
+
+                if (activityResult.resultCode == Activity.RESULT_OK) {
+                    activityResult.data?.let {
+                        val place = activityResult.data?.let { data ->
+                            Autocomplete.getPlaceFromIntent(
+                                data
+                            )
+                        }
+                        val address = place?.address ?: ""
+                        val latLng = place?.latLng
+                        val lat = latLng?.latitude ?: 0.0
+                        val long = latLng?.longitude ?: 0.0
+
+                        addressReq.street = address
+                        addressReq.lat = lat
+                        addressReq.long = long
+
+                        val geocoder = Geocoder(context, Locale.getDefault())
+                        try {
+                            val addresses = geocoder.getFromLocation(lat, long, 1)
+                            val stateName: String = addresses?.get(0)?.adminArea ?: ""
+                            val cityName: String = addresses?.get(0)?.locality ?: ""
+                            val countryName: String = addresses?.get(0)?.countryName ?: ""
+                            val zip: String = addresses?.get(0)?.postalCode ?: ""
+                            addressReq.state = stateName
+                            addressReq.city = cityName
+                            addressReq.country = countryName
+                            addressReq.zip = zip
+                        } catch (e: IOException) {
+                            e.printStackTrace()
+                        }
+                    }
+                }
+                if (addressReq.street.isNotEmpty()) {
+                    vm.onEvent(NewEvEvent.OnAddressChanged(addressReq))
+                }
+                if (activityResult.resultCode == RESULT_ERROR) {
+                    activityResult.let {
+                        val status = it.data?.let { it1 -> Autocomplete.getStatusFromIntent(it1) }
+                        Log.i("statusMessage--", status?.statusMessage ?: "and ${status}")
+                        Timber.i("RESULT_ERROR", status?.statusMessage ?: "and ${status}")
+                    }
+                }
+
+            })
 
 
     Box {
         Column {
             Divider(color = MaterialTheme.appColors.material.primary)
-            PracticeItem(
-                title = stringResource(R.string.event_name),
+            PracticeItem(title = stringResource(R.string.event_name),
                 label = stringResource(id = R.string.enter_event_name),
                 selectedValue = state.eventName,
                 isEditableField = true,
                 onSelectedValueChange = {
-                    if (it.length <= 30)
-                        vm.onEvent(NewEvEvent.OnEventNameChange(it))
+                    if (it.length <= 30) vm.onEvent(NewEvEvent.OnEventNameChange(it))
 
                 },
                 OnClick = {
                     mDatePickerDialog.show()
-                }, onNotificationChange = {})
+                },
+                onNotificationChange = {})
 
             Divider(color = MaterialTheme.appColors.material.primary)
-            PracticeItem(
-                title = stringResource(R.string.date),
+            PracticeItem(title = stringResource(R.string.date),
                 icon = painterResource(id = R.drawable.ic_calender),
                 label = stringResource(id = R.string.select_date),
                 selectedValue = apiToUIDateFormat2(state.selectedDate),
                 onSelectedValueChange = {
 
-                }, OnClick = {
+                },
+                OnClick = {
                     mDatePickerDialog.show()
                 },
                 onNotificationChange = {})
 
             Divider(color = MaterialTheme.appColors.material.primary)
 
-            PracticeItem(
-                title = stringResource(R.string.arrival_time),
+            PracticeItem(title = stringResource(R.string.arrival_time),
                 label = stringResource(id = R.string.select_arrival_time),
                 icon = painterResource(id = R.drawable.ic_date),
                 selectedValue = state.selectedArrivalTime,
                 onSelectedValueChange = {
 
-                }, OnClick = {
+                },
+                OnClick = {
                     mArrivalPickerDialog.show()
-                }, onNotificationChange = {})
+                },
+                onNotificationChange = {})
 
             Divider(color = MaterialTheme.appColors.material.primary)
 
-            PracticeItem(
-                title = stringResource(R.string.start_time),
+            PracticeItem(title = stringResource(R.string.start_time),
                 label = stringResource(id = R.string.select_start_time),
                 icon = painterResource(id = R.drawable.ic_date),
                 selectedValue = state.selectedStartTime,
                 onSelectedValueChange = {
 
-                }, OnClick = {
+                },
+                OnClick = {
                     mStartTimePickerDialog.show()
-                }, onNotificationChange = {})
+                },
+                onNotificationChange = {})
 
             Divider(color = MaterialTheme.appColors.material.primary)
 
-            PracticeItem(
-                title = stringResource(R.string.end_time),
+            PracticeItem(title = stringResource(R.string.end_time),
                 label = stringResource(id = R.string.select_end_time),
                 icon = painterResource(id = R.drawable.ic_date),
                 selectedValue = state.selectedEndTime,
                 onSelectedValueChange = {
 
-                }, OnClick = {
+                },
+                OnClick = {
                     mEndTimePickerDialog.show()
 
-                }, onNotificationChange = {})
+                },
+                onNotificationChange = {})
 
             Divider(color = MaterialTheme.appColors.material.primary)
 
-            PracticeItem(
-                title = stringResource(R.string.location),
+            PracticeItem(title = stringResource(R.string.location),
                 label = stringResource(R.string.select_location),
                 icon = painterResource(id = R.drawable.ic_next),
                 color = MaterialTheme.appColors.buttonColor.bckgroundDisabled,
@@ -403,34 +402,38 @@ fun PracticeScreen(
                 selectedValue = venue,
                 onSelectedValueChange = {
                     vm.onEvent(NewEvEvent.OnLocationVenueChange(venue))
-                }, OnClick = {
+                },
+                OnClick = {
                     onVenueClick.invoke()
-                }, onNotificationChange = {})
+                },
+                onNotificationChange = {})
 
             Divider(color = MaterialTheme.appColors.material.primary)
 
-            PracticeItem(
-                title = stringResource(R.string.address),
+            PracticeItem(title = stringResource(R.string.address),
                 label = stringResource(R.string.send_address),
                 icon = painterResource(id = R.drawable.ic_next),
                 color = MaterialTheme.appColors.buttonColor.bckgroundDisabled,
                 selectedValue = state.selectedAddress.street,
                 onSelectedValueChange = {
 
-                }, OnClick = {
+                },
+                OnClick = {
                     if (!Places.isInitialized()) {
-                        Places.initialize(context.applicationContext, com.allballapp.android.BuildConfig.MAPS_API_KEY)
+                        Places.initialize(
+                            context.applicationContext,
+                            com.allballapp.android.BuildConfig.MAPS_API_KEY
+                        )
                     }
                     val fields = listOf(
-                        Place.Field.NAME,
-                        Place.Field.ADDRESS,
-                        Place.Field.LAT_LNG
+                        Place.Field.NAME, Place.Field.ADDRESS, Place.Field.LAT_LNG
                     )
                     placePicker.launch(
                         Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
                             .build(context)
                     )
-                }, onNotificationChange = {})
+                },
+                onNotificationChange = {})
 
             Divider(color = MaterialTheme.appColors.material.primary)
 
@@ -454,8 +457,7 @@ fun PracticeScreen(
 
                 },
                 keyboardOptions = KeyboardOptions(
-                    imeAction = ImeAction.Next,
-                    keyboardType = KeyboardType.Email
+                    imeAction = ImeAction.Next, keyboardType = KeyboardType.Email
                 ),
                 isError = false,
                 errorMessage = stringResource(id = R.string.email_error),
@@ -473,13 +475,12 @@ fun PracticeScreen(
 
             Divider(color = MaterialTheme.appColors.material.primary)
 
-            PracticeItem(
-                stringResource(R.string.send_push_notification),
+            PracticeItem(stringResource(R.string.send_push_notification),
                 onlyIcon = true,
                 onSelectedValueChange = {
 
-                }, OnClick = {
                 },
+                OnClick = {},
                 onNotificationChange = {
                     vm.onEvent(NewEvEvent.OnNotificationChange(it))
                 })
@@ -518,8 +519,7 @@ fun PracticeItem(
         modifier = Modifier
             .height(dimensionResource(id = R.dimen.size_56dp))
             .fillMaxWidth()
-            .background(color = Color.White),
-        contentAlignment = Alignment.Center
+            .background(color = Color.White), contentAlignment = Alignment.Center
     ) {
         Row(
             modifier = Modifier
@@ -537,14 +537,12 @@ fun PracticeItem(
                 style = MaterialTheme.typography.h6,
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
             )
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
+            Row(verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End,
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = dimensionResource(id = R.dimen.size_16dp))
-                    .clickable { OnClick() }
-            ) {
+                    .clickable { OnClick() }) {
                 if (!onlyIcon) {
                     if (!isEditableField) {
                         if (selectedValue.isEmpty()) {
@@ -606,17 +604,14 @@ fun PracticeItem(
 
                     if (icon != null) {
                         Image(
-                            painter = icon, contentDescription = "", modifier = Modifier
-                                .size(
-                                    dimensionResource(id = R.dimen.size_14dp)
-                                ),
-                            colorFilter = ColorFilter.tint(color = color)
+                            painter = icon, contentDescription = "", modifier = Modifier.size(
+                                dimensionResource(id = R.dimen.size_14dp)
+                            ), colorFilter = ColorFilter.tint(color = color)
                         )
                     }
                 } else {
                     Switch(
-                        checked = notification,
-                        onCheckedChange = {
+                        checked = notification, onCheckedChange = {
                             notification = it
                             onNotificationChange.invoke(it)
                         }, colors = SwitchDefaults.colors(

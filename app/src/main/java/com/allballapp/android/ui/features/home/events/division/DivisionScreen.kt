@@ -78,8 +78,6 @@ fun DivisionScreen(
             }
         }
 
-
-
         if (vmState.isLoading) {
             CircularProgressIndicator(
                 modifier = Modifier.align(Alignment.Center),
