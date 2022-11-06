@@ -1,6 +1,5 @@
 package com.allballapp.android.ui.features.select_profile
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -49,11 +48,11 @@ fun SelectProfileScreen(vm: SignUpViewModel, onNextClick: () -> Unit) {
         vm.signUpChannel.collect { uiEvent ->
             when (uiEvent) {
                 is SignUpChannel.OnProfileUpdateSuccess -> {
-                    Toast.makeText(
+                   /* Toast.makeText(
                         context,
                         uiEvent.message.asString(context),
                         Toast.LENGTH_LONG
-                    ).show()
+                    ).show()*/
                     onNextClick()
                 }
             }

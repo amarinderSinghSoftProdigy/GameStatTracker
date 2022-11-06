@@ -87,6 +87,9 @@ fun InvitationScreen(
         vmSetupTeam.teamSetupChannel.collect { uiEvent ->
             when (uiEvent) {
                 is TeamSetupChannel.ShowToast -> {
+                    if (state.showAddPlayerDialog) {
+                        vm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
+                    }
                     Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
                         .show()
                 }
@@ -224,7 +227,6 @@ fun InvitationScreen(
             },
             dontHaveChildClick = {
                 vm.onEvent(InvitationEvent.ConfirmGuardianWithoutChildAlert(true))
-
             }
         )
     }

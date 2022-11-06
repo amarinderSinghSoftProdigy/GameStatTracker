@@ -129,8 +129,6 @@ fun AddPlayersScreenUpdated(
                     onNextClick.invoke(uiEvent.message)
                 }
                 is TeamSetupChannel.OnInvitationSuccess -> {
-                    Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
-                        .show()
                     onInvitationSuccess.invoke()
                 }
                 else -> Unit
@@ -244,8 +242,8 @@ fun AddPlayersScreenUpdated(
                         }
                     }
                 },
-                enableState = state.inviteList.isNotEmpty(), /*&&
-                        state.inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() }*/
+                enableState = !state.isLoading && state.inviteList.isNotEmpty() &&
+                        state.inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() },
                 themed = true,
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))

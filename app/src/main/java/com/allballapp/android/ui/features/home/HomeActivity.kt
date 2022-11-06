@@ -4,6 +4,7 @@ package com.allballapp.android.ui.features.home
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
@@ -77,7 +78,7 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
-val animeDuration = 750
+val animeDuration = 1050
 
 @AndroidEntryPoint
 class HomeActivity : FragmentActivity() {
@@ -251,13 +252,15 @@ class HomeActivity : FragmentActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.type = ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
-        startActivityForResult(
-            intent,
-            AppConstants.REQUEST_CONTACT_CODE,
-            null
-        )
+        if (requestCode == AppConstants.REQUEST_CONTACT && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.type = ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
+            startActivityForResult(
+                intent,
+                AppConstants.REQUEST_CONTACT_CODE,
+                null
+            )
+        }
     }
 }
 

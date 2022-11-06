@@ -13,6 +13,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
 import androidx.compose.foundation.text.selection.TextSelectionColors
@@ -360,8 +361,7 @@ fun ProfileSetUpScreen(
                                 keyboardOptions = KeyboardOptions(
                                     imeAction = ImeAction.Next,
                                     capitalization = KeyboardCapitalization.Sentences
-                                )
-
+                                ),
                             )
                             AppDivider()
 
@@ -373,8 +373,12 @@ fun ProfileSetUpScreen(
                                 stringResource(id = R.string.email),
                                 keyboardOptions = KeyboardOptions(
                                     keyboardType = KeyboardType.Email,
+                                    imeAction = ImeAction.Done,
                                     capitalization = KeyboardCapitalization.Sentences
                                 ),
+                                keyboardActions = KeyboardActions(onDone = {
+                                    keyboardController?.hideSoftwareKeyboard()
+                                }),
                                 isError = (state.signUpData.email
                                     ?: "").isNotEmpty() && state.signUpData.email?.isValidEmail() != true,
                                 errorMessage = stringResource(id = R.string.email_error),
@@ -611,11 +615,13 @@ fun ProfileSetUpScreen(
 
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_44dp)))
 
-                    val check = state.signUpData.token?.let {
+                    /* val check = remember {
+                         mutableStateOf(true)
+                     }*//*state.signUpData.token?.let {
                         state.signUpData.birthdate.isNotEmpty()
                                 && state.signUpData.address.isNotEmpty()
                                 && state.signUpData.gender.isNotEmpty()
-                    } ?: true
+                    } ?: true*/
                     BottomButtons(
                         onBackClick = {
                             signUpViewModel.onEvent(SignUpUIEvent.ClearPhoneField)
@@ -627,10 +633,12 @@ fun ProfileSetUpScreen(
                             } else {
                                 signUpViewModel.onEvent(SignUpUIEvent.OnScreenNext)
                             }
+                            /*check.value = false*/
                         },
-                        enableState = validName(state.signUpData.firstName)
+                        enableState = !state.isLoading && validName(state.signUpData.firstName)
                                 && validName(state.signUpData.lastName)
-                                && if (isToAddProfile) true else validPhoneNumber(state.signUpData.phone),
+                                && if (isToAddProfile) true else validPhoneNumber(state.signUpData.phone)
+                        /*&& check.value*/,
                         //&& (state.signUpData.email ?: "".isValidEmail()) != true
                         //&& state.signUpData.profileImageUri != null
                         //&& state.signUpData.phoneVerified

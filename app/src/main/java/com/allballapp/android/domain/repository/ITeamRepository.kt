@@ -67,7 +67,7 @@ interface ITeamRepository {
 
     suspend fun rejectTeamInvitation(invitationId: String): ResultWrapper<BaseResponse<Any>>
 
-    suspend fun getHomePageDetails(): ResultWrapper<BaseResponse<HomePageCoachModel>>
+    suspend fun getHomePageDetails(teamId: String): ResultWrapper<BaseResponse<HomePageCoachModel>>
 
     suspend fun getUserRoles(role: String): ResultWrapper<BaseResponse<List<UserRoles>>>
 

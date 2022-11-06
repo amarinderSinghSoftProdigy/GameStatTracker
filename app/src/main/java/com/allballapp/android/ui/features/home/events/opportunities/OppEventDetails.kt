@@ -1,6 +1,5 @@
 package com.allballapp.android.ui.features.home.events.opportunities
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -25,7 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.allballapp.android.BuildConfig
+import com.allballapp.android.R
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.home.events.BasePay
@@ -36,7 +35,7 @@ import com.allballapp.android.ui.features.venue.Location
 import com.allballapp.android.ui.theme.ColorBWGrayLight
 import com.allballapp.android.ui.theme.appColors
 import com.allballapp.android.ui.utils.CommonUtils
-import com.allballapp.android.R
+import com.google.android.gms.maps.model.LatLng
 
 @Composable
 fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
@@ -138,15 +137,24 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
                 .fillMaxSize()
         ) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-            LocationBlock(
-                Location(
-                    state.opportunitiesDetail.address,
-                    state.opportunitiesDetail.city,
-                    state.opportunitiesDetail.state,
-                    "",
-                    //latLong = LatLng(state.opportunitiesDetail.)
+            if(state.opportunitiesDetail!=null) {
+                LocationBlock(
+                    Location(
+                        state.opportunitiesDetail.address,
+                        state.opportunitiesDetail.city,
+                        state.opportunitiesDetail.state,
+                        "",
+                        latLong = if(state.opportunitiesDetail.location.coordinates.isNullOrEmpty()){
+                            LatLng(0.0,0.0)
+                        }else {
+                            LatLng(
+                                state.opportunitiesDetail.location.coordinates[0],
+                                state.opportunitiesDetail.location.coordinates[1]
+                            )
+                        }
+                    )
                 )
-            )
+            }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             /* CoilImage(
                  src = R.drawable.rectangle,

@@ -549,9 +549,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
                             )
                         )
                         resetMemberValues()
-                        if (type != AppConstants.TYPE_CREATE_TEAM) {
-                            inItToDefaultData()
-                        }
+                        inItToDefaultData()
                         _teamSetupChannel.send(
                             TeamSetupChannel.ShowToast(
                                 UiText.DynamicString(

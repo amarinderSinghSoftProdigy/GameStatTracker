@@ -181,6 +181,9 @@ fun TeamSetupScreenUpdated(
         vm.teamSetupChannel.collect { uiEvent ->
             when (uiEvent) {
                 is TeamSetupChannel.ShowToast -> {
+                    if (inviteState.showAddPlayerDialog) {
+                        inviteVm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
+                    }
                     Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
                         .show()
                 }
@@ -1007,19 +1010,19 @@ fun TeamSetupScreenUpdated(
                 }
 
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-                val enable =
-                    validTeamName(state.teamName)
-                            && state.teamImageUri != null
-                            && state.teamColorPrimary.isNotEmpty()
-                            && state.teamColorSec.isNotEmpty()
-                            && state.teamColorThird.isNotEmpty()
-                            && state.teamName.isNotEmpty()
-                            && state.teamNameOnJerseys.isNotEmpty()
-                            && state.teamNameOnTournaments.isNotEmpty()
-                            /* && validTeamName(state.venueName)
-                             && state.venueName.isNotEmpty()*/
-                            && state.selectedAddress.street.isNotEmpty()
-                            && state.selectedAddress.street.length >= 4
+                val enable = !state.isLoading &&
+                        validTeamName(state.teamName)
+                        && state.teamImageUri != null
+                        && state.teamColorPrimary.isNotEmpty()
+                        && state.teamColorSec.isNotEmpty()
+                        && state.teamColorThird.isNotEmpty()
+                        && state.teamName.isNotEmpty()
+                        && state.teamNameOnJerseys.isNotEmpty()
+                        && state.teamNameOnTournaments.isNotEmpty()
+                        /* && validTeamName(state.venueName)
+                         && state.venueName.isNotEmpty()*/
+                        && state.selectedAddress.street.isNotEmpty()
+                        && state.selectedAddress.street.length >= 4
                 BottomButtons(
                     firstText = stringResource(id = R.string.back),
                     secondText = stringResource(id = R.string.next),

@@ -83,7 +83,9 @@ fun HomeScreen(
     remember {
         coroutineScope.launch {
             if (UserStorage.token.isNotEmpty()) {
-                vm.getHomePageDetails()
+                if(UserStorage.teamId.isNotEmpty()) {
+                    vm.getHomePageDetails(UserStorage.teamId)
+                }
                 vm.getUnreadMessageCount()
             }
         }

@@ -316,8 +316,8 @@ class HomeViewModel @Inject constructor(
 
     }
 
-    suspend fun getHomePageDetails() {
-        when (val homeResponse = teamRepo.getHomePageDetails()) {
+    suspend fun getHomePageDetails(teamId: String) {
+        when (val homeResponse = teamRepo.getHomePageDetails(teamId)) {
             is ResultWrapper.GenericError -> {
                 _homeChannel.send(
                     HomeChannel.ShowToast(
@@ -342,9 +342,9 @@ class HomeViewModel @Inject constructor(
                         _state.value =
                             _state.value.copy(homePageCoachModel = baseResponse.data)
                         getHomeList()
-                        _homeChannel.send(
+                       /* _homeChannel.send(
                             HomeChannel.OnUserIdUpdate
-                        )
+                        )*/
                     }
                 }
             }

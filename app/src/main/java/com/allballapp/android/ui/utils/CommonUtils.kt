@@ -191,7 +191,7 @@ class CommonUtils {
 
         fun openMaps(context: Context, location: LatLng) {
             val gmmIntentUri: Uri =
-                Uri.parse("geo:" + location.latitude + "," + location.longitude + "?q=")
+                Uri.parse("geo:" + location.latitude + "," + location.longitude + "?q=loc:" + location.latitude + "," + location.longitude + " (" + "Location" + ")")
             val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
             mapIntent.setPackage("com.google.android.apps.maps")
             context.startActivity(mapIntent)

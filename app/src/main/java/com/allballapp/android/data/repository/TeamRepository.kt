@@ -126,9 +126,9 @@ class TeamRepository @Inject constructor(
         }
     }
 
-    override suspend fun getHomePageDetails(): ResultWrapper<BaseResponse<HomePageCoachModel>> {
+    override suspend fun getHomePageDetails(teamId: String): ResultWrapper<BaseResponse<HomePageCoachModel>> {
         return safeApiCall(dispatcher) {
-            service.getHomePageDetails()
+            service.getHomePageDetails(teamId)
         }
     }
 
