@@ -42,6 +42,7 @@ data class Team(
     val teamChatGroups: ArrayList<TeamChatGroup> = ArrayList(),
 
     @SerializedName("teamNameOnJersey") val teamNameOnJersey: String = "",
+    @SerializedName("createdBy") val createdBy: String = "",
     @SerializedName("teamNameOnTournaments") val teamNameOnTournaments: String = "",
     @SerializedName("primaryTeamColor") val primaryTeamColor: String = "",
     @SerializedName("secondaryTeamColor") val secondaryTeamColor: String = "",

@@ -114,8 +114,8 @@ class UIKitSettings(context: Context) {
         var shareLocation = true
 
         var allowDeleteGroup = true
-        var enableSoundForMessages = true
-        var enableSoundForCalls = true
+        var enableSoundForMessages = false
+        var enableSoundForCalls = false
         var joinOrLeaveGroup = true
         var sendGifs: Boolean = true
         var viewShareMedia = true

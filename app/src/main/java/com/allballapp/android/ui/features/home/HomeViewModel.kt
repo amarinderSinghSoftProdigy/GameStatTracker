@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.allballapp.android.BuildConfig
 import com.allballapp.android.R
 import com.allballapp.android.common.CometChatErrorCodes
 import com.allballapp.android.common.ResultWrapper
@@ -417,7 +418,7 @@ class HomeViewModel @Inject constructor(
 
         CometChat.login(
             uid,
-            com.allballapp.android.BuildConfig.COMET_CHAT_AUTH_KEY,
+           BuildConfig.COMET_CHAT_AUTH_KEY,
             object : CometChat.CallbackListener<User?>() {
                 override fun onSuccess(user: User?) {
                     Timber.i(" CometChat- Login Successful : " + user.toString())
