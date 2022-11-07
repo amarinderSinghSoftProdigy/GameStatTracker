@@ -371,7 +371,7 @@ fun ShowParentDialog(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         ButtonWithLeadingIconGrayed(
-                            text = stringResource(R.string.message),
+                            text = stringResource(R.string.message_),
                             onClick = {
                                 val u = Uri.parse("sms:" + parentDetails.parent?.phone)
                                 val i = Intent(Intent.ACTION_VIEW, u)

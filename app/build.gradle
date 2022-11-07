@@ -6,7 +6,7 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.parcelize'
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
     // Add the Google services Gradle plugin
-//    id 'com.google.gms.google-services'
+    id 'com.google.gms.google-services'
 
 }
 
@@ -196,4 +196,7 @@ dependencies {
     implementation "io.coil-kt:coil-svg:2.0.0"
 
     implementation 'com.google.accompanist:accompanist-permissions:0.24.9-beta'
+
+    implementation 'com.google.firebase:firebase-messaging'
+
 }
