@@ -134,11 +134,15 @@ fun addChatIds(item: Team) {
     val coachIds = item.coaches.map {
         it._id
     }
+    val supportingStaffIds = item.supportingCastDetails.map {
+        it._Id
+    }
     val groupId = item.teamChatGroups.map {
         it.groupId
     }
     mergedIds.addAll(playerIds)
     mergedIds.addAll(coachIds)
+    mergedIds.addAll(supportingStaffIds)
     mergedIds.addAll(groupId)
     CometChatConversationList.memberIds = mergedIds
 }

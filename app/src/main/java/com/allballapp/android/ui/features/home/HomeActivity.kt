@@ -132,6 +132,7 @@ class HomeActivity : FragmentActivity() {
                             TabBar(color = MaterialTheme.appColors.material.primaryVariant) {
                                 CommonTabView(
                                     topBarData = state.topBar,
+                                    selectedTeamCreatedBy = teamViewModel.teamUiState.value.createdBy,
                                     userRole = role.value,
                                     backClick = {
                                         if (state.topBar.topBar == TopBar.MY_EVENT) {

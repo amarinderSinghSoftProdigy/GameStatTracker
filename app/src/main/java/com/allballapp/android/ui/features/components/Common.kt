@@ -52,6 +52,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
+import com.allballapp.android.data.UserStorage
 import com.allballapp.android.ui.features.home.events.schedule.Space
 import com.allballapp.android.ui.features.venue.Location
 import com.allballapp.android.ui.theme.ButtonColor
@@ -100,6 +101,7 @@ fun BoxScope.CommonTabView(
     backClick: () -> Unit = {},
     iconClick: (() -> Unit)? = null,
     labelClick: (() -> Unit)? = null,
+    selectedTeamCreatedBy: String = "",
 ) {
     if (topBarData.topBar == TopBar.EMPTY) {
         return
@@ -212,8 +214,11 @@ fun BoxScope.CommonTabView(
     //Add the checks where we want to display the icon on the right corner
     when (topBarData.topBar) {
         TopBar.TEAMS -> {
-            icon =
-                painterResource(id = R.drawable.ic_settings)
+            /*Show team editing option only to the creator of the team*/
+            if (selectedTeamCreatedBy.isNotEmpty() && selectedTeamCreatedBy == UserStorage.userId) {
+                icon =
+                    painterResource(id = R.drawable.ic_settings)
+            }
         }
         TopBar.PROFILE -> {
             icon = painterResource(id = R.drawable.ic_edit)
