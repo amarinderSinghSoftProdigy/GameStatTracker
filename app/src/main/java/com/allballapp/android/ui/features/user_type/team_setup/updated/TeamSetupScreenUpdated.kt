@@ -229,7 +229,13 @@ fun TeamSetupScreenUpdated(
             onSelectionChange = { inviteVm.onEvent(InvitationEvent.OnRoleClick(roleKey = it)) },
             title = stringResource(
                 id = R.string.what_is_your_role,
-                inviteState.selectedInvitation.team.name.ifEmpty { state.teamName.ifEmpty { context.getString(R.string.the_team) } }
+                inviteState.selectedInvitation.team.name.ifEmpty {
+                    state.teamName.ifEmpty {
+                        context.getString(
+                            R.string.the_team
+                        )
+                    }
+                }
             ),
             selected = inviteState.selectedRoleKey,
             showLoading = inviteState.showLoading,
@@ -435,8 +441,11 @@ fun TeamSetupScreenUpdated(
                 )
             },
             teamName = state.teamName,
-            teamLogo = inviteState.selectedLogo,
-            playerName = if (showNoMessage.value) stringResource(id = R.string.no_player) else inviteState.selectedPlayerName
+            teamLogo = inviteState.selectedLogo.ifEmpty {
+                (state.teamImageUri ?: "").ifEmpty { "" }
+            },
+            playerName = if (showNoMessage.value) stringResource(id = R.string.no_player)
+            else inviteState.selectedPlayerName.ifEmpty { state.teamName.ifEmpty { "" } }
         )
     }
 

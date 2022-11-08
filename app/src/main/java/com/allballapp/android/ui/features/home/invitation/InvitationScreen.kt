@@ -60,6 +60,9 @@ fun InvitationScreen(
     addProfileClick: () -> Unit,
     onInviteClick: (teamId: String) -> Unit,
 ) {
+    val showNoMessage = remember {
+        mutableStateOf(false)
+    }
     val vm: InvitationViewModel = hiltViewModel()
     val state = vm.invitationState.value
     val context = LocalContext.current
@@ -207,6 +210,7 @@ fun InvitationScreen(
                 vm.onEvent(InvitationEvent.OnAddPlayerDialogClick(true))
             },
             dontHaveChildClick = {
+                showNoMessage.value = true
                 vm.onEvent(InvitationEvent.ConfirmGuardianWithoutChildAlert(true))
             }
         )
@@ -371,8 +375,10 @@ fun InvitationScreen(
         InvitationSuccessfullySentDialog(
             onDismiss = {
                 vm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
+                showNoMessage.value = false
             },
             onConfirmClick = {
+                showNoMessage.value = false
                 onInviteClick.invoke(state.selectedInvitation.team._id)
                 vm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
                 vm.onEvent(InvitationEvent.OnRoleDialogClick(false))
@@ -380,7 +386,7 @@ fun InvitationScreen(
             },
             teamLogo = BuildConfig.IMAGE_SERVER + state.selectedInvitation.team.logo,
             teamName = state.selectedInvitation.team.name,
-            playerName = if (teamState.inviteList.isNotEmpty()) teamState.inviteList[0].name else ""
+            playerName = if (showNoMessage.value) stringResource(id = R.string.no_player) else if (teamState.inviteList.isNotEmpty()) teamState.inviteList[0].name else ""
         )
     }
 }
