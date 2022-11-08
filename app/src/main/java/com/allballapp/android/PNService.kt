@@ -51,7 +51,7 @@ class PNService :
         createNotificationChannel()
         Log.i(
             "PNService",
-            "onMessageReceived: ${message.data} ${message.data}"
+            "onMessageReceived: ${message.data} ${message.notification?.title}"
         )
 
 
