@@ -38,7 +38,7 @@ open interface APIService {
     ): BaseResponse<ImageUpload>
 
     @POST(ApiConstants.CREATE_TEAM)
-    suspend fun createTeam(@Body request: CreateTeamRequest): BaseResponse<CreateTeamResponse>
+    suspend fun createTeam(@Body request: CreateTeamRequest): BaseResponse<TeamData>
 
     @GET(ApiConstants.GET_TEAMS_BY_COACH_ID)
     suspend fun getTeams(

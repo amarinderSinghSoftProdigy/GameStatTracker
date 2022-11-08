@@ -450,7 +450,7 @@ fun InvitationItem(
 
             Column(Modifier.weight(1f)) {
                 Text(
-                    text = invitation.team.name,
+                    text = invitation.team.title,
                     color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                     fontWeight = FontWeight.Bold,

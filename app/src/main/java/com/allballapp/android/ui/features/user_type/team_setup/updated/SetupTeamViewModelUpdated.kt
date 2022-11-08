@@ -268,8 +268,6 @@ class SetupTeamViewModelUpdated @Inject constructor(
                             .apply {
                                 add(InviteObject())
                             })
-                    /*_teamSetupUiState.value.inviteMemberName.add("")
-                    _teamSetupUiState.value.inviteMemberEmail.add("")*/
                 } else {
                     event.index?.let {
                         _teamSetupUiState.value =
@@ -277,10 +275,6 @@ class SetupTeamViewModelUpdated @Inject constructor(
                                 .apply {
                                     removeAt(it)
                                 })
-                        /*_teamSetupUiState.value =
-                        _teamSetupUiState.value.copy(inviteMemberCount = _teamSetupUiState.value.inviteMemberCount - 1)*/
-                        /*_teamSetupUiState.value.inviteMemberName.removeAt(event.index)
-                        _teamSetupUiState.value.inviteMemberEmail.removeAt(event.index)*/
                     }
                 }
 
@@ -760,7 +754,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
                         _teamSetupChannel.send(
                             TeamSetupChannel.OnTeamCreate(
                                 response.statusMessage,
-                                response.data.team.Id
+                                response.data.Id
                             )
                         )
                         inItToDefaultData()

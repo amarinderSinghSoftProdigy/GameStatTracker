@@ -32,7 +32,6 @@ import androidx.navigation.navArgument
 import com.allballapp.android.MainActivity
 import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
-import com.allballapp.android.common.IntentData
 import com.allballapp.android.common.Route
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
@@ -95,7 +94,7 @@ class HomeActivity : FragmentActivity() {
         cometChat.context = this
         cometChat.setConversationClickListener()
         setContent {
-            val fromSplash = intent.getBooleanExtra(IntentData.FROM_SPLASH, false)
+            //val fromSplash = intent.getBooleanExtra(IntentData.FROM_SPLASH, false)
             val homeViewModel: HomeViewModel = hiltViewModel()
             val signUpViewModel: SignUpViewModel = hiltViewModel()
             val teamViewModel: TeamViewModel = hiltViewModel()
@@ -554,14 +553,8 @@ fun NavControllerComposable(
                     navController.navigate(Route.GAME_DETAIL_SCREEN)
                 },
                 moveToOppDetails = {
-                    if (UserStorage.role.equals(
-                            UserType.COACH.key,
-                            ignoreCase = true
-                        ) || UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)
-                    ) {
-                        eventTitle = it
-                        navController.navigate(Route.OPP_DETAIL_SCREEN)
-                    }
+                    eventTitle = it
+                    navController.navigate(Route.OPP_DETAIL_SCREEN)
                 },
                 updateTopBar = {
                     homeViewModel.setTopBar(it)

@@ -227,7 +227,7 @@ fun AddPlayersScreenUpdated(
                             vm.onEvent(TeamSetupUIEventUpdated.OnAddPlayerScreenNext)
                         } else {
                             if (homeState.user.phone != state.inviteList[0].countryCode + state.inviteList[0].contact) {
-                                vm.onEvent(TeamSetupUIEventUpdated.OnInviteTeamMembers(teamId))
+                                vm.onEvent(TeamSetupUIEventUpdated.OnInviteTeamMembers(teamId, type = AppConstants.TYPE_CREATE_TEAM,))
                             } else {
                                 roleKey.value = state.inviteList[0].role.key
                                 vm.onEvent(

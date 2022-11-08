@@ -40,7 +40,7 @@ class TeamRepository @Inject constructor(
         return safeApiCall(dispatcher) { service.getAllPlayers(page, limit, searchPlayer) }
     }
 
-    override suspend fun createTeamAPI(request: CreateTeamRequest): ResultWrapper<BaseResponse<CreateTeamResponse>> {
+    override suspend fun createTeamAPI(request: CreateTeamRequest): ResultWrapper<BaseResponse<TeamData>> {
         return safeApiCall(dispatcher) { service.createTeam(request) }
     }
 

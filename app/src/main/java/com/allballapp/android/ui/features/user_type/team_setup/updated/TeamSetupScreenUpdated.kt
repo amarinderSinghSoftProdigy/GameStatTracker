@@ -312,7 +312,7 @@ fun TeamSetupScreenUpdated(
                                 TeamSetupUIEventUpdated.OnInviteTeamMembers(
                                     teamId = state.teamId,
                                     userType = state.role,
-                                    type = AppConstants.TYPE_CREATE_TEAM
+                                    type = AppConstants.TYPE_ACCEPT_INVITATION
                                 )
                             )
                         } else {
@@ -401,7 +401,7 @@ fun TeamSetupScreenUpdated(
                     TeamSetupUIEventUpdated.OnInviteTeamMembers(
                         state.teamId,
                         userType = state.role,
-                        type = AppConstants.TYPE_CREATE_TEAM,
+                        type = AppConstants.TYPE_ACCEPT_INVITATION,
                         profilesSelected = true,
                         member = Members(
                             name = swapUser.firstName,

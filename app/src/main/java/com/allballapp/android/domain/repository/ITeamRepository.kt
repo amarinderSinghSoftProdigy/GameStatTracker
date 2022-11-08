@@ -24,7 +24,7 @@ interface ITeamRepository {
         searchPlayer: String
     ): ResultWrapper<BaseResponse<ArrayList<Player>>>
 
-    suspend fun createTeamAPI(request: CreateTeamRequest): ResultWrapper<BaseResponse<CreateTeamResponse>>
+    suspend fun createTeamAPI(request: CreateTeamRequest): ResultWrapper<BaseResponse<TeamData>>
 
     suspend fun getTeams(
         coachId: String
