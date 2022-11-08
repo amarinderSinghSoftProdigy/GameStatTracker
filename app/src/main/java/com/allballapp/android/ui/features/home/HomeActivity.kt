@@ -385,9 +385,6 @@ fun NavControllerComposable(
                 },
                 onBack = {
                     navController.popBackStack()
-                }, moveToTermsAndConditions = {
-                    url = it
-                    navController.navigate(Route.WEB_VIEW)
                 })
 
         }
@@ -425,9 +422,6 @@ fun NavControllerComposable(
                 },
                 onBack = {
                     navController.popBackStack()
-                }, moveToTermsAndConditions = { urL->
-                    url = urL
-                    navController.navigate(Route.WEB_VIEW)
                 })
 
         }
@@ -615,6 +609,8 @@ fun NavControllerComposable(
                 }
             }
         }
+
+
 
         composable(route = Route.EVENT_REGISTRATION_SUCCESS) {
             homeViewModel.setTopBar(

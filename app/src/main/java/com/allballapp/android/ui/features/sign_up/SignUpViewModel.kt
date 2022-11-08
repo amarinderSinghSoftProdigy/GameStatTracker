@@ -227,11 +227,6 @@ class SignUpViewModel @Inject constructor(
                         signUpData = SignUpData()
                     )
             }
-            is SignUpUIEvent.OnTermsAndConditionChanged -> {
-                _signUpUiState.value = _signUpUiState.value.copy(
-                    signUpData = _signUpUiState.value.signUpData.copy(termsAndCondition = event.termsAndCondition)
-                )
-            }
         }
     }
 

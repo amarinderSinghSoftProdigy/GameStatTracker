@@ -144,7 +144,7 @@ fun OpportunitiesItem(league: OpportunitiesItem, showLabel: Boolean, OnNextClick
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.weight(1F)
                     )
-                    /*if (league.eventType.isNotEmpty()) {
+                    if (league.eventType.isNotEmpty()) {
                         Row(
                             modifier = Modifier.weight(1.8F),
                             horizontalArrangement = Arrangement.End
@@ -169,7 +169,7 @@ fun OpportunitiesItem(league: OpportunitiesItem, showLabel: Boolean, OnNextClick
                                 )
                             }
                         }
-                    }*/
+                    }
                 }
 
                 Text(

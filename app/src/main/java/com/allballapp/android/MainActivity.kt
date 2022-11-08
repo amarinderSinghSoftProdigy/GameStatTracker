@@ -5,13 +5,9 @@ import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
-import androidx.compose.runtime.saveable.rememberSaveable
 import android.provider.ContactsContract
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,9 +17,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
@@ -35,7 +29,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.IntentData
-import com.allballapp.android.common.Route
 import com.allballapp.android.common.Route.LOGIN_SCREEN
 import com.allballapp.android.common.Route.OTP_VERIFICATION_SCREEN
 import com.allballapp.android.common.Route.PROFILE_SETUP_SCREEN
@@ -47,11 +40,8 @@ import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.ui.features.components.CommonTabView
 import com.allballapp.android.ui.features.components.TabBar
-import com.allballapp.android.ui.features.components.TopBar
-import com.allballapp.android.ui.features.components.TopBarData
 import com.allballapp.android.ui.features.confirm_phone.OtpScreen
 import com.allballapp.android.ui.features.home.HomeActivity
-import com.allballapp.android.ui.features.home.webview.CommonWebView
 import com.allballapp.android.ui.features.login.LoginScreen
 import com.allballapp.android.ui.features.select_profile.SelectProfileScreen
 import com.allballapp.android.ui.features.sign_up.ProfileSetUpScreen
@@ -83,7 +73,6 @@ class MainActivity : ComponentActivity() {
             setupTeamViewModelUpdated = hiltViewModel()
             val state = mainViewModel.state.value
             BallerAppTheme {
-
                 val navController = rememberNavController()
                 if (!state.showAppBar) {
                     Surface(
@@ -185,6 +174,7 @@ class MainActivity : ComponentActivity() {
         )
     }
 }
+
 @Composable
 fun NavControllerComposable(
     activity: MainActivity,
@@ -201,9 +191,6 @@ fun NavControllerComposable(
     UserStorage.teamId = teamId.value
     val scope = rememberCoroutineScope()
     val color = dataStoreManager.getWalkThrough.collectAsState(initial = "")
-    var url by rememberSaveable {
-        mutableStateOf("")
-    }
     NavHost(navController, startDestination = SPLASH_SCREEN) {
         composable(route = SPLASH_SCREEN) {
             SplashScreen {
@@ -255,10 +242,6 @@ fun NavControllerComposable(
                 },
                 onBack = {
                     navController.popBackStack()
-                }, moveToTermsAndConditions = {
-                    url = it
-                    navController.navigate(Route.WEB_VIEW)
-
                 })
         }
 
@@ -305,9 +288,6 @@ fun NavControllerComposable(
                     navController.popBackStack()
                 }
             )
-        }
-        composable(route = Route.WEB_VIEW) {
-            CommonWebView(url)
         }
     }
 }

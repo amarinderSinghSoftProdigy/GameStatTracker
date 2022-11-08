@@ -220,17 +220,6 @@ fun LoginScreen(
                     }),
                     visualTransformation = MaskTransformation(),
                 )*/
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
-
-                AppText(
-                    text = stringResource(R.string.login_verification_code_label),
-                    style = MaterialTheme.typography.h6,
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = dimensionResource(id = R.dimen.size_3dp)),
-                    textAlign = TextAlign.Start
-                )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
 
                 AppButton(
@@ -252,7 +241,7 @@ fun LoginScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(dimensionResource(id = R.dimen.size_56dp)),
-                    text = stringResource(id = R.string.send_me_the_code),
+                    text = stringResource(id = R.string.next),
                     icon = painterResource(id = R.drawable.ic_circle_next),
                 )
             }
