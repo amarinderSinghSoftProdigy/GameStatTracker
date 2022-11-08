@@ -9,6 +9,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -21,6 +22,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowCompat
@@ -33,6 +35,7 @@ import com.allballapp.android.MainActivity
 import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.Route
+import com.allballapp.android.common.argbToHexString
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.ui.features.components.*
@@ -51,6 +54,7 @@ import com.allballapp.android.ui.features.home.manage_team.MainManageTeamScreen
 import com.allballapp.android.ui.features.home.teams.TeamUIEvent
 import com.allballapp.android.ui.features.home.teams.TeamViewModel
 import com.allballapp.android.ui.features.home.teams.TeamsScreen
+import com.allballapp.android.ui.features.home.teams.chat.ChatViewModel
 import com.allballapp.android.ui.features.home.teams.chat.NewConversationScreen
 import com.allballapp.android.ui.features.home.teams.chat.TeamsChatDetailScreen
 import com.allballapp.android.ui.features.home.teams.chat.TeamsChatScreen
@@ -115,6 +119,9 @@ class HomeActivity : FragmentActivity() {
             AppConstants.SELECTED_COLOR =
                 fromHex(color.value.ifEmpty { AppConstants.DEFAULT_COLOR })
             homeViewModel.setColor(AppConstants.SELECTED_COLOR)
+
+            cometChat.setPrimaryColor(AppConstants.SELECTED_COLOR.toArgb().argbToHexString())
+
             //homeViewModel.showBottomAppBar(true)
             BallerAppMainTheme(
                 customColor = state.color ?: MaterialTheme.appColors.material.primaryVariant
@@ -127,6 +134,7 @@ class HomeActivity : FragmentActivity() {
                             TabBar(color = MaterialTheme.appColors.material.primaryVariant) {
                                 CommonTabView(
                                     topBarData = state.topBar,
+                                    selectedTeamCreatedBy = teamViewModel.teamUiState.value.createdBy,
                                     userRole = role.value,
                                     backClick = {
                                         if (state.topBar.topBar == TopBar.MY_EVENT) {
@@ -280,6 +288,7 @@ fun NavControllerComposable(
 
     //val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = hiltViewModel()
     val profileViewModel: ProfileViewModel = hiltViewModel()
+    val chatViewModel: ChatViewModel = hiltViewModel()
     var eventTitle by rememberSaveable { mutableStateOf("") }
     var teamLogo by rememberSaveable {
         mutableStateOf("")
@@ -497,7 +506,8 @@ fun NavControllerComposable(
                     navController.navigate(Route.ADD_MY_PLAYER_SCREEN + "/${UserStorage.teamId}")
                 }, onHomeClick = {
                     navController.navigate(Route.HOME_SCREEN)
-                }, homeVm = homeViewModel
+                }, homeVm = homeViewModel,
+                chatViewModel = chatViewModel
             )
         }
 
@@ -523,7 +533,8 @@ fun NavControllerComposable(
                 teamId = teamId,
                 onGroupCreateSuccess = {
                     navController.popBackStack()
-                })
+                }, chatVM = chatViewModel
+            )
 
         }
 
@@ -963,6 +974,7 @@ fun NavControllerComposable(
         composable(route = Route.TEAMS_CHAT_SCREEN) {
             TeamsChatScreen(
                 "",
+                vm = chatViewModel,
                 homeVm = homeViewModel,
                 onTeamItemClick = {
 

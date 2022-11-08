@@ -239,6 +239,8 @@ class CometChatConversationList : Fragment(), TextWatcher {
         }
         conversationsRequest?.fetchNext(object : CallbackListener<List<Conversation>>() {
             override fun onSuccess(conversations: List<Conversation>) {
+                Log.i("conversationsRequest", "onSuccess:1 ")
+
                 if (conversations.isNotEmpty()) {
                     stopHideShimmer()
                     noConversationView?.visibility = View.GONE
@@ -246,12 +248,16 @@ class CometChatConversationList : Fragment(), TextWatcher {
                     setTeamFilteredConversation(conversations)
                     /*  rvConversation?.setConversationList(conversations)
                       conversationList = conversations as MutableList<Conversation>*/
+                    Log.i("conversationsRequest", "onSuccess:2 ")
                 } else {
                     checkNoConverstaion()
+                    Log.i("conversationsRequest", "onSuccess:3 ")
                 }
             }
 
             override fun onError(e: CometChatException) {
+                Log.i("conversationsRequest", "onError:4 ")
+
                 stopHideShimmer()
                 if (activity != null)
                     ErrorMessagesUtils.cometChatErrorMessage(context, e.code)

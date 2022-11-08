@@ -15,6 +15,7 @@ object UserStorage {
     var teamLogo: String? = null
     var role: String? = null
     var teamId: String = ""
+//    var teamId: String = "634e48d4c5dbb6dd91d01775"
     var userId: String = ""
     var teamName: String = ""
     var playerId: String = ""

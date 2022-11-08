@@ -352,7 +352,7 @@
     <string name="profile_label">Profile</string>
     <string name="parent">Parent</string>
     <string name="call">Call</string>
-    <string name="message">Message</string>
+    <string name="message_">Type something</string>
     <string name="start_date">Start Date</string>
     <string name="end_Date">End Date</string>
     <string name="event_Type">Event Type</string>
