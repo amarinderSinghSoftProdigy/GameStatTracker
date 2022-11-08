@@ -286,7 +286,6 @@ class TeamViewModel @Inject constructor(
     }
 
     private suspend fun setDefaultTeam(team: Team) {
-        UserStorage.teamId = team._id
         _teamUiState.value = _teamUiState.value.copy(
             teamId = team._id,
             selectedTeam = team,

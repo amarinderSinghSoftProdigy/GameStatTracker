@@ -229,7 +229,7 @@ fun TeamSetupScreenUpdated(
             onSelectionChange = { inviteVm.onEvent(InvitationEvent.OnRoleClick(roleKey = it)) },
             title = stringResource(
                 id = R.string.what_is_your_role,
-                inviteState.selectedInvitation.team.name
+                inviteState.selectedInvitation.team.name.ifEmpty { state.teamName.ifEmpty { context.getString(R.string.the_team) } }
             ),
             selected = inviteState.selectedRoleKey,
             showLoading = inviteState.showLoading,
