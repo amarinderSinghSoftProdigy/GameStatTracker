@@ -72,6 +72,19 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
         ) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_25dp)))
             Text(
+                text = stringResource(id = R.string.event_operator),
+                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                fontWeight = FontWeight.Bold,
+            )
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+            Text(
+                text = stringResource(R.string.name_of_organization),
+                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+            )
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_30dp)))
+            Text(
                 text = stringResource(id = R.string.events_info),
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
@@ -90,19 +103,18 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
                 CommonUtils.formatDateSingle(state.opportunitiesDetail.endDate)
             )
             DetailsItem(
-                stringResource(id = (R.string.event_type)),
                 stringResource(id = (R.string.participation)),
-                state.opportunitiesDetail.eventType,
+                stringResource(id = (R.string.regsitration_deadliine)),
                 CommonUtils.getParticipation(
-                    state.opportunitiesDetail.participation,
-                    context = context
-                )
+                    state.opportunitiesDetail.participation, context = context
+                ),
+                CommonUtils.formatDateSingle(state.opportunitiesDetail.registrationDeadline),
             )
             DetailsItem(
-                stringResource(id = (R.string.regsitration_deadliine)),
                 stringResource(id = (R.string.price)),
-                CommonUtils.formatDateSingle(state.opportunitiesDetail.registrationDeadline),
-                "$ " + state.opportunitiesDetail.standardPrice
+                "",
+                "$ " + state.opportunitiesDetail.standardPrice,
+                ""
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             Text(
@@ -133,20 +145,19 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
             }
         }
         Column(
-            Modifier
-                .fillMaxSize()
+            Modifier.fillMaxSize()
         ) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-            if(state.opportunitiesDetail!=null) {
+            if (state.opportunitiesDetail != null) {
                 LocationBlock(
                     Location(
                         state.opportunitiesDetail.address,
                         state.opportunitiesDetail.city,
                         state.opportunitiesDetail.state,
                         "",
-                        latLong = if(state.opportunitiesDetail.location.coordinates.isNullOrEmpty()){
-                            LatLng(0.0,0.0)
-                        }else {
+                        latLong = if (state.opportunitiesDetail.location.coordinates.isNullOrEmpty()) {
+                            LatLng(0.0, 0.0)
+                        } else {
                             LatLng(
                                 state.opportunitiesDetail.location.coordinates[0],
                                 state.opportunitiesDetail.location.coordinates[1]
@@ -368,19 +379,18 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
             PlayerRequirements("AAU Card", null);
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))*/
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
-            if (state.opportunitiesDetail.registration)
-                AppButton(
-                    enabled = true,
-                    icon = null,
-                    themed = true,
-                    onClick = {
-                        moveToRegistration()
-                        vm.onEvent(EvEvents.ClearRequest)
-                    },
-                    text = stringResource(id = R.string.register),
-                    isForceEnableNeeded = true,
-                    modifier = Modifier.fillMaxWidth()
-                )
+            if (state.opportunitiesDetail.registration) AppButton(
+                enabled = true,
+                icon = null,
+                themed = true,
+                onClick = {
+                    moveToRegistration()
+                    vm.onEvent(EvEvents.ClearRequest)
+                },
+                text = stringResource(id = R.string.register),
+                isForceEnableNeeded = true,
+                modifier = Modifier.fillMaxWidth()
+            )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
         }
     }
