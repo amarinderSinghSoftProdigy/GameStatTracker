@@ -74,7 +74,6 @@ fun WelcomeScreen(onNextScreen: () -> Unit) {
                 contentScale = ContentScale.FillWidth
             )
 
-
         }
         Box(
             modifier = Modifier

@@ -157,12 +157,14 @@ fun HomeFirstTimeLoginScreen(
                                     text = stringResource(id = R.string.pending_invitations),
                                     style = MaterialTheme.typography.h6,
                                     modifier = Modifier.weight(1f),
+                                    color = ColorBWBlack
                                 )
                             }
                             Text(
                                 text = state.homePageCoachModel.pendingInvitations.toString(),
                                 fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
-                                modifier = Modifier.align(Alignment.CenterEnd)
+                                modifier = Modifier.align(Alignment.CenterEnd),
+                                color = ColorBWBlack
                             )
                         }
                     }

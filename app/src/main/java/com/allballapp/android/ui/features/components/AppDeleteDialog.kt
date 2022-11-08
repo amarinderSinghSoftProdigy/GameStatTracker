@@ -2363,8 +2363,11 @@ fun AgeConfirmDialog(
                     DialogButton(
                         text = stringResource(R.string.dialog_button_confirm),
                         onClick = {
-                            onConfirmClick(selected.value)
-                            onDismiss()
+                            if(selected.value != -1) {
+                                onConfirmClick(selected.value)
+                                onDismiss()
+                            }
+
                         },
                         modifier = Modifier.fillMaxWidth(),
                         border = ButtonDefaults.outlinedBorder,
