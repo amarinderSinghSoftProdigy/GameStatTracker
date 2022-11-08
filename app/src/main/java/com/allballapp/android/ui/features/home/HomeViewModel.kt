@@ -448,6 +448,8 @@ class HomeViewModel @Inject constructor(
             // Get new FCM registration token
             val token = task.result
 
+            Timber.i("registerTokenForPN-- Token--  $token")
+
             CometChat.registerTokenForPushNotification(
                 token,
                 object : CometChat.CallbackListener<String?>() {
