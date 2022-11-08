@@ -1,23 +1,20 @@
 package com.allballapp.android.ui.features.home.teams.chat
 
 import android.app.Application
-import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.allballapp.android.R
-import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.ResultWrapper
-import com.allballapp.android.common.getFileFromUri
 import com.allballapp.android.core.util.UiText
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.domain.repository.IChatRepository
 import com.allballapp.android.domain.repository.IImageUploadRepo
 import com.allballapp.android.domain.repository.ITeamRepository
-import com.allballapp.android.ui.utils.CommonUtils
 import com.cometchat.pro.constants.CometChatConstants
 import com.cometchat.pro.core.CometChat
 import com.cometchat.pro.exceptions.CometChatException
@@ -50,13 +47,6 @@ class ChatViewModel @Inject constructor(
     val chatUiState: State<ChatUIState> = _chatUiState
 
 
-    init {
-        viewModelScope.launch {
-            getChatListings()
-        }
-    }
-
-
     fun onEvent(event: ChatUIEvent) {
         when (event) {
 
@@ -84,9 +74,26 @@ class ChatViewModel @Inject constructor(
             }
             is ChatUIEvent.GetAllMembers -> {
                 viewModelScope.launch {
-                    getTeamByTeamId(event.teamId)
+//                    getTeamByTeamId(event.teamId)
                 }
             }
+            is ChatUIEvent.TeamSelectionChange -> {
+                _chatUiState.value =
+                    _chatUiState.value.copy(teamIndex = event.teamIndex)
+            }
+            ChatUIEvent.GetChatListing -> {
+                viewModelScope.launch {
+                    getChatListings()
+                }
+            }
+            ChatUIEvent.ClearData -> {
+                _chatUiState.value =
+                    _chatUiState.value.copy(selectedPlayersForNewGroup = mutableStateListOf())
+                _chatUiState.value =
+                    _chatUiState.value.copy(selectedCoachesForNewGroup = mutableStateListOf())
+            }
+
+
         }
     }
 
@@ -101,61 +108,7 @@ class ChatViewModel @Inject constructor(
     }
 
 
-    private suspend fun uploadTeamLogo() {
-        _chatUiState.value = _chatUiState.value.copy(isLoading = true)
-        val isLocalImageTaken = _chatUiState.value.localLogo != null
-        val uri = Uri.parse("")
-        val file = getFileFromUri(getApplication<Application>().applicationContext, uri)
 
-        if (file != null) {
-            val size = Integer.parseInt((file.length() / 1024).toString())
-            Timber.i("Filesize compressed --> $size")
-        }
-        val uploadLogoResponse = imageUploadRepo.uploadSingleImage(
-            type = AppConstants.TEAM_LOGO,
-            file
-        )
-        _chatUiState.value = _chatUiState.value.copy(isLoading = false)
-
-        when (uploadLogoResponse) {
-            is ResultWrapper.GenericError -> {
-                _chatChannel.send(
-                    ChatChannel.ShowToast(
-                        UiText.DynamicString(
-                            "${uploadLogoResponse.message}"
-                        )
-                    )
-                )
-            }
-            is ResultWrapper.NetworkError -> {
-                _chatChannel.send(
-                    ChatChannel.ShowToast(
-                        UiText.DynamicString(
-                            uploadLogoResponse.message
-                        )
-                    )
-                )
-            }
-            is ResultWrapper.Success -> {
-                uploadLogoResponse.value.let { response ->
-                    if (response.status) {
-
-                    } else {
-                        _chatUiState.value =
-                            _chatUiState.value.copy(isLoading = false)
-                        _chatChannel.send(
-                            ChatChannel.ShowToast(
-                                UiText.DynamicString(
-                                    response.statusMessage
-                                )
-                            )
-                        )
-                    }
-                }
-            }
-        }
-
-    }
 
     private suspend fun getChatListings() {
         _chatUiState.value = _chatUiState.value.copy(isLoading = true)
@@ -337,71 +290,6 @@ class ChatViewModel @Inject constructor(
             }
 
         }
-
-    private suspend fun getTeamByTeamId(teamsId: String) {
-        _chatUiState.value =
-            _chatUiState.value.copy(isLoading = true)
-        val teamResponse = teamRepo.getTeamsByTeamID(teamsId)
-        Timber.i("getTeamByTeamId--chatViewModel")
-        _chatUiState.value =
-            _chatUiState.value.copy(isLoading = false)
-        when (teamResponse) {
-            is ResultWrapper.GenericError -> {
-                _chatChannel.send(
-                    ChatChannel.ShowToast(
-                        UiText.DynamicString(
-                            "${teamResponse.message}"
-                        )
-                    )
-                )
-            }
-            is ResultWrapper.NetworkError -> {
-                _chatChannel.send(
-                    ChatChannel.ShowToast(
-                        UiText.DynamicString(
-                            teamResponse.message
-                        )
-                    )
-                )
-            }
-            is ResultWrapper.Success -> {
-                teamResponse.value.let { response ->
-                    if (response.status && response.data != null) {
-                        _chatUiState.value = _chatUiState.value.copy(
-                            isLoading = false,
-                            players = CommonUtils.getPlayerTabs(response.data.players),
-//                            supportStaff = response.data.supportingCastDetails,
-//                            acceptPending = response.data.pendingAndDeclinedMembers,
-                            coaches = response.data.coaches,
-//                            allUsers = response.data.allMembers,
-                            teamName = response.data.name,
-                            teamColorPrimary = response.data.colorCode,
-                            logo = response.data.logo,
-                            leaderBoard = response.data.teamLeaderBoard,
-                            all = CommonUtils.getSelectedList(response.data.teamLeaderBoard),
-                            teamColorSec = response.data.secondaryTeamColor,
-                            teamColorThird = response.data.tertiaryTeamColor,
-                            teamNameOnJerseys = response.data.teamNameOnJersey,
-                            teamNameOnTournaments = response.data.teamNameOnTournaments,
-                            venueName = response.data.nameOfVenue,
-                            selectedAddress = response.data.address,
-                        )
-
-                    } else {
-                        _chatUiState.value =
-                            _chatUiState.value.copy(isLoading = false)
-                        _chatChannel.send(
-                            ChatChannel.ShowToast(
-                                UiText.DynamicString(
-                                    response.statusMessage
-                                )
-                            )
-                        )
-                    }
-                }
-            }
-        }
-    }
 
 }
 

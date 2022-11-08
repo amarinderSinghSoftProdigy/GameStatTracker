@@ -480,4 +480,7 @@ class CometChatUI : AppCompatActivity(), BottomNavigationView.OnNavigationItemSe
         private val TAG = CometChatUI::class.java.simpleName
         var convo: Conversation? = null
     }
+    fun setPrimaryColor(color:String){
+            UIKitSettings.color= color
+    }
 }

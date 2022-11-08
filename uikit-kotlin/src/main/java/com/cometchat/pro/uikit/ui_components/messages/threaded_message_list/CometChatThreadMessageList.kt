@@ -872,7 +872,7 @@ class CometChatThreadMessageList : Fragment(), View.OnClickListener, OnMessageLo
         val mapView = view.findViewById<ImageView>(R.id.map_vw)
         val mapUrl = UIKitConstants.MapUrl.MAPS_URL + LATITUDE + "," + LONGITUDE + "&key=" +
                 UIKitConstants.MapUrl.MAP_ACCESS_KEY
-        Glide.with(this)
+        Glide.with(requireContext())
                 .load(mapUrl)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(mapView)
@@ -1217,6 +1217,7 @@ class CometChatThreadMessageList : Fragment(), View.OnClickListener, OnMessageLo
         val textMessage: TextMessage
         textMessage = if (type.equals(CometChatConstants.RECEIVER_TYPE_USER, ignoreCase = true)) TextMessage(Id!!, message, CometChatConstants.RECEIVER_TYPE_USER) else TextMessage(Id!!, message, CometChatConstants.RECEIVER_TYPE_GROUP)
         textMessage.parentMessageId = parentId
+//        textMessage.metadata
         sendTypingIndicator(true)
         sendMessage(textMessage, object : CallbackListener<TextMessage?>() {
             override fun onSuccess(textMessage: TextMessage?) {
