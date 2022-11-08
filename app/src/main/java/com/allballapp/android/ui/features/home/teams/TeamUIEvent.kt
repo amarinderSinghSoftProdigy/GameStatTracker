@@ -15,6 +15,7 @@ sealed class TeamUIEvent {
     data class OnTeamNameChange(val teamName: String) : TeamUIEvent()
     data class OnImageSelected(val teamImageUri: String) : TeamUIEvent()
     data class OnDialogClick(val showDialog: Boolean) : TeamUIEvent()
+    data class GetTeam(val teamId: String) : TeamUIEvent()
     data class OnSearch(val searchKey: String) : TeamUIEvent()
     data class OnPlayerClick(val player: Player) : TeamUIEvent()
     data class OnItemSelected(val name: String) : TeamUIEvent()

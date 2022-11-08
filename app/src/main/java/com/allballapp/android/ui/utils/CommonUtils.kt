@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import com.allballapp.android.R
 import com.allballapp.android.data.response.AllUser
+import com.allballapp.android.data.response.UserRoles
 import com.allballapp.android.data.response.team.Player
 import com.allballapp.android.data.response.team.Team
 import com.allballapp.android.data.response.team.TeamLeaderBoard
@@ -163,7 +164,8 @@ class CommonUtils {
         fun getTeams(data: ArrayList<TeamParent>): ArrayList<Team> {
             val result: ArrayList<Team> = ArrayList()
             for (item in data) {
-                result.add(item.teamId)
+                if (item.teamId != null)
+                    result.add(item.teamId)
             }
             return result
         }
@@ -178,9 +180,18 @@ class CommonUtils {
             return "user_type"
         }
 
+        fun getUserRole(role: String, list: List<UserRoles>): UserRoles {
+            for (item in list) {
+                if (item.key == role) {
+                    return item
+                }
+            }
+            return UserRoles()
+        }
+
         fun openMaps(context: Context, location: LatLng) {
             val gmmIntentUri: Uri =
-                Uri.parse("geo:" + location.latitude + "," + location.longitude + "?q=")
+                Uri.parse("geo:" + location.latitude + "," + location.longitude + "?q=loc:" + location.latitude + "," + location.longitude + " (" + "Location" + ")")
             val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
             mapIntent.setPackage("com.google.android.apps.maps")
             context.startActivity(mapIntent)

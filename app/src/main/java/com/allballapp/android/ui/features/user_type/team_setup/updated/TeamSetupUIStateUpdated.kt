@@ -36,6 +36,7 @@ data class TeamSetupUIStateUpdated(
     val teamNameOnTournaments: String = "",
     val venueName: String = "",
     val role: String = "",
+    val teamId: String = "",
 
     val index: Int = 0,
     val coachName: String = "",

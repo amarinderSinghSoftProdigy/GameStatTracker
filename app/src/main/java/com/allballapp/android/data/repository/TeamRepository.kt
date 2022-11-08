@@ -40,7 +40,7 @@ class TeamRepository @Inject constructor(
         return safeApiCall(dispatcher) { service.getAllPlayers(page, limit, searchPlayer) }
     }
 
-    override suspend fun createTeamAPI(request: CreateTeamRequest): ResultWrapper<BaseResponse<CreateTeamResponse>> {
+    override suspend fun createTeamAPI(request: CreateTeamRequest): ResultWrapper<BaseResponse<TeamData>> {
         return safeApiCall(dispatcher) { service.createTeam(request) }
     }
 
@@ -126,9 +126,9 @@ class TeamRepository @Inject constructor(
         }
     }
 
-    override suspend fun getHomePageDetails(): ResultWrapper<BaseResponse<HomePageCoachModel>> {
+    override suspend fun getHomePageDetails(teamId: String): ResultWrapper<BaseResponse<HomePageCoachModel>> {
         return safeApiCall(dispatcher) {
-            service.getHomePageDetails()
+            service.getHomePageDetails(teamId)
         }
     }
 

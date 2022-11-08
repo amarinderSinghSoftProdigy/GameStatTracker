@@ -32,7 +32,7 @@ class CometChatEditText : AppCompatEditText {
     override fun onCreateInputConnection(outAttrs: EditorInfo): InputConnection? {
         this.typeface = FontUtils.getInstance(this.context).getTypeFace(FontUtils.robotoRegular)
         val ic = super.onCreateInputConnection(outAttrs)
-        EditorInfoCompat.setContentMimeTypes(outAttrs, arrayOf("image/png", "image/gif"))
+        EditorInfoCompat.setContentMimeTypes(outAttrs!!, arrayOf("image/png", "image/gif"))
 
         val callback =
             InputConnectionCompat.OnCommitContentListener { inputContentInfo, flags, opts ->

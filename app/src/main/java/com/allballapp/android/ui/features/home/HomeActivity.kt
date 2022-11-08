@@ -4,6 +4,7 @@ package com.allballapp.android.ui.features.home
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
@@ -32,7 +33,6 @@ import androidx.navigation.navArgument
 import com.allballapp.android.MainActivity
 import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
-import com.allballapp.android.common.IntentData
 import com.allballapp.android.common.Route
 import com.allballapp.android.common.argbToHexString
 import com.allballapp.android.data.UserStorage
@@ -47,6 +47,7 @@ import com.allballapp.android.ui.features.home.events.opportunities.*
 import com.allballapp.android.ui.features.home.events.team.team_tabs.EventTeamTabs
 import com.allballapp.android.ui.features.home.events.venues.openVenue.OpenVenueTopTabs
 import com.allballapp.android.ui.features.home.home_screen.HomeScreen
+import com.allballapp.android.ui.features.home.home_screen.HomeScreenEvent
 import com.allballapp.android.ui.features.home.invitation.InvitationScreen
 import com.allballapp.android.ui.features.home.manage_team.MainManageTeamScreen
 import com.allballapp.android.ui.features.home.teams.TeamUIEvent
@@ -79,7 +80,7 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
-val animeDuration = 750
+val animeDuration = 1050
 
 @AndroidEntryPoint
 class HomeActivity : FragmentActivity() {
@@ -96,7 +97,7 @@ class HomeActivity : FragmentActivity() {
         cometChat.context = this
         cometChat.setConversationClickListener()
         setContent {
-            val fromSplash = intent.getBooleanExtra(IntentData.FROM_SPLASH, false)
+            //val fromSplash = intent.getBooleanExtra(IntentData.FROM_SPLASH, false)
             val homeViewModel: HomeViewModel = hiltViewModel()
             val signUpViewModel: SignUpViewModel = hiltViewModel()
             val teamViewModel: TeamViewModel = hiltViewModel()
@@ -257,13 +258,15 @@ class HomeActivity : FragmentActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.type = ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
-        startActivityForResult(
-            intent,
-            AppConstants.REQUEST_CONTACT_CODE,
-            null
-        )
+        if (requestCode == AppConstants.REQUEST_CONTACT && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.type = ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
+            startActivityForResult(
+                intent,
+                AppConstants.REQUEST_CONTACT_CODE,
+                null
+            )
+        }
     }
 }
 
@@ -336,6 +339,7 @@ fun NavControllerComposable(
                     homeViewModel.setDialog(it)
                 },
                 onCreateTeamClick = {
+                    homeViewModel.setDialog(false)
                     navController.navigate(Route.TEAM_SETUP_SCREEN) {
                         if (it != null)
                             setupTeamViewModelUpdated.onEvent(
@@ -419,6 +423,9 @@ fun NavControllerComposable(
                 isToAddProfile = true,
                 signUpViewModel = signUpViewModel,
                 onNext = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("refreshProfileList", "true")
                     navController.popBackStack()
                 },
                 onBack = {
@@ -556,14 +563,8 @@ fun NavControllerComposable(
                     navController.navigate(Route.GAME_DETAIL_SCREEN)
                 },
                 moveToOppDetails = {
-                    if (UserStorage.role.equals(
-                            UserType.COACH.key,
-                            ignoreCase = true
-                        ) || UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)
-                    ) {
-                        eventTitle = it
-                        navController.navigate(Route.OPP_DETAIL_SCREEN)
-                    }
+                    eventTitle = it
+                    navController.navigate(Route.OPP_DETAIL_SCREEN)
                 },
                 updateTopBar = {
                     homeViewModel.setTopBar(it)
@@ -725,9 +726,8 @@ fun NavControllerComposable(
         }
 
 
-        composable(route = Route.ADD_PLAYER_SCREEN) {
+        composable(route = Route.ADD_PLAYER_SCREEN) { backStackEntry ->
             homeViewModel.setTopAppBar(true)
-            //homeViewModel.showBottomAppBar(false)
             homeViewModel.setTopBar(
                 TopBarData(
                     label = stringResource(id = R.string.invite_team_member),
@@ -736,10 +736,13 @@ fun NavControllerComposable(
             )
             BackHandler {
                 homeViewModel.setTopAppBar(false)
-                //homeViewModel.showBottomAppBar(true)
                 navController.popBackStack()
             }
             AddPlayersScreenUpdated(
+                homeVm = homeViewModel,
+                addProfileClick = {
+                    navController.navigate(Route.ADD_PROFILE_SCREEN)
+                },
                 vm = setupTeamViewModelUpdated,
                 onBackClick = { navController.popBackStack() },
                 onNextClick = {
@@ -775,8 +778,9 @@ fun NavControllerComposable(
             }
             val teamId = it.arguments?.getString("teamId")
             AddPlayersScreenUpdated(
+                homeVm = homeViewModel,
                 teamData = teamViewModel,
-                teamId,
+                teamId = teamId,
                 vm = setupTeamViewModelUpdated,
                 onBackClick = {
                     moveBackFromAddPlayer(homeViewModel, navController)
@@ -784,9 +788,15 @@ fun NavControllerComposable(
                 onNextClick = {
                     moveBackFromAddPlayer(homeViewModel, navController)
                     //navController.navigate(TEAMS_SCREEN)
-                }, onInvitationSuccess = {
+                },
+                onInvitationSuccess = {
                     moveBackFromAddPlayer(homeViewModel, navController)
-                })
+                },
+                addProfileClick = {
+                    navController.navigate(Route.ADD_PROFILE_SCREEN)
+
+                },
+            )
         }
 
         composable(route = Route.INVITATION_SCREEN,
@@ -835,6 +845,8 @@ fun NavControllerComposable(
             // get data passed back from next stack
             val venue: String = backStackEntry
                 .savedStateHandle.get<String>("venue") ?: ""
+            val refreshProfileList: String = backStackEntry
+                .savedStateHandle.get<String>("refreshProfileList") ?: ""
 
             homeViewModel.setTopAppBar(true)
             //homeViewModel.showBottomAppBar(false)
@@ -852,7 +864,8 @@ fun NavControllerComposable(
                 )
             }
             TeamSetupScreenUpdated(
-                homeVm=homeViewModel,
+                refreshProfileList,
+                homeVm = homeViewModel,
                 venue = venue,
                 vm = setupTeamViewModelUpdated,
                 addProfileClick = {
@@ -868,8 +881,20 @@ fun NavControllerComposable(
                     )
                 },
                 onNextClick = {
-                              navController.popBackStack()
-                    //navController.navigate(Route.ADD_PLAYER_SCREEN)
+                    setColorUpdate(
+                        setupTeamViewModelUpdated,
+                        teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
+                    )
+                    homeViewModel.onEvent(HomeScreenEvent.HideSwap(false))
+                    if (it.isNullOrEmpty()) {
+                        navController.navigate(Route.ADD_PLAYER_SCREEN) {
+                            navController.popBackStack()
+                        }
+                    } else {
+                        navController.navigate(Route.ADD_MY_PLAYER_SCREEN + "/${it}") {
+                            navController.popBackStack()
+                        }
+                    }
                 }, onVenueClick = {
                     navController.navigate(Route.SELECT_VENUE)
                 })
@@ -1075,6 +1100,7 @@ fun setColorUpdate(
 
 fun moveBackFromAddPlayer(homeViewModel: HomeViewModel, navController: NavHostController) {
     navController.popBackStack()
+    homeViewModel.onEvent(HomeScreenEvent.HideSwap(false))
     homeViewModel.setScreen(false)
 }
 

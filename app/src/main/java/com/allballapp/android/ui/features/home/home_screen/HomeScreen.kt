@@ -76,14 +76,16 @@ fun HomeScreen(
     val onTeamSelectionChange = { team: Team ->
         teamVm.onEvent(TeamUIEvent.OnTeamSelected(team))
     }
-    val showSwapDialog = remember {
+    val refresh = remember {
         mutableStateOf(false)
     }
 
     remember {
         coroutineScope.launch {
             if (UserStorage.token.isNotEmpty()) {
-                vm.getHomePageDetails()
+                if(UserStorage.teamId.isNotEmpty()) {
+                    vm.getHomePageDetails(UserStorage.teamId)
+                }
                 vm.getUnreadMessageCount()
             }
         }
@@ -107,7 +109,8 @@ fun HomeScreen(
                     teamVm.getTeamsUserId()
                 }
                 is HomeChannel.OnSwapListSuccess -> {
-                    showSwapDialog.value = true
+                    vm.onEvent(HomeScreenEvent.HideSwap(true))
+                    //showSwapDialog.value = true
                 }
                 is HomeChannel.ShowToast -> {
                     Toast.makeText(
@@ -137,6 +140,12 @@ fun HomeScreen(
             }
         }
     }
+    //val swipeRefreshState = rememberSwipeRefreshState(refresh.value)
+
+    /*SwipeRefresh(state = swipeRefreshState,
+        onRefresh = {
+
+        }) {*/
 
     CoachFlowBackground(
         colorCode = color.value.ifEmpty { AppConstants.DEFAULT_COLOR },
@@ -150,7 +159,7 @@ fun HomeScreen(
                     logoClick()
                 }
                 Options.SWAP_PROFILES -> {
-                    vm.onEvent(HomeScreenEvent.OnSwapClick)
+                    vm.onEvent(HomeScreenEvent.OnSwapClick(true))
                 }
                 Options.INVITE -> {
                     onInviteClick()
@@ -174,8 +183,7 @@ fun HomeScreen(
                     onInvitationCLick()
                 }
             )
-        }
-        else if (role.isNotEmpty()) {
+        } else if (role.isNotEmpty()) {
             Box {
                 Column(
                     Modifier
@@ -458,6 +466,7 @@ fun HomeScreen(
                 }
             }
         }
+        //}
     }
     if (showDialog) {
         SelectTeamDialog(
@@ -477,15 +486,19 @@ fun HomeScreen(
         )
     }
 
-    if (showSwapDialog.value) {
+    if (homeState.showSwapProfile) {
         SwapProfile(
             users = homeState.swapUsers,
-            onDismiss = { showSwapDialog.value = false },
+            onDismiss = {
+                vm.onEvent(HomeScreenEvent.HideSwap(false))
+                //showSwapDialog.value = false
+            },
             onConfirmClick = {
                 if (it._Id != UserStorage.userId) {
                     vm.onEvent(HomeScreenEvent.OnSwapUpdate(it._Id))
                 }
-                showSwapDialog.value = false
+                vm.onEvent(HomeScreenEvent.HideSwap(false))
+                //showSwapDialog.value = false
             },
             showLoading = homeState.isDataLoading,
             onCreatePlayerClick = {

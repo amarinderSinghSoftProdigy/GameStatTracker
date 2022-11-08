@@ -38,7 +38,7 @@ open interface APIService {
     ): BaseResponse<ImageUpload>
 
     @POST(ApiConstants.CREATE_TEAM)
-    suspend fun createTeam(@Body request: CreateTeamRequest): BaseResponse<CreateTeamResponse>
+    suspend fun createTeam(@Body request: CreateTeamRequest): BaseResponse<TeamData>
 
     @GET(ApiConstants.GET_TEAMS_BY_COACH_ID)
     suspend fun getTeams(
@@ -114,7 +114,7 @@ open interface APIService {
     suspend fun getUserDetails(): BaseResponse<User>
 
     @GET(ApiConstants.GET_HOME_PAGE_DETAILS)
-    suspend fun getHomePageDetails(): BaseResponse<HomePageCoachModel>
+    suspend fun getHomePageDetails(@Query("teamId") id: String): BaseResponse<HomePageCoachModel>
 
     @GET(ApiConstants.GET_USER_ROLE)
     suspend fun getUserRoles(@Query("type") type: String): BaseResponse<List<UserRoles>>

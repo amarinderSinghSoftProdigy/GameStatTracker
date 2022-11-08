@@ -972,7 +972,7 @@ fun hasContactPermission(context: Context): Boolean {
 fun requestContactPermission(context: Context, activity: Activity) {
     // on below line if permission is not granted requesting permissions.
     if (!hasContactPermission(context)) {
-        ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.READ_CONTACTS), 1)
+        ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.READ_CONTACTS), AppConstants.REQUEST_CONTACT)
     }
 }
 

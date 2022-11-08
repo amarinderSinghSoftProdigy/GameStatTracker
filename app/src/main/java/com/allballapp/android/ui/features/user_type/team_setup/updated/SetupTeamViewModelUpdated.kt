@@ -70,6 +70,10 @@ class SetupTeamViewModelUpdated @Inject constructor(
                 _teamSetupUiState.value =
                     _teamSetupUiState.value.copy(role = event.role)
             }
+            is TeamSetupUIEventUpdated.SetRequestData -> {
+                _teamSetupUiState.value =
+                    _teamSetupUiState.value.copy(role = event.role, teamId = event.teamId)
+            }
             is TeamSetupUIEventUpdated.GetRoles -> {
                 viewModelScope.launch {
                     getUserRoles()
@@ -264,8 +268,6 @@ class SetupTeamViewModelUpdated @Inject constructor(
                             .apply {
                                 add(InviteObject())
                             })
-                    /*_teamSetupUiState.value.inviteMemberName.add("")
-                    _teamSetupUiState.value.inviteMemberEmail.add("")*/
                 } else {
                     event.index?.let {
                         _teamSetupUiState.value =
@@ -273,10 +275,6 @@ class SetupTeamViewModelUpdated @Inject constructor(
                                 .apply {
                                     removeAt(it)
                                 })
-                        /*_teamSetupUiState.value =
-                        _teamSetupUiState.value.copy(inviteMemberCount = _teamSetupUiState.value.inviteMemberCount - 1)*/
-                        /*_teamSetupUiState.value.inviteMemberName.removeAt(event.index)
-                        _teamSetupUiState.value.inviteMemberEmail.removeAt(event.index)*/
                     }
                 }
 
@@ -458,11 +456,11 @@ class SetupTeamViewModelUpdated @Inject constructor(
         member: Members?
     ) {
 
+        val list = _teamSetupUiState.value.inviteList
 
         val members = if (member != null)
             listOf(member)
         else {
-            val list = _teamSetupUiState.value.inviteList
             for (item in list) {
                 if (item.contact.isEmpty()) {
                     list.remove(item)
@@ -481,7 +479,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
         val request = UpdateTeamRequest(
             teamID = teamId,
             members = members,
-            type = type,
+            type = AppConstants.TYPE_ACCEPT_INVITATION,
             userType = userType,
             profilesSelected = profileSelected.toString()
         )
@@ -495,6 +493,12 @@ class SetupTeamViewModelUpdated @Inject constructor(
             _teamSetupUiState.value.copy(isLoading = false)
         when (inviteMemberResponse) {
             is ResultWrapper.GenericError -> {
+                onEvent(
+                    TeamSetupUIEventUpdated.SetRequestData(
+                        _teamSetupUiState.value.role,
+                        _teamSetupUiState.value.teamId
+                    )
+                )
                 _teamSetupChannel.send(
                     TeamSetupChannel.ShowToast(
                         UiText.DynamicString(
@@ -504,6 +508,12 @@ class SetupTeamViewModelUpdated @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
+                onEvent(
+                    TeamSetupUIEventUpdated.SetRequestData(
+                        _teamSetupUiState.value.role,
+                        _teamSetupUiState.value.teamId
+                    )
+                )
                 _teamSetupChannel.send(
                     TeamSetupChannel.ShowToast(
                         UiText.DynamicString(
@@ -513,13 +523,23 @@ class SetupTeamViewModelUpdated @Inject constructor(
                 )
             }
             is ResultWrapper.Success -> {
+                onEvent(
+                    TeamSetupUIEventUpdated.SetRequestData(
+                        _teamSetupUiState.value.role,
+                        _teamSetupUiState.value.teamId
+                    )
+                )
                 inviteMemberResponse.value.let { response ->
                     if (response.status && response.data.failedMobileNumber.isEmpty() && response.data.failedProfiles.isEmpty()) {
+                        val url = _teamSetupUiState.value.teamImageServerUrl
+                        val playerName = list[0].name
                         _teamSetupChannel.send(
                             TeamSetupChannel.OnInvitationSuccess(
                                 UiText.DynamicString(
                                     response.statusMessage
-                                )
+                                ),
+                                url,
+                                playerName,
                             )
                         )
                         resetMemberValues()
@@ -734,7 +754,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
                         _teamSetupChannel.send(
                             TeamSetupChannel.OnTeamCreate(
                                 response.statusMessage,
-                                response.data.team.Id
+                                response.data.Id
                             )
                         )
                         inItToDefaultData()
@@ -771,7 +791,12 @@ class SetupTeamViewModelUpdated @Inject constructor(
 
 sealed class TeamSetupChannel {
     data class ShowToast(val message: UiText) : TeamSetupChannel()
-    data class OnInvitationSuccess(val message: UiText) : TeamSetupChannel()
+    data class OnInvitationSuccess(
+        val message: UiText,
+        val logo: String = "",
+        val name: String = "",
+    ) : TeamSetupChannel()
+
     data class OnInvitationDone(val message: UiText, val showToast: Boolean) : TeamSetupChannel()
     object OnTeamSetupNextClick : TeamSetupChannel()
     object OnLogoUpload : TeamSetupChannel()

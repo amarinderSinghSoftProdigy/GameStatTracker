@@ -1,6 +1,7 @@
 package com.allballapp.android.ui.features.home.teams
 
 import com.allballapp.android.data.request.Address
+import com.allballapp.android.data.request.Members
 import com.allballapp.android.data.request.UpdateTeamDetailRequest
 import com.allballapp.android.data.response.AllUser
 import com.allballapp.android.data.response.PlayerDetails
@@ -42,6 +43,7 @@ data class TeamUIState(
     val venueName: String = "",
     val selectedAddress: Address = Address(),
     val loadFirstUi: Boolean = false,
-    val teamId:String = "",
-    val newTeamId: String = ""
-    )
+    val teamId: String = "",
+    val newTeamId: String = "",
+    val member: Members = Members()
+)

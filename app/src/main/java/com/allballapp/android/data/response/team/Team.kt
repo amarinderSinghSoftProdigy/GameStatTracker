@@ -48,6 +48,7 @@ data class Team(
     @SerializedName("secondaryTeamColor") val secondaryTeamColor: String = "",
     @SerializedName("tertiaryTeamColor") val tertiaryTeamColor: String = "",
     @SerializedName("nameOfVenue") val nameOfVenue: String = "",
+    @SerializedName("title") val title: String = "",
     @SerializedName("location") val location: Location = Location(),
     @SerializedName("address") val address: Address = Address(),
 )
