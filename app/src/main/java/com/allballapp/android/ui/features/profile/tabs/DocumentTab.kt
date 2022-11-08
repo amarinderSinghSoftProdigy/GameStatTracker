@@ -2,6 +2,7 @@ package com.allballapp.android.ui.features.profile.tabs
 
 import android.app.Activity
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -103,6 +104,7 @@ fun DocumentTab(vm: ProfileViewModel) {
 @Composable
 fun DocumentItem(item: UserDocType, onImageClick: (String) -> Unit, onDeleteClick: () -> Unit) {
     val uriHandler = LocalUriHandler.current
+    val context = LocalContext.current
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -154,7 +156,14 @@ fun DocumentItem(item: UserDocType, onImageClick: (String) -> Unit, onDeleteClic
                                     shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                                 )
                                 .clickable {
-                                    uriHandler.openUri(item.url)
+                                    try {
+                                        uriHandler.openUri(item.url)
+
+                                    } catch (e: Exception) {
+                                        Toast
+                                            .makeText(context, e.message, Toast.LENGTH_SHORT)
+                                            .show()
+                                    }
                                 },
                             onLoading = {
                                 Box {

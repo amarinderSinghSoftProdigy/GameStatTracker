@@ -99,10 +99,10 @@ fun TeamsScreen(
         listOf(TeamsTabItems.Chat)
     } else {
         listOf(
-            TeamsTabItems.Standings,
+          /*  TeamsTabItems.Standings,*/
             TeamsTabItems.Chat,
             TeamsTabItems.Roaster,
-            TeamsTabItems.Leaderboard,
+           /* TeamsTabItems.Leaderboard,*/
         )
     }
 
@@ -181,16 +181,16 @@ fun TeamsContent(
         modifier = Modifier.fillMaxSize()
     ) { index ->
         when (index) {
-            0 -> StandingScreen()
-            1 -> TeamsChatScreen(
+           /* 0 -> StandingScreen()*/
+            0 -> TeamsChatScreen(
                 viewModel.teamUiState.value.teamColorPrimary,
                 homeVm = homeVm,
                 onTeamItemClick = onTeamItemClick,
                 onCreateNewConversationClick = onCreateNewConversationClick,
                 vm = chatViewModel
             )
-            2 -> RoasterScreen(viewModel, onAddPlayerClick, true)
-            3 -> LeaderBoardScreen()
+            1 -> RoasterScreen(viewModel, onAddPlayerClick, true)
+           /* 3 -> LeaderBoardScreen()*/
         }
     }
 }
@@ -201,7 +201,7 @@ fun TeamsTopTabs(pagerState: PagerState, tabData: List<TeamsTabItems>) {
 
     val coroutineScope = rememberCoroutineScope()
 
-    AppScrollableTabRow(
+    AppStaticTabRow(
         pagerState = pagerState,
         tabs = {
             tabData.forEachIndexed { index, item ->
@@ -243,8 +243,8 @@ fun RefereeTeamsTopTabs(pagerState: PagerState, tabData: List<TeamsTabItems>) {
 }
 
 enum class TeamsTabItems(val icon: Int, val stringId: String) {
-    Standings(R.drawable.ic_standing, stringId = "standings"),
+//    Standings(R.drawable.ic_standing, stringId = "standings"),
     Chat(R.drawable.ic_chat, stringId = "chat"),
     Roaster(R.drawable.ic_roaster, stringId = "roaster"),
-    Leaderboard(R.drawable.ic_leaderboard, stringId = "leaderboards")
+ //   Leaderboard(R.drawable.ic_leaderboard, stringId = "leaderboards")
 }
