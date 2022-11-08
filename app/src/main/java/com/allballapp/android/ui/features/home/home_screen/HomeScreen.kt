@@ -83,10 +83,10 @@ fun HomeScreen(
     remember {
         coroutineScope.launch {
             if (UserStorage.token.isNotEmpty()) {
-                if(UserStorage.teamId.isNotEmpty()) {
-                    vm.getHomePageDetails(UserStorage.teamId)
-                }
                 vm.getUnreadMessageCount()
+                if (UserStorage.userId.isNotEmpty()) {
+                    teamVm.getTeamsUserId()
+                }
             }
         }
     }
@@ -135,6 +135,7 @@ fun HomeScreen(
                 }
                 is TeamChannel.OnTeamDetailsSuccess -> {
                     OnTeamDetailsSuccess.invoke(uiEvent.teamId, uiEvent.teamName)
+                    vm.getHomePageDetails(uiEvent.teamId)
                     vm.showBottomAppBar(uiEvent.show)
                 }
             }

@@ -184,7 +184,7 @@ class HomeViewModel @Inject constructor(
                     if (response.status && response.data != null) {
                         _state.value =
                             _state.value.copy(
-                                user = response.data
+                                user = response.data,
                             )
                         UserStorage.userId = response.data._Id
                         UserStorage.role = response.data.role
@@ -251,7 +251,8 @@ class HomeViewModel @Inject constructor(
                     if (response.status && response.data != null) {
                         _state.value =
                             _state.value.copy(
-                                swapUsers = response.data
+                                swapUsers = response.data,
+                                phone = (response.data.filter { it.phone.isNotEmpty() })[0].phone
                             )
                         if (check)
                             _homeChannel.send(
@@ -342,9 +343,9 @@ class HomeViewModel @Inject constructor(
                         _state.value =
                             _state.value.copy(homePageCoachModel = baseResponse.data)
                         getHomeList()
-                       /* _homeChannel.send(
-                            HomeChannel.OnUserIdUpdate
-                        )*/
+                        /* _homeChannel.send(
+                             HomeChannel.OnUserIdUpdate
+                         )*/
                     }
                 }
             }

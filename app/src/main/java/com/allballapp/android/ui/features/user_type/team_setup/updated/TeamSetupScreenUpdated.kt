@@ -102,11 +102,10 @@ fun TeamSetupScreenUpdated(
     val teamId = remember {
         mutableStateOf("")
     }
-    if (refreshProfileList == true.toString()) {
-        LaunchedEffect(key1 = refreshProfileList, block = {
-            homeVm.onEvent(HomeScreenEvent.OnSwapClick())
-        })
+    remember {
+        homeVm.onEvent(HomeScreenEvent.OnSwapClick())
     }
+
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
             if (uri != null)
@@ -194,7 +193,6 @@ fun TeamSetupScreenUpdated(
                     teamId.value = uiEvent.id
                     Toast.makeText(context, uiEvent.message, Toast.LENGTH_LONG)
                         .show()
-                    //if (role.value == UserType.PARENT.key || role.value == UserType.PLAYER.key) {
                     vm.onEvent(TeamSetupUIEventUpdated.SetRequestData(role.value, teamId.value))
                     inviteVm.onEvent(InvitationEvent.SetTeamId(teamId.value))
                     inviteVm.onEvent(InvitationEvent.OnRoleDialogClick(false))
@@ -301,7 +299,7 @@ fun TeamSetupScreenUpdated(
             onConfirmClick = {
                 if (state.teamId.isNotEmpty()) {
                     if (state.inviteList.isNotEmpty()) {
-                        if (homeState.user.phone != state.inviteList[0].countryCode + state.inviteList[0].contact) {
+                        if (homeState.phone != state.inviteList[0].countryCode + state.inviteList[0].contact) {
                             inviteVm.onEvent(
                                 InvitationEvent.SetData(
                                     state.teamImageServerUrl,
@@ -429,11 +427,10 @@ fun TeamSetupScreenUpdated(
             onConfirmClick = {
                 showNoMessage.value = false
                 homeVm.onEvent(HomeScreenEvent.HideSwap(false))
+                vm.onEvent(TeamSetupUIEventUpdated.Clear)
                 onNextClick(
-                    state.teamId.ifEmpty {
-                        inviteState.teamId.ifEmpty {
-                            ""
-                        }
+                    inviteState.teamId.ifEmpty {
+                        ""
                     }
                 )
             },
@@ -1042,6 +1039,7 @@ fun TeamSetupScreenUpdated(
             }
         }
     }
+
     if (state.isLoading || inviteState.showLoading) {
         CommonProgressBar()
     }

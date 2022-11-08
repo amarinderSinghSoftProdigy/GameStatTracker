@@ -12,6 +12,7 @@ sealed class TeamSetupUIEventUpdated {
     data class OnTerColorSelected(val ternaryColor: String) : TeamSetupUIEventUpdated()
     data class OnTeamNameChange(val teamName: String) : TeamSetupUIEventUpdated()
     data class OnImageSelected(val teamImageUri: String) : TeamSetupUIEventUpdated()
+    object Clear : TeamSetupUIEventUpdated()
     object OnTeamSetupNextClick : TeamSetupUIEventUpdated()
 
     data class OnSearchPlayer(val searchPlayerQuery: String) : TeamSetupUIEventUpdated()

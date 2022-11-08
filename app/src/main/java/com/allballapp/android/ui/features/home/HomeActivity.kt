@@ -378,6 +378,8 @@ fun NavControllerComposable(
                 signUpViewModel = signUpViewModel,
                 isToAddProfile = true,
                 onNext = {
+                    homeViewModel.onEvent(HomeScreenEvent.OnSwapClick())
+                    signUpViewModel.onEvent(SignUpUIEvent.ClearPhoneField)
                     navController.previousBackStackEntry
                         ?.savedStateHandle
                         ?.set("refreshProfileList", "true")
@@ -1017,7 +1019,8 @@ fun NavControllerComposable(
                 )
             )
             OpportunitiesScreen(eventViewModel) {
-                navController.popBackStack()
+                eventTitle = it
+                navController.navigate(Route.OPP_DETAIL_SCREEN)
             }
         }
 

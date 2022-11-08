@@ -151,7 +151,7 @@ open interface APIService {
     ): BaseResponse<ArrayList<VenueDetails>>
 
     @GET(ApiConstants.GET_ALL_OPPORTUNITIES)
-    suspend fun getAllOpportunities(): BaseResponse<List<OpportunitiesItem>>
+    suspend fun getAllOpportunities(@Query("teamId") id: String): BaseResponse<List<OpportunitiesItem>>
 
     @GET(ApiConstants.GET_OPPORTUNITY_ID)
     suspend fun getOpportunityDetail(@Query("eventId") id: String): BaseResponse<OpportunitiesDetail>
