@@ -45,7 +45,7 @@ fun TogiCountryCodePicker(
     content: @Composable () -> Unit,
     placeHolder: (@Composable () -> Unit)? = null,
     textStyle: TextStyle = TextStyle(textAlign = TextAlign.End),
-    showDialog:Boolean = true
+    showDialog: Boolean = true
 ) {
     var textFieldValueState by remember { mutableStateOf(TextFieldValue(text = text)) }
     val textFieldValue = textFieldValueState.copy(text = text)
@@ -56,6 +56,9 @@ fun TogiCountryCodePicker(
         handleColor = Color.Black,
         backgroundColor = Color.Transparent
     )
+    val showDialogRemember = remember {
+        mutableStateOf(showDialog)
+    }
 
     Row(
         modifier = modifier
@@ -85,7 +88,7 @@ fun TogiCountryCodePicker(
                         showCountryCode = showCountryCode,
                         showCountryFlag = showCountryFlag,
                         dialogAppBarTextColor = dialogAppBarTextColor,
-                        showDialog = showDialog,
+                        showDialog = showDialogRemember.value,
                     )
                 }
                 CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {

@@ -15,15 +15,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import com.google.accompanist.flowlayout.FlowRow
-import com.allballapp.android.BuildConfig
+import com.allballapp.android.R
 import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.home.events.EvEvents
 import com.allballapp.android.ui.features.home.events.EventViewModel
 import com.allballapp.android.ui.features.home.events.schedule.Space
 import com.allballapp.android.ui.features.venue.Location
 import com.allballapp.android.ui.theme.appColors
-import com.allballapp.android.R
+import com.google.accompanist.flowlayout.FlowRow
+import com.google.android.gms.maps.model.LatLng
+
 @Composable
 fun OpenVenuesDetailsScreen(venueId: String, eventViewModel: EventViewModel) {
     val state = eventViewModel.eventState.value.venueDetails
@@ -75,6 +76,7 @@ fun OpenVenuesDetailsScreen(venueId: String, eventViewModel: EventViewModel) {
                         state.venueAddress.city,
                         state.venueAddress.state,
                         state.venueAddress.zipCode,
+                        latLong = LatLng(0.0, 0.0)
                     )
                 )
             }

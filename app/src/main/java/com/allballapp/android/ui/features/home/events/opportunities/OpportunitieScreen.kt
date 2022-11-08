@@ -18,12 +18,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
-import com.allballapp.android.BuildConfig
+import com.allballapp.android.R
 import com.allballapp.android.ui.features.components.CoilImage
 import com.allballapp.android.ui.features.components.CommonProgressBar
 import com.allballapp.android.ui.features.components.PlaceholderRect
@@ -32,7 +31,6 @@ import com.allballapp.android.ui.features.home.events.EventViewModel
 import com.allballapp.android.ui.features.home.events.OpportunitiesItem
 import com.allballapp.android.ui.theme.appColors
 import com.allballapp.android.ui.utils.CommonUtils
-import com.allballapp.android.R
 
 @Composable
 fun OpportunitiesScreen(vm: EventViewModel, moveToOppDetails: (String) -> Unit) {
@@ -146,25 +144,30 @@ fun OpportunitiesItem(league: OpportunitiesItem, showLabel: Boolean, OnNextClick
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.weight(1F)
                     )
-                    Row(modifier = Modifier.weight(1.8F), horizontalArrangement = Arrangement.End) {
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-                                .background(MaterialTheme.appColors.material.primaryVariant)
-                                .padding(
-                                    horizontal = dimensionResource(id = R.dimen.size_12dp),
-                                    vertical = dimensionResource(
-                                        id = R.dimen.size_6dp
-                                    )
-                                ),
-                            contentAlignment = Alignment.Center
+                    if (league.eventType.isNotEmpty()) {
+                        Row(
+                            modifier = Modifier.weight(1.8F),
+                            horizontalArrangement = Arrangement.End
                         ) {
-                            Text(
-                                text = league.eventType.capitalize(),
-                                color = Color.White,
-                                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                                fontWeight = FontWeight.Bold,
-                            )
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                                    .background(MaterialTheme.appColors.material.primaryVariant)
+                                    .padding(
+                                        horizontal = dimensionResource(id = R.dimen.size_12dp),
+                                        vertical = dimensionResource(
+                                            id = R.dimen.size_6dp
+                                        )
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = league.eventType.capitalize(),
+                                    color = Color.White,
+                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            }
                         }
                     }
                 }

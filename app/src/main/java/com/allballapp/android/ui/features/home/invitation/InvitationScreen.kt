@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.allballapp.android.BuildConfig
 import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.apiToUIDateFormat
@@ -78,7 +79,7 @@ fun InvitationScreen(
 
     if (refreshProfileList == true.toString()) {
         LaunchedEffect(key1 = refreshProfileList, block = {
-            homeVm.onEvent(HomeScreenEvent.OnSwapClick)
+            homeVm.onEvent(HomeScreenEvent.OnSwapClick())
 
         })
     }
@@ -86,6 +87,9 @@ fun InvitationScreen(
         vmSetupTeam.teamSetupChannel.collect { uiEvent ->
             when (uiEvent) {
                 is TeamSetupChannel.ShowToast -> {
+                    if (state.showAddPlayerDialog) {
+                        vm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
+                    }
                     Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
                         .show()
                 }
@@ -94,8 +98,6 @@ fun InvitationScreen(
                     vm.onEvent(InvitationEvent.OnRoleDialogClick(true))
                     vm.onEvent(InvitationEvent.OnGuardianDialogClick(true))
                     vm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
-
-
                 }
                 else -> Unit
             }
@@ -106,9 +108,19 @@ fun InvitationScreen(
         signUpViewModel.signUpChannel.collect { uiEvent ->
             when (uiEvent) {
                 is SignUpChannel.OnProfileUpdateSuccess -> {
-                    homeVm.onEvent(HomeScreenEvent.OnSwapClick)
+                    homeVm.onEvent(HomeScreenEvent.OnSwapClick())
                     Timber.i("HomeChannel.OnProfileUpdateSuccess")
 
+                }
+                else -> Unit
+            }
+        }
+    }
+    LaunchedEffect(key1 = Unit) {
+        vm.invitationChannel.collect { uiEvent ->
+            when (uiEvent) {
+                is InvitationChannel.Success -> {
+                    vm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(true))
                 }
                 else -> Unit
             }
@@ -165,13 +177,13 @@ fun InvitationScreen(
             },
             onConfirmClick = { /*vm.onEvent(InvitationEvent.OnRoleConfirmClick)*/
 
-                if (state.selectedRoleKey == UserType.PARENT.key || (state.selectedRoleKey == UserType.PLAYER.key)) {
-                    vm.onEvent(InvitationEvent.OnRoleConfirmClick)
-                    vm.onEvent(InvitationEvent.OnGuardianDialogClick(true))
-                } else {
-                    vm.onEvent(InvitationEvent.OnInvitationConfirm(homeState.user.gender))
-                    vm.onEvent(InvitationEvent.OnRoleDialogClick(false))
-                }
+                //if (state.selectedRoleKey == UserType.PARENT.key || (state.selectedRoleKey == UserType.PLAYER.key)) {
+                vm.onEvent(InvitationEvent.OnRoleConfirmClick)
+                vm.onEvent(InvitationEvent.OnGuardianDialogClick(true))
+                /* } else {
+                     vm.onEvent(InvitationEvent.OnInvitationConfirm(homeState.user.gender))
+                     vm.onEvent(InvitationEvent.OnRoleDialogClick(false))
+                 }*/
             },
             onSelectionChange = { vm.onEvent(InvitationEvent.OnRoleClick(roleKey = it)) },
             title = stringResource(
@@ -215,7 +227,6 @@ fun InvitationScreen(
             },
             dontHaveChildClick = {
                 vm.onEvent(InvitationEvent.ConfirmGuardianWithoutChildAlert(true))
-
             }
         )
     }
@@ -275,7 +286,7 @@ fun InvitationScreen(
                             )
                         } else {
                             /* show option to select his own profile*/
-                            homeVm.onEvent(HomeScreenEvent.OnSwapClick)
+                            homeVm.onEvent(HomeScreenEvent.OnSwapClick())
                         }
                     }
                 }
@@ -373,23 +384,22 @@ fun InvitationScreen(
         )
     }
 
-    /* if(state.showPlayerAddedSuccessDialog){
-         InvitationSuccessfullySentDialog(
-             onDismiss = {
-                 vm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
-             },
-             onConfirmClick = {
-                 onInviteClick.invoke(state.selectedInvitation.team._id)
-                 vm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
-                 vm.onEvent(InvitationEvent.OnRoleDialogClick(false))
-                 vm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
-
-             },
-             teamLogo = BuildConfig.IMAGE_SERVER + state.selectedInvitation.team.logo,
-             teamName = state.selectedInvitation.team.name,
-             playerName = if (teamState.inviteList.isNotEmpty()) teamState.inviteList[0].name else ""
-         )
-     }*/
+    if (state.showPlayerAddedSuccessDialog) {
+        InvitationSuccessfullySentDialog(
+            onDismiss = {
+                vm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
+            },
+            onConfirmClick = {
+                onInviteClick.invoke(state.selectedInvitation.team._id)
+                vm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
+                vm.onEvent(InvitationEvent.OnRoleDialogClick(false))
+                vm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
+            },
+            teamLogo = BuildConfig.IMAGE_SERVER + state.selectedInvitation.team.logo,
+            teamName = state.selectedInvitation.team.name,
+            playerName = if (teamState.inviteList.isNotEmpty()) teamState.inviteList[0].name else ""
+        )
+    }
 }
 
 
@@ -440,7 +450,7 @@ fun InvitationItem(
 
             Column(Modifier.weight(1f)) {
                 Text(
-                    text = invitation.team.name,
+                    text = invitation.team.title,
                     color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                     fontWeight = FontWeight.Bold,

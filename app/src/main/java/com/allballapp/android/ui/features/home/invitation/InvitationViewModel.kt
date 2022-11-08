@@ -32,6 +32,12 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
             is InvitationEvent.SetTeamId -> {
                 invitationState.value = invitationState.value.copy(teamId = event.teamId)
             }
+            is InvitationEvent.SetData -> {
+                invitationState.value = invitationState.value.copy(
+                    selectedPlayerName = event.playerName,
+                    selectedLogo = event.logo
+                )
+            }
             is InvitationEvent.OnAcceptCLick -> {
                 invitationState.value = invitationState.value.copy(
                     showRoleDialog = true,

@@ -9,19 +9,21 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
+import androidx.compose.ui.res.stringResource
 import com.allballapp.android.R
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.ui.features.components.AppScrollableTabRow
 import com.allballapp.android.ui.features.components.AppTabLikeViewPager
 import com.allballapp.android.ui.features.components.rememberPagerState
+import com.allballapp.android.ui.features.home.EmptyScreen
 import com.allballapp.android.ui.features.home.manage_team.leaderboard.ManageTeamLeaderBoard
 import com.allballapp.android.ui.features.home.manage_team.teams.ManageTeamScreen
 import com.allballapp.android.ui.features.home.teams.TeamChannel
 import com.allballapp.android.ui.features.home.teams.TeamViewModel
 import com.allballapp.android.ui.features.home.teams.manage_team.ManageTeamRoster
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.PagerState
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
@@ -76,17 +78,21 @@ fun ManageTeamsContent(
     pagerState: PagerState, vm: TeamViewModel, onAddPlayerCLick: () -> Unit,
     venue: String, onVenueClick: () -> Unit
 ) {
-    HorizontalPager(
-        state = pagerState,
-        modifier = Modifier.fillMaxSize()
-    ) { index ->
-        when (index) {
-            0 -> ManageTeamScreen(vm, venue = venue, onVenueClick = onVenueClick)
-            1 -> ManageTeamRoster(vm) {
-                onAddPlayerCLick.invoke()
+    if (vm.teamUiState.value.teamId.isNullOrEmpty()) {
+        EmptyScreen(singleText = true, stringResource(id = R.string.no_data_found))
+    } else {
+        HorizontalPager(
+            state = pagerState,
+            modifier = Modifier.fillMaxSize()
+        ) { index ->
+            when (index) {
+                0 -> ManageTeamScreen(vm, venue = venue, onVenueClick = onVenueClick)
+                1 -> ManageTeamRoster(vm) {
+                    onAddPlayerCLick.invoke()
+                }
+                2 -> ManageTeamLeaderBoard(vm)
+                /*3 -> ManageTeamScreen()*/
             }
-            2 -> ManageTeamLeaderBoard(vm)
-            /*3 -> ManageTeamScreen()*/
         }
     }
 }

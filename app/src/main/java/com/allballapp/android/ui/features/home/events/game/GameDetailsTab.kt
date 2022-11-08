@@ -24,11 +24,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.allballapp.android.R
 import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.home.events.EventViewModel
 import com.allballapp.android.ui.features.venue.Location
 import com.allballapp.android.ui.theme.*
-import com.allballapp.android.R
+import com.google.android.gms.maps.model.LatLng
+
 @Composable
 fun GameDetailsTab(vm: EventViewModel, moveToGameRules: () -> Unit) {
     val state = vm.eventState.value
@@ -122,6 +124,14 @@ fun GameDetailsTab(vm: EventViewModel, moveToGameRules: () -> Unit) {
                         state.event.address.street,
                         state.event.address.city,
                         state.event.address.zip,
+                        latLong = if (state.event.address.lat != 0.0 && state.event.address.long != 0.0) {
+                            LatLng(0.0, 0.0)
+                        } else {
+                            LatLng(
+                                state.event.address.lat,
+                                state.event.address.long
+                            )
+                        }
                     ),
                     padding = 0.dp
                 )

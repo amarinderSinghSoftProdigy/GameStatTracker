@@ -187,6 +187,8 @@ fun NavControllerComposable(
     val dataStoreManager = DataStoreManager(activity)
     val userToken = dataStoreManager.userToken.collectAsState(initial = "")
     UserStorage.token = userToken.value
+    val teamId = dataStoreManager.getId.collectAsState(initial = "")
+    UserStorage.teamId = teamId.value
     val scope = rememberCoroutineScope()
     val color = dataStoreManager.getWalkThrough.collectAsState(initial = "")
     NavHost(navController, startDestination = SPLASH_SCREEN) {

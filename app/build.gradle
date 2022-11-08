@@ -21,7 +21,7 @@ android {
         minSdk 24
         targetSdk 33
         versionCode 1
-        versionName "1.2"
+        versionName "1.14"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -53,6 +53,14 @@ android {
     packagingOptions {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
+            pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+            pickFirst 'lib/arm64-v8a/libfbjni.so'
+            pickFirst 'lib/arm64-v8a/libc++_shared.so'
+            pickFirst 'lib/armeabi-v7a/libfbjni.so'
+            pickFirst 'lib/x86/libc++_shared.so'
+            pickFirst 'lib/x86/libfbjni.so'
+            pickFirst 'lib/x86_64/libc++_shared.so'
+            pickFirst 'lib/x86_64/libfbjni.so'
         }
     }
 
@@ -73,7 +81,8 @@ android {
             //buildConfigField("String", "API_SERVER", "\"http://ballerapp-staging-v1.us-east-2.elasticbeanstalk.com/api/\"")
             //buildConfigField("String", "API_SERVER", "\"https://ballerapi.softprodigy.in/api/\"")
             //   buildConfigField("String", "API_SERVER", "\"https://ballerapi-qa.softprodigy.in/api/\"")
-      //      buildConfigField("String", "API_SERVER", "\"http://qa.allballapp.com/api/\"")
+            //buildConfigField("String", "API_SERVER", "\"http://qa.allballapp.com/api/\"")
+//            buildConfigField("String", "API_SERVER", "\"http://qa.allballapp.com/api/\"")
 
             buildConfigField("String", "SERVER", "\"http://baller-app.softprodigyphp.in\"")
             buildConfigField("String", "IMAGE_SERVER", "\"http://ballerapp.s3.us-east-2.amazonaws.com/\"")
@@ -131,7 +140,7 @@ dependencies {
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
 
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation "com.squareup.okhttp3:okhttp:5.0.0-alpha.2"
+    implementation "com.squareup.okhttp3:okhttp:5.0.0-alpha.3"
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.3'
     implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
@@ -187,5 +196,6 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:1.4.1"
     implementation "io.coil-kt:coil-svg:2.0.0"
 
-    implementation 'com.google.accompanist:accompanist-permissions:0.24.9-beta'
+    implementation "com.google.accompanist:accompanist-permissions:0.24.9-beta"
+    //implementation "com.google.accompanist:accompanist-swiperefresh:0.27.0"
 }

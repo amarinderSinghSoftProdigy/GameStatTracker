@@ -6,7 +6,8 @@ data class PlayerDetails(
     @SerializedName("_id") val id: String = "",
     @SerializedName("memberId") val memberDetails: MemberDetails = MemberDetails(),
     var checked: Boolean = false,
-    @SerializedName("role") val role: String = ""
+    @SerializedName("role") val role: String = "",
+    @SerializedName("temporary") val temporary: Boolean = false
 )
 
 data class MemberDetails(

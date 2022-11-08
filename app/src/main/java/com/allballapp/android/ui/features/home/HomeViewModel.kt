@@ -1,7 +1,6 @@
 package com.allballapp.android.ui.features.home
 
 import android.app.Application
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
@@ -142,8 +141,11 @@ class HomeViewModel @Inject constructor(
         when (event) {
             is HomeScreenEvent.OnSwapClick -> {
                 viewModelScope.launch {
-                    getSwapProfiles()
+                    getSwapProfiles(event.check)
                 }
+            }
+            is HomeScreenEvent.HideSwap -> {
+                setSwapProfile(event.check)
             }
             is HomeScreenEvent.OnSwapUpdate -> {
                 viewModelScope.launch {
@@ -220,7 +222,7 @@ class HomeViewModel @Inject constructor(
 
     }
 
-    private suspend fun getSwapProfiles() {
+    private suspend fun getSwapProfiles(check: Boolean) {
         _state.value = _state.value.copy(isDataLoading = true)
         val userResponse = userRepo.getSwapProfiles()
         _state.value = _state.value.copy(isDataLoading = false)
@@ -251,9 +253,10 @@ class HomeViewModel @Inject constructor(
                             _state.value.copy(
                                 swapUsers = response.data
                             )
-                        _homeChannel.send(
-                            HomeChannel.OnSwapListSuccess
-                        )
+                        if (check)
+                            _homeChannel.send(
+                                HomeChannel.OnSwapListSuccess
+                            )
                     } else {
                         _homeChannel.send(
                             HomeChannel.ShowToast(
@@ -313,8 +316,8 @@ class HomeViewModel @Inject constructor(
 
     }
 
-    suspend fun getHomePageDetails() {
-        when (val homeResponse = teamRepo.getHomePageDetails()) {
+    suspend fun getHomePageDetails(teamId: String) {
+        when (val homeResponse = teamRepo.getHomePageDetails(teamId)) {
             is ResultWrapper.GenericError -> {
                 _homeChannel.send(
                     HomeChannel.ShowToast(
@@ -339,9 +342,9 @@ class HomeViewModel @Inject constructor(
                         _state.value =
                             _state.value.copy(homePageCoachModel = baseResponse.data)
                         getHomeList()
-                        _homeChannel.send(
+                       /* _homeChannel.send(
                             HomeChannel.OnUserIdUpdate
-                        )
+                        )*/
                     }
                 }
             }

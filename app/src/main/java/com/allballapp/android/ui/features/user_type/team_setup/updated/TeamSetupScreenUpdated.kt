@@ -50,11 +50,6 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
-import com.allballapp.android.BuildConfig
-import com.allballapp.android.common.validTeamName
-import com.allballapp.android.data.UserStorage
-import com.allballapp.android.ui.features.components.*
-import com.allballapp.android.ui.theme.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.IOException
@@ -64,9 +59,10 @@ import java.util.*
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TeamSetupScreenUpdated(
+    refreshProfileList: String,
     venue: String = "",
     onBackClick: () -> Unit,
-    onNextClick: () -> Unit,
+    onNextClick: (String?) -> Unit,
     onVenueClick: () -> Unit,
     addProfileClick: () -> Unit,
     vm: SetupTeamViewModelUpdated,
@@ -82,6 +78,10 @@ fun TeamSetupScreenUpdated(
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
     val scope = rememberCoroutineScope()
     val showSwapDialog = rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    val showNoMessage = remember {
         mutableStateOf(false)
     }
     val roleKey = rememberSaveable {
@@ -102,7 +102,11 @@ fun TeamSetupScreenUpdated(
     val teamId = remember {
         mutableStateOf("")
     }
-
+    if (refreshProfileList == true.toString()) {
+        LaunchedEffect(key1 = refreshProfileList, block = {
+            homeVm.onEvent(HomeScreenEvent.OnSwapClick())
+        })
+    }
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
             if (uri != null)
@@ -177,6 +181,9 @@ fun TeamSetupScreenUpdated(
         vm.teamSetupChannel.collect { uiEvent ->
             when (uiEvent) {
                 is TeamSetupChannel.ShowToast -> {
+                    if (inviteState.showAddPlayerDialog) {
+                        inviteVm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
+                    }
                     Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
                         .show()
                 }
@@ -187,30 +194,23 @@ fun TeamSetupScreenUpdated(
                     teamId.value = uiEvent.id
                     Toast.makeText(context, uiEvent.message, Toast.LENGTH_LONG)
                         .show()
-                    if (role.value == UserType.PARENT.key || role.value == UserType.PLAYER.key) {
-                        inviteVm.onEvent(InvitationEvent.OnRoleDialogClick(false))
-                        inviteVm.onEvent(InvitationEvent.OnRoleConfirmClick)
-                        inviteVm.onEvent(InvitationEvent.OnGuardianDialogClick(true))
-                    } else {
-                        onNextClick.invoke()
-                    }
-                    //onNextClick.invoke()
+                    //if (role.value == UserType.PARENT.key || role.value == UserType.PLAYER.key) {
+                    vm.onEvent(TeamSetupUIEventUpdated.SetRequestData(role.value, teamId.value))
+                    inviteVm.onEvent(InvitationEvent.SetTeamId(teamId.value))
+                    inviteVm.onEvent(InvitationEvent.OnRoleDialogClick(false))
+                    inviteVm.onEvent(InvitationEvent.OnRoleConfirmClick)
+                    inviteVm.onEvent(InvitationEvent.OnGuardianDialogClick(true))
                 }
                 is TeamSetupChannel.OnInvitationSuccess -> {
-                    inviteVm.onEvent(InvitationEvent.SetTeamId(teamId.value))
                     inviteVm.onEvent(InvitationEvent.OnRoleConfirmClick)
                     inviteVm.onEvent(InvitationEvent.OnGuardianDialogClick(true))
                     inviteVm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
                 }
                 is TeamSetupChannel.OnInvitationDone -> {
-                    if (uiEvent.showToast)
-                        Toast.makeText(
-                            context,
-                            uiEvent.message.asString(context),
-                            Toast.LENGTH_LONG
-                        )
-                            .show()
-                    onNextClick.invoke()
+                    inviteVm.onEvent(InvitationEvent.OnRoleDialogClick(false))
+                    inviteVm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
+                    inviteVm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
+                    inviteVm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(true))
                 }
                 else -> Unit
             }
@@ -247,7 +247,7 @@ fun TeamSetupScreenUpdated(
             onBack = {
                 inviteVm.onEvent(InvitationEvent.OnRoleDialogClick(true))
                 inviteVm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
-                vm.onEvent(TeamSetupUIEventUpdated.MoveBack(false))
+                vm.onEvent(TeamSetupUIEventUpdated.MoveBack(true))
             },
             onConfirmClick = {
                 //inviteVm.onEvent(InvitationEvent.OnInvitationConfirm(homeState.user.gender))
@@ -257,7 +257,7 @@ fun TeamSetupScreenUpdated(
             },
             onSelectionChange = { inviteVm.onEvent(InvitationEvent.OnGuardianClick(guardian = it)) },
             selected = inviteState.selectedGuardian,
-            guardianList = if (inviteState.selectedRoleKey == UserType.PARENT.key)
+            guardianList = if (state.role != UserType.PLAYER.key)
                 inviteState.playerDetails.filter { member -> member.role == UserType.PLAYER.key }
             else inviteState.playerDetails.filter { member -> member.role != UserType.PLAYER.key },
             onValueSelected = {
@@ -271,6 +271,7 @@ fun TeamSetupScreenUpdated(
                 inviteVm.onEvent(InvitationEvent.OnAddPlayerDialogClick(true))
             },
             dontHaveChildClick = {
+                showNoMessage.value = true
                 inviteVm.onEvent(InvitationEvent.ConfirmGuardianWithoutChildAlert(true))
             }
         )
@@ -291,24 +292,32 @@ fun TeamSetupScreenUpdated(
     if (inviteState.showAddPlayerDialog) {
         vm.initialInviteCount(1)
         InviteTeamMembersDialog(
+            role = if (state.role == UserType.PLAYER.key) UserType.PARENT.key else UserType.PLAYER.key,
             onBack = {
                 //inviteVm.onEvent(InvitationEvent.OnRoleDialogClick(true))
                 inviteVm.onEvent(InvitationEvent.OnGuardianDialogClick(true))
                 inviteVm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
             },
             onConfirmClick = {
-                if (teamId.value.isNotEmpty()) {
+                if (state.teamId.isNotEmpty()) {
                     if (state.inviteList.isNotEmpty()) {
                         if (homeState.user.phone != state.inviteList[0].countryCode + state.inviteList[0].contact) {
+                            inviteVm.onEvent(
+                                InvitationEvent.SetData(
+                                    state.teamImageServerUrl,
+                                    state.inviteList[0].name
+                                )
+                            )
                             vm.onEvent(
                                 TeamSetupUIEventUpdated.OnInviteTeamMembers(
-                                    teamId = teamId.value,
-                                    userType = role.value,
+                                    teamId = state.teamId,
+                                    userType = state.role,
                                     type = AppConstants.TYPE_ACCEPT_INVITATION
                                 )
                             )
                         } else {
-                            homeVm.onEvent(HomeScreenEvent.OnSwapClick)
+                            showSwapDialog.value = true
+                            homeVm.onEvent(HomeScreenEvent.OnSwapClick())
                         }
                     }
                 }
@@ -382,10 +391,16 @@ fun TeamSetupScreenUpdated(
             users = homeState.swapUsers,
             onDismiss = { showSwapDialog.value = false },
             onConfirmClick = { swapUser ->
+                inviteVm.onEvent(
+                    InvitationEvent.SetData(
+                        state.teamImageServerUrl,
+                        swapUser.firstName
+                    )
+                )
                 vm.onEvent(
                     TeamSetupUIEventUpdated.OnInviteTeamMembers(
-                        inviteState.selectedInvitation.team._id,
-                        userType = role.value,
+                        state.teamId,
+                        userType = state.role,
                         type = AppConstants.TYPE_ACCEPT_INVITATION,
                         profilesSelected = true,
                         member = Members(
@@ -395,8 +410,7 @@ fun TeamSetupScreenUpdated(
                         )
                     )
                 )
-
-                showSwapDialog.value = false
+                homeVm.onEvent(HomeScreenEvent.HideSwap(false))
             },
             showLoading = homeState.isDataLoading,
             onCreatePlayerClick = {
@@ -406,6 +420,28 @@ fun TeamSetupScreenUpdated(
         )
     }
 
+    if (inviteState.showPlayerAddedSuccessDialog) {
+        InvitationSuccessfullySentDialog(
+            onDismiss = {
+                showNoMessage.value = false
+                inviteVm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
+            },
+            onConfirmClick = {
+                showNoMessage.value = false
+                homeVm.onEvent(HomeScreenEvent.HideSwap(false))
+                onNextClick(
+                    state.teamId.ifEmpty {
+                        inviteState.teamId.ifEmpty {
+                            ""
+                        }
+                    }
+                )
+            },
+            teamName = state.teamName,
+            teamLogo = inviteState.selectedLogo,
+            playerName = if (showNoMessage.value) stringResource(id = R.string.no_player) else inviteState.selectedPlayerName
+        )
+    }
 
     ModalBottomSheetLayout(
         sheetContent = {
@@ -974,26 +1010,25 @@ fun TeamSetupScreenUpdated(
                 }
 
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-                val enable =
-                    validTeamName(state.teamName)
-                            && state.teamImageUri != null
-                            && state.teamColorPrimary.isNotEmpty()
-                            && state.teamColorSec.isNotEmpty()
-                            && state.teamColorThird.isNotEmpty()
-                            && state.teamName.isNotEmpty()
-                            && state.teamNameOnJerseys.isNotEmpty()
-                            && state.teamNameOnTournaments.isNotEmpty()
-                            && validTeamName(state.venueName)
-                            && state.venueName.isNotEmpty()
-                            && state.selectedAddress.street.isNotEmpty()
-                            && state.selectedAddress.street.length >= 4
+                val enable = !state.isLoading &&
+                        validTeamName(state.teamName)
+                        && state.teamImageUri != null
+                        && state.teamColorPrimary.isNotEmpty()
+                        && state.teamColorSec.isNotEmpty()
+                        && state.teamColorThird.isNotEmpty()
+                        && state.teamName.isNotEmpty()
+                        && state.teamNameOnJerseys.isNotEmpty()
+                        && state.teamNameOnTournaments.isNotEmpty()
+                        /* && validTeamName(state.venueName)
+                         && state.venueName.isNotEmpty()*/
+                        && state.selectedAddress.street.isNotEmpty()
+                        && state.selectedAddress.street.length >= 4
                 BottomButtons(
                     firstText = stringResource(id = R.string.back),
                     secondText = stringResource(id = R.string.next),
                     onBackClick = onBackClick,
                     onNextClick = {
                         inviteVm.onEvent(InvitationEvent.OnAcceptCLick(Invitation()))
-                        //onNextClick.invoke()
                     },
                     enableState = enable,
                     showOnlyNext = true,
@@ -1007,7 +1042,7 @@ fun TeamSetupScreenUpdated(
             }
         }
     }
-    if (state.isLoading) {
+    if (state.isLoading || inviteState.showLoading) {
         CommonProgressBar()
     }
 }

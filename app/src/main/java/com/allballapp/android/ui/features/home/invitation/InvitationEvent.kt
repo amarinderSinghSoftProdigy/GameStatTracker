@@ -4,6 +4,7 @@ import com.allballapp.android.data.response.PlayerDetails
 
 sealed class InvitationEvent {
     data class SetTeamId(val teamId: String) : InvitationEvent()
+    data class SetData(val logo: String, val playerName: String) : InvitationEvent()
     data class OnAcceptCLick(val invitation: Invitation) : InvitationEvent()
     data class OnDeclineCLick(val invitation: Invitation) : InvitationEvent()
     data class OnRoleClick(val roleKey: String) : InvitationEvent()
@@ -20,5 +21,5 @@ sealed class InvitationEvent {
     object GetRoles : InvitationEvent()
     object OnClearGuardianValues : InvitationEvent()
     data class OnValuesSelected(val playerDetails: PlayerDetails) : InvitationEvent()
-    data class OnInvitationConfirm(val gender:String?) : InvitationEvent()
+    data class OnInvitationConfirm(val gender: String?) : InvitationEvent()
 }

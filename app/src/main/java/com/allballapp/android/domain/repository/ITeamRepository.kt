@@ -24,7 +24,7 @@ interface ITeamRepository {
         searchPlayer: String
     ): ResultWrapper<BaseResponse<ArrayList<Player>>>
 
-    suspend fun createTeamAPI(request: CreateTeamRequest): ResultWrapper<BaseResponse<CreateTeamResponse>>
+    suspend fun createTeamAPI(request: CreateTeamRequest): ResultWrapper<BaseResponse<TeamData>>
 
     suspend fun getTeams(
         coachId: String
@@ -67,7 +67,7 @@ interface ITeamRepository {
 
     suspend fun rejectTeamInvitation(invitationId: String): ResultWrapper<BaseResponse<Any>>
 
-    suspend fun getHomePageDetails(): ResultWrapper<BaseResponse<HomePageCoachModel>>
+    suspend fun getHomePageDetails(teamId: String): ResultWrapper<BaseResponse<HomePageCoachModel>>
 
     suspend fun getUserRoles(role: String): ResultWrapper<BaseResponse<List<UserRoles>>>
 
