@@ -1217,6 +1217,7 @@ class CometChatThreadMessageList : Fragment(), View.OnClickListener, OnMessageLo
         val textMessage: TextMessage
         textMessage = if (type.equals(CometChatConstants.RECEIVER_TYPE_USER, ignoreCase = true)) TextMessage(Id!!, message, CometChatConstants.RECEIVER_TYPE_USER) else TextMessage(Id!!, message, CometChatConstants.RECEIVER_TYPE_GROUP)
         textMessage.parentMessageId = parentId
+//        textMessage.metadata
         sendTypingIndicator(true)
         sendMessage(textMessage, object : CallbackListener<TextMessage?>() {
             override fun onSuccess(textMessage: TextMessage?) {
