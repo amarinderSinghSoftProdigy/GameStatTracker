@@ -38,6 +38,7 @@ import com.allballapp.android.ui.features.components.AppText
 import com.allballapp.android.ui.features.components.Text
 import com.allballapp.android.ui.features.sign_up.SignUpUIEvent
 import com.allballapp.android.ui.features.sign_up.SignUpViewModel
+import com.allballapp.android.ui.theme.ColorBWGrayDark
 import com.allballapp.android.ui.theme.appColors
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -238,7 +239,7 @@ fun ConfirmPhoneScreen(
 
                 withStyle(
                     style = SpanStyle(
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = ColorBWGrayDark,
                     )
                 ) {
                     append(stringResource(id = R.string.resend_code_in))
