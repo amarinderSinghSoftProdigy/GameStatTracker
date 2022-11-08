@@ -24,6 +24,7 @@ data class SignUpData(
     @SerializedName("repeat_password") val repeatPassword: String? = null,
     @SerializedName("token") val token: String? = null,
     @SerializedName("id") val id: String? = null,
+    val termsAndCondition: Boolean = false
 ) : Parcelable
 
 data class SignUpPhoneData(

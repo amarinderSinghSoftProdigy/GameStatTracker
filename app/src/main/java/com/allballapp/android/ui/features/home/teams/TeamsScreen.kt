@@ -17,6 +17,7 @@ import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.response.team.Team
 import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.home.HomeViewModel
+import com.allballapp.android.ui.features.home.teams.chat.ChatViewModel
 import com.allballapp.android.ui.features.home.teams.chat.TeamsChatScreen
 import com.allballapp.android.ui.features.home.teams.leaderboard.LeaderBoardScreen
 import com.allballapp.android.ui.features.home.teams.roaster.RoasterScreen
@@ -33,12 +34,13 @@ import kotlinx.coroutines.launch
 fun TeamsScreen(
     vm: TeamViewModel,
     homeVm: HomeViewModel,
+    chatViewModel: ChatViewModel,
     showDialog: Boolean,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
     dismissDialog: (Boolean) -> Unit,
     OnTeamDetailsSuccess: (String, String) -> Unit,
     onCreateTeamClick: (Team?) -> Unit,
-    onCreateNewConversationClick: (teamId:String) -> Unit,
+    onCreateNewConversationClick: (teamId: String) -> Unit,
     onTeamItemClick: () -> Unit,
     onAddPlayerClick: () -> Unit,
     onHomeClick: () -> Unit
@@ -97,10 +99,10 @@ fun TeamsScreen(
         listOf(TeamsTabItems.Chat)
     } else {
         listOf(
-            TeamsTabItems.Standings,
+          /*  TeamsTabItems.Standings,*/
             TeamsTabItems.Chat,
             TeamsTabItems.Roaster,
-            TeamsTabItems.Leaderboard,
+           /* TeamsTabItems.Leaderboard,*/
         )
     }
 
@@ -119,7 +121,8 @@ fun TeamsScreen(
                 onCreateNewConversationClick = onCreateNewConversationClick,
                 viewModel = vm,
                 onAddPlayerClick = onAddPlayerClick,
-                homeVm = homeVm
+                homeVm = homeVm,
+                chatViewModel = chatViewModel
             )
         } else {
             RefereeTeamsTopTabs(pagerState = pagerState, tabData = tabData)
@@ -127,7 +130,8 @@ fun TeamsScreen(
                 vm.teamUiState.value.teamColorPrimary,
                 onTeamItemClick = onTeamItemClick,
                 onCreateNewConversationClick = onCreateNewConversationClick,
-                homeVm = homeVm
+                homeVm = homeVm,
+                vm = chatViewModel
             )
             //EmptyScreen(singleText = true, heading = stringResource(id = R.string.coming_soon))
         }
@@ -166,25 +170,27 @@ fun TeamsScreen(
 fun TeamsContent(
     pagerState: PagerState,
     onTeamItemClick: () -> Unit,
-    onCreateNewConversationClick: (teamId:String) -> Unit,
+    onCreateNewConversationClick: (teamId: String) -> Unit,
     onAddPlayerClick: () -> Unit,
     viewModel: TeamViewModel,
-    homeVm : HomeViewModel
+    homeVm: HomeViewModel,
+    chatViewModel: ChatViewModel
 ) {
     HorizontalPager(
         state = pagerState,
         modifier = Modifier.fillMaxSize()
     ) { index ->
         when (index) {
-            0 -> StandingScreen()
-            1 -> TeamsChatScreen(
+           /* 0 -> StandingScreen()*/
+            0 -> TeamsChatScreen(
                 viewModel.teamUiState.value.teamColorPrimary,
                 homeVm = homeVm,
                 onTeamItemClick = onTeamItemClick,
-                onCreateNewConversationClick = onCreateNewConversationClick
+                onCreateNewConversationClick = onCreateNewConversationClick,
+                vm = chatViewModel
             )
-            2 -> RoasterScreen(viewModel, onAddPlayerClick, true)
-            3 -> LeaderBoardScreen()
+            1 -> RoasterScreen(viewModel, onAddPlayerClick, true)
+           /* 3 -> LeaderBoardScreen()*/
         }
     }
 }
@@ -195,7 +201,7 @@ fun TeamsTopTabs(pagerState: PagerState, tabData: List<TeamsTabItems>) {
 
     val coroutineScope = rememberCoroutineScope()
 
-    AppScrollableTabRow(
+    AppStaticTabRow(
         pagerState = pagerState,
         tabs = {
             tabData.forEachIndexed { index, item ->
@@ -237,8 +243,8 @@ fun RefereeTeamsTopTabs(pagerState: PagerState, tabData: List<TeamsTabItems>) {
 }
 
 enum class TeamsTabItems(val icon: Int, val stringId: String) {
-    Standings(R.drawable.ic_standing, stringId = "standings"),
+//    Standings(R.drawable.ic_standing, stringId = "standings"),
     Chat(R.drawable.ic_chat, stringId = "chat"),
     Roaster(R.drawable.ic_roaster, stringId = "roaster"),
-    Leaderboard(R.drawable.ic_leaderboard, stringId = "leaderboards")
+ //   Leaderboard(R.drawable.ic_leaderboard, stringId = "leaderboards")
 }

@@ -1,11 +1,13 @@
 package com.allballapp.android.ui.features.home
 
 import android.app.Application
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.allballapp.android.BuildConfig
 import com.allballapp.android.R
 import com.allballapp.android.common.CometChatErrorCodes
 import com.allballapp.android.common.ResultWrapper
@@ -21,6 +23,8 @@ import com.allballapp.android.ui.features.home.home_screen.HomeScreenEvent
 import com.cometchat.pro.core.CometChat
 import com.cometchat.pro.exceptions.CometChatException
 import com.cometchat.pro.models.User
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -421,12 +425,12 @@ class HomeViewModel @Inject constructor(
 
         CometChat.login(
             uid,
-            com.allballapp.android.BuildConfig.COMET_CHAT_AUTH_KEY,
+           BuildConfig.COMET_CHAT_AUTH_KEY,
             object : CometChat.CallbackListener<User?>() {
                 override fun onSuccess(user: User?) {
                     Timber.i(" CometChat- Login Successful : " + user.toString())
                     getUnreadMessageCount()
-
+                    registerTokenForPN()
                 }
 
                 override fun onError(e: CometChatException) {
@@ -434,6 +438,40 @@ class HomeViewModel @Inject constructor(
                 }
             })
     }
+
+    private fun registerTokenForPN() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w(
+                    "registerTokenForPN",
+                    "Fetching FCM registration token failed",
+                    task.exception
+                )
+                return@OnCompleteListener
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+
+            Timber.i("registerTokenForPN-- Token--  $token")
+
+            CometChat.registerTokenForPushNotification(
+                token,
+                object : CometChat.CallbackListener<String?>() {
+                    override fun onError(e: CometChatException) {
+                        Log.e("onErrorPN: ", e.message!!)
+                    }
+
+                    override fun onSuccess(p0: String?) {
+                        Log.e("ononSuccessPN: ", p0.toString())
+                    }
+                })
+        })
+
+
+    }
+
+
 }
 
 sealed class HomeChannel {

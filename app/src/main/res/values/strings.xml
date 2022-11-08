@@ -352,7 +352,7 @@
     <string name="profile_label">Profile</string>
     <string name="parent">Parent</string>
     <string name="call">Call</string>
-    <string name="message">Message</string>
+    <string name="message_">Type something</string>
     <string name="start_date">Start Date</string>
     <string name="end_Date">End Date</string>
     <string name="event_Type">Event Type</string>
@@ -363,7 +363,7 @@
     <string name="event_desc">Event Description</string>
     <string name="contact_With_questions">Contact with questions</string>
     <string name="question_contact">Questions? Contact:</string>
-    <string name="days_play">Days of play</string>
+    <string name="days_play">Potential Days of play</string>
     <string name="register">Register</string>
     <string name="registration_form">Registration Form</string>
     <string name="age_group">Age group</string>
@@ -467,5 +467,8 @@
     <string name="authorize_message">Awesome! We need your parents help to get started.Enter either of your parent\'s phone number below and we\'ll send them a message to help you get started.</string>
     <string name="valid_cash_message">Cash must be greater or equal to league price</string>
     <string name="team_chat">Team Chat</string>
-
+    <string name="event_operator">Event Operator</string>
+    <string name="name_of_organization">Name of Organization</string>
+    <string name="login_verification_code_label">We need to send you a verification code to log in to All Ball. Standard text messaging rates may apply.</string>
+    <string name="send_me_the_code">Send me the code</string>
 </resources>

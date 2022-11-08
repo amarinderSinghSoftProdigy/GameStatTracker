@@ -680,6 +680,7 @@ class TeamViewModel @Inject constructor(
                             coaches = response.data.coaches,
                             allUsers = response.data.allMembers,
                             teamName = response.data.name,
+                            createdBy = response.data.createdBy,
                             teamColorPrimary = response.data.colorCode,
                             logo = response.data.logo,
                             leaderBoard = response.data.teamLeaderBoard,

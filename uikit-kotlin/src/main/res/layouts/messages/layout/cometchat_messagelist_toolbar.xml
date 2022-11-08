@@ -59,7 +59,7 @@
                 android:ellipsize="marquee"
                 android:maxWidth="150dp"
                 android:singleLine="true"
-                android:textColor="@color/primaryTextColor"
+                android:textColor="@color/textColorWhite"
                 android:textSize="16sp"
                 tools:text="@tools:sample/full_names" />
 
@@ -79,7 +79,7 @@
                 android:ellipsize="end"
                 android:maxWidth="200dp"
                 android:maxLines="1"
-                android:textColor="@color/green"
+                android:textColor="@color/textColorWhite"
                 android:textSize="12sp"
                 tools:text="online" />
         </RelativeLayout>

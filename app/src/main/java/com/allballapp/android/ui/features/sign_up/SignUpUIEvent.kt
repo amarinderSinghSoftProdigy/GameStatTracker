@@ -20,10 +20,10 @@ sealed class SignUpUIEvent {
     data class OnPhoneNumberChanged(val phoneNumber: String) : SignUpUIEvent()
     data class OnBirthdayChanged(val birthday: String) : SignUpUIEvent()
     data class OnAddressChanged(val address: String) : SignUpUIEvent()
-    data class OnSwapUpdate(val user : SwapUser)  : SignUpUIEvent()
+    data class OnSwapUpdate(val user: SwapUser) : SignUpUIEvent()
     data class OnGenderChange(val gender: String) : SignUpUIEvent()
     data class OnCountryCode(val countryCode: String) : SignUpUIEvent()
-    data class AuthorizeUser(val phone: String,val parentPhone: String) : SignUpUIEvent()
-
+    data class AuthorizeUser(val phone: String, val parentPhone: String) : SignUpUIEvent()
+    data class OnTermsAndConditionChanged(val termsAndCondition: Boolean) : SignUpUIEvent()
     object ClearPhoneField : SignUpUIEvent()
 }

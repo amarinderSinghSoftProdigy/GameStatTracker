@@ -2634,7 +2634,7 @@ class MessageAdapter(context: Context, messageList: List<BaseMessage>, type: Str
 
                 viewHolder.view.goTxtMessage.text = message
                 viewHolder.view.goTxtMessage.typeface = fontUtils.getTypeFace(FontUtils.robotoRegular)
-                if (baseMessage.getSender().uid == loggedInUser.uid) viewHolder.view.goTxtMessage.setTextColor(context.resources.getColor(R.color.textColorWhite)) else viewHolder.view.goTxtMessage.setTextColor(context.resources.getColor(R.color.primaryTextColor))
+                if (baseMessage.getSender().uid == loggedInUser.uid) viewHolder.view.goTxtMessage.setTextColor(context.resources.getColor(R.color.textColorWhite)) else viewHolder.view.goTxtMessage.setTextColor(context.resources.getColor(R.color.textColorDark))
                 showMessageTime(viewHolder, baseMessage)
 //                if (messageList[messageList.size - 1] == baseMessage) {
 //                    selectedItemList.add(baseMessage.getId())
@@ -3056,7 +3056,7 @@ class MessageAdapter(context: Context, messageList: List<BaseMessage>, type: Str
                 }
             } else {
                 if (view !is CardView) {
-                    if (Build.VERSION.SDK_INT >= 29) view.background.colorFilter = PorterDuffColorFilter(context.getColor(R.color.message_bubble_grey), PorterDuff.Mode.SRC_ATOP) else view.background.setColorFilter(context.resources.getColor(R.color.message_bubble_grey), PorterDuff.Mode.SRC_ATOP)
+                    if (Build.VERSION.SDK_INT >= 29) view.background.colorFilter = PorterDuffColorFilter(context.getColor(R.color.textColorWhite), PorterDuff.Mode.SRC_ATOP) else view.background.setColorFilter(context.resources.getColor(R.color.textColorWhite), PorterDuff.Mode.SRC_ATOP)
                 }
             }
         } else {

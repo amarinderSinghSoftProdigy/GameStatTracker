@@ -43,6 +43,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import com.allballapp.android.R
 import com.allballapp.android.common.ComposeFileProvider
@@ -51,9 +52,8 @@ import com.allballapp.android.common.validName
 import com.allballapp.android.common.validPhoneNumber
 import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.confirm_phone.ConfirmPhoneScreen
-import com.allballapp.android.ui.theme.ColorBWBlack
-import com.allballapp.android.ui.theme.ColorPrimaryTransparent
-import com.allballapp.android.ui.theme.appColors
+import com.allballapp.android.ui.features.home.events.EvEvents
+import com.allballapp.android.ui.theme.*
 import com.togitech.ccp.component.TogiCountryCodePicker
 import com.togitech.ccp.data.utils.getDefaultLangCode
 import com.togitech.ccp.data.utils.getDefaultPhoneCode
@@ -70,7 +70,8 @@ fun ProfileSetUpScreen(
     mobileNumber: String = "",
     onNext: () -> Unit,
     onBack: () -> Unit,
-    signUpViewModel: SignUpViewModel
+    signUpViewModel: SignUpViewModel,
+    moveToTermsAndConditions : (String) -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val modalBottomSheetState =
@@ -82,6 +83,7 @@ fun ProfileSetUpScreen(
 
     BackHandler {
         signUpViewModel.onEvent(SignUpUIEvent.ClearPhoneField)
+        onBack()
     }
 
     val maxChar = 30
@@ -208,6 +210,7 @@ fun ProfileSetUpScreen(
                         modalBottomSheetState.hide()
                     }
                 }
+
                 else -> Unit
             }
         }
@@ -572,6 +575,7 @@ fun ProfileSetUpScreen(
                                         )
                                     }
                                 }
+
                             }
 
                             /*if (validPhoneNumber(state.signUpData.phone) && !state.signUpData.phoneVerified) {
@@ -609,7 +613,37 @@ fun ProfileSetUpScreen(
                                     textAlign = TextAlign.End
                                 )
                             }*/
-
+                            AppDivider()
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                CustomCheckBox(
+                                    state.signUpData.termsAndCondition
+                                ) {
+                                    signUpViewModel.onEvent(
+                                        SignUpUIEvent.OnTermsAndConditionChanged(
+                                            !state.signUpData.termsAndCondition
+                                        )
+                                    )
+                                }
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_20dp)))
+                                AppText(
+                                    text = stringResource(id = R.string.i_agree) + " ",
+                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                    color = md_theme_light_onSurface,
+                                )
+                                AppText(
+                                    text = stringResource(id = R.string.terms_cond),
+                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                    color = ColorMainPrimary,
+                                    modifier = Modifier.clickable {
+                                        moveToTermsAndConditions("")
+                                    }
+                                )
+                            }
                         }
                     }
 
@@ -636,7 +670,7 @@ fun ProfileSetUpScreen(
                             /*check.value = false*/
                         },
                         enableState = !state.isLoading && validName(state.signUpData.firstName)
-                                && validName(state.signUpData.lastName)
+                                && validName(state.signUpData.lastName) && state.signUpData.termsAndCondition
                                 && if (isToAddProfile) true else validPhoneNumber(state.signUpData.phone)
                         /*&& check.value*/,
                         //&& (state.signUpData.email ?: "".isValidEmail()) != true

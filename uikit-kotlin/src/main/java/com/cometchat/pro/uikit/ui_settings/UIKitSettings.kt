@@ -30,6 +30,8 @@ class UIKitSettings(context: Context) {
         //style
         var color = "#03A9F4"
 
+//        var selectedTeamId:String=""
+
         //BottomBarcalls
         var showUsersBB = true
         var showGroupsBB = true
@@ -114,8 +116,8 @@ class UIKitSettings(context: Context) {
         var shareLocation = true
 
         var allowDeleteGroup = true
-        var enableSoundForMessages = true
-        var enableSoundForCalls = true
+        var enableSoundForMessages = false
+        var enableSoundForCalls = false
         var joinOrLeaveGroup = true
         var sendGifs: Boolean = true
         var viewShareMedia = true

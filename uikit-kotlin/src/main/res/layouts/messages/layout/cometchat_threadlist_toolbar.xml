@@ -34,7 +34,7 @@
                 android:maxLines="1"
                 tools:text="Thread in Conversation"
                 android:layout_width="wrap_content"
-                android:textColor="@color/primaryTextColor"
+                android:textColor="@color/textColorWhite"
                 android:layout_height="wrap_content"/>
 
             <TextView
