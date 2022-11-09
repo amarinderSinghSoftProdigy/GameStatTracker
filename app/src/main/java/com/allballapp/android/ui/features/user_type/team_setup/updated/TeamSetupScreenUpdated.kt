@@ -376,7 +376,10 @@ fun TeamSetupScreenUpdated(
                         code = code
                     )
                 )
-            }, roles = inviteState.roles, onRoleValueChange = { index, role ->
+            }, roles = if (state.role != UserType.PLAYER.key)
+                inviteState.roles.filter { member -> member.key == UserType.PLAYER.key }
+            else inviteState.roles.filter { member -> member.key != UserType.PLAYER.key },
+            onRoleValueChange = { index, role ->
                 vm.onEvent(
                     TeamSetupUIEventUpdated.OnRoleValueChange(
                         index = index,

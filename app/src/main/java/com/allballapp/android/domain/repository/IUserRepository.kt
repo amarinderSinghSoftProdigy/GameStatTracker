@@ -51,4 +51,8 @@ interface IUserRepository {
 
     suspend fun authorizeGuardian(request: AuthorizeRequest): ResultWrapper<BaseResponse<Any>>
 
+    suspend fun getStaffSchedule(request: String): ResultWrapper<BaseResponse<List<ScheduleResponseObject>>>
+
+    suspend fun updateStaffSchedule(request: StaffScheduleRequest): ResultWrapper<BaseResponse<Any>>
+
 }

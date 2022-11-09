@@ -148,4 +148,16 @@ class UserRepository @Inject constructor(
             service.authorizeGuardian(request)
         }
     }
+
+    override suspend fun getStaffSchedule(request: String): ResultWrapper<BaseResponse<List<ScheduleResponseObject>>> {
+        return safeApiCall(dispatcher = dispatcher) {
+            service.getStaffSchedule(request)
+        }
+    }
+
+    override suspend fun updateStaffSchedule(request: StaffScheduleRequest): ResultWrapper<BaseResponse<Any>> {
+        return safeApiCall(dispatcher = dispatcher) {
+            service.updateStaffSchedule(request)
+        }
+    }
 }

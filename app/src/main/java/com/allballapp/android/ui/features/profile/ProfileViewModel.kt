@@ -14,17 +14,17 @@ import com.allballapp.android.core.util.UiText
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.data.request.*
-import com.allballapp.android.data.response.PayResponse
-import com.allballapp.android.data.response.User
-import com.allballapp.android.data.response.UserDocType
+import com.allballapp.android.data.response.*
 import com.allballapp.android.domain.repository.IImageUploadRepo
 import com.allballapp.android.domain.repository.IUserRepository
 import com.allballapp.android.ui.features.components.UserType
+import com.allballapp.android.ui.utils.CommonUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
@@ -71,6 +71,16 @@ class ProfileViewModel @Inject constructor(
 
     fun onEvent(event: ProfileEvent) {
         when (event) {
+            is ProfileEvent.GetStaffSchedule -> {
+                viewModelScope.launch {
+                    getStaffSchedule(UserStorage.userId)
+                }
+            }
+            is ProfileEvent.UpdateScheduleStaff -> {
+                viewModelScope.launch {
+                    updateStaffSchedule(event.list)
+                }
+            }
             is ProfileEvent.OnParentDialogChange -> {
                 _state.value = _state.value.copy(showParentDialog = event.showDialog)
             }
@@ -281,6 +291,115 @@ class ProfileViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private suspend fun getStaffSchedule(userId: String, showToast: Boolean = false) {
+        _state.value = _state.value.copy(isLoading = true)
+        val leaveTeamResponse = userRepository.getStaffSchedule(userId)
+        _state.value = _state.value.copy(isLoading = false)
+
+        when (leaveTeamResponse) {
+            is ResultWrapper.GenericError -> {
+                _channel.send(
+                    ProfileChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${leaveTeamResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _channel.send(
+                    ProfileChannel.ShowToast(
+                        UiText.DynamicString(
+                            leaveTeamResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                leaveTeamResponse.value.let { response ->
+                    if (response.status) {
+                        if (response.data != null) {
+                            _state.value = _state.value.copy(scheduleList = response.data)
+                            if (showToast) {
+                                _channel.send(
+                                    ProfileChannel.ShowToast(
+                                        UiText.DynamicString(
+                                            response.statusMessage
+                                        )
+                                    )
+                                )
+                            }
+                        }
+                    } else {
+                        _channel.send(
+                            ProfileChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
+        }
+
+    }
+
+    private suspend fun updateStaffSchedule(list: ArrayList<Date> = ArrayList()) {
+        val schedule: ArrayList<ScheduleObject> = ArrayList()
+        list.forEach {
+            schedule.add(
+                ScheduleObject(
+                    UserStorage.userId, startTime = "12:00 AM", endTime = "12:00 AM",
+                    date = CommonUtils.formatDateRequest(it), "description"
+                )
+            )
+        }
+        val request = StaffScheduleRequest(UserStorage.userId, schedule)
+
+        _state.value = _state.value.copy(isLoading = true)
+        val leaveTeamResponse = userRepository.updateStaffSchedule(request)
+        _state.value = _state.value.copy(isLoading = false)
+
+        when (leaveTeamResponse) {
+            is ResultWrapper.GenericError -> {
+                _channel.send(
+                    ProfileChannel.ShowToast(
+                        UiText.DynamicString(
+                            "${leaveTeamResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                _channel.send(
+                    ProfileChannel.ShowToast(
+                        UiText.DynamicString(
+                            leaveTeamResponse.message
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.Success -> {
+                leaveTeamResponse.value.let { response ->
+                    if (response.status) {
+                        getStaffSchedule(UserStorage.userId, true)
+                    } else {
+                        _channel.send(
+                            ProfileChannel.ShowToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+
+                    }
+                }
+            }
+        }
+
     }
 
     private suspend fun updateUserDoc(userDocType: String, url: String) {

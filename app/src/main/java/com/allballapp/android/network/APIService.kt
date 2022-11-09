@@ -280,4 +280,10 @@ open interface APIService {
     @POST(ApiConstants.REGISTER_GAME_STAFF)
     suspend fun registerGameStaff(@Body gameStaffRegisterRequest: GameStaffRegisterRequest): BaseResponse<Any>
 
+    @GET(ApiConstants.GET_STAFF_SCHEDULE)
+    suspend fun getStaffSchedule(@Query("id") id: String): BaseResponse<List<ScheduleResponseObject>>
+
+    @PUT(ApiConstants.UPDATE_SCHEDULE)
+    suspend fun updateStaffSchedule(@Body request: StaffScheduleRequest): BaseResponse<Any>
+
 }

@@ -248,11 +248,11 @@ fun HomeScreen(
                                     )
                                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
                                     Text(
-                                        text = if (UserStorage.role.equals(
+                                        text =/* if (UserStorage.role.equals(
                                                 UserType.REFEREE.key,
                                                 ignoreCase = true
                                             )
-                                        ) stringResource(id = R.string.team_total_hoop) else teamState.teamName.ifEmpty { teamName.value },
+                                        ) stringResource(id = R.string.team_total_hoop) else*/ teamState.teamName.ifEmpty { teamName.value },
                                         style = MaterialTheme.typography.h3,
                                         fontWeight = FontWeight.W700,
                                         modifier = Modifier.weight(1f)

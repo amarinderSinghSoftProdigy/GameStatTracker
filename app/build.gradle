@@ -200,4 +200,5 @@ dependencies {
     //implementation "com.google.accompanist:accompanist-swiperefresh:0.27.0"
     implementation 'com.google.firebase:firebase-messaging'
 
+    implementation "com.github.prolificinteractive:material-calendarview:1.6.1"
 }

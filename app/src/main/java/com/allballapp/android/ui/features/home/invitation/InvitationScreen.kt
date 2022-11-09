@@ -328,7 +328,10 @@ fun InvitationScreen(
                         code = code
                     )
                 )
-            }, roles = state.roles, onRoleValueChange = { index, role ->
+            }, roles = if (state.selectedRoleKey != UserType.PLAYER.key)
+                state.roles.filter { member -> member.key == UserType.PLAYER.key }
+            else state.roles.filter { member -> member.key != UserType.PLAYER.key },
+            onRoleValueChange = { index, role ->
                 vmSetupTeam.onEvent(
                     TeamSetupUIEventUpdated.OnRoleValueChange(
                         index = index,
