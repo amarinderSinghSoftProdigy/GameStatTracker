@@ -28,9 +28,9 @@ class UIKitSettings(context: Context) {
 
 
         //style
-        var color = "#03A9F4"
+        var color = "#FF923D"
 
-//        var selectedTeamId:String=""
+        var selectedTeamId:String=""
 
         //BottomBarcalls
         var showUsersBB = true

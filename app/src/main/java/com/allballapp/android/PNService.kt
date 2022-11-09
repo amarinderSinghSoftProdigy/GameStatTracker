@@ -12,6 +12,8 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.allballapp.android.common.IntentData
 import com.cometchat.pro.constants.CometChatConstants
 import com.cometchat.pro.helpers.CometChatHelper
 import com.cometchat.pro.models.BaseMessage
@@ -24,9 +26,9 @@ import com.google.firebase.messaging.RemoteMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
+import timber.log.Timber
 import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
@@ -48,11 +50,16 @@ class PNService :
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
+
+        /*Crete channel for notification*/
         createNotificationChannel()
-        Log.i(
-            "PNService",
-            "onMessageReceived: ${message.data} ${message.notification?.title}"
-        )
+
+        /*Sending app level broadcast on notification */
+        sendBroadcastToUpdateUnreadChatCount()
+
+
+        Timber.i("PNService onMessageReceived: ${message.data} ${message.notification?.title}")
+
 
 
         try {
@@ -69,6 +76,12 @@ class PNService :
         } catch (e: JSONException) {
             e.printStackTrace()
         }
+    }
+
+    private fun sendBroadcastToUpdateUnreadChatCount() {
+
+        val intent = Intent(IntentData.COMET_CHAT_READ_COUNT)
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
     }
 
     override fun onSendError(msgId: String, exception: Exception) {
@@ -153,14 +166,14 @@ class PNService :
                     (baseMessage.receiver as Group).membersCount
                 )
             }
-            /* val messagePendingIntent = PendingIntent.getActivity(
+             val messagePendingIntent = PendingIntent.getActivity(
                  applicationContext,
                  83, messageIntent, PendingIntent.FLAG_UPDATE_CURRENT
-             )*/
-            val messagePendingIntent = PendingIntent.getActivity(
+             )
+           /* val messagePendingIntent = PendingIntent.getActivity(
                 applicationContext,
                 83, messageIntent, PendingIntent.FLAG_IMMUTABLE
-            )
+            )*/
             val builder: NotificationCompat.Builder = NotificationCompat.Builder(this, "2")
                 .setSmallIcon(R.drawable.ic_all_ball_logo)
                 .setContentTitle(json?.getString("title"))
@@ -168,6 +181,7 @@ class PNService :
                 .setColor(resources.getColor(R.color.colorPrimary))
                 .setLargeIcon(getBitmapFromURL(baseMessage.sender.avatar))
                 .setGroup(GROUP_ID)
+                .setAutoCancel(true)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 
             //Show image incase of media message
@@ -188,8 +202,10 @@ class PNService :
                 .setSmallIcon(R.drawable.ic_all_ball_logo)
                 .setGroup(GROUP_ID)
                 .setGroupSummary(true)
+                .setAutoCancel(true)
             val notificationManager = NotificationManagerCompat.from(this)
             builder.priority = NotificationCompat.PRIORITY_HIGH
+            builder.setAutoCancel(true)
             builder.setContentIntent(messagePendingIntent)
             builder.setCategory(NotificationCompat.CATEGORY_MESSAGE)
             builder.setDefaults(Notification.DEFAULT_VIBRATE)
