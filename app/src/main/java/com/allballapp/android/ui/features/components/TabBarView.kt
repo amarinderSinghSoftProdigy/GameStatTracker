@@ -171,7 +171,7 @@ enum class BottomNavKey(val resId: String, val route: String) {
 enum class UserType(val stringId: String, val key: String) {
     PLAYER("player_label", "player"),
     COACH("coach_label", "coach"),
-    REFEREE("referee_label", "programManager"),
+    REFEREE("referee_label", "gameStaff"),
     PARENT("parent_label", "guardian"),
     PROGRAM_STAFF("program_label", "assistantCoach"),
     //GAME_STAFF("game_staff_label", "gameStaff"),
