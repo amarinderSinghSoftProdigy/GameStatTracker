@@ -471,4 +471,13 @@
     <string name="name_of_organization">Name of Organization</string>
     <string name="login_verification_code_label">We need to send you a verification code to log in to All Ball. Standard text messaging rates may apply.</string>
     <string name="send_me_the_code">Send me the code</string>
+    <string name="select_payment_option">Select a payment option</string>
+    <string name="check">Check</string>
+    <string name="square_cash">Square Cash</string>
+    <string name="zelle">Zelle</string>
+    <string name="apple_pay">Apple Pay</string>
+    <string name="google_pay">Google Pay</string>
+    <string name="please_enter_details">Please enter details</string>
+    <string name="payment_details">Payment details</string>
+    <string name="age">Age</string>
 </resources>

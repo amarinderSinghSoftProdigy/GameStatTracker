@@ -144,34 +144,32 @@ fun OpportunitiesItem(league: OpportunitiesItem, showLabel: Boolean, OnNextClick
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.weight(1F)
                     )
-                    /*if (league.eventType.isNotEmpty()) {
-                        Row(
-                            modifier = Modifier.weight(1.8F),
-                            horizontalArrangement = Arrangement.End
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-                                    .background(MaterialTheme.appColors.material.primaryVariant)
-                                    .padding(
-                                        horizontal = dimensionResource(id = R.dimen.size_12dp),
-                                        vertical = dimensionResource(
-                                            id = R.dimen.size_6dp
-                                        )
-                                    ),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    text = league.eventType.capitalize(),
-                                    color = Color.White,
-                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                            }
-                        }
-                    }*/
-                }
 
+                    Row(
+                        modifier = Modifier.weight(0.8F),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                                .background(MaterialTheme.appColors.material.primaryVariant)
+                                .padding(
+                                    horizontal = dimensionResource(id = R.dimen.size_12dp),
+                                    vertical = dimensionResource(
+                                        id = R.dimen.size_6dp
+                                    )
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = league.participation.minRange + "-" + league.participation.maxRange,
+                                color = Color.White,
+                                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                    }
+                }
                 Text(
                     modifier = Modifier.padding(end = dimensionResource(id = R.dimen.size_100dp)),
                     overflow = TextOverflow.Ellipsis,
