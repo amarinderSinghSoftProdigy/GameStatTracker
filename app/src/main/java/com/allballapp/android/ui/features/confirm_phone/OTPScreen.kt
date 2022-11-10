@@ -79,7 +79,6 @@ fun OtpScreen(
     var otp by rememberSaveable { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
     val state = viewModel.signUpUiState.value
-    val pattern = remember { Regex("^\\d+\$") }
 
     LaunchedEffect(key1 = true) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -118,7 +117,6 @@ fun OtpScreen(
             }
         }
     }
-
 
     Box(
         modifier = Modifier
