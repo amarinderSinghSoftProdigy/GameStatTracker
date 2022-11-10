@@ -142,6 +142,7 @@ fun OtpScreen(
         ) {
 
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
+
                 AppText(
                     text = stringResource(id = R.string.verification_code),
                     style = MaterialTheme.typography.h6,
