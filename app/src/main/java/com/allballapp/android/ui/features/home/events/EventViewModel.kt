@@ -409,6 +409,11 @@ class EventViewModel @Inject constructor(
                 _state.value = _state.value.copy(opportunitiesDetail = OpportunitiesDetail())
             }
 
+            is EvEvents.PaymentOption -> {
+                _state.value = _state.value.copy(
+                    registerRequest = _state.value.registerRequest.copy(paymentOption = event.paymentOption)
+                )
+            }
         }
     }
 

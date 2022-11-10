@@ -3,7 +3,10 @@ package com.allballapp.android.ui.features.home
 //import com.softprodigy.ballerapp.ui.features.home.events.NewEventScreen
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
@@ -28,12 +31,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.allballapp.android.MainActivity
 import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
+import com.allballapp.android.common.IntentData
 import com.allballapp.android.common.Route
 import com.allballapp.android.common.argbToHexString
 import com.allballapp.android.data.UserStorage
@@ -89,7 +94,7 @@ class HomeActivity : FragmentActivity() {
     var dataStoreManager: DataStoreManager = DataStoreManager(this)
     val cometChat = CometChatUI()
     var setupTeamViewModelUpdated: SetupTeamViewModelUpdated? = null
-
+    lateinit var homeViewModel: HomeViewModel
     @OptIn(ExperimentalAnimationApi::class)
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -99,7 +104,7 @@ class HomeActivity : FragmentActivity() {
         cometChat.setConversationClickListener()
         setContent {
             //val fromSplash = intent.getBooleanExtra(IntentData.FROM_SPLASH, false)
-            val homeViewModel: HomeViewModel = hiltViewModel()
+            homeViewModel = hiltViewModel()
             val signUpViewModel: SignUpViewModel = hiltViewModel()
             val teamViewModel: TeamViewModel = hiltViewModel()
             val eventViewModel: EventViewModel = hiltViewModel()
@@ -121,6 +126,11 @@ class HomeActivity : FragmentActivity() {
             homeViewModel.setColor(AppConstants.SELECTED_COLOR)
 
             cometChat.setPrimaryColor(AppConstants.SELECTED_COLOR.toArgb().argbToHexString())
+
+            /* Register for unread chat count broadcast*/
+            registerForTeamChatCountBroadcast(homeViewModel)
+
+
 
             //homeViewModel.showBottomAppBar(true)
             BallerAppMainTheme(
@@ -226,8 +236,27 @@ class HomeActivity : FragmentActivity() {
         }
     }
 
+    private fun registerForTeamChatCountBroadcast(homeViewModel: HomeViewModel) {
+
+        // on below line we are creating a new broad cast.
+        val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+            // we will receive data updates in onReceive method.
+            override fun onReceive(context: Context?, intent: Intent) {
+                Timber.i("onReceive")
+                homeViewModel.getUnreadMessageCount()
+            }
+        }
+        // on below line we are registering our local broadcast manager.
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+            broadcastReceiver, IntentFilter(IntentData.COMET_CHAT_READ_COUNT)
+        )
+    }
+
     override fun onResume() {
         super.onResume()
+            if(::homeViewModel.isInitialized){
+                homeViewModel.getUnreadMessageCount()
+            }
     }
 
     // on below line we are calling on activity result method.
@@ -269,6 +298,7 @@ class HomeActivity : FragmentActivity() {
             )
         }
     }
+
 }
 
 @OptIn(ExperimentalAnimationApi::class)

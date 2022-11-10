@@ -106,6 +106,9 @@ data class OpportunitiesItem(
     @SerializedName("standardPrice") val standardPrice: String = "",
     @SerializedName("locationDesc") val locationDesc: String = "",
     @SerializedName("eventShortDescription") val eventShortDescription: String = "",
+    @SerializedName("gender") val gender: ArrayList<String> = arrayListOf(),
+    @SerializedName("format") val format: String = "",
+    @SerializedName("participation") val participation: Participation = Participation()
 )
 
 data class OpportunitiesDetail(
@@ -159,6 +162,8 @@ data class Participation(
     @SerializedName("boysMax") val boysMax: String = "",
     @SerializedName("girlsMin") val girlsMin: String = "",
     @SerializedName("girlsMax") val girlsMax: String = "",
+    @SerializedName("minRange") val minRange: String = "",
+    @SerializedName("maxRange") val maxRange: String = ""
 )
 
 
@@ -172,7 +177,7 @@ data class RegisterRequest(
     val team: String = "",
     val event: String = "",
     val players: ArrayList<String> = ArrayList(),
-    val paymentOption: String = "cash",
+    val paymentOption: String = "",
     val payment: String = "",
     val division: String = "",
     val sendPushNotification: Boolean = false,

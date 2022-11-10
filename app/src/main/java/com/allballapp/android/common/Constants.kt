@@ -204,6 +204,7 @@ object RequestCode {
 object IntentData {
     const val FROM_SPLASH = "fromSplash"
     const val ROLE = "role"
+    const val COMET_CHAT_READ_COUNT = "cometChatReadCount"
 }
 
 object CometChatErrorCodes {

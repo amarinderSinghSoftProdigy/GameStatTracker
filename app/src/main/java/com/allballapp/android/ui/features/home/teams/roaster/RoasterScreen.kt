@@ -126,37 +126,38 @@ fun RoasterScreen(vm: TeamViewModel, onAddPlayerClick: () -> Unit, showAddButton
 
 @Composable
 fun ParentItem(id: Int, count: Int, listing: List<AllUser>) {
-    Column {
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-        ShowHeading(id, count.toString())
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-        val gridCount = 3
-        val heightFactor = ceil(listing.size.toDouble() / gridCount)
+    if (count != 0)
+        Column {
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+            ShowHeading(id, count.toString())
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+            val gridCount = 3
+            val heightFactor = ceil(listing.size.toDouble() / gridCount)
 
-        LazyVerticalGrid(
-            userScrollEnabled = false,
-            columns = GridCells.Fixed(gridCount),
-            modifier = Modifier
-                .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
-                .height(
-                    dimensionResource(id = R.dimen.size_150dp) * (if (heightFactor.toInt() == 0) {
-                        if (count == 0) 0 else 1
-                    } else heightFactor.toInt())
-                ),
-            content = {
-                items(listing) {
-                    CoachListItem(
-                        modifier = Modifier.padding(
-                            bottom = dimensionResource(
-                                id = R.dimen.size_16dp
-                            )
-                        ),
-                        it,
-                    )
-                }
-            })
-        DividerCommon()
-    }
+            LazyVerticalGrid(
+                userScrollEnabled = false,
+                columns = GridCells.Fixed(gridCount),
+                modifier = Modifier
+                    .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
+                    .height(
+                        dimensionResource(id = R.dimen.size_150dp) * (if (heightFactor.toInt() == 0) {
+                            if (count == 0) 0 else 1
+                        } else heightFactor.toInt())
+                    ),
+                content = {
+                    items(listing) {
+                        CoachListItem(
+                            modifier = Modifier.padding(
+                                bottom = dimensionResource(
+                                    id = R.dimen.size_16dp
+                                )
+                            ),
+                            it,
+                        )
+                    }
+                })
+            DividerCommon()
+        }
 }
 
 @Composable
