@@ -21,6 +21,7 @@ import com.cometchat.pro.exceptions.CometChatException
 import com.cometchat.pro.models.Group
 import com.cometchat.pro.models.GroupMember
 import com.cometchat.pro.models.User
+import com.cometchat.pro.uikit.ui_settings.UIKitSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -80,6 +81,11 @@ class ChatViewModel @Inject constructor(
             is ChatUIEvent.TeamSelectionChange -> {
                 _chatUiState.value =
                     _chatUiState.value.copy(teamIndex = event.teamIndex)
+
+                /* Saving team Id  */
+                if (_chatUiState.value.teams.isNotEmpty()) {
+                    UIKitSettings.selectedTeamId = _chatUiState.value.teams[event.teamIndex]._id
+                }
             }
             ChatUIEvent.GetChatListing -> {
                 viewModelScope.launch {

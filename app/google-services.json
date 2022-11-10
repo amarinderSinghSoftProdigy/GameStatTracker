@@ -1,34 +1,42 @@
 {
   "project_info": {
-    "project_number": "34242822392",
-    "project_id": "allballandroid",
-    "storage_bucket": "allballandroid.appspot.com"
+    "project_number": "491397372271",
+    "firebase_url": "https://realtime-app-e0a61.firebaseio.com",
+    "project_id": "realtime-app-e0a61",
+    "storage_bucket": "realtime-app-e0a61.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:34242822392:android:d11b56c84ca06aeb3d3b0d",
+        "mobilesdk_app_id": "1:491397372271:android:49540d3bb3c500dd25b09a",
         "android_client_info": {
           "package_name": "com.allballapp.android"
         }
       },
       "oauth_client": [
         {
-          "client_id": "34242822392-r6hlcc9csgrop6sp8f8jk530iqe3c9r4.apps.googleusercontent.com",
+          "client_id": "491397372271-plueg96hg2devmq6s7mj1q9p4sle8h77.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCp2fYNwqlc9QsFCkR9zVP-Fw4bnum1lVc"
+          "current_key": "AIzaSyAlk3UPbxSygnIP7n2TxQib1C7VxO8eDCA"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "34242822392-r6hlcc9csgrop6sp8f8jk530iqe3c9r4.apps.googleusercontent.com",
+              "client_id": "491397372271-plueg96hg2devmq6s7mj1q9p4sle8h77.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "491397372271-ljivgju9b73ml0p7mtl179l0a7b8cv2d.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.spring.allball"
+              }
             }
           ]
         }
