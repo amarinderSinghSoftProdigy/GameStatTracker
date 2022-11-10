@@ -470,8 +470,8 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
         ivUserInfo?.setOnClickListener(this)
         ivBackArrow = view?.findViewById(R.id.iv_back_arrow)
         ivBackArrow?.setOnClickListener(this)
-        if (CometChatMessageListActivity.toolbarColor.isNotEmpty())
-            toolbar?.setBackgroundColor(Color.parseColor(CometChatMessageListActivity.toolbarColor))
+        if (UIKitSettings.color.isNotEmpty())
+            toolbar?.setBackgroundColor(Color.parseColor(UIKitSettings.color))
 
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         tvName?.typeface = fontUtils?.getTypeFace(FontUtils.robotoMedium)
@@ -497,7 +497,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
             //rvChatListView?.setBackgroundColor(resources.getColor(R.color.textColorWhite))
             replyMessageLayout?.background = resources.getDrawable(R.drawable.left_border)
 //            rlMessageAction!!.setBackgroundColor(resources.getColor(R.color.textColorWhite))
-            tvName?.setTextColor(resources.getColor(R.color.textColorDark))
+            tvName?.setTextColor(resources.getColor(R.color.textColorWhite))
         }
         KeyBoardUtils.setKeyboardVisibilityListener(
             requireActivity(),
@@ -1899,7 +1899,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
                                 override fun onSuccess(p0: Boolean) {
                                     if (p0) {
                                         if (user.status == CometChatConstants.USER_STATUS_ONLINE)
-                                            tvStatus!!.setTextColor(activity!!.resources.getColor(R.color.colorPrimary))
+                                            tvStatus!!.setTextColor(activity!!.resources.getColor(R.color.textColorWhite))
                                         status = user.status.toString()
                                         tvStatus!!.text = status
                                     }
@@ -1978,6 +1978,11 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
             messageAdapter?.addMessage(textMessage)
             scrollToBottom()
         }
+        /*Adding team id as meta data in message*/
+        val metadata = JSONObject()
+        metadata.put("id", UIKitSettings.selectedTeamId)
+        textMessage.metadata = metadata
+
         sendMessage(textMessage, object : CallbackListener<TextMessage?>() {
             override fun onSuccess(textMessage: TextMessage?) {
                 isSmartReplyClicked = false
@@ -2105,6 +2110,9 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
                 jsonObject.put("replyToMessage", baseMessage?.rawMessage)
             else
                 jsonObject.put("reply-message", baseMessage?.rawMessage)
+
+            /*Adding team id as meta data in message*/
+            jsonObject.put("id", UIKitSettings.selectedTeamId)
 
             textMessage.metadata = jsonObject
             sendTypingIndicator(true)
@@ -2258,7 +2266,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
                     Log.d(TAG, "onUserOnline: $user")
                     if (user.uid == Id) {
                         tvStatus?.text = user.status
-                        tvStatus?.setTextColor(resources.getColor(R.color.colorPrimary))
+                        tvStatus?.setTextColor(resources.getColor(R.color.textColorWhite))
                     }
                 }
 
@@ -2266,7 +2274,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
                     Log.d(TAG, "onUserOffline: $user")
                     if (user.uid == Id) {
                         if (Utils.isDarkMode(context!!)) tvStatus?.setTextColor(resources.getColor(R.color.textColorWhite)) else tvStatus?.setTextColor(
-                            resources.getColor(android.R.color.black)
+                            resources.getColor(android.R.color.white)
                         )
                         tvStatus?.text = user.status
                     }
