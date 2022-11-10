@@ -156,7 +156,7 @@ fun OtpScreen(
                 AppOutlineTextField(
                     value = editValue,
                     onValueChange = {
-                        if (it.matches(pattern) && it.length <= otpLength ) {
+                        if (it.length <= otpLength ) {
                             setEditValue(it)
                             otp = it
                             if (otpLength == otp.length) {
@@ -169,6 +169,7 @@ fun OtpScreen(
                                 )
                             }
                         }
+
                     },
                     modifier = Modifier
                         .size(0.dp)
