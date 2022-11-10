@@ -251,13 +251,13 @@ class SignUpViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _signUpChannel.send(
+               /* _signUpChannel.send(
                     SignUpChannel.ShowToast(
                         UiText.DynamicString(
                             userResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
@@ -385,13 +385,13 @@ class SignUpViewModel @Inject constructor(
             is ResultWrapper.NetworkError -> {
                 _signUpUiState.value =
                     _signUpUiState.value.copy(isLoading = false)
-                _signUpChannel.send(
+               /* _signUpChannel.send(
                     SignUpChannel.ShowToast(
                         UiText.DynamicString(
                             uploadLogoResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 uploadLogoResponse.value.let { response ->
@@ -491,13 +491,13 @@ class SignUpViewModel @Inject constructor(
                             errorMessage = signUpResponse.message,
                             isLoading = false
                         )
-                    _signUpChannel.send(
+                    /*_signUpChannel.send(
                         SignUpChannel.ShowToast(
                             UiText.DynamicString(
                                 signUpResponse.message
                             )
                         )
-                    )
+                    )*/
                 }
             }
         }
@@ -648,13 +648,13 @@ class SignUpViewModel @Inject constructor(
                         errorMessage = response.message,
                         isLoading = false
                     )
-                _signUpChannel.send(
+                /*_signUpChannel.send(
                     SignUpChannel.ShowToast(
                         UiText.DynamicString(
                             response.message
                         )
                     )
-                )
+                )*/
             }
         }
     }
@@ -686,13 +686,13 @@ class SignUpViewModel @Inject constructor(
                         errorMessage = updateProfileResp.message,
                         isLoading = false
                     )
-                _signUpChannel.send(
+               /* _signUpChannel.send(
                     SignUpChannel.ShowToast(
                         UiText.DynamicString(
                             updateProfileResp.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 updateProfileResp.value.let { response ->
@@ -766,13 +766,13 @@ class SignUpViewModel @Inject constructor(
                             errorMessage = verifyResponseResponse.message,
                             isLoading = false
                         )
-                    _signUpChannel.send(
+                   /* _signUpChannel.send(
                         SignUpChannel.ShowToast(
                             UiText.DynamicString(
                                 verifyResponseResponse.message
                             )
                         )
-                    )
+                    )*/
                 }
             }
         }
@@ -827,13 +827,13 @@ class SignUpViewModel @Inject constructor(
                             errorMessage = verifyResponseResponse.message,
                             isLoading = false
                         )
-                    _signUpChannel.send(
+                    /*_signUpChannel.send(
                         SignUpChannel.ShowToast(
                             UiText.DynamicString(
                                 verifyResponseResponse.message
                             )
                         )
-                    )
+                    )*/
                 }
             }
         }
@@ -901,13 +901,13 @@ class SignUpViewModel @Inject constructor(
                             errorMessage = verifyResponseResponse.message,
                             isLoading = false
                         )
-                    _signUpChannel.send(
+                   /* _signUpChannel.send(
                         SignUpChannel.ShowToast(
                             UiText.DynamicString(
                                 verifyResponseResponse.message
                             )
                         )
-                    )
+                    )*/
                 }
             }
         }

@@ -157,6 +157,15 @@ class HomeViewModel @Inject constructor(
                     updateProfileToken(event.userId)
                 }
             }
+            is HomeScreenEvent.OnNetworkAvailable -> {
+                _state.value = _state.value.copy(showNoInternetDialog = !event.isAvailable)
+
+                if (event.isAvailable) {
+                    viewModelScope.launch {
+                        getUserInfo()
+                    }
+                }
+            }
         }
     }
 
@@ -176,13 +185,13 @@ class HomeViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _homeChannel.send(
+               /* _homeChannel.send(
                     HomeChannel.ShowToast(
                         UiText.DynamicString(
                             userResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
@@ -243,13 +252,13 @@ class HomeViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _homeChannel.send(
+               /* _homeChannel.send(
                     HomeChannel.ShowToast(
                         UiText.DynamicString(
                             userResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
@@ -293,13 +302,13 @@ class HomeViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _homeChannel.send(
+               /* _homeChannel.send(
                     HomeChannel.ShowToast(
                         UiText.DynamicString(
                             userResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
@@ -333,13 +342,13 @@ class HomeViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _homeChannel.send(
+               /* _homeChannel.send(
                     HomeChannel.ShowToast(
                         UiText.DynamicString(
                             homeResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 homeResponse.value.let { baseResponse ->

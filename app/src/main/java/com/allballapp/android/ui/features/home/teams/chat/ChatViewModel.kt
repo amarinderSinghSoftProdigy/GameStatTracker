@@ -131,13 +131,13 @@ class ChatViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _chatChannel.send(
+               /* _chatChannel.send(
                     ChatChannel.ShowToast(
                         UiText.DynamicString(
                             response.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 response.value.let { resp ->
@@ -178,13 +178,13 @@ class ChatViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _chatChannel.send(
+                /*_chatChannel.send(
                     ChatChannel.ShowToast(
                         UiText.DynamicString(
                             response.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 response.value.let { resp ->
