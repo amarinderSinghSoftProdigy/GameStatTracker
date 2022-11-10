@@ -28,6 +28,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.allballapp.android.R
+import com.allballapp.android.data.UserStorage
 import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.home.events.EvEvents
 import com.allballapp.android.ui.features.home.events.EventChannel
@@ -63,16 +64,19 @@ fun EventRegistraionDetails(
     val showDivisionDialog = remember {
         mutableStateOf(false)
     }
+    val showPaymentDialog = remember {
+        mutableStateOf(false)
+    }
 
     LaunchedEffect(key1 = Unit) {
         vm.eventChannel.collect { uiEvent ->
             when (uiEvent) {
                 is EventChannel.ShowToast -> {
-                     Toast.makeText(
-                         context,
-                         uiEvent.message.asString(context),
-                         Toast.LENGTH_LONG
-                     ).show()
+                    Toast.makeText(
+                        context,
+                        uiEvent.message.asString(context),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
                 is EventChannel.OnSuccess -> {
                     Toast.makeText(
@@ -86,6 +90,16 @@ fun EventRegistraionDetails(
         }
     }
 
+    LaunchedEffect(true) {
+        if(teamVm.teamUiState.value.teams.isNotEmpty()) {
+            teamVm.teamUiState.value.teams.forEach {
+                if(UserStorage.teamId == it._id) {
+                    vm.onEvent(EvEvents.RegisterTeam(it))
+                    teamVm.onEvent(TeamUIEvent.OnTeamIdSelected(it._id))
+                }
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -177,20 +191,21 @@ fun EventRegistraionDetails(
                 DividerCommon()
                 RegisterItem(
                     stringResource(id = R.string.payment_options),
-                    stringResource(id = R.string.cash),
+                   if(state.registerRequest.paymentOption.isNotEmpty()) state.registerRequest.paymentOption else stringResource(
+                       id = R.string.select_payment_option),
                     showIcon = false,
-                    updated = true
+                    updated = state.registerRequest.paymentOption.isNotEmpty()
                 ) {
-
+                    showPaymentDialog.value = true
                 }
                 AppOutlineTextField(
                     isError = showError.value,
-                    leadingIcon = {
-                        AppText(
+                   /* leadingIcon = {
+                        *//*AppText(
                             text = stringResource(id = R.string.dollar),
                             fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
-                        )
-                    },
+                        )*//*
+                    },*/
                     value = state.registerRequest.payment,
                     onValueChange = {
                         if (it.isNotEmpty() || it != "0") {
@@ -209,7 +224,9 @@ fun EventRegistraionDetails(
                     ),
                     placeholder = {
                         AppText(
-                            text = stringResource(id = R.string.cash),
+                            text = if (state.registerRequest.paymentOption.isEmpty()) stringResource(
+                                id = R.string.payment_details
+                            ) else state.registerRequest.paymentOption + " details",
                             fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
                         )
                     },
@@ -345,8 +362,9 @@ fun EventRegistraionDetails(
                     showError.value = true
                 } else if (!state.registerRequest.termsAndCondition || !state.registerRequest.privacy) {
                     message = context.getString(R.string.please_accept_tems)
-                } else if(state.registerRequest.payment < state.opportunitiesDetail.standardPrice) {
-                    message = context.getString(R.string.valid_cash_message) }
+                } else if (state.registerRequest.payment.toInt() < state.opportunitiesDetail.standardPrice.toInt()) {
+                    message = context.getString(R.string.valid_cash_message)
+                }
                 if (message.isNotEmpty()) {
                     vm.onEvent(EvEvents.ShowToast(message))
                 } else if (!showError.value) {
@@ -365,7 +383,7 @@ fun EventRegistraionDetails(
     if (showDialog.value) {
         SwitchTeamDialog(
             teamSelect = state.team,
-            teams = teamVm.teamUiState.value.teams.apply { removeAt(0) },
+            teams = teamVm.teamUiState.value.teams,
             title = stringResource(id = R.string.select_team),
             onDismiss = {
                 showDialog.value = false
@@ -389,6 +407,17 @@ fun EventRegistraionDetails(
                 vm.onEvent(EvEvents.RegisterPlayer(it))
                 showPlayerDialog.value = false
             }
+        )
+    }
+
+    if (showPaymentDialog.value) {
+        PaymentPickerDialog(onDismiss = {
+            showPaymentDialog.value = false
+        }, onConfirmClick = {
+            vm.onEvent(EvEvents.PaymentOption(it))
+            showPaymentDialog.value = false
+        },
+            selectedOption = state.registerRequest.paymentOption
         )
     }
 

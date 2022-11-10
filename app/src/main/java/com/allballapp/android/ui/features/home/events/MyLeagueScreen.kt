@@ -142,7 +142,7 @@ fun LeagueItem(league: MyLeagueResponse, OnNextClick: () -> Unit) {
                         modifier = Modifier.weight(1F)
                     )
 
-                    Row(modifier = Modifier.weight(1.8F), horizontalArrangement = Arrangement.End) {
+                    /*Row(modifier = Modifier.weight(1.8F), horizontalArrangement = Arrangement.End) {
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
@@ -162,7 +162,7 @@ fun LeagueItem(league: MyLeagueResponse, OnNextClick: () -> Unit) {
                                 fontWeight = FontWeight.Bold,
                             )
                         }
-                    }
+                    }*/
 
 
                 }

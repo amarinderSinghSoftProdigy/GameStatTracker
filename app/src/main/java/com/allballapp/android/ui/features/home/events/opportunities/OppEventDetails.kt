@@ -22,6 +22,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.allballapp.android.R
@@ -104,17 +105,18 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
             )
             DetailsItem(
                 stringResource(id = (R.string.participation)),
-                stringResource(id = (R.string.regsitration_deadliine)),
-                CommonUtils.getParticipation(
-                    state.opportunitiesDetail.participation, context = context
-                ),
-                CommonUtils.formatDateSingle(state.opportunitiesDetail.registrationDeadline),
+                stringResource(id = (R.string.age)),
+//                CommonUtils.getParticipation(
+//                    state.opportunitiesDetail.participation, context = context
+//                ),
+                state.opportunitiesDetail.participation.type,
+                state.opportunitiesDetail.participation.minRange + "-" + state.opportunitiesDetail.participation.maxRange,
             )
             DetailsItem(
+                stringResource(id = (R.string.regsitration_deadliine)),
                 stringResource(id = (R.string.price)),
-                "",
+                CommonUtils.formatDateSingle(state.opportunitiesDetail.registrationDeadline),
                 "$ " + state.opportunitiesDetail.standardPrice,
-                ""
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             Text(
@@ -408,7 +410,7 @@ fun DetailsItem(key1: String, key2: String, value1: String, value2: String) {
             modifier = Modifier.weight(1f)
         )
         Text(
-            text = key2,
+            text = key2.capitalize(),
             fontWeight = FontWeight.SemiBold,
             color = ColorBWGrayLight,
             fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
