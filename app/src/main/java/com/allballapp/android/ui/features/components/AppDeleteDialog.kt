@@ -19,6 +19,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.snapshots.SnapshotApplyResult.Success.check
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -2363,7 +2364,7 @@ fun AgeConfirmDialog(
                     DialogButton(
                         text = stringResource(R.string.dialog_button_confirm),
                         onClick = {
-                            if(selected.value != -1) {
+                            if (selected.value != -1) {
                                 onConfirmClick(selected.value)
                                 onDismiss()
                             }
@@ -3094,6 +3095,97 @@ fun NumberPickerDialog(
                     }
                 }
             },
+        )
+    }
+}
+
+@Composable
+fun PaymentPickerDialog(
+    onDismiss: () -> Unit,
+    onConfirmClick: (String) -> Unit,
+    selectedOption: String
+) {
+
+    val paymentOptions = arrayListOf(
+        stringResource(id = R.string.venmo),
+        stringResource(id = R.string.cash),
+        stringResource(id = R.string.check),
+        stringResource(id = R.string.square_cash),
+        stringResource(id = R.string.zelle),
+        stringResource(id = R.string.apple_pay),
+        stringResource(id = R.string.google_pay)
+    )
+
+    BallerAppMainTheme {
+        AlertDialog(
+            modifier = Modifier
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+            onDismissRequest = {
+                onDismiss.invoke()
+            },
+            buttons = {
+                Column(
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(
+                            all = dimensionResource(
+                                id = R.dimen.size_16dp
+                            )
+                        ),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        AppText(
+                            text = stringResource(id = R.string.select_payment_option),
+                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                            style = MaterialTheme.typography.h6
+                        )
+
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_close_color_picker),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(dimensionResource(id = R.dimen.size_12dp))
+                                .clickable {
+                                    onDismiss.invoke()
+                                }
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
+
+                    paymentOptions.forEach {
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(dimensionResource(id = R.dimen.size_44dp))
+                                .background(
+                                    color = if (it == selectedOption) MaterialTheme.appColors.material.primaryVariant else Color.White,
+                                    shape = RoundedCornerShape(
+                                        dimensionResource(id = R.dimen.size_8dp)
+                                    )
+                                )
+                                .clickable {
+                                    onConfirmClick(it)
+                                },
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+
+                            AppText(
+                                text = it,
+                                color = if (it == selectedOption) Color.White else MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                style = MaterialTheme.typography.h6,
+                                modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_5dp))
+                            )
+                        }
+                    }
+                }
+            }
         )
     }
 }
