@@ -83,7 +83,7 @@ class ChatViewModel @Inject constructor(
                     _chatUiState.value.copy(teamIndex = event.teamIndex)
 
                 /* Saving team Id  */
-                if (_chatUiState.value.teams.isNotEmpty()) {
+                if (_chatUiState.value.teams.isNotEmpty() && event.teamIndex > 0) {
                     UIKitSettings.selectedTeamId = _chatUiState.value.teams[event.teamIndex]._id
                 }
             }
@@ -144,6 +144,7 @@ class ChatViewModel @Inject constructor(
                     if (!resp.data.isNullOrEmpty()) {
                         _chatUiState.value =
                             _chatUiState.value.copy(teams = resp.data)
+                        _chatChannel.send(ChatChannel.OnNewChatListingSuccess)
                     } else {
                         _chatUiState.value =
                             _chatUiState.value.copy(isLoading = false)
@@ -309,4 +310,7 @@ sealed class ChatChannel {
         val user: User?,
         val message: UiText? = null
     ) : ChatChannel()
+
+    object OnNewChatListingSuccess : ChatChannel()
+
 }

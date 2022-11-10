@@ -928,7 +928,7 @@ class SignUpViewModel @Inject constructor(
 
     /*Register newly updated user to cometchat*/
     private fun registerProfileToCometChat(name: String, uid: String) {
-
+        if(AppConstants.ENABLE_CHAT){
         val authKey = com.allballapp.android.BuildConfig.COMET_CHAT_AUTH_KEY
         val user = User()
         user.uid = uid
@@ -944,6 +944,7 @@ class SignUpViewModel @Inject constructor(
                 e.printStackTrace()
             }
         })
+    }
     }
 }
 
