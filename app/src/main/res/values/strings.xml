@@ -481,4 +481,5 @@
     <string name="please_enter_details">Please enter details</string>
     <string name="payment_details">Payment details</string>
     <string name="age">Age</string>
+    <string name="pending">Pending</string>
 </resources>

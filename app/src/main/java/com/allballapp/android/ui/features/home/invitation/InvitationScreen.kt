@@ -51,7 +51,6 @@ import timber.log.Timber
 
 @Composable
 fun InvitationScreen(
-    refreshProfileList: String,
     vmSetupTeam: SetupTeamViewModelUpdated,
     homeVm: HomeViewModel,
     signUpViewModel: SignUpViewModel,

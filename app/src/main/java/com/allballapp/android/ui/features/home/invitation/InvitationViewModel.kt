@@ -228,9 +228,6 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
             }
             is ResultWrapper.Success -> {
                 acceptInviteResponse.value.let { response ->
-
-//                    if(response.)
-
                     getAllInvitation()
                     _invitationChannel.send(
                         InvitationChannel.Success(
@@ -277,13 +274,6 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
             is ResultWrapper.Success -> {
                 rejectInviteResponse.value.let { response ->
                     getAllInvitation()
-                    _invitationChannel.send(
-                        InvitationChannel.Success(
-                            UiText.DynamicString(
-                                response.statusMessage
-                            )
-                        )
-                    )
                 }
             }
         }

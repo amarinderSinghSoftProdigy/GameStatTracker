@@ -96,6 +96,7 @@ open interface APIService {
 
     @GET(ApiConstants.GET_ALL_EVENTS)
     suspend fun getAllevents(
+        @Query("teamId") teamId: String,
         @Query("page") page: Int,
         @Query("limit") limit: Int,
         @Query("sort") sort: String
@@ -183,7 +184,10 @@ open interface APIService {
 
     @GET(ApiConstants.GET_MY_LEAGUE)
     suspend fun getMyLeagues(
-        @Query("page") page: Int, @Query("limit") limit: Int, @Query("sort") sort: String
+        @Query("teamId") teamId: String,
+        @Query("page") page: Int,
+        @Query("limit") limit: Int,
+        @Query("sort") sort: String
     ): BaseResponse<ArrayList<MyLeagueResponse>>
 
     @GET(ApiConstants.GET_DIVISION)

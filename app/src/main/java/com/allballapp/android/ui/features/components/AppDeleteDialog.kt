@@ -19,7 +19,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.snapshots.SnapshotApplyResult.Success.check
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -1475,11 +1474,7 @@ fun SwitchPlayerDialog(
                 Column(
                     modifier = Modifier
                         .background(color = Color.White)
-                        .padding(
-                            all = dimensionResource(
-                                id = R.dimen.size_16dp
-                            )
-                        ),
+                        .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -1503,7 +1498,8 @@ fun SwitchPlayerDialog(
                     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
                     val list = teamSelected.value
                     LazyColumn(
-                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.height(dimensionResource(id = R.dimen.size_200dp)),
+                        verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         items(teams) { team ->
@@ -1545,10 +1541,10 @@ fun SwitchPlayerDialog(
                                     )
                                     CustomCheckBox(status.value) {
                                         status.value = !status.value
-                                        if (list.contains(team.id)) {
-                                            list.remove(team.id)
+                                        if (list.contains(team.memberDetails.id)) {
+                                            list.remove(team.memberDetails.id)
                                         } else {
-                                            list.add(team.id)
+                                            list.add(team.memberDetails.id)
                                         }
                                         teamSelected.value = list
                                     }
@@ -1644,6 +1640,7 @@ fun SelectDivisionDialog(
                     }
                     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
                     LazyColumn(
+                        modifier = Modifier.height(dimensionResource(id = R.dimen.size_200dp)),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {

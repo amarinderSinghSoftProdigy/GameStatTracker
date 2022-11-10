@@ -59,7 +59,6 @@ import java.util.*
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TeamSetupScreenUpdated(
-    refreshProfileList: String,
     venue: String = "",
     onBackClick: () -> Unit,
     onNextClick: (String?) -> Unit,
@@ -325,6 +324,7 @@ fun TeamSetupScreenUpdated(
                         }
                     }
                 }
+                inviteVm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
             },
             onIndexChange = { index ->
                 vm.onEvent(

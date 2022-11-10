@@ -38,7 +38,7 @@ class EventViewModel @Inject constructor(
     private suspend fun getEventList() {
         _state.value =
             eventState.value.copy(showLoading = true)
-        val eventResponse = eventsRepo.getAllevents()
+        val eventResponse = eventsRepo.getAllevents(teamId = UserStorage.teamId)
         _state.value =
             eventState.value.copy(showLoading = false)
 
@@ -196,7 +196,6 @@ class EventViewModel @Inject constructor(
                 }
             }
             is EvEvents.GetDivisions -> {
-//                onEvent(EvEvents.ClearRegister)
                 viewModelScope.launch {
                     getEventDivisions(event.id)
                     _state.value = _state.value.copy(
@@ -904,7 +903,7 @@ class EventViewModel @Inject constructor(
     private suspend fun getMyLeagues() {
 
         _state.value = _state.value.copy(isLoading = true)
-        val userResponse = teamRepo.getMyLeagues()
+        val userResponse = teamRepo.getMyLeagues(UserStorage.teamId)
         _state.value = _state.value.copy(isLoading = false)
 
         when (userResponse) {

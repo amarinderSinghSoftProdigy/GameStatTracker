@@ -33,12 +33,13 @@ class EventsRepository @Inject constructor(
     }
 
     override suspend fun getAllevents(
+        teamId: String,
         page: Int,
         limit: Int,
         sort: String
     ): ResultWrapper<BaseResponse<EventsResponse>> {
         return safeApiCall(dispatcher) {
-            service.getAllevents(page, limit, sort)
+            service.getAllevents(teamId,page, limit, sort)
         }
     }
 

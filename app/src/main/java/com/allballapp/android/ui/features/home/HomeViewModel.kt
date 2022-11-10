@@ -52,7 +52,6 @@ class HomeViewModel @Inject constructor(
 
         viewModelScope.launch {
             if (UserStorage.token.isNotEmpty()) {
-                //getHomeList()
                 getUserInfo()
             }
         }
@@ -138,6 +137,9 @@ class HomeViewModel @Inject constructor(
             dataStoreManager.setEmail("")
             dataStoreManager.setColor("")
             dataStoreManager.setTeamName("")
+            UserStorage.userId = ""
+            UserStorage.teamId = ""
+            UserStorage.teamName = ""
         }
     }
 
@@ -425,7 +427,7 @@ class HomeViewModel @Inject constructor(
 
         CometChat.login(
             uid,
-           BuildConfig.COMET_CHAT_AUTH_KEY,
+            BuildConfig.COMET_CHAT_AUTH_KEY,
             object : CometChat.CallbackListener<User?>() {
                 override fun onSuccess(user: User?) {
                     Timber.i(" CometChat- Login Successful : " + user.toString())

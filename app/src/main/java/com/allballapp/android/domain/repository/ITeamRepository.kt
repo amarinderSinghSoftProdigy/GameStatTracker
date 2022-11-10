@@ -83,6 +83,7 @@ interface ITeamRepository {
     ): ResultWrapper<BaseResponse<ArrayList<VenueDetails>>>
 
     suspend fun getMyLeagues(
+        teamId: String,
         page: Int = 1,
         limit: Int = 20,
         sort: String = ""

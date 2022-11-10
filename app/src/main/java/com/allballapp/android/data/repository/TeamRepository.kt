@@ -138,7 +138,10 @@ class TeamRepository @Inject constructor(
         }
     }
 
-    override suspend fun getPlayerById(id: String, eventRegistration :String): ResultWrapper<BaseResponse<ArrayList<PlayerDetails>>> {
+    override suspend fun getPlayerById(
+        id: String,
+        eventRegistration: String
+    ): ResultWrapper<BaseResponse<ArrayList<PlayerDetails>>> {
         return safeApiCall(dispatcher) {
             service.getTeamPlayerById(id, eventRegistration)
         }
@@ -155,12 +158,13 @@ class TeamRepository @Inject constructor(
     }
 
     override suspend fun getMyLeagues(
+        teamId: String,
         page: Int,
         limit: Int,
         sort: String
     ): ResultWrapper<BaseResponse<ArrayList<MyLeagueResponse>>> {
         return safeApiCall(dispatcher) {
-            service.getMyLeagues(page = page, limit = limit, sort = sort)
+            service.getMyLeagues(teamId, page = page, limit = limit, sort = sort)
         }
     }
 

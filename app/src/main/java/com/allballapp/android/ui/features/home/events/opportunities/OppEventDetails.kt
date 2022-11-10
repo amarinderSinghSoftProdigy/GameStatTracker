@@ -22,7 +22,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.allballapp.android.R
@@ -301,8 +300,10 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
                     fontWeight = FontWeight.Bold,
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
-                RefereesLevels(state.opportunitiesDetail.basePay)
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+                if(state.opportunitiesDetail.basePay.isNotEmpty()) {
+                    RefereesLevels(state.opportunitiesDetail.basePay)
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+                }
                 Row(
                     modifier = Modifier.padding(vertical = dimensionResource(id = R.dimen.size_12dp))
                 ) {
