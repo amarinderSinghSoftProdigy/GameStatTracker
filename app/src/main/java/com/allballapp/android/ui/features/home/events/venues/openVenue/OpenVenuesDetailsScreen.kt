@@ -76,7 +76,10 @@ fun OpenVenuesDetailsScreen(venueId: String, eventViewModel: EventViewModel) {
                         state.venueAddress.city,
                         state.venueAddress.state,
                         state.venueAddress.zipCode,
-                        latLong = LatLng(0.0, 0.0)
+                        latLong = if (state.venueLocation.coordinates.isNotEmpty()) LatLng(
+                            state.venueLocation.coordinates[0],
+                            state.venueLocation.coordinates[1]
+                        ) else LatLng(0.0, 0.0)
                     )
                 )
             }

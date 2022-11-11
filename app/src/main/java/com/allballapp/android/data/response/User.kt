@@ -189,3 +189,28 @@ data class AddProfileRequest(
 //    val role: String? = "",
 //    val profileImageUri: String? = null,
 )
+
+data class StaffScheduleRequest(
+    val userId: String = "",
+    val schedule: ArrayList<ScheduleObject> = ArrayList()
+)
+
+data class ScheduleObject(
+    val userId: String = "",
+    val startTime: String = "",
+    val endTime: String = "",
+    val date: String = "",
+    val description: String = "",
+)
+
+data class ScheduleResponseObject(
+    @SerializedName("_id") val _id: String = "",
+    @SerializedName("__v") val __v: String = "",
+    @SerializedName("userId") val userId: String = "",
+    @SerializedName("startTime") val startTime: String = "",
+    @SerializedName("endTime") val endTime: String = "",
+    @SerializedName("date") val date: String = "",
+    @SerializedName("description") val description: String = "",
+    @SerializedName("createdAt") val createdAt: String = "",
+    @SerializedName("updatedAt") val updatedAt: String = "",
+)

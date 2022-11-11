@@ -28,6 +28,7 @@ data class HomeState(
     val bottomBar: BottomNavKey = BottomNavKey.HOME,
     val homeItemList: List<HomeItemResponse> = arrayListOf(),
     val user: User = User(),
+    val phone: String = "",
     val swapUsers: List<SwapUser> = mutableListOf(),
     val homePageCoachModel: HomePageCoachModel = HomePageCoachModel(),
     val unReadMessageCount: Int = 0,

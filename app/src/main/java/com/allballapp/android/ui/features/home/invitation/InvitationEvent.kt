@@ -22,4 +22,5 @@ sealed class InvitationEvent {
     object OnClearGuardianValues : InvitationEvent()
     data class OnValuesSelected(val playerDetails: PlayerDetails) : InvitationEvent()
     data class OnInvitationConfirm(val gender: String?) : InvitationEvent()
+    data class SetParentRole(val role: String?) : InvitationEvent()
 }

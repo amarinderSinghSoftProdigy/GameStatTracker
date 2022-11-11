@@ -3,7 +3,6 @@ package com.allballapp.android.ui.features.user_type.team_setup.updated
 import android.app.Application
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -338,6 +337,11 @@ class SetupTeamViewModelUpdated @Inject constructor(
                     )
                 }
             }
+
+            is TeamSetupUIEventUpdated.Clear -> {
+                inItToDefaultData()
+                resetMemberValues()
+            }
         }
 
 
@@ -479,7 +483,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
         val request = UpdateTeamRequest(
             teamID = teamId,
             members = members,
-            type = AppConstants.TYPE_ACCEPT_INVITATION,
+            type = if (type == AppConstants.TYPE_ACCEPT_INVITATION) type else "",
             userType = userType,
             profilesSelected = profileSelected.toString()
         )
@@ -543,7 +547,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
                             )
                         )
                         resetMemberValues()
-                        inItToDefaultData()
+                        //inItToDefaultData()
                         _teamSetupChannel.send(
                             TeamSetupChannel.ShowToast(
                                 UiText.DynamicString(
@@ -555,8 +559,9 @@ class SetupTeamViewModelUpdated @Inject constructor(
                         _teamSetupChannel.send(
                             TeamSetupChannel.ShowToast(
                                 UiText.DynamicString(
-                                    context.getString(R.string.number_already_exist) + " " + response.data.failedMobileNumber.toString() + response.data.failedProfiles.toString()
-                                        .replace("[", "").replace("]", "")
+                                    context.getString(R.string.number_already_exist)
+                                    /* + " " + response.data.failedMobileNumber.toString() + response.data.failedProfiles.toString()
+                                        .replace("[", "").replace("]", "")*/
                                 )
                             )
                         )
@@ -757,7 +762,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
                                 response.data.Id
                             )
                         )
-                        inItToDefaultData()
+                        //inItToDefaultData()
                     } else {
                         _teamSetupUiState.value =
                             _teamSetupUiState.value.copy(isLoading = false)
@@ -774,16 +779,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
         }
     }
 
-    private fun clearToken() {
-        viewModelScope.launch {
-            dataStoreManager.saveToken("")
-            dataStoreManager.setRole("")
-            dataStoreManager.setEmail("")
-        }
-    }
-
     private fun inItToDefaultData() {
-        Log.i("inItToDefaultData", "inItToDefaultData: ")
         _teamSetupUiState.value =
             TeamSetupUIStateUpdated(teamColorPrimary = _teamSetupUiState.value.teamColorPrimary)
     }
