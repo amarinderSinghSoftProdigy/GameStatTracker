@@ -299,13 +299,13 @@ class ProfileViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _channel.send(
+                /*_channel.send(
                     ProfileChannel.ShowToast(
                         UiText.DynamicString(
                             leaveTeamResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 leaveTeamResponse.value.let { response ->
@@ -347,13 +347,13 @@ class ProfileViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _channel.send(
+               /* _channel.send(
                     ProfileChannel.ShowToast(
                         UiText.DynamicString(
                             leaveTeamResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 leaveTeamResponse.value.let { response ->
@@ -392,13 +392,13 @@ class ProfileViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _channel.send(
+                /*_channel.send(
                     ProfileChannel.ShowToast(
                         UiText.DynamicString(
                             leaveTeamResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 leaveTeamResponse.value.let { response ->
@@ -439,13 +439,13 @@ class ProfileViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _channel.send(
+               /* _channel.send(
                     ProfileChannel.ShowToast(
                         UiText.DynamicString(
                             leaveTeamResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 leaveTeamResponse.value.let { response ->
@@ -495,13 +495,13 @@ class ProfileViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _channel.send(
+             /*   _channel.send(
                     ProfileChannel.ShowToast(
                         UiText.DynamicString(
                             userResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
@@ -552,13 +552,13 @@ class ProfileViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _channel.send(
+                /*_channel.send(
                     ProfileChannel.ShowToast(
                         UiText.DynamicString(
                             userResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
@@ -612,13 +612,13 @@ class ProfileViewModel @Inject constructor(
             is ResultWrapper.NetworkError -> {
                 _state.value = _state.value.copy(isLoading = false)
 
-                _channel.send(
+               /* _channel.send(
                     ProfileChannel.ShowToast(
                         UiText.DynamicString(
                             userResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
@@ -796,13 +796,13 @@ class ProfileViewModel @Inject constructor(
             is ResultWrapper.NetworkError -> {
                 _state.value =
                     _state.value.copy(isLoading = false)
-                _channel.send(
+               /* _channel.send(
                     ProfileChannel.ShowToast(
                         UiText.DynamicString(
                             uploadLogoResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 uploadLogoResponse.value.let { response ->
@@ -867,13 +867,13 @@ class ProfileViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _channel.send(
+               /* _channel.send(
                     ProfileChannel.ShowToast(
                         UiText.DynamicString(
                             searchResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 searchResponse.value.let { response ->

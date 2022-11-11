@@ -8,6 +8,7 @@ import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import timber.log.Timber
 import java.io.IOException
+import java.net.UnknownHostException
 
 suspend fun <T> safeApiCall(
     dispatcher: CoroutineDispatcher,
@@ -19,7 +20,15 @@ suspend fun <T> safeApiCall(
         } catch (throwable: Throwable) {
             when (throwable) {
                 is IOException ->{
-                    val message = throwable.message
+
+                  val message = when(throwable){
+                        is UnknownHostException->{
+                            AppConstants.INTERNET_CONNECTION_ERROR
+                        }
+                        else -> {
+                            throwable.message
+                        }
+                    }
                     ResultWrapper.NetworkError(message = message?:AppConstants.DEFAULT_ERROR_MESSAGE)
                 }
                 is HttpException -> {

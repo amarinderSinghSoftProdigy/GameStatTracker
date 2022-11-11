@@ -9,6 +9,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.allballapp.android.BuildConfig
 import com.allballapp.android.R
+import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.CometChatErrorCodes
 import com.allballapp.android.common.ResultWrapper
 import com.allballapp.android.core.util.UiText
@@ -138,8 +139,8 @@ class HomeViewModel @Inject constructor(
             dataStoreManager.setEmail("")
             dataStoreManager.setColor("")
             dataStoreManager.setTeamName("")
-        }
-    }
+            logoutFromCometChat()
+    }}
 
     fun onEvent(event: HomeScreenEvent) {
         when (event) {
@@ -154,6 +155,15 @@ class HomeViewModel @Inject constructor(
             is HomeScreenEvent.OnSwapUpdate -> {
                 viewModelScope.launch {
                     updateProfileToken(event.userId)
+                }
+            }
+            is HomeScreenEvent.OnNetworkAvailable -> {
+                _state.value = _state.value.copy(showNoInternetDialog = !event.isAvailable)
+
+                if (event.isAvailable) {
+                    viewModelScope.launch {
+                        getUserInfo()
+                    }
                 }
             }
         }
@@ -175,13 +185,13 @@ class HomeViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _homeChannel.send(
+               /* _homeChannel.send(
                     HomeChannel.ShowToast(
                         UiText.DynamicString(
                             userResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
@@ -242,13 +252,13 @@ class HomeViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _homeChannel.send(
+               /* _homeChannel.send(
                     HomeChannel.ShowToast(
                         UiText.DynamicString(
                             userResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
@@ -292,19 +302,19 @@ class HomeViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _homeChannel.send(
+               /* _homeChannel.send(
                     HomeChannel.ShowToast(
                         UiText.DynamicString(
                             userResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
                     if (response.status && response.data != null) {
                         setToken(response.data)
-                        getUserInfo(true)
+                        getUserInfo(false)
                     } else {
                         _homeChannel.send(
                             HomeChannel.ShowToast(
@@ -332,13 +342,13 @@ class HomeViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _homeChannel.send(
+               /* _homeChannel.send(
                     HomeChannel.ShowToast(
                         UiText.DynamicString(
                             homeResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 homeResponse.value.let { baseResponse ->
@@ -370,6 +380,8 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getUnreadMessageCount() {
+
+        if(AppConstants.ENABLE_CHAT){
         CometChat.getUnreadMessageCount(object :
             CometChat.CallbackListener<HashMap<String?, HashMap<String?, Int?>?>?>() {
 
@@ -389,11 +401,13 @@ class HomeViewModel @Inject constructor(
 
             }
         })
-
+        }
     }
 
     /*Register newly updated user to cometchat*/
     private fun registerProfileToCometChat(name: String, uid: String) {
+
+        if(AppConstants.ENABLE_CHAT){
         val authKey = com.allballapp.android.BuildConfig.COMET_CHAT_AUTH_KEY
         val user = User()
         user.uid = uid
@@ -417,11 +431,12 @@ class HomeViewModel @Inject constructor(
                 }
             }
         })
+        }
     }
 
     /*Login registered user */
     private fun loginToCometChat(uid: String) {
-
+        if(AppConstants.ENABLE_CHAT){
         CometChat.login(
             uid,
            BuildConfig.COMET_CHAT_AUTH_KEY,
@@ -436,9 +451,11 @@ class HomeViewModel @Inject constructor(
                     Timber.e("CometChat- Login failed with exception:  ${e.message} ${e.code}");
                 }
             })
+        }
     }
 
     private fun registerTokenForPN() {
+        if(AppConstants.ENABLE_CHAT){
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
                 Log.w(
@@ -469,9 +486,25 @@ class HomeViewModel @Inject constructor(
 
 
     }
+    }
 
 
-}
+    }
+
+    private fun logoutFromCometChat() {
+        if(AppConstants.ENABLE_CHAT){
+        CometChat.logout(object : CometChat.CallbackListener<String?>() {
+            override fun onError(e: CometChatException) {
+                Timber.e("Logout failed with exception: " + e.message)
+            }
+
+            override fun onSuccess(p0: String?) {
+                Timber.i("Logout completed successfully")
+            }
+        })
+        }
+    }
+
 
 sealed class HomeChannel {
     data class ShowToast(val message: UiText) : HomeChannel()

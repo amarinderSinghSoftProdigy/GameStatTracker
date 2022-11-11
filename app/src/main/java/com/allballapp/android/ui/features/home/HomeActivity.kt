@@ -12,7 +12,6 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -41,6 +40,8 @@ import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.IntentData
 import com.allballapp.android.common.Route
 import com.allballapp.android.common.argbToHexString
+import com.allballapp.android.common.connectivity_helper.ConnectionState
+import com.allballapp.android.common.connectivity_helper.connectivityState
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.ui.features.components.*
@@ -84,6 +85,7 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import timber.log.Timber
 
 val animeDuration = 1050
@@ -131,6 +133,8 @@ class HomeActivity : FragmentActivity() {
             /* Register for unread chat count broadcast*/
             registerForTeamChatCountBroadcast(homeViewModel)
 
+            /*Check for internet availability*/
+            ListenForConnectionAvailability(homeViewModel)
 
             //homeViewModel.showBottomAppBar(true)
             BallerAppMainTheme(
@@ -232,8 +236,35 @@ class HomeActivity : FragmentActivity() {
                             moveToLogin(this)
                         })
                 }
+
+                if (state.showNoInternetDialog) {
+                    NoInternetDialog(
+                        title = stringResource(id = R.string.no_internet_message),
+                    )
+                }
             }
         }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Composable
+    private fun ListenForConnectionAvailability(homeViewModel: HomeViewModel) {
+
+        // This will cause re-composition on every network state change
+        val connection by connectivityState()
+        val isConnected = connection === ConnectionState.Available
+
+        LaunchedEffect(key1 = isConnected, block = {
+            if (isConnected) {
+                Timber.i("connectivityState--- connected")
+                homeViewModel.onEvent(HomeScreenEvent.OnNetworkAvailable(isAvailable = true))
+
+            } else {
+                Timber.i("connectivityState--- disconnected")
+                homeViewModel.onEvent(HomeScreenEvent.OnNetworkAvailable(isAvailable = false))
+
+            }
+        })
     }
 
     private fun registerForTeamChatCountBroadcast(homeViewModel: HomeViewModel) {
@@ -331,7 +362,12 @@ fun NavControllerComposable(
     }
 
     AnimatedNavHost(navController, startDestination = Route.HOME_SCREEN) {
-        composable(route = Route.HOME_SCREEN) {
+        composable(route = Route.HOME_SCREEN) { backStackEntry ->
+
+            /*Getting required refreshTeamListing in home screen if new team added*/
+            val refreshTeamListing: String = backStackEntry
+                .savedStateHandle.get<String>("refreshTeamListing") ?: ""
+
             homeViewModel.setTopAppBar(false)
             HomeScreen(
                 role,
@@ -392,7 +428,8 @@ fun NavControllerComposable(
                 setupTeamViewModelUpdated = setupTeamViewModelUpdated,
                 onChatCLick = {
                     navController.navigate(Route.TEAMS_CHAT_SCREEN)
-                }
+                },
+                refreshTeamListing = refreshTeamListing,
             )
         }
         composable(route = Route.PROFILE_SCREEN) {
@@ -939,6 +976,10 @@ fun NavControllerComposable(
                     }
                 }, onVenueClick = {
                     navController.navigate(Route.SELECT_VENUE)
+                }, onTeamCreationSuccess = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("refreshTeamListing", true.toString())
                 })
         }
 

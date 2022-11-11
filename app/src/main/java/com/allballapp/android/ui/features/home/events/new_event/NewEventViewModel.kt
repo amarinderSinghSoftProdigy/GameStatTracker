@@ -138,13 +138,13 @@ class NewEventViewModel @Inject constructor(val eventsRepository: IEventsReposit
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _channel.send(
+               /* _channel.send(
                     NewEventChannel.ShowToast(
                         UiText.DynamicString(
                             eventResponse.message
                         )
                     )
-                )
+                )*/
 
             }
             is ResultWrapper.Success -> {

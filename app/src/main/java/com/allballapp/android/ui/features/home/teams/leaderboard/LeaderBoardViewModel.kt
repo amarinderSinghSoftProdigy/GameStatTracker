@@ -126,13 +126,13 @@ class LeaderBoardViewModel @Inject constructor(
                         )*/
                 }
                 is ResultWrapper.NetworkError -> {
-                    _leaderChannel.send(
+                    /*_leaderChannel.send(
                         LeaderBoardChannel.ShowToast(
                             UiText.DynamicString(
                                 leaderReponse.message
                             )
                         )
-                    )
+                    )*/
                     /*_leaderUiState.value =
                         _leaderUiState.value.copy(
                             isLoading = false
