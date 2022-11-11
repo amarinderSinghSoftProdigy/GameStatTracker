@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -34,11 +33,11 @@ import com.allballapp.android.ui.theme.appColors
 import com.allballapp.android.ui.utils.CommonUtils
 
 @Composable
-fun OpportunitiesScreen(vm: EventViewModel, moveToOppDetails: (String) -> Unit) {
+fun OpportunitiesScreen(type: String = "", vm: EventViewModel, moveToOppDetails: (String) -> Unit) {
 
     val state = vm.eventState.value
     remember {
-        vm.onEvent(EvEvents.GetOpportunities)
+        vm.onEvent(EvEvents.GetOpportunities(type))
     }
     if (state.isLoading) {
         CommonProgressBar()

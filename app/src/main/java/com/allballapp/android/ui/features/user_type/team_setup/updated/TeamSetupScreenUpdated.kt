@@ -435,6 +435,7 @@ fun TeamSetupScreenUpdated(
                 inviteVm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
             },
             onConfirmClick = {
+                inviteVm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
                 showNoMessage.value = false
                 homeVm.onEvent(HomeScreenEvent.HideSwap(false))
                 vm.onEvent(TeamSetupUIEventUpdated.Clear)

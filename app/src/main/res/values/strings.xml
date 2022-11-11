@@ -113,6 +113,7 @@
     <string name="teams_label">Team</string>
     <string name="player_label">Player</string>
     <string name="parent_label">Parent</string>
+    <string name="program_manager">Program Manager</string>
     <string name="parents_label">Parents</string>
     <string name="game_staff_label">Game Staff</string>
     <string name="program_label">Program Staff</string>

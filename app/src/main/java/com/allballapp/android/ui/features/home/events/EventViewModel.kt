@@ -101,13 +101,13 @@ class EventViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-               /* _channel.send(
-                    EventChannel.ShowEventDetailsToast(
-                        UiText.DynamicString(
-                            eventResponse.message
-                        )
-                    )
-                )*/
+                /* _channel.send(
+                     EventChannel.ShowEventDetailsToast(
+                         UiText.DynamicString(
+                             eventResponse.message
+                         )
+                     )
+                 )*/
             }
             is ResultWrapper.Success -> {
                 eventResponse.value.let { response ->
@@ -217,7 +217,7 @@ class EventViewModel @Inject constructor(
             }
             is EvEvents.GetOpportunities -> {
                 viewModelScope.launch {
-                    getOpportunities()
+                    getOpportunities(event.type)
                 }
             }
             is EvEvents.GetFilters -> {
@@ -436,13 +436,13 @@ class EventViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-               /* _channel.send(
-                    EventChannel.ShowEventDetailsToast(
-                        UiText.DynamicString(
-                            addNoteResponse.message
-                        )
-                    )
-                )*/
+                /* _channel.send(
+                     EventChannel.ShowEventDetailsToast(
+                         UiText.DynamicString(
+                             addNoteResponse.message
+                         )
+                     )
+                 )*/
 
             }
             is ResultWrapper.Success -> {
@@ -623,13 +623,13 @@ class EventViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-               /* _channel.send(
-                    EventChannel.ShowToast(
-                        UiText.DynamicString(
-                            userResponse.message
-                        )
-                    )
-                )*/
+                /* _channel.send(
+                     EventChannel.ShowToast(
+                         UiText.DynamicString(
+                             userResponse.message
+                         )
+                     )
+                 )*/
             }
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
@@ -682,13 +682,13 @@ class EventViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-              /*  _channel.send(
-                    EventChannel.ShowToast(
-                        UiText.DynamicString(
-                            userResponse.message
-                        )
-                    )
-                )*/
+                /*  _channel.send(
+                      EventChannel.ShowToast(
+                          UiText.DynamicString(
+                              userResponse.message
+                          )
+                      )
+                  )*/
             }
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
@@ -730,13 +730,13 @@ class EventViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-               /* _channel.send(
-                    EventChannel.ShowToast(
-                        UiText.DynamicString(
-                            userResponse.message
-                        )
-                    )
-                )*/
+                /* _channel.send(
+                     EventChannel.ShowToast(
+                         UiText.DynamicString(
+                             userResponse.message
+                         )
+                     )
+                 )*/
             }
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
@@ -761,9 +761,9 @@ class EventViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getOpportunities() {
+    private suspend fun getOpportunities(type: String) {
         _state.value = _state.value.copy(isLoading = true)
-        val userResponse = eventsRepo.getEventOpportunities(UserStorage.teamId)
+        val userResponse = eventsRepo.getEventOpportunities(type = type, UserStorage.teamId)
         _state.value = _state.value.copy(isLoading = false)
 
         when (userResponse) {
@@ -777,13 +777,13 @@ class EventViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-              /*  _channel.send(
-                    EventChannel.ShowToast(
-                        UiText.DynamicString(
-                            userResponse.message
-                        )
-                    )
-                )*/
+                /*  _channel.send(
+                      EventChannel.ShowToast(
+                          UiText.DynamicString(
+                              userResponse.message
+                          )
+                      )
+                  )*/
             }
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
@@ -824,13 +824,13 @@ class EventViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-               /* _channel.send(
-                    EventChannel.ShowToast(
-                        UiText.DynamicString(
-                            acceptResponse.message
-                        )
-                    )
-                )*/
+                /* _channel.send(
+                     EventChannel.ShowToast(
+                         UiText.DynamicString(
+                             acceptResponse.message
+                         )
+                     )
+                 )*/
             }
             is ResultWrapper.Success -> {
                 acceptResponse.value.let { response ->
@@ -874,13 +874,13 @@ class EventViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-             /*   _channel.send(
-                    EventChannel.ShowToast(
-                        UiText.DynamicString(
-                            rejectResponse.message
-                        )
-                    )
-                )*/
+                /*   _channel.send(
+                       EventChannel.ShowToast(
+                           UiText.DynamicString(
+                               rejectResponse.message
+                           )
+                       )
+                   )*/
             }
             is ResultWrapper.Success -> {
                 rejectResponse.value.let { response ->
@@ -918,7 +918,7 @@ class EventViewModel @Inject constructor(
                  )*/
             }
             is ResultWrapper.NetworkError -> {
-                  _state.value = _state.value.copy(isLoading = false)
+                _state.value = _state.value.copy(isLoading = false)
                 /*_channel.send(
                     EventChannel.ShowToast(
                         UiText.DynamicString(
@@ -968,13 +968,13 @@ class EventViewModel @Inject constructor(
             }
             is ResultWrapper.NetworkError -> {
                 _state.value = _state.value.copy(isLoading = false)
-               /* _channel.send(
-                    EventChannel.ShowToast(
-                        UiText.DynamicString(
-                            userResponse.message
-                        )
-                    )
-                )*/
+                /* _channel.send(
+                     EventChannel.ShowToast(
+                         UiText.DynamicString(
+                             userResponse.message
+                         )
+                     )
+                 )*/
             }
             is ResultWrapper.Success -> {
                 _state.value = _state.value.copy(isLoading = false)
@@ -1016,13 +1016,13 @@ class EventViewModel @Inject constructor(
             }
             is ResultWrapper.NetworkError -> {
                 _state.value = _state.value.copy(isLoading = false)
-               /* _channel.send(
-                    EventChannel.ShowToast(
-                        UiText.DynamicString(
-                            userResponse.message
-                        )
-                    )
-                )*/
+                /* _channel.send(
+                     EventChannel.ShowToast(
+                         UiText.DynamicString(
+                             userResponse.message
+                         )
+                     )
+                 )*/
             }
             is ResultWrapper.Success -> {
                 _state.value = _state.value.copy(isLoading = false)
@@ -1063,13 +1063,13 @@ class EventViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-               /* _channel.send(
-                    EventChannel.ShowDivisionTeamToast(
-                        UiText.DynamicString(
-                            teamResponse.message
-                        )
-                    )
-                )*/
+                /* _channel.send(
+                     EventChannel.ShowDivisionTeamToast(
+                         UiText.DynamicString(
+                             teamResponse.message
+                         )
+                     )
+                 )*/
             }
             is ResultWrapper.Success -> {
                 teamResponse.value.let { response ->
@@ -1108,13 +1108,13 @@ class EventViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-               /* _channel.send(
-                    EventChannel.ShowToast(
-                        UiText.DynamicString(
-                            teamResponse.message
-                        )
-                    )
-                )*/
+                /* _channel.send(
+                     EventChannel.ShowToast(
+                         UiText.DynamicString(
+                             teamResponse.message
+                         )
+                     )
+                 )*/
             }
             is ResultWrapper.Success -> {
                 teamResponse.value.let { response ->
@@ -1208,13 +1208,13 @@ class EventViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-               /* _channel.send(
-                    EventChannel.ShowToast(
-                        UiText.DynamicString(
-                            venueResponse.message
-                        )
-                    )
-                )*/
+                /* _channel.send(
+                     EventChannel.ShowToast(
+                         UiText.DynamicString(
+                             venueResponse.message
+                         )
+                     )
+                 )*/
             }
             is ResultWrapper.Success -> {
                 venueResponse.value.let { response ->
@@ -1252,13 +1252,13 @@ class EventViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-               /* _channel.send(
-                    EventChannel.ShowEventDetailsToast(
-                        UiText.DynamicString(
-                            eventResponse.message
-                        )
-                    )
-                )*/
+                /* _channel.send(
+                     EventChannel.ShowEventDetailsToast(
+                         UiText.DynamicString(
+                             eventResponse.message
+                         )
+                     )
+                 )*/
             }
             is ResultWrapper.Success -> {
                 eventResponse.value.let { response ->
@@ -1296,13 +1296,13 @@ class EventViewModel @Inject constructor(
             is ResultWrapper.NetworkError -> {
                 _state.value = _state.value.copy(showLoading = false)
 
-              /*  _channel.send(
-                    EventChannel.ShowToast(
-                        UiText.DynamicString(
-                            userRoles.message
-                        )
-                    )
-                )*/
+                /*  _channel.send(
+                      EventChannel.ShowToast(
+                          UiText.DynamicString(
+                              userRoles.message
+                          )
+                      )
+                  )*/
             }
             is ResultWrapper.Success -> {
                 userRoles.value.let { response ->

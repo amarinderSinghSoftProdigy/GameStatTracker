@@ -429,7 +429,7 @@ fun getRoleList(): List<UserType> {
         UserType.PLAYER,
         UserType.COACH,
         UserType.PARENT,
-        //UserType.GAME_STAFF,
+        UserType.PROGRAM_MANAGER,
         UserType.PROGRAM_STAFF,
         //UserType.FAN,
         UserType.REFEREE

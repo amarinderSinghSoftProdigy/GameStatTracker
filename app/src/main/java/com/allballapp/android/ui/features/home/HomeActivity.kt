@@ -362,7 +362,7 @@ fun NavControllerComposable(
     }
 
     AnimatedNavHost(navController, startDestination = Route.HOME_SCREEN) {
-        composable(route = Route.HOME_SCREEN,   enterTransition = { slideInHorizont(animeDuration) },
+        composable(route = Route.HOME_SCREEN, enterTransition = { slideInHorizont(animeDuration) },
             exitTransition = { exitTransition(animeDuration) },
             popExitTransition = { slideOutHorizont(animeDuration) }
         ) { backStackEntry ->
@@ -375,7 +375,7 @@ fun NavControllerComposable(
             HomeScreen(
                 role,
                 onOpportunityClick = {
-                    navController.navigate(Route.OPPORTUNITIES_SCREEN)
+                    navController.navigate(Route.OPPORTUNITIES_SCREEN + "/" + it)
                 },
                 onEventsClick = {
                     navController.navigate(Route.MY_EVENTS)
@@ -1186,18 +1186,24 @@ fun NavControllerComposable(
             })
         }
 
-        composable(route = Route.OPPORTUNITIES_SCREEN,
+        composable(route = Route.OPPORTUNITIES_SCREEN + "/{type}",
+            arguments = listOf(
+                navArgument("type") {
+                    type = NavType.StringType
+                }),
             enterTransition = { slideInHorizont(animeDuration) },
             exitTransition = { exitTransition(animeDuration) },
             popExitTransition = { slideOutHorizont(animeDuration) }
         ) {
+
+            val type = it.arguments?.getString("type")
             homeViewModel.setTopBar(
                 TopBarData(
                     label = stringResource(id = R.string.events_label),
                     topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
-            OpportunitiesScreen(eventViewModel) {
+            OpportunitiesScreen(type = type ?: "", vm = eventViewModel) {
                 eventTitle = it
                 navController.navigate(Route.OPP_DETAIL_SCREEN)
             }

@@ -60,7 +60,7 @@ fun HomeScreen(
     onCreateTeamClick: (Team?) -> Unit,
     onTeamNameClick: (Boolean) -> Unit,
     onInviteClick: () -> Unit,
-    onOpportunityClick: () -> Unit,
+    onOpportunityClick: (String) -> Unit,
     onLeagueClick: () -> Unit,
     onEventsClick: () -> Unit,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
@@ -156,6 +156,7 @@ fun HomeScreen(
         }) {*/
 
     CoachFlowBackground(
+        show = homeState.showBottomAppBar,
         colorCode = color.value.ifEmpty { AppConstants.DEFAULT_COLOR },
         teamLogo = com.allballapp.android.BuildConfig.IMAGE_SERVER + homeState.user.profileImage,
         click = {
@@ -182,7 +183,7 @@ fun HomeScreen(
                 {
                     onLeagueClick()
                 }, {
-                    onOpportunityClick()
+                    onOpportunityClick(AppConstants.OPP_WORK)
                 }, {
                     onTeamNameClick(it)
                 }, {
@@ -364,7 +365,7 @@ fun HomeScreen(
                             Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    onOpportunityClick.invoke()
+                                    onOpportunityClick.invoke(AppConstants.OPP_WORK)
                                 }
                                 .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                             contentAlignment = Alignment.Center
@@ -417,7 +418,7 @@ fun HomeScreen(
                         Box(
                             Modifier
                                 .fillMaxWidth()
-                                .clickable { onOpportunityClick() }
+                                .clickable { onOpportunityClick(AppConstants.OPP_PLAY) }
                                 .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                             contentAlignment = Alignment.Center
                         ) {
@@ -456,7 +457,7 @@ fun HomeScreen(
                             homeState.homePageCoachModel.myLeagues.toString(),
                             R.drawable.ic_leagues
                         ) {
-
+                            onLeagueClick()
                         }
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
 
@@ -466,7 +467,7 @@ fun HomeScreen(
                             homeState.homePageCoachModel.allLeagues.toString(),
                             R.drawable.ic_leagues
                         ) {
-                            onLeagueClick()
+                            onOpportunityClick(AppConstants.ALL_LEAGUE)
                         }
 
                     }
