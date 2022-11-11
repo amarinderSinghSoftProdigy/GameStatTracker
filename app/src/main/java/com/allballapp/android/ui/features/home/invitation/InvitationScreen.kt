@@ -462,7 +462,7 @@ fun InvitationItem(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = " ${stringResource(id = R.string.sent_by)} ${invitation.createdBy.name}",
+                        text = " ${stringResource(id = R.string.sent_by)} ${if (invitation.createdBy != null) invitation.createdBy.name else ""}",
                         color = MaterialTheme.appColors.textField.label,
                         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                         fontWeight = FontWeight.W500,

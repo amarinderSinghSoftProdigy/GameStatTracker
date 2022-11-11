@@ -359,13 +359,13 @@ class SetupTeamViewModelUpdated @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _teamSetupChannel.send(
+              /*  _teamSetupChannel.send(
                     TeamSetupChannel.ShowToast(
                         UiText.DynamicString(
                             userRoles.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 userRoles.value.let { response ->
@@ -418,13 +418,13 @@ class SetupTeamViewModelUpdated @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _teamSetupChannel.send(
+               /* _teamSetupChannel.send(
                     TeamSetupChannel.ShowToast(
                         UiText.DynamicString(
                             inviteMemberResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 inviteMemberResponse.value.let { response ->
@@ -514,13 +514,13 @@ class SetupTeamViewModelUpdated @Inject constructor(
                         _teamSetupUiState.value.teamId
                     )
                 )
-                _teamSetupChannel.send(
+               /* _teamSetupChannel.send(
                     TeamSetupChannel.ShowToast(
                         UiText.DynamicString(
                             inviteMemberResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 onEvent(
@@ -590,13 +590,13 @@ class SetupTeamViewModelUpdated @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _teamSetupChannel.send(
+              /*  _teamSetupChannel.send(
                     TeamSetupChannel.ShowToast(
                         UiText.DynamicString(
                             playersResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 playersResponse.value.let { response ->
@@ -654,13 +654,13 @@ class SetupTeamViewModelUpdated @Inject constructor(
             }
             is ResultWrapper.NetworkError -> {
                 _teamSetupUiState.value = _teamSetupUiState.value.copy(isLoading = false)
-                _teamSetupChannel.send(
+               /* _teamSetupChannel.send(
                     TeamSetupChannel.ShowToast(
                         UiText.DynamicString(
                             uploadLogoResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 uploadLogoResponse.value.let { response ->
@@ -739,13 +739,13 @@ class SetupTeamViewModelUpdated @Inject constructor(
             }
             is ResultWrapper.NetworkError -> {
                 _teamSetupUiState.value = _teamSetupUiState.value.copy(isLoading = false)
-                _teamSetupChannel.send(
+                /*_teamSetupChannel.send(
                     TeamSetupChannel.ShowToast(
                         UiText.DynamicString(
                             createTeamResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 createTeamResponse.value.let { response ->

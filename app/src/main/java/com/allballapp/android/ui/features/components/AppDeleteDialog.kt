@@ -485,6 +485,33 @@ fun ConfirmDialog(
 }
 
 
+@Composable
+fun NoInternetDialog(
+    title: String,
+) {
+    BallerAppMainTheme {
+        AlertDialog(
+            modifier = Modifier.clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+            onDismissRequest = {},
+            buttons = {
+                Column(
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(all = dimensionResource(id = R.dimen.size_16dp))
+                ) {
+                    Text(
+                        text = title,
+                        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                        fontWeight = FontWeight.W600,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            },
+        )
+    }
+}
+
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TeamListItem(team: Team, selected: Boolean, onClick: (Team) -> Unit) {
