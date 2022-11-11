@@ -22,6 +22,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import okhttp3.FormBody
 import okhttp3.RequestBody
+import retrofit2.http.Query
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -155,12 +156,13 @@ class TeamRepository @Inject constructor(
     }
 
     override suspend fun getMyLeagues(
+        teamId: String,
         page: Int,
         limit: Int,
         sort: String
     ): ResultWrapper<BaseResponse<ArrayList<MyLeagueResponse>>> {
         return safeApiCall(dispatcher) {
-            service.getMyLeagues(page = page, limit = limit, sort = sort)
+            service.getMyLeagues(teamId = teamId,page = page, limit = limit, sort = sort)
         }
     }
 

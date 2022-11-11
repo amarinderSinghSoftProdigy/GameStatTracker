@@ -72,5 +72,13 @@ fun uiToAPiDate(uiDate: String): Date? {
     } else {
         return null
     }
+}
+/* Convert type "2022-09-20T02:30:00.000Z" date to long*/
 
+fun convertStringDateToLong(stringDate: String): Long {
+    val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+    val date: Date? = formatter.parse(stringDate)
+    val timeInMillis= date?.time ?: 0
+    Timber.i("timeInMillis--$timeInMillis")
+    return  timeInMillis
 }
