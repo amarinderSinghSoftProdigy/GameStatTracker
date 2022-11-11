@@ -126,7 +126,7 @@ data class OpportunitiesDetail(
     @SerializedName("city") val city: String = "",
     @SerializedName("state") val state: String = "",
     @SerializedName("eventGeneralInfo") val eventGeneralInfo: String = "",
-    @SerializedName("userId") val userId: UserData = UserData(),
+    @SerializedName("userId") val userId: UserData? = UserData(),
     @SerializedName("potentialDaysOfPlay") val potentialDaysOfPlay: List<DaysOfPlay> = mutableListOf(),
     @SerializedName("skillLevel") val skillLevel: List<String> = mutableListOf(),
     @SerializedName("participation") val participation: Participation = Participation(),

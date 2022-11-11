@@ -258,19 +258,19 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             Text(
-                text = state.opportunitiesDetail.userId.name.capitalize(),
+                text = state.opportunitiesDetail.userId?.name?.capitalize()?:"",
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
             Text(
-                text = state.opportunitiesDetail.userId.email,
+                text = state.opportunitiesDetail.userId?.email?:"",
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
             Text(
-                text = state.opportunitiesDetail.userId.phone,
+                text = state.opportunitiesDetail.userId?.phone?:"",
                 color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             )

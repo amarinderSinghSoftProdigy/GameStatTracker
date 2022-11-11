@@ -318,7 +318,7 @@ class HomeViewModel @Inject constructor(
                 userResponse.value.let { response ->
                     if (response.status && response.data != null) {
                         setToken(response.data)
-                        getUserInfo(true)
+                        getUserInfo(false)
                     } else {
                         _homeChannel.send(
                             HomeChannel.ShowToast(
