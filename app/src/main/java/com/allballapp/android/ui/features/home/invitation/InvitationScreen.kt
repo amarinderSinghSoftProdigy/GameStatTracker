@@ -183,6 +183,7 @@ fun InvitationScreen(
 
     if (state.showGuardianDialog) {
         SelectGuardianRoleDialog(
+            state.showLoading,
             state.selectedRoleKey,
             onBack = {
                 vm.onEvent(InvitationEvent.OnRoleDialogClick(true))

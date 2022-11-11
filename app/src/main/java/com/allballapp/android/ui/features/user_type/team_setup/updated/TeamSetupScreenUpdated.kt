@@ -246,6 +246,7 @@ fun TeamSetupScreenUpdated(
 
     if (inviteState.showGuardianDialog) {
         SelectGuardianRoleDialog(
+            loading=state.isLoading,
             inviteState.selectedRoleKey,
             onBack = {
                 inviteVm.onEvent(InvitationEvent.OnRoleDialogClick(true))
