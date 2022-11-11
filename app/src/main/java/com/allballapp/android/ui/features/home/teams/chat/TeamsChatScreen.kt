@@ -1,35 +1,49 @@
 package com.allballapp.android.ui.features.home.teams.chat
 
-import android.widget.Toast
+//import com.cometchat.pro.uikit.ui_components.chats.CometChatConversationList
+//import com.cometchat.pro.uikit.ui_components.messages.message_list.CometChatMessageListActivity
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.viewinterop.AndroidViewBinding
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.data.response.team.Team
-import com.allballapp.android.databinding.FragmentConversationBinding
 import com.allballapp.android.ui.features.components.AppTab
+import com.allballapp.android.ui.features.components.CoilImage
 import com.allballapp.android.ui.features.components.CommonProgressBar
-import com.allballapp.android.ui.features.home.EmptyScreen
+import com.allballapp.android.ui.features.components.Placeholder
 import com.allballapp.android.ui.features.home.HomeViewModel
-import com.allballapp.android.ui.features.home.events.new_event.NewEventChannel
+import com.allballapp.android.ui.features.home.invitation.InvitationStatus
+import com.allballapp.android.ui.theme.ColorButtonGreen
+import com.allballapp.android.ui.theme.ColorButtonRed
 import com.allballapp.android.ui.theme.appColors
-import com.cometchat.pro.uikit.ui_components.chats.CometChatConversationList
-import com.cometchat.pro.uikit.ui_components.messages.message_list.CometChatMessageListActivity
-import kotlin.random.Random
+import com.cometchat.pro.constants.CometChatConstants
+import com.cometchat.pro.models.Conversation
+import com.cometchat.pro.models.Group
+import com.cometchat.pro.models.User
 
 @Composable
 fun TeamsChatScreen(
@@ -80,7 +94,7 @@ fun TeamsChatScreen(
                                 title = item.name,
                                 selected = index == selected.value,
                                 onClick = {
-                                    addChatIds(item)
+//                                    addChatIds(item)
                                     selected.value = index
                                     key.value = index.toString()
                                 })
@@ -89,25 +103,33 @@ fun TeamsChatScreen(
                 }
 
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-                if (selected.value != -1) {
-                    key(key.value) {
-                            AndroidViewBinding(FragmentConversationBinding::inflate) {
-                            CometChatMessageListActivity.toolbarColor =
-                                if (color.startsWith("#")) color else "#" + color
-                            converstionContainer.getFragment<CometChatConversationList>()
+
+                LazyColumn {
+                    item {
+                        state.conversation?.forEach {
+                            ConversationItem(conversation = it!!)
                         }
+                    }
+                }
+/*                if (selected.value != -1) {
+                    key(key.value) {
+                      *//*      AndroidViewBinding(FragmentConversationBinding::inflate) {
+//                            CometChatMessageListActivity.toolbarColor =
+//                                if (color.startsWith("#")) color else "#" + color
+//                            converstionContainer.getFragment<CometChatConversationList>()
+                        }*//*
                     }
                 } else if (state.teams.isNotEmpty()) {
                     addChatIds(state.teams[0])
                     key.value = 0.toString()
                     selected.value = 0
                 } else {
-                    EmptyScreen(
+                   *//* EmptyScreen(
                         singleText = false,
                         icon = com.cometchat.pro.uikit.R.drawable.ic_chat_placeholder,
                         heading = stringResource(id = com.cometchat.pro.uikit.R.string.no_conversations)
-                    )
-                }
+                    )*//*
+                }*/
             }
             IconButton(
                 modifier = Modifier
@@ -160,5 +182,86 @@ fun addChatIds(item: Team) {
     mergedIds.addAll(coachIds)
     mergedIds.addAll(supportingStaffIds)
     mergedIds.addAll(groupId)
-    CometChatConversationList.memberIds = mergedIds
+//    CometChatConversationList.memberIds = mergedIds
+}
+
+@Composable
+fun ConversationItem(conversation: Conversation) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+
+    ) {
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .background(
+                    color = MaterialTheme.appColors.material.surface, shape = RoundedCornerShape(
+                        topStart = dimensionResource(
+                            id = R.dimen.size_8dp
+                        ),
+                        topEnd = dimensionResource(id = R.dimen.size_8dp)
+                    )
+                )
+                .padding(
+                    dimensionResource(id = R.dimen.size_16dp)
+                ),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            CoilImage(
+                src = "",
+                modifier =
+                Modifier
+                    .size(dimensionResource(id = R.dimen.size_44dp))
+                    .clip(CircleShape)
+                    .background(
+                        color = Color.Transparent,
+                        shape = CircleShape
+                    ),
+                isCrossFadeEnabled = false,
+                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                onError = { Placeholder(R.drawable.ic_team_placeholder) }
+            )
+            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+
+            Column(Modifier.weight(1f)) {
+                Text(
+                    text = when (val conversationWith = conversation.conversationWith) {
+                        is User -> {
+                            conversationWith.name
+                        }
+                        is Group -> {
+                            conversationWith.name
+                        }
+                        else -> {
+                            ""
+                        }
+                    },
+                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = if (conversation.conversationType == CometChatConstants.RECEIVER_TYPE_USER) {
+                            (conversation.conversationWith as User).name
+                        } else {
+                            (conversation.conversationWith as Group).name
+                        },
+                        color = MaterialTheme.appColors.textField.label,
+                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                        fontWeight = FontWeight.W500,
+                    )
+
+                }
+            }
+            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+        }
+    }
 }

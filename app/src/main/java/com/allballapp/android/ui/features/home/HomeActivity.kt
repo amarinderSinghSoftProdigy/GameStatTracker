@@ -80,7 +80,7 @@ import com.cometchat.pro.constants.CometChatConstants
 import com.cometchat.pro.models.Conversation
 import com.cometchat.pro.models.Group
 import com.cometchat.pro.models.User
-import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
+//import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -94,7 +94,7 @@ val animeDuration = 500
 class HomeActivity : FragmentActivity() {
 
     var dataStoreManager: DataStoreManager = DataStoreManager(this)
-    val cometChat = CometChatUI()
+//    val cometChat = CometChatUI()
     var setupTeamViewModelUpdated: SetupTeamViewModelUpdated? = null
     lateinit var homeViewModel: HomeViewModel
 
@@ -103,8 +103,8 @@ class HomeActivity : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, true)
-        cometChat.context = this
-        cometChat.setConversationClickListener()
+//        cometChat.context = this
+//        cometChat.setConversationClickListener()
         setContent {
             //val fromSplash = intent.getBooleanExtra(IntentData.FROM_SPLASH, false)
             homeViewModel = hiltViewModel()
@@ -128,7 +128,7 @@ class HomeActivity : FragmentActivity() {
                 fromHex(color.value.ifEmpty { AppConstants.DEFAULT_COLOR })
             homeViewModel.setColor(AppConstants.SELECTED_COLOR)
 
-            cometChat.setPrimaryColor(AppConstants.SELECTED_COLOR.toArgb().argbToHexString())
+//            cometChat.setPrimaryColor(AppConstants.SELECTED_COLOR.toArgb().argbToHexString())
 
             /* Register for unread chat count broadcast*/
             registerForTeamChatCountBroadcast(homeViewModel)
@@ -202,7 +202,7 @@ class HomeActivity : FragmentActivity() {
                                 navController = navController,
                                 showDialog = state.showDialog,
                                 role = role.value,
-                                cometChat = cometChat,
+//                                cometChat = cometChat,
                                 setupTeamViewModelUpdated = setupTeamViewModelUpdated
                                     ?: hiltViewModel()
                             )
@@ -342,7 +342,7 @@ fun NavControllerComposable(
     showDialog: Boolean = false,
     navController: NavHostController = rememberAnimatedNavController(),
     role: String = "",
-    cometChat: CometChatUI,
+//    cometChat: CometChatUI,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated
 ) {
     val state = homeViewModel.state.value
@@ -626,7 +626,7 @@ fun NavControllerComposable(
             )
 
             NewConversationScreen(
-                cometChat = cometChat,
+//                cometChat = cometChat,
                 teamId = teamId,
                 onGroupCreateSuccess = {
                     navController.popBackStack()
@@ -1120,7 +1120,7 @@ fun NavControllerComposable(
             exitTransition = { exitTransition(animeDuration) },
             popExitTransition = { slideOutHorizont(animeDuration) }
         ) {
-            Timber.e("data " + CometChatUI.convo)
+//            Timber.e("data " + CometChatUI.convo)
             TeamsChatDetailScreen()
         }
         composable(route = Route.TEAMS_CHAT_SCREEN,

@@ -5,7 +5,7 @@ import com.allballapp.android.ui.theme.Yellow700
 
 object AppConstants {
     const val DATE_DAY_FORMAT: String="EEE, MMM DD"
-    const val ENABLE_CHAT: Boolean = false
+    const val ENABLE_CHAT: Boolean = true
     const val TYPE_ACCEPT_INVITATION = "acceptInvitation"
     const val TYPE_CREATE_TEAM = "createTeam"
     val REQUEST_CONTACT_CODE: Int = 1122

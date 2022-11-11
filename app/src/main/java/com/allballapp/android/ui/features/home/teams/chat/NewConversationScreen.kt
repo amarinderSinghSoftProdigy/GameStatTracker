@@ -37,14 +37,14 @@ import com.allballapp.android.ui.features.home.EmptyScreen
 import com.allballapp.android.ui.theme.ColorBWGrayStatus
 import com.allballapp.android.ui.theme.appColors
 import com.allballapp.android.ui.theme.rubikFamily
-import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
+//import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
 import timber.log.Timber
 
 @Composable
 fun NewConversationScreen(
     teamId: String,
     chatVM: ChatViewModel,
-    cometChat: CometChatUI,
+//    cometChat: CometChatUI,
     onGroupCreateSuccess: () -> Unit
 ) {
     val chatState = chatVM.chatUiState.value
@@ -73,7 +73,7 @@ fun NewConversationScreen(
                 }
                 is ChatChannel.TriggerUserGetIntent -> {
                     if (chatChannel.isSuccess) {
-                        chatChannel.user?.let { cometChat.startUserIntent(it) }
+//                        chatChannel.user?.let { cometChat.startUserIntent(it) }
                         onGroupCreateSuccess.invoke()
                     } else if (chatChannel.message != null) {
                         Toast.makeText(
