@@ -95,6 +95,7 @@ class HomeActivity : FragmentActivity() {
     val cometChat = CometChatUI()
     var setupTeamViewModelUpdated: SetupTeamViewModelUpdated? = null
     lateinit var homeViewModel: HomeViewModel
+
     @OptIn(ExperimentalAnimationApi::class)
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -129,7 +130,6 @@ class HomeActivity : FragmentActivity() {
 
             /* Register for unread chat count broadcast*/
             registerForTeamChatCountBroadcast(homeViewModel)
-
 
 
             //homeViewModel.showBottomAppBar(true)
@@ -254,9 +254,9 @@ class HomeActivity : FragmentActivity() {
 
     override fun onResume() {
         super.onResume()
-            if(::homeViewModel.isInitialized){
-                homeViewModel.getUnreadMessageCount()
-            }
+        if (::homeViewModel.isInitialized) {
+            homeViewModel.getUnreadMessageCount()
+        }
     }
 
     // on below line we are calling on activity result method.
@@ -427,8 +427,12 @@ fun NavControllerComposable(
                 }, moveToTermsAndConditions = {
                     url = it
                     navController.navigate(Route.WEB_VIEW)
-                })
-
+                },
+                moveToPrivacyAndPolicy = {
+                    url = it
+                    navController.navigate(Route.WEB_VIEW)
+                }
+            )
         }
 
         composable(route = Route.ADD_PROFILE_SCREEN + "/{countryCode}/{mobileNumber}",
@@ -464,8 +468,11 @@ fun NavControllerComposable(
                 },
                 onBack = {
                     navController.popBackStack()
-                }, moveToTermsAndConditions = { urL->
+                }, moveToTermsAndConditions = { urL ->
                     url = urL
+                    navController.navigate(Route.WEB_VIEW)
+                }, moveToPrivacyAndPolicy = {
+                    url = it
                     navController.navigate(Route.WEB_VIEW)
                 })
 
