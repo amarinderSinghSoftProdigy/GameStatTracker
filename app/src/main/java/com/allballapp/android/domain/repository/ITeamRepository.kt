@@ -14,6 +14,7 @@ import com.allballapp.android.data.response.team.Team
 import com.allballapp.android.domain.BaseResponse
 import com.allballapp.android.ui.features.home.invitation.Invitation
 import com.allballapp.android.ui.features.venue.VenueDetails
+import retrofit2.http.Query
 import javax.inject.Singleton
 
 @Singleton
@@ -83,7 +84,7 @@ interface ITeamRepository {
     ): ResultWrapper<BaseResponse<ArrayList<VenueDetails>>>
 
     suspend fun getMyLeagues(
-        teamId: String,
+         teamId: String,
         page: Int = 1,
         limit: Int = 20,
         sort: String = ""

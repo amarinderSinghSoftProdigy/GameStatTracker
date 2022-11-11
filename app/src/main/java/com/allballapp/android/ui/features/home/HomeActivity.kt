@@ -661,6 +661,9 @@ fun NavControllerComposable(
                 },
                 updateTopBar = {
                     homeViewModel.setTopBar(it)
+                }, moveToEventDetail = {
+                    eventTitle = it
+                    navController.navigate(Route.OPP_DETAIL_SCREEN)
                 }
             )
         }
@@ -1239,6 +1242,9 @@ fun NavControllerComposable(
                 moveToGameDetail = {
                     eventTitle = it
                     navController.navigate(Route.GAME_DETAIL_SCREEN)
+                }, moveToEventDetail = {
+                    eventTitle = it
+                    navController.navigate(Route.OPP_DETAIL_SCREEN)
                 })
         }
     }

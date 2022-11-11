@@ -45,7 +45,9 @@ fun EventsScreen(
     moveToDetail: (String) -> Unit,
     moveToPracticeDetail: (String, String) -> Unit, moveToGameDetail: (String) -> Unit,
     moveToOppDetails: (String) -> Unit,
-    updateTopBar: (TopBarData) -> Unit
+    updateTopBar: (TopBarData) -> Unit,
+    moveToEventDetail: (String) -> Unit
+
 ) {
     val teamState = teamVm.teamUiState.value
     val state = vm.eventState.value
@@ -94,8 +96,9 @@ fun EventsScreen(
                     moveToPracticeDetail,
                     moveToGameDetail,
                     moveToOppDetails,
+                    moveToEventDetail,
                     updateTopBar,
-                    role
+                    role,
                 )
             }
         }
@@ -182,6 +185,7 @@ fun TabsContent(
     moveToPracticeDetail: (String, String) -> Unit,
     moveToGameDetail: (String) -> Unit,
     moveToOppDetails: (String) -> Unit,
+    moveToEventDetail: (String) -> Unit,
     updateTopBar: (TopBarData) -> Unit,
     role: State<String>
 ) {
@@ -190,7 +194,7 @@ fun TabsContent(
         when (page) {
 
             0 -> {
-                MyEvents(vm, moveToPracticeDetail, moveToGameDetail)
+                MyEvents(vm, moveToPracticeDetail, moveToGameDetail,moveToEventDetail)
             }
 
             1 -> {

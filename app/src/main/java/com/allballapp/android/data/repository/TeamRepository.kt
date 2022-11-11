@@ -22,6 +22,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import okhttp3.FormBody
 import okhttp3.RequestBody
+import retrofit2.http.Query
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -164,6 +165,7 @@ class TeamRepository @Inject constructor(
         sort: String
     ): ResultWrapper<BaseResponse<ArrayList<MyLeagueResponse>>> {
         return safeApiCall(dispatcher) {
+            service.getMyLeagues(teamId = teamId,page = page, limit = limit, sort = sort)
             service.getMyLeagues(teamId, page = page, limit = limit, sort = sort)
         }
     }

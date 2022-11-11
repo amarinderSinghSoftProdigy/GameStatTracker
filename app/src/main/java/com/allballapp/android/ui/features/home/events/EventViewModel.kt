@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.allballapp.android.common.ResultWrapper
+import com.allballapp.android.common.convertStringDateToLong
 import com.allballapp.android.core.util.UiText
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
@@ -38,7 +39,7 @@ class EventViewModel @Inject constructor(
     private suspend fun getEventList() {
         _state.value =
             eventState.value.copy(showLoading = true)
-        val eventResponse = eventsRepo.getAllevents(teamId = UserStorage.teamId)
+        val eventResponse = eventsRepo.getAllevents(UserStorage.teamId)
         _state.value =
             eventState.value.copy(showLoading = false)
 
@@ -63,11 +64,33 @@ class EventViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 eventResponse.value.let { response ->
-                    if (response.status && response.data.upcommingEvents.isNotEmpty()) {
+                    if (response.status && (response.data.upcommingEvents.isNotEmpty())
+                        || (response.data.upcommingEvents.isNotEmpty())
+                        || (response.data.publishedGames.isNotEmpty())
+                    ) {
+                        val upcomingAndGameData =
+                            response.data.upcommingEvents + response.data.publishedGames
+
+                        val sortedUpcomingAndGameData = upcomingAndGameData.sortedByDescending {
+                            when (it) {
+                                is Events -> {
+                                    convertStringDateToLong(it.date)
+                                }
+                                is PublishedGames -> {
+                                    convertStringDateToLong(it.date)
+                                }
+                                else -> {
+                                    0
+                                }
+                            }
+                        }
+                        Timber.i("sortedUpcomingAndGameData--$sortedUpcomingAndGameData")
+
                         _state.value =
                             _state.value.copy(
                                 currentEvents = response.data.upcommingEvents,
-                                pastEvents = response.data.pastEvents
+                                pastEvents = response.data.pastEvents,
+                                upcomingAndGameData = sortedUpcomingAndGameData
                             )
                     } else {
                         /* _channel.send(

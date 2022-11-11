@@ -14,7 +14,7 @@ import javax.inject.Singleton
 interface IEventsRepository {
     suspend fun createEvent(createEvent: CreateEventReq): ResultWrapper<BaseResponse<Any>>
     suspend fun getAllevents(
-        teamId: String,
+        teamId:String,
         page: Int = 1,
         limit: Int = 50,
         sort: String = ""

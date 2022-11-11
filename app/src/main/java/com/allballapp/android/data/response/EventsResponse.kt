@@ -1,17 +1,19 @@
 package com.allballapp.android.ui.features.home.events
 
 import androidx.compose.ui.graphics.Color
-import com.google.gson.annotations.SerializedName
 import com.allballapp.android.data.request.Address
 import com.allballapp.android.data.request.Location
+import com.allballapp.android.data.response.Team
 import com.allballapp.android.ui.theme.ColorButtonGreen
 import com.allballapp.android.ui.theme.ColorButtonRed
 import com.allballapp.android.ui.theme.ColorMainPrimary
 import com.allballapp.android.ui.theme.Yellow700
+import com.google.gson.annotations.SerializedName
 
 data class EventsResponse(
     @SerializedName("upcommingEvents") val upcommingEvents: ArrayList<Events> = arrayListOf(),
     @SerializedName("pastEvents") val pastEvents: ArrayList<Events> = arrayListOf(),
+    @SerializedName("publishedGames") val publishedGames: ArrayList<PublishedGames> = arrayListOf(),
 )
 
 data class Events(
@@ -240,4 +242,19 @@ data class Pairs(
     @SerializedName("name") val name: String = "",
     @SerializedName("logo") val logo: String = "",
     @SerializedName("scheduleId") val scheduleId: String = ""
+)
+
+data class PublishedGames(
+    @SerializedName("_id") val Id: String = "",
+    @SerializedName("pairname") val pairname: String = "",
+    @SerializedName("date") val date: String = "",
+    @SerializedName("teams") val teams: ArrayList<Team> = arrayListOf(),
+    @SerializedName("gameData") val gameData: GameData = GameData()
+
+)
+
+data class GameData(
+    @SerializedName("_id") val Id: String = "",
+    @SerializedName("name") val name: String = "",
+    @SerializedName("logo") val logo: String = ""
 )
