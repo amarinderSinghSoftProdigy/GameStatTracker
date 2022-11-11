@@ -116,7 +116,7 @@ class LoginViewModel @Inject constructor(
                         errorMessage = loginResponse.message,
                         isDataLoading = false
                     )
-                    _loginChannel.send(LoginChannel.OnLoginFailed(UiText.DynamicString(loginResponse.message)))
+//                    _loginChannel.send(LoginChannel.OnLoginFailed(UiText.DynamicString(loginResponse.message)))
                 }
 
             }

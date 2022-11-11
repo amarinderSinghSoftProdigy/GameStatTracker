@@ -55,13 +55,13 @@ class VenueSearchVIewModel @Inject constructor(val teamRepository: ITeamReposito
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _channel.send(
+                /*_channel.send(
                     VenueChannel.ShowToast(
                         UiText.DynamicString(
                             venueResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 venueResponse.value.let { response ->

@@ -30,6 +30,6 @@ data class HomeState(
     val user: User = User(),
     val swapUsers: List<SwapUser> = mutableListOf(),
     val homePageCoachModel: HomePageCoachModel = HomePageCoachModel(),
-    val unReadMessageCount: Int = 0
-
+    val unReadMessageCount: Int = 0,
+    val showNoInternetDialog: Boolean = false,
     )

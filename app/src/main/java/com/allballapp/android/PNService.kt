@@ -1,10 +1,7 @@
 package com.allballapp.android
 
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
+import android.app.*
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -13,6 +10,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.IntentData
 import com.cometchat.pro.constants.CometChatConstants
 import com.cometchat.pro.helpers.CometChatHelper
@@ -51,6 +49,7 @@ class PNService :
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
 
+        if(AppConstants.ENABLE_CHAT){
         /*Crete channel for notification*/
         createNotificationChannel()
 
@@ -65,7 +64,7 @@ class PNService :
         try {
             count++
             json = (message.data as Map<*, *>?)?.let { JSONObject(it) }
-            Log.d(TAG, "JSONObject: " + json.toString())
+            Log.d(TAG, "JSONObject: " + json.toString().replace("\\",  ""))
 //            val messageData = json?.getString("message")?.let { JSONObject(it) }
             val baseMessage: BaseMessage =
                 CometChatHelper.processMessage(
@@ -75,6 +74,7 @@ class PNService :
             showNotification(baseMessage)
         } catch (e: JSONException) {
             e.printStackTrace()
+        }
         }
     }
 
@@ -197,7 +197,7 @@ class PNService :
                 )
             }
             val summaryBuilder: NotificationCompat.Builder = NotificationCompat.Builder(this, "2")
-                .setContentTitle("YOUR_TITLE")
+                .setContentTitle(json?.getString("title"))
                 .setContentText("$count messages")
                 .setSmallIcon(R.drawable.ic_all_ball_logo)
                 .setGroup(GROUP_ID)

@@ -156,13 +156,13 @@ class EventScheduleViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _channel.send(
+              /*  _channel.send(
                     EventChannel.ShowEventDetailsToast(
                         UiText.DynamicString(
                             eventResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 eventResponse.value.let { response ->

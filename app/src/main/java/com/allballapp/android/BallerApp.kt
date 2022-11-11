@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.os.Build
 import android.provider.Settings
+import com.allballapp.android.common.AppConstants
 import com.allballapp.android.data.UserStorage
 import com.cometchat.pro.core.AppSettings
 import com.cometchat.pro.core.CometChat
@@ -19,6 +20,8 @@ class BallerApp : Application() {
             Timber.plant(Timber.DebugTree())
         }
         getPhoneInfo()
+
+        /*Initialising comet chat module*/
         initChat()
     }
     @SuppressLint("HardwareIds")
@@ -33,22 +36,24 @@ class BallerApp : Application() {
     }
 
     private fun initChat() {
-        val appID = com.allballapp.android.BuildConfig.COMET_CHAT_APP_KEY
-        val region = com.allballapp.android.BuildConfig.COMET_CHAT_REGION
-        val appSettings =
-            AppSettings.AppSettingsBuilder().subscribePresenceForAllUsers().setRegion(region)
-                .build()
 
-        CometChat.init(this, appID, appSettings, object : CometChat.CallbackListener<String>() {
-            override fun onSuccess(successMessage: String) {
-                Timber.i("Initialization completed successfully")
-            }
+        /*Check for enabling comet chat*/
+        if (AppConstants.ENABLE_CHAT) {
+            val appID = com.allballapp.android.BuildConfig.COMET_CHAT_APP_KEY
+            val region = com.allballapp.android.BuildConfig.COMET_CHAT_REGION
+            val appSettings =
+                AppSettings.AppSettingsBuilder().subscribePresenceForAllUsers().setRegion(region)
+                    .build()
 
-            override fun onError(e: CometChatException) {
-                Timber.i("Initialization failed with exception: ${e.message}")
-            }
-        })
+            CometChat.init(this, appID, appSettings, object : CometChat.CallbackListener<String>() {
+                override fun onSuccess(successMessage: String) {
+                    Timber.i("Initialization completed successfully")
+                }
 
-
+                override fun onError(e: CometChatException) {
+                    Timber.i("Initialization failed with exception: ${e.message}")
+                }
+            })
+        }
     }
 }
