@@ -12,7 +12,6 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -41,6 +40,8 @@ import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.IntentData
 import com.allballapp.android.common.Route
 import com.allballapp.android.common.argbToHexString
+import com.allballapp.android.common.connectivity_helper.ConnectionState
+import com.allballapp.android.common.connectivity_helper.connectivityState
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.ui.features.components.*
@@ -84,6 +85,7 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import timber.log.Timber
 
 val animeDuration = 1050
@@ -95,6 +97,7 @@ class HomeActivity : FragmentActivity() {
     val cometChat = CometChatUI()
     var setupTeamViewModelUpdated: SetupTeamViewModelUpdated? = null
     lateinit var homeViewModel: HomeViewModel
+
     @OptIn(ExperimentalAnimationApi::class)
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -130,6 +133,8 @@ class HomeActivity : FragmentActivity() {
             /* Register for unread chat count broadcast*/
             registerForTeamChatCountBroadcast(homeViewModel)
 
+            /*Check for internet availability*/
+            ListenForConnectionAvailability(homeViewModel)
 
 
             //homeViewModel.showBottomAppBar(true)
@@ -232,8 +237,35 @@ class HomeActivity : FragmentActivity() {
                             moveToLogin(this)
                         })
                 }
+
+                if (state.showNoInternetDialog) {
+                    NoInternetDialog(
+                        title = stringResource(id = R.string.no_internet_message),
+                    )
+                }
             }
         }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Composable
+    private fun ListenForConnectionAvailability(homeViewModel: HomeViewModel) {
+
+        // This will cause re-composition on every network state change
+        val connection by connectivityState()
+        val isConnected = connection === ConnectionState.Available
+
+        LaunchedEffect(key1 = isConnected, block = {
+            if (isConnected) {
+                Timber.i("connectivityState--- connected")
+                homeViewModel.onEvent(HomeScreenEvent.OnNetworkAvailable(isAvailable = true))
+
+            } else {
+                Timber.i("connectivityState--- disconnected")
+                homeViewModel.onEvent(HomeScreenEvent.OnNetworkAvailable(isAvailable = false))
+
+            }
+        })
     }
 
     private fun registerForTeamChatCountBroadcast(homeViewModel: HomeViewModel) {

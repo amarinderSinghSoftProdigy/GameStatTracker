@@ -1,5 +1,6 @@
 package com.allballapp.android.ui.features.home.teams.chat
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -17,15 +18,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.viewinterop.AndroidViewBinding
 import com.allballapp.android.R
+import com.allballapp.android.common.AppConstants
 import com.allballapp.android.data.response.team.Team
 import com.allballapp.android.databinding.FragmentConversationBinding
 import com.allballapp.android.ui.features.components.AppTab
 import com.allballapp.android.ui.features.components.CommonProgressBar
 import com.allballapp.android.ui.features.home.EmptyScreen
 import com.allballapp.android.ui.features.home.HomeViewModel
+import com.allballapp.android.ui.features.home.events.new_event.NewEventChannel
 import com.allballapp.android.ui.theme.appColors
 import com.cometchat.pro.uikit.ui_components.chats.CometChatConversationList
 import com.cometchat.pro.uikit.ui_components.messages.message_list.CometChatMessageListActivity
+import kotlin.random.Random
 
 @Composable
 fun TeamsChatScreen(
@@ -48,82 +52,94 @@ fun TeamsChatScreen(
     }
     LaunchedEffect(key1 = selected.value, block = {
         vm.onEvent(ChatUIEvent.TeamSelectionChange(selected.value))
+        vm.onEvent(ChatUIEvent.GetChatListing)
+
     })
     LaunchedEffect(key1 = Unit) {
         vm.onEvent(ChatUIEvent.ClearData)
     }
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column {
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-            LazyRow {
-                itemsIndexed(state.teams) { index, item ->
-                    Row {
-                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
-                        AppTab(
-                            title = item.name,
-                            selected = index == selected.value,
-                            onClick = {
-                                addChatIds(item)
-                                selected.value = index
-                                key.value = index.toString()
-                            })
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-            if (selected.value != -1) {
-                key(key.value) {
-                    AndroidViewBinding(FragmentConversationBinding::inflate) {
-                        CometChatMessageListActivity.toolbarColor =
-                            if (color.startsWith("#")) color else "#" + color
-                        converstionContainer.getFragment<CometChatConversationList>()
-                    }
-                }
-            } else if (state.teams.isNotEmpty()) {
-                addChatIds(state.teams[0])
-                key.value = 0.toString()
-                selected.value = 0
-            } else {
-                EmptyScreen(
-                    singleText = false,
-                    icon = com.cometchat.pro.uikit.R.drawable.ic_chat_placeholder,
-                    heading = stringResource(id = com.cometchat.pro.uikit.R.string.no_conversations)
-                )
+    LaunchedEffect(key1 = Unit) {
+        vm.chatChannel.collect { uiEvent ->
+            when (uiEvent) {
+                /*ChatChannel.OnNewChatListingSuccess->{
+                    key.value = Random.nextLong().toString()
+                }*/
             }
         }
-        IconButton(
-            modifier = Modifier
-                .padding(all = dimensionResource(id = R.dimen.size_16dp))
-                .size(dimensionResource(id = R.dimen.size_44dp))
-                .background(
-                    MaterialTheme.appColors.material.primaryVariant,
-                    RoundedCornerShape(50)
-                )
-                .align(Alignment.BottomEnd),
-            enabled = true,
-            onClick = {
-                if (selected.value != -1)
-                    onCreateNewConversationClick.invoke(state.teams[selected.value]._id)
-            }
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_add_button),
-                "",
-                tint = MaterialTheme.appColors.buttonColor.textEnabled,
-                modifier = Modifier
-                    .width(
-                        dimensionResource(id = R.dimen.size_16dp)
-                    )
-            )
-        }
-        if (state.isLoading) {
-            CommonProgressBar()
-        }
-
     }
 
+    if (AppConstants.ENABLE_CHAT) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column {
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                LazyRow {
+                    itemsIndexed(state.teams) { index, item ->
+                        Row {
+                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+                            AppTab(
+                                title = item.name,
+                                selected = index == selected.value,
+                                onClick = {
+                                    addChatIds(item)
+                                    selected.value = index
+                                    key.value = index.toString()
+                                })
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                if (selected.value != -1) {
+                    key(key.value) {
+                            AndroidViewBinding(FragmentConversationBinding::inflate) {
+                            CometChatMessageListActivity.toolbarColor =
+                                if (color.startsWith("#")) color else "#" + color
+                            converstionContainer.getFragment<CometChatConversationList>()
+                        }
+                    }
+                } else if (state.teams.isNotEmpty()) {
+                    addChatIds(state.teams[0])
+                    key.value = 0.toString()
+                    selected.value = 0
+                } else {
+                    EmptyScreen(
+                        singleText = false,
+                        icon = com.cometchat.pro.uikit.R.drawable.ic_chat_placeholder,
+                        heading = stringResource(id = com.cometchat.pro.uikit.R.string.no_conversations)
+                    )
+                }
+            }
+            IconButton(
+                modifier = Modifier
+                    .padding(all = dimensionResource(id = R.dimen.size_16dp))
+                    .size(dimensionResource(id = R.dimen.size_44dp))
+                    .background(
+                        MaterialTheme.appColors.material.primaryVariant,
+                        RoundedCornerShape(50)
+                    )
+                    .align(Alignment.BottomEnd),
+                enabled = true,
+                onClick = {
+                    if (selected.value != -1)
+                        onCreateNewConversationClick.invoke(state.teams[selected.value]._id)
+                }
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_add_button),
+                    "",
+                    tint = MaterialTheme.appColors.buttonColor.textEnabled,
+                    modifier = Modifier
+                        .width(
+                            dimensionResource(id = R.dimen.size_16dp)
+                        )
+                )
+            }
+            if (state.isLoading) {
+                CommonProgressBar()
+            }
+
+        }
+    }
 }
 
 fun addChatIds(item: Team) {
