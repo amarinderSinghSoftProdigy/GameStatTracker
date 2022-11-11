@@ -559,8 +559,9 @@ class SetupTeamViewModelUpdated @Inject constructor(
                         _teamSetupChannel.send(
                             TeamSetupChannel.ShowToast(
                                 UiText.DynamicString(
-                                    context.getString(R.string.number_already_exist) + " " + response.data.failedMobileNumber.toString() + response.data.failedProfiles.toString()
-                                        .replace("[", "").replace("]", "")
+                                    context.getString(R.string.number_already_exist)
+                                    /* + " " + response.data.failedMobileNumber.toString() + response.data.failedProfiles.toString()
+                                        .replace("[", "").replace("]", "")*/
                                 )
                             )
                         )
@@ -775,14 +776,6 @@ class SetupTeamViewModelUpdated @Inject constructor(
                     }
                 }
             }
-        }
-    }
-
-    private fun clearToken() {
-        viewModelScope.launch {
-            dataStoreManager.saveToken("")
-            dataStoreManager.setRole("")
-            dataStoreManager.setEmail("")
         }
     }
 
