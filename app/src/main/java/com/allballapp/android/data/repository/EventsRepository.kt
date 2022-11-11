@@ -33,7 +33,7 @@ class EventsRepository @Inject constructor(
     }
 
     override suspend fun getAllevents(
-        teamId: String,
+        teamId:String,
         page: Int,
         limit: Int,
         sort: String
@@ -173,6 +173,7 @@ class EventsRepository @Inject constructor(
             service.getVenueDetailsById(venueId = venueId)
         }
     }
+
 
 
     override suspend fun getEventScheduleDetails(eventId: String): ResultWrapper<BaseResponse<List<ScheduleResponse>>> {

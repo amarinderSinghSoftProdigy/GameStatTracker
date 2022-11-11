@@ -20,6 +20,7 @@ fun CommonWebView(url: String) {
                     ViewGroup.LayoutParams.MATCH_PARENT
                 )
                 webViewClient = WebViewClient()
+                settings.javaScriptEnabled = true
                 loadUrl(url)
             }
         }, update = {

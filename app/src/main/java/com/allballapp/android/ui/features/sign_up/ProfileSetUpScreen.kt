@@ -40,6 +40,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.android.TextLayout
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -79,6 +80,7 @@ fun ProfileSetUpScreen(
     moveToPrivacyAndPolicy: (String) -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
+
     val modalBottomSheetState =
         rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
 
@@ -722,7 +724,7 @@ fun ProfileSetUpScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-                                verticalAlignment = Alignment.Top
+                                verticalAlignment = Alignment.Top,
                             ) {
                                 CustomCheckBox(
                                     state.signUpData.privacyAndPolicy
@@ -767,7 +769,7 @@ fun ProfileSetUpScreen(
                                         ).firstOrNull()?.let {
                                             moveToPrivacyAndPolicy("")
                                         }
-                                    }
+                                    },
                                 )
                             }
                         }
@@ -801,7 +803,7 @@ fun ProfileSetUpScreen(
                             /*check.value = false*/
                         },
                         enableState = !state.isLoading && validName(state.signUpData.firstName)
-                                && validName(state.signUpData.lastName) && state.signUpData.termsAndCondition && state.signUpData.privacyAndPolicy
+                                && validName(state.signUpData.lastName) && state.signUpData.termsAndCondition && state.signUpData.privacyAndPolicy && !state.signUpData.email.isNullOrEmpty() && state.signUpData.email?.isValidEmail() == true
                                 && if (isToAddProfile) true else validPhoneNumber(state.signUpData.phone)
                         /*&& check.value*/,
                         //&& (state.signUpData.email ?: "".isValidEmail()) != true
