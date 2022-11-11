@@ -78,13 +78,13 @@ class StandingViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _standingChannel.send(
+               /* _standingChannel.send(
                     StandingChannel.ShowToast(
                         UiText.DynamicString(
                             standingResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 standingResponse.value.let { response ->

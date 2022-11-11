@@ -11,7 +11,7 @@ data class Invitation(
     @SerializedName("emailId") val emailId: String = "",
     @SerializedName("teamId") val team: Team = Team(),
     @SerializedName("status") val status: String = "",
-    @SerializedName("createdBy") val createdBy: User = User(),
+    @SerializedName("createdBy") val createdBy: User ?= null,
     @SerializedName("createdAt") val createdAt: String = "",
     @SerializedName("updatedAt") val updatedAt: String = "",
     @SerializedName("jersey") val jersey: String = "",

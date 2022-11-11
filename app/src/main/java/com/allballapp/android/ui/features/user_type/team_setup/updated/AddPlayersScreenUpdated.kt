@@ -83,6 +83,7 @@ fun AddPlayersScreenUpdated(
     val roleKey = rememberSaveable {
         mutableStateOf("")
     }
+
     remember {
         vm.onEvent(TeamSetupUIEventUpdated.GetRoles)
         vm.initialInviteCount(1)
@@ -227,7 +228,12 @@ fun AddPlayersScreenUpdated(
                             vm.onEvent(TeamSetupUIEventUpdated.OnAddPlayerScreenNext)
                         } else {
                             if (homeState.user.phone != state.inviteList[0].countryCode + state.inviteList[0].contact) {
-                                vm.onEvent(TeamSetupUIEventUpdated.OnInviteTeamMembers(teamId, type = AppConstants.TYPE_CREATE_TEAM,))
+                                vm.onEvent(
+                                    TeamSetupUIEventUpdated.OnInviteTeamMembers(
+                                        teamId,
+                                        type = AppConstants.TYPE_CREATE_TEAM,
+                                    )
+                                )
                             } else {
                                 roleKey.value = state.inviteList[0].role.key
                                 vm.onEvent(
@@ -243,7 +249,7 @@ fun AddPlayersScreenUpdated(
                     }
                 },
                 enableState = !state.isLoading && state.inviteList.isNotEmpty() &&
-                        state.inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() },
+                        state.inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() && it.contact.length >= 10 },
                 themed = true,
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))

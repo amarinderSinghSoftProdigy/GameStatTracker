@@ -5,6 +5,7 @@ import com.allballapp.android.ui.theme.Yellow700
 
 object AppConstants {
     const val DATE_DAY_FORMAT: String="EEE, MMM DD"
+    const val ENABLE_CHAT: Boolean = false
     const val TYPE_ACCEPT_INVITATION = "acceptInvitation"
     const val TYPE_CREATE_TEAM = "createTeam"
     val REQUEST_CONTACT_CODE: Int = 1122
@@ -20,6 +21,7 @@ object AppConstants {
     const val KEY_PASSWORD = "password"
     const val KEY_USERS = "users"
     const val DEFAULT_ERROR_MESSAGE = "Something went wrong"
+    const val INTERNET_CONNECTION_ERROR = "Please check your internet connection..."
     const val USER_TYPE_PLAYER = "Player"
     const val USER_TYPE_REFEREE = "Referee"
     const val USER_TYPE_COACH = "Coach"

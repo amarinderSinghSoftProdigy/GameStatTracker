@@ -427,6 +427,9 @@ fun ProfileEditScreen(
                     )
                 }
 
+                val regex = ("^[0-9 _ ,]*\$")
+                val p = regex.toRegex()
+
                 AppText(
                     text = stringResource(id = R.string.jersey_pref),
                     style = MaterialTheme.typography.h2,
@@ -440,7 +443,7 @@ fun ProfileEditScreen(
                         data =
                         state.jerseyNumerPerferences,
                         onValueChange = {
-                            if (it.length <= 9 && it.length <= Long.MAX_VALUE.toString().length && it.isDigitsOnly())
+                            if (p.matches(it))
                                 vm.onEvent(ProfileEvent.OnPrefJerseyNoChange(it))
                         },
                         stringResource(id = R.string.jersey_number),
@@ -450,7 +453,6 @@ fun ProfileEditScreen(
                             capitalization = KeyboardCapitalization.Sentences,
                             keyboardType = KeyboardType.Number
                         ),
-                        visualTransformation = NumberCommaTransformation()
                     )
 
                     DividerCommon()

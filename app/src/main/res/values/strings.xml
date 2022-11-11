@@ -397,6 +397,7 @@
     <string name="dollar">$</string>
     <string name="choose_team">Choose Team</string>
     <string name="please_select_division">Please select division.</string>
+    <string name="no_internet_message">Please check your internet connection.</string>
     <string name="please_select_player">Please select players.</string>
     <string name="select_team">Select Team</string>
     <string name="select_player">Select Players</string>
@@ -465,7 +466,7 @@
     <string name="age_ok">I\'m 13 years or older</string>
     <string name="age_zero">I\'m 0–12 years</string>
     <string name="age_conformation">To begin, Please select your age</string>
-    <string name="authorize_message">Awesome! We need your parents help to get started.Enter either of your parent\'s phone number below and we\'ll send them a message to help you get started.</string>
+    <string name="authorize_message">Awesome! We need your parents help to get started. Enter either of your parent\'s phone number below and we\'ll send them a message to help you get started.</string>
     <string name="valid_cash_message">Cash must be greater or equal to league price</string>
     <string name="team_chat">Team Chat</string>
     <string name="event_operator">Event Operator</string>

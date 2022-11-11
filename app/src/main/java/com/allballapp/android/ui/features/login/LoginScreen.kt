@@ -77,7 +77,7 @@ fun LoginScreen(
             painter = painterResource(id = R.drawable.ic_all_ball_logo),
             contentDescription = null,
             modifier = Modifier
-                .padding(top = dimensionResource(id = R.dimen.size_120dp))
+                .padding(top = dimensionResource(id = R.dimen.size_100dp))
                 .size(dimensionResource(id = R.dimen.size_130dp)),
         )
 
@@ -88,7 +88,11 @@ fun LoginScreen(
         ) {
             Column(
                 modifier = Modifier
-                    .padding(horizontal = dimensionResource(id = R.dimen.size_20dp)),
+                    .padding(
+                        start = dimensionResource(id = R.dimen.size_20dp),
+                        end = dimensionResource(id = R.dimen.size_20dp),
+                        top = dimensionResource(id = R.dimen.size_20dp)
+                    ),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AppText(
@@ -174,7 +178,7 @@ fun LoginScreen(
                         modifier = Modifier
                             .padding(dimensionResource(id = R.dimen.size_4dp))
                             .fillMaxWidth(0.95f),
-                        )
+                    )
                 }
 
                 /*AppOutlineTextField(

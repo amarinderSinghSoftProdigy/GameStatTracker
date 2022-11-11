@@ -158,13 +158,13 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _invitationChannel.send(
+               /* _invitationChannel.send(
                     InvitationChannel.ShowToast(
                         UiText.DynamicString(
                             inviteResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 inviteResponse.value.let { response ->
@@ -218,13 +218,13 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _invitationChannel.send(
+               /* _invitationChannel.send(
                     InvitationChannel.ShowToast(
                         UiText.DynamicString(
                             acceptInviteResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 acceptInviteResponse.value.let { response ->
@@ -263,13 +263,13 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                 )
             }
             is ResultWrapper.NetworkError -> {
-                _invitationChannel.send(
+               /* _invitationChannel.send(
                     InvitationChannel.ShowToast(
                         UiText.DynamicString(
                             rejectInviteResponse.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 rejectInviteResponse.value.let { response ->
@@ -297,13 +297,13 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
             is ResultWrapper.NetworkError -> {
                 invitationState.value = invitationState.value.copy(showLoading = false)
 
-                _invitationChannel.send(
+                /*_invitationChannel.send(
                     InvitationChannel.ShowToast(
                         UiText.DynamicString(
                             userRoles.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 userRoles.value.let { response ->
@@ -351,13 +351,13 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
             is ResultWrapper.NetworkError -> {
                 invitationState.value = invitationState.value.copy(showLoading = false)
 
-                _invitationChannel.send(
+               /* _invitationChannel.send(
                     InvitationChannel.ShowToast(
                         UiText.DynamicString(
                             userRoles.message
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.Success -> {
                 userRoles.value.let { response ->
