@@ -3,7 +3,6 @@ package com.allballapp.android.ui.features.home.teams.chat
 //import com.cometchat.pro.uikit.ui_components.chats.CometChatConversationList
 //import com.cometchat.pro.uikit.ui_components.messages.message_list.CometChatMessageListActivity
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -23,9 +22,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.allballapp.android.R
@@ -36,11 +35,9 @@ import com.allballapp.android.ui.features.components.CoilImage
 import com.allballapp.android.ui.features.components.CommonProgressBar
 import com.allballapp.android.ui.features.components.Placeholder
 import com.allballapp.android.ui.features.home.HomeViewModel
-import com.allballapp.android.ui.features.home.invitation.InvitationStatus
-import com.allballapp.android.ui.theme.ColorButtonGreen
-import com.allballapp.android.ui.theme.ColorButtonRed
 import com.allballapp.android.ui.theme.appColors
-import com.cometchat.pro.constants.CometChatConstants
+import com.allballapp.android.ui.theme.rubikFamily
+import com.allballapp.android.ui.utils.CommonUtils
 import com.cometchat.pro.models.Conversation
 import com.cometchat.pro.models.Group
 import com.cometchat.pro.models.User
@@ -102,7 +99,7 @@ fun TeamsChatScreen(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
                 LazyColumn {
                     item {
@@ -187,21 +184,24 @@ fun addChatIds(item: Team) {
 
 @Composable
 fun ConversationItem(conversation: Conversation) {
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(
+                horizontal = dimensionResource(id = R.dimen.size_16dp),
+                vertical = dimensionResource(id = R.dimen.size_4dp)
+            )
 
     ) {
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
         Row(
             Modifier
                 .fillMaxWidth()
                 .background(
-                    color = MaterialTheme.appColors.material.surface, shape = RoundedCornerShape(
-                        topStart = dimensionResource(
-                            id = R.dimen.size_8dp
-                        ),
-                        topEnd = dimensionResource(id = R.dimen.size_8dp)
+                    color = MaterialTheme.appColors.material.surface,
+                    shape = RoundedCornerShape(
+                        dimensionResource(id = R.dimen.size_8dp)
                     )
                 )
                 .padding(
@@ -240,28 +240,32 @@ fun ConversationItem(conversation: Conversation) {
                     },
                     color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.W500,
+                    fontFamily = rubikFamily
                 )
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
 
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = if (conversation.conversationType == CometChatConstants.RECEIVER_TYPE_USER) {
-                            (conversation.conversationWith as User).name
+                        text = if (conversation.lastMessage != null) {
+                            if (conversation.lastMessage.deletedAt > 0L) {
+                                ""
+                            } else CommonUtils.getLastMessage(context, conversation.lastMessage)
                         } else {
-                            (conversation.conversationWith as Group).name
-                        },
+                            context.resources.getString(R.string.tap_to_start_conversation)
+                        } ?: "",
                         color = MaterialTheme.appColors.textField.label,
                         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                        fontWeight = FontWeight.W500,
+                        fontWeight = FontWeight.W400,
+                        fontFamily = rubikFamily
+
                     )
 
                 }
             }
-            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
         }
     }
 }
