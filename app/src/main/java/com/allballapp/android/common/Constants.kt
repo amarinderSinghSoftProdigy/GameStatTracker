@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import com.allballapp.android.ui.theme.Yellow700
 
 object AppConstants {
+    const val DATE_DAY_FORMAT: String="EEE, MMM DD"
     const val ENABLE_CHAT: Boolean = false
     const val TYPE_ACCEPT_INVITATION = "acceptInvitation"
     const val TYPE_CREATE_TEAM = "createTeam"
@@ -166,6 +167,8 @@ object ApiConstants {
     const val GET_ALL_VENUE = "v1/venue/getAllVenues"
     const val GET_SEARCH_GAME_STAFF = "v1/staff/searchGameStaff"
     const val REGISTER_GAME_STAFF = "v1/staff/registerGameStaff"
+    const val GET_STAFF_SCHEDULE = "v1/schedule/bystaff"
+    const val UPDATE_SCHEDULE = "v1/schedule/updateStaff/schedule"
 
 
     const val EMAIL = "email"

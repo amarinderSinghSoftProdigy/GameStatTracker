@@ -3,13 +3,14 @@ package com.allballapp.android.ui.features.profile
 import com.allballapp.android.data.response.GetSearchStaff
 import com.allballapp.android.data.response.ParentDetails
 import com.allballapp.android.data.response.UserDocType
+import java.util.*
 
 sealed class ProfileEvent {
     data class OnParentDialogChange(val showDialog: Boolean) : ProfileEvent()
     data class OnParentClick(val selectedParentDetails: ParentDetails) : ProfileEvent()
 
     data class OnFirstNameChange(val firstName: String) : ProfileEvent()
-   data class OnLastNameChange(val lastName: String) : ProfileEvent()
+    data class OnLastNameChange(val lastName: String) : ProfileEvent()
     data class OnEmailChange(val email: String) : ProfileEvent()
     data class OnPhoneChange(val phone: String) : ProfileEvent()
     data class OnAddressChange(val address: String) : ProfileEvent()
@@ -52,5 +53,7 @@ sealed class ProfileEvent {
     data class OnGameStaffChanges(val searchGameStaff: String) : ProfileEvent()
     data class OnSelectedGameStaff(val getSearchStaff: GetSearchStaff) : ProfileEvent()
     data class OnProfileImageSelected(val selectedImage: String) : ProfileEvent()
-    object ProfileUpload: ProfileEvent()
+    object ProfileUpload : ProfileEvent()
+    object GetStaffSchedule : ProfileEvent()
+    data class UpdateScheduleStaff(val list: ArrayList<Date>) : ProfileEvent()
 }

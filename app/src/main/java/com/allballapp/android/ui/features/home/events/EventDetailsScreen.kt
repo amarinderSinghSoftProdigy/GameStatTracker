@@ -30,8 +30,6 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.android.gms.maps.model.LatLng
-import com.allballapp.android.BuildConfig
 import com.allballapp.android.R
 import com.allballapp.android.common.apiToUIDateFormat
 import com.allballapp.android.common.apiToUIDateFormat2
@@ -43,6 +41,7 @@ import com.allballapp.android.ui.features.venue.Location
 import com.allballapp.android.ui.theme.ColorButtonGreen
 import com.allballapp.android.ui.theme.ColorButtonRed
 import com.allballapp.android.ui.theme.appColors
+import com.google.android.gms.maps.model.LatLng
 import timber.log.Timber
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -182,7 +181,7 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
                 var startTime = state.event.startTime
                 var endTime = state.event.endTime
 
-                if(startTime.isNotEmpty() && endTime.isNotEmpty()){
+                if (startTime.isNotEmpty() && endTime.isNotEmpty()) {
                     if (startTime[0] == '0') {
                         startTime = startTime.drop(1)
                     }
@@ -278,7 +277,19 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
                                 ),
                         ) {
                             Text(
-                                text = item.status,
+                                text = if (item.status.equals(
+                                        EventStatus.GOING.status,
+                                        ignoreCase = true
+                                    )
+                                )
+                                    stringResource(id = R.string.accepted)
+                                else if (item.status.equals(
+                                        EventStatus.NOT_GOING.status,
+                                        ignoreCase = true
+                                    )
+                                )
+                                    stringResource(id = R.string.declined)
+                                else stringResource(id = R.string.pending),
                                 color = if (item.status.equals(
                                         EventStatus.GOING.status,
                                         ignoreCase = true

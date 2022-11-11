@@ -59,7 +59,6 @@ import java.util.*
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TeamSetupScreenUpdated(
-    refreshProfileList: String,
     venue: String = "",
     onBackClick: () -> Unit,
     onNextClick: (String?) -> Unit,
@@ -67,7 +66,6 @@ fun TeamSetupScreenUpdated(
     addProfileClick: () -> Unit,
     vm: SetupTeamViewModelUpdated,
     homeVm: HomeViewModel,
-    onTeamCreationSuccess: () -> Unit,
     inviteVm: InvitationViewModel = hiltViewModel()
 ) {
 
@@ -103,11 +101,10 @@ fun TeamSetupScreenUpdated(
     val teamId = remember {
         mutableStateOf("")
     }
-    if (refreshProfileList == true.toString()) {
-        LaunchedEffect(key1 = refreshProfileList, block = {
-            homeVm.onEvent(HomeScreenEvent.OnSwapClick())
-        })
+    remember {
+        homeVm.onEvent(HomeScreenEvent.OnSwapClick())
     }
+
     val launcher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri: Uri? ->
             if (uri != null)
@@ -192,11 +189,9 @@ fun TeamSetupScreenUpdated(
                     vm.onEvent(TeamSetupUIEventUpdated.OnLogoUploadSuccess)
                 }
                 is TeamSetupChannel.OnTeamCreate -> {
-                    onTeamCreationSuccess.invoke()
                     teamId.value = uiEvent.id
                     Toast.makeText(context, uiEvent.message, Toast.LENGTH_LONG)
                         .show()
-                    //if (role.value == UserType.PARENT.key || role.value == UserType.PLAYER.key) {
                     vm.onEvent(TeamSetupUIEventUpdated.SetRequestData(role.value, teamId.value))
                     inviteVm.onEvent(InvitationEvent.SetTeamId(teamId.value))
                     inviteVm.onEvent(InvitationEvent.OnRoleDialogClick(false))
@@ -233,7 +228,13 @@ fun TeamSetupScreenUpdated(
             onSelectionChange = { inviteVm.onEvent(InvitationEvent.OnRoleClick(roleKey = it)) },
             title = stringResource(
                 id = R.string.what_is_your_role,
-                inviteState.selectedInvitation.team.name
+                inviteState.selectedInvitation.team.name.ifEmpty {
+                    state.teamName.ifEmpty {
+                        context.getString(
+                            R.string.the_team
+                        )
+                    }
+                }
             ),
             selected = inviteState.selectedRoleKey,
             showLoading = inviteState.showLoading,
@@ -245,6 +246,7 @@ fun TeamSetupScreenUpdated(
 
     if (inviteState.showGuardianDialog) {
         SelectGuardianRoleDialog(
+            loading=state.isLoading,
             inviteState.selectedRoleKey,
             onBack = {
                 inviteVm.onEvent(InvitationEvent.OnRoleDialogClick(true))
@@ -303,7 +305,7 @@ fun TeamSetupScreenUpdated(
             onConfirmClick = {
                 if (state.teamId.isNotEmpty()) {
                     if (state.inviteList.isNotEmpty()) {
-                        if (homeState.user.phone != state.inviteList[0].countryCode + state.inviteList[0].contact) {
+                        if (homeState.phone != state.inviteList[0].countryCode + state.inviteList[0].contact) {
                             inviteVm.onEvent(
                                 InvitationEvent.SetData(
                                     state.teamImageServerUrl,
@@ -323,6 +325,7 @@ fun TeamSetupScreenUpdated(
                         }
                     }
                 }
+                inviteVm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
             },
             onIndexChange = { index ->
                 vm.onEvent(
@@ -374,7 +377,10 @@ fun TeamSetupScreenUpdated(
                         code = code
                     )
                 )
-            }, roles = inviteState.roles, onRoleValueChange = { index, role ->
+            }, roles = if (state.role != UserType.PLAYER.key)
+                inviteState.roles.filter { member -> member.key == UserType.PLAYER.key }
+            else inviteState.roles.filter { member -> member.key != UserType.PLAYER.key },
+            onRoleValueChange = { index, role ->
                 vm.onEvent(
                     TeamSetupUIEventUpdated.OnRoleValueChange(
                         index = index,
@@ -431,17 +437,19 @@ fun TeamSetupScreenUpdated(
             onConfirmClick = {
                 showNoMessage.value = false
                 homeVm.onEvent(HomeScreenEvent.HideSwap(false))
+                vm.onEvent(TeamSetupUIEventUpdated.Clear)
                 onNextClick(
-                    state.teamId.ifEmpty {
-                        inviteState.teamId.ifEmpty {
-                            ""
-                        }
+                    inviteState.teamId.ifEmpty {
+                        ""
                     }
                 )
             },
             teamName = state.teamName,
-            teamLogo = inviteState.selectedLogo,
-            playerName = if (showNoMessage.value) stringResource(id = R.string.no_player) else inviteState.selectedPlayerName
+            teamLogo = inviteState.selectedLogo.ifEmpty {
+                (state.teamImageUri ?: "").ifEmpty { "" }
+            },
+            playerName = if (showNoMessage.value) stringResource(id = R.string.no_player)
+            else inviteState.selectedPlayerName.ifEmpty { state.teamName.ifEmpty { "" } }
         )
     }
 
@@ -1044,6 +1052,7 @@ fun TeamSetupScreenUpdated(
             }
         }
     }
+
     if (state.isLoading || inviteState.showLoading) {
         CommonProgressBar()
     }

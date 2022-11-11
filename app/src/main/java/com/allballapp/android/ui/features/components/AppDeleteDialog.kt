@@ -19,7 +19,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.snapshots.SnapshotApplyResult.Success.check
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -1156,6 +1155,7 @@ fun SelectGuardianRoleItem(
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun SelectGuardianRoleDialog(
+    loading: Boolean = false,
     selectedRole: String,
     onBack: () -> Unit,
     onConfirmClick: () -> Unit,
@@ -1174,110 +1174,115 @@ fun SelectGuardianRoleDialog(
                 .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
             onDismissRequest = onDismiss,
             buttons = {
-                Column(
-                    modifier = Modifier
-                        .background(color = Color.White)
-                        .padding(
-                            all = dimensionResource(
-                                id = R.dimen.size_16dp
-                            )
-                        ),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        Text(
-                            text = if (selectedRole != UserType.PLAYER.key) stringResource(R.string.select_the_players_guardian) else stringResource(
-                                R.string.confirm_your_guardin
+                Box {
+                    Column(
+                        modifier = Modifier
+                            .background(color = Color.White)
+                            .padding(
+                                all = dimensionResource(
+                                    id = R.dimen.size_16dp
+                                )
                             ),
-
-                            style = MaterialTheme.typography.h5,
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                            fontWeight = FontWeight.W500
-                        )
-                    }
-                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
-
-                    CompositionLocalProvider(
-                        LocalOverScrollConfiguration provides null
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        LazyVerticalGrid(
-                            columns = GridCells.Fixed(3),
-                            modifier = Modifier.height(dimensionResource(id = R.dimen.size_300dp)),
-                            content = {
-                                items(guardianList) { member ->
-                                    SelectGuardianRoleItem(
-                                        name = member.memberDetails.firstName,
-                                        profile = member.memberDetails.profileImage,
-                                        onItemClick = { guardian ->
-                                            onSelectionChange(guardian)
-                                            onValueSelected(member)
-                                        },
-                                        isSelected = selected == member.id,
-                                        id = member.id
-                                    )
-                                }
-                            })
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            Text(
+                                text = if (selectedRole != UserType.PLAYER.key) stringResource(R.string.select_the_players_guardian) else stringResource(
+                                    R.string.confirm_your_guardin
+                                ),
 
-                    }
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                                style = MaterialTheme.typography.h5,
+                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                fontWeight = FontWeight.W500
+                            )
+                        }
+                        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
 
-                    DialogButton(
-                        text = if (selectedRole != UserType.PLAYER.key) stringResource(R.string.child_not_listed) else stringResource(
-                            R.string.my_guardian_not_listed
-                        ),
-                        onClick = onChildNotListedCLick,
-                        modifier = Modifier.fillMaxWidth(),
-                        border = ButtonDefaults.outlinedBorder,
-                        onlyBorder = true,
-                        enabled = false
-                    )
+                        CompositionLocalProvider(
+                            LocalOverScrollConfiguration provides null
+                        ) {
+                            LazyVerticalGrid(
+                                columns = GridCells.Fixed(3),
+                                modifier = Modifier.height(dimensionResource(id = R.dimen.size_300dp)),
+                                content = {
+                                    items(guardianList) { member ->
+                                        SelectGuardianRoleItem(
+                                            name = member.memberDetails.firstName,
+                                            profile = member.memberDetails.profileImage,
+                                            onItemClick = { guardian ->
+                                                onSelectionChange(guardian)
+                                                onValueSelected(member)
+                                            },
+                                            isSelected = selected == member.id,
+                                            id = member.id
+                                        )
+                                    }
+                                })
 
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                        }
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
-                    if (selectedRole != UserType.PLAYER.key)
                         DialogButton(
-                            text = stringResource(R.string.i_dont_have_child_on_this_team),
-                            onClick = dontHaveChildClick,
+                            text = if (selectedRole != UserType.PLAYER.key) stringResource(R.string.child_not_listed) else stringResource(
+                                R.string.my_guardian_not_listed
+                            ),
+                            onClick = onChildNotListedCLick,
                             modifier = Modifier.fillMaxWidth(),
                             border = ButtonDefaults.outlinedBorder,
                             onlyBorder = true,
                             enabled = false
                         )
 
-                    AppDivider()
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(color = Color.White)
-                            .padding(
-                                vertical = dimensionResource(id = R.dimen.size_16dp)
-                            ),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        DialogButton(
-                            text = stringResource(R.string.back),
-                            onClick = onBack,
+                        if (selectedRole != UserType.PLAYER.key)
+                            DialogButton(
+                                text = stringResource(R.string.i_dont_have_child_on_this_team),
+                                onClick = dontHaveChildClick,
+                                modifier = Modifier.fillMaxWidth(),
+                                border = ButtonDefaults.outlinedBorder,
+                                onlyBorder = true,
+                                enabled = false
+                            )
+
+                        AppDivider()
+
+                        Row(
                             modifier = Modifier
-                                .weight(1f)
-                                .padding(end = dimensionResource(id = R.dimen.size_10dp)),
-                            border = ButtonDefaults.outlinedBorder,
-                            onlyBorder = true,
-                            enabled = false
-                        )
-                        DialogButton(
-                            text = stringResource(R.string.dialog_button_confirm),
-                            onClick = {
-                                if ((selected ?: "").isNotEmpty())
-                                    onConfirmClick.invoke()
-                            },
-                            modifier = Modifier
-                                .weight(1f),
-                            border = ButtonDefaults.outlinedBorder,
-                            enabled = (selected ?: "").isNotEmpty(),
-                            onlyBorder = false,
-                        )
+                                .fillMaxWidth()
+                                .background(color = Color.White)
+                                .padding(
+                                    vertical = dimensionResource(id = R.dimen.size_16dp)
+                                ),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            DialogButton(
+                                text = stringResource(R.string.back),
+                                onClick = onBack,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(end = dimensionResource(id = R.dimen.size_10dp)),
+                                border = ButtonDefaults.outlinedBorder,
+                                onlyBorder = true,
+                                enabled = false
+                            )
+                            DialogButton(
+                                text = stringResource(R.string.dialog_button_confirm),
+                                onClick = {
+                                    if ((selected ?: "").isNotEmpty())
+                                        onConfirmClick.invoke()
+                                },
+                                modifier = Modifier
+                                    .weight(1f),
+                                border = ButtonDefaults.outlinedBorder,
+                                enabled = (selected ?: "").isNotEmpty(),
+                                onlyBorder = false,
+                            )
+                        }
+                    }
+                    if (loading) {
+                        CommonProgressBar()
                     }
                 }
 
@@ -1502,11 +1507,7 @@ fun SwitchPlayerDialog(
                 Column(
                     modifier = Modifier
                         .background(color = Color.White)
-                        .padding(
-                            all = dimensionResource(
-                                id = R.dimen.size_16dp
-                            )
-                        ),
+                        .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -1530,7 +1531,8 @@ fun SwitchPlayerDialog(
                     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
                     val list = teamSelected.value
                     LazyColumn(
-                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.height(dimensionResource(id = R.dimen.size_200dp)),
+                        verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         items(teams) { team ->
@@ -1572,10 +1574,10 @@ fun SwitchPlayerDialog(
                                     )
                                     CustomCheckBox(status.value) {
                                         status.value = !status.value
-                                        if (list.contains(team.id)) {
-                                            list.remove(team.id)
+                                        if (list.contains(team.memberDetails.id)) {
+                                            list.remove(team.memberDetails.id)
                                         } else {
-                                            list.add(team.id)
+                                            list.add(team.memberDetails.id)
                                         }
                                         teamSelected.value = list
                                     }
@@ -1671,6 +1673,7 @@ fun SelectDivisionDialog(
                     }
                     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
                     LazyColumn(
+                        modifier = Modifier.height(dimensionResource(id = R.dimen.size_200dp)),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {

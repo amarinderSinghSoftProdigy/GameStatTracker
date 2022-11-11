@@ -21,6 +21,7 @@ import com.allballapp.android.data.response.SwapUser
 import com.allballapp.android.data.response.UserInfo
 import com.allballapp.android.domain.repository.IImageUploadRepo
 import com.allballapp.android.domain.repository.IUserRepository
+import com.allballapp.android.ui.features.home.events.EventChannel
 import com.cometchat.pro.core.CometChat
 import com.cometchat.pro.exceptions.CometChatException
 import com.cometchat.pro.models.User
@@ -231,6 +232,22 @@ class SignUpViewModel @Inject constructor(
                 _signUpUiState.value = _signUpUiState.value.copy(
                     signUpData = _signUpUiState.value.signUpData.copy(termsAndCondition = event.termsAndCondition)
                 )
+            }
+            is SignUpUIEvent.OnPrivacyAndPolicy -> {
+                _signUpUiState.value = _signUpUiState.value.copy(
+                    signUpData = _signUpUiState.value.signUpData.copy(privacyAndPolicy = event.privacyAndPolicy)
+                )
+            }
+            is SignUpUIEvent.ShowToast -> {
+                viewModelScope.launch {
+                    _signUpChannel.send(
+                        SignUpChannel.ShowToast(
+                            UiText.DynamicString(
+                                event.message
+                            )
+                        )
+                    )
+                }
             }
         }
     }

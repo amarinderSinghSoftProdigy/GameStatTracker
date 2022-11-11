@@ -88,7 +88,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import timber.log.Timber
 
-val animeDuration = 1050
+val animeDuration = 500
 
 @AndroidEntryPoint
 class HomeActivity : FragmentActivity() {
@@ -135,7 +135,6 @@ class HomeActivity : FragmentActivity() {
 
             /*Check for internet availability*/
             ListenForConnectionAvailability(homeViewModel)
-
 
             //homeViewModel.showBottomAppBar(true)
             BallerAppMainTheme(
@@ -286,9 +285,9 @@ class HomeActivity : FragmentActivity() {
 
     override fun onResume() {
         super.onResume()
-            if(::homeViewModel.isInitialized){
-                homeViewModel.getUnreadMessageCount()
-            }
+        if (::homeViewModel.isInitialized) {
+            homeViewModel.getUnreadMessageCount()
+        }
     }
 
     // on below line we are calling on activity result method.
@@ -363,7 +362,10 @@ fun NavControllerComposable(
     }
 
     AnimatedNavHost(navController, startDestination = Route.HOME_SCREEN) {
-        composable(route = Route.HOME_SCREEN) { backStackEntry ->
+        composable(route = Route.HOME_SCREEN,   enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+        ) { backStackEntry ->
 
             /*Getting required refreshTeamListing in home screen if new team added*/
             val refreshTeamListing: String = backStackEntry
@@ -433,7 +435,11 @@ fun NavControllerComposable(
                 refreshTeamListing = refreshTeamListing,
             )
         }
-        composable(route = Route.PROFILE_SCREEN) {
+        composable(route = Route.PROFILE_SCREEN,
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+        ) {
             homeViewModel.setTopBar(
                 TopBarData(
                     topBar = TopBar.PROFILE,
@@ -442,7 +448,11 @@ fun NavControllerComposable(
             ProfileScreen(updateTopBar = { homeViewModel.setTopBar(it) }, vm = profileViewModel)
         }
 
-        composable(route = Route.ADD_PROFILE_SCREEN) { backStackEntry ->
+        composable(route = Route.ADD_PROFILE_SCREEN,
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+        ) {
             homeViewModel.setTopBar(
                 TopBarData(
                     label = stringResource(id = R.string.add_new_profile),
@@ -455,9 +465,8 @@ fun NavControllerComposable(
                 signUpViewModel = signUpViewModel,
                 isToAddProfile = true,
                 onNext = {
-                    navController.previousBackStackEntry
-                        ?.savedStateHandle
-                        ?.set("refreshProfileList", "true")
+                    homeViewModel.onEvent(HomeScreenEvent.OnSwapClick())
+                    signUpViewModel.onEvent(SignUpUIEvent.ClearPhoneField)
                     navController.popBackStack()
                 },
                 onBack = {
@@ -465,8 +474,12 @@ fun NavControllerComposable(
                 }, moveToTermsAndConditions = {
                     url = it
                     navController.navigate(Route.WEB_VIEW)
-                })
-
+                },
+                moveToPrivacyAndPolicy = {
+                    url = it
+                    navController.navigate(Route.WEB_VIEW)
+                }
+            )
         }
 
         composable(route = Route.ADD_PROFILE_SCREEN + "/{countryCode}/{mobileNumber}",
@@ -475,7 +488,10 @@ fun NavControllerComposable(
                     type = NavType.StringType
                 }, navArgument("mobileNumber") {
                     type = NavType.StringType
-                })
+                }),
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
         ) {
 
             val countryCode = it.arguments?.getString("countryCode") ?: ""
@@ -495,20 +511,24 @@ fun NavControllerComposable(
                 isToAddProfile = true,
                 signUpViewModel = signUpViewModel,
                 onNext = {
-                    navController.previousBackStackEntry
-                        ?.savedStateHandle
-                        ?.set("refreshProfileList", "true")
                     navController.popBackStack()
                 },
                 onBack = {
                     navController.popBackStack()
-                }, moveToTermsAndConditions = { urL->
+                }, moveToTermsAndConditions = { urL ->
                     url = urL
+                    navController.navigate(Route.WEB_VIEW)
+                }, moveToPrivacyAndPolicy = {
+                    url = it
                     navController.navigate(Route.WEB_VIEW)
                 })
 
         }
-        composable(route = Route.PROFILE_EDIT_SCREEN) {
+        composable(route = Route.PROFILE_EDIT_SCREEN,
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+        ) {
             homeViewModel.setTopBar(
                 TopBarData(
                     topBar = TopBar.EDIT_PROFILE,
@@ -590,7 +610,10 @@ fun NavControllerComposable(
             arguments = listOf(
                 navArgument("teamId") {
                     type = NavType.StringType
-                })
+                }),
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
         ) {
 
             val teamId = it.arguments?.getString("teamId") ?: ""
@@ -615,11 +638,6 @@ fun NavControllerComposable(
 
 
         composable(route = Route.EVENTS_SCREEN) {
-            /* homeViewModel.setTopBar(
-                 TopBarData(
-                     topBar = TopBar.MY_EVENT,
-                 )
-             )*/
             EventsScreen(
                 teamViewModel,
                 eventViewModel,
@@ -649,7 +667,12 @@ fun NavControllerComposable(
                 }
             )
         }
-        composable(route = Route.GAME_DETAIL_SCREEN) {
+
+        composable(route = Route.GAME_DETAIL_SCREEN,
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+        ) {
             homeViewModel.setTopBar(
                 TopBarData(
                     topBar = TopBar.GAME_DETAILS,
@@ -660,7 +683,11 @@ fun NavControllerComposable(
                 navController.navigate(Route.GAME_RULES_SCREENS)
             })
         }
-        composable(route = Route.OPP_DETAIL_SCREEN) {
+        composable(route = Route.OPP_DETAIL_SCREEN,
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+        ) {
             homeViewModel.setTopBar(
                 TopBarData(
                     topBar = TopBar.EVENT_DETAILS,
@@ -672,7 +699,11 @@ fun NavControllerComposable(
                 navController.navigate(Route.EVENT_REGISTRATION)
             })
         }
-        composable(route = Route.EVENT_REGISTRATION) {
+        composable(route = Route.EVENT_REGISTRATION,
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+        ) {
             homeViewModel.setTopBar(
                 TopBarData(
                     label = stringResource(id = R.string.registration_form),
@@ -684,7 +715,6 @@ fun NavControllerComposable(
                 EventRefereeRegistrationScreen(vm = eventViewModel) {
                     navController.navigate(Route.EVENT_REGISTRATION_SUCCESS)
                 }
-
             } else {
                 EventRegistraionDetails(eventViewModel, teamViewModel, moveToPrivacy = {
                     url = it
@@ -698,7 +728,11 @@ fun NavControllerComposable(
             }
         }
 
-        composable(route = Route.EVENT_REGISTRATION_SUCCESS) {
+        composable(route = Route.EVENT_REGISTRATION_SUCCESS,
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+        ) {
             homeViewModel.setTopBar(
                 TopBarData(
                     label = stringResource(id = R.string.registration_form),
@@ -711,7 +745,11 @@ fun NavControllerComposable(
                 }
             }
         }
-        composable(route = Route.LEAGUE_DETAIL_SCREEN) {
+        composable(route = Route.LEAGUE_DETAIL_SCREEN,
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+        ) {
             homeViewModel.setTopBar(
                 TopBarData(
                     label = eventMainTitle,
@@ -738,7 +776,11 @@ fun NavControllerComposable(
                 eventViewModel = eventViewModel
             )
         }
-        composable(route = Route.EVENTS_FILTER_SCREEN) {
+        composable(route = Route.EVENTS_FILTER_SCREEN,
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+        ) {
             homeViewModel.setTopBar(
                 TopBarData(
                     topBar = TopBar.FILTER_EVENT,
@@ -758,7 +800,10 @@ fun NavControllerComposable(
             arguments = listOf(
                 navArgument("eventId") {
                     type = NavType.StringType
-                })
+                }),
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
         ) {
             homeViewModel.setTopBar(
                 TopBarData(
@@ -768,7 +813,11 @@ fun NavControllerComposable(
             val eventId = it.arguments?.getString("eventId") ?: ""
             EventDetailsScreen(eventViewModel, eventId)
         }
-        composable(route = Route.GAME_RULES_SCREENS) {
+        composable(route = Route.GAME_RULES_SCREENS,
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+        ) {
             homeViewModel.setTopBar(
                 TopBarData(
                     topBar = TopBar.GAME_RULES, label = eventTitle
@@ -776,7 +825,11 @@ fun NavControllerComposable(
             )
             GameRuleScreen(eventViewModel)
         }
-        composable(route = Route.MANAGED_TEAM_SCREEN) { backStackEntry ->
+        composable(route = Route.MANAGED_TEAM_SCREEN,
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+        ) { backStackEntry ->
 
             // get data passed back from next stack
             val venue: String = backStackEntry
@@ -802,7 +855,11 @@ fun NavControllerComposable(
         }
 
 
-        composable(route = Route.ADD_PLAYER_SCREEN) { backStackEntry ->
+        composable(route = Route.ADD_PLAYER_SCREEN,
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+        ) {
             homeViewModel.setTopAppBar(true)
             homeViewModel.setTopBar(
                 TopBarData(
@@ -838,6 +895,9 @@ fun NavControllerComposable(
                 navArgument("teamId") {
                     type = NavType.StringType
                 }),
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
         ) {
             homeViewModel.setTopAppBar(true)
             //homeViewModel.showBottomAppBar(false)
@@ -881,8 +941,6 @@ fun NavControllerComposable(
             popExitTransition = { slideOutHorizont(animeDuration) }
         ) { backStackEntry ->
 
-            val refreshProfileList: String = backStackEntry
-                .savedStateHandle.get<String>("refreshProfileList") ?: ""
             homeViewModel.setTopBar(
                 TopBarData(
                     label = stringResource(id = R.string.invitation),
@@ -894,7 +952,6 @@ fun NavControllerComposable(
                 navController.popBackStack()
             }
             InvitationScreen(
-                refreshProfileList = refreshProfileList,
                 vmSetupTeam = setupTeamViewModelUpdated,
                 onNewProfileIntent = { countryCode, mobileNumber ->
                     navController.navigate(Route.ADD_PROFILE_SCREEN + "/$countryCode/$mobileNumber")
@@ -916,14 +973,15 @@ fun NavControllerComposable(
                     navController.navigate(Route.ADD_MY_PLAYER_SCREEN + "/${teamId}")
                 })
         }
-        composable(route = Route.TEAM_SETUP_SCREEN) { backStackEntry ->
+        composable(route = Route.TEAM_SETUP_SCREEN,
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+        ) { backStackEntry ->
 
             // get data passed back from next stack
             val venue: String = backStackEntry
                 .savedStateHandle.get<String>("venue") ?: ""
-            val refreshProfileList: String = backStackEntry
-                .savedStateHandle.get<String>("refreshProfileList") ?: ""
-
             homeViewModel.setTopAppBar(true)
             //homeViewModel.showBottomAppBar(false)
             homeViewModel.setTopBar(
@@ -940,7 +998,6 @@ fun NavControllerComposable(
                 )
             }
             TeamSetupScreenUpdated(
-                refreshProfileList,
                 homeVm = homeViewModel,
                 venue = venue,
                 vm = setupTeamViewModelUpdated,
@@ -973,14 +1030,14 @@ fun NavControllerComposable(
                     }
                 }, onVenueClick = {
                     navController.navigate(Route.SELECT_VENUE)
-                }, onTeamCreationSuccess = {
-                    navController.previousBackStackEntry
-                        ?.savedStateHandle
-                        ?.set("refreshTeamListing", true.toString())
                 })
         }
 
-        composable(route = Route.NEW_EVENT) { backStackEntry ->
+        composable(route = Route.NEW_EVENT,
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+        ) { backStackEntry ->
 
             // get data passed back from next stack
             val venue: String = backStackEntry
@@ -1006,7 +1063,11 @@ fun NavControllerComposable(
             arguments = listOf(
                 navArgument("venueId") {
                     type = NavType.StringType
-                })
+                }),
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+
         ) {
 
             val venueId = it.arguments?.getString("venueId") ?: ""
@@ -1024,7 +1085,11 @@ fun NavControllerComposable(
             arguments = listOf(
                 navArgument("divisionId") {
                     type = NavType.StringType
-                })
+                }),
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+
         ) {
             homeViewModel.setTopBar(
                 TopBarData(
@@ -1036,7 +1101,11 @@ fun NavControllerComposable(
             DivisionScreenTab(divisionId, eventViewModel)
         }
 
-        composable(route = Route.TEAM_TAB) {
+        composable(route = Route.TEAM_TAB,
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+        ) {
             homeViewModel.setTopBar(
                 TopBarData(
                     label = eventTitle,
@@ -1046,11 +1115,19 @@ fun NavControllerComposable(
             )
             EventTeamTabs(vm = teamViewModel)
         }
-        composable(route = Route.MY_CHAT_DETAIL) {
+        composable(route = Route.MY_CHAT_DETAIL,
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+        ) {
             Timber.e("data " + CometChatUI.convo)
             TeamsChatDetailScreen()
         }
-        composable(route = Route.TEAMS_CHAT_SCREEN) {
+        composable(route = Route.TEAMS_CHAT_SCREEN,
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+        ) {
             TeamsChatScreen(
                 "",
                 vm = chatViewModel,
@@ -1063,7 +1140,11 @@ fun NavControllerComposable(
                 }
             )
         }
-        composable(route = Route.SELECT_VENUE) {
+        composable(route = Route.SELECT_VENUE,
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+        ) {
             homeViewModel.setTopBar(
                 TopBarData(
                     label = stringResource(id = R.string.select_venue),
@@ -1078,7 +1159,11 @@ fun NavControllerComposable(
             })
         }
 
-        composable(route = Route.WEB_VIEW) {
+        composable(route = Route.WEB_VIEW,
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+        ) {
             homeViewModel.setTopBar(
                 TopBarData(
                     label = "",
@@ -1088,7 +1173,11 @@ fun NavControllerComposable(
             CommonWebView(url)
         }
 
-        composable(route = Route.GAME_STAFF_SCREEN) {
+        composable(route = Route.GAME_STAFF_SCREEN,
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+        ) {
             homeViewModel.setTopBar(
                 TopBarData(
                     label = "",
@@ -1100,7 +1189,11 @@ fun NavControllerComposable(
             })
         }
 
-        composable(route = Route.OPPORTUNITIES_SCREEN) {
+        composable(route = Route.OPPORTUNITIES_SCREEN,
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+        ) {
             homeViewModel.setTopBar(
                 TopBarData(
                     label = stringResource(id = R.string.events_label),
@@ -1108,11 +1201,16 @@ fun NavControllerComposable(
                 )
             )
             OpportunitiesScreen(eventViewModel) {
-                navController.popBackStack()
+                eventTitle = it
+                navController.navigate(Route.OPP_DETAIL_SCREEN)
             }
         }
 
-        composable(route = Route.MY_LEAGUE) {
+        composable(route = Route.MY_LEAGUE,
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+        ) {
             homeViewModel.setTopBar(
                 TopBarData(
                     label = stringResource(id = R.string.events_label),
@@ -1125,7 +1223,11 @@ fun NavControllerComposable(
             }
         }
 
-        composable(route = Route.MY_EVENTS) {
+        composable(route = Route.MY_EVENTS,
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+        ) {
             homeViewModel.setTopBar(
                 TopBarData(
                     label = stringResource(id = R.string.events_label),

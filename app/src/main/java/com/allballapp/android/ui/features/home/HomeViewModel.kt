@@ -53,7 +53,6 @@ class HomeViewModel @Inject constructor(
 
         viewModelScope.launch {
             if (UserStorage.token.isNotEmpty()) {
-                //getHomeList()
                 getUserInfo()
             }
         }
@@ -140,7 +139,11 @@ class HomeViewModel @Inject constructor(
             dataStoreManager.setColor("")
             dataStoreManager.setTeamName("")
             logoutFromCometChat()
-    }}
+            UserStorage.userId = ""
+            UserStorage.teamId = ""
+            UserStorage.teamName = ""
+        }
+    }
 
     fun onEvent(event: HomeScreenEvent) {
         when (event) {
@@ -265,7 +268,8 @@ class HomeViewModel @Inject constructor(
                     if (response.status && response.data != null) {
                         _state.value =
                             _state.value.copy(
-                                swapUsers = response.data
+                                swapUsers = response.data,
+                                phone = (response.data.filter { it.phone.isNotEmpty() })[0].phone
                             )
                         if (check)
                             _homeChannel.send(
@@ -356,9 +360,9 @@ class HomeViewModel @Inject constructor(
                         _state.value =
                             _state.value.copy(homePageCoachModel = baseResponse.data)
                         getHomeList()
-                       /* _homeChannel.send(
-                            HomeChannel.OnUserIdUpdate
-                        )*/
+                        /* _homeChannel.send(
+                             HomeChannel.OnUserIdUpdate
+                         )*/
                     }
                 }
             }
@@ -439,7 +443,7 @@ class HomeViewModel @Inject constructor(
         if(AppConstants.ENABLE_CHAT){
         CometChat.login(
             uid,
-           BuildConfig.COMET_CHAT_AUTH_KEY,
+            BuildConfig.COMET_CHAT_AUTH_KEY,
             object : CometChat.CallbackListener<User?>() {
                 override fun onSuccess(user: User?) {
                     Timber.i(" CometChat- Login Successful : " + user.toString())

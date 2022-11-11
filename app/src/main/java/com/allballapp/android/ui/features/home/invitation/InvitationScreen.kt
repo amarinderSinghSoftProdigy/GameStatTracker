@@ -17,6 +17,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,7 +37,6 @@ import com.allballapp.android.common.apiToUIDateFormat
 import com.allballapp.android.data.request.Members
 import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.home.EmptyScreen
-import com.allballapp.android.ui.features.home.HomeChannel
 import com.allballapp.android.ui.features.home.HomeViewModel
 import com.allballapp.android.ui.features.home.home_screen.HomeScreenEvent
 import com.allballapp.android.ui.features.sign_up.SignUpChannel
@@ -51,7 +51,6 @@ import timber.log.Timber
 
 @Composable
 fun InvitationScreen(
-    refreshProfileList: String,
     vmSetupTeam: SetupTeamViewModelUpdated,
     homeVm: HomeViewModel,
     signUpViewModel: SignUpViewModel,
@@ -60,6 +59,9 @@ fun InvitationScreen(
     addProfileClick: () -> Unit,
     onInviteClick: (teamId: String) -> Unit,
 ) {
+    val showNoMessage = remember {
+        mutableStateOf(false)
+    }
     val vm: InvitationViewModel = hiltViewModel()
     val state = vm.invitationState.value
     val context = LocalContext.current
@@ -77,11 +79,8 @@ fun InvitationScreen(
         CommonProgressBar()
     }
 
-    if (refreshProfileList == true.toString()) {
-        LaunchedEffect(key1 = refreshProfileList, block = {
-            homeVm.onEvent(HomeScreenEvent.OnSwapClick())
-
-        })
+    remember {
+        homeVm.onEvent(HomeScreenEvent.OnSwapClick())
     }
     LaunchedEffect(key1 = Unit) {
         vmSetupTeam.teamSetupChannel.collect { uiEvent ->
@@ -110,7 +109,6 @@ fun InvitationScreen(
                 is SignUpChannel.OnProfileUpdateSuccess -> {
                     homeVm.onEvent(HomeScreenEvent.OnSwapClick())
                     Timber.i("HomeChannel.OnProfileUpdateSuccess")
-
                 }
                 else -> Unit
             }
@@ -123,21 +121,6 @@ fun InvitationScreen(
                     vm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(true))
                 }
                 else -> Unit
-            }
-        }
-    }
-
-
-    LaunchedEffect(key1 = Unit) {
-        homeVm.homeChannel.collect { uiEvent ->
-            when (uiEvent) {
-
-                is HomeChannel.OnSwapListSuccess -> {
-                    vm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
-                    showSwapDialog.value = true
-                    Timber.i("HomeChannel.OnSwapListSuccess")
-                }
-
             }
         }
     }
@@ -200,6 +183,7 @@ fun InvitationScreen(
 
     if (state.showGuardianDialog) {
         SelectGuardianRoleDialog(
+            state.showLoading,
             state.selectedRoleKey,
             onBack = {
                 vm.onEvent(InvitationEvent.OnRoleDialogClick(true))
@@ -226,6 +210,7 @@ fun InvitationScreen(
                 vm.onEvent(InvitationEvent.OnAddPlayerDialogClick(true))
             },
             dontHaveChildClick = {
+                showNoMessage.value = true
                 vm.onEvent(InvitationEvent.ConfirmGuardianWithoutChildAlert(true))
             }
         )
@@ -264,6 +249,7 @@ fun InvitationScreen(
         vmSetupTeam.initialInviteCount(1)
 
         InviteTeamMembersDialog(
+            role = if (state.selectedRoleKey == UserType.PLAYER.key) UserType.PARENT.key else UserType.PLAYER.key,
             onBack = {
                 vm.onEvent(InvitationEvent.OnRoleDialogClick(true))
                 vm.onEvent(InvitationEvent.OnGuardianDialogClick(true))
@@ -276,7 +262,7 @@ fun InvitationScreen(
 
                     if (teamState.inviteList.isNotEmpty()) {
                         /*Check if user is entering his own number or not*/
-                        if (homeState.user.phone != teamState.inviteList[0].countryCode + teamState.inviteList[0].contact) {
+                        if (homeState.phone != teamState.inviteList[0].countryCode + teamState.inviteList[0].contact) {
                             vmSetupTeam.onEvent(
                                 TeamSetupUIEventUpdated.OnInviteTeamMembers(
                                     teamId = state.selectedInvitation.team._id,
@@ -287,6 +273,7 @@ fun InvitationScreen(
                         } else {
                             /* show option to select his own profile*/
                             homeVm.onEvent(HomeScreenEvent.OnSwapClick())
+                            showSwapDialog.value = true
                         }
                     }
                 }
@@ -341,7 +328,10 @@ fun InvitationScreen(
                         code = code
                     )
                 )
-            }, roles = state.roles, onRoleValueChange = { index, role ->
+            }, roles = if (state.selectedRoleKey != UserType.PLAYER.key)
+                state.roles.filter { member -> member.key == UserType.PLAYER.key }
+            else state.roles.filter { member -> member.key != UserType.PLAYER.key },
+            onRoleValueChange = { index, role ->
                 vmSetupTeam.onEvent(
                     TeamSetupUIEventUpdated.OnRoleValueChange(
                         index = index,
@@ -388,8 +378,10 @@ fun InvitationScreen(
         InvitationSuccessfullySentDialog(
             onDismiss = {
                 vm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
+                showNoMessage.value = false
             },
             onConfirmClick = {
+                showNoMessage.value = false
                 onInviteClick.invoke(state.selectedInvitation.team._id)
                 vm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
                 vm.onEvent(InvitationEvent.OnRoleDialogClick(false))
@@ -397,7 +389,7 @@ fun InvitationScreen(
             },
             teamLogo = BuildConfig.IMAGE_SERVER + state.selectedInvitation.team.logo,
             teamName = state.selectedInvitation.team.name,
-            playerName = if (teamState.inviteList.isNotEmpty()) teamState.inviteList[0].name else ""
+            playerName = if (showNoMessage.value) stringResource(id = R.string.no_player) else if (teamState.inviteList.isNotEmpty()) teamState.inviteList[0].name else ""
         )
     }
 }

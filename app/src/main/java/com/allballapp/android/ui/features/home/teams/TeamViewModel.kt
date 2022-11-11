@@ -286,7 +286,6 @@ class TeamViewModel @Inject constructor(
     }
 
     private suspend fun setDefaultTeam(team: Team) {
-        UserStorage.teamId = team._id
         _teamUiState.value = _teamUiState.value.copy(
             teamId = team._id,
             selectedTeam = team,
@@ -617,10 +616,14 @@ class TeamViewModel @Inject constructor(
                 teamResponse.value.let { response ->
                     if (response.status && response.data != null) {
                         _teamUiState.value = _teamUiState.value.copy(
-                            member = Members(_id=userId,name=response.data.name, profileImage = response.data.logo),
+                            member = Members(
+                                _id = userId,
+                                name = response.data.name,
+                                profileImage = response.data.logo
+                            ),
                         )
                     } else {
-                       _teamChannel.send(
+                        _teamChannel.send(
                             TeamChannel.ShowToast(
                                 UiText.DynamicString(
                                     response.statusMessage
@@ -632,6 +635,7 @@ class TeamViewModel @Inject constructor(
             }
         }
     }
+
     private suspend fun getTeamByTeamId(userId: String) {
         _teamUiState.value =
             _teamUiState.value.copy(isLoading = true)

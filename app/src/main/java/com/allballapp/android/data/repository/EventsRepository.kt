@@ -95,9 +95,9 @@ class EventsRepository @Inject constructor(
         }
     }
 
-    override suspend fun getEventOpportunities(): ResultWrapper<BaseResponse<List<OpportunitiesItem>>> {
+    override suspend fun getEventOpportunities(teamId: String): ResultWrapper<BaseResponse<List<OpportunitiesItem>>> {
         return safeApiCall(dispatcher) {
-            service.getAllOpportunities()
+            service.getAllOpportunities(teamId)
         }
     }
 

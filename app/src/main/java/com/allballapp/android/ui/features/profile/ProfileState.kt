@@ -34,6 +34,7 @@ data class ProfileState(
     val selectedDocKey: String = "",
     val selectedTeamIndex: Int? = null,
     val payData: ArrayList<PayResponse> = arrayListOf(),
+    val scheduleList: List<ScheduleResponseObject> = mutableListOf(),
     val searchGameStaff: String = "",
     val searchGameStaffList: List<GetSearchStaff> = emptyList(),
     val selectedImage: String = ""

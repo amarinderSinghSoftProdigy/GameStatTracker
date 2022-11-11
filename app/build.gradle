@@ -21,7 +21,7 @@ android {
         minSdk 24
         targetSdk 33
         versionCode 1
-        versionName "1.14"
+        versionName "1.20"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -78,9 +78,8 @@ android {
         create("develop") {
             dimension = "ballerapp"
             buildConfigField("String", "API_SERVER", "\"http://staging.allballapp.com/api/\"")
-            //buildConfigField("String", "API_SERVER", "\"http://ballerapp-staging-v1.us-east-2.elasticbeanstalk.com/api/\"")
             //buildConfigField("String", "API_SERVER", "\"https://ballerapi.softprodigy.in/api/\"")
-            //   buildConfigField("String", "API_SERVER", "\"https://ballerapi-qa.softprodigy.in/api/\"")
+            //buildConfigField("String", "API_SERVER", "\"https://ballerapi-qa.softprodigy.in/api/\"")
             //buildConfigField("String", "API_SERVER", "\"http://qa.allballapp.com/api/\"")
 //            buildConfigField("String", "API_SERVER", "\"http://qa.allballapp.com/api/\"")
 
@@ -126,8 +125,8 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
 
     /*Hilt and navigation */
-    implementation ("androidx.hilt:hilt-navigation-compose:1.0.0")
-    implementation ("androidx.navigation:navigation-compose:2.5.3")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation("androidx.navigation:navigation-compose:2.5.3")
     implementation("com.google.accompanist:accompanist-navigation-animation:0.24.10-beta")
 
     implementation("com.google.dagger:hilt-android:$hilt_version")
@@ -200,4 +199,5 @@ dependencies {
     //implementation "com.google.accompanist:accompanist-swiperefresh:0.27.0"
     implementation 'com.google.firebase:firebase-messaging'
 
+    implementation "com.github.prolificinteractive:material-calendarview:1.6.1"
 }

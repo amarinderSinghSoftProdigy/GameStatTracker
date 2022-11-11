@@ -152,7 +152,7 @@ open interface APIService {
     ): BaseResponse<ArrayList<VenueDetails>>
 
     @GET(ApiConstants.GET_ALL_OPPORTUNITIES)
-    suspend fun getAllOpportunities(): BaseResponse<List<OpportunitiesItem>>
+    suspend fun getAllOpportunities(@Query("teamId") id: String): BaseResponse<List<OpportunitiesItem>>
 
     @GET(ApiConstants.GET_OPPORTUNITY_ID)
     suspend fun getOpportunityDetail(@Query("eventId") id: String): BaseResponse<OpportunitiesDetail>
@@ -184,7 +184,10 @@ open interface APIService {
 
     @GET(ApiConstants.GET_MY_LEAGUE)
     suspend fun getMyLeagues(
-        @Query("teamId") teamId: String,@Query("page") page: Int, @Query("limit") limit: Int, @Query("sort") sort: String
+        @Query("teamId") teamId: String,
+        @Query("page") page: Int,
+        @Query("limit") limit: Int,
+        @Query("sort") sort: String
     ): BaseResponse<ArrayList<MyLeagueResponse>>
 
     @GET(ApiConstants.GET_DIVISION)
@@ -280,5 +283,11 @@ open interface APIService {
 
     @POST(ApiConstants.REGISTER_GAME_STAFF)
     suspend fun registerGameStaff(@Body gameStaffRegisterRequest: GameStaffRegisterRequest): BaseResponse<Any>
+
+    @GET(ApiConstants.GET_STAFF_SCHEDULE)
+    suspend fun getStaffSchedule(@Query("id") id: String): BaseResponse<List<ScheduleResponseObject>>
+
+    @PUT(ApiConstants.UPDATE_SCHEDULE)
+    suspend fun updateStaffSchedule(@Body request: StaffScheduleRequest): BaseResponse<Any>
 
 }

@@ -103,8 +103,8 @@ class CommonUtils {
             var str = ""
 
             try {
-                firstDate = inputFormat.parse(startTime)
-                lastDate = inputFormat.parse(endTime)
+                firstDate = inputFormat.parse(startTime)!!
+                lastDate = inputFormat.parse(endTime)!!
                 str = startFormat.format(firstDate) + " - " + endFormat.format(lastDate)
             } catch (e: ParseException) {
                 e.printStackTrace()
@@ -112,15 +112,23 @@ class CommonUtils {
             return str
         }
 
+        fun getDateString(startDate: String): String {
+            return if (startDate.contains("T")) startDate.substring(
+                0,
+                startDate.indexOf("T")
+            ) else startDate
+        }
+
+
         @SuppressLint("SimpleDateFormat")
-        fun formatDateSingle(startDate: String): String {
+        fun formatDateSingle(startDate: String, format: String = ""): String {
             val startTime =
                 if (startDate.contains("T")) startDate.substring(
                     0,
                     startDate.indexOf("T")
                 ) else startDate
             val inputPattern = "yyyy-MM-dd"
-            val outputPattern = "MMM dd, yyyy"
+            val outputPattern = format.ifEmpty { "MMM dd, yyyy" }
             val inputFormat = SimpleDateFormat(inputPattern)
             val endFormat = SimpleDateFormat(outputPattern)
 
@@ -128,8 +136,22 @@ class CommonUtils {
             var str = ""
 
             try {
-                firstDate = inputFormat.parse(startTime)
+                firstDate = inputFormat.parse(startTime)!!
                 str = endFormat.format(firstDate)
+            } catch (e: ParseException) {
+
+            }
+            return str
+        }
+
+
+        @SuppressLint("SimpleDateFormat")
+        fun formatDateRequest(startDate: Date): String {
+            val outputPattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+            val endFormat = SimpleDateFormat(outputPattern)
+            var str = ""
+            try {
+                str = endFormat.format(startDate)
             } catch (e: ParseException) {
 
             }

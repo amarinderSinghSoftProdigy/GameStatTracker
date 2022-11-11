@@ -48,7 +48,18 @@ data class VenueDetails(
     @SerializedName("venueName") val venueName: String = "",
     @SerializedName("courtId") val courtId: ArrayList<CourtInfo> = arrayListOf(),
     @SerializedName("venueAddress") val venueAddress: VenueAddress = VenueAddress(),
-    @SerializedName("location") val location: String? = null
+    @SerializedName("location") val location: String? = null,
+    @SerializedName("venueLocation") val venueLocation: com.allballapp.android.data.request.Location = com.allballapp.android.data.request.Location(),
+    @SerializedName("manager") val manager: Manager = Manager(),
+    @SerializedName("scheduleManager") val scheduleManager: Manager = Manager(),
+    @SerializedName("paymentManager") val paymentManager: Manager = Manager(),
+    @SerializedName("facilityManager") val facilityManager: Manager = Manager()
+)
+
+data class Manager(
+    @SerializedName("name") val name: String = "",
+    @SerializedName("email") val email: String = "",
+    @SerializedName("phone") val phone: String = ""
 )
 
 data class VenueAddress(

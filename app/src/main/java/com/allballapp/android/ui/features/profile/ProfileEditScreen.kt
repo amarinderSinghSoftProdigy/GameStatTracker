@@ -427,7 +427,7 @@ fun ProfileEditScreen(
                     )
                 }
 
-                val regex = ("^[0-9 _ ,]*\$")
+                val regex = ("^[0-9,]*\$")
                 val p = regex.toRegex()
 
                 AppText(
@@ -451,7 +451,7 @@ fun ProfileEditScreen(
                         keyboardOptions = KeyboardOptions(
                             imeAction = ImeAction.Next,
                             capitalization = KeyboardCapitalization.Sentences,
-                            keyboardType = KeyboardType.Number
+                           /* keyboardType = KeyboardType.Number*/
                         ),
                     )
 
@@ -645,7 +645,6 @@ fun ProfileEditScreen(
                         onValueChange = {
                             if (it.length <= maxChar)
                                 vm.onEvent(ProfileEvent.OnAllTimeFavChange(it))
-
                         },
                         stringResource(id = R.string.favoritea_all_time_tlayer),
                         errorMessage = stringResource(id = R.string.valid_first_name),

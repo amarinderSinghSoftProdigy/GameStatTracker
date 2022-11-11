@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.allballapp.android.R
-import com.allballapp.android.data.UserStorage
 import com.allballapp.android.ui.theme.ColorGreyLighter
 import com.allballapp.android.ui.theme.appColors
 
@@ -181,15 +180,13 @@ fun CoachFlowBackground(
                                     showOptions.value = false
                                     click(Options.SWAP_PROFILES)
                                 }
-                                if (UserStorage.role == UserType.COACH.key) {
-                                    Divider(thickness = dimensionResource(id = R.dimen.divider))
-                                    OptionItem(
-                                        stringResource(id = R.string.invite),
-                                        R.drawable.ic_invite
-                                    ) {
-                                        showOptions.value = false
-                                        click(Options.INVITE)
-                                    }
+                                Divider(thickness = dimensionResource(id = R.dimen.divider))
+                                OptionItem(
+                                    stringResource(id = R.string.invite),
+                                    R.drawable.ic_invite
+                                ) {
+                                    showOptions.value = false
+                                    click(Options.INVITE)
                                 }
                                 Divider(thickness = dimensionResource(id = R.dimen.divider))
                                 OptionItem(
