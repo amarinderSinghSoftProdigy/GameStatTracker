@@ -362,7 +362,7 @@ fun EventRegistraionDetails(
                     showError.value = true
                 } else if (!state.registerRequest.termsAndCondition || !state.registerRequest.privacy) {
                     message = context.getString(R.string.please_accept_tems)
-                } else if (state.registerRequest.payment.toInt() < state.opportunitiesDetail.standardPrice.toInt()) {
+                } else if (state.registerRequest.payment.toDouble() < state.opportunitiesDetail.standardPrice.toDouble()) {
                     message = context.getString(R.string.valid_cash_message)
                 }
                 if (message.isNotEmpty()) {

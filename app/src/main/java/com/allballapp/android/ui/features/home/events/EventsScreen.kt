@@ -54,7 +54,7 @@ fun EventsScreen(
     val dataStoreManager = DataStoreManager(LocalContext.current)
     val role = dataStoreManager.getRole.collectAsState(initial = "")
     // on below line we are creating variable for pager state.
-     // Add the count for number of pages
+    // Add the count for number of pages
 
     Box(Modifier.fillMaxSize()) {
         Column(
@@ -62,7 +62,7 @@ fun EventsScreen(
                 .fillMaxSize()
         ) {
             if (role.value == UserType.REFEREE.key) {
-                val list =  listOf(
+                val list = listOf(
                     TabItems.MyShifts,
                     TabItems.Opportunity,
                 )
@@ -79,7 +79,7 @@ fun EventsScreen(
                     role
                 )
             } else {
-                val list =    listOf(
+                val list = listOf(
                     TabItems.Events,
                     TabItems.Leagues,
                     TabItems.Opportunity,
