@@ -67,6 +67,7 @@ fun TeamSetupScreenUpdated(
     addProfileClick: () -> Unit,
     vm: SetupTeamViewModelUpdated,
     homeVm: HomeViewModel,
+    onTeamCreationSuccess: () -> Unit,
     inviteVm: InvitationViewModel = hiltViewModel()
 ) {
 
@@ -191,6 +192,7 @@ fun TeamSetupScreenUpdated(
                     vm.onEvent(TeamSetupUIEventUpdated.OnLogoUploadSuccess)
                 }
                 is TeamSetupChannel.OnTeamCreate -> {
+                    onTeamCreationSuccess.invoke()
                     teamId.value = uiEvent.id
                     Toast.makeText(context, uiEvent.message, Toast.LENGTH_LONG)
                         .show()

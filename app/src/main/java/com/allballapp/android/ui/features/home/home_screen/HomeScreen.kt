@@ -64,6 +64,7 @@ fun HomeScreen(
     onLeagueClick: () -> Unit,
     onEventsClick: () -> Unit,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
+    refreshTeamListing: String = "",
 ) {
     val dataStoreManager = DataStoreManager(LocalContext.current)
     val color = dataStoreManager.getColor.collectAsState(initial = AppConstants.DEFAULT_COLOR)
@@ -80,6 +81,12 @@ fun HomeScreen(
         mutableStateOf(false)
     }
 
+    LaunchedEffect(key1 = refreshTeamListing, block = {
+        /* New team is added so refresh the teams listing*/
+        if (refreshTeamListing == true.toString()) {
+            teamVm.getTeamsUserId()
+        }
+    })
     remember {
         coroutineScope.launch {
             if (UserStorage.token.isNotEmpty()) {
@@ -503,6 +510,7 @@ fun HomeScreen(
             showLoading = homeState.isDataLoading,
             onCreatePlayerClick = {
                 addProfileClick()
+                vm.onEvent(HomeScreenEvent.HideSwap(false))
             },
             showCreatePlayerButton = true
         )

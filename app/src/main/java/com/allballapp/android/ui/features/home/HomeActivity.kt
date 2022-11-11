@@ -363,7 +363,12 @@ fun NavControllerComposable(
     }
 
     AnimatedNavHost(navController, startDestination = Route.HOME_SCREEN) {
-        composable(route = Route.HOME_SCREEN) {
+        composable(route = Route.HOME_SCREEN) { backStackEntry ->
+
+            /*Getting required refreshTeamListing in home screen if new team added*/
+            val refreshTeamListing: String = backStackEntry
+                .savedStateHandle.get<String>("refreshTeamListing") ?: ""
+
             homeViewModel.setTopAppBar(false)
             HomeScreen(
                 role,
@@ -424,7 +429,8 @@ fun NavControllerComposable(
                 setupTeamViewModelUpdated = setupTeamViewModelUpdated,
                 onChatCLick = {
                     navController.navigate(Route.TEAMS_CHAT_SCREEN)
-                }
+                },
+                refreshTeamListing = refreshTeamListing,
             )
         }
         composable(route = Route.PROFILE_SCREEN) {
@@ -964,6 +970,10 @@ fun NavControllerComposable(
                     }
                 }, onVenueClick = {
                     navController.navigate(Route.SELECT_VENUE)
+                }, onTeamCreationSuccess = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("refreshTeamListing", true.toString())
                 })
         }
 
