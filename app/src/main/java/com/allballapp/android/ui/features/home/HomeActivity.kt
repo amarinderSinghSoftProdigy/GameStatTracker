@@ -474,8 +474,12 @@ fun NavControllerComposable(
                 }, moveToTermsAndConditions = {
                     url = it
                     navController.navigate(Route.WEB_VIEW)
-                })
-
+                },
+                moveToPrivacyAndPolicy = {
+                    url = it
+                    navController.navigate(Route.WEB_VIEW)
+                }
+            )
         }
 
         composable(route = Route.ADD_PROFILE_SCREEN + "/{countryCode}/{mobileNumber}",
@@ -513,6 +517,9 @@ fun NavControllerComposable(
                     navController.popBackStack()
                 }, moveToTermsAndConditions = { urL ->
                     url = urL
+                    navController.navigate(Route.WEB_VIEW)
+                }, moveToPrivacyAndPolicy = {
+                    url = it
                     navController.navigate(Route.WEB_VIEW)
                 })
 

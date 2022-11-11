@@ -185,6 +185,7 @@ class MainActivity : ComponentActivity() {
         )
     }
 }
+
 @Composable
 fun NavControllerComposable(
     activity: MainActivity,
@@ -259,7 +260,12 @@ fun NavControllerComposable(
                     url = it
                     navController.navigate(Route.WEB_VIEW)
 
-                })
+                },
+                moveToPrivacyAndPolicy = {
+                    url = it
+                    navController.navigate(Route.WEB_VIEW)
+                }
+            )
         }
 
         composable(route = SELECT_PROFILE) {
