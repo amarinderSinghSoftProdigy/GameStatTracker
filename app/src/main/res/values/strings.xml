@@ -481,4 +481,13 @@
     <string name="please_enter_details">Please enter details</string>
     <string name="payment_details">Payment details</string>
     <string name="age">Age</string>
+    <string name="privacy_policy"> Privacy Policy</string>
+    <string name="please_select_profile">Please select profile picture</string>
+    <string name="by_creating_an_account">By creating an account, you agree to the \n</string>
+    <string name="all_ball_terms_condition">All Ball Terms and Conditions,</string>
+    <string name="authorizing_all_ball"> (authorizing All Ball to send you text messages), and</string>
+    <string name="text_message_agreement">Text message agreement</string>
+    <string name="including_child_online_privacy_protection">(Including Child\'s Online Privacy Protection Act (COPPA) details to protect the online privacy of children under the age of 13).</string>
+    <string name="all_ball_privacy_policy">All Ball Privacy Policy.</string>
+    <string name="i_authorize_all_ball">I authorize All Ball to allow my children to create an All Ball account and join their respective team(s) and for All Ball to collect data in accordance with the </string>
 </resources>

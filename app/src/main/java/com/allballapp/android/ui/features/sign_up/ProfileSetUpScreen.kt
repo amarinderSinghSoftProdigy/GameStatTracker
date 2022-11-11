@@ -13,6 +13,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
@@ -38,10 +39,13 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
@@ -71,7 +75,8 @@ fun ProfileSetUpScreen(
     onNext: () -> Unit,
     onBack: () -> Unit,
     signUpViewModel: SignUpViewModel,
-    moveToTermsAndConditions : (String) -> Unit
+    moveToTermsAndConditions: (String) -> Unit,
+    moveToPrivacyAndPolicy: (String) -> Unit
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val modalBottomSheetState =
@@ -618,7 +623,7 @@ fun ProfileSetUpScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-                                verticalAlignment = Alignment.CenterVertically
+                                verticalAlignment = Alignment.Top
                             ) {
                                 CustomCheckBox(
                                     state.signUpData.termsAndCondition
@@ -630,17 +635,138 @@ fun ProfileSetUpScreen(
                                     )
                                 }
                                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_20dp)))
-                                AppText(
-                                    text = stringResource(id = R.string.i_agree) + " ",
-                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                                    color = md_theme_light_onSurface,
+
+                                val annotatedText = buildAnnotatedString {
+
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = md_theme_light_onSurface,
+                                        )
+                                    ) {
+                                        append(stringResource(id = R.string.by_creating_an_account))
+                                    }
+                                    pushStringAnnotation(
+                                        tag = stringResource(id = R.string.all_ball_terms_condition),
+                                        annotation = stringResource(id = R.string.all_ball_terms_condition)
+                                    )
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = ColorMainPrimary,
+                                        )
+                                    ) {
+                                        append(stringResource(id = R.string.all_ball_terms_condition))
+                                    }
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = ColorMainPrimary,
+                                        )
+                                    ) {
+                                        append(" ")
+                                        append(stringResource(id = R.string.text_message_agreement))
+                                    }
+                                    pop()
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = md_theme_light_onSurface,
+                                        )
+                                    ) {
+                                        append(" ")
+                                        append(stringResource(id = R.string.authorizing_all_ball))
+                                    }
+                                    pushStringAnnotation(
+                                        tag = stringResource(id = R.string.privacy_policy),
+                                        annotation = stringResource(id = R.string.privacy_policy)
+                                    )
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = ColorMainPrimary,
+                                        )
+                                    ) {
+                                        append(" ")
+                                        append(stringResource(id = R.string.privacy_policy))
+                                    }
+                                    pop()
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = md_theme_light_onSurface,
+                                        )
+                                    ) {
+                                        append(" ")
+                                        append(stringResource(id = R.string.including_child_online_privacy_protection))
+                                    }
+                                }
+
+                                ClickableText(
+                                    text = annotatedText,
+                                    onClick = { offset ->
+                                        annotatedText.getStringAnnotations(
+                                            tag = context.getString(R.string.all_ball_terms_condition),
+                                            start = offset,
+                                            end = offset
+                                        ).firstOrNull()?.let {
+                                            moveToTermsAndConditions("")
+                                        }
+                                        annotatedText.getStringAnnotations(
+                                            tag = context.getString(R.string.privacy_policy),
+                                            start = offset,
+                                            end = offset
+                                        ).firstOrNull()?.let {
+                                            moveToPrivacyAndPolicy("")
+                                        }
+                                    },
                                 )
-                                AppText(
-                                    text = stringResource(id = R.string.terms_cond),
-                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                                    color = ColorMainPrimary,
-                                    modifier = Modifier.clickable {
-                                        moveToTermsAndConditions("")
+                            }
+
+                            AppDivider()
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                                verticalAlignment = Alignment.Top
+                            ) {
+                                CustomCheckBox(
+                                    state.signUpData.privacyAndPolicy
+                                ) {
+                                    signUpViewModel.onEvent(
+                                        SignUpUIEvent.OnPrivacyAndPolicy(
+                                            !state.signUpData.privacyAndPolicy
+                                        )
+                                    )
+                                }
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_20dp)))
+                                val annotatedText = buildAnnotatedString {
+
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = md_theme_light_onSurface,
+                                        )
+                                    ) {
+                                        append(stringResource(id = R.string.i_authorize_all_ball))
+                                        append(" ")
+                                    }
+                                    pushStringAnnotation(
+                                        tag = stringResource(id = R.string.all_ball_privacy_policy),
+                                        annotation = stringResource(id = R.string.all_ball_privacy_policy)
+                                    )
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = ColorMainPrimary,
+                                        )
+                                    ) {
+                                        append(stringResource(id = R.string.all_ball_privacy_policy))
+                                    }
+                                    pop()
+                                }
+                                ClickableText(
+                                    text = annotatedText,
+                                    onClick = { offset ->
+                                        annotatedText.getStringAnnotations(
+                                            tag = context.getString(R.string.all_ball_privacy_policy),
+                                            start = offset,
+                                            end = offset
+                                        ).firstOrNull()?.let {
+                                            moveToPrivacyAndPolicy("")
+                                        }
                                     }
                                 )
                             }
@@ -662,15 +788,20 @@ fun ProfileSetUpScreen(
                             onBack()
                         },
                         onNextClick = {
-                            if (state.registered) {
-                                signUpViewModel.onEvent(SignUpUIEvent.OnAddProfile)
+                            if (state.signUpData.profileImageUri.isNullOrEmpty()) {
+                                signUpViewModel.onEvent(SignUpUIEvent.ShowToast(context.getString(R.string.please_select_profile)))
                             } else {
-                                signUpViewModel.onEvent(SignUpUIEvent.OnScreenNext)
+                                if (state.registered) {
+                                    signUpViewModel.onEvent(SignUpUIEvent.OnAddProfile)
+                                } else {
+                                    signUpViewModel.onEvent(SignUpUIEvent.OnScreenNext)
+                                }
                             }
+
                             /*check.value = false*/
                         },
                         enableState = !state.isLoading && validName(state.signUpData.firstName)
-                                && validName(state.signUpData.lastName) && state.signUpData.termsAndCondition
+                                && validName(state.signUpData.lastName) && state.signUpData.termsAndCondition && state.signUpData.privacyAndPolicy
                                 && if (isToAddProfile) true else validPhoneNumber(state.signUpData.phone)
                         /*&& check.value*/,
                         //&& (state.signUpData.email ?: "".isValidEmail()) != true

@@ -136,7 +136,6 @@ class HomeActivity : FragmentActivity() {
             /*Check for internet availability*/
             ListenForConnectionAvailability(homeViewModel)
 
-
             //homeViewModel.showBottomAppBar(true)
             BallerAppMainTheme(
                 customColor = state.color ?: MaterialTheme.appColors.material.primaryVariant
@@ -286,9 +285,9 @@ class HomeActivity : FragmentActivity() {
 
     override fun onResume() {
         super.onResume()
-            if(::homeViewModel.isInitialized){
-                homeViewModel.getUnreadMessageCount()
-            }
+        if (::homeViewModel.isInitialized) {
+            homeViewModel.getUnreadMessageCount()
+        }
     }
 
     // on below line we are calling on activity result method.
@@ -465,8 +464,12 @@ fun NavControllerComposable(
                 }, moveToTermsAndConditions = {
                     url = it
                     navController.navigate(Route.WEB_VIEW)
-                })
-
+                },
+                moveToPrivacyAndPolicy = {
+                    url = it
+                    navController.navigate(Route.WEB_VIEW)
+                }
+            )
         }
 
         composable(route = Route.ADD_PROFILE_SCREEN + "/{countryCode}/{mobileNumber}",
@@ -502,8 +505,11 @@ fun NavControllerComposable(
                 },
                 onBack = {
                     navController.popBackStack()
-                }, moveToTermsAndConditions = { urL->
+                }, moveToTermsAndConditions = { urL ->
                     url = urL
+                    navController.navigate(Route.WEB_VIEW)
+                }, moveToPrivacyAndPolicy = {
+                    url = it
                     navController.navigate(Route.WEB_VIEW)
                 })
 
