@@ -1,6 +1,5 @@
 package com.allballapp.android.ui.features.home.teams.chat
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -25,11 +24,9 @@ import com.allballapp.android.ui.features.components.AppTab
 import com.allballapp.android.ui.features.components.CommonProgressBar
 import com.allballapp.android.ui.features.home.EmptyScreen
 import com.allballapp.android.ui.features.home.HomeViewModel
-import com.allballapp.android.ui.features.home.events.new_event.NewEventChannel
 import com.allballapp.android.ui.theme.appColors
 import com.cometchat.pro.uikit.ui_components.chats.CometChatConversationList
 import com.cometchat.pro.uikit.ui_components.messages.message_list.CometChatMessageListActivity
-import kotlin.random.Random
 
 @Composable
 fun TeamsChatScreen(
@@ -91,7 +88,7 @@ fun TeamsChatScreen(
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
                 if (selected.value != -1) {
                     key(key.value) {
-                            AndroidViewBinding(FragmentConversationBinding::inflate) {
+                        AndroidViewBinding(FragmentConversationBinding::inflate) {
                             CometChatMessageListActivity.toolbarColor =
                                 if (color.startsWith("#")) color else "#" + color
                             converstionContainer.getFragment<CometChatConversationList>()
@@ -139,6 +136,12 @@ fun TeamsChatScreen(
             }
 
         }
+    } else {
+        EmptyScreen(
+            singleText = false,
+            icon = com.cometchat.pro.uikit.R.drawable.ic_chat_placeholder,
+            heading = stringResource(id = com.cometchat.pro.uikit.R.string.no_conversations)
+        )
     }
 }
 
