@@ -275,7 +275,7 @@ fun ProfileSetUpScreen(
                         color = ColorBWBlack,
                         modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
                     )
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_40dp)))
 
                     UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
 
