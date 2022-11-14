@@ -219,9 +219,11 @@ fun InvitationScreen(
     if (state.showGuardianOnlyConfirmDialog) {
         ConfirmDialog(
             title = stringResource(id = R.string.join_team_without_child_selection), onDismiss = {
+                showNoMessage.value = false
                 vm.onEvent(InvitationEvent.ConfirmGuardianWithoutChildAlert(false))
             },
             onConfirmClick = {
+                showNoMessage.value = true
                 vm.onEvent(InvitationEvent.OnInvitationConfirm(homeState.user.gender))
                 vm.onEvent(InvitationEvent.ConfirmGuardianWithoutChildAlert(false))
                 vm.onEvent(InvitationEvent.OnRoleDialogClick(false))
@@ -235,6 +237,7 @@ fun InvitationScreen(
             item = state.selectedInvitation,
             message = stringResource(id = R.string.alert_decline_invitation),
             onDismiss = {
+
                 vm.onEvent(InvitationEvent.OnDeleteDialogClick(false))
             },
             onDelete = {
@@ -378,10 +381,8 @@ fun InvitationScreen(
         InvitationSuccessfullySentDialog(
             onDismiss = {
                 vm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
-                showNoMessage.value = false
             },
             onConfirmClick = {
-                showNoMessage.value = false
                 onInviteClick.invoke(state.selectedInvitation.team._id)
                 vm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
                 vm.onEvent(InvitationEvent.OnRoleDialogClick(false))

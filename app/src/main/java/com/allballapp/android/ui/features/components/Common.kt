@@ -667,8 +667,11 @@ fun LocationBlock(location: Location, padding: Dp = dimensionResource(id = R.dim
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
+                var address = if (location.city.isNotEmpty()) location.city + ", " else ""
+                address += if (location.state.isNotEmpty()) location.state + ", " else ""
+                address += location.zipCode.ifEmpty { "" }
                 Text(
-                    text = location.city + ", " + location.state + ", " + location.zipCode,
+                    text = address,
                     color = ColorBWGrayLight,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                 )
@@ -972,7 +975,11 @@ fun hasContactPermission(context: Context): Boolean {
 fun requestContactPermission(context: Context, activity: Activity) {
     // on below line if permission is not granted requesting permissions.
     if (!hasContactPermission(context)) {
-        ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.READ_CONTACTS), AppConstants.REQUEST_CONTACT)
+        ActivityCompat.requestPermissions(
+            activity,
+            arrayOf(Manifest.permission.READ_CONTACTS),
+            AppConstants.REQUEST_CONTACT
+        )
     }
 }
 
@@ -985,7 +992,11 @@ fun hasFileManagerPermission(context: Context): Boolean {
 
 fun requestFileManagerPermission(context: Context, activity: Activity) {
     if (!hasFileManagerPermission(context)) {
-        ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),1)
+        ActivityCompat.requestPermissions(
+            activity,
+            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+            1
+        )
     }
 }
 

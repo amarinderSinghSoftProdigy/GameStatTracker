@@ -7,7 +7,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.allballapp.android.common.ResultWrapper
 import com.allballapp.android.common.convertStringDateToLong
-import com.allballapp.android.ui.utils.UiText
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.data.response.Format
@@ -15,6 +14,7 @@ import com.allballapp.android.data.response.GenderList
 import com.allballapp.android.domain.repository.IEventsRepository
 import com.allballapp.android.domain.repository.ITeamRepository
 import com.allballapp.android.ui.utils.CommonUtils
+import com.allballapp.android.ui.utils.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -285,7 +285,7 @@ class EventViewModel @Inject constructor(
                 viewModelScope.launch { getEventDetails(event.eventId) }
             }
 
-            EvEvents.OnConfirmGoing -> {
+            is EvEvents.OnConfirmGoing -> {
                 viewModelScope.launch { acceptEventInvite() }
             }
 
@@ -296,7 +296,7 @@ class EventViewModel @Inject constructor(
                 _state.value = _state.value.copy(declineReason = event.reason)
             }
 
-            EvEvents.OnConfirmDeclineClick -> {
+            is EvEvents.OnConfirmDeclineClick -> {
                 viewModelScope.launch { declineEventInvitation() }
             }
             is EvEvents.ShowToast -> {
@@ -439,6 +439,7 @@ class EventViewModel @Inject constructor(
                     registerRequest = _state.value.registerRequest.copy(paymentOption = event.paymentOption)
                 )
             }
+            else -> {}
         }
     }
 
@@ -1355,6 +1356,7 @@ class EventViewModel @Inject constructor(
                     }
                 }
             }
+            else -> {}
         }
     }
 

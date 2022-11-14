@@ -12,7 +12,6 @@ import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.CometChatErrorCodes
 import com.allballapp.android.common.ResultWrapper
-import com.allballapp.android.ui.utils.UiText
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.data.response.HomeItemResponse
@@ -21,6 +20,7 @@ import com.allballapp.android.domain.repository.IUserRepository
 import com.allballapp.android.ui.features.components.BottomNavKey
 import com.allballapp.android.ui.features.components.TopBarData
 import com.allballapp.android.ui.features.home.home_screen.HomeScreenEvent
+import com.allballapp.android.ui.utils.UiText
 import com.cometchat.pro.core.CometChat
 import com.cometchat.pro.exceptions.CometChatException
 import com.cometchat.pro.models.User
@@ -175,7 +175,7 @@ class HomeViewModel @Inject constructor(
     private suspend fun getUserInfo(showToast: Boolean = false) {
         _state.value = _state.value.copy(isDataLoading = true)
         val userResponse = userRepo.getUserProfile()
-        _state.value = _state.value.copy(isDataLoading = false)
+
 
         when (userResponse) {
             is ResultWrapper.GenericError -> {
@@ -188,13 +188,13 @@ class HomeViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-               /* _homeChannel.send(
-                    HomeChannel.ShowToast(
-                        UiText.DynamicString(
-                            userResponse.message
-                        )
-                    )
-                )*/
+                /* _homeChannel.send(
+                     HomeChannel.ShowToast(
+                         UiText.DynamicString(
+                             userResponse.message
+                         )
+                     )
+                 )*/
             }
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
@@ -236,7 +236,7 @@ class HomeViewModel @Inject constructor(
                 }
             }
         }
-
+        _state.value = _state.value.copy(isDataLoading = false)
     }
 
     private suspend fun getSwapProfiles(check: Boolean) {
@@ -255,13 +255,13 @@ class HomeViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-               /* _homeChannel.send(
-                    HomeChannel.ShowToast(
-                        UiText.DynamicString(
-                            userResponse.message
-                        )
-                    )
-                )*/
+                /* _homeChannel.send(
+                     HomeChannel.ShowToast(
+                         UiText.DynamicString(
+                             userResponse.message
+                         )
+                     )
+                 )*/
             }
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
@@ -306,13 +306,13 @@ class HomeViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-               /* _homeChannel.send(
-                    HomeChannel.ShowToast(
-                        UiText.DynamicString(
-                            userResponse.message
-                        )
-                    )
-                )*/
+                /* _homeChannel.send(
+                     HomeChannel.ShowToast(
+                         UiText.DynamicString(
+                             userResponse.message
+                         )
+                     )
+                 )*/
             }
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
@@ -335,7 +335,10 @@ class HomeViewModel @Inject constructor(
     }
 
     suspend fun getHomePageDetails(teamId: String) {
-        when (val homeResponse = teamRepo.getHomePageDetails(teamId)) {
+        _state.value = _state.value.copy(isDataLoading = true)
+        val homeResponse = teamRepo.getHomePageDetails(teamId)
+        _state.value = _state.value.copy(isDataLoading = false)
+        when (homeResponse) {
             is ResultWrapper.GenericError -> {
                 _homeChannel.send(
                     HomeChannel.ShowToast(
@@ -346,13 +349,13 @@ class HomeViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-               /* _homeChannel.send(
-                    HomeChannel.ShowToast(
-                        UiText.DynamicString(
-                            homeResponse.message
-                        )
-                    )
-                )*/
+                /* _homeChannel.send(
+                     HomeChannel.ShowToast(
+                         UiText.DynamicString(
+                             homeResponse.message
+                         )
+                     )
+                 )*/
             }
             is ResultWrapper.Success -> {
                 homeResponse.value.let { baseResponse ->
@@ -367,6 +370,7 @@ class HomeViewModel @Inject constructor(
                 }
             }
         }
+
     }
 
     private fun setToken(token: String) {
@@ -385,118 +389,118 @@ class HomeViewModel @Inject constructor(
 
     fun getUnreadMessageCount() {
 
-        if(AppConstants.ENABLE_CHAT){
-        CometChat.getUnreadMessageCount(object :
-            CometChat.CallbackListener<HashMap<String?, HashMap<String?, Int?>?>?>() {
+        if (AppConstants.ENABLE_CHAT) {
+            CometChat.getUnreadMessageCount(object :
+                CometChat.CallbackListener<HashMap<String?, HashMap<String?, Int?>?>?>() {
 
-            override fun onError(e: CometChatException) {
-            }
+                override fun onError(e: CometChatException) {
+                }
 
-            override fun onSuccess(stringHashMapHashMap: HashMap<String?, HashMap<String?, Int?>?>?) {
+                override fun onSuccess(stringHashMapHashMap: HashMap<String?, HashMap<String?, Int?>?>?) {
 
-                val count = (stringHashMapHashMap?.get("user")?.keys?.size ?: 0).plus(
-                    stringHashMapHashMap?.get("group")?.keys?.size ?: 0
-                )
-                _state.value =
-                    _state.value.copy(unReadMessageCount = count)
-                Timber.i(
-                    "CometChatUI onSuccess: unread count $count -- stringHashMapHashMap$stringHashMapHashMap"
-                )
+                    val count = (stringHashMapHashMap?.get("user")?.keys?.size ?: 0).plus(
+                        stringHashMapHashMap?.get("group")?.keys?.size ?: 0
+                    )
+                    _state.value =
+                        _state.value.copy(unReadMessageCount = count)
+                    Timber.i(
+                        "CometChatUI onSuccess: unread count $count -- stringHashMapHashMap$stringHashMapHashMap"
+                    )
 
-            }
-        })
+                }
+            })
         }
     }
 
     /*Register newly updated user to cometchat*/
     private fun registerProfileToCometChat(name: String, uid: String) {
 
-        if(AppConstants.ENABLE_CHAT){
-        val authKey = com.allballapp.android.BuildConfig.COMET_CHAT_AUTH_KEY
-        val user = User()
-        user.uid = uid
-        user.name = name
+        if (AppConstants.ENABLE_CHAT) {
+            val authKey = com.allballapp.android.BuildConfig.COMET_CHAT_AUTH_KEY
+            val user = User()
+            user.uid = uid
+            user.name = name
 
-        CometChat.createUser(user, authKey, object : CometChat.CallbackListener<User>() {
-            override fun onSuccess(user: User) {
-                Timber.i("CometChat- createUser $user")
-                /*It means user registered successfully so let's login  */
-                loginToCometChat(uid)
-            }
-
-            override fun onError(e: CometChatException) {
-                Timber.e("CometChat- createUser ${e.message}")
-                if (e.code.equals(CometChatErrorCodes.ERR_UID_ALREADY_EXISTS)) {
-
-                    /*It means user already registered so login to his profile */
+            CometChat.createUser(user, authKey, object : CometChat.CallbackListener<User>() {
+                override fun onSuccess(user: User) {
+                    Timber.i("CometChat- createUser $user")
+                    /*It means user registered successfully so let's login  */
                     loginToCometChat(uid)
-
-
-                }
-            }
-        })
-        }
-    }
-
-    /*Login registered user */
-    private fun loginToCometChat(uid: String) {
-        if(AppConstants.ENABLE_CHAT){
-        CometChat.login(
-            uid,
-            BuildConfig.COMET_CHAT_AUTH_KEY,
-            object : CometChat.CallbackListener<User?>() {
-                override fun onSuccess(user: User?) {
-                    Timber.i(" CometChat- Login Successful : " + user.toString())
-                    getUnreadMessageCount()
-                    registerTokenForPN()
                 }
 
                 override fun onError(e: CometChatException) {
-                    Timber.e("CometChat- Login failed with exception:  ${e.message} ${e.code}");
+                    Timber.e("CometChat- createUser ${e.message}")
+                    if (e.code.equals(CometChatErrorCodes.ERR_UID_ALREADY_EXISTS)) {
+
+                        /*It means user already registered so login to his profile */
+                        loginToCometChat(uid)
+
+
+                    }
                 }
             })
         }
     }
 
-    private fun registerTokenForPN() {
-        if(AppConstants.ENABLE_CHAT){
-        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                Log.w(
-                    "registerTokenForPN",
-                    "Fetching FCM registration token failed",
-                    task.exception
-                )
-                return@OnCompleteListener
-            }
-
-            // Get new FCM registration token
-            val token = task.result
-
-            Timber.i("registerTokenForPN-- Token--  $token")
-
-            CometChat.registerTokenForPushNotification(
-                token,
-                object : CometChat.CallbackListener<String?>() {
-                    override fun onError(e: CometChatException) {
-                        Log.e("onErrorPN: ", e.message!!)
+    /*Login registered user */
+    private fun loginToCometChat(uid: String) {
+        if (AppConstants.ENABLE_CHAT) {
+            CometChat.login(
+                uid,
+                BuildConfig.COMET_CHAT_AUTH_KEY,
+                object : CometChat.CallbackListener<User?>() {
+                    override fun onSuccess(user: User?) {
+                        Timber.i(" CometChat- Login Successful : " + user.toString())
+                        getUnreadMessageCount()
+                        registerTokenForPN()
                     }
 
-                    override fun onSuccess(p0: String?) {
-                        Log.e("ononSuccessPN: ", p0.toString())
+                    override fun onError(e: CometChatException) {
+                        Timber.e("CometChat- Login failed with exception:  ${e.message} ${e.code}");
                     }
                 })
-        })
-
-
-    }
+        }
     }
 
+    private fun registerTokenForPN() {
+        if (AppConstants.ENABLE_CHAT) {
+            FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w(
+                        "registerTokenForPN",
+                        "Fetching FCM registration token failed",
+                        task.exception
+                    )
+                    return@OnCompleteListener
+                }
 
+                // Get new FCM registration token
+                val token = task.result
+
+                Timber.i("registerTokenForPN-- Token--  $token")
+
+                CometChat.registerTokenForPushNotification(
+                    token,
+                    object : CometChat.CallbackListener<String?>() {
+                        override fun onError(e: CometChatException) {
+                            Log.e("onErrorPN: ", e.message!!)
+                        }
+
+                        override fun onSuccess(p0: String?) {
+                            Log.e("ononSuccessPN: ", p0.toString())
+                        }
+                    })
+            })
+
+
+        }
     }
 
-    private fun logoutFromCometChat() {
-        if(AppConstants.ENABLE_CHAT){
+
+}
+
+private fun logoutFromCometChat() {
+    if (AppConstants.ENABLE_CHAT) {
         CometChat.logout(object : CometChat.CallbackListener<String?>() {
             override fun onError(e: CometChatException) {
                 Timber.e("Logout failed with exception: " + e.message)
@@ -506,8 +510,8 @@ class HomeViewModel @Inject constructor(
                 Timber.i("Logout completed successfully")
             }
         })
-        }
     }
+}
 
 
 sealed class HomeChannel {

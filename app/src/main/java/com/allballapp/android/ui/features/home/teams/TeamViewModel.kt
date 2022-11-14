@@ -9,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.ResultWrapper
 import com.allballapp.android.common.getFileFromUri
-import com.allballapp.android.ui.utils.UiText
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.data.request.Location
@@ -23,6 +22,7 @@ import com.allballapp.android.domain.repository.IImageUploadRepo
 import com.allballapp.android.domain.repository.ITeamRepository
 import com.allballapp.android.ui.features.components.fromHex
 import com.allballapp.android.ui.utils.CommonUtils
+import com.allballapp.android.ui.utils.UiText
 import com.allballapp.android.ui.utils.dragDrop.ItemPosition
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -197,6 +197,7 @@ class TeamViewModel @Inject constructor(
                 _teamUiState.value =
                     _teamUiState.value.copy(selectedAddress = event.addressReq)
             }
+            else -> {}
         }
     }
 
@@ -641,9 +642,7 @@ class TeamViewModel @Inject constructor(
             _teamUiState.value.copy(isLoading = true)
         val teamResponse = teamRepo.getTeamsByTeamID(userId)
         Timber.i("getTeamByTeamId--teamViewModel")
-        _teamUiState.value =
-            _teamUiState.value.copy(isLoading = false)
-        when (teamResponse) {
+       when (teamResponse) {
             is ResultWrapper.GenericError -> {
                 if (_teamUiState.value.selectedTeam != null) {
                     setDefaultData(_teamUiState.value.selectedTeam!!)
@@ -718,6 +717,8 @@ class TeamViewModel @Inject constructor(
                 }
             }
         }
+        _teamUiState.value =
+            _teamUiState.value.copy(isLoading = false)
     }
 
     private suspend fun updateColorData(colorCode: String) {

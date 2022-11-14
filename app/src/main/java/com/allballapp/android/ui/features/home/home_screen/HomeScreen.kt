@@ -145,6 +145,7 @@ fun HomeScreen(
                     vm.getHomePageDetails(uiEvent.teamId)
                     vm.showBottomAppBar(uiEvent.show)
                 }
+                else -> {}
             }
         }
     }

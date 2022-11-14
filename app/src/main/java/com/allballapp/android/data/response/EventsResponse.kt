@@ -235,7 +235,10 @@ data class Matches(
     @SerializedName("timeSlot") val timeSlot: String = "",
 )
 
-data class ScheduleTeam(@SerializedName("teams") val teams: List<Pairs> = mutableListOf())
+data class ScheduleTeam(
+    @SerializedName("teams") val teams: List<Pairs> = mutableListOf(),
+    @SerializedName("divisionName") val divisionName: String = ""
+)
 
 data class Pairs(
     @SerializedName("_id") val _id: String = "",

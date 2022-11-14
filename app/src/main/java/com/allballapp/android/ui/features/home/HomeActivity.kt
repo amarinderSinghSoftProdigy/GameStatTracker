@@ -772,9 +772,10 @@ fun NavControllerComposable(
                     eventTitle = divisionName
                     navController.navigate(Route.DIVISION_TAB + "/${divisionId}")
                 }, moveToOpenTeams = { title, logo ->
-                    eventTitle = title
+                    //Commented the Team screen
+                    /*eventTitle = title
                     teamLogo = logo
-                    navController.navigate(Route.TEAM_TAB)
+                    navController.navigate(Route.TEAM_TAB)*/
                 },
                 eventViewModel = eventViewModel
             )
@@ -1116,7 +1117,7 @@ fun NavControllerComposable(
                     logo = teamLogo
                 )
             )
-            EventTeamTabs(vm = teamViewModel)
+            EventTeamTabs(vm = teamViewModel, eventVm = eventViewModel)
         }
         composable(route = Route.MY_CHAT_DETAIL,
             enterTransition = { slideInHorizont(animeDuration) },
