@@ -606,7 +606,7 @@ class CometChatThreadMessageList : Fragment(), View.OnClickListener, OnMessageLo
         onGoingCallView = view.findViewById<RelativeLayout>(R.id.ongoing_call_view)
         onGoingCallClose = view.findViewById<ImageView>(R.id.close_ongoing_view)
         onGoingCallTxt = view.findViewById<TextView>(R.id.ongoing_call)
-        checkOnGoingCall()
+        //checkOnGoingCall()
     }
 
     private fun setReactionForParentMessage() {
@@ -727,7 +727,7 @@ class CometChatThreadMessageList : Fragment(), View.OnClickListener, OnMessageLo
         }
     }
 
-    private fun checkOnGoingCall() {
+    /*private fun checkOnGoingCall() {
         if (getActiveCall() != null && getActiveCall().callStatus == CometChatConstants.CALL_STATUS_ONGOING && getActiveCall().sessionId != null) {
             if (onGoingCallView != null) onGoingCallView!!.visibility = View.VISIBLE
             if (onGoingCallTxt != null) {
@@ -743,7 +743,7 @@ class CometChatThreadMessageList : Fragment(), View.OnClickListener, OnMessageLo
             if (onGoingCallView != null) onGoingCallView!!.visibility = View.GONE
             Log.e(Companion.TAG, "checkOnGoingCall: " + getActiveCall().toString())
         }
-    }
+    }*/
 
     private fun setComposeBoxListener() {
 
@@ -1535,7 +1535,7 @@ class CometChatThreadMessageList : Fragment(), View.OnClickListener, OnMessageLo
         Log.d(Companion.TAG, "onResume: ")
         messageAdapter = null
         messagesRequest = null
-        checkOnGoingCall()
+        //checkOnGoingCall()
         fetchMessage()
         isNoMoreMessages = false
         addMessageListener()

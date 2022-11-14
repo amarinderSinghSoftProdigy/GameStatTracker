@@ -825,9 +825,9 @@ class MessageAdapter(context: Context, messageList: List<BaseMessage>, type: Str
                     }
                     viewHolder.view.callMessage.text = baseMessage.sender.name + " " + context.getString(R.string.has_shared_group_call)
                 }
-                viewHolder.view.joinCall.setOnClickListener(View.OnClickListener {
+                /*viewHolder.view.joinCall.setOnClickListener(View.OnClickListener {
                     Utils.startVideoCallIntent(context, (baseMessage as CustomMessage).customData.getString("sessionID"))
-                })
+                })*/
 
                 viewHolder.view.cvMessageContainer.setOnClickListener(View.OnClickListener {
                     if (baseMessage.sender.uid == loggedInUser.uid) {
@@ -852,9 +852,9 @@ class MessageAdapter(context: Context, messageList: List<BaseMessage>, type: Str
             } else {
                 viewHolder as RightConferenceCallMessageViewHolder
                 viewHolder.view.callMessage.text = context.getString(R.string.you_created_group_call)
-                viewHolder.view.joinCall.setOnClickListener(View.OnClickListener {
+               /* viewHolder.view.joinCall.setOnClickListener(View.OnClickListener {
                     Utils.startVideoCallIntent(context, (baseMessage as CustomMessage).customData.getString("sessionID"))
-                })
+                })*/
                 viewHolder.view.cvMessageContainer.setOnClickListener(View.OnClickListener {
                     if (baseMessage.sender.uid == loggedInUser.uid) {
                         if (isLongClickEnabled && !isImageMessageClick) {

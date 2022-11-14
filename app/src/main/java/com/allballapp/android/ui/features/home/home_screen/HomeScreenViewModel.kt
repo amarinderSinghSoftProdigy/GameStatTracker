@@ -3,7 +3,7 @@ package com.allballapp.android.ui.features.home.home_screen
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.allballapp.android.core.util.UiText
+import com.allballapp.android.ui.utils.UiText
 import com.allballapp.android.domain.repository.ITeamRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel

@@ -51,7 +51,7 @@ fun NewConversationScreen(
     val context = LocalContext.current
 
     remember {
-//        chatVM.onEvent(ChatUIEvent.GetAllMembers(teamId))
+        chatVM.onEvent(ChatUIEvent.GetAllMembers(teamId))
     }
 
 

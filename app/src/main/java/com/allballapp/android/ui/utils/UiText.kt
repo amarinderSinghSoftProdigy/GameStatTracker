@@ -1,4 +1,4 @@
-package  com.allballapp.android.core.util
+package  com.allballapp.android.ui.utils
 
 import android.content.Context
 

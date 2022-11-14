@@ -1,8 +1,6 @@
 package com.cometchat.pro.uikit.ui_components.groups.add_members
 
-import com.cometchat.pro.uikit.ui_components.shared.cometchatUsers.CometChatUsersAdapter
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -16,7 +14,6 @@ import android.widget.TextView.OnEditorActionListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import com.cometchat.pro.constants.CometChatConstants
 import com.cometchat.pro.core.CometChat.CallbackListener
 import com.cometchat.pro.core.UsersRequest
 import com.cometchat.pro.core.UsersRequest.UsersRequestBuilder
@@ -24,16 +21,15 @@ import com.cometchat.pro.exceptions.CometChatException
 import com.cometchat.pro.models.GroupMember
 import com.cometchat.pro.models.User
 import com.cometchat.pro.uikit.R
-import com.google.android.material.appbar.MaterialToolbar
+import com.cometchat.pro.uikit.ui_components.shared.cometchatUsers.CometChatUsersAdapter
 import com.cometchat.pro.uikit.ui_resources.constants.UIKitConstants
-import com.cometchat.pro.uikit.ui_resources.utils.recycler_touch.ClickListener
-import com.cometchat.pro.uikit.ui_resources.utils.recycler_touch.RecyclerTouchListener
-import com.cometchat.pro.uikit.ui_resources.utils.sticker_header.StickyHeaderDecoration
-import com.cometchat.pro.uikit.ui_components.users.user_details.CometChatUserDetailScreenActivity
 import com.cometchat.pro.uikit.ui_resources.utils.ErrorMessagesUtils
 import com.cometchat.pro.uikit.ui_resources.utils.FontUtils
 import com.cometchat.pro.uikit.ui_resources.utils.Utils
-import java.util.*
+import com.cometchat.pro.uikit.ui_resources.utils.recycler_touch.ClickListener
+import com.cometchat.pro.uikit.ui_resources.utils.recycler_touch.RecyclerTouchListener
+import com.cometchat.pro.uikit.ui_resources.utils.sticker_header.StickyHeaderDecoration
+import com.google.android.material.appbar.MaterialToolbar
 
 class CometChatAddMembers : Fragment() {
     private var userListAdapter: CometChatUsersAdapter? = null
@@ -105,7 +101,7 @@ class CometChatAddMembers : Fragment() {
             override fun onClick(var1: View, var2: Int) {
                 val user = var1.getTag(R.string.user) as User
                 if (activity != null) {
-                    val intent = Intent(activity, CometChatUserDetailScreenActivity::class.java)
+                   /* val intent = Intent(activity, CometChatUserDetailScreenActivity::class.java)
                     intent.putExtra(UIKitConstants.IntentStrings.UID, user.uid)
                     intent.putExtra(UIKitConstants.IntentStrings.NAME, user.name)
                     intent.putExtra(UIKitConstants.IntentStrings.AVATAR, user.avatar)
@@ -116,7 +112,7 @@ class CometChatAddMembers : Fragment() {
                     intent.putExtra(UIKitConstants.IntentStrings.IS_ADD_MEMBER, true)
                     intent.putExtra(UIKitConstants.IntentStrings.GROUP_NAME, groupName)
                     activity!!.finish()
-                    startActivity(intent)
+                    startActivity(intent)*/
                 }
             }
 

@@ -81,6 +81,7 @@ import com.cometchat.pro.models.Conversation
 import com.cometchat.pro.models.Group
 import com.cometchat.pro.models.User
 import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
+//import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -1120,7 +1121,7 @@ fun NavControllerComposable(
             exitTransition = { exitTransition(animeDuration) },
             popExitTransition = { slideOutHorizont(animeDuration) }
         ) {
-            Timber.e("data " + CometChatUI.convo)
+//            Timber.e("data " + CometChatUI.convo)
             TeamsChatDetailScreen()
         }
         composable(route = Route.TEAMS_CHAT_SCREEN,

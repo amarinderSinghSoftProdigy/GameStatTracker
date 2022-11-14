@@ -7,7 +7,6 @@ import androidx.viewpager.widget.ViewPager
 import com.cometchat.pro.uikit.R
 import com.cometchat.pro.uikit.ui_components.groups.group_list.CometChatGroupList
 import com.cometchat.pro.uikit.ui_components.shared.cometchatSharedMedia.adapter.TabAdapter
-import com.cometchat.pro.uikit.ui_components.users.user_list.CometChatUserList
 import com.cometchat.pro.uikit.ui_settings.UIKitSettings
 import com.cometchat.pro.uikit.ui_settings.enum.ConversationMode
 import com.google.android.material.appbar.MaterialToolbar
@@ -33,15 +32,14 @@ class CometChatStartConversation : AppCompatActivity() {
         viewPager = findViewById(R.id.viewPager)
         adapter = TabAdapter(supportFragmentManager)
 
-        val cometChatUserList = CometChatUserList()
-        cometChatUserList.setTitleVisible(false)
+        //val cometChatUserList = CometChatUserList()
         val cometChatGroupList = CometChatGroupList()
         cometChatGroupList.setTitleVisible(false)
         cometChatGroupList.setGroupCreateVisible(false)
 
         when (conversationType) {
             ConversationMode.ALL_CHATS.toString() -> {
-                adapter?.addFragment(cometChatUserList, getString(R.string.users))
+                //adapter?.addFragment(cometChatUserList, getString(R.string.users))
                 adapter?.addFragment(cometChatGroupList, getString(R.string.groups))
             }
             ConversationMode.GROUP.toString() -> {
@@ -52,7 +50,7 @@ class CometChatStartConversation : AppCompatActivity() {
             else -> {
                 toolbar.title = getString(R.string.select_user)
                 tabLayout?.visibility = View.GONE;
-                adapter?.addFragment(cometChatUserList, getString(R.string.users));
+                //adapter?.addFragment(cometChatUserList, getString(R.string.users));
             }
         }
 

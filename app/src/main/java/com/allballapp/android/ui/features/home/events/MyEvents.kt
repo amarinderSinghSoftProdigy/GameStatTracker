@@ -2,8 +2,8 @@ package com.allballapp.android.ui.features.home.events
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -18,12 +19,13 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.allballapp.android.BuildConfig
 import com.allballapp.android.R
+import com.allballapp.android.common.apiToUIDateFormat
 import com.allballapp.android.data.UserStorage
-import com.allballapp.android.ui.features.components.*
-import com.allballapp.android.ui.theme.ColorBWBlack
-import com.allballapp.android.ui.theme.appColors
+import com.allballapp.android.ui.features.components.CommonProgressBar
+import com.allballapp.android.ui.features.components.DeclineEventDialog
+import com.allballapp.android.ui.features.components.DeleteDialog
+import com.allballapp.android.ui.theme.*
 import com.google.accompanist.flowlayout.FlowRow
 
 @Composable
@@ -203,52 +205,114 @@ fun GameDataItem(
     publishedGames: PublishedGames,
     moveToEventDetail: (GameData) -> Unit,
 ) {
-    Column(
+
+    Box(
         modifier = modifier
-            .fillMaxWidth()
             .clickable {
-                moveToEventDetail.invoke(publishedGames.gameData)
+//                moveToEventDetail.invoke(publishedGames.gameData)
             }
     ) {
-        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-        Row(
-            Modifier
+        Column(
+            modifier = modifier
                 .fillMaxWidth()
-                .background(
-                    color = MaterialTheme.appColors.material.surface,
-                    shape = RoundedCornerShape(
-                        dimensionResource(id = R.dimen.size_8dp)
-                    )
-                )
-                .padding(
-                    dimensionResource(id = R.dimen.size_16dp)
-                ),
-            verticalAlignment = Alignment.CenterVertically
         ) {
-            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
-
-            CoilImage(
-                src = BuildConfig.IMAGE_SERVER + publishedGames.gameData.logo,
-                modifier = Modifier
-                    .size(dimensionResource(id = R.dimen.size_32dp))
-                    .clip(CircleShape)
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+            Row(
+                Modifier
+                    .fillMaxWidth()
                     .background(
-                        color = MaterialTheme.appColors.material.onSurface,
-                        CircleShape
+                        color = MaterialTheme.appColors.material.surface,
+                        shape = RoundedCornerShape(
+                            dimensionResource(id = R.dimen.size_8dp),
+                        )
+                    )
+                    .padding(
+                        dimensionResource(id = R.dimen.size_16dp)
                     ),
-                onError = {
-                    Placeholder(R.drawable.ic_team_placeholder)
-                },
-                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
-                isCrossFadeEnabled = false
-            )
-            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
-            Text(
-                text = publishedGames.gameData.name,
-                fontWeight = FontWeight.Bold,
-                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
-            )
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            modifier = Modifier.weight(1f),
+                            text = publishedGames.pairname,
+                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                            fontWeight = FontWeight.Bold,
+                        )
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                                .background(
+                                    color = ColorMainPrimary
+                                )
+                                .padding(dimensionResource(id = R.dimen.size_4dp))
+                        ) {
+                            Text(
+                                text = EventType.GAME.type,
+                                color = Color.White,
+                                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.size_5dp))
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            modifier = Modifier.weight(1f),
+                            text = publishedGames.gameData.name,
+                            color = MaterialTheme.appColors.textField.label,
+                            style = MaterialTheme.typography.h4
+                        )
+
+
+                        Text(
+                            text = "${apiToUIDateFormat(publishedGames.date)} ${publishedGames.timeslot.toUpperCase()}",
+                            color = ColorBWGrayLight,
+                            style = MaterialTheme.typography.h4
+                        )
+                    }
+
+
+                }
+            }
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = ColorButtonGreen,
+                        shape = RoundedCornerShape(
+                            bottomStart = dimensionResource(
+                                id = R.dimen.size_8dp
+                            ),
+                            bottomEnd = dimensionResource(id = R.dimen.size_8dp)
+                        )
+                    )
+                    .clickable {
+//                        moveToEventDetail.invoke(publishedGames.gameData)
+                    }
+                    .padding(dimensionResource(id = R.dimen.size_14dp)),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_check),
+                    contentDescription = "",
+                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_6dp)),
+                    tint = MaterialTheme.appColors.buttonColor.textEnabled,
+                )
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
+                Text(
+                    text = stringResource(id = R.string.going),
+                    color = MaterialTheme.appColors.buttonColor.textEnabled,
+                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                    fontWeight = FontWeight.W500,
+                )
+            }
         }
     }
 }

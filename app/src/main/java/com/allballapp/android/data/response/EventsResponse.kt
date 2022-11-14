@@ -248,6 +248,7 @@ data class PublishedGames(
     @SerializedName("_id") val Id: String = "",
     @SerializedName("pairname") val pairname: String = "",
     @SerializedName("date") val date: String = "",
+    @SerializedName("timeslot") val timeslot: String = "",
     @SerializedName("teams") val teams: ArrayList<Team> = arrayListOf(),
     @SerializedName("gameData") val gameData: GameData = GameData()
 
