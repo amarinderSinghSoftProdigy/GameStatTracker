@@ -42,7 +42,6 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
     val context = LocalContext.current
     val state = vm.eventState.value
     remember {
-        vm.onEvent(EvEvents.ClearOpportunities)
         vm.onEvent(EvEvents.GetOpportunityDetail)
     }
 

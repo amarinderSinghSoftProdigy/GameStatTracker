@@ -694,6 +694,9 @@ fun NavControllerComposable(
                     label = eventTitle
                 )
             )
+            remember {
+                eventViewModel.onEvent(EvEvents.ClearOpportunities)
+            }
             OppEventDetails(eventViewModel, moveToRegistration = {
                 //eventViewModel.onEvent(EvEvents.ClearRegister)
                 navController.navigate(Route.EVENT_REGISTRATION)

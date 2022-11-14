@@ -146,7 +146,7 @@ fun OpportunitiesItem(league: OpportunitiesItem, showLabel: Boolean, OnNextClick
                     )
 
                     Row(
-                        modifier = Modifier.weight(0.8F),
+                        modifier = Modifier.weight(0.5F),
                         horizontalArrangement = Arrangement.End
                     ) {
                         Box(
