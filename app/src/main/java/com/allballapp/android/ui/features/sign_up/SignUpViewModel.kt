@@ -47,6 +47,8 @@ class SignUpViewModel @Inject constructor(
     private val _signUpUiState = mutableStateOf(SignUpUIState())
     val signUpUiState: State<SignUpUIState> = _signUpUiState
 
+    var isCountryPickerOpened = mutableStateOf(false)
+
     fun onEvent(event: SignUpUIEvent) {
         when (event) {
             is SignUpUIEvent.OnSwapUpdate -> {

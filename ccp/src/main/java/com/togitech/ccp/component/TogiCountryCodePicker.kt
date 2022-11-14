@@ -1,5 +1,6 @@
 package com.togitech.ccp.component
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
@@ -45,7 +46,8 @@ fun TogiCountryCodePicker(
     content: @Composable () -> Unit,
     placeHolder: (@Composable () -> Unit)? = null,
     textStyle: TextStyle = TextStyle(textAlign = TextAlign.End),
-    showDialog: Boolean = true
+    showDialog: Boolean = true,
+    isAlreadyOpenPicker : MutableState<Boolean> = mutableStateOf(false),
 ) {
     var textFieldValueState by remember { mutableStateOf(TextFieldValue(text = text)) }
     val textFieldValue = textFieldValueState.copy(text = text)
@@ -59,6 +61,8 @@ fun TogiCountryCodePicker(
     val showDialogRemember = remember {
         mutableStateOf(showDialog)
     }
+
+
 
     Row(
         modifier = modifier
@@ -89,6 +93,7 @@ fun TogiCountryCodePicker(
                         showCountryFlag = showCountryFlag,
                         dialogAppBarTextColor = dialogAppBarTextColor,
                         showDialog = showDialogRemember.value,
+                        isOpenDialog = isAlreadyOpenPicker
                     )
                 }
                 CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {

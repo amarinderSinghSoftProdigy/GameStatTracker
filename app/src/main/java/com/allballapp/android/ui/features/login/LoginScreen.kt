@@ -167,7 +167,9 @@ fun LoginScreen(
                         textStyle = TextStyle(
                             textAlign = TextAlign.Start,
                             color = Color.Black
-                        )
+                        ),
+                        isAlreadyOpenPicker = signUpViewModel.isCountryPickerOpened
+
                     )
                 }
                 if ((phone.value || !validPhoneNumber(state.signUpData.phone) && state.signUpData.phone.isNotEmpty())) {

@@ -1,5 +1,6 @@
 package com.togitech.ccp.component
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -54,10 +55,11 @@ class TogiCodePicker {
         pickedCountry: (CountryData) -> Unit,
         dialogAppBarColor: Color = MaterialTheme.colors.primary,
         dialogAppBarTextColor: Color = Color.White,
+        isOpenDialog : MutableState<Boolean> = mutableStateOf(false),
     ) {
         val countryList: List<CountryData> = getLibCountries()
         var isPickCountry by remember { mutableStateOf(defaultSelectedCountry) }
-        var isOpenDialog by remember { mutableStateOf(false) }
+//        var isOpenDialog by remember { mutableStateOf(false) }
         var searchValue by remember { mutableStateOf("") }
         var isSearch by remember { mutableStateOf(false) }
         val context = LocalContext.current
@@ -71,7 +73,7 @@ class TogiCodePicker {
                     indication = null
                 ) {
                     if (showDialog) {
-                        isOpenDialog = true
+                        isOpenDialog.value = true
                     }
                 },
             verticalArrangement = Arrangement.Center,
@@ -109,9 +111,9 @@ class TogiCodePicker {
         }
 
         //Select Country Dialog
-        if (isOpenDialog) {
+        if (isOpenDialog.value) {
             Dialog(
-                onDismissRequest = { isOpenDialog = false },
+                onDismissRequest = { isOpenDialog.value = false },
                 properties = DialogProperties(
                     usePlatformDefaultWidth = false
                 ),
@@ -159,7 +161,7 @@ class TogiCodePicker {
                             },
                             navigationIcon = {
                                 IconButton(onClick = {
-                                    isOpenDialog = false
+                                    isOpenDialog.value = false
                                     searchValue = ""
                                     isSearch = false
                                 }) {
@@ -214,7 +216,7 @@ class TogiCodePicker {
                                                 .clickable {
                                                     pickedCountry(countryItem)
                                                     isPickCountry = countryItem
-                                                    isOpenDialog = false
+                                                    isOpenDialog.value = false
                                                     searchValue = ""
                                                     isSearch = false
                                                 },
