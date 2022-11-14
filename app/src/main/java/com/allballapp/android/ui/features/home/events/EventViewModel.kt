@@ -155,6 +155,9 @@ class EventViewModel @Inject constructor(
 
     fun onEvent(event: EvEvents) {
         when (event) {
+            is EvEvents.ClearList -> {
+                _state.value = _state.value.copy(opportunitiesList = emptyList())
+            }
             is EvEvents.ClearRegister -> {
                 _state.value =
                     _state.value.copy(registerRequest = RegisterRequest())

@@ -275,7 +275,6 @@ fun TeamSetupScreenUpdated(
                 inviteVm.onEvent(InvitationEvent.OnAddPlayerDialogClick(true))
             },
             dontHaveChildClick = {
-                showNoMessage.value = true
                 inviteVm.onEvent(InvitationEvent.ConfirmGuardianWithoutChildAlert(true))
             }
         )
@@ -284,9 +283,11 @@ fun TeamSetupScreenUpdated(
     if (inviteState.showGuardianOnlyConfirmDialog) {
         ConfirmDialog(
             title = stringResource(id = R.string.join_team_without_child_selection), onDismiss = {
+                showNoMessage.value = false
                 inviteVm.onEvent(InvitationEvent.ConfirmGuardianWithoutChildAlert(false))
             },
             onConfirmClick = { //inviteVm.onEvent(InvitationEvent.OnInvitationConfirm(homeState.user.gender))
+                showNoMessage.value = true
                 inviteVm.onEvent(InvitationEvent.ConfirmGuardianWithoutChildAlert(false))
                 inviteVm.onEvent(InvitationEvent.OnRoleDialogClick(false))
                 inviteVm.onEvent(InvitationEvent.OnGuardianDialogClick(false))

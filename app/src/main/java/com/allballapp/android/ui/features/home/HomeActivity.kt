@@ -1206,6 +1206,9 @@ fun NavControllerComposable(
                     topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
+            remember {
+                eventViewModel.onEvent(EvEvents.ClearList)
+            }
             OpportunitiesScreen(type = type ?: "", vm = eventViewModel) {
                 eventTitle = it
                 navController.navigate(Route.OPP_DETAIL_SCREEN)

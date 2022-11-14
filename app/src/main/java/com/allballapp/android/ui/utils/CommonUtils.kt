@@ -80,31 +80,27 @@ class CommonUtils {
 
         @SuppressLint("SimpleDateFormat")
         fun formatDate(startDate: String, endDate: String): String {
-            val startTime =
-                if (startDate.contains("T")) startDate.substring(
-                    0,
-                    startDate.indexOf("T")
-                ) else startDate
-            val endTime =
-                if (endDate.contains("T")) endDate.substring(
-                    0,
-                    endDate.indexOf("T")
-                ) else endDate
-            val inputPattern = "yyyy-MM-dd"
-            val outputStartPattern = "MMM dd"
-            val outputPattern = "MMM dd, yyyy"
-            val inputFormat = SimpleDateFormat(inputPattern)
-
-            val startFormat = SimpleDateFormat(outputStartPattern)
-            val endFormat = SimpleDateFormat(outputPattern)
-
-            val firstDate: Date
-            val lastDate: Date
             var str = ""
-
             try {
-                firstDate = inputFormat.parse(startTime)!!
-                lastDate = inputFormat.parse(endTime)!!
+                val startTime =
+                    if (startDate.contains("T")) startDate.substring(
+                        0,
+                        startDate.indexOf("T")
+                    ) else startDate
+                val endTime =
+                    if (endDate.contains("T")) endDate.substring(
+                        0,
+                        endDate.indexOf("T")
+                    ) else endDate
+                val inputPattern = "yyyy-MM-dd"
+                val outputStartPattern = "MMM dd"
+                val outputPattern = "MMM dd, yyyy"
+                val inputFormat = SimpleDateFormat(inputPattern)
+
+                val startFormat = SimpleDateFormat(outputStartPattern)
+                val endFormat = SimpleDateFormat(outputPattern)
+                val firstDate: Date = inputFormat.parse(startTime)!!
+                val lastDate: Date = inputFormat.parse(endTime)!!
                 str = startFormat.format(firstDate) + " - " + endFormat.format(lastDate)
             } catch (e: ParseException) {
                 e.printStackTrace()
@@ -122,21 +118,17 @@ class CommonUtils {
 
         @SuppressLint("SimpleDateFormat")
         fun formatDateSingle(startDate: String, format: String = ""): String {
-            val startTime =
-                if (startDate.contains("T")) startDate.substring(
+            var str = ""
+            try {
+                val startTime = if (startDate.contains("T")) startDate.substring(
                     0,
                     startDate.indexOf("T")
                 ) else startDate
-            val inputPattern = "yyyy-MM-dd"
-            val outputPattern = format.ifEmpty { "MMM dd, yyyy" }
-            val inputFormat = SimpleDateFormat(inputPattern)
-            val endFormat = SimpleDateFormat(outputPattern)
-
-            val firstDate: Date
-            var str = ""
-
-            try {
-                firstDate = inputFormat.parse(startTime)!!
+                val inputPattern = "yyyy-MM-dd"
+                val outputPattern = format.ifEmpty { "MMM dd, yyyy" }
+                val inputFormat = SimpleDateFormat(inputPattern)
+                val endFormat = SimpleDateFormat(outputPattern)
+                val firstDate: Date = inputFormat.parse(startTime)!!
                 str = endFormat.format(firstDate)
             } catch (e: ParseException) {
 
@@ -147,10 +139,10 @@ class CommonUtils {
 
         @SuppressLint("SimpleDateFormat")
         fun formatDateRequest(startDate: Date): String {
-            val outputPattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
-            val endFormat = SimpleDateFormat(outputPattern)
             var str = ""
             try {
+                val outputPattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+                val endFormat = SimpleDateFormat(outputPattern)
                 str = endFormat.format(startDate)
             } catch (e: ParseException) {
 
@@ -199,7 +191,7 @@ class CommonUtils {
                     return item.stringId
                 }
             }
-            return "user_type"
+            return "supporting_staff"
         }
 
         fun getUserRole(role: String, list: List<UserRoles>): UserRoles {
