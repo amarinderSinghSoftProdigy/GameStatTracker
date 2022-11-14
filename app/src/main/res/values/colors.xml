@@ -32,6 +32,9 @@
     <color name="game_setting_item_selected_bg_color">#E3584A</color>
     <color name="game_setting_background_color">#32373C</color>
 
+    <color name="text_color">#17191B</color>
+    <color name="text_color_sub_title">#58636B</color>
+
     <color name="game_bg_color">#BF17191B</color>
     <color name="game_add_roster_button_text_color">#FFFFFF</color>
     <color name="game_box_period_bg_color">#17191B</color>

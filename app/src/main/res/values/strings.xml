@@ -260,6 +260,10 @@
     <string name="personal_foul">Personal Foul</string>
     <string name="flagrant_foul">Flagrant Foul</string>
     <string name="technical_foul">Technical Foul</string>
+    <string name="vs">v/s</string>
+    <string name="confirm_game_result">Confirm Game Result</string>
+    <string name="professionalism">Professionalism</string>
+    <string name="call_Quality">Call Quality</string>
 
     <string-array name="game_settings">
         <item>@string/exit</item>

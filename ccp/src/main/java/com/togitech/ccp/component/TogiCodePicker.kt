@@ -251,6 +251,7 @@ class TogiCodePicker {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     if (leadingIcon != null) leadingIcon()
+
                     Box(Modifier.weight(1f)) {
                         if (value.isEmpty()) Text(
                             hint,

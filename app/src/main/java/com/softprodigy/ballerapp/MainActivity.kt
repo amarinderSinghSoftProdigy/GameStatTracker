@@ -47,7 +47,10 @@ import com.softprodigy.ballerapp.data.SocialUserModel
 import com.softprodigy.ballerapp.data.UserStorage
 import com.softprodigy.ballerapp.data.datastore.DataStoreManager
 import com.softprodigy.ballerapp.data.request.SignUpData
+import com.softprodigy.ballerapp.data.response.team.Player
 import com.softprodigy.ballerapp.twitter_login.TwitterConstants
+import com.softprodigy.ballerapp.ui.features.components.ConfirmSubstitutionDialog
+import com.softprodigy.ballerapp.ui.features.components.RatingDialog
 import com.softprodigy.ballerapp.ui.features.components.UserType
 import com.softprodigy.ballerapp.ui.features.forgot_password.ForgotPasswordScreen
 import com.softprodigy.ballerapp.ui.features.game_zone.GameZoneActivity
@@ -255,6 +258,40 @@ fun NavControllerComposable(activity: MainActivity) {
     val email = dataStoreManager.getEmail.collectAsState(initial = "")
     val scope = rememberCoroutineScope()
     val color = dataStoreManager.getWalkThrough.collectAsState(initial = "")
+
+
+    /**  ------------ RATING dialog data ------------*/
+    val ratingDialog  = remember {
+        mutableStateOf(false)
+    }
+
+
+    val profileImage = "https://images.unsplash.com/profile-1446404465118-3a53b909cc82?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&cs=tinysrgb&fit=crop&h=128&w=128&s=27a346c2362207494baa7b76f5d606e5"
+    val playerList: ArrayList<Player> = ArrayList();
+    playerList.add(Player(_id = "1", firstName = "Satish", position = "10", profileImage = profileImage))
+    playerList.add(Player(_id = "2", firstName = "Satish", position = "10", profileImage = profileImage))
+
+    val selectedPlayer : ArrayList<Player> = ArrayList();
+    selectedPlayer.add(Player(_id = "1", firstName = "Satish", position = "10", profileImage = profileImage))
+
+    if(ratingDialog.value){
+        RatingDialog(
+            onDismiss = {
+                ratingDialog.value = false
+            },
+            onSelectionChange = {
+
+            },
+            onConfirmClick = {
+
+            },
+            matchedPlayers = playerList,
+            selectedPlayers = selectedPlayer
+        )
+    }
+
+    /**  ------------ END RATING dialog data ------------*/
+
     NavHost(navController, startDestination = SPLASH_SCREEN) {
         composable(route = SPLASH_SCREEN) {
             SplashScreen {
@@ -273,8 +310,14 @@ fun NavControllerComposable(activity: MainActivity) {
                         )
                     } else if (color.value.isNotEmpty()) {
                         navController.popBackStack()
+                        /** ------------ LOGIN SCREEN NAVIGATION ----------  */
                         //navController.navigate(LOGIN_SCREEN)
-                        moveToGameZone(activity)
+
+                        /** ------------Check game activity ----------  */
+//                        moveToGameZone(activity)
+                        /** -----------Check Rating dialog----------   */
+                        ratingDialog.value =  true
+
                     } else {
                         navController.popBackStack()
                         navController.navigate(WELCOME_SCREEN)

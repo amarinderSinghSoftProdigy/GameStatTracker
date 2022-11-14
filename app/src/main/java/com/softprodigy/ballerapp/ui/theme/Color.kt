@@ -78,6 +78,8 @@ val error = Color(0xFFba1b1b)
 val ol_field_border_focused = Color(0xFFE4EBF0)
 val ol_field_border_unfocused = Color(0xFFE4EBF0)
 val ol_field_border_error = Color(0xFFED7E49)
+val in_active_star = Color(0xFFE4EBF0)
+val active_star = Color(0xFFFF923D)
 
 val text_field_label = Color(0x808A9BA8)
 val text_field_indicator = Color(0xB3FFFFFF)

@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.core.view.WindowCompat
@@ -24,6 +26,7 @@ import com.google.accompanist.systemuicontroller.SystemUiController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.softprodigy.ballerapp.common.IntentData
 import com.softprodigy.ballerapp.common.Route
+import com.softprodigy.ballerapp.ui.features.components.RatingDialog
 import com.softprodigy.ballerapp.ui.theme.BallerAppMainTheme
 import com.softprodigy.ballerapp.ui.theme.appColors
 import dagger.hilt.android.AndroidEntryPoint
@@ -85,6 +88,17 @@ fun NavControllerComposable(
     fromSplash: Boolean = false
 ) {
     var isAddRoaster = false
+    val ratingDialog  = remember {
+        mutableStateOf(false)
+    }
+
+    if(ratingDialog.value){
+//        RatingDialog(
+//            onDismiss = {
+//                ratingDialog.value = false
+//            }
+//        )
+    }
 
     NavHost(navController, startDestination = Route.OVERVIEW_SCREEN) {
         composable(route = Route.OVERVIEW_SCREEN) {
@@ -110,6 +124,7 @@ fun NavControllerComposable(
                 },
                 onAddRosterClick= {
                     isAddRoaster = true
+//                    ratingDialog.value =  true
                     navController.navigate(Route.ROASTER_SELECTION_SCREEN)
                 }
             )
