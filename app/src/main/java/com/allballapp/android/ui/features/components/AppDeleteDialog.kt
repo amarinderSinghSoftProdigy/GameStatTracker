@@ -2544,9 +2544,6 @@ fun InviteTeamMembersDialog(
     val context = LocalContext.current
     val focusRequester = remember { FocusRequester() }
 
-
-
-
     BallerAppMainTheme {
         AlertDialog(
             modifier = Modifier
@@ -2950,7 +2947,7 @@ fun InvitationSuccessfullySentDialog(
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
             onDismissRequest = {
-                onDismiss.invoke()
+                /*onDismiss.invoke()*/
             },
             buttons = {
                 Column(

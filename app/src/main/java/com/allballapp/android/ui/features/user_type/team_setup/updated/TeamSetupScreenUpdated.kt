@@ -434,6 +434,7 @@ fun TeamSetupScreenUpdated(
             onDismiss = {
                 showNoMessage.value = false
                 inviteVm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
+                vm.onEvent(TeamSetupUIEventUpdated.Clear)
             },
             onConfirmClick = {
                 inviteVm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
@@ -445,6 +446,8 @@ fun TeamSetupScreenUpdated(
                         ""
                     }
                 )
+                inviteVm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
+
             },
             teamName = state.teamName,
             teamLogo = inviteState.selectedLogo.ifEmpty {

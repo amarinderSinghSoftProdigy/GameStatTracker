@@ -17,6 +17,7 @@ import com.cometchat.pro.uikit.R
 import com.cometchat.pro.uikit.ui_components.messages.message_actions.listener.MessageActionCloseListener
 import com.cometchat.pro.uikit.ui_components.messages.message_actions.listener.OnMessageLongClick
 import com.cometchat.pro.uikit.ui_resources.constants.UIKitConstants
+import com.cometchat.pro.uikit.ui_settings.UIKitSettings
 
 
 /**
@@ -40,8 +41,8 @@ class CometChatMessageListActivity : AppCompatActivity(), MessageAdapter.OnMessa
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cometchat_message_list)
 
-        if (toolbarColor.isNotEmpty())
-            window.statusBarColor = Color.parseColor(toolbarColor)
+        if (UIKitSettings.color.isNotEmpty())
+            window.statusBarColor = Color.parseColor(UIKitSettings.color)
 
 
         val config: EmojiCompat.Config = BundledEmojiCompatConfig(this)

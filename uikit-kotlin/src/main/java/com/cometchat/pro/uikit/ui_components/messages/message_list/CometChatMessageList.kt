@@ -56,6 +56,7 @@ import com.cometchat.pro.exceptions.CometChatException
 import com.cometchat.pro.helpers.CometChatHelper
 import com.cometchat.pro.models.*
 import com.cometchat.pro.uikit.R
+import com.cometchat.pro.uikit.ui_components.chats.MessageListner
 import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
 import com.cometchat.pro.uikit.ui_components.messages.extensions.ExtensionResponseListener
 import com.cometchat.pro.uikit.ui_components.messages.extensions.Extensions
@@ -234,6 +235,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.i("CometChatMessageList","onCreate")
         if (activity != null) fontUtils = FontUtils.getInstance(activity)
         FeatureRestriction.isThreadedMessagesEnabled(object : FeatureRestriction.OnSuccessListener {
             override fun onSuccess(p0: Boolean) {
@@ -2294,6 +2296,8 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
             override fun onTextMessageReceived(message: TextMessage) {
                 Log.d(TAG, "onTextMessageReceived: $message")
                 onMessageReceived(message)
+                newMessageListner.setResult(message.metadata.getString("id"))
+
             }
 
             override fun onMediaMessageReceived(message: MediaMessage) {
@@ -3555,6 +3559,8 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
     companion object {
         private const val TAG = "CometChatMessageScreen"
         private const val LIMIT = 30
+        lateinit var newMessageListner: MessageListner
+
     }
 
     private fun shareMessage() {

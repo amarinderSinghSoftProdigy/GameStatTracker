@@ -23,6 +23,7 @@ import com.cometchat.pro.models.Conversation
 import com.cometchat.pro.models.Group
 import com.cometchat.pro.models.GroupMember
 import com.cometchat.pro.models.User
+import com.cometchat.pro.uikit.ui_settings.UIKitSettings
 import com.google.gson.Gson
 //import com.cometchat.pro.uikit.ui_settings.UIKitSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -87,7 +88,7 @@ class ChatViewModel @Inject constructor(
 
                 /* Saving team Id  */
                 if (_chatUiState.value.teams.isNotEmpty() && event.teamIndex > 0) {
-//                    UIKitSettings.selectedTeamId = _chatUiState.value.teams[event.teamIndex]._id
+                    UIKitSettings.selectedTeamId = _chatUiState.value.teams[event.teamIndex]._id
                 }
             }
             ChatUIEvent.GetChatListing -> {
