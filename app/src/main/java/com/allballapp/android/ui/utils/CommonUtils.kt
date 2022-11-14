@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import com.allballapp.android.R
+import com.allballapp.android.common.comet_chat.UIKitConstants
 import com.allballapp.android.data.response.AllUser
 import com.allballapp.android.data.response.UserRoles
 import com.allballapp.android.data.response.team.Player
@@ -15,6 +16,10 @@ import com.allballapp.android.ui.features.components.UserType
 import com.allballapp.android.ui.features.components.getRoleList
 import com.allballapp.android.ui.features.home.events.FilterPreference
 import com.allballapp.android.ui.features.home.events.Participation
+import com.cometchat.pro.constants.CometChatConstants
+import com.cometchat.pro.core.Call
+import com.cometchat.pro.core.CometChat
+import com.cometchat.pro.models.*
 import com.google.android.gms.maps.model.LatLng
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -218,5 +223,142 @@ class CommonUtils {
             mapIntent.setPackage("com.google.android.apps.maps")
             context.startActivity(mapIntent)
         }
+
+
+        fun getLastMessage(context: Context, lastMessage: BaseMessage): String? {
+            var message: String? = null
+            if (lastMessage.deletedAt == 0L) {
+                when (lastMessage.category) {
+                    CometChatConstants.CATEGORY_MESSAGE ->
+                        if (lastMessage is TextMessage) {
+                            if (isLoggedInUser(lastMessage.getSender()))
+                                message =
+                                    context.getString(R.string.you) + ": " + if (lastMessage.text == null) context.getString(
+                                        R.string.this_message_deleted
+                                    ) else lastMessage.text
+                            else
+                                message = lastMessage.getSender().name + ": " + lastMessage.text
+
+                        } else if (lastMessage is MediaMessage) {
+                            if (lastMessage.getDeletedAt() == 0L) {
+                                if (lastMessage.getType() == CometChatConstants.MESSAGE_TYPE_IMAGE) message =
+                                    context.getString(R.string.message_image) else if (lastMessage.getType() == CometChatConstants.MESSAGE_TYPE_VIDEO) message =
+                                    context.getString(R.string.message_video) else if (lastMessage.getType() == CometChatConstants.MESSAGE_TYPE_FILE) message =
+                                    context.getString(R.string.message_file) else if (lastMessage.getType() == CometChatConstants.MESSAGE_TYPE_AUDIO) message =
+                                    context.getString(R.string.message_audio)
+                            } else message = context.getString(R.string.this_message_deleted)
+                        }
+                    CometChatConstants.CATEGORY_CUSTOM ->
+                        message = if (lastMessage.deletedAt == 0L) {
+                            if (lastMessage.type == UIKitConstants.IntentStrings.LOCATION) context.getString(
+                                R.string.custom_message_location
+                            ) else if (lastMessage.type == UIKitConstants.IntentStrings.POLLS) context.getString(
+                                R.string.custom_message_poll
+                            ) else if (lastMessage.type.equals(
+                                    UIKitConstants.IntentStrings.STICKERS,
+                                    ignoreCase = true
+                                )
+                            ) context.getString(R.string.custom_message_sticker) else if (lastMessage.type.equals(
+                                    UIKitConstants.IntentStrings.WHITEBOARD,
+                                    ignoreCase = true
+                                )
+                            ) context.getString(R.string.custom_message_whiteboard) else if (lastMessage.type.equals(
+                                    UIKitConstants.IntentStrings.WRITEBOARD,
+                                    ignoreCase = true
+                                )
+                            ) context.getString(R.string.custom_message_document) else if (lastMessage.type.equals(
+                                    UIKitConstants.IntentStrings.MEETING,
+                                    ignoreCase = true
+                                )
+                            ) context.getString(R.string.custom_message_meeting) else String.format(
+                                context.getString(R.string.you_received),
+                                lastMessage.type
+                            )
+                        } else context.getString(R.string.this_message_deleted)
+//                    CometChatConstants.CATEGORY_ACTION -> message = (lastMessage as Action).message
+                    CometChatConstants.CATEGORY_ACTION -> if (lastMessage is Action) {
+                        if (lastMessage.action == CometChatConstants.ActionKeys.ACTION_JOINED)
+                            message =
+                                (lastMessage.actioBy as User).name + " " + context.getString(R.string.joined)
+                        else if (lastMessage.action == CometChatConstants.ActionKeys.ACTION_MEMBER_ADDED) message =
+                            ((lastMessage.actioBy as User).name + " "
+                                    + context.getString(R.string.added) + " " + (lastMessage.actionOn as User).name)
+                        else if (lastMessage.action == CometChatConstants.ActionKeys.ACTION_KICKED) message =
+                            ((lastMessage.actioBy as User).name + " "
+                                    + context.getString(R.string.kicked_by) + " " + (lastMessage.actionOn as User).name)
+                        else if (lastMessage.action == CometChatConstants.ActionKeys.ACTION_BANNED) message =
+                            ((lastMessage.actioBy as User).name + " "
+                                    + context.getString(R.string.ban) + " " + (lastMessage.actionOn as User).name)
+                        else if (lastMessage.action == CometChatConstants.ActionKeys.ACTION_UNBANNED) message =
+                            ((lastMessage.actioBy as User).name + " "
+                                    + context.getString(R.string.unban) + " " + (lastMessage.actionOn as User).name)
+                        else if (lastMessage.action == CometChatConstants.ActionKeys.ACTION_LEFT) message =
+                            (lastMessage.actioBy as User).name + " " + context.getString(R.string.left)
+                        else if (lastMessage.action == CometChatConstants.ActionKeys.ACTION_SCOPE_CHANGED)
+                            message =
+                                if (lastMessage.newScope == CometChatConstants.SCOPE_MODERATOR) {
+                                    ((lastMessage.actioBy as User).name + " " + context.getString(R.string.made) + " "
+                                            + (lastMessage.actionOn as User).name + " " + context.getString(
+                                        R.string.moderator
+                                    ))
+                                } else if (lastMessage.newScope == CometChatConstants.SCOPE_ADMIN) {
+                                    ((lastMessage.actioBy as User).name + " " + context.getString(R.string.made) + " "
+                                            + (lastMessage.actionOn as User).name + " " + context.getString(
+                                        R.string.admin
+                                    ))
+                                } else if (lastMessage.newScope == CometChatConstants.SCOPE_PARTICIPANT) {
+                                    ((lastMessage.actioBy as User).name + " " + context.getString(R.string.made) + " "
+                                            + (lastMessage.actionOn as User).name + " " + context.getString(
+                                        R.string.participant
+                                    ))
+                                } else lastMessage.message
+                    }
+                    CometChatConstants.CATEGORY_CALL ->
+                        message = if ((lastMessage as Call).callStatus.equals(
+                                CometChatConstants.CALL_STATUS_ENDED,
+                                ignoreCase = true
+                            ) ||
+                            lastMessage.callStatus.equals(
+                                CometChatConstants.CALL_STATUS_CANCELLED,
+                                ignoreCase = true
+                            )
+                        ) {
+                            if (lastMessage.getType()
+                                    .equals(CometChatConstants.CALL_TYPE_AUDIO, ignoreCase = true)
+                            ) context.getString(R.string.incoming_audio_call) else context.getString(
+                                R.string.incoming_video_call
+                            )
+                        } else if (lastMessage.callStatus.equals(
+                                CometChatConstants.CALL_STATUS_ONGOING,
+                                ignoreCase = true
+                            )
+                        ) {
+                            context.getString(R.string.ongoing_call)
+                        } else if (lastMessage.callStatus.equals(
+                                CometChatConstants.CALL_STATUS_CANCELLED,
+                                ignoreCase = true
+                            ) ||
+                            lastMessage.callStatus.equals(
+                                CometChatConstants.CALL_STATUS_UNANSWERED,
+                                ignoreCase = true
+                            ) ||
+                            lastMessage.callStatus.equals(
+                                CometChatConstants.CALL_STATUS_BUSY,
+                                ignoreCase = true
+                            )
+                        ) {
+                            if (lastMessage.getType()
+                                    .equals(CometChatConstants.CALL_TYPE_AUDIO, ignoreCase = true)
+                            ) context.getString(R.string.missed_voice_call) else context.getString(R.string.missed_video_call)
+                        } else lastMessage.callStatus + " " + lastMessage.getType() + " Call"
+                    else -> message = context.getString(R.string.tap_to_start_conversation)
+                }
+                return message
+            } else return context.getString(R.string.this_message_deleted)
+        }
+        fun isLoggedInUser(user: User): Boolean {
+            return user.uid == CometChat.getLoggedInUser().uid
+        }
+
     }
 }

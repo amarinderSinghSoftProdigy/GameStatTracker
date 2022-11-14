@@ -50,10 +50,10 @@ class PNService :
         super.onMessageReceived(message)
 
         if(AppConstants.ENABLE_CHAT){
-        /*Crete channel for notification*/
+        //*Crete channel for notification*//*
         createNotificationChannel()
 
-        /*Sending app level broadcast on notification */
+        //*Sending app level broadcast on notification *//*
         sendBroadcastToUpdateUnreadChatCount()
 
 

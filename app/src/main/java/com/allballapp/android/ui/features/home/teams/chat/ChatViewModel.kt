@@ -9,7 +9,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.allballapp.android.R
 import com.allballapp.android.common.ResultWrapper
-import com.allballapp.android.core.util.UiText
+import com.allballapp.android.ui.utils.UiText
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.domain.repository.IChatRepository
@@ -17,11 +17,14 @@ import com.allballapp.android.domain.repository.IImageUploadRepo
 import com.allballapp.android.domain.repository.ITeamRepository
 import com.cometchat.pro.constants.CometChatConstants
 import com.cometchat.pro.core.CometChat
+import com.cometchat.pro.core.ConversationsRequest
 import com.cometchat.pro.exceptions.CometChatException
+import com.cometchat.pro.models.Conversation
 import com.cometchat.pro.models.Group
 import com.cometchat.pro.models.GroupMember
 import com.cometchat.pro.models.User
-import com.cometchat.pro.uikit.ui_settings.UIKitSettings
+import com.google.gson.Gson
+//import com.cometchat.pro.uikit.ui_settings.UIKitSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -84,7 +87,7 @@ class ChatViewModel @Inject constructor(
 
                 /* Saving team Id  */
                 if (_chatUiState.value.teams.isNotEmpty() && event.teamIndex > 0) {
-                    UIKitSettings.selectedTeamId = _chatUiState.value.teams[event.teamIndex]._id
+//                    UIKitSettings.selectedTeamId = _chatUiState.value.teams[event.teamIndex]._id
                 }
             }
             ChatUIEvent.GetChatListing -> {
@@ -145,6 +148,10 @@ class ChatViewModel @Inject constructor(
                         _chatUiState.value =
                             _chatUiState.value.copy(teams = resp.data)
                         _chatChannel.send(ChatChannel.OnNewChatListingSuccess)
+
+                        /*Getting list of comet chat conversation*/
+//                        getConversation()
+
                     } else {
                         _chatUiState.value =
                             _chatUiState.value.copy(isLoading = false)
@@ -297,8 +304,39 @@ class ChatViewModel @Inject constructor(
             }
 
         }
+    private fun getConversation() {
+        _chatUiState.value = _chatUiState.value.copy(isLoading = true)
+
+        val conversationRequest = ConversationsRequest.ConversationsRequestBuilder()
+            .setLimit(50).setConversationType(ConversationMode.ALL_CHATS.toString())
+            .build()
+
+        conversationRequest.fetchNext(object : CometChat.CallbackListener<List<Conversation?>?>() {
+
+            override fun onSuccess(conversations: List<Conversation?>?) {
+                _chatUiState.value = _chatUiState.value.copy(isLoading = false)
+
+                Timber.i("getConversation-- ${conversations}")
+                val json= Gson().toJson(conversations).replace("\\","")
+                Timber.i("getConversation json-- $json")
+                _chatUiState.value = _chatUiState.value.copy(conversation = conversations)
+
+
+            }
+
+            override fun onError(e: CometChatException) {
+                _chatUiState.value = _chatUiState.value.copy(isLoading = false)
+
+                Timber.i("getConversation-- ${e.message}")
+                e.printStackTrace()
+            }
+
+        })
+    }
+
 
 }
+
 
 sealed class ChatChannel {
     data class ShowToast(val message: UiText) : ChatChannel()
@@ -313,4 +351,14 @@ sealed class ChatChannel {
 
     object OnNewChatListingSuccess : ChatChannel()
 
+}
+
+enum class ConversationMode(private val label: String) {
+    ALL_CHATS("all_chats"), GROUP("groups"), USER("users");
+}
+
+fun getConvoType(conversation: Conversation): Any {
+    return if (conversation.conversationType == CometChatConstants.CONVERSATION_TYPE_GROUP)
+        conversation.conversationWith as Group else
+        conversation.conversationWith as User
 }

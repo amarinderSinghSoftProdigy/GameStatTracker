@@ -10,7 +10,7 @@ import com.cometchat.pro.core.CometChat.*
 import com.cometchat.pro.core.ConversationsRequest
 import com.cometchat.pro.helpers.CometChatHelper
 import com.cometchat.pro.models.*
-import com.cometchat.pro.uikit.ui_resources.utils.item_clickListener.OnItemClickListener
+//import com.cometchat.pro.uikit.ui_resources.utils.item_clickListener.OnItemClickListener
 
 /*
 
