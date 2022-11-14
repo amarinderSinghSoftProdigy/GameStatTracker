@@ -63,7 +63,7 @@ fun TeamsChatScreen(
     }
     LaunchedEffect(key1 = selected.value, block = {
         vm.onEvent(ChatUIEvent.TeamSelectionChange(selected.value))
-        vm.onEvent(ChatUIEvent.GetChatListing)
+//        vm.onEvent(ChatUIEvent.GetChatListing)
 
     })
     LaunchedEffect(key1 = Unit) {

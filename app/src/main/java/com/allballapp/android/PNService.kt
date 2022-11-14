@@ -17,8 +17,8 @@ import com.cometchat.pro.helpers.CometChatHelper
 import com.cometchat.pro.models.BaseMessage
 import com.cometchat.pro.models.Group
 import com.cometchat.pro.models.MediaMessage
-//import com.cometchat.pro.uikit.ui_components.messages.message_list.CometChatMessageListActivity
-//import com.cometchat.pro.uikit.ui_resources.constants.UIKitConstants
+import com.cometchat.pro.uikit.ui_components.messages.message_list.CometChatMessageListActivity
+import com.cometchat.pro.uikit.ui_resources.constants.UIKitConstants
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import kotlinx.coroutines.CoroutineScope
@@ -36,7 +36,7 @@ import java.util.*
 
 class PNService :
     FirebaseMessagingService() {
-    /*private val job = SupervisorJob()
+    private val job = SupervisorJob()
     private val scope = CoroutineScope(Dispatchers.IO + job)
 
     private val TAG = "PNService"
@@ -50,10 +50,10 @@ class PNService :
         super.onMessageReceived(message)
 
         if(AppConstants.ENABLE_CHAT){
-        *//*Crete channel for notification*//*
+        //*Crete channel for notification*//*
         createNotificationChannel()
 
-        *//*Sending app level broadcast on notification *//*
+        //*Sending app level broadcast on notification *//*
         sendBroadcastToUpdateUnreadChatCount()
 
 
@@ -170,10 +170,10 @@ class PNService :
                  applicationContext,
                  83, messageIntent, PendingIntent.FLAG_UPDATE_CURRENT
              )
-           *//* val messagePendingIntent = PendingIntent.getActivity(
+           /* val messagePendingIntent = PendingIntent.getActivity(
                 applicationContext,
                 83, messageIntent, PendingIntent.FLAG_IMMUTABLE
-            )*//*
+            )*/
             val builder: NotificationCompat.Builder = NotificationCompat.Builder(this, "2")
                 .setSmallIcon(R.drawable.ic_all_ball_logo)
                 .setContentTitle(json?.getString("title"))
@@ -238,5 +238,5 @@ class PNService :
                 getSystemService(NotificationManager::class.java)
             notificationManager.createNotificationChannel(channel)
         }
-    }*/
+    }
 }

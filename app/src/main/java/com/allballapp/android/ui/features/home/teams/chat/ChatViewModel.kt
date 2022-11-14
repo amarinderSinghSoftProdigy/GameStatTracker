@@ -150,7 +150,7 @@ class ChatViewModel @Inject constructor(
                         _chatChannel.send(ChatChannel.OnNewChatListingSuccess)
 
                         /*Getting list of comet chat conversation*/
-                        getConversation()
+//                        getConversation()
 
                     } else {
                         _chatUiState.value =
