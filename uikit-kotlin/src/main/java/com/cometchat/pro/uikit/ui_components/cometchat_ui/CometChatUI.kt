@@ -28,12 +28,9 @@ import com.cometchat.pro.exceptions.CometChatException
 import com.cometchat.pro.models.*
 import com.cometchat.pro.uikit.R
 import com.cometchat.pro.uikit.databinding.ActivityCometchatUnifiedBinding
-import com.cometchat.pro.uikit.ui_components.calls.call_list.CometChatCallList
 import com.cometchat.pro.uikit.ui_components.chats.CometChatConversationList
 import com.cometchat.pro.uikit.ui_components.groups.group_list.CometChatGroupList
 import com.cometchat.pro.uikit.ui_components.messages.message_list.CometChatMessageListActivity
-import com.cometchat.pro.uikit.ui_components.userProfile.CometChatUserProfile
-import com.cometchat.pro.uikit.ui_components.users.user_list.CometChatUserList
 import com.cometchat.pro.uikit.ui_resources.constants.UIKitConstants
 import com.cometchat.pro.uikit.ui_resources.utils.ErrorMessagesUtils
 import com.cometchat.pro.uikit.ui_resources.utils.Utils
@@ -81,7 +78,7 @@ class CometChatUI : AppCompatActivity(), BottomNavigationView.OnNavigationItemSe
             DataBindingUtil.setContentView(this, R.layout.activity_cometchat_unified)
         initViewComponent()
         // It performs action on click of user item in CometChatUserListScreen.
-        setUserClickListener()
+        //setUserClickListener()
 
         val config: EmojiCompat.Config = BundledEmojiCompatConfig(this)
         EmojiCompat.init(config)
@@ -143,13 +140,13 @@ class CometChatUI : AppCompatActivity(), BottomNavigationView.OnNavigationItemSe
         })
     }
 
-    private fun setUserClickListener() {
+    /*private fun setUserClickListener() {
         CometChatUserList.Companion.setItemClickListener(object : OnItemClickListener<Any>() {
             override fun OnItemClick(t: Any, position: Int) {
                 startUserIntent(t as User)
             }
         })
-    }
+    }*/
 
     /**
      * This method initialize the BadgeDrawable which is used on conversation menu of BottomNavigationBar to display unread conversations.
@@ -224,16 +221,11 @@ class CometChatUI : AppCompatActivity(), BottomNavigationView.OnNavigationItemSe
             }
 
         })
-
-
 //        badgeDrawable!!.isVisible = false
         activityCometChatUnifiedBinding!!.bottomNavigation.id = R.id.menu_conversation
         when {
             recentChatListEnabled -> loadFragment(CometChatConversationList())
-            callListEnabled -> loadFragment(CometChatCallList())
             groupListEnabled -> loadFragment(CometChatGroupList())
-            userSettingsEnabled -> loadFragment(CometChatUserProfile())
-            userListEnabled -> loadFragment(CometChatUserList())
         }
     }
 
@@ -417,20 +409,11 @@ class CometChatUI : AppCompatActivity(), BottomNavigationView.OnNavigationItemSe
      */
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_users -> {
-                fragment = CometChatUserList()
-            }
             R.id.menu_group -> {
                 fragment = CometChatGroupList()
             }
             R.id.menu_conversation -> {
                 fragment = CometChatConversationList()
-            }
-            R.id.menu_more -> {
-                fragment = CometChatUserProfile()
-            }
-            R.id.menu_call -> {
-                fragment = CometChatCallList()
             }
         }
         return loadFragment(fragment)

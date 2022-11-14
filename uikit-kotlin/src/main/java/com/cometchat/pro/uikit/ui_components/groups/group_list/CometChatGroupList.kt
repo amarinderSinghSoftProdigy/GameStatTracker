@@ -29,8 +29,6 @@ import com.cometchat.pro.uikit.R
 import com.cometchat.pro.uikit.ui_components.groups.create_group.CometChatCreateGroupActivity
 import com.cometchat.pro.uikit.ui_components.shared.cometchatGroups.CometChatGroups
 import com.cometchat.pro.uikit.ui_components.shared.cometchatGroups.CometChatGroupsAdapter
-import com.cometchat.pro.uikit.ui_components.users.user_list.CometChatUserList
-import com.cometchat.pro.uikit.ui_resources.constants.UIKitConstants
 import com.cometchat.pro.uikit.ui_resources.utils.ErrorMessagesUtils
 import com.cometchat.pro.uikit.ui_resources.utils.FontUtils
 import com.cometchat.pro.uikit.ui_resources.utils.Utils

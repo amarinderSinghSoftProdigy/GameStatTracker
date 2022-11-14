@@ -158,8 +158,6 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("androidx.datastore:datastore:1.0.0")
 
-    implementation(project(Modules.core))
-
     implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
 
     // Color picker

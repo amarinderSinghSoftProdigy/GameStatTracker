@@ -330,6 +330,7 @@ class CometChatConversationList : Fragment(), TextWatcher {
                     rvConversation?.refreshConversation(message)
                     checkNoConverstaion()
                 }
+                Log.i(TAG, "onTextMessageReceived: $message")
             }
 
             override fun onMediaMessageReceived(message: MediaMessage) {
@@ -505,3 +506,8 @@ fun getConvoType(conversation: Conversation): Any {
         conversation.conversationWith as Group else
         conversation.conversationWith as User
 }
+
+/*
+interface MyInterface{
+    fun setResult(teamId:String)
+}*/

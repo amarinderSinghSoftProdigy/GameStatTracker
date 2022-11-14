@@ -18,7 +18,6 @@ dependencyResolutionManagement {
 }
 rootProject.name = "ballerapp"
 include ':app'
-include 'core'
 //include 'buildSrc'
 include ':ccp'
 include ':uikit-kotlin'

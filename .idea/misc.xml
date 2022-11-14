@@ -6,6 +6,7 @@
         <entry key="../../../../layout/compose-model-1660742464153.xml" value="0.6637931034482759" />
         <entry key="../../../../layout/compose-model-1660911269847.xml" value="0.6450617283950617" />
         <entry key="../../../../layout/compose-model-1661253814152.xml" value="0.5" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable-v24/ic_chat_placeholder.xml" value="0.2425" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_add.xml" value="0.244" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_add_button.xml" value="0.227" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_add_circle.xml" value="0.2425" />
@@ -70,6 +71,7 @@
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/layouts/chats/layout/cometchat_conversation_list_item.xml" value="0.21195652173913043" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/layouts/chats/layout/fragment_conversation_screen.xml" value="0.1634963768115942" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/layouts/cometchat_ui/layout/activity_cometchat_unified.xml" value="0.1" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/layouts/groups/layout/activity_cometchat_group_detail.xml" value="0.23802083333333332" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/layouts/groups/layout/fragment_cometchat_group_list.xml" value="0.21195652173913043" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/layouts/messages/layout/activity_cometchat_forward_message.xml" value="0.21195652173913043" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/layouts/messages/layout/activity_cometchat_message_list.xml" value="0.21195652173913043" />

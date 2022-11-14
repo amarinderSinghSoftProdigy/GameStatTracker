@@ -703,7 +703,7 @@ fun EventItem(
                         Modifier
                             .fillMaxWidth()
                             .background(
-                                color = MaterialTheme.appColors.material.surface,
+                                color = ColorPrimaryTransparent,
                                 shape = RoundedCornerShape(
                                     bottomStart = dimensionResource(
                                         id = R.dimen.size_8dp
