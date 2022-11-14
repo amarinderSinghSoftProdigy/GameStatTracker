@@ -9,7 +9,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.allballapp.android.R
 import com.allballapp.android.common.ResultWrapper
-import com.allballapp.android.core.util.UiText
+import com.allballapp.android.ui.utils.UiText
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.domain.repository.IChatRepository

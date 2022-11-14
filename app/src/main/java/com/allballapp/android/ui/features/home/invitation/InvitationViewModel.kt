@@ -4,7 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.allballapp.android.common.ResultWrapper
-import com.allballapp.android.core.util.UiText
+import com.allballapp.android.ui.utils.UiText
 import com.allballapp.android.domain.repository.ITeamRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel

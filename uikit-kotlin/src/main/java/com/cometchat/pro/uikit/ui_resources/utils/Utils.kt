@@ -2,11 +2,8 @@ package com.cometchat.pro.uikit.ui_resources.utils
 
 import android.app.Activity
 import android.app.Dialog
-import android.app.Notification
-import android.app.PendingIntent
 import android.content.ContentUris
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.database.Cursor
@@ -19,7 +16,6 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.location.Geocoder
 import android.media.AudioManager
-import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -37,8 +33,6 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.renderscript.Allocation
 import androidx.renderscript.Element
 import androidx.renderscript.RenderScript
@@ -50,14 +44,11 @@ import com.cometchat.pro.constants.CometChatConstants
 import com.cometchat.pro.core.Call
 import com.cometchat.pro.core.CallSettings
 import com.cometchat.pro.core.CometChat
-import com.cometchat.pro.core.CometChat.CallbackListener
 import com.cometchat.pro.core.CometChat.OngoingCallListener
 import com.cometchat.pro.exceptions.CometChatException
 import com.cometchat.pro.helpers.Logger
 import com.cometchat.pro.models.*
 import com.cometchat.pro.uikit.R
-import com.cometchat.pro.uikit.ui_components.calls.call_manager.CometChatCallActivity
-import com.cometchat.pro.uikit.ui_components.calls.call_manager.CometChatStartCallActivity
 import com.cometchat.pro.uikit.ui_resources.constants.UIKitConstants
 import com.cometchat.pro.uikit.ui_resources.utils.zoom_imageView.ZoomImageView
 import com.google.android.material.appbar.MaterialToolbar
@@ -135,16 +126,16 @@ public class Utils {
                 e.printStackTrace()
             }
             call.metadata = jsonObject
-            CometChat.initiateCall(call, object : CallbackListener<Call>() {
+           /* CometChat.initiateCall(call, object : CallbackListener<Call>() {
                 override fun onSuccess(call: Call) {
-                    startCallIntent(context, call.callReceiver as User, call.type, true, call.sessionId)
+                   // startCallIntent(context, call.callReceiver as User, call.type, true, call.sessionId)
                 }
 
                 override fun onError(e: CometChatException) {
                     Log.e(TAG, "onError: " + e.message)
                     Snackbar.make((context as Activity).window.decorView.rootView, context.getResources().getString(R.string.call_initiate_error) + ":" + e.message, Snackbar.LENGTH_LONG).show()
                 }
-            })
+            })*/
         }
 
         fun convertTimeStampToDurationTime(var0: Long): String? {
@@ -660,7 +651,7 @@ public class Utils {
 //            return null
 //        }
 
-        fun startCallIntent(context: Context, user: User, type: String?,
+       /* fun startCallIntent(context: Context, user: User, type: String?,
                             isOutgoing: Boolean, sessionId: String) {
             val videoCallIntent = Intent(context, CometChatCallActivity::class.java)
             videoCallIntent.putExtra(UIKitConstants.IntentStrings.NAME, user.name)
@@ -692,7 +683,7 @@ public class Utils {
                 videoCallIntent.type = "incoming"
             }
             context.startActivity(videoCallIntent)
-        }
+        }*/
 
         fun dpToPx(context: Context, valueInDp: Float): Float {
             val resources = context.resources
@@ -714,7 +705,7 @@ public class Utils {
             }
         }
 
-        fun showCallNotifcation(context: Context, call: Call) {
+       /* fun showCallNotifcation(context: Context, call: Call) {
             try {
                 Thread {
                     val REQUEST_CODE = 12
@@ -770,7 +761,7 @@ public class Utils {
             } catch (e: java.lang.Exception) {
                 e.printStackTrace()
             }
-        }
+        }*/
 
         fun startCall(activity: Activity, call: Call, mainView: RelativeLayout?) {
             val callSettings = CallSettings.CallSettingsBuilder(activity, mainView)
@@ -809,11 +800,11 @@ public class Utils {
             })
         }
 
-        fun joinOnGoingCall(context: Context) {
+       /* fun joinOnGoingCall(context: Context) {
             val intent = Intent(context, CometChatCallActivity::class.java)
             intent.putExtra(UIKitConstants.IntentStrings.JOIN_ONGOING, true)
             context.startActivity(intent)
-        }
+        }*/
 
         fun getAddress(context: Context?, latitude: Double, longitude: Double): String? {
             val geocoder = Geocoder(context, Locale.getDefault())
@@ -828,12 +819,12 @@ public class Utils {
             return null
         }
 
-        fun startVideoCallIntent(context: Context, sessionId: String?) {
+       /* fun startVideoCallIntent(context: Context, sessionId: String?) {
             val intent = Intent(context, CometChatStartCallActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.putExtra(UIKitConstants.IntentStrings.SESSION_ID, sessionId)
             context.startActivity(intent)
-        }
+        }*/
 
         fun blur(context: Context?, image: Bitmap): Bitmap? {
             val width = (image.width * 0.6f).roundToInt()

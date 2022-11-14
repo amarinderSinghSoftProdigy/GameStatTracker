@@ -1,9 +1,8 @@
-package com.cometchat.pro.uikit.ui_components.calls.call_list
+package com.cometchat.pro.uikit.ui_components.shared.cometchatSharedMedia
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import java.util.*
 
 class TabAdapter(fm: FragmentManager?) : FragmentStatePagerAdapter(fm!!) {
     private val mFragmentList: MutableList<Fragment> = ArrayList()

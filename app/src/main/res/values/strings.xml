@@ -541,6 +541,7 @@
     <string name="missed_video_call">Missed video call</string>
     <string name="tap_to_start_conversation">Tap to start conversation</string>
     <string name="ban">Ban</string>
+    <string name="no_conversations">You have no conversations.</string>
 
     <string name="you">You</string>
     <string name="dummy_terms_and_conditions">https://qa.dlvdkc2jsd6h5.amplifyapp.com/terms-and-conditions/636a369414fbe7f538c3d1bb</string>
