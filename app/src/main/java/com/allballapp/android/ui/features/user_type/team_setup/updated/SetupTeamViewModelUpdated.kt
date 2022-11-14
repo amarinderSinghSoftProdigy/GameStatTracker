@@ -343,8 +343,6 @@ class SetupTeamViewModelUpdated @Inject constructor(
                 resetMemberValues()
             }
         }
-
-
     }
 
 

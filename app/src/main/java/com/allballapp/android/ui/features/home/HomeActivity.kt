@@ -643,7 +643,6 @@ fun NavControllerComposable(
         }
 
 
-
         composable(route = Route.EVENTS_SCREEN) {
             EventsScreen(
                 teamViewModel,
