@@ -41,7 +41,7 @@ fun MyEvents(
         vm.onEvent(EvEvents.RefreshEventScreen)
     }
     Box(modifier = Modifier.fillMaxSize()) {
-        if (state.upcomingAndGameData.size > 0 || state.pastEvents.size > 0) {
+        if (state.upcomingAndGameData.isNotEmpty() || state.pastEvents.isNotEmpty()) {
             Box(modifier = Modifier.fillMaxSize()) {
                 Column(
                     Modifier
@@ -70,7 +70,6 @@ fun MyEvents(
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_6dp)))
                     FlowRow(Modifier.fillMaxWidth()) {
                         state.upcomingAndGameData.forEach { data ->
-
                             when (data) {
                                 is Events -> {
                                     EventItem(events = data, onAcceptCLick = {
@@ -92,8 +91,6 @@ fun MyEvents(
                                         })
                                 }
                             }
-
-
                         }
                     }
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))

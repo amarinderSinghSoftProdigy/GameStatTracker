@@ -19,9 +19,7 @@ import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.home.HomeViewModel
 import com.allballapp.android.ui.features.home.teams.chat.ChatViewModel
 import com.allballapp.android.ui.features.home.teams.chat.TeamsChatScreen
-import com.allballapp.android.ui.features.home.teams.leaderboard.LeaderBoardScreen
 import com.allballapp.android.ui.features.home.teams.roaster.RoasterScreen
-import com.allballapp.android.ui.features.home.teams.standing.StandingScreen
 import com.allballapp.android.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
 import com.allballapp.android.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
 import com.google.accompanist.pager.ExperimentalPagerApi

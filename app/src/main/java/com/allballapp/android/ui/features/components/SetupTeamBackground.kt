@@ -27,6 +27,7 @@ import com.allballapp.android.ui.theme.appColors
 
 @Composable
 fun CoachFlowBackground(
+    show: Boolean = false,
     colorCode: String? = null,
     teamLogo: String? = "",
     click: (Options) -> Unit = {},
@@ -181,14 +182,16 @@ fun CoachFlowBackground(
                                     click(Options.SWAP_PROFILES)
                                 }
                                 Divider(thickness = dimensionResource(id = R.dimen.divider))
-                                OptionItem(
-                                    stringResource(id = R.string.invite),
-                                    R.drawable.ic_invite
-                                ) {
-                                    showOptions.value = false
-                                    click(Options.INVITE)
+                                if (show) {
+                                    OptionItem(
+                                        stringResource(id = R.string.invite),
+                                        R.drawable.ic_invite
+                                    ) {
+                                        showOptions.value = false
+                                        click(Options.INVITE)
+                                    }
+                                    Divider(thickness = dimensionResource(id = R.dimen.divider))
                                 }
-                                Divider(thickness = dimensionResource(id = R.dimen.divider))
                                 OptionItem(
                                     stringResource(id = R.string.logout),
                                     R.drawable.ic_logout

@@ -2940,6 +2940,10 @@ fun InvitationSuccessfullySentDialog(
 ) {
     BallerAppMainTheme {
         AlertDialog(
+            properties = DialogProperties(
+                dismissOnBackPress = false,
+                dismissOnClickOutside = false
+            ),
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
             onDismissRequest = {

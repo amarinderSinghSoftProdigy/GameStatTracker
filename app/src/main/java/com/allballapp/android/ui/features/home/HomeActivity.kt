@@ -369,7 +369,7 @@ fun NavControllerComposable(
     }
 
     AnimatedNavHost(navController, startDestination = Route.HOME_SCREEN) {
-        composable(route = Route.HOME_SCREEN,   enterTransition = { slideInHorizont(animeDuration) },
+        composable(route = Route.HOME_SCREEN, enterTransition = { slideInHorizont(animeDuration) },
             exitTransition = { exitTransition(animeDuration) },
             popExitTransition = { slideOutHorizont(animeDuration) }
         ) { backStackEntry ->
@@ -382,7 +382,7 @@ fun NavControllerComposable(
             HomeScreen(
                 role,
                 onOpportunityClick = {
-                    navController.navigate(Route.OPPORTUNITIES_SCREEN)
+                    navController.navigate(Route.OPPORTUNITIES_SCREEN + "/" + it)
                 },
                 onEventsClick = {
                     navController.navigate(Route.MY_EVENTS)
@@ -700,6 +700,9 @@ fun NavControllerComposable(
                     label = eventTitle
                 )
             )
+            remember {
+                eventViewModel.onEvent(EvEvents.ClearOpportunities)
+            }
             OppEventDetails(eventViewModel, moveToRegistration = {
                 //eventViewModel.onEvent(EvEvents.ClearRegister)
                 navController.navigate(Route.EVENT_REGISTRATION)
@@ -775,9 +778,10 @@ fun NavControllerComposable(
                     eventTitle = divisionName
                     navController.navigate(Route.DIVISION_TAB + "/${divisionId}")
                 }, moveToOpenTeams = { title, logo ->
-                    eventTitle = title
+                    //Commented the Team screen
+                    /*eventTitle = title
                     teamLogo = logo
-                    navController.navigate(Route.TEAM_TAB)
+                    navController.navigate(Route.TEAM_TAB)*/
                 },
                 eventViewModel = eventViewModel
             )
@@ -1119,7 +1123,7 @@ fun NavControllerComposable(
                     logo = teamLogo
                 )
             )
-            EventTeamTabs(vm = teamViewModel)
+            EventTeamTabs(vm = teamViewModel, eventVm = eventViewModel)
         }
         composable(route = Route.MY_CHAT_DETAIL,
             enterTransition = { slideInHorizont(animeDuration) },
@@ -1195,18 +1199,27 @@ fun NavControllerComposable(
             })
         }
 
-        composable(route = Route.OPPORTUNITIES_SCREEN,
+        composable(route = Route.OPPORTUNITIES_SCREEN + "/{type}",
+            arguments = listOf(
+                navArgument("type") {
+                    type = NavType.StringType
+                }),
             enterTransition = { slideInHorizont(animeDuration) },
             exitTransition = { exitTransition(animeDuration) },
             popExitTransition = { slideOutHorizont(animeDuration) }
         ) {
+
+            val type = it.arguments?.getString("type")
             homeViewModel.setTopBar(
                 TopBarData(
                     label = stringResource(id = R.string.events_label),
                     topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
-            OpportunitiesScreen(eventViewModel) {
+            remember {
+                eventViewModel.onEvent(EvEvents.ClearList)
+            }
+            OpportunitiesScreen(type = type ?: "", vm = eventViewModel) {
                 eventTitle = it
                 navController.navigate(Route.OPP_DETAIL_SCREEN)
             }
