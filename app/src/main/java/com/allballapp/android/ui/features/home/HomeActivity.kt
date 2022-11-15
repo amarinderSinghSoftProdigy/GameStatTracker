@@ -94,7 +94,7 @@ import timber.log.Timber
 val animeDuration = 500
 
 @AndroidEntryPoint
-class HomeActivity : FragmentActivity() ,MessageListner {
+class HomeActivity : FragmentActivity(), MessageListner {
     var dataStoreManager: DataStoreManager = DataStoreManager(this)
     val cometChat = CometChatUI()
     var setupTeamViewModelUpdated: SetupTeamViewModelUpdated? = null
@@ -107,7 +107,7 @@ class HomeActivity : FragmentActivity() ,MessageListner {
         WindowCompat.setDecorFitsSystemWindows(window, true)
         cometChat.context = this
         cometChat.setConversationClickListener()
-        CometChatConversationList.newMessageListner=this
+        CometChatConversationList.newMessageListner = this
         setContent {
             //val fromSplash = intent.getBooleanExtra(IntentData.FROM_SPLASH, false)
             homeViewModel = hiltViewModel()
@@ -334,7 +334,7 @@ class HomeActivity : FragmentActivity() ,MessageListner {
     }
 
     override fun setResult(teamId: String) {
-      Timber.i("setResult--- $teamId")
+        Timber.i("setResult--- $teamId")
     }
 
 }
@@ -388,7 +388,7 @@ fun NavControllerComposable(
                     navController.navigate(Route.MY_EVENTS)
                 },
                 onLeagueClick = {
-                    navController.navigate(Route.MY_LEAGUE)
+                    navController.navigate(Route.MY_LEAGUE + "/" + it)
                 },
                 onInvitationCLick = {
                     navController.navigate(Route.INVITATION_SCREEN)
@@ -1225,7 +1225,11 @@ fun NavControllerComposable(
             }
         }
 
-        composable(route = Route.MY_LEAGUE,
+        composable(route = Route.MY_LEAGUE + "/{type}",
+            arguments = listOf(
+                navArgument("type") {
+                    type = NavType.StringType
+                }),
             enterTransition = { slideInHorizont(animeDuration) },
             exitTransition = { exitTransition(animeDuration) },
             popExitTransition = { slideOutHorizont(animeDuration) }
@@ -1236,7 +1240,8 @@ fun NavControllerComposable(
                     topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
-            MyLeagueScreen(eventViewModel) {
+            val type = it.arguments?.getString("type")
+            MyLeagueScreen(type = type ?: "", eventViewModel) {
                 eventMainTitle = it
                 navController.navigate(Route.LEAGUE_DETAIL_SCREEN)
             }

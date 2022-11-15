@@ -25,7 +25,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.allballapp.android.BuildConfig
+import com.allballapp.android.R
+import com.allballapp.android.common.AppConstants
 import com.allballapp.android.data.response.HomeItemResponse
 import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.home.teams.TeamViewModel
@@ -34,12 +35,12 @@ import com.allballapp.android.ui.theme.ColorGreyLighter
 import com.allballapp.android.ui.theme.appColors
 import com.allballapp.android.ui.theme.rubikFamily
 import com.google.accompanist.flowlayout.FlowRow
-import com.allballapp.android.R
+
 @Composable
 fun HomeFirstTimeLoginScreen(
     viewModel: HomeViewModel,
     teamVm: TeamViewModel,
-    onLeagueClick: () -> Unit,
+    onLeagueClick: (String) -> Unit,
     onOpportunityClick: () -> Unit,
     onTeamNameClick: (Boolean) -> Unit,
     onCreateTeamClick: () -> Unit,
@@ -178,7 +179,7 @@ fun HomeFirstTimeLoginScreen(
                                     onOpportunityClick()
                                 }
                                 1 -> {
-                                    onLeagueClick()
+                                    onLeagueClick(AppConstants.ALL_LEAGUE)
                                 }
                                 2 -> {
                                     onOpportunityClick()

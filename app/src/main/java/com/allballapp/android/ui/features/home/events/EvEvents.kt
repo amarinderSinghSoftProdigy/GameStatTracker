@@ -58,7 +58,7 @@ sealed class EvEvents {
         val eventId: String
     ) : EvEvents()
 
-    object GetMyLeagues : EvEvents()
+    data class GetMyLeagues(val type:String) : EvEvents()
 
     object GetDivision : EvEvents()
     data class GetLeagueId(val id: String, val eventId: String) : EvEvents()

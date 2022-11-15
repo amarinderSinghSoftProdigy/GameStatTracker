@@ -313,7 +313,7 @@ class EventViewModel @Inject constructor(
             }
             is EvEvents.GetMyLeagues -> {
                 viewModelScope.launch {
-                    getMyLeagues()
+                    getMyLeagues(event.type)
                 }
             }
             is EvEvents.GetLeagueId -> {
@@ -927,7 +927,7 @@ class EventViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getMyLeagues() {
+    private suspend fun getMyLeagues(type: String) {
 
         _state.value = _state.value.copy(isLoading = true)
         val userResponse = teamRepo.getMyLeagues(UserStorage.teamId)

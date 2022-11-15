@@ -19,6 +19,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.allballapp.android.R
@@ -194,11 +195,11 @@ fun TabsContent(
         when (page) {
 
             0 -> {
-                MyEvents(vm, moveToPracticeDetail, moveToGameDetail,moveToEventDetail)
+                MyEvents(vm, moveToPracticeDetail, moveToGameDetail, moveToEventDetail)
             }
 
             1 -> {
-                MyLeagueScreen(vm, moveToDetail)
+                MyLeagueScreen(type = "", vm, moveToDetail)
             }
 
             2 -> {
@@ -689,6 +690,8 @@ fun EventItem(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
                                     text = events.reason,
                                     color = MaterialTheme.appColors.buttonColor.textEnabled,
                                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,

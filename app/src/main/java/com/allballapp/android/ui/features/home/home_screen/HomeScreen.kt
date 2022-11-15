@@ -61,7 +61,7 @@ fun HomeScreen(
     onTeamNameClick: (Boolean) -> Unit,
     onInviteClick: () -> Unit,
     onOpportunityClick: (String) -> Unit,
-    onLeagueClick: () -> Unit,
+    onLeagueClick: (String) -> Unit,
     onEventsClick: () -> Unit,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
     refreshTeamListing: String = "",
@@ -182,7 +182,7 @@ fun HomeScreen(
         if (!homeState.showBottomAppBar) {
             HomeFirstTimeLoginScreen(vm, teamVm,
                 {
-                    onLeagueClick()
+                    onLeagueClick(it)
                 }, {
                     onOpportunityClick(AppConstants.OPP_WORK)
                 }, {
@@ -458,7 +458,7 @@ fun HomeScreen(
                             homeState.homePageCoachModel.myLeagues.toString(),
                             R.drawable.ic_leagues
                         ) {
-                            onLeagueClick()
+                            onLeagueClick("")
                         }
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
 
@@ -469,6 +469,7 @@ fun HomeScreen(
                             R.drawable.ic_leagues
                         ) {
                             onOpportunityClick(AppConstants.ALL_LEAGUE)
+                            //onLeagueClick(AppConstants.ALL_LEAGUE)
                         }
 
                     }

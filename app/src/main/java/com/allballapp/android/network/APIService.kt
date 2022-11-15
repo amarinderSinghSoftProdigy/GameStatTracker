@@ -184,6 +184,7 @@ open interface APIService {
 
     @GET(ApiConstants.GET_MY_LEAGUE)
     suspend fun getMyLeagues(
+        //@Query("type") type: String,
         @Query("teamId") teamId: String,
         @Query("page") page: Int,
         @Query("limit") limit: Int,
