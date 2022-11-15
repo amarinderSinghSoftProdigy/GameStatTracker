@@ -80,6 +80,8 @@ import com.cometchat.pro.constants.CometChatConstants
 import com.cometchat.pro.models.Conversation
 import com.cometchat.pro.models.Group
 import com.cometchat.pro.models.User
+import com.cometchat.pro.uikit.ui_components.chats.CometChatConversationList
+import com.cometchat.pro.uikit.ui_components.chats.MessageListner
 import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
 //import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
 import com.google.accompanist.navigation.animation.AnimatedNavHost
@@ -92,8 +94,7 @@ import timber.log.Timber
 val animeDuration = 500
 
 @AndroidEntryPoint
-class HomeActivity : FragmentActivity() {
-
+class HomeActivity : FragmentActivity() ,MessageListner {
     var dataStoreManager: DataStoreManager = DataStoreManager(this)
     val cometChat = CometChatUI()
     var setupTeamViewModelUpdated: SetupTeamViewModelUpdated? = null
@@ -106,6 +107,7 @@ class HomeActivity : FragmentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, true)
         cometChat.context = this
         cometChat.setConversationClickListener()
+        CometChatConversationList.newMessageListner=this
         setContent {
             //val fromSplash = intent.getBooleanExtra(IntentData.FROM_SPLASH, false)
             homeViewModel = hiltViewModel()
@@ -331,6 +333,10 @@ class HomeActivity : FragmentActivity() {
         }
     }
 
+    override fun setResult(teamId: String) {
+      Timber.i("setResult--- $teamId")
+    }
+
 }
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -363,7 +369,7 @@ fun NavControllerComposable(
     }
 
     AnimatedNavHost(navController, startDestination = Route.HOME_SCREEN) {
-        composable(route = Route.HOME_SCREEN,   enterTransition = { slideInHorizont(animeDuration) },
+        composable(route = Route.HOME_SCREEN, enterTransition = { slideInHorizont(animeDuration) },
             exitTransition = { exitTransition(animeDuration) },
             popExitTransition = { slideOutHorizont(animeDuration) }
         ) { backStackEntry ->
@@ -376,7 +382,7 @@ fun NavControllerComposable(
             HomeScreen(
                 role,
                 onOpportunityClick = {
-                    navController.navigate(Route.OPPORTUNITIES_SCREEN)
+                    navController.navigate(Route.OPPORTUNITIES_SCREEN + "/" + it)
                 },
                 onEventsClick = {
                     navController.navigate(Route.MY_EVENTS)
@@ -694,6 +700,9 @@ fun NavControllerComposable(
                     label = eventTitle
                 )
             )
+            remember {
+                eventViewModel.onEvent(EvEvents.ClearOpportunities)
+            }
             OppEventDetails(eventViewModel, moveToRegistration = {
                 //eventViewModel.onEvent(EvEvents.ClearRegister)
                 navController.navigate(Route.EVENT_REGISTRATION)
@@ -769,9 +778,10 @@ fun NavControllerComposable(
                     eventTitle = divisionName
                     navController.navigate(Route.DIVISION_TAB + "/${divisionId}")
                 }, moveToOpenTeams = { title, logo ->
-                    eventTitle = title
+                    //Commented the Team screen
+                    /*eventTitle = title
                     teamLogo = logo
-                    navController.navigate(Route.TEAM_TAB)
+                    navController.navigate(Route.TEAM_TAB)*/
                 },
                 eventViewModel = eventViewModel
             )
@@ -1113,7 +1123,7 @@ fun NavControllerComposable(
                     logo = teamLogo
                 )
             )
-            EventTeamTabs(vm = teamViewModel)
+            EventTeamTabs(vm = teamViewModel, eventVm = eventViewModel)
         }
         composable(route = Route.MY_CHAT_DETAIL,
             enterTransition = { slideInHorizont(animeDuration) },
@@ -1189,18 +1199,27 @@ fun NavControllerComposable(
             })
         }
 
-        composable(route = Route.OPPORTUNITIES_SCREEN,
+        composable(route = Route.OPPORTUNITIES_SCREEN + "/{type}",
+            arguments = listOf(
+                navArgument("type") {
+                    type = NavType.StringType
+                }),
             enterTransition = { slideInHorizont(animeDuration) },
             exitTransition = { exitTransition(animeDuration) },
             popExitTransition = { slideOutHorizont(animeDuration) }
         ) {
+
+            val type = it.arguments?.getString("type")
             homeViewModel.setTopBar(
                 TopBarData(
                     label = stringResource(id = R.string.events_label),
                     topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
-            OpportunitiesScreen(eventViewModel) {
+            remember {
+                eventViewModel.onEvent(EvEvents.ClearList)
+            }
+            OpportunitiesScreen(type = type ?: "", vm = eventViewModel) {
                 eventTitle = it
                 navController.navigate(Route.OPP_DETAIL_SCREEN)
             }

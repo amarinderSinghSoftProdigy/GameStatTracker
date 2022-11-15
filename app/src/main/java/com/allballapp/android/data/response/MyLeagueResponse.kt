@@ -11,6 +11,8 @@ data class MyLeagueResponse(
     val event: String,
     @SerializedName("eventDetail")
     val eventDetail: EventDetail,
+    @SerializedName("divisionDetail")
+    val divisionDetail: DivisionDetail,
     @SerializedName("payment")
     val payment: String,
     @SerializedName("paymentOption")
@@ -19,6 +21,13 @@ data class MyLeagueResponse(
     val status: String,
     @SerializedName("team")
     val team: String
+)
+
+data class DivisionDetail(
+    @SerializedName("_id")
+    val _id: String = "",
+    @SerializedName("divisionName")
+    val divisionName: String = "",
 )
 
 data class EventDetail(

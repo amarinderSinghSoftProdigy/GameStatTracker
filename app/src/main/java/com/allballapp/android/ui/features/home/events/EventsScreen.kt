@@ -202,7 +202,7 @@ fun TabsContent(
             }
 
             2 -> {
-                OpportunitiesScreen(vm, moveToOppDetails)
+                OpportunitiesScreen(vm = vm, moveToOppDetails = moveToOppDetails)
             }
 
         }
@@ -228,7 +228,7 @@ fun TabsContentForReferee(
             }
 
             1 -> {
-                OpportunitiesScreen(vm, moveToOppDetails)
+                OpportunitiesScreen(vm = vm, moveToOppDetails = moveToOppDetails)
             }
 
         }

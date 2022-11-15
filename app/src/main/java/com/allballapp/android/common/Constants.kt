@@ -37,6 +37,11 @@ object AppConstants {
     const val PAGE_LIMIT = 20
     var DEFAULT_COLOR = "FF923D"
     var SELECTED_COLOR: Color = Yellow700
+
+    const val OPP_PLAY = "opportunitiesToPlay"
+    const val ALL_LEAGUE = "allLeagues"
+    const val OPP_WORK = "opportunitiesToWork"
+
 }
 
 object Route {

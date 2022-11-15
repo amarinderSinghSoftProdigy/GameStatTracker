@@ -16,7 +16,7 @@ sealed class EvEvents {
     //Opportunities
     object GetFilters : EvEvents()
     object GetRefereeFilters : EvEvents()
-    object GetOpportunities : EvEvents()
+    data class GetOpportunities(val type: String = "") : EvEvents()
     object GetOpportunityDetail : EvEvents()
     data class SetEventId(val id: String) : EvEvents()
     data class GetDivisions(val id: String) : EvEvents()
@@ -32,7 +32,8 @@ sealed class EvEvents {
     data class RegisterPrivacy(val request: Boolean) : EvEvents()
     data class RegisterCash(val request: String) : EvEvents()
     object ClearRegister : EvEvents()
-    object ClearOpportunities: EvEvents()
+    object ClearList : EvEvents()
+    object ClearOpportunities : EvEvents()
     data class ShowToast(val message: String) : EvEvents()
     data class OnDeclineConfirmClick(val invitation: EventsResponse) : EvEvents()
     object RefreshEventScreen : EvEvents()
