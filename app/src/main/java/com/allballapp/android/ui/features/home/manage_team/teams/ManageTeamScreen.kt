@@ -33,6 +33,7 @@ import com.allballapp.android.BuildConfig
 import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.argbToHexString
+import com.allballapp.android.common.getCustomColorCode
 import com.allballapp.android.common.validTeamName
 import com.allballapp.android.data.request.Address
 import com.allballapp.android.ui.features.components.*
@@ -424,9 +425,10 @@ fun ManageTeamScreen(
                                 } else {
                                     Timber.e("color " + state.teamColorPrimary)
                                     if (state.teamColorPrimary.startsWith("#")) {
-                                        Color(android.graphics.Color.parseColor(state.teamColorPrimary))
+                                        Color(android.graphics.Color.parseColor("#" + getCustomColorCode(state.teamColorPrimary.removePrefix("#"))))
                                     } else {
-                                        Color(android.graphics.Color.parseColor("#" + state.teamColorPrimary))
+                                        Color(android.graphics.Color.parseColor("#" + getCustomColorCode(state.teamColorPrimary)))
+
                                     }
                                 },
                                 shape = RoundedCornerShape(
@@ -506,9 +508,10 @@ fun ManageTeamScreen(
                                 } else {
 //                                    Color(android.graphics.Color.parseColor("#" + state.teamColorSec))
                                     if (state.teamColorSec.startsWith("#")) {
-                                        Color(android.graphics.Color.parseColor(state.teamColorSec))
+                                        Color(android.graphics.Color.parseColor("#" + getCustomColorCode(state.teamColorSec.removePrefix("#"))))
+
                                     } else {
-                                        Color(android.graphics.Color.parseColor("#" + state.teamColorSec))
+                                        Color(android.graphics.Color.parseColor("#" + getCustomColorCode(state.teamColorSec)))
                                     }
                                 },
                                 shape = RoundedCornerShape(
@@ -570,11 +573,16 @@ fun ManageTeamScreen(
                                     modifier = Modifier.align(Alignment.Center),
                                     textAlign = TextAlign.Center,
                                     text = if (state.teamColorThird.isNotEmpty()) {
-                                        "#" + state.teamColorThird
+                                        if (state.teamColorThird.substring(0, 1) == "#") {
+                                            state.teamColorThird
+                                        } else {
+                                            "#" + state.teamColorThird
+                                        }
                                     } else {
                                         ""
                                     },
                                     color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+
 
                                 )
                             }
@@ -587,9 +595,10 @@ fun ManageTeamScreen(
                                 } else {
 //                                    Color(android.graphics.Color.parseColor("#" + state.teamColorThird))
                                     if (state.teamColorThird.startsWith("#")) {
-                                        Color(android.graphics.Color.parseColor(state.teamColorThird))
+                                        Color(android.graphics.Color.parseColor("#" + getCustomColorCode(state.teamColorThird.removePrefix("#"))))
+
                                     } else {
-                                        Color(android.graphics.Color.parseColor("#" + state.teamColorThird))
+                                        Color(android.graphics.Color.parseColor("#" + getCustomColorCode(state.teamColorThird)))
                                     }
                                 },
                                 shape = RoundedCornerShape(

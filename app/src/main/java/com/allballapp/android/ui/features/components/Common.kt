@@ -52,6 +52,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
+import com.allballapp.android.common.getCustomColorCode
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.ui.features.home.events.schedule.Space
 import com.allballapp.android.ui.features.venue.Location
@@ -74,7 +75,14 @@ fun stringResourceByName(name: String): String {
     }.getOrNull()?.let { stringResource(id = it) } ?: name else ""
 }
 
-fun fromHex(color: String? = "0177C1") = Color(android.graphics.Color.parseColor("#" + color))
+fun fromHex(color: String? = "0177C1"):Color {
+    return try {
+        Color(android.graphics.Color.parseColor("#${getCustomColorCode(color?:"")}"))
+    }
+    catch (e:Exception){
+        Color(android.graphics.Color.parseColor("#" + "0177C1"))
+    }
+}
 
 @Composable
 fun TabBar(

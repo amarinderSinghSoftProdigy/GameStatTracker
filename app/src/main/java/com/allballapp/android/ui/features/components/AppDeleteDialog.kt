@@ -50,10 +50,7 @@ import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.DialogProperties
 import com.allballapp.android.R
-import com.allballapp.android.common.AppConstants
-import com.allballapp.android.common.argbToHexString
-import com.allballapp.android.common.validName
-import com.allballapp.android.common.validPhoneNumber
+import com.allballapp.android.common.*
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.response.ParentDetails
 import com.allballapp.android.data.response.PlayerDetails
@@ -848,7 +845,7 @@ fun CheckBoxButton(icon: Painter, tintColor: String, selected: Boolean, onItemCl
             .background(
                 shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)),
                 color = if (selected)
-                    Color(android.graphics.Color.parseColor("#$tintColor"))
+                    Color(android.graphics.Color.parseColor("#${getCustomColorCode(tintColor)}"))
                 else {
                     Color.Transparent
                 }
