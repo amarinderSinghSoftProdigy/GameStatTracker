@@ -1072,22 +1072,32 @@ fun SelectInvitationRoleItem(
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
             Box(
                 modifier = Modifier
-                    .border(
-                        width = 1.dp,
-                        color = MaterialTheme.appColors.textField.label,
-                        shape = RoundedCornerShape(50)
-                    )
                     .background(
                         shape = RoundedCornerShape(50),
-                        color = if (isSelected)
-                            MaterialTheme.appColors.material.primaryVariant
-                        else {
-                            Color.Transparent
-                        }
+                        color = if (isSelected) MaterialTheme.appColors.material.primaryVariant.copy(
+                            alpha = 0.4f
+                        ) else Color.Transparent
                     )
-                    .padding(dimensionResource(id = R.dimen.size_8dp))
-            )
-
+                    .padding(dimensionResource(id = R.dimen.size_2dp))
+            ) {
+                Box(
+                    modifier = Modifier
+                        .border(
+                            width = if(!isSelected) 1.dp else 0.dp,
+                            color = if(!isSelected) MaterialTheme.appColors.textField.label else Color.Transparent,
+                            shape = RoundedCornerShape(50)
+                        )
+                        .background(
+                            shape = RoundedCornerShape(50),
+                            color = if (isSelected)
+                                MaterialTheme.appColors.material.primaryVariant
+                            else {
+                                Color.Transparent
+                            },
+                        )
+                        .padding(dimensionResource(id = R.dimen.size_8dp))
+                )
+            }
         }
     }
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
