@@ -50,10 +50,7 @@ import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.DialogProperties
 import com.allballapp.android.R
-import com.allballapp.android.common.AppConstants
-import com.allballapp.android.common.argbToHexString
-import com.allballapp.android.common.validName
-import com.allballapp.android.common.validPhoneNumber
+import com.allballapp.android.common.*
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.response.ParentDetails
 import com.allballapp.android.data.response.PlayerDetails
@@ -848,7 +845,7 @@ fun CheckBoxButton(icon: Painter, tintColor: String, selected: Boolean, onItemCl
             .background(
                 shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)),
                 color = if (selected)
-                    Color(android.graphics.Color.parseColor("#$tintColor"))
+                    Color(android.graphics.Color.parseColor("#${getCustomColorCode(tintColor)}"))
                 else {
                     Color.Transparent
                 }
@@ -1075,22 +1072,32 @@ fun SelectInvitationRoleItem(
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
             Box(
                 modifier = Modifier
-                    .border(
-                        width = 1.dp,
-                        color = MaterialTheme.appColors.textField.label,
-                        shape = RoundedCornerShape(50)
-                    )
                     .background(
                         shape = RoundedCornerShape(50),
-                        color = if (isSelected)
-                            MaterialTheme.appColors.material.primaryVariant
-                        else {
-                            Color.Transparent
-                        }
+                        color = if (isSelected) MaterialTheme.appColors.material.primaryVariant.copy(
+                            alpha = 0.4f
+                        ) else Color.Transparent
                     )
-                    .padding(dimensionResource(id = R.dimen.size_8dp))
-            )
-
+                    .padding(dimensionResource(id = R.dimen.size_2dp))
+            ) {
+                Box(
+                    modifier = Modifier
+                        .border(
+                            width = if(!isSelected) 1.dp else 0.dp,
+                            color = if(!isSelected) MaterialTheme.appColors.textField.label else Color.Transparent,
+                            shape = RoundedCornerShape(50)
+                        )
+                        .background(
+                            shape = RoundedCornerShape(50),
+                            color = if (isSelected)
+                                MaterialTheme.appColors.material.primaryVariant
+                            else {
+                                Color.Transparent
+                            },
+                        )
+                        .padding(dimensionResource(id = R.dimen.size_8dp))
+                )
+            }
         }
     }
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
