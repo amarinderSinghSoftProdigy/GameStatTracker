@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
+import com.allballapp.android.common.getCustomColorCode
 import com.allballapp.android.common.validName
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.request.Members
@@ -554,7 +555,7 @@ fun AddRemoveButton(icon: Painter, teamColor: String, onItemClick: () -> Unit) {
             .size(dimensionResource(id = R.dimen.size_20dp))
             .background(
                 shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)),
-                color = Color(android.graphics.Color.parseColor("#$teamColor"))
+                color = Color(android.graphics.Color.parseColor("#${getCustomColorCode(teamColor)}"))
             )
     ) {
 

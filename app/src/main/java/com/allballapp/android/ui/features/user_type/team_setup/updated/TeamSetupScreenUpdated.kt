@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
+import com.allballapp.android.common.getCustomColorCode
 import com.allballapp.android.common.validTeamName
 import com.allballapp.android.data.request.Address
 import com.allballapp.android.data.request.Members
@@ -741,7 +742,7 @@ fun TeamSetupScreenUpdated(
                                 backgroundColor = if (state.teamColorPrimary.isEmpty()) {
                                     MaterialTheme.appColors.buttonColor.bckgroundDisabled
                                 } else {
-                                    Color(android.graphics.Color.parseColor("#" + state.teamColorPrimary))
+                                    Color(android.graphics.Color.parseColor("#${getCustomColorCode(state.teamColorPrimary)}"))
                                 },
                                 shape = RoundedCornerShape(
                                     dimensionResource(id = R.dimen.size_4dp)
@@ -816,7 +817,7 @@ fun TeamSetupScreenUpdated(
                                 backgroundColor = if (state.teamColorSec.isEmpty()) {
                                     MaterialTheme.appColors.buttonColor.bckgroundDisabled
                                 } else {
-                                    Color(android.graphics.Color.parseColor("#" + state.teamColorSec))
+                                    Color(android.graphics.Color.parseColor("#${getCustomColorCode(state.teamColorSec)}"))
                                 },
                                 shape = RoundedCornerShape(
                                     dimensionResource(id = R.dimen.size_4dp)
@@ -892,7 +893,7 @@ fun TeamSetupScreenUpdated(
                                 backgroundColor = if (state.teamColorThird.isEmpty()) {
                                     MaterialTheme.appColors.buttonColor.bckgroundDisabled
                                 } else {
-                                    Color(android.graphics.Color.parseColor("#" + state.teamColorThird))
+                                    Color(android.graphics.Color.parseColor("#${getCustomColorCode(state.teamColorThird)}"))
                                 },
                                 shape = RoundedCornerShape(
                                     dimensionResource(id = R.dimen.size_4dp)

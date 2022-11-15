@@ -1,7 +1,9 @@
 package com.allballapp.android.common
 
 import androidx.compose.ui.graphics.Color
+import com.allballapp.android.common.AppConstants.DEFAULT_COLOR
 import com.allballapp.android.ui.theme.Yellow700
+import timber.log.Timber
 
 object AppConstants {
     const val DATE_DAY_FORMAT: String="EEE, MMM DD"
@@ -216,4 +218,20 @@ object IntentData {
 
 object CometChatErrorCodes {
     const val ERR_UID_ALREADY_EXISTS = "ERR_UID_ALREADY_EXISTS"
+}
+
+
+fun getCustomColorCode(colorWithoutHash: String): String {
+    if (colorWithoutHash.length == 7) {
+        val updatedCode = colorWithoutHash.take(6)
+        Timber.i("updatedCode--$updatedCode")
+        return updatedCode
+    } else if (colorWithoutHash.length == 6 || colorWithoutHash.length == 8) {
+        Timber.i("colorWithoutHash--$colorWithoutHash")
+        return colorWithoutHash
+    } else {
+        Timber.i("colorWithoutHash--$DEFAULT_COLOR")
+        return DEFAULT_COLOR
+
+    }
 }

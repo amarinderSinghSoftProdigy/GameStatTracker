@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.allballapp.android.R
+import com.allballapp.android.common.getCustomColorCode
 import com.allballapp.android.ui.theme.ColorGreyLighter
 import com.allballapp.android.ui.theme.appColors
 
@@ -47,11 +48,23 @@ fun CoachFlowBackground(
         ) {
             Surface(
                 shape = CircleShape,
-                color = (if (colorCode.isNullOrEmpty()) ballColor else Color(
-                    android.graphics.Color.parseColor(
-                        "#$colorCode"
-                    )
-                )).copy(alpha = 0.05F),
+                color = (if (colorCode.isNullOrEmpty()) ballColor else
+                    try {
+                        Color(
+                            android.graphics.Color.parseColor(
+                                "#${getCustomColorCode(colorCode)}"
+
+                            )
+                        )
+                    } catch (e: Exception) {
+                        Color(
+                            android.graphics.Color.parseColor(
+                                "#${getCustomColorCode(colorCode)}"
+
+                            )
+                        )
+                    }
+                        ).copy(alpha = 0.05F),
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .absoluteOffset(
@@ -63,7 +76,7 @@ fun CoachFlowBackground(
                     shape = CircleShape,
                     color = if (colorCode.isNullOrEmpty()) ballColor else Color(
                         android.graphics.Color.parseColor(
-                            "#$colorCode"
+                            "#${getCustomColorCode(colorCode)}"
                         )
                     ),
                     modifier = Modifier
