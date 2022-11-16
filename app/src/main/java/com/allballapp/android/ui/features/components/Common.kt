@@ -8,10 +8,7 @@ import androidx.annotation.FloatRange
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -24,14 +21,19 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusEvent
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.boundsInParent
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
@@ -66,7 +68,9 @@ import com.google.accompanist.pager.PagerState
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.maps.android.compose.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun stringResourceByName(name: String): String {
@@ -1018,5 +1022,24 @@ fun requestCameraPermission(context: Context, activity: Activity) {
     // on below line if permission is not granted requesting permissions.
     if (!hasContactPermission(context)) {
         ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.CAMERA), 1)
+    }
+}
+
+class RectHolder(var rect: Rect? = null)
+
+
+fun Modifier.scrollOnFocus(
+    scrollState: ScrollState,
+    coroutineScope: CoroutineScope,
+): Modifier {
+    val rectHolder = RectHolder()
+    return composed {
+        onGloballyPositioned { rectHolder.rect = it.boundsInParent() }
+            .onFocusEvent {
+                if (it.isFocused) {
+                    rectHolder.rect.takeIf { !scrollState.isScrollInProgress }
+                        ?.let { coroutineScope.launch { scrollState.animateScrollTo(it.top.toInt()) } }
+                }
+            }
     }
 }

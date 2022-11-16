@@ -182,7 +182,6 @@ fun ShowHeading(id: Int, count: String) {
                 id = R.dimen.txt_size_12
             ).value.sp
         )
-
     }
 }
 
@@ -237,7 +236,7 @@ fun CoachListItem(
             if (data.role == UserType.PLAYER.key) {
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                 AppText(
-                    text = data.jersey + " " + data.position,
+                    text = data.jersey + " " +  data.position,
                     color = MaterialTheme.appColors.textField.label,
                     style = MaterialTheme.typography.h6
                 )

@@ -82,6 +82,7 @@ fun InvitationScreen(
     remember {
         homeVm.onEvent(HomeScreenEvent.OnSwapClick())
     }
+
     LaunchedEffect(key1 = Unit) {
         vmSetupTeam.teamSetupChannel.collect { uiEvent ->
             when (uiEvent) {
@@ -114,6 +115,7 @@ fun InvitationScreen(
             }
         }
     }
+
     LaunchedEffect(key1 = Unit) {
         vm.invitationChannel.collect { uiEvent ->
             when (uiEvent) {
@@ -143,7 +145,6 @@ fun InvitationScreen(
                     }
                 }
             }
-
         }
     } else if (!state.showLoading) {
         EmptyScreen(singleText = true, stringResource(id = R.string.no_data_found))
