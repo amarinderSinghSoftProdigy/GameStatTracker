@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.NumberPicker
 import android.widget.Toast
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
 import androidx.compose.foundation.layout.*
@@ -1083,8 +1084,8 @@ fun SelectInvitationRoleItem(
                 Box(
                     modifier = Modifier
                         .border(
-                            width = if(!isSelected) 1.dp else 0.dp,
-                            color = if(!isSelected) MaterialTheme.appColors.textField.label else Color.Transparent,
+                            width = if (!isSelected) 1.dp else 0.dp,
+                            color = if (!isSelected) MaterialTheme.appColors.textField.label else Color.Transparent,
                             shape = RoundedCornerShape(50)
                         )
                         .background(
@@ -1177,8 +1178,12 @@ fun SelectGuardianRoleDialog(
 
     BallerAppMainTheme {
         AlertDialog(
+            properties = DialogProperties(usePlatformDefaultWidth = false),
             modifier = Modifier
-                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                .padding(horizontal = dimensionResource(id = R.dimen.size_32dp))
+                .wrapContentSize()
+                .animateContentSize(),
             onDismissRequest = onDismiss,
             buttons = {
                 Box {
@@ -1289,7 +1294,10 @@ fun SelectGuardianRoleDialog(
                         }
                     }
                     if (loading) {
-                        CommonProgressBar()
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center),
+                            color = MaterialTheme.appColors.material.primaryVariant
+                        )
                     }
                 }
 
@@ -2534,6 +2542,7 @@ fun GuardianAuthorizeDialog(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun InviteTeamMembersDialog(
     role: String = "",
@@ -2553,8 +2562,12 @@ fun InviteTeamMembersDialog(
 
     BallerAppMainTheme {
         AlertDialog(
+            properties = DialogProperties(usePlatformDefaultWidth = false),
             modifier = Modifier
-                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                .wrapContentSize()
+                .animateContentSize()
+                .padding(horizontal = dimensionResource(id = R.dimen.size_32dp)),
             onDismissRequest = {
 
             },
@@ -2589,7 +2602,7 @@ fun InviteTeamMembersDialog(
                             content = stringResource(id = R.string.info_text),
                             color = ColorMainPrimary,
                             onCancelClick = {
-//                                showInfoBox.value = false
+                                showInfoBox.value = false
                             })
                     }
 
