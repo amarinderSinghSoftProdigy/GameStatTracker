@@ -30,12 +30,13 @@ import com.allballapp.android.ui.utils.CommonUtils
 
 @Composable
 fun MyLeagueScreen(
+    type: String = "",
     vm: EventViewModel,
     moveToDetail: (String) -> Unit,
 ) {
     val state = vm.eventState.value
     remember {
-        vm.onEvent(EvEvents.GetMyLeagues)
+        vm.onEvent(EvEvents.GetMyLeagues(type))
     }
     if (state.isLoading) {
         CommonProgressBar()

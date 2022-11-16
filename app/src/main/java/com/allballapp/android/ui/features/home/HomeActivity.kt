@@ -94,7 +94,7 @@ import timber.log.Timber
 val animeDuration = 500
 
 @AndroidEntryPoint
-class HomeActivity : FragmentActivity() ,MessageListner {
+class HomeActivity : FragmentActivity(), MessageListner {
     var dataStoreManager: DataStoreManager = DataStoreManager(this)
     val cometChat = CometChatUI()
     var setupTeamViewModelUpdated: SetupTeamViewModelUpdated? = null
@@ -107,7 +107,7 @@ class HomeActivity : FragmentActivity() ,MessageListner {
         WindowCompat.setDecorFitsSystemWindows(window, true)
         cometChat.context = this
         cometChat.setConversationClickListener()
-        CometChatConversationList.newMessageListner=this
+        CometChatConversationList.newMessageListner = this
         setContent {
             //val fromSplash = intent.getBooleanExtra(IntentData.FROM_SPLASH, false)
             homeViewModel = hiltViewModel()
@@ -334,7 +334,7 @@ class HomeActivity : FragmentActivity() ,MessageListner {
     }
 
     override fun setResult(teamId: String) {
-      Timber.i("setResult--- $teamId")
+        Timber.i("setResult--- $teamId")
     }
 
 }
@@ -1236,7 +1236,7 @@ fun NavControllerComposable(
                     topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
-            MyLeagueScreen(eventViewModel) {
+            MyLeagueScreen(type = "", eventViewModel) {
                 eventMainTitle = it
                 navController.navigate(Route.LEAGUE_DETAIL_SCREEN)
             }
