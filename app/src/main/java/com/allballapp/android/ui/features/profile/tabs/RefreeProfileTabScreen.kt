@@ -21,7 +21,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import com.allballapp.android.BuildConfig
 import com.allballapp.android.ui.features.components.AppText
 import com.allballapp.android.ui.features.components.CoilImage
 import com.allballapp.android.ui.features.components.Placeholder
@@ -112,7 +111,7 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
                     AppText(
                         text = state.user.address,
                         style = MaterialTheme.typography.h5,
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -165,7 +164,7 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
                     Row {
                         AppText(
                             text = state.user.totalGames.toString(),
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.weight(1F),
                             fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp
@@ -173,7 +172,7 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
 
                         AppText(
                             text = state.user.totalHoopsGames.toString(),
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.weight(2F),
                             fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp
@@ -181,7 +180,7 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
 
                         AppText(
                             text = state.user.rating.toString(),
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.weight(1F),
                             fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp
@@ -237,7 +236,7 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
                     AppText(
                         text = state.user.userDetails.aboutExperience,
                         style = MaterialTheme.typography.h5,
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled
                     )
                 }
             }

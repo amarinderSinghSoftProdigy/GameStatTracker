@@ -79,7 +79,7 @@ fun DivisionTabs(pagerState: PagerState, list: List<DivisionTabs>) {
                         Text(
                             stringResourceByName(name = item.stringId),
                             fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                            color = if (pagerState.currentPage == index) MaterialTheme.appColors.buttonColor.bckgroundEnabled else MaterialTheme.appColors.textField.label
+                            color = if (pagerState.currentPage == index) MaterialTheme.appColors.buttonColor.backgroundEnabled else MaterialTheme.appColors.textField.label
                         )
                     }
                 },

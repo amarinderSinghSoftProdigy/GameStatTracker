@@ -170,7 +170,7 @@ fun ShowHeading(id: Int, count: String) {
             text = stringResource(id = id),
             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             style = MaterialTheme.typography.h6,
-            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
             fontWeight = FontWeight.Bold,
         )
         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
@@ -213,7 +213,7 @@ fun CoachListItem(
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
         AppText(
             text = ("${data.firstName} ${data.lastName}").capitalize(),
-            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             style = MaterialTheme.typography.h6,
             overflow = TextOverflow.Ellipsis,

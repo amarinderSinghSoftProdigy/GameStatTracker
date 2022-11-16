@@ -2,6 +2,7 @@ package com.allballapp.android.ui.features.home.home_screen
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -37,6 +38,7 @@ import com.allballapp.android.ui.features.home.teams.TeamUIEvent
 import com.allballapp.android.ui.features.home.teams.TeamViewModel
 import com.allballapp.android.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
 import com.allballapp.android.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
+import com.allballapp.android.ui.theme.BallerAppMainTheme
 import com.allballapp.android.ui.theme.ColorBWBlack
 import com.allballapp.android.ui.theme.ColorGreyLighter
 import com.allballapp.android.ui.theme.appColors
@@ -155,6 +157,7 @@ fun HomeScreen(
 
         }) {*/
 
+
     CoachFlowBackground(
         colorCode = color.value.ifEmpty { AppConstants.DEFAULT_COLOR },
         teamLogo = com.allballapp.android.BuildConfig.IMAGE_SERVER + homeState.user.profileImage,
@@ -176,7 +179,8 @@ fun HomeScreen(
                     //vm.onEvent(HomeScreenEvent.OnSwapClick)
                 }
             }
-        }) {
+        }
+    ) {
         if (!homeState.showBottomAppBar) {
             HomeFirstTimeLoginScreen(vm, teamVm,
                 {
@@ -191,7 +195,8 @@ fun HomeScreen(
                     onInvitationCLick()
                 }
             )
-        } else if (role.isNotEmpty()) {
+        } else if (role.isNotEmpty())
+        {
             Box {
                 Column(
                     Modifier
@@ -210,7 +215,7 @@ fun HomeScreen(
                         ),
                         style = MaterialTheme.typography.h5,
                         fontWeight = FontWeight.W500,
-                        color = ColorBWBlack
+                        color = MaterialTheme.appColors.textField.labelColor
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
                     AppText(
@@ -225,11 +230,12 @@ fun HomeScreen(
                     if (teamState.teams.isNotEmpty()) {
                         UserFlowBackground(
                             padding = 0.dp,
-                            color = Color.White
+//                            color = Color.White
                         ) {
                             Box(
                                 modifier = Modifier
                                     .fillMaxWidth()
+                                    .background(color = Color.Transparent)
                                     .clickable { /*logoClick()*/
                                         onTeamNameClick.invoke(true)
                                     }
@@ -262,6 +268,7 @@ fun HomeScreen(
                                         ) stringResource(id = R.string.team_total_hoop) else*/ teamState.teamName.ifEmpty { teamName.value },
                                         style = MaterialTheme.typography.h3,
                                         fontWeight = FontWeight.W700,
+                                        color = MaterialTheme.appColors.textField.labelColor,
                                         modifier = Modifier.weight(1f)
                                     )
                                 }
@@ -279,7 +286,6 @@ fun HomeScreen(
                     if (homeState.unReadMessageCount > 0) {
                         UserFlowBackground(
                             padding = 0.dp,
-                            color = Color.White
                         ) {
                             Box(
                                 Modifier
@@ -319,7 +325,7 @@ fun HomeScreen(
                     }
                     UserFlowBackground(
                         padding = 0.dp,
-                        color = Color.White
+//                        color = Color.White
                     ) {
                         Box(
                             Modifier
@@ -345,12 +351,14 @@ fun HomeScreen(
                                 Text(
                                     text = stringResource(id = R.string.pending_invitations),
                                     style = MaterialTheme.typography.h6,
+                                    color = MaterialTheme.appColors.textField.labelColor,
                                     modifier = Modifier.weight(1f),
                                 )
                             }
                             Text(
                                 text = homeState.homePageCoachModel.pendingInvitations.toString(),
                                 fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
+                                color = MaterialTheme.appColors.textField.labelColor,
                                 modifier = Modifier.align(Alignment.CenterEnd)
                             )
                         }
@@ -358,7 +366,7 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                     UserFlowBackground(
                         padding = 0.dp,
-                        color = Color.White
+//                        color = Color.White
                     ) {
                         Box(
                             Modifier
@@ -385,6 +393,7 @@ fun HomeScreen(
                                 Text(
                                     text = stringResource(id = R.string.opportunities_to_work),
                                     style = MaterialTheme.typography.h6,
+                                    color = MaterialTheme.appColors.textField.labelColor,
                                     modifier = Modifier.weight(1f),
                                 )
                             }
@@ -392,6 +401,7 @@ fun HomeScreen(
                             Text(
                                 text = homeState.homePageCoachModel.opportunityToWork.toString(),
                                 fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
+                                color = MaterialTheme.appColors.textField.labelColor,
                                 modifier = Modifier.align(Alignment.CenterEnd)
                             )
                         }
@@ -412,7 +422,7 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                     UserFlowBackground(
                         padding = 0.dp,
-                        color = Color.White
+//                        color = Color.White
                     ) {
                         Box(
                             Modifier
@@ -537,7 +547,7 @@ fun RowScope.EventItem(
             .fillMaxWidth()
             .weight(1F)
             .height(dimensionResource(id = R.dimen.size_160dp)),
-        color = color
+//        color = color
 
     ) {
         Column(
@@ -563,20 +573,20 @@ fun RowScope.EventItem(
                 AppText(
                     text = stringResourceByName(headingId),
                     style = MaterialTheme.typography.h6,
-                    color = ColorBWBlack
+                    color = MaterialTheme.appColors.textField.labelColor
                 )
             }
             AppText(
                 modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp)),
                 text = value,
                 fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
-                color = ColorBWBlack
+                color = MaterialTheme.appColors.textField.labelColor
             )
             AppText(
                 modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_5dp)),
                 text = stringResourceByName(stringId),
                 style = MaterialTheme.typography.h6,
-                color = MaterialTheme.appColors.textField.label
+                color = MaterialTheme.appColors.textField.labelColor
             )
         }
     }
@@ -594,7 +604,7 @@ fun RowScope.EventInviteItem(
             .fillMaxWidth()
             .weight(1F)
             .height(dimensionResource(id = R.dimen.size_160dp)),
-        color = Color.White
+//        color = Color.White
     ) {
         Column(
             modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp)),
@@ -616,7 +626,7 @@ fun RowScope.EventInviteItem(
                 AppText(
                     text = stringResourceByName(headingId),
                     style = MaterialTheme.typography.h6,
-                    color = ColorBWBlack
+                    color = MaterialTheme.appColors.textField.labelColor
                 )
             }
 

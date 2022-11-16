@@ -29,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -240,6 +241,12 @@ fun NavControllerComposable(
                     navController.navigate(OTP_VERIFICATION_SCREEN)
                 }
             )
+
+//            OtpScreenView(
+//                signUpViewModel = signUpViewModel,
+//                navController = navController,
+//                activity = activity
+//            )
         }
 
         composable(route = PROFILE_SETUP_SCREEN) {
@@ -285,37 +292,50 @@ fun NavControllerComposable(
         }
 
         composable(route = OTP_VERIFICATION_SCREEN) {
-            OtpScreen(
-                viewModel = signUpViewModel,
-                onSuccess = { profilesCount, profileIdIFSingle ->
-                    when (profilesCount) {
-                        0 -> {
-                            navController.popBackStack()
-                            navController.navigate(PROFILE_SETUP_SCREEN)
-                        }
-                        1 -> {
-                            profileIdIFSingle?.let {
-                                signUpViewModel.onEvent(SignUpUIEvent.OnSwapUpdate(it))
-                            }
-                        }
-                        else -> {
-                            navController.popBackStack()
-                            navController.navigate(SELECT_PROFILE)
-                        }
-                    }
-
-                },
-                onTokenSelectionSuccess = {
-                    moveToHome(activity)
-                }, onAuthorize = {
-                    navController.popBackStack()
-                }
+            OtpScreenView(
+                signUpViewModel = signUpViewModel,
+                navController = navController,
+                activity = activity
             )
         }
         composable(route = Route.WEB_VIEW) {
             CommonWebView(url)
         }
     }
+}
+
+@Composable
+fun OtpScreenView(
+    signUpViewModel : SignUpViewModel,
+    navController : NavController,
+    activity : MainActivity,
+){
+    OtpScreen(
+        viewModel = signUpViewModel,
+        onSuccess = { profilesCount, profileIdIFSingle ->
+            when (profilesCount) {
+                0 -> {
+                    navController.popBackStack()
+                    navController.navigate(PROFILE_SETUP_SCREEN)
+                }
+                1 -> {
+                    profileIdIFSingle?.let {
+                        signUpViewModel.onEvent(SignUpUIEvent.OnSwapUpdate(it))
+                    }
+                }
+                else -> {
+                    navController.popBackStack()
+                    navController.navigate(SELECT_PROFILE)
+                }
+            }
+
+        },
+        onTokenSelectionSuccess = {
+            moveToHome(activity)
+        }, onAuthorize = {
+            navController.popBackStack()
+        }
+    )
 }
 
 

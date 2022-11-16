@@ -39,7 +39,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
-import androidx.core.text.isDigitsOnly
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.allballapp.android.R
 import com.allballapp.android.common.*
@@ -859,7 +858,7 @@ fun CheckBoxItem(item: CheckBoxData, onCheckedChange: (Boolean) -> Unit) {
                     color = if (item.isChecked)
                         Color.Transparent
                     else
-                        MaterialTheme.appColors.buttonColor.bckgroundDisabled
+                        MaterialTheme.appColors.buttonColor.backgroundDisabled
                 )
         ) {
             if (item.isChecked)

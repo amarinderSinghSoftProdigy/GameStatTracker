@@ -18,6 +18,7 @@ data class EditField(
 
 data class TextFieldColor(
     val label: Color,
+    val labelColor: Color,
     val labelDark: Color,
     val indicator: Color
 )
@@ -28,8 +29,8 @@ data class SpinnerColor(
 )
 
 data class ButtonColor(
-    val bckgroundEnabled: Color,
-    val bckgroundDisabled: Color,
+    val backgroundEnabled: Color,
+    val backgroundDisabled: Color,
     val textEnabled: Color,
     val textDisabled: Color
 )
@@ -72,7 +73,8 @@ private val DarkThemeColors = darkColors(
     background = md_theme_dark_background,
     onBackground = md_theme_dark_onBackground,
     surface = md_theme_dark_surface,
-    onSurface = md_theme_dark_onSurface
+    onSurface = md_theme_dark_onSurface,
+
 )
 
 private val LightColorPalette = appColors(
@@ -86,6 +88,7 @@ private val LightColorPalette = appColors(
     ),
     textField = TextFieldColor(
         label = text_field_label,
+        labelColor = ColorBWBlack,
         labelDark = text_field_label_dark,
         indicator = text_field_indicator,
     ),
@@ -94,15 +97,41 @@ private val LightColorPalette = appColors(
         popupBorder = spiner_popup_border
     ),
     buttonColor = ButtonColor(
-        bckgroundDisabled = button_background_disable,
-        bckgroundEnabled = button_background_enable,
+        backgroundDisabled = button_background_disable,
+        backgroundEnabled = button_background_enable,
         textEnabled = button_text_enable,
         textDisabled = button_text_disable
     )
 
 )
 
-private val DarkColorPalette = LightColorPalette
+private val DarkColorPalette = appColors(
+    material = LightThemeColors,
+    warning = error,
+    onWarning = Color.Black,
+    editField = EditField(
+        borderFocused = ol_field_border_focused,
+        borderUnFocused = ol_field_border_unfocused,
+        borderError = ol_field_border_error
+    ),
+    textField = TextFieldColor(
+        label = text_field_label_dark_theme,
+        labelColor = /*ColorBWBlack*/ text_field_label_dark_theme,
+        labelDark = text_field_label_dark,
+        indicator = text_field_indicator,
+    ),
+    spinnerColo = SpinnerColor(
+        popupBackground = spiner_popup_background,
+        popupBorder = spiner_popup_border
+    ),
+    buttonColor = ButtonColor(
+        backgroundDisabled = button_background_disable,
+        backgroundEnabled = button_background_enable_dark_theme,
+        textEnabled = button_text_enable,
+        textDisabled = button_text_disable
+    )
+
+)
 
 private val LocalColors = staticCompositionLocalOf { LightColorPalette }
 
@@ -137,12 +166,12 @@ fun BallerAppTheme(
 
 @Composable
 fun BallerAppMainTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = /*false*/ isSystemInDarkTheme(),
     customColor: Color = AppConstants.SELECTED_COLOR,
     content: @Composable () -> Unit
 ) {
     val colors = if (darkTheme) {
-        DarkColorPalette.copy(material = LightThemeColors.copy(primaryVariant = customColor))
+        DarkColorPalette.copy(material = DarkThemeColors.copy(primaryVariant = customColor))
     } else {
         LightColorPalette.copy(material = LightThemeColors.copy(primaryVariant = customColor))
     }

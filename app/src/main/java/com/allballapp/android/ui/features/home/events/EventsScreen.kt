@@ -159,7 +159,7 @@ fun Tabs(pagerState: PagerState, list: List<TabItems>) {
                         Text(
                             stringResourceByName(name = item.stringId),
                             fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                            color = if (pagerState.currentPage == index) MaterialTheme.appColors.buttonColor.bckgroundEnabled else MaterialTheme.appColors.textField.label
+                            color = if (pagerState.currentPage == index) MaterialTheme.appColors.buttonColor.backgroundEnabled else MaterialTheme.appColors.textField.label
                         )
                     }
                 },
@@ -469,7 +469,7 @@ fun EventItem(
                         Text(
                             modifier = Modifier.weight(1f),
                             text = events.eventName,
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                             fontWeight = FontWeight.Bold,
                         )
@@ -566,7 +566,7 @@ fun EventItem(
                                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                                 Text(
                                     text = stringResource(id = R.string.decline),
-                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                     fontWeight = FontWeight.W500,
 
@@ -592,7 +592,7 @@ fun EventItem(
                                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                                 Text(
                                     text = stringResource(id = R.string.accept),
-                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                     fontWeight = FontWeight.W500,
                                 )
@@ -732,7 +732,7 @@ fun EventItem(
                             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                             Text(
                                 text = events.notGoing.size.toString(),
-                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                 fontWeight = FontWeight.W500,
 
@@ -767,7 +767,7 @@ fun EventItem(
                             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                             Text(
                                 text = events.going.size.toString(),
-                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                 fontWeight = FontWeight.W500,
 

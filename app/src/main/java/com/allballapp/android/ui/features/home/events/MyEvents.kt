@@ -247,7 +247,7 @@ fun GameDataItem(
                 text = publishedGames.gameData.name,
                 fontWeight = FontWeight.Bold,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled
             )
         }
     }

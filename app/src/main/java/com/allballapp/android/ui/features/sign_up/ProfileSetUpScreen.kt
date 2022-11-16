@@ -40,7 +40,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.android.TextLayout
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -48,7 +47,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import com.allballapp.android.R
 import com.allballapp.android.common.ComposeFileProvider
@@ -57,7 +55,6 @@ import com.allballapp.android.common.validName
 import com.allballapp.android.common.validPhoneNumber
 import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.confirm_phone.ConfirmPhoneScreen
-import com.allballapp.android.ui.features.home.events.EvEvents
 import com.allballapp.android.ui.theme.*
 import com.togitech.ccp.component.TogiCountryCodePicker
 import com.togitech.ccp.data.utils.getDefaultLangCode
@@ -480,7 +477,7 @@ fun ProfileSetUpScreen(
                                         AppText(
                                             text = stringResource(id = R.string.birthdate),
                                             style = MaterialTheme.typography.h6,
-                                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                                             modifier = Modifier
                                                 .align(Alignment.CenterStart)
                                                 .padding(start = dimensionResource(id = R.dimen.size_3dp)),
@@ -524,7 +521,7 @@ fun ProfileSetUpScreen(
                                         ) {
 
                                             val customTextSelectionColors = TextSelectionColors(
-                                                handleColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                                handleColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                                                 backgroundColor = Color.Transparent
                                             )
                                             CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {

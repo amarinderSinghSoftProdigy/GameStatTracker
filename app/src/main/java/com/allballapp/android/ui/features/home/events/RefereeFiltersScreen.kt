@@ -176,7 +176,7 @@ fun RefereeGenderFilterItem(
 
         AppText(
             text = name,
-            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
             style = MaterialTheme.typography.h5,
             fontWeight = FontWeight.W500,
         )
@@ -223,7 +223,7 @@ fun RefereeEventTypeFilterItem(
 
         AppText(
             text = name,
-            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
             style = MaterialTheme.typography.h5,
             fontWeight = FontWeight.W500,
         )
@@ -269,7 +269,7 @@ fun RefereeFormatFilterItem(
 
         AppText(
             text = name,
-            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
             style = MaterialTheme.typography.h5,
             fontWeight = FontWeight.W500,
         )

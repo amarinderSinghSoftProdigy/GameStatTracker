@@ -93,7 +93,8 @@ fun TogiCountryCodePicker(
                         showCountryFlag = showCountryFlag,
                         dialogAppBarTextColor = dialogAppBarTextColor,
                         showDialog = showDialogRemember.value,
-                        isOpenDialog = isAlreadyOpenPicker
+                        isOpenDialog = isAlreadyOpenPicker,
+                        textColor =  textStyle.color
                     )
                 }
                 CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
@@ -109,6 +110,7 @@ fun TogiCountryCodePicker(
                                 }
                             }
                         },
+
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             focusedBorderColor = focusedBorderColor,
                             unfocusedBorderColor = unfocusedBorderColor,

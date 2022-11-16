@@ -39,7 +39,7 @@ fun ManageTeamUsersScreen(vm: ManageUserViewModel = hiltViewModel()) {
                 style = MaterialTheme.typography.h4,
                 fontWeight = FontWeight.W500,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled
             )
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
@@ -122,7 +122,7 @@ fun CoachList(coachList: ManagedUserResponse) {
             Text(
                 text = coachList.name,
                 style = MaterialTheme.typography.h6,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled
             )
         }
 

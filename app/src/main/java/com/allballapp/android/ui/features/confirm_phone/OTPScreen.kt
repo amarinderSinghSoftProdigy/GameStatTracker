@@ -1,7 +1,6 @@
 package com.allballapp.android.ui.features.confirm_phone
 
 import android.widget.Toast
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -38,6 +37,7 @@ import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.sign_up.SignUpChannel
 import com.allballapp.android.ui.features.sign_up.SignUpUIEvent
 import com.allballapp.android.ui.features.sign_up.SignUpViewModel
+import com.allballapp.android.ui.theme.BallerAppMainTheme
 import com.allballapp.android.ui.theme.ColorBWGrayDark
 import com.allballapp.android.ui.theme.ColorBWGrayLight
 import com.allballapp.android.ui.theme.appColors
@@ -118,197 +118,202 @@ fun OtpScreen(
         }
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
-    ) {
-
-        Image(
-            painter = painterResource(id = R.drawable.ic_all_ball_logo),
-            contentDescription = null,
-            modifier = Modifier
-                .padding(top = dimensionResource(id = R.dimen.size_120dp))
-                .size(dimensionResource(id = R.dimen.size_130dp)),
-        )
-
+    BallerAppMainTheme() {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = dimensionResource(id = R.dimen.size_32dp)),
-            contentAlignment = Alignment.Center
+            ,
+            contentAlignment = Alignment.TopCenter
         ) {
 
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.appColors.material.surface)
+                    .padding(horizontal = dimensionResource(id = R.dimen.size_32dp)),
+                contentAlignment = Alignment.Center
+            ) {
 
-                AppText(
-                    text = stringResource(id = R.string.verification_code),
-                    style = MaterialTheme.typography.h6,
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Start
-                )
-
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
-
-                AppOutlineTextField(
-                    value = editValue,
-                    onValueChange = {
-                        if (it.length <= otpLength ) {
-                            setEditValue(it)
-                            otp = it
-                            if (otpLength == otp.length) {
-                                keyboardController?.hide()
-                                viewModel.onEvent(
-                                    SignUpUIEvent.OnConfirmNumber(
-                                        phoneNumber = state.signUpData.phone,
-                                        otp = otp
-                                    )
-                                )
-                            }
-                        }
-
-                    },
-                    modifier = Modifier
-                        .size(0.dp)
-                        .focusRequester(focusRequester),
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Number
-                    )
-                )
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    (0 until otpLength).map { index ->
-                        OtpCell(
-                            modifier = Modifier
-                                .height(dimensionResource(id = R.dimen.size_50dp))
-                                .weight(1f)
-                                .clickable {
-                                    focusRequester.requestFocus()
-                                    keyboard?.show()
-                                }
-                                .border(
-                                    width = dimensionResource(id = R.dimen.size_1dp),
-                                    color = if (editValue.length == index) MaterialTheme.appColors.material.primaryVariant else MaterialTheme.appColors.editField.borderUnFocused,
-                                    RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp))
-                                )
-                                .graphicsLayer {
-                                    shadowElevation = 0.dp.toPx()
-                                    shape = CutCornerShape(5.dp)
-                                    clip = true
-                                }
-                                .background(color = MaterialTheme.colors.background),
-                            value = editValue.getOrNull(index)?.toString() ?: "",
-                            isCursorVisible = editValue.length == index
-                        )
-                        Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_10dp)))
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_48dp)))
-
-                Box(modifier = Modifier.fillMaxWidth()) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
                     AppText(
+                        text = stringResource(id = R.string.verification_code),
                         style = MaterialTheme.typography.h6,
-                        text = stringResource(id = R.string.did_not_recieve_code),
-                        modifier = Modifier.align(Alignment.CenterStart),
-                        color = ColorBWGrayLight
+                        color = MaterialTheme.appColors.textField.labelColor,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Start
                     )
 
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
 
-                    val annotatedText = buildAnnotatedString {
-                        pushStringAnnotation(
-                            tag = stringResource(id = R.string.code),
-                            annotation = stringResource(id = R.string.code)
-                        )
-                        withStyle(
-                            style = SpanStyle(
-                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                                textDecoration = TextDecoration.Underline
-                            )
-                        ) {
-                            append(stringResource(id = R.string.resend_it))
-                        }
-
-                        pop()
-
-                    }
-                    val timer = buildAnnotatedString {
-                        withStyle(
-                            style = SpanStyle(
-                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                            )
-                        ) {
-                            append("00:" + if ((currentTime / 1000L).toString().length == 1) "0" + (currentTime / 1000L).toString() else (currentTime / 1000L).toString())
-                        }
-                    }
-                    if (currentTime <= 0L) {
-                        ClickableText(
-                            text = annotatedText,
-                            modifier = Modifier
-                                .align(Alignment.CenterEnd),
-                            onClick = {
-                                annotatedText.getStringAnnotations(
-                                    tag = "Resend Code",
-                                    start = it,
-                                    end = it
-                                ).forEach { _ ->
+                    AppOutlineTextField(
+                        value = editValue,
+                        onValueChange = {
+                            if (it.length <= otpLength ) {
+                                setEditValue(it)
+                                otp = it
+                                if (otpLength == otp.length) {
+                                    keyboardController?.hide()
                                     viewModel.onEvent(
-                                        SignUpUIEvent.OnVerifyNumber
+                                        SignUpUIEvent.OnConfirmNumber(
+                                            phoneNumber = state.signUpData.phone,
+                                            otp = otp
+                                        )
                                     )
                                 }
-                                currentTime = 60L * 1000L
-                            },
-                            style = MaterialTheme.typography.h6.copy(color = ColorBWGrayDark)
-                        )
-                    } else {
+                            }
 
-                        Text(
-                            style = MaterialTheme.typography.h6,
-                            color = ColorBWGrayDark,
-                            text = timer,
-                            modifier = Modifier
-                                .align(Alignment.CenterEnd),
+                        },
+                        modifier = Modifier
+                            .size(0.dp)
+                            .focusRequester(focusRequester),
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Number
                         )
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        (0 until otpLength).map { index ->
+                            OtpCell(
+                                modifier = Modifier
+                                    .height(dimensionResource(id = R.dimen.size_50dp))
+                                    .weight(1f)
+                                    .clickable {
+                                        focusRequester.requestFocus()
+                                        keyboard?.show()
+                                    }
+                                    .border(
+                                        width = dimensionResource(id = R.dimen.size_1dp),
+                                        color = if (editValue.length == index) MaterialTheme.appColors.material.primaryVariant else MaterialTheme.appColors.editField.borderUnFocused,
+                                        RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp))
+                                    )
+                                    .graphicsLayer {
+                                        shadowElevation = 0.dp.toPx()
+                                        shape = CutCornerShape(5.dp)
+                                        clip = true
+                                    }
+                                    .background(color = MaterialTheme.colors.background),
+                                value = editValue.getOrNull(index)?.toString() ?: "",
+                                isCursorVisible = editValue.length == index
+                            )
+                            Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_10dp)))
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_48dp)))
+
+                    Box(modifier = Modifier.fillMaxWidth()) {
+
+                        AppText(
+                            style = MaterialTheme.typography.h6,
+                            text = stringResource(id = R.string.did_not_recieve_code),
+                            modifier = Modifier.align(Alignment.CenterStart),
+                            color = ColorBWGrayLight
+                        )
+
+
+                        val annotatedText = buildAnnotatedString {
+                            pushStringAnnotation(
+                                tag = stringResource(id = R.string.code),
+                                annotation = stringResource(id = R.string.code)
+                            )
+                            withStyle(
+                                style = SpanStyle(
+                                    color = MaterialTheme.appColors.textField.labelColor,
+                                    textDecoration = TextDecoration.Underline
+                                )
+                            ) {
+                                append(stringResource(id = R.string.resend_it))
+                            }
+
+                            pop()
+
+                        }
+                        val timer = buildAnnotatedString {
+                            withStyle(
+                                style = SpanStyle(
+                                    color = MaterialTheme.appColors.textField.labelColor,
+                                )
+                            ) {
+                                append("00:" + if ((currentTime / 1000L).toString().length == 1) "0" + (currentTime / 1000L).toString() else (currentTime / 1000L).toString())
+                            }
+                        }
+                        if (currentTime <= 0L) {
+                            ClickableText(
+                                text = annotatedText,
+                                modifier = Modifier
+                                    .align(Alignment.CenterEnd),
+                                onClick = {
+                                    annotatedText.getStringAnnotations(
+                                        tag = "Resend Code",
+                                        start = it,
+                                        end = it
+                                    ).forEach { _ ->
+                                        viewModel.onEvent(
+                                            SignUpUIEvent.OnVerifyNumber
+                                        )
+                                    }
+                                    currentTime = 60L * 1000L
+                                },
+                                style = MaterialTheme.typography.h6.copy(color = MaterialTheme.appColors.textField.labelColor)
+                            )
+                        } else {
+
+                            Text(
+                                style = MaterialTheme.typography.h6.copy(color = MaterialTheme.appColors.textField.labelColor),
+                                color = MaterialTheme.appColors.textField.labelColor,
+                                text = timer,
+                                modifier = Modifier
+                                    .align(Alignment.CenterEnd),
+                            )
+                        }
                     }
                 }
             }
-        }
 
-        if (showAgeDialog.value) {
-            AgeConfirmDialog(
-                onDismiss = {
-                    showAgeDialog.value = false
-                },
-                onConfirmClick = {
-                    if (it == 0) {
-                        showGuardianDialog.value = true
-                    } else {
-                        onSuccess(0, null)
-                    }
-                })
-        }
+            Image(
+                painter = painterResource(id = R.drawable.ic_all_ball_logo),
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(top = dimensionResource(id = R.dimen.size_120dp))
+                    .size(dimensionResource(id = R.dimen.size_130dp)),
+            )
 
-        if (showGuardianDialog.value) {
-            GuardianAuthorizeDialog(
-                onDismiss = {
-                    showGuardianDialog.value = false
-                },
-                onConfirmClick = {
-                    viewModel.onEvent(
-                        SignUpUIEvent.AuthorizeUser(
-                            phone = state.phoneCode + state.signUpData.phone,
-                            parentPhone = it
+            if (showAgeDialog.value) {
+                AgeConfirmDialog(
+                    onDismiss = {
+                        showAgeDialog.value = false
+                    },
+                    onConfirmClick = {
+                        if (it == 0) {
+                            showGuardianDialog.value = true
+                        } else {
+                            onSuccess(0, null)
+                        }
+                    })
+            }
+
+            if (showGuardianDialog.value) {
+                GuardianAuthorizeDialog(
+                    onDismiss = {
+                        showGuardianDialog.value = false
+                    },
+                    onConfirmClick = {
+                        viewModel.onEvent(
+                            SignUpUIEvent.AuthorizeUser(
+                                phone = state.phoneCode + state.signUpData.phone,
+                                parentPhone = it
+                            )
                         )
-                    )
-                })
-        }
-        if (state.isLoading) {
-            CommonProgressBar()
+                    })
+            }
+            if (state.isLoading) {
+                CommonProgressBar()
+            }
         }
     }
+
 }

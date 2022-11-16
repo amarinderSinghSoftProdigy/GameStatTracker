@@ -25,7 +25,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.allballapp.android.BuildConfig
 import com.allballapp.android.data.response.team.TeamsByLeagueDivisionResponse
 import com.allballapp.android.ui.features.components.CoilImage
 import com.allballapp.android.ui.features.components.Placeholder
@@ -133,7 +132,7 @@ fun DivisionTeamItem(teamLeague: TeamsByLeagueDivisionResponse) {
                 text = teamLeague.team.name,
                 fontWeight = FontWeight.Bold,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled
 
             )
         }

@@ -125,19 +125,19 @@ fun GameRuleItem(
     Row() {
         Text(
             text = value1,
-            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
             style = MaterialTheme.typography.h5,
             modifier = Modifier.weight(1f),
         )
         Text(
             text = value2,
-            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
             style = MaterialTheme.typography.h5,
             modifier = Modifier.weight(1f),
             )
         Text(
             text = value3,
-            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
             style = MaterialTheme.typography.h5,
             modifier = Modifier.weight(1f),
         )
@@ -152,7 +152,7 @@ fun GameRuleItem(
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
     Text(
         text = value4,
-        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
         style = MaterialTheme.typography.h5
     )
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
@@ -172,7 +172,7 @@ fun OtherItem(key: String, value: String) {
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
     Text(
         text = value,
-        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
         style = MaterialTheme.typography.h5
     )
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))

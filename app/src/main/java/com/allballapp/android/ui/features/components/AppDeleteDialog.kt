@@ -159,7 +159,9 @@ fun SelectTeamDialog(
             buttons = {
                 Column(
                     modifier = Modifier
-                        .background(color = Color.White)
+                        .background(
+                            color = MaterialTheme.appColors.material.surface
+                        )
                         .padding(
                             all = dimensionResource(
                                 id = R.dimen.size_16dp
@@ -296,7 +298,7 @@ fun ShowParentDialog(
                         AppText(
                             text = stringResource(id = R.string.parent),
                             style = MaterialTheme.typography.h5,
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                             fontWeight = FontWeight.W500
                         )
 
@@ -554,7 +556,7 @@ fun TeamListItem(team: Team, selected: Boolean, onClick: (Team) -> Unit) {
                 color = if (selected) {
                     MaterialTheme.appColors.buttonColor.textEnabled
                 } else {
-                    MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                    MaterialTheme.appColors.buttonColor.backgroundEnabled
                 }
             )
         }
@@ -613,7 +615,7 @@ fun UserListItem(user: SwapUser, selected: Boolean, onClick: (String) -> Unit) {
                 color = if (selected) {
                     MaterialTheme.appColors.buttonColor.textEnabled
                 } else {
-                    MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                    MaterialTheme.appColors.buttonColor.backgroundEnabled
                 }
             )
         }
@@ -705,7 +707,7 @@ fun AddPlayerDialog(
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             focusedBorderColor = ColorBWGrayBorder,
                             unfocusedBorderColor = ColorBWGrayBorder,
-                            cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            cursorColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                             backgroundColor = MaterialTheme.appColors.material.background
                         ),
                         placeholder = {
@@ -901,7 +903,7 @@ fun SelectInvitationRoleDialog(
                         Text(
                             text = title,
                             style = MaterialTheme.typography.h5,
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                             fontWeight = FontWeight.W500,
                         )
 
@@ -953,7 +955,7 @@ fun SelectInvitationRoleDialog(
                             AppText(
                                 text = userName,
                                 style = MaterialTheme.typography.h3,
-                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                                color = MaterialTheme.appColors.buttonColor.backgroundEnabled
                             )
 
                             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
@@ -1142,7 +1144,7 @@ fun SelectGuardianRoleItem(
 
         AppText(
             text = name.capitalize(),
-            color = if (isSelected) MaterialTheme.appColors.buttonColor.bckgroundEnabled else ColorBWGrayMedium,
+            color = if (isSelected) MaterialTheme.appColors.buttonColor.backgroundEnabled else ColorBWGrayMedium,
             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             style = MaterialTheme.typography.h6,
             overflow = TextOverflow.Ellipsis,
@@ -1193,7 +1195,7 @@ fun SelectGuardianRoleDialog(
                                 ),
 
                                 style = MaterialTheme.typography.h5,
-                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                                 fontWeight = FontWeight.W500
                             )
                         }
@@ -1813,9 +1815,9 @@ fun DeclineEventDialog(
                             focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
                             unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
                             backgroundColor = MaterialTheme.appColors.material.background,
-                            textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            textColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                             placeholderColor = MaterialTheme.appColors.textField.label,
-                            cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                            cursorColor = MaterialTheme.appColors.buttonColor.backgroundEnabled
 
                         ),
                         keyboardActions = KeyboardActions(onDone = {
@@ -2061,7 +2063,7 @@ fun AddPlayer(
                                 },
                                 colors = TextFieldDefaults.outlinedTextFieldColors(
                                     unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
-                                    cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                                    cursorColor = MaterialTheme.appColors.buttonColor.backgroundEnabled
 
                                 ),
                                 errorMessage = stringResource(id = R.string.valid_team_name)
@@ -2082,7 +2084,7 @@ fun AddPlayer(
                                 },
                                 colors = TextFieldDefaults.outlinedTextFieldColors(
                                     unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
-                                    cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                                    cursorColor = MaterialTheme.appColors.buttonColor.backgroundEnabled
 
                                 ),
                                 errorMessage = stringResource(id = R.string.valid_team_name)
@@ -2257,9 +2259,9 @@ fun AddNoteDialog(
                             focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
                             unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
                             backgroundColor = MaterialTheme.appColors.material.background,
-                            textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            textColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                             placeholderColor = MaterialTheme.appColors.textField.label,
-                            cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                            cursorColor = MaterialTheme.appColors.buttonColor.backgroundEnabled
 
                         ),
                         keyboardActions = KeyboardActions(onDone = {
@@ -2363,7 +2365,7 @@ fun AgeConfirmDialog(
                     ) {
                         Text(
                             style = MaterialTheme.typography.h6,
-                            color = if (selected.value == 0) Color.White else MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            color = if (selected.value == 0) Color.White else MaterialTheme.appColors.buttonColor.backgroundEnabled,
                             text = stringResource(id = R.string.age_zero),
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -2383,7 +2385,7 @@ fun AgeConfirmDialog(
                     ) {
                         Text(
                             style = MaterialTheme.typography.h6,
-                            color = if (selected.value == 1) Color.White else MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            color = if (selected.value == 1) Color.White else MaterialTheme.appColors.buttonColor.backgroundEnabled,
                             text = stringResource(id = R.string.age_ok),
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -2443,7 +2445,7 @@ fun GuardianAuthorizeDialog(
                 ) {
                     Text(
                         style = MaterialTheme.typography.h6,
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         text = stringResource(id = R.string.authorize_message),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -2573,7 +2575,7 @@ fun InviteTeamMembersDialog(
                         Text(
                             text = stringResource(id = R.string.invite_team_member),
                             style = MaterialTheme.typography.h5,
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                             fontWeight = FontWeight.W500
                         )
                     }
@@ -2653,7 +2655,7 @@ fun InviteTeamMembersDialog(
                                             colors = TextFieldDefaults.outlinedTextFieldColors(
                                                 focusedBorderColor = ColorBWGrayBorder,
                                                 unfocusedBorderColor = ColorBWGrayBorder,
-                                                cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                                cursorColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                                                 backgroundColor = MaterialTheme.appColors.material.background
                                             ),
                                             placeholder = {
@@ -2900,7 +2902,7 @@ fun InfoBox(title: String, content: String, color: Color, onCancelClick: () -> U
                     text = title,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                     fontFamily = rubikFamily
                 )
 
@@ -2995,7 +2997,7 @@ fun InvitationSuccessfullySentDialog(
                         ),
                         fontSize = dimensionResource(id = R.dimen.txt_size_18).value.sp,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         fontFamily = rubikFamily,
                         textAlign = TextAlign.Center
                     )
@@ -3008,7 +3010,7 @@ fun InvitationSuccessfullySentDialog(
                         ),
                         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                         fontWeight = FontWeight.W400,
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         fontFamily = rubikFamily,
                         textAlign = TextAlign.Center
                     )
@@ -3171,7 +3173,7 @@ fun PaymentPickerDialog(
                     ) {
                         AppText(
                             text = stringResource(id = R.string.select_payment_option),
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                             style = MaterialTheme.typography.h6
                         )
@@ -3208,7 +3210,7 @@ fun PaymentPickerDialog(
 
                             AppText(
                                 text = it,
-                                color = if (it == selectedOption) Color.White else MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                color = if (it == selectedOption) Color.White else MaterialTheme.appColors.buttonColor.backgroundEnabled,
                                 style = MaterialTheme.typography.h6,
                                 modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_5dp))
                             )

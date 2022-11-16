@@ -356,7 +356,7 @@ fun InviteItem(
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = ColorBWGrayBorder,
                     unfocusedBorderColor = ColorBWGrayBorder,
-                    cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    cursorColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                     backgroundColor = MaterialTheme.appColors.material.background
                 ),
                 placeholder = {
@@ -607,7 +607,7 @@ fun TeamMemberItem(
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
             Text(
                 text = data.name,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                 style = MaterialTheme.typography.h5,
                 fontWeight = FontWeight.SemiBold
             )
@@ -626,7 +626,7 @@ fun TeamMemberItem(
                     GreenColor
                 }
                 else -> {
-                    MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                    MaterialTheme.appColors.buttonColor.backgroundEnabled
                 }
             }
 

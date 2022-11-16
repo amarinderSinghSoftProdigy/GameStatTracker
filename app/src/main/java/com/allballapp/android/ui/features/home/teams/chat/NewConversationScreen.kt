@@ -131,7 +131,7 @@ fun NewConversationScreen(
                     Text(
                         text = coachSize,
                         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         fontWeight = FontWeight.W600,
                         modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
                     )
@@ -173,7 +173,7 @@ fun NewConversationScreen(
                     Text(
                         text = playersSize,
                         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         fontWeight = FontWeight.W600,
                         modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
                     )
@@ -226,7 +226,7 @@ fun NewConversationScreen(
                     Text(
                         text = supportingStaffSize,
                         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         fontWeight = FontWeight.W600,
                         modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
                     )
@@ -268,7 +268,7 @@ fun NewConversationScreen(
                         || chatState.selectedCoachesForNewGroup.isNotEmpty()
                     )
                         MaterialTheme.appColors.material.primaryVariant
-                    else MaterialTheme.appColors.buttonColor.bckgroundDisabled,
+                    else MaterialTheme.appColors.buttonColor.backgroundDisabled,
                     RoundedCornerShape(50)
                 )
                 .align(Alignment.BottomEnd),
@@ -368,7 +368,7 @@ fun TeamUserListCheckbox(
                         ?: "" else "${teamUser?.firstName} ${teamUser?.lastName}",
                     fontWeight = FontWeight.Bold,
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_4dp)))
             }

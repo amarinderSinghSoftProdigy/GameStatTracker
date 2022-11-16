@@ -64,7 +64,7 @@ fun AppTextField(
     colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(),
 ) {
     val customTextSelectionColors = TextSelectionColors(
-        handleColor = if (!isError) MaterialTheme.appColors.buttonColor.bckgroundEnabled else MaterialTheme.colors.error,
+        handleColor = if (!isError) MaterialTheme.appColors.buttonColor.backgroundEnabled else MaterialTheme.colors.error,
         backgroundColor = Color.Transparent
     )
 
@@ -154,7 +154,7 @@ fun AppDateField(
                 AppText(
                     text = data,
                     textAlign = TextAlign.Center,
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                     style = androidx.compose.material.LocalTextStyle.current
                 )
             }

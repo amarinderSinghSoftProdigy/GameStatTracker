@@ -45,13 +45,10 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity.RESULT_ERROR
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
-import com.allballapp.android.BuildConfig
 import com.allballapp.android.R
 import com.allballapp.android.common.*
 import com.allballapp.android.data.request.Address
 import com.allballapp.android.ui.features.components.*
-import com.allballapp.android.ui.features.home.events.EvEvents
-import com.allballapp.android.ui.features.home.events.EventChannel
 import com.allballapp.android.ui.theme.appColors
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -107,7 +104,7 @@ fun NewEventScreen(
         ) {
             AppText(
                 text = stringResource(id = R.string.event_type),
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                 style = MaterialTheme.typography.h6,
                 modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp))
             )
@@ -397,7 +394,7 @@ fun PracticeScreen(
             PracticeItem(title = stringResource(R.string.location),
                 label = stringResource(R.string.select_location),
                 icon = painterResource(id = R.drawable.ic_next),
-                color = MaterialTheme.appColors.buttonColor.bckgroundDisabled,
+                color = MaterialTheme.appColors.buttonColor.backgroundDisabled,
 //                selectedValue = state.selectedLocation,
                 selectedValue = venue,
                 onSelectedValueChange = {
@@ -413,7 +410,7 @@ fun PracticeScreen(
             PracticeItem(title = stringResource(R.string.address),
                 label = stringResource(R.string.send_address),
                 icon = painterResource(id = R.drawable.ic_next),
-                color = MaterialTheme.appColors.buttonColor.bckgroundDisabled,
+                color = MaterialTheme.appColors.buttonColor.backgroundDisabled,
                 selectedValue = state.selectedAddress.street,
                 onSelectedValueChange = {
 
@@ -440,7 +437,7 @@ fun PracticeScreen(
             AppText(
                 text = stringResource(id = R.string.pre_practive_head),
                 style = MaterialTheme.typography.h6,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                 modifier = Modifier.padding(dimensionResource(id = R.dimen.size_16dp)),
             )
 
@@ -465,9 +462,9 @@ fun PracticeScreen(
                     focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
                     unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
                     backgroundColor = MaterialTheme.appColors.material.background,
-                    textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    textColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                     placeholderColor = MaterialTheme.appColors.textField.label,
-                    cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                    cursorColor = MaterialTheme.appColors.buttonColor.backgroundEnabled
                 ),
                 singleLine = false,
                 maxLines = 6
@@ -507,7 +504,7 @@ fun PracticeItem(
     val focusManager = LocalFocusManager.current
 
     val customTextSelectionColors = TextSelectionColors(
-        handleColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+        handleColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
         backgroundColor = Color.Transparent
     )
 
@@ -535,7 +532,7 @@ fun PracticeItem(
             AppText(
                 text = title,
                 style = MaterialTheme.typography.h6,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
             )
             Row(verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End,
@@ -557,7 +554,7 @@ fun PracticeItem(
                             AppText(
                                 text = selectedValue,
                                 style = MaterialTheme.typography.h5,
-                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                                 fontWeight = FontWeight.W500
                             )
                             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_14dp)))
@@ -573,7 +570,7 @@ fun PracticeItem(
                                         backgroundColor = Color.Transparent,
                                         focusedBorderColor = Color.Transparent,
                                         unfocusedBorderColor = Color.Transparent,
-                                        cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                        cursorColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                                     ),
                                     textStyle = MaterialTheme.typography.overline,
                                     singleLine = true,

@@ -131,7 +131,7 @@ fun ConfirmPhoneScreen(
             AppText(
                 text = stringResource(id = R.string.enter_otp),
                 style = MaterialTheme.typography.h6,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start
             )
@@ -213,7 +213,7 @@ fun ConfirmPhoneScreen(
 
                 withStyle(
                     style = SpanStyle(
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                     )
                 ) {
                     append(stringResource(id = R.string.did_not_recieve_sms))
@@ -225,7 +225,7 @@ fun ConfirmPhoneScreen(
                 )
                 withStyle(
                     style = SpanStyle(
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         textDecoration = TextDecoration.Underline
                     )
                 ) {
@@ -248,7 +248,7 @@ fun ConfirmPhoneScreen(
 
                 withStyle(
                     style = SpanStyle(
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                     )
                 ) {
                     append("00:" + if ((currentTime / 1000L).toString().length == 1) "0" + (currentTime / 1000L).toString() else (currentTime / 1000L).toString())
@@ -310,7 +310,7 @@ fun OtpCell(
         AppText(
             text = if (isCursorVisible) cursorSymbol else value,
             style = MaterialTheme.typography.h2,
-            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            color = MaterialTheme.appColors.textField.labelColor,
             modifier = Modifier.align(Alignment.Center)
         )
     }

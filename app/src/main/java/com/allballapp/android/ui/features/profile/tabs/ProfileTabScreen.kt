@@ -28,7 +28,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.allballapp.android.BuildConfig
 import com.allballapp.android.common.apiToUIDateFormat2
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
@@ -324,7 +323,7 @@ fun ProfileItem(type: String, value: String, imageUrl: String? = null) {
                 AppText(
                     text = value,
                     style = MaterialTheme.typography.h5,
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled
                 )
                 if (imageUrl != null) {
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
@@ -409,7 +408,7 @@ fun RowScope.DetailItem(heading: String, value: String) {
             text = value,
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.h5,
-            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+            color = MaterialTheme.appColors.buttonColor.backgroundEnabled
         )
     }
 }

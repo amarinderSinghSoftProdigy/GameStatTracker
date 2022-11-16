@@ -36,7 +36,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
-import com.allballapp.android.BuildConfig
 import com.allballapp.android.R
 import com.allballapp.android.common.ComposeFileProvider
 import com.allballapp.android.common.isValidEmail
@@ -314,9 +313,9 @@ fun RefereeEditScreen(
                             focusedBorderColor = Color.Transparent,
                             unfocusedBorderColor = Color.Transparent,
                             backgroundColor = MaterialTheme.appColors.material.background,
-                            textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            textColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                             placeholderColor = MaterialTheme.appColors.textField.label,
-                            cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                            cursorColor = MaterialTheme.appColors.buttonColor.backgroundEnabled
                         ),
                         singleLine = false,
                         maxLines = 6
@@ -388,9 +387,9 @@ fun RefereeEditScreen(
                                 focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
                                 unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
                                 backgroundColor = MaterialTheme.appColors.material.background,
-                                textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                textColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                                 placeholderColor = MaterialTheme.appColors.textField.label,
-                                cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                                cursorColor = MaterialTheme.appColors.buttonColor.backgroundEnabled
                             ),
                             singleLine = false,
                             maxLines = 6
@@ -708,7 +707,7 @@ fun DistanceItem(age: Int, vm: ProfileViewModel) {
         )
         Text(
             text = distance.value.toString(),
-            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier

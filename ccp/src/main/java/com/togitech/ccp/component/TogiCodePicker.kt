@@ -41,8 +41,10 @@ import com.togitech.ccp.data.utils.getCountryName
 import com.togitech.ccp.data.utils.getFlags
 import com.togitech.ccp.data.utils.getLibCountries
 import com.togitech.ccp.utils.searchCountry
+import androidx.compose.material.MaterialTheme
 
 class TogiCodePicker {
+
     @OptIn(ExperimentalComposeUiApi::class)
     @Composable
     fun TogiCodeDialog(
@@ -56,6 +58,7 @@ class TogiCodePicker {
         dialogAppBarColor: Color = MaterialTheme.colors.primary,
         dialogAppBarTextColor: Color = Color.White,
         isOpenDialog : MutableState<Boolean> = mutableStateOf(false),
+        textColor : Color = Color.Black,
     ) {
         val countryList: List<CountryData> = getLibCountries()
         var isPickCountry by remember { mutableStateOf(defaultSelectedCountry) }
@@ -64,6 +67,7 @@ class TogiCodePicker {
         var isSearch by remember { mutableStateOf(false) }
         val context = LocalContext.current
         val interactionSource = remember { MutableInteractionSource() }
+
 
         Column(
             modifier = Modifier
@@ -79,6 +83,7 @@ class TogiCodePicker {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
@@ -97,13 +102,13 @@ class TogiCodePicker {
                     Text(
                         text = isPickCountry.countryPhoneCode,
                         modifier = Modifier.padding(start = 6.dp),
-                        color = Color.Black
+                        color = textColor
                     )
                     if (!showCountryFlag) {
                         Icon(
                             imageVector = Icons.Default.ArrowDropDown,
                             contentDescription = null,
-                            tint = Color.Black
+                            tint = textColor
                         )
                     }
                 }

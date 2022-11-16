@@ -72,7 +72,7 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                             Text(
                                 text = stringResource(id = R.string.coaches),
                                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                                 fontWeight = FontWeight.W600,
                             )
                             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
@@ -93,7 +93,7 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                                 Text(
                                     text = stringResource(id = R.string.all_players),
                                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                                     fontWeight = FontWeight.W600,
                                 )
                                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
@@ -133,7 +133,7 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                                 Text(
                                     text = stringResource(id = R.string.invited),
                                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                                     fontWeight = FontWeight.W600,
                                 )
                                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
@@ -278,7 +278,7 @@ fun TeamUserListItem(
                     text = "${data.firstName} ${data.lastName}",
                     fontWeight = FontWeight.Bold,
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_4dp)))
             }

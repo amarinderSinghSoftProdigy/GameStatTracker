@@ -3,85 +3,29 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../../layout/compose-model-1667985340628.xml" value="0.335" />
         <entry key="../../../../layout/compose-model-1660742464153.xml" value="0.6637931034482759" />
         <entry key="../../../../layout/compose-model-1660911269847.xml" value="0.6450617283950617" />
         <entry key="../../../../layout/compose-model-1661253814152.xml" value="0.5" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_add.xml" value="0.244" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_add_button.xml" value="0.227" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_add_circle.xml" value="0.2425" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_add_circle_filled.xml" value="0.2425" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_add_cirlce_filled.xml" value="0.2425" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_add_filled.xml" value="0.2425" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_add_player.xml" value="0.227" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_add_round.xml" value="0.2365" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_all_ball_logo.xml" value="0.243" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_app_logo_foreground.xml" value="0.244" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_apple.xml" value="0.244" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_arrow_bottom_event.xml" value="0.2175" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_arrow_down.xml" value="0.2175" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_back.xml" value="0.226" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_ball.xml" value="0.227" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_ball_green.xml" value="0.226" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_ball_lines.xml" value="0.227" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_baseline_calendar_month_24.xml" value="0.244" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_call.xml" value="0.2425" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_chat.xml" value="0.188" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_cross_1.xml" value="0.226" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_cross_2.xml" value="0.2175" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_edit.xml" value="0.244" />
+        <entry key="..\:/Android/BallerAndroidApp/app/src/main/res/drawable/ic_add_circle_filled.xml" value="0.162" />
+        <entry key="..\:/Android/BallerAndroidApp/app/src/main/res/drawable/ic_back.xml" value="0.1" />
+        <entry key="..\:/Android/BallerAndroidApp/app/src/main/res/drawable/ic_correct.xml" value="0.2415" />
+        <entry key="..\:/Android/BallerAndroidApp/app/src/main/res/drawable/ic_correct_white.xml" value="0.2415" />
+        <entry key="..\:/Android/BallerAndroidApp/app/src/main/res/drawable/ic_facebook.xml" value="0.1" />
+        <entry key="..\:/Android/BallerAndroidApp/app/src/main/res/drawable/ic_info.xml" value="0.171" />
+        <entry key="..\:/Android/BallerAndroidApp/app/src/main/res/drawable/ic_player_info.xml" value="0.162" />
+        <entry key="..\:/Android/BallerAndroidApp/app/src/main/res/drawable/ic_possesion_next_arrow_selected.xml" value="0.2245" />
+        <entry key="..\:/Android/BallerAndroidApp/app/src/main/res/drawable/ic_settings.xml" value="0.1" />
+        <entry key="..\:/Android/BallerAndroidApp/app/src/main/res/drawable/ic_wrong.xml" value="0.237" />
+        <entry key="..\:/Android/BallerAndroidApp/app/src/main/res/drawable/ic_wrong_white.xml" value="0.237" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_events.xml" value="0.2265" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_events_large.xml" value="0.2425" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_file.xml" value="0.2425" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_home.xml" value="0.2425" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1095" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_leagues.xml" value="0.226" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_left_arrow.xml" value="0.2175" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_logo.xml" value="0.2265" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_message.xml" value="0.2425" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_nav.xml" value="0.2175" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_nav_icon.xml" value="0.2425" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_profile.xml" value="0.226" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_profile_placeholder.xml" value="0.2425" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_remove.xml" value="0.2425" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_team_placeholder.xml" value="0.2175" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/ic_teams_large.xml" value="0.226" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/splash_background.xml" value="0.2275" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/splash_background_color.xml" value="0.2275" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/walkthrough_1.xml" value="0.244" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/walkthrough_2.xml" value="0.244" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/drawable/walkthrough_4.xml" value="0.2305" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/layout/fragment_conversation.xml" value="0.1" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/layout/twitter_login.xml" value="0.1838768115942029" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/mipmap-anydpi-v26/ic_app_logo.xml" value="0.227" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.227" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.227" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/drawable/bottom_border.xml" value="0.1795" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/drawable/cc_message_bubble_l_left.xml" value="0.1795" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/drawable/cc_message_bubble_left.xml" value="0.1795" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/drawable/cc_rounded_date_button.xml" value="0.1795" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/drawable/compose_box.xml" value="0.187" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/drawable/ic_chat.xml" value="0.1795" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/drawable/ic_send.xml" value="0.224" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/drawable/layout_background.xml" value="0.1795" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/drawable/tab_background_state.xml" value="0.1795" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/drawable/tab_layout_background.xml" value="0.1795" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/drawable/tab_layout_background_active.xml" value="0.1795" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/layouts/calls/layout/fragment_cometchat_calls.xml" value="0.21195652173913043" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/layouts/chats/layout/cometchat_conversation_list_item.xml" value="0.21195652173913043" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/layouts/chats/layout/fragment_conversation_screen.xml" value="0.1634963768115942" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/layouts/cometchat_ui/layout/activity_cometchat_unified.xml" value="0.1" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/layouts/groups/layout/fragment_cometchat_group_list.xml" value="0.21195652173913043" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/layouts/messages/layout/activity_cometchat_forward_message.xml" value="0.21195652173913043" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/layouts/messages/layout/activity_cometchat_message_list.xml" value="0.21195652173913043" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/layouts/messages/layout/cometchat_messagelist_toolbar.xml" value="0.5950540958268934" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/layouts/messages/layout/cometchat_reply_message_view.xml" value="0.21195652173913043" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/layouts/messages/layout/fragment_cometchat_messagelist.xml" value="0.44412050534499514" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/layouts/others/drawable/ic_chat.xml" value="0.187" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/layouts/others/drawable/ic_chat_placeholder.xml" value="0.2155" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/layouts/others/drawable/ic_message_sent.xml" value="0.187" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/layouts/others/drawable/ic_send.xml" value="0.224" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/layouts/others/drawable/ic_send_message.xml" value="0.2155" />
-        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/layouts/shared/layout/cometchat_compose_box.xml" value="0.4" />
         <entry key="..\:/Users/user/baller-app/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
         <entry key="..\:/Users/user/baller-app/app/src/main/res/drawable/ic_add_player.xml" value="0.1" />
         <entry key="..\:/Users/user/baller-app/app/src/main/res/drawable/ic_app_logo_foreground.xml" value="0.1" />
@@ -98,7 +42,6 @@
         <entry key="..\:/Users/user/baller-app/app/src/main/res/drawable/ic_leagues.xml" value="0.1" />
         <entry key="..\:/Users/user/baller-app/app/src/main/res/drawable/ic_logo.xml" value="0.1" />
         <entry key="..\:/Users/user/baller-app/app/src/main/res/drawable/ic_nav.xml" value="0.1" />
-        <entry key="..\:/Users/user/baller-app/app/src/main/res/drawable/ic_next.xml" value="0.1" />
         <entry key="..\:/Users/user/baller-app/app/src/main/res/drawable/ic_remove.xml" value="0.1" />
         <entry key="..\:/Users/user/baller-app/app/src/main/res/drawable/ic_roaster.xml" value="0.1" />
         <entry key="..\:/Users/user/baller-app/app/src/main/res/drawable/ic_scanner.xml" value="0.1" />
@@ -114,12 +57,14 @@
         <entry key="..\:/Users/user/baller-app/app/src/main/res/drawable/splash_background.xml" value="0.1" />
         <entry key="..\:/Users/user/baller-app/app/src/main/res/drawable/splash_background_color.xml" value="0.1" />
         <entry key="..\:/Users/user/baller-app/app/src/main/res/mipmap-anydpi-v26/ic_app_logo.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_add_button.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_add_player.xml" value="0.131" />
+        <entry key="app/src/main/res/drawable/ic_all_ball_logo.xml" value="0.11" />
+        <entry key="app/src/main/res/drawable/ic_arrow_prev_selected.xml" value="0.117" />
         <entry key="app/src/main/res/drawable/ic_ball.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_ball_center.xml" value="0.144" />
         <entry key="app/src/main/res/drawable/ic_ball_green.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_ball_lines.xml" value="0.11" />
-        <entry key="app/src/main/res/drawable/ic_baseline_calendar_month_24.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_check.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_checkbox.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_circle_next.xml" value="0.1" />
@@ -130,17 +75,17 @@
         <entry key="app/src/main/res/drawable/ic_drag.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_facebook.xml" value="0.136" />
         <entry key="app/src/main/res/drawable/ic_hike_green.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_invite.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_logo.xml" value="0.136" />
+        <entry key="app/src/main/res/drawable/ic_next_arrow_selected.xml" value="0.117" />
+        <entry key="app/src/main/res/drawable/ic_posession_arrow_prev_selected.xml" value="0.129" />
+        <entry key="app/src/main/res/drawable/ic_possesion_next_arrow_selected.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_remove.xml" value="0.104" />
         <entry key="app/src/main/res/drawable/ic_scanner.xml" value="0.131" />
         <entry key="app/src/main/res/drawable/ic_settings.xml" value="0.139" />
-        <entry key="app/src/main/res/drawable/ic_standing.xml" value="0.1" />
-        <entry key="app/src/main/res/drawable/ic_sub.xml" value="0.1" />
-        <entry key="app/src/main/res/drawable/ic_twitter.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_upload.xml" value="0.131" />
-        <entry key="app/src/main/res/drawable/ic_user_profile_icon.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_user_profile_icon.xml" value="0.129" />
         <entry key="app/src/main/res/layout/activity_details.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/activity_place_picker.xml" value="0.2140625" />
         <entry key="app/src/main/res/layout/twitter_login.xml" value="0.25" />
       </map>
     </option>

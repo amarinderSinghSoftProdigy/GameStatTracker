@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -140,7 +139,7 @@ fun OpportunitiesItem(league: OpportunitiesItem, showLabel: Boolean, OnNextClick
                 ) {
                     Text(
                         text = league.name,
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.weight(1F)

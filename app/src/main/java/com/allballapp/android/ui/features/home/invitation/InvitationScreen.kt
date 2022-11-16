@@ -443,7 +443,7 @@ fun InvitationItem(
             Column(Modifier.weight(1f)) {
                 Text(
                     text = invitation.team.title,
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                     fontWeight = FontWeight.Bold,
                 )
@@ -475,7 +475,7 @@ fun InvitationItem(
                 Modifier
                     .fillMaxWidth()
                     .background(
-                        color = MaterialTheme.appColors.buttonColor.bckgroundDisabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundDisabled,
                         shape = RoundedCornerShape(
                             bottomStart = dimensionResource(
                                 id = R.dimen.size_8dp
@@ -504,7 +504,7 @@ fun InvitationItem(
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                     Text(
                         text = stringResource(id = R.string.decline),
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                         fontWeight = FontWeight.W500,
 
@@ -530,7 +530,7 @@ fun InvitationItem(
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                     Text(
                         text = stringResource(id = R.string.accept),
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                         fontWeight = FontWeight.W500,
                     )

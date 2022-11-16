@@ -73,27 +73,27 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_25dp)))
             Text(
                 text = stringResource(id = R.string.event_operator),
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                 fontWeight = FontWeight.Bold,
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
             Text(
                 text = stringResource(R.string.name_of_organization),
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_30dp)))
             Text(
                 text = stringResource(id = R.string.events_info),
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                 fontWeight = FontWeight.Bold,
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
             Text(
                 text = state.opportunitiesDetail.eventGeneralInfo,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             )
             DetailsItem(
@@ -196,14 +196,14 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
             Text(
                 text = stringResource(id = R.string.event_desc),
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                 fontWeight = FontWeight.Bold,
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             Text(
                 text = state.opportunitiesDetail.eventShortDescription,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
@@ -218,14 +218,14 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
                 Text(
                     text = stringResource(id = R.string.staff_details),
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                     fontWeight = FontWeight.Bold,
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
                 Text(
                     text = state.opportunitiesDetail.staffDetails,
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
@@ -243,14 +243,14 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
             if (UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
                 Text(
                     text = stringResource(id = R.string.question_contact),
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                     fontWeight = FontWeight.Bold,
                 )
             } else {
                 Text(
                     text = stringResource(id = R.string.contact_With_questions),
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                     fontWeight = FontWeight.Bold,
                 )
@@ -259,19 +259,19 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             Text(
                 text = state.opportunitiesDetail.userId?.name?.capitalize()?:"",
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
             Text(
                 text = state.opportunitiesDetail.userId?.email?:"",
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
             Text(
                 text = state.opportunitiesDetail.userId?.phone?:"",
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
@@ -288,14 +288,14 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
                 Text(
                     text = stringResource(id = R.string.pay),
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                     fontWeight = FontWeight.Bold,
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
                 Text(
                     text = stringResource(id = R.string.referees),
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                     fontWeight = FontWeight.Bold,
                 )
@@ -309,14 +309,14 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
                 ) {
                     Text(
                         text = stringResource(id = R.string.stat_managers),
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.weight(0.4f)
                     )
                     Text(
                         text = "-",
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                         modifier = Modifier.weight(0.6f)
                     )
@@ -327,14 +327,14 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
                 ) {
                     Text(
                         text = stringResource(id = R.string.clock_managers),
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.weight(0.4f)
                     )
                     Text(
                         text = "-",
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                         modifier = Modifier.weight(0.6f)
                     )
@@ -353,7 +353,7 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
             Text(
                 text = stringResource(id = R.string.days_play),
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                 fontWeight = FontWeight.Bold,
             )
@@ -422,14 +422,14 @@ fun DetailsItem(key1: String, key2: String, value1: String, value2: String) {
     Row {
         Text(
             text = value1,
-            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             modifier = Modifier.weight(1f)
 
         )
         Text(
             text = value2,
-            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             modifier = Modifier.weight(1f)
         )
@@ -452,7 +452,7 @@ fun DaysPlay(potentialDaysOfPlay: List<DaysOfPlay>) {
             )
             Text(
                 text = item.earliestStartTime + " - " + item.latestStartTime,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                 modifier = Modifier.weight(0.6f)
             )
@@ -481,7 +481,7 @@ fun RefereesLevels(basePay: ArrayList<BasePay>) {
             )
             Text(
                 text = "$" + item.cost + "/hr",
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                 modifier = Modifier.weight(0.6f)
             )
@@ -505,7 +505,7 @@ fun PlayerRequirements(req1: String, req2: String?) {
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
             Text(
                 text = req1,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             )
         }
@@ -521,7 +521,7 @@ fun PlayerRequirements(req1: String, req2: String?) {
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
                 Text(
                     text = req2,
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                 )
             }

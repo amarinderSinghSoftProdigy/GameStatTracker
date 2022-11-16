@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.allballapp.android.ui.theme.BallerAppTheme
+import com.allballapp.android.ui.theme.appColors
 
 @Composable
 fun AppText(
@@ -54,7 +55,7 @@ fun AppText(
     }
     val mergedStyle = style.merge(
         TextStyle(
-            color = textColor,
+            color = textColor /*MaterialTheme.appColors.textField.labelColor*/,
             fontSize = fontSize,
             fontWeight = fontWeight,
             textAlign = textAlign,

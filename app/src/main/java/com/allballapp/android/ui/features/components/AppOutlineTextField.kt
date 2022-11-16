@@ -56,7 +56,7 @@ fun AppOutlineTextField(
     colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(),
 ) {
     val customTextSelectionColors = TextSelectionColors(
-        handleColor = if (!isError) MaterialTheme.appColors.buttonColor.bckgroundEnabled else MaterialTheme.colors.error,
+        handleColor = if (!isError) MaterialTheme.appColors.buttonColor.backgroundEnabled else MaterialTheme.colors.error,
         backgroundColor = Color.Transparent
     )
 
@@ -147,7 +147,7 @@ fun AppOutlineDateField(
                 AppText(
                     text = data,
                     textAlign = TextAlign.Center,
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                     style = androidx.compose.material.LocalTextStyle.current
                 )
             }
@@ -178,7 +178,7 @@ fun EditFields(
     placeholder: @Composable (() -> Unit)? = null
 ) {
     val customTextSelectionColors = TextSelectionColors(
-        handleColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+        handleColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
         backgroundColor = Color.Transparent
     )
 
@@ -206,7 +206,7 @@ fun EditFields(
                         backgroundColor = Color.Transparent,
                         focusedBorderColor = Color.Transparent,
                         unfocusedBorderColor = Color.Transparent,
-                        cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        cursorColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                     ),
                     textStyle = textStyle,
                     singleLine = true,
@@ -253,7 +253,7 @@ fun EditProfileFields(
     visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     val customTextSelectionColors = TextSelectionColors(
-        handleColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+        handleColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
         backgroundColor = Color.Transparent
     )
 
@@ -281,7 +281,7 @@ fun EditProfileFields(
                         backgroundColor = Color.Transparent,
                         focusedBorderColor = Color.Transparent,
                         unfocusedBorderColor = Color.Transparent,
-                        cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        cursorColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         disabledBorderColor = Color.Transparent
                     ),
                     textStyle = TextStyle(

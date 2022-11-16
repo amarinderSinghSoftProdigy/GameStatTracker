@@ -51,11 +51,11 @@ fun BottomNavigationBar(
     val selected: MutableState<BottomNavKey> = remember { mutableStateOf(navKey) }
     Surface(
         elevation = dimensionResource(id = R.dimen.size_12dp),
-        color = Color.White,
+        color = MaterialTheme.appColors.material.surface,
     ) {
         Row(
             modifier = Modifier
-                .background(Color.White)
+                .background(MaterialTheme.appColors.material.surface)
                 .fillMaxWidth()
                 .height(height),
             horizontalArrangement = Arrangement.SpaceAround,

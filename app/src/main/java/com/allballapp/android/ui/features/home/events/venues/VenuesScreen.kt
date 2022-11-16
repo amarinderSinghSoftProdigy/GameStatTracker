@@ -21,7 +21,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import com.allballapp.android.BuildConfig
 import com.allballapp.android.data.response.VenuesId
 import com.allballapp.android.ui.features.components.AppText
 import com.allballapp.android.ui.features.components.CoilImage
@@ -115,7 +114,7 @@ fun VenuesItem(item: VenuesId, moveToOpenVenues: () -> Unit) {
                 text = item.venueName,
                 style = MaterialTheme.typography.h5,
                 fontWeight = FontWeight.W500,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
             )
         }
         Row {

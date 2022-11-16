@@ -58,7 +58,7 @@ fun EventRegisterSuccessScreen(
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_44dp)))
             AppText(
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                 text = heading.ifEmpty { stringResource(id = R.string.no_data_found) },
                 fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
                 fontWeight = FontWeight.Bold

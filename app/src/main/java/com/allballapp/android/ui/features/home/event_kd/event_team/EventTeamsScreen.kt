@@ -24,7 +24,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.allballapp.android.BuildConfig
 import com.allballapp.android.data.response.team.Team
 import com.allballapp.android.ui.features.components.CoilImage
 import com.allballapp.android.ui.features.components.FoldableItem
@@ -75,7 +74,7 @@ fun EventTeamHeader(divisionName: String, isExpanded: Boolean = false) {
     ) {
         Text(
             text = divisionName,
-            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
             fontWeight = FontWeight.Bold,
             fontSize = dimensionResource(
                 id = R.dimen.txt_size_12
@@ -149,7 +148,7 @@ fun EventTeamSubItem(team: Team) {
                     fontWeight = FontWeight.Bold,
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                     color =
-                    MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                    MaterialTheme.appColors.buttonColor.backgroundEnabled
 
                 )
             }
