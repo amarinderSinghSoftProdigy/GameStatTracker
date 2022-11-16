@@ -116,7 +116,7 @@
     <string name="program_manager">Program Manager</string>
     <string name="parents_label">Parents</string>
     <string name="game_staff_label">Game Staff</string>
-    <string name="program_label">Program Staff</string>
+    <string name="program_label">Assistant Coach</string>
     <string name="fan_label">Fan</string>
     <string name="coach_label">Coach</string>
     <string name="referee_label">Referee</string>
@@ -202,7 +202,6 @@
     <string name="coaches">Coaches</string>
     <string name="add_uers">Add User</string>
     <string name="select_all">Select All</string>
-
     <string name="points_label">Points</string>
     <string name="points_guard">Points Guards</string>
     <string name="rebounds_label">Rebounds</string>

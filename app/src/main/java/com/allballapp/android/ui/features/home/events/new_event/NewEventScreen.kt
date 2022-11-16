@@ -37,6 +37,11 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.allballapp.android.R
+import com.allballapp.android.common.*
+import com.allballapp.android.data.request.Address
+import com.allballapp.android.ui.features.components.*
+import com.allballapp.android.ui.theme.appColors
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
@@ -45,14 +50,6 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity.RESULT_ERROR
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
-import com.allballapp.android.BuildConfig
-import com.allballapp.android.R
-import com.allballapp.android.common.*
-import com.allballapp.android.data.request.Address
-import com.allballapp.android.ui.features.components.*
-import com.allballapp.android.ui.features.home.events.EvEvents
-import com.allballapp.android.ui.features.home.events.EventChannel
-import com.allballapp.android.ui.theme.appColors
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.IOException
@@ -211,6 +208,10 @@ fun PracticeScreen(
     var startTime by remember {
         mutableStateOf("")
     }
+    val sdf = SimpleDateFormat("HH:mm")
+    val str = sdf.format(Date())
+
+    Log.d("time", "PracticeScreen: " + str)
     var dateString = ""
     val mDatePickerDialog = DatePickerDialog(
         context, { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
@@ -225,8 +226,12 @@ fun PracticeScreen(
 
     val mArrivalPickerDialog = TimePickerDialog(
         context, { _, mHour: Int, mMinute: Int ->
-            arrivalTime = "$mHour:$mMinute"
-            vm.onEvent(NewEvEvent.OnArrivalTimeChanged(get24HoursTimeWithAMPM("$mHour:$mMinute")))
+            if (checkTimings(str, "$mHour:${mMinute+1}")) {
+                arrivalTime = "$mHour:$mMinute"
+                vm.onEvent(NewEvEvent.OnArrivalTimeChanged(get24HoursTimeWithAMPM("$mHour:$mMinute")))
+            } else {
+                vm.onEvent(NewEvEvent.ShowToast("Enter valid Time"))
+            }
         }, mHour, mMinute, false
     )
 
