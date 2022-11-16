@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
@@ -47,7 +48,15 @@ fun TogiCountryCodePicker(
     textStyle: TextStyle = TextStyle(textAlign = TextAlign.End),
     showDialog: Boolean = true
 ) {
-    var textFieldValueState by remember { mutableStateOf(TextFieldValue(text = text)) }
+
+    var textFieldValueState by remember {
+        mutableStateOf(
+            TextFieldValue(
+                text = text,
+                selection = TextRange(0)
+            )
+        )
+    }
     val textFieldValue = textFieldValueState.copy(text = text)
     val keyboardController = LocalTextInputService.current
     val pattern = remember { Regex("^\\d+\$") }
@@ -98,7 +107,10 @@ fun TogiCountryCodePicker(
                         value = textFieldValue,
                         onValueChange = {
                             if (it.text.matches(pattern) || it.text.isEmpty()) {
-                                textFieldValueState = it
+                                textFieldValueState = TextFieldValue(
+                                    text = it.text,
+                                    selection = TextRange(it.text.length)
+                                )
                                 if (text != it.text) {
                                     onValueChange(it.text)
                                 }

@@ -49,6 +49,12 @@ class CommonUtils {
                 for (item in list) {
                     if (key.key == item.role) {
                         listing.add(item)
+                    } else if (item.role.equals(
+                            UserType.PROGRAM_STAFF.key,
+                            ignoreCase = true
+                        ) && key.key != UserType.PLAYER.key && key.key != UserType.PROGRAM_MANAGER.key
+                    ) {
+                        listing.add(item)
                     }
                 }
             }
@@ -348,6 +354,7 @@ class CommonUtils {
                 return message
             } else return context.getString(R.string.this_message_deleted)
         }
+
         fun isLoggedInUser(user: User): Boolean {
             return user.uid == CometChat.getLoggedInUser().uid
         }
