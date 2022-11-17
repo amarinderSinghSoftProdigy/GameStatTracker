@@ -153,6 +153,7 @@ fun BoxScope.CommonTabView(
     }*/
     val interactionSource = remember { MutableInteractionSource() }
     Row(
+        horizontalArrangement = Arrangement.Center,
         modifier = Modifier
             .align(Alignment.Center)
             .background(Color.Transparent)
@@ -178,47 +179,35 @@ fun BoxScope.CommonTabView(
             } else {
                 stringResource(id = R.string.app_name)
             }
-
-        Row(
-            modifier = Modifier.padding(
-                start = dimensionResource(id = R.dimen.size_50dp),
-                end = dimensionResource(id = R.dimen.size_50dp)
-            ),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-
-            if (topBarData.logo != null) {
-                CoilImage(
-                    src = com.allballapp.android.BuildConfig.IMAGE_SERVER + topBarData.logo,
-                    modifier = Modifier
-                        .size(dimensionResource(id = R.dimen.size_32dp))
-                        .background(
-                            color = MaterialTheme.appColors.material.primary,
-                            CircleShape
-                        )
-                        .clip(
-                            CircleShape
-                        ),
-                    isCrossFadeEnabled = false,
-                    onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
-                    onError = { Placeholder(R.drawable.ic_team_placeholder) },
-                    contentScale = ContentScale.Crop
-                )
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
-            }
-
-            Text(
-                textAlign = TextAlign.Center,
-                text = label,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.h3,
-                color = Color.White
+        if (topBarData.logo != null) {
+            CoilImage(
+                src = com.allballapp.android.BuildConfig.IMAGE_SERVER + topBarData.logo,
+                modifier = Modifier
+                    .size(dimensionResource(id = R.dimen.size_32dp))
+                    .background(
+                        color = MaterialTheme.appColors.material.primary,
+                        CircleShape
+                    )
+                    .clip(
+                        CircleShape
+                    ),
+                isCrossFadeEnabled = false,
+                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                onError = { Placeholder(R.drawable.ic_team_placeholder) },
+                contentScale = ContentScale.Crop
             )
+            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
         }
 
-
+        Text(
+            modifier = Modifier.widthIn(0.dp, dimensionResource(id = R.dimen.size_225dp)),
+            textAlign = TextAlign.Center,
+            text = label,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            style = MaterialTheme.typography.h3,
+            color = Color.White
+        )
         if (topBarData.topBar == TopBar.TEAMS) {
             AppSpacer(Modifier.size(dimensionResource(id = R.dimen.size_5dp)))
             Icon(
@@ -227,7 +216,6 @@ fun BoxScope.CommonTabView(
                 tint = Color.White
             )
         }
-
     }
 
     var icon: Painter? = null
