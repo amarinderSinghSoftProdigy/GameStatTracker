@@ -2,6 +2,7 @@ package com.allballapp.android.ui.features.profile
 
 import android.app.Application
 import android.net.Uri
+import android.provider.ContactsContract.Profile
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
@@ -289,6 +290,9 @@ class ProfileViewModel @Inject constructor(
                     if (_state.value.selectedImage.isNotEmpty())
                         imageUpload()
                 }
+            }
+            is ProfileEvent.ImageUploadedDialog -> {
+                _state.value = _state.value.copy(showImage = event.showImage)
             }
         }
     }

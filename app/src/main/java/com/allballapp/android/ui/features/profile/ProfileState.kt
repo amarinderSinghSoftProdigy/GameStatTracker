@@ -37,5 +37,6 @@ data class ProfileState(
     val scheduleList: List<ScheduleResponseObject> = mutableListOf(),
     val searchGameStaff: String = "",
     val searchGameStaffList: List<GetSearchStaff> = emptyList(),
-    val selectedImage: String = ""
+    val selectedImage: String = "",
+    val showImage: Boolean = false
 )
