@@ -63,6 +63,9 @@ class ChatViewModel @Inject constructor(
             is ChatUIEvent.OnGroupNameChange -> {
                 _chatUiState.value = _chatUiState.value.copy(groupName = event.groupName)
             }
+            is ChatUIEvent.OnSearchValueChange -> {
+                _chatUiState.value = _chatUiState.value.copy(searchText = event.searchText)
+            }
             is ChatUIEvent.ShowDialog -> {
                 _chatUiState.value =
                     _chatUiState.value.copy(showCreateGroupNameDialog = event.showDialog)
@@ -87,7 +90,7 @@ class ChatViewModel @Inject constructor(
                     _chatUiState.value.copy(teamIndex = event.teamIndex)
 
                 /* Saving team Id  */
-                if (_chatUiState.value.teams.isNotEmpty() && event.teamIndex > 0) {
+                if (_chatUiState.value.teams.isNotEmpty() && event.teamIndex > -1) {
                     UIKitSettings.selectedTeamId = _chatUiState.value.teams[event.teamIndex]._id
                 }
             }

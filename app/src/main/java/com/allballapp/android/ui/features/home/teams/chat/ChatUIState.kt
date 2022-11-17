@@ -12,6 +12,7 @@ data class ChatUIState(
     val teams: ArrayList<Team> = ArrayList(),
 
     /*New conversation states*/
+    val searchText:String="",
     val selectedPlayersForNewGroup: SnapshotStateList<String> = mutableStateListOf(),
     val selectedCoachesForNewGroup: SnapshotStateList<String> = mutableStateListOf(),
     val showCreateGroupNameDialog: Boolean = false,
