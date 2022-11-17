@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.NumberPicker
 import android.widget.Toast
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
 import androidx.compose.foundation.layout.*
@@ -1187,8 +1188,12 @@ fun SelectGuardianRoleDialog(
 
     BallerAppMainTheme {
         AlertDialog(
+            properties = DialogProperties(usePlatformDefaultWidth = false),
             modifier = Modifier
-                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                .padding(horizontal = dimensionResource(id = R.dimen.size_32dp))
+                .wrapContentSize()
+                .animateContentSize(),
             onDismissRequest = {
                 /*   onDismiss*/
             },
@@ -2558,6 +2563,7 @@ fun GuardianAuthorizeDialog(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun InviteTeamMembersDialog(
     role: String = "",
@@ -2577,8 +2583,12 @@ fun InviteTeamMembersDialog(
 
     BallerAppMainTheme {
         AlertDialog(
+            properties = DialogProperties(usePlatformDefaultWidth = false),
             modifier = Modifier
-                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                .wrapContentSize()
+                .animateContentSize()
+                .padding(horizontal = dimensionResource(id = R.dimen.size_32dp)),
             onDismissRequest = {
 
             },
@@ -2613,7 +2623,7 @@ fun InviteTeamMembersDialog(
                             content = stringResource(id = R.string.info_text),
                             color = ColorMainPrimary,
                             onCancelClick = {
-//                                showInfoBox.value = false
+                                showInfoBox.value = false
                             })
                     }
 

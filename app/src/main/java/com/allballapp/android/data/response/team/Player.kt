@@ -40,7 +40,7 @@ data class Player(
     @SerializedName("fgPerc")
     val fgPerc: String? = "",
     @SerializedName("firstName")
-    val firstName: String? = "",
+    val firstName: String = "",
     @SerializedName("gender")
     val gender: String? = "",
     @SerializedName("grade")
@@ -52,7 +52,7 @@ data class Player(
     @SerializedName("jerseyNumberPerferences")
     val jerseyNumberPreferences: List<String> = emptyList(),
     @SerializedName("lastName")
-    val lastName: String? = "",
+    val lastName: String = "",
     @SerializedName("loginType")
     val loginType: String? = "",
     @SerializedName("name")

@@ -41,6 +41,7 @@ import com.cometchat.pro.models.Group
 import com.cometchat.pro.models.User
 import com.cometchat.pro.uikit.ui_components.chats.CometChatConversationList
 import com.cometchat.pro.uikit.ui_components.messages.message_list.CometChatMessageListActivity
+import kotlin.random.Random
 
 @Composable
 fun TeamsChatScreen(
@@ -72,9 +73,13 @@ fun TeamsChatScreen(
     LaunchedEffect(key1 = Unit) {
         vm.chatChannel.collect { uiEvent ->
             when (uiEvent) {
-                /*ChatChannel.OnNewChatListingSuccess->{
-                    key.value = Random.nextLong().toString()
-                }*/
+                ChatChannel.OnNewChatListingSuccess -> {
+                   /* if (state.teams.isNotEmpty() && selected.value > -1) {
+                        addChatIds(state.teams[selected.value], onKeyChange = { newKey ->
+                            key.value = newKey
+                        })
+                    }*/
+                }
             }
         }
     }
@@ -91,7 +96,7 @@ fun TeamsChatScreen(
                                 title = item.name,
                                 selected = index == selected.value,
                                 onClick = {
-                                    addChatIds(item)
+                                    addChatIds(item,{})
                                     selected.value = index
                                     key.value = index.toString()
                                 })
@@ -112,7 +117,9 @@ fun TeamsChatScreen(
                         }
                     }
                 } else if (state.teams.isNotEmpty()) {
-                    addChatIds(state.teams[0])
+                    addChatIds(state.teams[0], onKeyChange = {
+
+                    })
                     key.value = 0.toString()
                     selected.value = 0
                 } else {
@@ -162,18 +169,18 @@ fun TeamsChatScreen(
     }
 }
 
-fun addChatIds(item: Team) {
+fun addChatIds(team: Team, onKeyChange: (String) -> Unit) {
     val mergedIds = mutableListOf<String>()
-    val playerIds = item.players.map {
+    val playerIds = team.players.map {
         it._id
     }
-    val coachIds = item.coaches.map {
+    val coachIds = team.coaches.map {
         it._id
     }
-    val supportingStaffIds = item.supportingCastDetails.map {
+    val supportingStaffIds = team.supportingCastDetails.map {
         it._Id
     }
-    val groupId = item.teamChatGroups.map {
+    val groupId = team.teamChatGroups.map {
         it.groupId
     }
     mergedIds.addAll(playerIds)
@@ -181,6 +188,9 @@ fun addChatIds(item: Team) {
     mergedIds.addAll(supportingStaffIds)
     mergedIds.addAll(groupId)
     CometChatConversationList.memberIds = mergedIds
+
+    onKeyChange.invoke(Random.nextLong().toString())
+//    key.value = Random.nextLong().toString()
 }
 
 
