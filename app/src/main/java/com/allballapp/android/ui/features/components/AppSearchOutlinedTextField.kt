@@ -123,7 +123,7 @@ fun AppSearchOutlinedTextField2(
             OutlinedTextField(
                 value = value,
                 onValueChange = onValueChange,
-            modifier = modifier,
+                modifier = modifier,
                 enabled = enabled,
                 readOnly = readOnly,
                 textStyle = textStyle,

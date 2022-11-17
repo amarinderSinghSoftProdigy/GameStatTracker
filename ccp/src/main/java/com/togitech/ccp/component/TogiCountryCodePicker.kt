@@ -53,7 +53,6 @@ fun TogiCountryCodePicker(
         mutableStateOf(
             TextFieldValue(
                 text = text,
-                selection = TextRange(0)
             )
         )
     }
@@ -107,22 +106,19 @@ fun TogiCountryCodePicker(
                         value = textFieldValue,
                         onValueChange = {
                             if (it.text.matches(pattern) || it.text.isEmpty()) {
-                                textFieldValueState = TextFieldValue(
-                                    text = it.text,
-                                    selection = TextRange(it.text.length)
-                                )
+                                textFieldValueState = it
                                 if (text != it.text) {
                                     onValueChange(it.text)
                                 }
                             }
                         },
                         colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = focusedBorderColor,
-                            unfocusedBorderColor = unfocusedBorderColor,
+                            focusedBorderColor = Color.Transparent,
+                            unfocusedBorderColor = Color.Transparent,
                             cursorColor = cursorColor
                         ),
                         singleLine = true,
-                        visualTransformation = MaskTransformation(),
+                        visualTransformation = VisualTransformation.None,
                         /* MaskTransformation(),*///PhoneNumberTransformation(defaultCountry.countryCode.uppercase()),
                         placeholder = placeHolder,
                         keyboardOptions = KeyboardOptions.Default.copy(

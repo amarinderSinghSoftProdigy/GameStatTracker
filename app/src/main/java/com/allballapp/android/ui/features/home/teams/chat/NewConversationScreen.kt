@@ -88,9 +88,19 @@ fun NewConversationScreen(
                     }
                 }
 
+              is ChatChannel.OnNewChatListingSuccess -> {
+//                    onNewListingSuccess.invoke()
+                    Timber.i("OnNewChatListingSuccess")
+                    if (chatChannel.teams.isNotEmpty() && chatState.teamIndex > -1) {
+                        addChatIds(chatChannel.teams[chatState.teamIndex], onKeyChange = { newKey ->
+                        })
+                    }
+                }
+
             }
         }
     }
+
 
     Column() {
         AppOutlineTextField(
