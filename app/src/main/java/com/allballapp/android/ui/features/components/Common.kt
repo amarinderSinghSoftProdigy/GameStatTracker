@@ -45,6 +45,7 @@ import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
@@ -79,11 +80,10 @@ fun stringResourceByName(name: String): String {
     }.getOrNull()?.let { stringResource(id = it) } ?: name else ""
 }
 
-fun fromHex(color: String? = "0177C1"):Color {
+fun fromHex(color: String? = "0177C1"): Color {
     return try {
-        Color(android.graphics.Color.parseColor("#${getCustomColorCode(color?:"")}"))
-    }
-    catch (e:Exception){
+        Color(android.graphics.Color.parseColor("#${getCustomColorCode(color ?: "")}"))
+    } catch (e: Exception) {
         Color(android.graphics.Color.parseColor("#" + "0177C1"))
     }
 }
@@ -132,7 +132,9 @@ fun BoxScope.CommonTabView(
                 tint = Color.White
             )
         }
-    } else if (topBarData.topBar == TopBar.MY_EVENT) {
+    }
+    //Dots hidden from events screen.
+    /*else if (topBarData.topBar == TopBar.MY_EVENT) {
         Row(modifier = Modifier
             .align(Alignment.CenterStart)
             .clickable {
@@ -148,7 +150,7 @@ fun BoxScope.CommonTabView(
                 tint = Color.White
             )
         }
-    }
+    }*/
     val interactionSource = remember { MutableInteractionSource() }
     Row(
         modifier = Modifier
@@ -178,6 +180,10 @@ fun BoxScope.CommonTabView(
             }
 
         Row(
+            modifier = Modifier.padding(
+                start = dimensionResource(id = R.dimen.size_50dp),
+                end = dimensionResource(id = R.dimen.size_50dp)
+            ),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -205,6 +211,8 @@ fun BoxScope.CommonTabView(
             Text(
                 textAlign = TextAlign.Center,
                 text = label,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
                 style = MaterialTheme.typography.h3,
                 color = Color.White
             )

@@ -416,7 +416,8 @@ fun TeamSetupScreenUpdated(
                         member = Members(
                             name = swapUser.firstName,
                             mobileNumber = swapUser._Id,
-                            role = roleKey.value
+                            role = roleKey.value,
+                            profilesSelected = "true"
                         )
                     )
                 )
