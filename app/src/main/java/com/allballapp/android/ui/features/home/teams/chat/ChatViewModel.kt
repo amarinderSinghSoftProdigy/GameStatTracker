@@ -1,5 +1,6 @@
 package com.allballapp.android.ui.features.home.teams.chat
 
+//import com.cometchat.pro.uikit.ui_settings.UIKitSettings
 import android.app.Application
 import android.util.Log
 import androidx.compose.runtime.State
@@ -9,12 +10,12 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.allballapp.android.R
 import com.allballapp.android.common.ResultWrapper
-import com.allballapp.android.ui.utils.UiText
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.domain.repository.IChatRepository
 import com.allballapp.android.domain.repository.IImageUploadRepo
 import com.allballapp.android.domain.repository.ITeamRepository
+import com.allballapp.android.ui.utils.UiText
 import com.cometchat.pro.constants.CometChatConstants
 import com.cometchat.pro.core.CometChat
 import com.cometchat.pro.core.ConversationsRequest
@@ -25,7 +26,6 @@ import com.cometchat.pro.models.GroupMember
 import com.cometchat.pro.models.User
 import com.cometchat.pro.uikit.ui_settings.UIKitSettings
 import com.google.gson.Gson
-//import com.cometchat.pro.uikit.ui_settings.UIKitSettings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -149,9 +149,21 @@ class ChatViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 response.value.let { resp ->
                     if (!resp.data.isNullOrEmpty()) {
+
+                        val teams = resp.data
+
+                        /*According to requirement setting default teams as first element of chat team list*/
+                        val team = teams.find { team -> team._id == UserStorage.teamId }
+
+                        team?.let {
+                            teams.remove(team)
+                            teams.add(0, team)
+                        }
+
+
                         _chatUiState.value =
-                            _chatUiState.value.copy(teams = resp.data)
-                        _chatChannel.send(ChatChannel.OnNewChatListingSuccess)
+                            _chatUiState.value.copy(teams = teams)
+                        _chatChannel.send(ChatChannel.OnNewChatListingSuccess(teams))
 
                         /*Getting list of comet chat conversation*/
 //                        getConversation()
@@ -175,7 +187,10 @@ class ChatViewModel @Inject constructor(
 
     private suspend fun saveChatGroup(groupId: String) {
         _chatUiState.value = _chatUiState.value.copy(isLoading = true)
-        val response = chatRepo.saveChatGroup(teamId = UserStorage.teamId, groupId = groupId)
+        val response = chatRepo.saveChatGroup(
+            teamId = chatUiState.value.teams[chatUiState.value.teamIndex]._id,
+            groupId = groupId
+        )
         _chatUiState.value = _chatUiState.value.copy(isLoading = false)
 
         when (response) {
@@ -237,10 +252,10 @@ class ChatViewModel @Inject constructor(
                         override fun onSuccess(group: Group, hashMap: HashMap<String?, String?>) {
                             Timber.i("CreateGroupWithMembersListener-- $group")
                             Timber.i("CreateGroupWithMembersListener-- $hashMap")
-                            ChatChannel.OnNewConversationResponse(
-                                isSuccess = true,
-                                UiText.StringResource(R.string.new_group_created_successfully)
-                            )
+                            /* ChatChannel.OnNewConversationResponse(
+                                 isSuccess = true,
+                                 UiText.StringResource(R.string.new_group_created_successfully), groupId = group.guid
+                             )*/
                             viewModelScope.launch {
                                 saveChatGroup(randomUid)
                                 _chatChannel.send(
@@ -353,7 +368,8 @@ sealed class ChatChannel {
         val message: UiText? = null
     ) : ChatChannel()
 
-    object OnNewChatListingSuccess : ChatChannel()
+    data class OnNewChatListingSuccess(val teams: ArrayList<com.allballapp.android.data.response.team.Team>) :
+        ChatChannel()
 
 }
 
