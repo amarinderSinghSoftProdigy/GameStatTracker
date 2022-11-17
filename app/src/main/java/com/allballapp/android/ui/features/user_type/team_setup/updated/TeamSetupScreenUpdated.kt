@@ -250,7 +250,7 @@ fun TeamSetupScreenUpdated(
             loading=state.isLoading,
             inviteState.selectedRoleKey,
             onBack = {
-                inviteVm.onEvent(InvitationEvent.OnRoleDialogClick(true))
+                inviteVm.onEvent(InvitationEvent.OnRoleDialogClick(false))
                 inviteVm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
                 vm.onEvent(TeamSetupUIEventUpdated.MoveBack(true))
             },

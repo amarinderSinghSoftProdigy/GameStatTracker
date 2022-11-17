@@ -158,7 +158,7 @@ class TeamRepository @Inject constructor(
     }
 
     override suspend fun getMyLeagues(
-        //type: String,
+        type: String,
         teamId: String,
         page: Int,
         limit: Int,
@@ -166,7 +166,7 @@ class TeamRepository @Inject constructor(
     ): ResultWrapper<BaseResponse<ArrayList<MyLeagueResponse>>> {
         return safeApiCall(dispatcher) {
             service.getMyLeagues(
-                //type = type,
+                type = type,
                 teamId = teamId,
                 page = page,
                 limit = limit,

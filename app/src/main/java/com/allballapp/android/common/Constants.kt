@@ -42,6 +42,7 @@ object AppConstants {
 
     const val OPP_PLAY = "opportunitiesToPlay"
     const val ALL_LEAGUE = "allLeagues"
+    const val MY_LEAGUE = "myLeagues"
     const val OPP_WORK = "opportunitiesToWork"
 
 }

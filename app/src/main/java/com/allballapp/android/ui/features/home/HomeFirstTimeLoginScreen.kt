@@ -41,7 +41,7 @@ fun HomeFirstTimeLoginScreen(
     viewModel: HomeViewModel,
     teamVm: TeamViewModel,
     onLeagueClick: (String) -> Unit,
-    onOpportunityClick: () -> Unit,
+    onOpportunityClick: (String) -> Unit,
     onTeamNameClick: (Boolean) -> Unit,
     onCreateTeamClick: () -> Unit,
     onInvitationCLick: () -> Unit
@@ -176,13 +176,13 @@ fun HomeFirstTimeLoginScreen(
                         HomeScreenItem(item) {
                             when (index) {
                                 0 -> {
-                                    onOpportunityClick()
+                                    onOpportunityClick(AppConstants.OPP_PLAY)
                                 }
                                 1 -> {
                                     onLeagueClick(AppConstants.ALL_LEAGUE)
                                 }
                                 2 -> {
-                                    onOpportunityClick()
+                                    onOpportunityClick(AppConstants.OPP_WORK)
                                 }
                             }
                         }
