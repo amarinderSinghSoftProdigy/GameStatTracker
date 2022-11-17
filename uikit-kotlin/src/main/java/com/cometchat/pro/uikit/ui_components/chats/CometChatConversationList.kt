@@ -36,6 +36,7 @@ import com.cometchat.pro.uikit.ui_settings.FeatureRestriction
 import com.cometchat.pro.uikit.ui_settings.UIKitSettings
 import com.cometchat.pro.uikit.ui_settings.enum.ConversationMode
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.google.gson.Gson
 
 /*
 
@@ -239,7 +240,8 @@ class CometChatConversationList : Fragment(), TextWatcher {
         }
         conversationsRequest?.fetchNext(object : CallbackListener<List<Conversation>>() {
             override fun onSuccess(conversations: List<Conversation>) {
-                Log.i("conversationsRequest", "onSuccess:1 ")
+                val jsonConvo=Gson().toJson(conversations).replace("\\",  "")
+                Log.i("conversationsRequest", "onSuccess:1 -- $jsonConvo ")
 
                 if (conversations.isNotEmpty()) {
                     stopHideShimmer()
@@ -331,7 +333,7 @@ class CometChatConversationList : Fragment(), TextWatcher {
                     checkNoConverstaion()
                 }
                 Log.i(TAG, "onTextMessageReceived: $message")
-                newMessageListner.setResult(message.metadata.getString("id"))
+                newCustomCometListener.onTeamIDChange(message.metadata.getString("id"))
             }
 
             override fun onMediaMessageReceived(message: MediaMessage) {
@@ -499,7 +501,7 @@ class CometChatConversationList : Fragment(), TextWatcher {
         fun setItemClickListener(onItemClickListener: OnItemClickListener<Any>) {
             events = onItemClickListener
         }
-        lateinit var newMessageListner: MessageListner
+        lateinit var newCustomCometListener: CustomCometListener
     }
 }
 
@@ -509,6 +511,6 @@ fun getConvoType(conversation: Conversation): Any {
         conversation.conversationWith as User
 }
 
-interface MessageListner{
-    fun setResult(teamId:String)
+interface CustomCometListener{
+    fun onTeamIDChange(teamId:String)
 }

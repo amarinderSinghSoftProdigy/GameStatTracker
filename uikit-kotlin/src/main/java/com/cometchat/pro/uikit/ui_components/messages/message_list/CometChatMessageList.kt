@@ -56,7 +56,7 @@ import com.cometchat.pro.exceptions.CometChatException
 import com.cometchat.pro.helpers.CometChatHelper
 import com.cometchat.pro.models.*
 import com.cometchat.pro.uikit.R
-import com.cometchat.pro.uikit.ui_components.chats.MessageListner
+import com.cometchat.pro.uikit.ui_components.chats.CustomCometListener
 import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
 import com.cometchat.pro.uikit.ui_components.messages.extensions.ExtensionResponseListener
 import com.cometchat.pro.uikit.ui_components.messages.extensions.Extensions
@@ -2296,7 +2296,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
             override fun onTextMessageReceived(message: TextMessage) {
                 Log.d(TAG, "onTextMessageReceived: $message")
                 onMessageReceived(message)
-                newMessageListner.setResult(message.metadata.getString("id"))
+                newCustomCometListener.onTeamIDChange(message.metadata.getString("id"))
 
             }
 
@@ -3559,7 +3559,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
     companion object {
         private const val TAG = "CometChatMessageScreen"
         private const val LIMIT = 30
-        lateinit var newMessageListner: MessageListner
+        lateinit var newCustomCometListener: CustomCometListener
 
     }
 

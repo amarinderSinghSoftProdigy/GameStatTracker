@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.sp
 import com.allballapp.android.R
 import com.allballapp.android.data.response.AllUser
 import com.allballapp.android.ui.features.components.*
+import com.allballapp.android.ui.features.home.invitation.InvitationStatus
 import com.allballapp.android.ui.features.home.teams.TeamViewModel
 import com.allballapp.android.ui.theme.ColorBWBlack
 import com.allballapp.android.ui.theme.ColorBWGrayStatus
@@ -66,7 +67,8 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                 FlowRow {
                     Column {
                         val list =
-                            CommonUtils.getUsersList(state.allUsers, UserType.COACH)
+                            CommonUtils.getUsersList(state.allUsers, UserType.COACH).filter {coach->
+                                (!coach.status.equals(InvitationStatus.PENDING.status,true)) && (!coach.status.equals(InvitationStatus.DECLINED.status,true))}
                         if (list.isNotEmpty()) {
                             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
                             Text(
@@ -86,7 +88,8 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                                 }
                             }
                         }
-                        val listplayers = CommonUtils.getUsersList(state.allUsers, UserType.PLAYER)
+                        val listplayers = CommonUtils.getUsersList(state.allUsers, UserType.PLAYER).filter {player->
+                            (!player.status.equals(InvitationStatus.PENDING.status,true)) && (!player.status.equals(InvitationStatus.DECLINED.status,true))}
                         if (listplayers.isNotEmpty()) {
                             Column {
                                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
@@ -126,7 +129,8 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                                 }
                             }
                         }
-                        val listuser = CommonUtils.getUsersList(state.allUsers, UserType.PARENT)
+                        val listuser = CommonUtils.getUsersList(state.allUsers, UserType.PARENT).filter {parent->
+                            (!parent.status.equals(InvitationStatus.PENDING.status,true)) && (!parent.status.equals(InvitationStatus.DECLINED.status,true))}
                         if (listuser.isNotEmpty()) {
                             Column {
                                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))

@@ -81,8 +81,9 @@ import com.cometchat.pro.models.Conversation
 import com.cometchat.pro.models.Group
 import com.cometchat.pro.models.User
 import com.cometchat.pro.uikit.ui_components.chats.CometChatConversationList
-import com.cometchat.pro.uikit.ui_components.chats.MessageListner
+import com.cometchat.pro.uikit.ui_components.chats.CustomCometListener
 import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
+import com.cometchat.pro.uikit.ui_components.messages.message_list.CometChatMessageList
 //import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
@@ -94,7 +95,7 @@ import timber.log.Timber
 val animeDuration = 500
 
 @AndroidEntryPoint
-class HomeActivity : FragmentActivity(), MessageListner {
+class HomeActivity : FragmentActivity() ,CustomCometListener {
     var dataStoreManager: DataStoreManager = DataStoreManager(this)
     val cometChat = CometChatUI()
     var setupTeamViewModelUpdated: SetupTeamViewModelUpdated? = null
@@ -107,7 +108,8 @@ class HomeActivity : FragmentActivity(), MessageListner {
         WindowCompat.setDecorFitsSystemWindows(window, true)
         cometChat.context = this
         cometChat.setConversationClickListener()
-        CometChatConversationList.newMessageListner = this
+        CometChatConversationList.newCustomCometListener = this
+        CometChatMessageList.newCustomCometListener = this
         setContent {
             //val fromSplash = intent.getBooleanExtra(IntentData.FROM_SPLASH, false)
             homeViewModel = hiltViewModel()
@@ -333,8 +335,8 @@ class HomeActivity : FragmentActivity(), MessageListner {
         }
     }
 
-    override fun setResult(teamId: String) {
-        Timber.i("setResult--- $teamId")
+    override fun onTeamIDChange(teamId: String) {
+      Timber.i("setResult--- $teamId")
     }
 
 }

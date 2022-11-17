@@ -92,4 +92,6 @@ dependencies {
     implementation "androidx.activity:activity-ktx:$activityKtxVersion"
     def fragmentKtxVersion = "1.4.0-alpha06"
     implementation "androidx.fragment:fragment-ktx:$fragmentKtxVersion"
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
 }
