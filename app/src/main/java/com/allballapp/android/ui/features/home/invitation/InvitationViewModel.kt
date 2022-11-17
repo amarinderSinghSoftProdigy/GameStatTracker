@@ -4,8 +4,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.allballapp.android.common.ResultWrapper
-import com.allballapp.android.ui.utils.UiText
 import com.allballapp.android.domain.repository.ITeamRepository
+import com.allballapp.android.ui.utils.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -111,8 +111,14 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
             }
 
             is InvitationEvent.OnValuesSelected -> {
+                val list = invitationState.value.selectedPlayerIds
+                if (list.contains(event.playerDetails.memberDetails.id)) {
+                    list.remove(event.playerDetails.memberDetails.id)
+                } else {
+                    list.add(event.playerDetails.memberDetails.id)
+                }
                 invitationState.value = invitationState.value.copy(
-                    selectedPlayerId = event.playerDetails.memberDetails!!.id,
+                    selectedPlayerIds = list,
                     selectedGender = event.playerDetails.memberDetails.gender
                 )
             }
@@ -123,7 +129,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                         invitationId = invitationState.value.selectedInvitation.id,
                         role = invitationState.value.selectedRoleKey,
                         guardianGender = event.gender ?: "",
-                        playerId = invitationState.value.selectedPlayerId
+                        playerId = invitationState.value.selectedPlayerIds
                     )
                     invitationState.value = invitationState.value.copy(selectedRoleKey = "")
                 }
@@ -192,7 +198,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
     private suspend fun acceptTeamInvitation(
         invitationId: String,
         role: String,
-        playerId: String,
+        playerId: ArrayList<String>,
         guardianGender: String
     ) {
         Timber.i("acceptTeamInvitation-- id--$invitationId role--$role playerId--$playerId guardianGender--$guardianGender")

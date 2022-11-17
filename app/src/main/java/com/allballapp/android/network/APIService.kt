@@ -103,7 +103,7 @@ open interface APIService {
     ): BaseResponse<EventsResponse>
 
     @PUT(ApiConstants.ACCEPT_TEAM_INVITATION)
-    suspend fun acceptTeamInvitation(@Body request: RequestBody): BaseResponse<Any>
+    suspend fun acceptTeamInvitation(@Body request: InviteMembersRequest): BaseResponse<Any>
 
     @PUT(ApiConstants.REJECT_TEAM_INVITATION)
     suspend fun rejectTeamInvitation(@Body request: RequestBody): BaseResponse<Any>

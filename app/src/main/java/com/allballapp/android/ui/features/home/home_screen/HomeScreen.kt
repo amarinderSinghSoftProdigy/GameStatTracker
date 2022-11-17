@@ -184,7 +184,7 @@ fun HomeScreen(
                 {
                     onLeagueClick(it)
                 }, {
-                    onOpportunityClick(AppConstants.OPP_WORK)
+                    onOpportunityClick(it)
                 }, {
                     onTeamNameClick(it)
                 }, {

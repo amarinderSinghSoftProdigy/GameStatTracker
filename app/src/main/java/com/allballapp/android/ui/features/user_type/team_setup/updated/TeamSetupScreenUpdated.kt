@@ -247,7 +247,7 @@ fun TeamSetupScreenUpdated(
 
     if (inviteState.showGuardianDialog) {
         SelectGuardianRoleDialog(
-            loading=state.isLoading,
+            loading = state.isLoading,
             inviteState.selectedRoleKey,
             onBack = {
                 inviteVm.onEvent(InvitationEvent.OnRoleDialogClick(false))
@@ -261,7 +261,7 @@ fun TeamSetupScreenUpdated(
                 vm.onEvent(TeamSetupUIEventUpdated.MoveBack(true))
             },
             onSelectionChange = { inviteVm.onEvent(InvitationEvent.OnGuardianClick(guardian = it)) },
-            selected = inviteState.selectedGuardian,
+            selected = inviteState.selectedPlayerIds,
             guardianList = if (state.role != UserType.PLAYER.key)
                 inviteState.playerDetails.filter { member -> member.role == UserType.PLAYER.key }
             else inviteState.playerDetails.filter { member -> member.role != UserType.PLAYER.key },
@@ -742,7 +742,15 @@ fun TeamSetupScreenUpdated(
                                 backgroundColor = if (state.teamColorPrimary.isEmpty()) {
                                     MaterialTheme.appColors.buttonColor.bckgroundDisabled
                                 } else {
-                                    Color(android.graphics.Color.parseColor("#${getCustomColorCode(state.teamColorPrimary)}"))
+                                    Color(
+                                        android.graphics.Color.parseColor(
+                                            "#${
+                                                getCustomColorCode(
+                                                    state.teamColorPrimary
+                                                )
+                                            }"
+                                        )
+                                    )
                                 },
                                 shape = RoundedCornerShape(
                                     dimensionResource(id = R.dimen.size_4dp)
@@ -817,7 +825,15 @@ fun TeamSetupScreenUpdated(
                                 backgroundColor = if (state.teamColorSec.isEmpty()) {
                                     MaterialTheme.appColors.buttonColor.bckgroundDisabled
                                 } else {
-                                    Color(android.graphics.Color.parseColor("#${getCustomColorCode(state.teamColorSec)}"))
+                                    Color(
+                                        android.graphics.Color.parseColor(
+                                            "#${
+                                                getCustomColorCode(
+                                                    state.teamColorSec
+                                                )
+                                            }"
+                                        )
+                                    )
                                 },
                                 shape = RoundedCornerShape(
                                     dimensionResource(id = R.dimen.size_4dp)
@@ -893,7 +909,15 @@ fun TeamSetupScreenUpdated(
                                 backgroundColor = if (state.teamColorThird.isEmpty()) {
                                     MaterialTheme.appColors.buttonColor.bckgroundDisabled
                                 } else {
-                                    Color(android.graphics.Color.parseColor("#${getCustomColorCode(state.teamColorThird)}"))
+                                    Color(
+                                        android.graphics.Color.parseColor(
+                                            "#${
+                                                getCustomColorCode(
+                                                    state.teamColorThird
+                                                )
+                                            }"
+                                        )
+                                    )
                                 },
                                 shape = RoundedCornerShape(
                                     dimensionResource(id = R.dimen.size_4dp)
