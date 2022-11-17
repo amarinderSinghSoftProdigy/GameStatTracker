@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import com.allballapp.android.R
 import com.allballapp.android.data.response.AllUser
 import com.allballapp.android.ui.features.components.*
+import com.allballapp.android.ui.features.home.invitation.InvitationStatus
 import com.allballapp.android.ui.features.home.teams.TeamViewModel
 import com.allballapp.android.ui.theme.ColorBWBlack
 import com.allballapp.android.ui.theme.appColors
@@ -182,7 +183,6 @@ fun ShowHeading(id: Int, count: String) {
                 id = R.dimen.txt_size_12
             ).value.sp
         )
-
     }
 }
 
@@ -237,13 +237,13 @@ fun CoachListItem(
             if (data.role == UserType.PLAYER.key) {
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                 AppText(
-                    text = data.jersey + " " + data.position,
+                    text = data.jersey + " " +  data.position,
                     color = MaterialTheme.appColors.textField.label,
                     style = MaterialTheme.typography.h6
                 )
             }
         }
-        if (data.status.equals("pending", true))
+        if (data.status.equals(InvitationStatus.PENDING.status, true) || data.status.equals(InvitationStatus.DECLINED.status, true))
             AppText(
                 text = data.status,
                 color = MaterialTheme.appColors.textField.label,

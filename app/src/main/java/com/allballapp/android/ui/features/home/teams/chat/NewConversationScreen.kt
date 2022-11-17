@@ -8,10 +8,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -27,6 +29,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.sp
 import com.allballapp.android.R
 import com.allballapp.android.data.UserStorage
@@ -88,211 +92,309 @@ fun NewConversationScreen(
         }
     }
 
-    Box(
-        Modifier
-            .fillMaxSize()
-            .padding(all = dimensionResource(id = R.dimen.size_16dp))
-    ) {
-        if ((chatState.teams[chatState.teamIndex].coaches.isNotEmpty()
-                    || chatState.teams[chatState.teamIndex].players.isNotEmpty()
-                    || chatState.teams[chatState.teamIndex].supportingCastDetails.isNotEmpty())
-            && (chatState.teams[chatState.teamIndex].coaches.any { coach -> coach._id != UserStorage.userId }
-                    || chatState.teams[chatState.teamIndex].players.any { coach -> coach._id != UserStorage.userId }
-                    || chatState.teams[chatState.teamIndex].supportingCastDetails.any { coach -> coach._Id != UserStorage.userId })
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        color = MaterialTheme.appColors.material.surface,
-                        shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
-                    )
-            ) {
-                if (chatState.teams[chatState.teamIndex].coaches.isNotEmpty()
-                    && chatState.teams[chatState.teamIndex].coaches.any { coach -> coach._id != UserStorage.userId }
-                ) {
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
-                    val coachSize = buildAnnotatedString {
-                        append(stringResource(id = R.string.coaches))
-                        val startIndex = length
-                        append(" ( ")
-                        append("" + chatState.teams[chatState.teamIndex].coaches.size)
-                        append(" )")
-                        addStyle(
-                            SpanStyle(
-                                color = MaterialTheme.appColors.textField.label,
-                                fontFamily = rubikFamily,
-                                fontWeight = FontWeight.W400
-                            ),
-                            startIndex,
-                            length,
-                        )
-                    }
-                    Text(
-                        text = coachSize,
-                        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                        fontWeight = FontWeight.W600,
-                        modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
-                    )
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                    LazyColumn {
-                        items(chatState.teams[chatState.teamIndex].coaches) { coach ->
-                            TeamUserListCheckbox(
-                                isCoach = true,
-                                coachUser = coach,
-                                selectedTeamMembers = chatState.selectedCoachesForNewGroup
-                            ) {
-                                chatVM.onEvent(ChatUIEvent.OnCoachChange(selectedCoaches = it))
-                                Log.i("selectedCoach", "NewConversationScreen: $it")
-
-                            }
-                        }
-                    }
-                }
-                if (chatState.teams[chatState.teamIndex].players.isNotEmpty()
-                    && chatState.teams[chatState.teamIndex].players.any { coach -> coach._id != UserStorage.userId }) {
-                    AppDivider()
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
-                    val playersSize = buildAnnotatedString {
-                        append(stringResource(id = R.string.players))
-                        val startIndex = length
-                        append(" ( ")
-                        append("" + chatState.teams[chatState.teamIndex].players.size)
-                        append(" )")
-                        addStyle(
-                            SpanStyle(
-                                color = MaterialTheme.appColors.textField.label,
-                                fontFamily = rubikFamily,
-                                fontWeight = FontWeight.W400
-                            ),
-                            startIndex,
-                            length,
-                        )
-                    }
-                    Text(
-                        text = playersSize,
-                        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                        fontWeight = FontWeight.W600,
-                        modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
-                    )
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
-                    LazyColumn {
-                        items(chatState.teams[chatState.teamIndex].players) { player ->
-                            TeamUserListCheckbox(
-                                isCoach = false,
-                                teamUser = player,
-                                selectedTeamMembers = chatState.selectedPlayersForNewGroup
-                            ) {
-                                chatVM.onEvent(ChatUIEvent.OnPlayerChange(selectedPlayers = it))
-                                Timber.i(
-                                    "selectedPlayers NewConversationScreen: ${
-                                        it.map { playerId ->
-                                            playerId
-                                        }
-                                    }"
-                                )
-                            }
-                        }
-                    }
-                }
-
-
-
-
-
-
-                if (chatState.teams[chatState.teamIndex].supportingCastDetails.isNotEmpty()
-                    && chatState.teams[chatState.teamIndex].supportingCastDetails.any { coach -> coach._Id != UserStorage.userId }) {
-                    AppDivider()
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
-                    val supportingStaffSize = buildAnnotatedString {
-                        append(stringResource(id = R.string.supporting_staff))
-                        val startIndex = length
-                        append(" ( ")
-                        append("" + chatState.teams[chatState.teamIndex].supportingCastDetails.size)
-                        append(" )")
-                        addStyle(
-                            SpanStyle(
-                                color = MaterialTheme.appColors.textField.label,
-                                fontFamily = rubikFamily,
-                                fontWeight = FontWeight.W400
-                            ),
-                            startIndex,
-                            length,
-                        )
-                    }
-                    Text(
-                        text = supportingStaffSize,
-                        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                        fontWeight = FontWeight.W600,
-                        modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
-                    )
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
-                    LazyColumn {
-                        items(chatState.teams[chatState.teamIndex].supportingCastDetails) { staff ->
-                            TeamUserListCheckbox(
-                                isCoach = false,
-//                                teamUser = player,
-                                teamUser = Player(_id = staff._Id, firstName = staff.firstName, lastName = staff.lastName, profileImage = staff.profileImage),
-                                selectedTeamMembers = chatState.selectedPlayersForNewGroup
-                            ) {
-                                chatVM.onEvent(ChatUIEvent.OnPlayerChange(selectedPlayers = it))
-                                Timber.i(
-                                    "selectedPlayers NewConversationScreen: ${
-                                        it.map { playerId ->
-                                            playerId
-                                        }
-                                    }"
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            if (!chatState.isLoading) {
-                EmptyScreen(
-                    singleText = true,
-                    stringResource(id = R.string.no_members_in_the_team_currently)
-                )
-            }
-        }
-        IconButton(
+    Column() {
+        AppOutlineTextField(
+            value = chatState.searchText,
             modifier = Modifier
-                .size(dimensionResource(id = R.dimen.size_44dp))
-                .background(
-                    color = if (chatState.selectedPlayersForNewGroup.isNotEmpty()
-                        || chatState.selectedCoachesForNewGroup.isNotEmpty()
+                .fillMaxWidth(),
+            onValueChange = {
+                chatVM.onEvent(ChatUIEvent.OnSearchValueChange(it))
+            },
+            placeholder = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(dimensionResource(id = R.dimen.size_24dp))
+                ) {
+                    AppText(
+                        text = stringResource(id = R.string.search_users),
+                        color = MaterialTheme.appColors.textField.label,
+                        fontSize = dimensionResource(
+                            id = R.dimen.txt_size_12
+                        ).value.sp,
+                        fontFamily = rubikFamily,
+                        fontWeight = FontWeight.W400,
+                        modifier = Modifier.align(Alignment.CenterStart)
                     )
-                        MaterialTheme.appColors.material.primaryVariant
-                    else MaterialTheme.appColors.buttonColor.bckgroundDisabled,
-                    RoundedCornerShape(50)
+                }
+
+            },
+            keyboardOptions = KeyboardOptions(
+                imeAction = ImeAction.Next,
+                keyboardType = KeyboardType.Email
+            ),
+            isError = false,
+            errorMessage = stringResource(id = R.string.email_error),
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
+                unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
+                backgroundColor = MaterialTheme.appColors.material.background,
+                textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                placeholderColor = MaterialTheme.appColors.textField.label,
+                cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+            ),
+            singleLine = false,
+            maxLines = 6,
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_search),
+                    contentDescription = ""
                 )
-                .align(Alignment.BottomEnd),
-            enabled = chatState.selectedPlayersForNewGroup.isNotEmpty() || chatState.selectedCoachesForNewGroup.isNotEmpty(),
-            onClick = {
-                if (chatState.selectedPlayersForNewGroup.size.plus(chatState.selectedCoachesForNewGroup.size) > 1)
-                    chatVM.onEvent(ChatUIEvent.ShowDialog(true))
-                else {
-                    chatVM.onEvent(ChatUIEvent.OnInitiateNewConversation)
+            }
+        )
+
+        Box(
+            Modifier
+                .fillMaxSize()
+                .padding(all = dimensionResource(id = R.dimen.size_16dp))
+        ) {
+            if ((chatState.teams[chatState.teamIndex].coaches.isNotEmpty()
+                        || chatState.teams[chatState.teamIndex].players.isNotEmpty()
+                        || chatState.teams[chatState.teamIndex].supportingCastDetails.isNotEmpty())
+                && (chatState.teams[chatState.teamIndex].coaches.any { coach -> coach._id != UserStorage.userId }
+                        || chatState.teams[chatState.teamIndex].players.any { coach -> coach._id != UserStorage.userId }
+                        || chatState.teams[chatState.teamIndex].supportingCastDetails.any { coach -> coach._Id != UserStorage.userId })
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = MaterialTheme.appColors.material.surface,
+                            shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+                        )
+                ) {
+                    if (chatState.teams[chatState.teamIndex].coaches.isNotEmpty()
+                        && chatState.teams[chatState.teamIndex].coaches.any { coach -> coach._id != UserStorage.userId }
+                    ) {
+                        val filteredCoaches= chatState.teams[chatState.teamIndex].coaches.filter { coach ->
+                            if (chatState.searchText.isNotEmpty()) {
+                                (coach.firstName.contains(
+                                    chatState.searchText,ignoreCase = true
+                                ) || coach.lastName.contains(chatState.searchText,ignoreCase = true))
+                            } else true
+                        }
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+                        val coachSize = buildAnnotatedString {
+                            append(stringResource(id = R.string.coaches))
+                            val startIndex = length
+                            append(" ( ")
+                            append("" + filteredCoaches.size)
+                            append(" )")
+                            addStyle(
+                                SpanStyle(
+                                    color = MaterialTheme.appColors.textField.label,
+                                    fontFamily = rubikFamily,
+                                    fontWeight = FontWeight.W400
+                                ),
+                                startIndex,
+                                length,
+                            )
+                        }
+                        Text(
+                            text = coachSize,
+                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            fontWeight = FontWeight.W600,
+                            modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
+                        )
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                        LazyColumn {
+                            items(filteredCoaches /*chatState.teams[chatState.teamIndex].coaches.filter { coach ->
+                                if (chatState.searchText.isNotEmpty()) {
+                                    (coach.firstName.contains(
+                                        chatState.searchText,ignoreCase = true
+                                    ) || coach.lastName.contains(chatState.searchText,ignoreCase = true))
+                                } else true
+                            }*/) { coach ->
+                                TeamUserListCheckbox(
+                                    isCoach = true,
+                                    coachUser = coach,
+                                    selectedTeamMembers = chatState.selectedCoachesForNewGroup
+                                ) {
+                                    chatVM.onEvent(ChatUIEvent.OnCoachChange(selectedCoaches = it))
+                                    Log.i("selectedCoach", "NewConversationScreen: $it")
+
+                                }
+                            }
+                        }
+                    }
+                    if (chatState.teams[chatState.teamIndex].players.isNotEmpty()
+                        && chatState.teams[chatState.teamIndex].players.any { coach -> coach._id != UserStorage.userId }
+                    ) {
+                        val filteredPlayer= chatState.teams[chatState.teamIndex].players.filter { coach ->
+                            if (chatState.searchText.isNotEmpty()) {
+                                (coach.firstName.contains(
+                                    chatState.searchText,ignoreCase = true
+                                ) || coach.lastName.contains(chatState.searchText,ignoreCase = true))
+                            } else true
+                        }
+                        AppDivider()
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+                        val playersSize = buildAnnotatedString {
+                            append(stringResource(id = R.string.players))
+                            val startIndex = length
+                            append(" ( ")
+                            append("" + filteredPlayer.size)
+                            append(" )")
+                            addStyle(
+                                SpanStyle(
+                                    color = MaterialTheme.appColors.textField.label,
+                                    fontFamily = rubikFamily,
+                                    fontWeight = FontWeight.W400
+                                ),
+                                startIndex,
+                                length,
+                            )
+                        }
+                        Text(
+                            text = playersSize,
+                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            fontWeight = FontWeight.W600,
+                            modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
+                        )
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+                        LazyColumn {
+                            items(filteredPlayer/*chatState.teams[chatState.teamIndex].players.filter { coach ->
+                                if (chatState.searchText.isNotEmpty()) {
+                                    (coach.firstName.contains(
+                                        chatState.searchText,ignoreCase = true
+                                    ) || coach.lastName.contains(chatState.searchText,ignoreCase = true))
+                                } else true
+                            }*/) { player ->
+                                TeamUserListCheckbox(
+                                    isCoach = false,
+                                    teamUser = player,
+                                    selectedTeamMembers = chatState.selectedPlayersForNewGroup
+                                ) {
+                                    chatVM.onEvent(ChatUIEvent.OnPlayerChange(selectedPlayers = it))
+                                    Timber.i(
+                                        "selectedPlayers NewConversationScreen: ${
+                                            it.map { playerId ->
+                                                playerId
+                                            }
+                                        }"
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+
+
+
+
+
+                    if (chatState.teams[chatState.teamIndex].supportingCastDetails.isNotEmpty()
+                        && chatState.teams[chatState.teamIndex].supportingCastDetails.any { coach -> coach._Id != UserStorage.userId }
+                    ) {
+                        val filteredSupportingStaff = chatState.teams[chatState.teamIndex].supportingCastDetails.filter { coach ->
+                            if (chatState.searchText.isNotEmpty()) {
+                                (coach.firstName.contains(
+                                    chatState.searchText,ignoreCase = true
+                                ) || coach.lastName.contains(chatState.searchText,ignoreCase = true))
+                            } else true
+                        }
+                        AppDivider()
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+                        val supportingStaffSize = buildAnnotatedString {
+                            append(stringResource(id = R.string.supporting_staff))
+                            val startIndex = length
+                            append(" ( ")
+                            append("" + filteredSupportingStaff.size)
+                            append(" )")
+                            addStyle(
+                                SpanStyle(
+                                    color = MaterialTheme.appColors.textField.label,
+                                    fontFamily = rubikFamily,
+                                    fontWeight = FontWeight.W400
+                                ),
+                                startIndex,
+                                length,
+                            )
+                        }
+                        Text(
+                            text = supportingStaffSize,
+                            fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            fontWeight = FontWeight.W600,
+                            modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
+                        )
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+                        LazyColumn {
+                            items(filteredSupportingStaff /*chatState.teams[chatState.teamIndex].supportingCastDetails.filter { coach ->
+                                if (chatState.searchText.isNotEmpty()) {
+                                    (coach.firstName.contains(
+                                        chatState.searchText,ignoreCase = true
+                                    ) || coach.lastName.contains(chatState.searchText,ignoreCase = true))
+                                } else true
+                            }*/) { staff ->
+                                TeamUserListCheckbox(
+                                    isCoach = false,
+//                                teamUser = player,
+                                    teamUser = Player(
+                                        _id = staff._Id,
+                                        firstName = staff.firstName,
+                                        lastName = staff.lastName,
+                                        profileImage = staff.profileImage
+                                    ),
+                                    selectedTeamMembers = chatState.selectedPlayersForNewGroup
+                                ) {
+                                    chatVM.onEvent(ChatUIEvent.OnPlayerChange(selectedPlayers = it))
+                                    Timber.i(
+                                        "selectedPlayers NewConversationScreen: ${
+                                            it.map { playerId ->
+                                                playerId
+                                            }
+                                        }"
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                if (!chatState.isLoading) {
+                    EmptyScreen(
+                        singleText = true,
+                        stringResource(id = R.string.no_members_in_the_team_currently)
+                    )
                 }
             }
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_arrow_next),
-                "",
-                modifier = Modifier.width(
-                    dimensionResource(id = R.dimen.size_14dp)
+            IconButton(
+                modifier = Modifier
+                    .size(dimensionResource(id = R.dimen.size_44dp))
+                    .background(
+                        color = if (chatState.selectedPlayersForNewGroup.isNotEmpty()
+                            || chatState.selectedCoachesForNewGroup.isNotEmpty()
+                        )
+                            MaterialTheme.appColors.material.primaryVariant
+                        else MaterialTheme.appColors.buttonColor.bckgroundDisabled,
+                        RoundedCornerShape(50)
+                    )
+                    .align(Alignment.BottomEnd),
+                enabled = chatState.selectedPlayersForNewGroup.isNotEmpty() || chatState.selectedCoachesForNewGroup.isNotEmpty(),
+                onClick = {
+                    if (chatState.selectedPlayersForNewGroup.size.plus(chatState.selectedCoachesForNewGroup.size) > 1)
+                        chatVM.onEvent(ChatUIEvent.ShowDialog(true))
+                    else {
+                        chatVM.onEvent(ChatUIEvent.OnInitiateNewConversation)
+                    }
+                }
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_arrow_next),
+                    "",
+                    modifier = Modifier.width(
+                        dimensionResource(id = R.dimen.size_14dp)
+                    )
                 )
-            )
-        }
-        if (chatState.isLoading) {
-            CommonProgressBar()
-        }
+            }
+            if (chatState.isLoading) {
+                CommonProgressBar()
+            }
 
+        }
     }
     if (chatState.showCreateGroupNameDialog) {
         DeclineEventDialog(
@@ -401,7 +503,7 @@ fun TeamUserListCheckbox(
                         if (selectedTeamMembers.contains(coachUser._id)) {
                             selectedTeamMembers.remove(coachUser._id)
                         } else {
-                            coachUser._id?.let { selectedTeamMembers.add(it) }
+                            coachUser._id.let { selectedTeamMembers.add(it) }
                         }
                         onSelectedMemberChange.invoke(selectedTeamMembers)
                     }
