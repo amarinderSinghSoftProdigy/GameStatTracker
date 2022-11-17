@@ -41,6 +41,7 @@ import com.cometchat.pro.models.Group
 import com.cometchat.pro.models.User
 import com.cometchat.pro.uikit.ui_components.chats.CometChatConversationList
 import com.cometchat.pro.uikit.ui_components.messages.message_list.CometChatMessageListActivity
+import timber.log.Timber
 import kotlin.random.Random
 
 @Composable
@@ -70,16 +71,42 @@ fun TeamsChatScreen(
     LaunchedEffect(key1 = Unit) {
         vm.onEvent(ChatUIEvent.ClearData)
     }
+
+    /*LaunchedEffect(key1 = refreshChatScreen) {
+        if (refreshChatScreen.isNotEmpty() && refreshChatScreen == true.toString()) {
+            if (state.teams.isNotEmpty() && selected.value > -1) {
+                addChatIds(state.teams[selected.value], onKeyChange = { newKey ->
+                    key.value = newKey
+                })
+            }
+        }
+    }*/
+    /* LaunchedEffect(key1 = Unit) {
+         vm.chatChannel.collect { uiEvent ->
+             when (uiEvent) {
+                 ChatChannel.OnNewChatListingSuccess -> {
+                     if (state.teams.isNotEmpty() && selected.value > -1) {
+                         addChatIds(state.teams[selected.value], onKeyChange = { newKey ->
+                             key.value = newKey
+                         })
+                     }
+                 }
+             }
+         }
+     }*/
+
     LaunchedEffect(key1 = Unit) {
-        vm.chatChannel.collect { uiEvent ->
-            when (uiEvent) {
-                ChatChannel.OnNewChatListingSuccess -> {
-                   /* if (state.teams.isNotEmpty() && selected.value > -1) {
-                        addChatIds(state.teams[selected.value], onKeyChange = { newKey ->
+        vm.chatChannel.collect { chatChannel ->
+            when (chatChannel) {
+               is ChatChannel.OnNewChatListingSuccess -> {
+                    Timber.i("OnNewChatListingSuccess")
+                    if (chatChannel.teams.isNotEmpty() && selected.value > -1) {
+                        addChatIds(chatChannel.teams[selected.value], onKeyChange = { newKey ->
                             key.value = newKey
                         })
-                    }*/
+                    }
                 }
+
             }
         }
     }
@@ -190,6 +217,7 @@ fun addChatIds(team: Team, onKeyChange: (String) -> Unit) {
     CometChatConversationList.memberIds = mergedIds
 
     onKeyChange.invoke(Random.nextLong().toString())
+    Timber.i(" addChatIds-teamChatGroups ${team.teamChatGroups.map { it.groupId }}")
 //    key.value = Random.nextLong().toString()
 }
 
