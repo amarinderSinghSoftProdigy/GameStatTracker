@@ -1,6 +1,7 @@
 package com.allballapp.android.ui.features.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -26,13 +27,16 @@ fun EmptyScreen(
     icon: Int = 0,
     onClick: (() -> Unit)? = null
 ) {
-    Box(Modifier.fillMaxSize()) {
+    Box(
+        Modifier.fillMaxSize()
+            .background(color = MaterialTheme.appColors.material.surface)
+    ) {
         if (singleText) {
             AppText(
                 modifier = Modifier.align(Alignment.Center).fillMaxWidth(0.95f),
                 text = heading.ifEmpty { stringResource(id = R.string.coming_soon) },
                 fontSize = dimensionResource(id = R.dimen.txt_size_18).value.sp,
-                color = ColorBWBlack,
+                color = MaterialTheme.appColors.textField.labelColor,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 fontFamily = rubikFamily
@@ -51,13 +55,13 @@ fun EmptyScreen(
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_44dp)))
                 AppText(
-                    color = MaterialTheme.appColors.textField.label,
+                    color = MaterialTheme.appColors.textField.labelColor,
                     text = heading.ifEmpty { stringResource(id = R.string.no_data_found) },
                     fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
                 AppText(
-                    color = MaterialTheme.appColors.textField.label,
+                    color = MaterialTheme.appColors.textField.labelColor,
                     text = description.ifEmpty { stringResource(id = R.string.try_something_else) },
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                 )

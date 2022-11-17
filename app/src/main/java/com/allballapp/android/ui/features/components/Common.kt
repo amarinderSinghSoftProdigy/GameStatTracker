@@ -380,7 +380,12 @@ fun DialogButton(
 
 @Composable
 fun CommonProgressBar() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.appColors.material.surface),
+        contentAlignment = Alignment.Center
+    ) {
         CircularProgressIndicator(
             color = MaterialTheme.appColors.material.primaryVariant
         )

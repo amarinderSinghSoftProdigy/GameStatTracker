@@ -49,7 +49,7 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color.White)
+            .background(color = Color.White /*MaterialTheme.appColors.material.surface*/)
             .verticalScroll(rememberScrollState()),
     ) {
         CoilImage(

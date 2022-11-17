@@ -38,8 +38,10 @@ fun MyEvents(
     remember {
         vm.onEvent(EvEvents.RefreshEventScreen)
     }
-    Box(modifier = Modifier.fillMaxSize()) {
-        if (state.upcomingAndGameData.size > 0 || state.pastEvents.size > 0) {
+    Box(modifier = Modifier.fillMaxSize()
+        .background(MaterialTheme.appColors.material.surface)
+    ) {
+        if (state.upcomingAndGameData.isNotEmpty() || state.pastEvents.size > 0) {
             Box(modifier = Modifier.fillMaxSize()) {
                 Column(
                     Modifier
@@ -55,7 +57,7 @@ fun MyEvents(
                         append("" + state.upcomingAndGameData.size)
                         append(" )")
                         addStyle(
-                            SpanStyle(color = MaterialTheme.appColors.textField.label),
+                            SpanStyle(color = MaterialTheme.appColors.textField.labelColor),
                             startIndex,
                             length,
                         )
@@ -63,7 +65,7 @@ fun MyEvents(
                     Text(
                         text = text,
                         style = MaterialTheme.typography.h2,
-                        color = ColorBWBlack,
+                        color = MaterialTheme.appColors.textField.labelColor,
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_6dp)))
                     FlowRow(Modifier.fillMaxWidth()) {
@@ -102,7 +104,7 @@ fun MyEvents(
                         append("" + state.pastEvents.size)
                         append(" )")
                         addStyle(
-                            SpanStyle(color = MaterialTheme.appColors.textField.label),
+                            SpanStyle(color = MaterialTheme.appColors.textField.labelColor),
                             startIndex,
                             length,
                         )
@@ -110,7 +112,7 @@ fun MyEvents(
                     Text(
                         text = text,
                         style = MaterialTheme.typography.h2,
-                        color = ColorBWBlack,
+                        color = MaterialTheme.appColors.textField.labelColor,
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_6dp)))
                     Box {

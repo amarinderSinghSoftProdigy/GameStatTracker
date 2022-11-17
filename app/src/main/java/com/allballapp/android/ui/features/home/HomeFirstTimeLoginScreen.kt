@@ -100,7 +100,7 @@ fun HomeFirstTimeLoginScreen(
                                 verticalAlignment = Alignment.CenterVertically,
                                 ) {
                                 CoilImage(
-                                    src = com.allballapp.android.BuildConfig.IMAGE_SERVER + teamState.logo,
+                                    src = BuildConfig.IMAGE_SERVER + teamState.logo,
                                     modifier = Modifier
                                         .size(dimensionResource(id = R.dimen.size_48dp))
                                         .clip(CircleShape),

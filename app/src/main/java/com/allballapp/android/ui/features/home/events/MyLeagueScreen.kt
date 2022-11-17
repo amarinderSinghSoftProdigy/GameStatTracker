@@ -41,7 +41,11 @@ fun MyLeagueScreen(
         CommonProgressBar()
     } else if (state.myLeaguesList.isNotEmpty()) {
 
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.appColors.material.surface)
+        ) {
             Column(
                 Modifier
                     .fillMaxSize()
@@ -59,7 +63,10 @@ fun MyLeagueScreen(
         }
 
     } else {
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier.fillMaxSize()
+            .background(MaterialTheme.appColors.material.surface)
+        ) {
             Column(
                 modifier = Modifier
                     .align(Alignment.Center)

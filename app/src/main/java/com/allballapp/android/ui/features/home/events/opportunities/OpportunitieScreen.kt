@@ -42,7 +42,10 @@ fun OpportunitiesScreen(vm: EventViewModel, moveToOppDetails: (String) -> Unit) 
     if (state.isLoading) {
         CommonProgressBar()
     } else if (state.opportunitiesList.isNotEmpty()) {
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier.fillMaxSize()
+                .background(MaterialTheme.appColors.material.surface)
+        ) {
             Column(
                 Modifier
                     .fillMaxSize()
@@ -103,7 +106,7 @@ fun OpportunitiesItem(league: OpportunitiesItem, showLabel: Boolean, OnNextClick
             Modifier
                 .fillMaxWidth()
                 .background(
-                    color = MaterialTheme.appColors.material.surface,
+                    color = MaterialTheme.appColors.material.background,
                     shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                 )
                 .padding(
@@ -115,7 +118,7 @@ fun OpportunitiesItem(league: OpportunitiesItem, showLabel: Boolean, OnNextClick
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .background(
-                        color = MaterialTheme.appColors.material.primary,
+                        color = MaterialTheme.appColors.material.background,
                         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                     )
                     .size(dimensionResource(id = R.dimen.size_64dp))
@@ -139,7 +142,7 @@ fun OpportunitiesItem(league: OpportunitiesItem, showLabel: Boolean, OnNextClick
                 ) {
                     Text(
                         text = league.name,
-                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
+                        color = MaterialTheme.appColors.textField.labelColor,
                         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.weight(1F)
@@ -175,7 +178,7 @@ fun OpportunitiesItem(league: OpportunitiesItem, showLabel: Boolean, OnNextClick
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 2,
                     text = league.eventShortDescription,
-                    color = Color.Black,
+                    color = MaterialTheme.appColors.textField.labelColor,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                     fontWeight = FontWeight.W400,
                 )

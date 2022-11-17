@@ -55,7 +55,7 @@ fun BottomNavigationBar(
     ) {
         Row(
             modifier = Modifier
-                .background(MaterialTheme.appColors.material.surface)
+                .background(MaterialTheme.appColors.bottomNavColors.backgroundColor)
                 .fillMaxWidth()
                 .height(height),
             horizontalArrangement = Arrangement.SpaceAround,
@@ -112,7 +112,6 @@ fun BottomNavigationBar(
                                     )
                                     .clip(CircleShape)
                                     .align(Alignment.TopEnd)
-
                                     .padding(
                                         horizontal = dimensionResource(id = R.dimen.size_6dp),
                                         vertical = dimensionResource(id = R.dimen.size_2dp)
@@ -126,7 +125,6 @@ fun BottomNavigationBar(
                                 )
                             }
                         }
-
                     }
                 }
             }

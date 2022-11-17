@@ -35,6 +35,13 @@ data class ButtonColor(
     val textDisabled: Color
 )
 
+data class BottomNavigationColor(
+    val backgroundColor: Color,
+)
+data class AppDivider(
+    val dividerColor: Color,
+)
+
 data class appColors(
     val material: Colors,
     val warning: Color,
@@ -42,7 +49,9 @@ data class appColors(
     val editField: EditField,
     val textField: TextFieldColor,
     val spinnerColo: SpinnerColor,
-    val buttonColor: ButtonColor
+    val buttonColor: ButtonColor,
+    val bottomNavColors: BottomNavigationColor,
+    val appDivider : AppDivider
 
 )
 
@@ -101,8 +110,13 @@ private val LightColorPalette = appColors(
         backgroundEnabled = button_background_enable,
         textEnabled = button_text_enable,
         textDisabled = button_text_disable
+    ),
+    bottomNavColors = BottomNavigationColor(
+        backgroundColor = md_theme_light_surface
+    ),
+    appDivider = AppDivider(
+        dividerColor = md_theme_dark_primary
     )
-
 )
 
 private val DarkColorPalette = appColors(
@@ -115,7 +129,7 @@ private val DarkColorPalette = appColors(
         borderError = ol_field_border_error
     ),
     textField = TextFieldColor(
-        label = text_field_label_dark_theme,
+        label = text_label_dark_theme,
         labelColor = /*ColorBWBlack*/ text_field_label_dark_theme,
         labelDark = text_field_label_dark,
         indicator = text_field_indicator,
@@ -129,8 +143,13 @@ private val DarkColorPalette = appColors(
         backgroundEnabled = button_background_enable_dark_theme,
         textEnabled = button_text_enable,
         textDisabled = button_text_disable
+    ),
+    bottomNavColors = BottomNavigationColor(
+        backgroundColor = black
+    ),
+    appDivider = AppDivider(
+        dividerColor = md_theme_dark_divider
     )
-
 )
 
 private val LocalColors = staticCompositionLocalOf { LightColorPalette }
