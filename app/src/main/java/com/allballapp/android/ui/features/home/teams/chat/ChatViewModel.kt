@@ -15,6 +15,7 @@ import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.domain.repository.IChatRepository
 import com.allballapp.android.domain.repository.IImageUploadRepo
 import com.allballapp.android.domain.repository.ITeamRepository
+import com.allballapp.android.ui.features.components.findCommon
 import com.allballapp.android.ui.utils.UiText
 import com.cometchat.pro.constants.CometChatConstants
 import com.cometchat.pro.core.CometChat
@@ -158,6 +159,30 @@ class ChatViewModel @Inject constructor(
                         team?.let {
                             teams.remove(team)
                             teams.add(0, team)
+                        }
+                        teams.map {
+                                team->
+                            val mergedIds = mutableListOf<String>()
+                            val playerIds = team.players.map {
+                                it._id
+                            }
+                            val coachIds = team.coaches.map {
+                                it._id
+                            }
+                            val supportingStaffIds = team.supportingCastDetails.map {
+                                it._Id
+                            }
+                            val groupId = team.teamChatGroups.map {
+                                it.groupId
+                            }
+                            mergedIds.addAll(playerIds)
+                            mergedIds.addAll(coachIds)
+                            mergedIds.addAll(supportingStaffIds)
+                            mergedIds.addAll(groupId)
+
+                            val commonCount = findCommon(mergedIds, listOf("11f22990-06e1-4812-83a8-08544dabe9fd"))
+                          team.copy(unreadMessageCount = commonCount)
+
                         }
 
 

@@ -27,10 +27,7 @@ import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.data.response.team.Team
 import com.allballapp.android.databinding.FragmentConversationBinding
-import com.allballapp.android.ui.features.components.AppTab
-import com.allballapp.android.ui.features.components.CoilImage
-import com.allballapp.android.ui.features.components.CommonProgressBar
-import com.allballapp.android.ui.features.components.Placeholder
+import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.home.EmptyScreen
 import com.allballapp.android.ui.features.home.HomeViewModel
 import com.allballapp.android.ui.theme.appColors
@@ -117,17 +114,43 @@ fun TeamsChatScreen(
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
                 LazyRow {
                     itemsIndexed(state.teams) { index, item ->
-                        Row {
-                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
-                            AppTab(
-                                title = item.name,
-                                selected = index == selected.value,
-                                onClick = {
-                                    addChatIds(item,{})
-                                    selected.value = index
-                                    key.value = index.toString()
-                                })
+                        Box() {
+                            Row {
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+                                AppTab(
+                                    title = item.name,
+                                    selected = index == selected.value,
+                                    onClick = {
+                                        addChatIds(item,{})
+                                        selected.value = index
+                                        key.value = index.toString()
+
+                                    })
+                            }
+                            Box(
+                                modifier = Modifier
+//                                    .offset(y = (dimensionResource(id = R.dimen.size_10dp)))
+                                    .background(
+                                        shape = RoundedCornerShape(50),
+                                        color = if(index != selected.value) AppConstants.SELECTED_COLOR else MaterialTheme.appColors.material.surface
+                                    )
+                                    .clip(CircleShape)
+                                    .align(Alignment.TopEnd)
+
+                                    .padding(
+                                        horizontal = dimensionResource(id = R.dimen.size_6dp),
+                                        vertical = dimensionResource(id = R.dimen.size_2dp)
+                                    )
+                            ) {
+                                AppText(
+                                    text = item.unreadMessageCount.toString(),
+                                    fontFamily = rubikFamily,
+                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                    color = if(index != selected.value) MaterialTheme.appColors.material.surface else AppConstants.SELECTED_COLOR
+                                )
+                            }
                         }
+
                     }
                     item {
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_24dp)))
@@ -217,157 +240,9 @@ fun addChatIds(team: Team, onKeyChange: (String) -> Unit) {
     CometChatConversationList.memberIds = mergedIds
 
     onKeyChange.invoke(Random.nextLong().toString())
+
     Timber.i(" addChatIds-teamChatGroups ${team.teamChatGroups.map { it.groupId }}")
-//    key.value = Random.nextLong().toString()
 }
-
-
-/*@Composable
-fun TeamsChatScreen(
-    color: String = "",
-    homeVm: HomeViewModel,
-    vm: ChatViewModel,
-    onTeamItemClick: () -> Unit,
-    onCreateNewConversationClick: (teamId: String) -> Unit
-) {
-
-    val state = vm.chatUiState.value
-    val selected = rememberSaveable {
-        mutableStateOf(-1)
-    }
-    val key = remember { mutableStateOf("selected") }
-
-    remember {
-        homeVm.getUnreadMessageCount()
-        vm.onEvent(ChatUIEvent.GetChatListing)
-    }
-    LaunchedEffect(key1 = selected.value, block = {
-        vm.onEvent(ChatUIEvent.TeamSelectionChange(selected.value))
-        vm.onEvent(ChatUIEvent.GetChatListing)
-
-    })
-    LaunchedEffect(key1 = Unit) {
-        vm.onEvent(ChatUIEvent.ClearData)
-    }
-    LaunchedEffect(key1 = Unit) {
-        vm.chatChannel.collect { uiEvent ->
-            when (uiEvent) {
-                *//*ChatChannel.OnNewChatListingSuccess->{
-                    key.value = Random.nextLong().toString()
-                }*//*
-            }
-        }
-    }
-
-    if (AppConstants.ENABLE_CHAT) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Column {
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-                LazyRow {
-                    itemsIndexed(state.teams) { index, item ->
-                        Row {
-                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
-                            AppTab(
-                                title = item.name,
-                                selected = index == selected.value,
-                                onClick = {
-                                    selected.value = index
-                                    key.value = index.toString()
-                                })
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-
-                LazyColumn {
-                    item {
-                        state.conversation?.forEach {
-                            ConversationItem(conversation = it!!)
-                        }
-                    }
-                }
-*//*                if (selected.value != -1) {
-                    key(key.value) {
-                      *//**//*      AndroidViewBinding(FragmentConversationBinding::inflate) {
-//                            CometChatMessageListActivity.toolbarColor =
-//                                if (color.startsWith("#")) color else "#" + color
-//                            converstionContainer.getFragment<CometChatConversationList>()
-                        }*//**//*
-                    }
-                } else if (state.teams.isNotEmpty()) {
-                    addChatIds(state.teams[0])
-                    key.value = 0.toString()
-                    selected.value = 0
-                } else {
-                   *//**//* EmptyScreen(
-                        singleText = false,
-                        icon = com.cometchat.pro.uikit.R.drawable.ic_chat_placeholder,
-                        heading = stringResource(id = com.cometchat.pro.uikit.R.string.no_conversations)
-                    )*//**//*
-                }*//*
-            }
-            IconButton(
-                modifier = Modifier
-                    .padding(all = dimensionResource(id = R.dimen.size_16dp))
-                    .size(dimensionResource(id = R.dimen.size_44dp))
-                    .background(
-                        MaterialTheme.appColors.material.primaryVariant,
-                        RoundedCornerShape(50)
-                    )
-                    .align(Alignment.BottomEnd),
-                enabled = true,
-                onClick = {
-                    if (selected.value != -1)
-                        onCreateNewConversationClick.invoke(state.teams[selected.value]._id)
-                }
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_add_button),
-                    "",
-                    tint = MaterialTheme.appColors.buttonColor.textEnabled,
-                    modifier = Modifier
-                        .width(
-                            dimensionResource(id = R.dimen.size_16dp)
-                        )
-                )
-            }
-            if (state.isLoading) {
-                CommonProgressBar()
-            }
-
-        }
-    }else{
-        EmptyScreen(
-            singleText = false,
-            icon = R.drawable.ic_chat_placeholder,
-            heading = stringResource(id = R.string.no_conversations)
-        )
-    }
-}*/
-
-/*
-fun addChatIds(item: Team) {
-    val mergedIds = mutableListOf<String>()
-    val playerIds = item.players.map {
-        it._id
-    }
-    val coachIds = item.coaches.map {
-        it._id
-    }
-    val supportingStaffIds = item.supportingCastDetails.map {
-        it._Id
-    }
-    val groupId = item.teamChatGroups.map {
-        it.groupId
-    }
-    mergedIds.addAll(playerIds)
-    mergedIds.addAll(coachIds)
-    mergedIds.addAll(supportingStaffIds)
-    mergedIds.addAll(groupId)
-//    CometChatConversationList.memberIds = mergedIds
-}
-*/
 
 @Composable
 fun ConversationItem(conversation: Conversation) {

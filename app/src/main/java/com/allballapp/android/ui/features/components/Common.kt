@@ -1043,3 +1043,7 @@ fun Modifier.scrollOnFocus(
             }
     }
 }
+
+fun <T> findCommon(first: List<T>, second: List<T>): Int{
+    return first.filter(second::contains).size
+}
