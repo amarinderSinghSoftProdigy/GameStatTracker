@@ -127,28 +127,28 @@ fun TeamsChatScreen(
 
                                     })
                             }
-                            Box(
-                                modifier = Modifier
-//                                    .offset(y = (dimensionResource(id = R.dimen.size_10dp)))
-                                    .background(
-                                        shape = RoundedCornerShape(50),
-                                        color = if(index != selected.value) AppConstants.SELECTED_COLOR else MaterialTheme.appColors.material.surface
-                                    )
-                                    .clip(CircleShape)
-                                    .align(Alignment.TopEnd)
+                            if (item.unreadMessageCount > 0){
+                                Box(
+                                    modifier = Modifier
+                                        .background(
+                                            shape = RoundedCornerShape(50),
+                                            color = if (index != selected.value) AppConstants.SELECTED_COLOR else MaterialTheme.appColors.material.surface
+                                        )
+                                        .clip(CircleShape)
+                                        .align(Alignment.TopEnd)
 
-                                    .padding(
-                                        horizontal = dimensionResource(id = R.dimen.size_6dp),
-                                        vertical = dimensionResource(id = R.dimen.size_2dp)
+                                        .padding(
+                                            horizontal = dimensionResource(id = R.dimen.size_6dp),
+                                            vertical = dimensionResource(id = R.dimen.size_2dp)
+                                        )
+                                ) {
+                                    AppText(
+                                        text = item.unreadMessageCount.toString(),
+                                        fontFamily = rubikFamily,
+                                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                        color = if(index != selected.value) MaterialTheme.appColors.material.surface else AppConstants.SELECTED_COLOR
                                     )
-                            ) {
-                                AppText(
-                                    text = item.unreadMessageCount.toString(),
-                                    fontFamily = rubikFamily,
-                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                                    color = if(index != selected.value) MaterialTheme.appColors.material.surface else AppConstants.SELECTED_COLOR
-                                )
-                            }
+                                }}
                         }
 
                     }

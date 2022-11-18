@@ -15,7 +15,7 @@ import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.domain.repository.IChatRepository
 import com.allballapp.android.domain.repository.IImageUploadRepo
 import com.allballapp.android.domain.repository.ITeamRepository
-import com.allballapp.android.ui.features.components.findCommon
+import com.allballapp.android.ui.features.components.getCommonElementsCount
 import com.allballapp.android.ui.utils.UiText
 import com.cometchat.pro.constants.CometChatConstants
 import com.cometchat.pro.core.CometChat
@@ -160,19 +160,18 @@ class ChatViewModel @Inject constructor(
                             teams.remove(team)
                             teams.add(0, team)
                         }
-                        teams.map {
-                                team->
+                        val mappedList = teams.map { orderedTeam ->
                             val mergedIds = mutableListOf<String>()
-                            val playerIds = team.players.map {
+                            val playerIds = orderedTeam.players.map {
                                 it._id
                             }
-                            val coachIds = team.coaches.map {
+                            val coachIds = orderedTeam.coaches.map {
                                 it._id
                             }
-                            val supportingStaffIds = team.supportingCastDetails.map {
+                            val supportingStaffIds = orderedTeam.supportingCastDetails.map {
                                 it._Id
                             }
-                            val groupId = team.teamChatGroups.map {
+                            val groupId = orderedTeam.teamChatGroups.map {
                                 it.groupId
                             }
                             mergedIds.addAll(playerIds)
@@ -180,14 +179,18 @@ class ChatViewModel @Inject constructor(
                             mergedIds.addAll(supportingStaffIds)
                             mergedIds.addAll(groupId)
 
-                            val commonCount = findCommon(mergedIds, listOf("11f22990-06e1-4812-83a8-08544dabe9fd"))
-                          team.copy(unreadMessageCount = commonCount)
+                            val commonCount =
+                                getCommonElementsCount(mergedIds, listOf("4b3f73da-8e1f-4741-a9f6-9897d3afe25c","c38528f0-e585-4531-95df-8300e6743d74"))
+
+                            Timber.i("findCommon--$commonCount ${orderedTeam.name}")
+
+                            orderedTeam.copy(unreadMessageCount = commonCount)
 
                         }
 
 
                         _chatUiState.value =
-                            _chatUiState.value.copy(teams = teams)
+                            _chatUiState.value.copy(teams = mappedList)
                         _chatChannel.send(ChatChannel.OnNewChatListingSuccess(teams))
 
                         /*Getting list of comet chat conversation*/
