@@ -62,40 +62,19 @@ fun TeamsChatScreen(
     }
     LaunchedEffect(key1 = selected.value, block = {
         vm.onEvent(ChatUIEvent.TeamSelectionChange(selected.value))
-//        vm.onEvent(ChatUIEvent.GetChatListing)
 
     })
     LaunchedEffect(key1 = Unit) {
         vm.onEvent(ChatUIEvent.ClearData)
     }
-
-    /*LaunchedEffect(key1 = refreshChatScreen) {
-        if (refreshChatScreen.isNotEmpty() && refreshChatScreen == true.toString()) {
-            if (state.teams.isNotEmpty() && selected.value > -1) {
-                addChatIds(state.teams[selected.value], onKeyChange = { newKey ->
-                    key.value = newKey
-                })
-            }
-        }
-    }*/
-    /* LaunchedEffect(key1 = Unit) {
-         vm.chatChannel.collect { uiEvent ->
-             when (uiEvent) {
-                 ChatChannel.OnNewChatListingSuccess -> {
-                     if (state.teams.isNotEmpty() && selected.value > -1) {
-                         addChatIds(state.teams[selected.value], onKeyChange = { newKey ->
-                             key.value = newKey
-                         })
-                     }
-                 }
-             }
-         }
-     }*/
+    LaunchedEffect(key1 = homeVm.state.value.unreadUsersGroupsIds) {
+        vm.onEvent(ChatUIEvent.RefreshChatListingAPI(homeVm.state.value.unreadUsersGroupsIds))
+    }
 
     LaunchedEffect(key1 = Unit) {
         vm.chatChannel.collect { chatChannel ->
             when (chatChannel) {
-               is ChatChannel.OnNewChatListingSuccess -> {
+                is ChatChannel.OnNewChatListingSuccess -> {
                     Timber.i("OnNewChatListingSuccess")
                     if (chatChannel.teams.isNotEmpty() && selected.value > -1) {
                         addChatIds(chatChannel.teams[selected.value], onKeyChange = { newKey ->

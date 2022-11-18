@@ -12,6 +12,7 @@ import com.allballapp.android.R
 import com.allballapp.android.common.ResultWrapper
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
+import com.allballapp.android.data.response.team.Team
 import com.allballapp.android.domain.repository.IChatRepository
 import com.allballapp.android.domain.repository.IImageUploadRepo
 import com.allballapp.android.domain.repository.ITeamRepository
@@ -100,11 +101,22 @@ class ChatViewModel @Inject constructor(
                     getChatListings()
                 }
             }
+
+            is ChatUIEvent.RefreshChatListingAPI -> {
+                viewModelScope.launch {
+                    getChatListings(event.unreadUserGroupIds)
+                }
+            }
+
             ChatUIEvent.ClearData -> {
                 _chatUiState.value =
-                    _chatUiState.value.copy(selectedPlayersForNewGroup = mutableStateListOf())
-                _chatUiState.value =
-                    _chatUiState.value.copy(selectedCoachesForNewGroup = mutableStateListOf())
+                    _chatUiState.value.copy(
+                        selectedPlayersForNewGroup = mutableStateListOf(),
+                        selectedCoachesForNewGroup = mutableStateListOf(),
+                        searchText = "",
+                        groupName = ""
+                    )
+
             }
 
 
@@ -122,9 +134,7 @@ class ChatViewModel @Inject constructor(
     }
 
 
-
-
-    private suspend fun getChatListings() {
+    private suspend fun getChatListings(unreadUserGroupIds: List<String> = listOf()) {
         _chatUiState.value = _chatUiState.value.copy(isLoading = true)
         val response = chatRepo.getAllChats(userId = UserStorage.userId)
         _chatUiState.value = _chatUiState.value.copy(isLoading = false)
@@ -160,37 +170,49 @@ class ChatViewModel @Inject constructor(
                             teams.remove(team)
                             teams.add(0, team)
                         }
-                        val mappedList = teams.map { orderedTeam ->
-                            val mergedIds = mutableListOf<String>()
-                            val playerIds = orderedTeam.players.map {
-                                it._id
-                            }
-                            val coachIds = orderedTeam.coaches.map {
-                                it._id
-                            }
-                            val supportingStaffIds = orderedTeam.supportingCastDetails.map {
-                                it._Id
-                            }
-                            val groupId = orderedTeam.teamChatGroups.map {
-                                it.groupId
-                            }
-                            mergedIds.addAll(playerIds)
-                            mergedIds.addAll(coachIds)
-                            mergedIds.addAll(supportingStaffIds)
-                            mergedIds.addAll(groupId)
 
-                            val commonCount =
-                                getCommonElementsCount(mergedIds, listOf("4b3f73da-8e1f-4741-a9f6-9897d3afe25c","c38528f0-e585-4531-95df-8300e6743d74"))
+                        var mappedList = listOf<Team>()
 
-                            Timber.i("findCommon--$commonCount ${orderedTeam.name}")
+                        if (unreadUserGroupIds.isNotEmpty()) {
+                            mappedList = teams.map { orderedTeam ->
+                                val mergedIds = mutableListOf<String>()
+                                val playerIds = orderedTeam.players.map {
+                                    it._id
+                                }
+                                val coachIds = orderedTeam.coaches.map {
+                                    it._id
+                                }
+                                val supportingStaffIds = orderedTeam.supportingCastDetails.map {
+                                    it._Id
+                                }
+                                val groupId = orderedTeam.teamChatGroups.map {
+                                    it.groupId
+                                }
+                                mergedIds.addAll(playerIds)
+                                mergedIds.addAll(coachIds)
+                                mergedIds.addAll(supportingStaffIds)
+                                mergedIds.addAll(groupId)
 
-                            orderedTeam.copy(unreadMessageCount = commonCount)
+                                val commonCount =
+                                    getCommonElementsCount(
+                                        mergedIds,
+                                        unreadUserGroupIds
+                                    )
 
+                                Timber.i("findCommon--$commonCount ${orderedTeam.name}")
+
+                                orderedTeam.copy(unreadMessageCount = commonCount)
+
+                            }
                         }
 
 
                         _chatUiState.value =
-                            _chatUiState.value.copy(teams = mappedList)
+                            _chatUiState.value.copy(
+                                teams = if (unreadUserGroupIds.isNotEmpty()) {
+                                    mappedList
+                                } else teams
+                            )
                         _chatChannel.send(ChatChannel.OnNewChatListingSuccess(teams))
 
                         /*Getting list of comet chat conversation*/
