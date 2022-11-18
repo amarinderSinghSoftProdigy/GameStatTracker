@@ -22,11 +22,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -35,12 +38,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.allballapp.android.R
 import com.allballapp.android.common.*
 import com.allballapp.android.data.request.Address
 import com.allballapp.android.ui.features.components.*
+import com.allballapp.android.ui.features.sign_up.SignUpUIEvent
 import com.allballapp.android.ui.theme.appColors
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
@@ -202,6 +208,18 @@ fun PracticeScreen(
     val mHour = mCalendar[Calendar.HOUR_OF_DAY]
     val mMinute = mCalendar[Calendar.MINUTE]
     val formatter = SimpleDateFormat("dd/M/yyyy h:mm")
+
+    val dummyList = arrayListOf(
+        "5 Minutes Before",
+        "10 Minutes Before",
+        "15 Minutes Before",
+        "30 Minutes Before",
+        "45 Minutes Before",
+        "1 Hour Before"
+    )
+    var textFieldSize by remember { mutableStateOf(Size.Zero) }
+    var expanded by remember { mutableStateOf(false) }
+
     var arrivalTime by remember {
         mutableStateOf("")
     }
@@ -226,7 +244,7 @@ fun PracticeScreen(
 
     val mArrivalPickerDialog = TimePickerDialog(
         context, { _, mHour: Int, mMinute: Int ->
-            if (checkTimings(str, "$mHour:${mMinute+1}")) {
+            if (checkTimings(str, "$mHour:${mMinute + 1}")) {
                 arrivalTime = "$mHour:$mMinute"
                 vm.onEvent(NewEvEvent.OnArrivalTimeChanged(get24HoursTimeWithAMPM("$mHour:$mMinute")))
             } else {
@@ -237,9 +255,7 @@ fun PracticeScreen(
 
     val mStartTimePickerDialog = TimePickerDialog(
         context, { _, mHour: Int, mMinute: Int ->
-            if (arrivalTime.isEmpty()) {
-                vm.onEvent(NewEvEvent.ShowToast("Enter Arrival Time"))
-            } else if (checkTimings(arrivalTime, "$mHour:$mMinute")) {
+            if (checkTimings(str, "$mHour:${mMinute + 1}")) {
                 vm.onEvent(NewEvEvent.OnStartTimeChanged(get24HoursTimeWithAMPM("$mHour:$mMinute")))
                 startTime = "$mHour:$mMinute"
             } else {
@@ -356,18 +372,158 @@ fun PracticeScreen(
 
             Divider(color = MaterialTheme.appColors.material.primary)
 
-            PracticeItem(title = stringResource(R.string.arrival_time),
-                label = stringResource(id = R.string.select_arrival_time),
-                icon = painterResource(id = R.drawable.ic_date),
-                selectedValue = state.selectedArrivalTime,
-                onSelectedValueChange = {
+            /* PracticeItem(title = stringResource(R.string.arrival_time),
+                 label = stringResource(id = R.string.select_arrival_time),
+                 icon = painterResource(id = R.drawable.ic_date),
+                 selectedValue = state.selectedArrivalTime,
+                 onSelectedValueChange = {
 
-                },
-                OnClick = {
-                    mArrivalPickerDialog.show()
-                },
-                onNotificationChange = {})
+                 },
+                 OnClick = {
+                     mArrivalPickerDialog.show()
+                 },
+                 onNotificationChange = {})*/
 
+            Column(
+                modifier = Modifier
+                    .height(dimensionResource(id = R.dimen.size_56dp))
+                    .fillMaxWidth()
+                    .background(color = Color.White),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .onGloballyPositioned {
+                            textFieldSize = it.size.toSize()
+                        }
+                        .clickable {
+                            expanded = !expanded
+                        }
+                        .padding(
+                            start = dimensionResource(id = R.dimen.size_16dp),
+                            end = dimensionResource(
+                                id = R.dimen.size_14dp
+                            )
+                        ),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    AppText(
+                        text = stringResource(id = R.string.arrival_time),
+                        style = MaterialTheme.typography.h6,
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    )
+                    Row(verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End,
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(start = dimensionResource(id = R.dimen.size_16dp))
+                    )
+                    {
+
+                        if (state.selectedArrivalTime.isEmpty()) {
+                            AppText(
+                                text = stringResource(id = R.string.select_arrival_time),
+                                style = MaterialTheme.typography.h4,
+                                color = MaterialTheme.appColors.textField.label,
+                            )
+                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_14dp)))
+
+                        } else {
+                            AppText(
+                                text = state.selectedArrivalTime,
+                                style = MaterialTheme.typography.h5,
+                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                fontWeight = FontWeight.W500
+                            )
+                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_14dp)))
+                        }
+
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_date),
+                            contentDescription = "",
+                            modifier = Modifier.size(
+                                dimensionResource(id = R.dimen.size_14dp)
+                            ),
+                            colorFilter = ColorFilter.tint(color = MaterialTheme.appColors.material.primaryVariant)
+                        )
+                    }
+                }
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier
+                        .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+                        .background(MaterialTheme.colors.background)
+                ) {
+                    dummyList.forEach { label ->
+                        DropdownMenuItem(onClick = {
+                            vm.onEvent(NewEvEvent.OnArrivalTimeChanged(label))
+                            expanded = false
+                        }) {
+                            Text(text = label, textAlign = TextAlign.Center)
+                        }
+                    }
+                }
+            }
+
+
+            /* Column()
+             {
+                 EditFields
+                     state.selectedArrivalTime,
+                     onValueChange = {
+                         vm.onEvent(NewEvEvent.OnEndTimeChanged(it))
+                     },
+                     stringResource(id = R.string.arrival_time),
+                     KeyboardOptions(
+                         imeAction = ImeAction.Next,
+                         keyboardType = KeyboardType.Text
+                     ),
+                     placeholder = {
+                         AppText(
+                             text = stringResource(id = R.string.select_arrival_time),
+                             style = MaterialTheme.typography.h4,
+                             color = MaterialTheme.appColors.textField.label,
+                             textAlign = TextAlign.End,
+                             modifier = Modifier.fillMaxWidth()
+                         )
+                     },
+                     modifier = Modifier
+                         .onGloballyPositioned {
+                             textFieldSize = it.size.toSize()
+                         },
+                     trailingIcon = {
+                         Image(
+                             painter = painterResource(id = R.drawable.ic_date),
+                             contentDescription = "",
+                             modifier = Modifier.size(
+                                 dimensionResource(id = R.dimen.size_14dp)
+                             ),
+                             colorFilter = ColorFilter.tint(color = MaterialTheme.appColors.material.primaryVariant)
+                         )
+                     },
+                     enabled = true
+                 )
+                 DropdownMenu(
+                     expanded = expanded,
+                     onDismissRequest = { expanded = false },
+                     modifier = Modifier
+                         .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+                         .background(MaterialTheme.colors.background)
+                 ) {
+                     dummyList.forEach { label ->
+                         DropdownMenuItem(onClick = {
+                             vm.onEvent(NewEvEvent.OnEndTimeChanged(label))
+                             expanded = false
+                         }) {
+                             Text(text = label, textAlign = TextAlign.Center)
+                         }
+                     }
+                 }
+             }
+ */
             Divider(color = MaterialTheme.appColors.material.primary)
 
             PracticeItem(title = stringResource(R.string.start_time),
@@ -547,7 +703,8 @@ fun PracticeItem(
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = dimensionResource(id = R.dimen.size_16dp))
-                    .clickable { OnClick() }) {
+                    .clickable { OnClick() })
+            {
                 if (!onlyIcon) {
                     if (!isEditableField) {
                         if (selectedValue.isEmpty()) {
