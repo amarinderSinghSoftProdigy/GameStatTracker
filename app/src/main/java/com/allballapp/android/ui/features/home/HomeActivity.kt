@@ -1238,10 +1238,13 @@ fun NavControllerComposable(
         ) {
             homeViewModel.setTopBar(
                 TopBarData(
-                    label = stringResource(id = R.string.events_label),
+                    label = stringResource(id = R.string.leagues),
                     topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
+            remember {
+                eventViewModel.onEvent(EvEvents.ClearListLeague)
+            }
             val type = it.arguments?.getString("type") ?:""
             MyLeagueScreen(type = type , eventViewModel) {
                 eventMainTitle = it

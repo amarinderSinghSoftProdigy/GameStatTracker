@@ -1180,7 +1180,8 @@ fun SelectGuardianRoleDialog(
     onChildNotListedCLick: () -> Unit,
     dontHaveChildClick: () -> Unit,
     onSelectionChange: (String) -> Unit,
-    selected: ArrayList<String>,
+    selected: String?,
+    //selected: ArrayList<String>,
     onDismiss: () -> Unit,
     guardianList: List<PlayerDetails>,
     onValueSelected: (PlayerDetails) -> Unit
@@ -1238,7 +1239,7 @@ fun SelectGuardianRoleDialog(
                                                 onSelectionChange(guardian)
                                                 onValueSelected(member)
                                             },
-                                            isSelected = selected.contains(member.memberDetails.id),
+                                            isSelected = selected == member.id,
                                             id = member.id
                                         )
                                     }
@@ -1294,13 +1295,13 @@ fun SelectGuardianRoleDialog(
                             DialogButton(
                                 text = stringResource(R.string.dialog_button_confirm),
                                 onClick = {
-                                    if (selected.isNotEmpty())
+                                    if ((selected ?: "").isNotEmpty())
                                         onConfirmClick.invoke()
                                 },
                                 modifier = Modifier
                                     .weight(1f),
                                 border = ButtonDefaults.outlinedBorder,
-                                enabled = selected.isNotEmpty(),
+                                enabled =  (selected ?: "").isNotEmpty(),
                                 onlyBorder = false,
                             )
                         }

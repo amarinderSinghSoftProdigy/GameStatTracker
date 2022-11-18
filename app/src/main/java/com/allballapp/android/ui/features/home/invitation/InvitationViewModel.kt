@@ -111,14 +111,15 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
             }
 
             is InvitationEvent.OnValuesSelected -> {
-                val list = invitationState.value.selectedPlayerIds
+                /*//COmmented the code for multiple invitation
+                *   val list = invitationState.value.selectedPlayerIds
                 if (list.contains(event.playerDetails.memberDetails.id)) {
                     list.remove(event.playerDetails.memberDetails.id)
                 } else {
                     list.add(event.playerDetails.memberDetails.id)
-                }
+                }*/
                 invitationState.value = invitationState.value.copy(
-                    selectedPlayerIds = list,
+                    selectedPlayerId = event.playerDetails.memberDetails!!.id,
                     selectedGender = event.playerDetails.memberDetails.gender
                 )
             }
@@ -129,7 +130,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
                         invitationId = invitationState.value.selectedInvitation.id,
                         role = invitationState.value.selectedRoleKey,
                         guardianGender = event.gender ?: "",
-                        playerId = invitationState.value.selectedPlayerIds
+                        playerId = invitationState.value.selectedPlayerId
                     )
                     invitationState.value = invitationState.value.copy(selectedRoleKey = "")
                 }
@@ -198,7 +199,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
     private suspend fun acceptTeamInvitation(
         invitationId: String,
         role: String,
-        playerId: ArrayList<String>,
+        playerId: String,
         guardianGender: String
     ) {
         Timber.i("acceptTeamInvitation-- id--$invitationId role--$role playerId--$playerId guardianGender--$guardianGender")

@@ -261,7 +261,8 @@ fun TeamSetupScreenUpdated(
                 vm.onEvent(TeamSetupUIEventUpdated.MoveBack(true))
             },
             onSelectionChange = { inviteVm.onEvent(InvitationEvent.OnGuardianClick(guardian = it)) },
-            selected = inviteState.selectedPlayerIds,
+            selected = inviteState.selectedGuardian,
+            //selected = inviteState.selectedPlayerIds,
             guardianList = if (state.role != UserType.PLAYER.key)
                 inviteState.playerDetails.filter { member -> member.role == UserType.PLAYER.key }
             else inviteState.playerDetails.filter { member -> member.role != UserType.PLAYER.key },
@@ -417,7 +418,7 @@ fun TeamSetupScreenUpdated(
                             name = swapUser.firstName,
                             mobileNumber = swapUser._Id,
                             role = roleKey.value,
-                            profilesSelected = "true"
+                            //profilesSelected = "true"
                         )
                     )
                 )

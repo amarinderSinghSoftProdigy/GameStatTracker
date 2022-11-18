@@ -33,6 +33,7 @@ sealed class EvEvents {
     data class RegisterCash(val request: String) : EvEvents()
     object ClearRegister : EvEvents()
     object ClearList : EvEvents()
+    object ClearListLeague : EvEvents()
     object ClearOpportunities : EvEvents()
     data class ShowToast(val message: String) : EvEvents()
     data class OnDeclineConfirmClick(val invitation: EventsResponse) : EvEvents()

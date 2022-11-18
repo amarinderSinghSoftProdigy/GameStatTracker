@@ -17,7 +17,6 @@ import com.allballapp.android.data.request.CreateTeamRequest
 import com.allballapp.android.data.request.Location
 import com.allballapp.android.data.request.Members
 import com.allballapp.android.data.request.UpdateTeamRequest
-import com.allballapp.android.data.response.UserRoles
 import com.allballapp.android.data.response.team.Player
 import com.allballapp.android.domain.repository.IImageUploadRepo
 import com.allballapp.android.domain.repository.ITeamRepository
@@ -281,7 +280,8 @@ class SetupTeamViewModelUpdated @Inject constructor(
 
             }
             is TeamSetupUIEventUpdated.AddInviteTeamMembers -> {
-                _teamSetupUiState.value =
+                //Commented the multiple invite option
+                /*_teamSetupUiState.value =
                     _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList
                         .apply {
                             this[event.index].name = event.member?.firstName ?: ""
@@ -298,7 +298,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
                         profileSelected = false,
                         member = null
                     )
-                }
+                }*/
             }
 
             is TeamSetupUIEventUpdated.OnInviteTeamMembers -> {
@@ -495,7 +495,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
                     name = item.name,
                     mobileNumber = item.id.ifEmpty { "${item.countryCode}${item.contact}" },
                     role = item.role.key,
-                    profilesSelected = item.profileSelected
+                    //profilesSelected = item.profileSelected
                 )
             }
         }

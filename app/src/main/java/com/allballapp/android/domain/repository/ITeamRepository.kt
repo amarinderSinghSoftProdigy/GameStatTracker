@@ -61,7 +61,7 @@ interface ITeamRepository {
     suspend fun acceptTeamInvitation(
         invitationId: String,
         role: String,
-        playerId: ArrayList<String>,
+        playerId: String,//ArrayList<String>,
         guardianGender: String,
     ): ResultWrapper<BaseResponse<Any>>
 

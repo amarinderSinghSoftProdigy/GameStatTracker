@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
@@ -25,6 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.togitech.ccp.R
 import com.togitech.ccp.data.CountryData
+import com.togitech.ccp.transformation.PhoneNumberTransformation
 
 @Composable
 fun TogiCountryCodePicker(
@@ -118,7 +118,7 @@ fun TogiCountryCodePicker(
                             cursorColor = cursorColor
                         ),
                         singleLine = true,
-                        visualTransformation = VisualTransformation.None,
+                        visualTransformation = PhoneNumberTransformation(defaultCountry.countryCode.uppercase()),
                         /* MaskTransformation(),*///PhoneNumberTransformation(defaultCountry.countryCode.uppercase()),
                         placeholder = placeHolder,
                         keyboardOptions = KeyboardOptions.Default.copy(
