@@ -74,6 +74,9 @@ fun InvitationScreen(
     val roleKey = rememberSaveable {
         mutableStateOf("")
     }
+    val playerName = rememberSaveable {
+        mutableStateOf("")
+    }
 
     if (vmSetupTeam.teamSetupUiState.value.isLoading) {
         CommonProgressBar()
@@ -202,6 +205,7 @@ fun InvitationScreen(
                 state.playerDetails.filter { member -> member.role == UserType.PLAYER.key }
             else state.playerDetails.filter { member -> member.role != UserType.PLAYER.key },
             onValueSelected = {
+                playerName.value = it.memberDetails.name
                 vm.onEvent(InvitationEvent.OnValuesSelected(it))
             },
             onDismiss = {
@@ -212,7 +216,6 @@ fun InvitationScreen(
                 vm.onEvent(InvitationEvent.OnAddPlayerDialogClick(true))
             },
             dontHaveChildClick = {
-                showNoMessage.value = true
                 vm.onEvent(InvitationEvent.ConfirmGuardianWithoutChildAlert(true))
             }
         )
@@ -392,7 +395,7 @@ fun InvitationScreen(
             },
             teamLogo = BuildConfig.IMAGE_SERVER + state.selectedInvitation.team.logo,
             teamName = state.selectedInvitation.team.name,
-            playerName = if (showNoMessage.value) stringResource(id = R.string.no_player) else if (teamState.inviteList.isNotEmpty()) teamState.inviteList[0].name else ""
+            playerName = if (showNoMessage.value) stringResource(id = R.string.no_player) else if (playerName.value.isNotEmpty()) playerName.value else if (teamState.inviteList.isNotEmpty()) teamState.inviteList[0].name else ""
         )
     }
 }

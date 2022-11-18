@@ -94,7 +94,9 @@ fun TeamSetupScreenUpdated(
     remember {
         inviteVm.onEvent(InvitationEvent.GetRoles)
     }
-
+    val playerName = rememberSaveable {
+        mutableStateOf("")
+    }
     val role = remember {
         mutableStateOf("")
     }
@@ -250,6 +252,7 @@ fun TeamSetupScreenUpdated(
             loading = state.isLoading,
             inviteState.selectedRoleKey,
             onBack = {
+                showNoMessage.value = true
                 inviteVm.onEvent(InvitationEvent.OnRoleDialogClick(false))
                 inviteVm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
                 vm.onEvent(TeamSetupUIEventUpdated.MoveBack(true))
@@ -267,6 +270,7 @@ fun TeamSetupScreenUpdated(
                 inviteState.playerDetails.filter { member -> member.role == UserType.PLAYER.key }
             else inviteState.playerDetails.filter { member -> member.role != UserType.PLAYER.key },
             onValueSelected = {
+                playerName.value = it.memberDetails.name
                 inviteVm.onEvent(InvitationEvent.OnValuesSelected(it))
             },
             onDismiss = {
@@ -435,13 +439,11 @@ fun TeamSetupScreenUpdated(
     if (inviteState.showPlayerAddedSuccessDialog) {
         InvitationSuccessfullySentDialog(
             onDismiss = {
-                showNoMessage.value = false
                 inviteVm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
                 vm.onEvent(TeamSetupUIEventUpdated.Clear)
             },
             onConfirmClick = {
                 inviteVm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
-                showNoMessage.value = false
                 homeVm.onEvent(HomeScreenEvent.HideSwap(false))
                 vm.onEvent(TeamSetupUIEventUpdated.Clear)
                 onNextClick(
@@ -449,15 +451,13 @@ fun TeamSetupScreenUpdated(
                         ""
                     }
                 )
-                inviteVm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
-
             },
             teamName = state.teamName,
             teamLogo = inviteState.selectedLogo.ifEmpty {
                 (state.teamImageUri ?: "").ifEmpty { "" }
             },
             playerName = if (showNoMessage.value) stringResource(id = R.string.no_player)
-            else inviteState.selectedPlayerName.ifEmpty { state.teamName.ifEmpty { "" } }
+            else if (playerName.value.isNotEmpty()) playerName.value else inviteState.selectedPlayerName.ifEmpty { "" }
         )
     }
 

@@ -14,6 +14,7 @@ import com.allballapp.android.data.response.Format
 import com.allballapp.android.data.response.GenderList
 import com.allballapp.android.domain.repository.IEventsRepository
 import com.allballapp.android.domain.repository.ITeamRepository
+import com.allballapp.android.ui.features.venue.VenueDetails
 import com.allballapp.android.ui.utils.CommonUtils
 import com.allballapp.android.ui.utils.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -156,6 +157,14 @@ class EventViewModel @Inject constructor(
 
     fun onEvent(event: EvEvents) {
         when (event) {
+            is EvEvents.ClearListEvents -> {
+                _state.value =
+                    _state.value.copy(
+                        currentEvents = arrayListOf(),
+                        pastEvents = arrayListOf(),
+                        upcomingAndGameData = arrayListOf()
+                    )
+            }
             is EvEvents.ClearList -> {
                 _state.value = _state.value.copy(opportunitiesList = emptyList())
             }
@@ -377,6 +386,7 @@ class EventViewModel @Inject constructor(
                 viewModelScope.launch { getTeamsByLeagueIdAllDivision(_state.value.eventId) }
             }
             is EvEvents.RefreshVenueDetailsById -> {
+                _state.value = _state.value.copy(venueDetails = VenueDetails())
                 viewModelScope.launch { getVenueDetailsById(event.venueId) }
             }
 
@@ -439,9 +449,14 @@ class EventViewModel @Inject constructor(
             }
 
             is EvEvents.PaymentOption -> {
-                _state.value = _state.value.copy(
-                    registerRequest = _state.value.registerRequest.copy(paymentOption = event.paymentOption)
-                )
+                if (event.paymentOption != _state.value.registerRequest.paymentOption) {
+                    _state.value = _state.value.copy(
+                        registerRequest = _state.value.registerRequest.copy(
+                            paymentOption = event.paymentOption,
+                            payment = ""
+                        )
+                    )
+                }
             }
             else -> {}
         }
@@ -809,7 +824,7 @@ class EventViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-               // _state.value = _state.value.copy(opportunitiesList = mutableListOf())
+                // _state.value = _state.value.copy(opportunitiesList = mutableListOf())
                 /*  _channel.send(
               EventChannel.ShowToast(
                   UiText.DynamicString(
@@ -939,6 +954,7 @@ class EventViewModel @Inject constructor(
         _state.value = _state.value.copy(isLoading = true)
         val userResponse = teamRepo.getMyLeagues(type = type, UserStorage.teamId)
         _state.value = _state.value.copy(isLoading = false)
+
 
         when (userResponse) {
             is ResultWrapper.GenericError -> {

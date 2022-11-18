@@ -38,9 +38,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.allballapp.android.R
-import com.allballapp.android.common.*
+import com.allballapp.android.common.apiToUIDateFormat2
+import com.allballapp.android.common.checkTimings
+import com.allballapp.android.common.get24HoursTimeWithAMPM
+import com.allballapp.android.common.validEventName
 import com.allballapp.android.data.request.Address
-import com.allballapp.android.ui.features.components.*
+import com.allballapp.android.ui.features.components.AppButton
+import com.allballapp.android.ui.features.components.AppOutlineTextField
+import com.allballapp.android.ui.features.components.AppText
+import com.allballapp.android.ui.features.components.CommonProgressBar
 import com.allballapp.android.ui.theme.appColors
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
@@ -263,17 +269,6 @@ fun PracticeScreen(
         vm.onEvent(NewEvEvent.OnLocationVenueChange(venue))
     })
 
-    LaunchedEffect(Unit) {
-        vm.channel.collect { uiEvent ->
-            when (uiEvent) {
-                is NewEventChannel.ShowToast -> {
-                    Toast.makeText(
-                        context, uiEvent.message.asString(context), Toast.LENGTH_LONG
-                    ).show()
-                }
-            }
-        }
-    }
     val placePicker =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.StartActivityForResult(),
             onResult = { activityResult ->

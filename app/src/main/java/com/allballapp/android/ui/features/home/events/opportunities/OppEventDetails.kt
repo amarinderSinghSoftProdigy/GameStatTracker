@@ -58,9 +58,9 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
                 .height(dimensionResource(id = R.dimen.size_200dp))
                 .fillMaxWidth(),
             onError = {
-                PlaceholderRect(R.drawable.ic_team_placeholder)
+                PlaceholderRect(R.drawable.ic_events_placeholder)
             },
-            onLoading = { PlaceholderRect(R.drawable.ic_team_placeholder) },
+            onLoading = { PlaceholderRect(R.drawable.ic_events_placeholder) },
             isCrossFadeEnabled = false,
             contentScale = ContentScale.Crop
         )
@@ -159,8 +159,8 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
                             LatLng(0.0, 0.0)
                         } else {
                             LatLng(
-                                state.opportunitiesDetail.location.coordinates[0],
-                                state.opportunitiesDetail.location.coordinates[1]
+                                state.opportunitiesDetail.location.coordinates[1],
+                                state.opportunitiesDetail.location.coordinates[0]
                             )
                         }
                     )
