@@ -398,11 +398,24 @@ class HomeViewModel @Inject constructor(
 
                 override fun onSuccess(stringHashMapHashMap: HashMap<String?, HashMap<String?, Int?>?>?) {
 
+                    val users = stringHashMapHashMap?.get("user")?.keys
+                    val groups = stringHashMapHashMap?.get("group")?.keys
+
                     val count = (stringHashMapHashMap?.get("user")?.keys?.size ?: 0).plus(
                         stringHashMapHashMap?.get("group")?.keys?.size ?: 0
                     )
                     _state.value =
                         _state.value.copy(unReadMessageCount = count)
+
+
+                    val lstUser = (users?.toMutableList()?.filterNotNull()) ?: listOf()
+                    val lstGroups = (groups?.toMutableList()?.filterNotNull()) ?: listOf()
+
+                    val mergedUnreadIds = lstUser + lstGroups
+
+                    _state.value =
+                        _state.value.copy(unreadUsersGroupsIds = mergedUnreadIds)
+
                     Timber.i(
                         "CometChatUI onSuccess: unread count $count -- stringHashMapHashMap$stringHashMapHashMap"
                     )

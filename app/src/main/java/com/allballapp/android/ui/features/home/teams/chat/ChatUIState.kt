@@ -9,7 +9,7 @@ import com.cometchat.pro.models.Conversation
 data class ChatUIState(
     val teamIndex: Int = 0,
     val isLoading: Boolean = false,
-    val teams: ArrayList<Team> = ArrayList(),
+    val teams: List<Team> = ArrayList(),
 
     /*New conversation states*/
     val searchText:String="",
