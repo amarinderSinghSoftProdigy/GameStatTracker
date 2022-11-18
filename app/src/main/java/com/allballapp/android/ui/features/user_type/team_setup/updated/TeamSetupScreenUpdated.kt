@@ -13,6 +13,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -26,6 +27,9 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -529,6 +533,10 @@ fun TeamSetupScreenUpdated(
                                 cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
 
                             ),
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Text,
+                                imeAction = ImeAction.Next,
+                            ),
                             isError = !validTeamName(state.teamName) && state.teamName.isNotEmpty(),
                             errorMessage = stringResource(id = R.string.valid_team_name)
                         )
@@ -553,6 +561,11 @@ fun TeamSetupScreenUpdated(
                                 unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
                                 cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
 
+                            ),
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Text,
+                                imeAction = ImeAction.Next,
+                                capitalization = KeyboardCapitalization.Sentences
                             ),
                             isError = !validTeamName(state.teamNameOnJerseys) && state.teamNameOnJerseys.isNotEmpty(),
                             errorMessage = stringResource(id = R.string.valid_team_name)
@@ -583,6 +596,11 @@ fun TeamSetupScreenUpdated(
                                 unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
                                 cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
 
+                            ),
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Text,
+                                imeAction = ImeAction.Next,
+                                capitalization = KeyboardCapitalization.Sentences
                             ),
                             isError = !validTeamName(state.teamNameOnTournaments) && state.teamNameOnTournaments.isNotEmpty(),
                             errorMessage = stringResource(id = R.string.valid_team_name)
