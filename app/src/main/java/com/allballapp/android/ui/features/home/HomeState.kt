@@ -32,5 +32,6 @@ data class HomeState(
     val swapUsers: List<SwapUser> = mutableListOf(),
     val homePageCoachModel: HomePageCoachModel = HomePageCoachModel(),
     val unReadMessageCount: Int = 0,
+    val unreadUsersGroupsIds: List<String> = arrayListOf(),
     val showNoInternetDialog: Boolean = false,
     )
