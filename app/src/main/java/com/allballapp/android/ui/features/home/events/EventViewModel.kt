@@ -582,7 +582,6 @@ class EventViewModel @Inject constructor(
                                 )
                             )
                         )
-
                     }
                 }
             }
