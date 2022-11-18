@@ -38,21 +38,21 @@ interface IEventsRepository {
         page: Int = 1,
         limit: Int = 50,
         sort: String = "",
-        leagueId: String,
+        eventId: String,
         divisionId: String
     ): ResultWrapper<BaseResponse<ArrayList<TeamsByLeagueDivisionResponse>>>
 
-    suspend fun getTeamsByLeagueIdAllDivision(leagueId: String): ResultWrapper<BaseResponse<ArrayList<DivisionWiseTeamResponse>>>
+    suspend fun getTeamsByLeagueIdAllDivision(eventId: String): ResultWrapper<BaseResponse<ArrayList<DivisionWiseTeamResponse>>>
 
     suspend fun getAllTeamsStandingByLeaguedAndDivision(
         page: Int = 1,
         limit: Int = 50,
         sort: String = "",
-        leagueId: String,
+        eventId: String,
         divisionId: String
     ): ResultWrapper<BaseResponse<StandingByLeagueAndDivisionData>>
 
-    suspend fun getVenueDetailsById(venueId: String): ResultWrapper<BaseResponse<VenueDetails>>
+    suspend fun getVenueDetailsById(venueId: String,  eventId: String): ResultWrapper<BaseResponse<VenueDetails>>
 
     suspend fun getEventScheduleDetails(eventId: String): ResultWrapper<BaseResponse<List<ScheduleResponse>>>
 

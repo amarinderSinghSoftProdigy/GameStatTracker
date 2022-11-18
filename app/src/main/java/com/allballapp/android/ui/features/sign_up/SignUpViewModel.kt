@@ -844,13 +844,13 @@ class SignUpViewModel @Inject constructor(
                             errorMessage = verifyResponseResponse.message,
                             isLoading = false
                         )
-                    /*_signUpChannel.send(
+                    _signUpChannel.send(
                         SignUpChannel.ShowToast(
                             UiText.DynamicString(
                                 verifyResponseResponse.message
                             )
                         )
-                    )*/
+                    )
                 }
             }
         }

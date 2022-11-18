@@ -16,6 +16,7 @@ import com.allballapp.android.ui.features.components.UserType
 import com.allballapp.android.ui.features.components.getRoleList
 import com.allballapp.android.ui.features.home.events.FilterPreference
 import com.allballapp.android.ui.features.home.events.Participation
+import com.allballapp.android.ui.features.user_type.team_setup.updated.InviteObject
 import com.cometchat.pro.constants.CometChatConstants
 import com.cometchat.pro.core.Call
 import com.cometchat.pro.core.CometChat
@@ -357,6 +358,24 @@ class CommonUtils {
 
         fun isLoggedInUser(user: User): Boolean {
             return user.uid == CometChat.getLoggedInUser().uid
+        }
+
+        fun getCheck(phone: String, list: List<InviteObject>): String {
+            list.forEach {
+                if (phone == it.countryCode + it.contact) {
+                    return it.role.key
+                }
+            }
+            return ""
+        }
+
+        fun getIndex(phone: String, list: List<InviteObject>): Int {
+            list.forEachIndexed { index, item ->
+                if (phone == item.countryCode + item.contact) {
+                    return index
+                }
+            }
+            return -1
         }
 
     }

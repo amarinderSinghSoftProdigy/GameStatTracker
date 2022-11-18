@@ -892,7 +892,7 @@ fun SelectInvitationRoleDialog(
                 .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
             onDismissRequest = {
 //                onDismiss
-                               },
+            },
             buttons = {
                 Column(
                     modifier = Modifier
@@ -1181,6 +1181,7 @@ fun SelectGuardianRoleDialog(
     dontHaveChildClick: () -> Unit,
     onSelectionChange: (String) -> Unit,
     selected: String?,
+    //selected: ArrayList<String>,
     onDismiss: () -> Unit,
     guardianList: List<PlayerDetails>,
     onValueSelected: (PlayerDetails) -> Unit
@@ -1300,13 +1301,16 @@ fun SelectGuardianRoleDialog(
                                 modifier = Modifier
                                     .weight(1f),
                                 border = ButtonDefaults.outlinedBorder,
-                                enabled = (selected ?: "").isNotEmpty(),
+                                enabled =  (selected ?: "").isNotEmpty(),
                                 onlyBorder = false,
                             )
                         }
                     }
                     if (loading) {
-                        CommonProgressBar()
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center),
+                            color = MaterialTheme.appColors.material.primaryVariant
+                        )
                     }
                 }
 
@@ -3256,6 +3260,61 @@ fun PaymentPickerDialog(
                             )
                         }
                     }
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun ShowImageUploaded(
+    onDismiss: () -> Unit,
+    image: String
+) {
+
+    BallerAppMainTheme {
+        AlertDialog(
+            modifier = Modifier
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+            onDismissRequest = {
+                /*onDismiss.invoke()*/
+            },
+            buttons = {
+                Column(
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(
+                            all = dimensionResource(
+                                id = R.dimen.size_16dp
+                            )
+                        ),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_close_color_picker),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(dimensionResource(id = R.dimen.size_12dp))
+                                .clickable {
+                                    onDismiss.invoke()
+                                }
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
+
+                    CoilImage(
+                        src = com.allballapp.android.BuildConfig.IMAGE_SERVER + image,
+                        modifier = Modifier.size(dimensionResource(id = R.dimen.size_300dp)),
+                        isCrossFadeEnabled = false,
+                        onLoading = { PlaceholderRect(R.drawable.ic_events_placeholder) },
+                        onError = { PlaceholderRect(R.drawable.ic_events_placeholder) }
+                    )
                 }
             }
         )

@@ -184,7 +184,7 @@ fun HomeScreen(
                 {
                     onLeagueClick(it)
                 }, {
-                    onOpportunityClick(AppConstants.OPP_WORK)
+                    onOpportunityClick(it)
                 }, {
                     onTeamNameClick(it)
                 }, {
@@ -458,7 +458,7 @@ fun HomeScreen(
                             homeState.homePageCoachModel.myLeagues.toString(),
                             R.drawable.ic_leagues
                         ) {
-                            onLeagueClick("")
+                            onLeagueClick(AppConstants.MY_LEAGUE)
                         }
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
 
@@ -468,8 +468,8 @@ fun HomeScreen(
                             homeState.homePageCoachModel.allLeagues.toString(),
                             R.drawable.ic_leagues
                         ) {
-                            onOpportunityClick(AppConstants.ALL_LEAGUE)
-                            //onLeagueClick(AppConstants.ALL_LEAGUE)
+                            //onOpportunityClick(AppConstants.ALL_LEAGUE)
+                            onLeagueClick(AppConstants.ALL_LEAGUE)
                         }
 
                     }

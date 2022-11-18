@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
@@ -25,6 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.togitech.ccp.R
 import com.togitech.ccp.data.CountryData
+import com.togitech.ccp.transformation.PhoneNumberTransformation
 
 @Composable
 fun TogiCountryCodePicker(
@@ -53,7 +53,6 @@ fun TogiCountryCodePicker(
         mutableStateOf(
             TextFieldValue(
                 text = text,
-                selection = TextRange(0)
             )
         )
     }
@@ -107,22 +106,19 @@ fun TogiCountryCodePicker(
                         value = textFieldValue,
                         onValueChange = {
                             if (it.text.matches(pattern) || it.text.isEmpty()) {
-                                textFieldValueState = TextFieldValue(
-                                    text = it.text,
-                                    selection = TextRange(it.text.length)
-                                )
+                                textFieldValueState = it
                                 if (text != it.text) {
                                     onValueChange(it.text)
                                 }
                             }
                         },
                         colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = focusedBorderColor,
-                            unfocusedBorderColor = unfocusedBorderColor,
+                            focusedBorderColor = Color.Transparent,
+                            unfocusedBorderColor = Color.Transparent,
                             cursorColor = cursorColor
                         ),
                         singleLine = true,
-                        visualTransformation = MaskTransformation(),
+                        visualTransformation = PhoneNumberTransformation(defaultCountry.countryCode.uppercase()),
                         /* MaskTransformation(),*///PhoneNumberTransformation(defaultCountry.countryCode.uppercase()),
                         placeholder = placeHolder,
                         keyboardOptions = KeyboardOptions.Default.copy(

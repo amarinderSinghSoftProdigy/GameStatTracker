@@ -803,7 +803,7 @@ fun ProfileSetUpScreen(
                             /*check.value = false*/
                         },
                         enableState = !state.isLoading && validName(state.signUpData.firstName)
-                                && validName(state.signUpData.lastName) && state.signUpData.termsAndCondition && state.signUpData.privacyAndPolicy && !state.signUpData.email.isNullOrEmpty() && state.signUpData.email?.isValidEmail() == true
+                                && validName(state.signUpData.lastName) && state.signUpData.termsAndCondition && state.signUpData.privacyAndPolicy && state.signUpData.profileImageUri != null
                                 && if (isToAddProfile) true else validPhoneNumber(state.signUpData.phone)
                         /*&& check.value*/,
                         //&& (state.signUpData.email ?: "".isValidEmail()) != true

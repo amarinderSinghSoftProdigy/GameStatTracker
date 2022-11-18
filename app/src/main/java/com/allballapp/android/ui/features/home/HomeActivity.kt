@@ -390,7 +390,7 @@ fun NavControllerComposable(
                     navController.navigate(Route.MY_EVENTS)
                 },
                 onLeagueClick = {
-                    navController.navigate(Route.MY_LEAGUE)
+                    navController.navigate(Route.MY_LEAGUE + "/" + it)
                 },
                 onInvitationCLick = {
                     navController.navigate(Route.INVITATION_SCREEN)
@@ -1227,18 +1227,26 @@ fun NavControllerComposable(
             }
         }
 
-        composable(route = Route.MY_LEAGUE,
+        composable(route = Route.MY_LEAGUE + "/{type}",
+            arguments = listOf(
+                navArgument("type") {
+                    type = NavType.StringType
+                }),
             enterTransition = { slideInHorizont(animeDuration) },
             exitTransition = { exitTransition(animeDuration) },
             popExitTransition = { slideOutHorizont(animeDuration) }
         ) {
             homeViewModel.setTopBar(
                 TopBarData(
-                    label = stringResource(id = R.string.events_label),
+                    label = stringResource(id = R.string.leagues),
                     topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
-            MyLeagueScreen(type = "", eventViewModel) {
+            remember {
+                eventViewModel.onEvent(EvEvents.ClearListLeague)
+            }
+            val type = it.arguments?.getString("type") ?:""
+            MyLeagueScreen(type = type , eventViewModel) {
                 eventMainTitle = it
                 navController.navigate(Route.LEAGUE_DETAIL_SCREEN)
             }

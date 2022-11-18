@@ -51,8 +51,8 @@ fun MyLeagueScreen(
                 LazyColumn(Modifier.fillMaxWidth()) {
                     items(state.myLeaguesList) { item ->
                         LeagueItem(item) {
-                            vm.onEvent(EvEvents.GetLeagueId(item._id, item.event))
-                            moveToDetail(item.eventDetail.name)
+                            vm.onEvent(EvEvents.GetLeagueId(eventId = item._id))
+                            moveToDetail(item.name)
                         }
                     }
                 }
@@ -107,7 +107,7 @@ fun LeagueItem(league: MyLeagueResponse, OnNextClick: () -> Unit) {
                 ),
         ) {
             CoilImage(
-                src = com.allballapp.android.BuildConfig.IMAGE_SERVER + league.eventDetail.logo,
+                src = com.allballapp.android.BuildConfig.IMAGE_SERVER + league.logo,
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
                     .background(
@@ -135,7 +135,7 @@ fun LeagueItem(league: MyLeagueResponse, OnNextClick: () -> Unit) {
                 ) {
 
                     Text(
-                        text = league.eventDetail.name,
+                        text = league.name,
                         color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                         fontWeight = FontWeight.Bold,
@@ -175,7 +175,7 @@ fun LeagueItem(league: MyLeagueResponse, OnNextClick: () -> Unit) {
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_6dp)))
 
                 Text(
-                    text = league.eventDetail.zip + " " + league.eventDetail.city + ", " + league.eventDetail.state,
+                    text = league.zip + " " + league.city + ", " + league.state,
                     color = Color.Black,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                     fontWeight = FontWeight.W400,
@@ -190,8 +190,8 @@ fun LeagueItem(league: MyLeagueResponse, OnNextClick: () -> Unit) {
                 ) {
                     Text(
                         text = CommonUtils.formatDate(
-                            league.eventDetail.startDate,
-                            league.eventDetail.startDate
+                            league.startDate,
+                            league.endDate
                         ),
                         color = MaterialTheme.appColors.textField.label,
                         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
