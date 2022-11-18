@@ -208,30 +208,6 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
         }
         AppDivider()
-        if (UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
-            ) {
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
-                Text(
-                    text = stringResource(id = R.string.staff_details),
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                    fontWeight = FontWeight.Bold,
-                )
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-                Text(
-                    text = state.opportunitiesDetail.staffDetails,
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                )
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
-            }
-            AppDivider()
-        }
-
 
         Column(
             Modifier
@@ -239,46 +215,95 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
                 .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
         ) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
-            if (UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
-                Text(
-                    text = stringResource(id = R.string.question_contact),
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                    fontWeight = FontWeight.Bold,
-                )
-            } else {
-                Text(
-                    text = stringResource(id = R.string.contact_With_questions),
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                    fontWeight = FontWeight.Bold,
-                )
-            }
-
+            Text(
+                text = stringResource(id = R.string.days_play),
+                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                fontWeight = FontWeight.Bold,
+            )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-            Text(
-                text = state.opportunitiesDetail.userId?.name?.capitalize()?:"",
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-            )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-            Text(
-                text = state.opportunitiesDetail.userId?.email?:"",
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-            )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-            Text(
-                text = state.opportunitiesDetail.userId?.phone?:"",
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-            )
+            DaysPlay(state.opportunitiesDetail.potentialDaysOfPlay)
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
         }
 
         AppDivider()
 
-        if (UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
+        ) {
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
+            /* if (UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {*/
+            Text(
+                text = stringResource(id = R.string.question_contact),
+                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                fontWeight = FontWeight.Bold,
+            )
+            /* } else {
+                 Text(
+                     text = stringResource(id = R.string.contact_With_questions),
+                     color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                     fontWeight = FontWeight.Bold,
+                 )
+             }*/
+
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+            if (state.opportunitiesDetail.userId?.name?.isNotEmpty() == true) {
+                Text(
+                    text = state.opportunitiesDetail.userId?.name?.capitalize() ?: "",
+                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                )
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+            }
+
+            if (state.opportunitiesDetail.userId?.email?.isNotEmpty() == true) {
+                Text(
+                    text = state.opportunitiesDetail.userId?.email ?: "",
+                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                )
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+            }
+            if (state.opportunitiesDetail.userId?.phone?.isNotEmpty() == true) {
+                Text(
+                    text = state.opportunitiesDetail.userId?.phone ?: "",
+                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                )
+            }
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
+
+        }
+
+        AppDivider()
+
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
+        ) {
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
+            Text(
+                text = stringResource(id = R.string.staff_details),
+                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                fontWeight = FontWeight.Bold,
+            )
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+            Text(
+                text = state.opportunitiesDetail.staffDetails,
+                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+            )
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
+        }
+        AppDivider()
+
+        if(state.opportunitiesDetail.basePay.isNotEmpty()) {
             Column(
                 Modifier
                     .fillMaxSize()
@@ -299,7 +324,7 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
                     fontWeight = FontWeight.Bold,
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
-                if(state.opportunitiesDetail.basePay.isNotEmpty()) {
+                if (state.opportunitiesDetail.basePay.isNotEmpty()) {
                     RefereesLevels(state.opportunitiesDetail.basePay)
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
                 }
@@ -344,23 +369,6 @@ fun OppEventDetails(vm: EventViewModel, moveToRegistration: () -> Unit) {
             AppDivider()
         }
 
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
-        ) {
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
-            Text(
-                text = stringResource(id = R.string.days_play),
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                fontWeight = FontWeight.Bold,
-            )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-            DaysPlay(state.opportunitiesDetail.potentialDaysOfPlay)
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
-        }
-        AppDivider()
         Column(
             Modifier
                 .fillMaxSize()

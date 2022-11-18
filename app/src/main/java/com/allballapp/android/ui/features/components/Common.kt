@@ -1041,3 +1041,7 @@ fun Modifier.scrollOnFocus(
             }
     }
 }
+
+fun <T> getCommonElementsCount(first: List<T>, second: List<T>): Int{
+    return first.filter(second::contains).size
+}
