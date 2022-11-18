@@ -11,7 +11,6 @@ import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.ResultWrapper
 import com.allballapp.android.common.getFileFromUri
 import com.allballapp.android.common.getFileFromUriWithoutCompress
-import com.allballapp.android.ui.utils.UiText
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.data.request.*
@@ -20,6 +19,7 @@ import com.allballapp.android.domain.repository.IImageUploadRepo
 import com.allballapp.android.domain.repository.IUserRepository
 import com.allballapp.android.ui.features.components.UserType
 import com.allballapp.android.ui.utils.CommonUtils
+import com.allballapp.android.ui.utils.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -470,13 +470,13 @@ class ProfileViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-               /* _channel.send(
-                    ProfileChannel.ShowToast(
-                        UiText.DynamicString(
-                            leaveTeamResponse.message
-                        )
-                    )
-                )*/
+                /* _channel.send(
+                     ProfileChannel.ShowToast(
+                         UiText.DynamicString(
+                             leaveTeamResponse.message
+                         )
+                     )
+                 )*/
             }
             is ResultWrapper.Success -> {
                 leaveTeamResponse.value.let { response ->
@@ -562,13 +562,13 @@ class ProfileViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-               /* _channel.send(
-                    ProfileChannel.ShowToast(
-                        UiText.DynamicString(
-                            leaveTeamResponse.message
-                        )
-                    )
-                )*/
+                /* _channel.send(
+                     ProfileChannel.ShowToast(
+                         UiText.DynamicString(
+                             leaveTeamResponse.message
+                         )
+                     )
+                 )*/
             }
             is ResultWrapper.Success -> {
                 leaveTeamResponse.value.let { response ->
@@ -618,13 +618,13 @@ class ProfileViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-             /*   _channel.send(
-                    ProfileChannel.ShowToast(
-                        UiText.DynamicString(
-                            userResponse.message
-                        )
-                    )
-                )*/
+                /*   _channel.send(
+                       ProfileChannel.ShowToast(
+                           UiText.DynamicString(
+                               userResponse.message
+                           )
+                       )
+                   )*/
             }
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
@@ -735,13 +735,13 @@ class ProfileViewModel @Inject constructor(
             is ResultWrapper.NetworkError -> {
                 _state.value = _state.value.copy(isLoading = false)
 
-               /* _channel.send(
-                    ProfileChannel.ShowToast(
-                        UiText.DynamicString(
-                            userResponse.message
-                        )
-                    )
-                )*/
+                /* _channel.send(
+                     ProfileChannel.ShowToast(
+                         UiText.DynamicString(
+                             userResponse.message
+                         )
+                     )
+                 )*/
             }
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
@@ -839,12 +839,14 @@ class ProfileViewModel @Inject constructor(
             profileImage = _state.value.user.profileImage,
             firstName = _state.value.user.firstName,
             lastName = _state.value.user.lastName,
+            email = _state.value.user.email,
             birthdate = _state.value.user.birthdate ?: "",
-            phone = _state.value.user.phone,
+            //phone = _state.value.user.phone,
             gender = _state.value.user.gender,
             grade = _state.value.user.userDetails.grade,
 //            teamDetailsReq = teamDetailsReq,
             userDetailsReq = userDetailReq
+
         )
     }
 
@@ -919,13 +921,13 @@ class ProfileViewModel @Inject constructor(
             is ResultWrapper.NetworkError -> {
                 _state.value =
                     _state.value.copy(isLoading = false)
-               /* _channel.send(
-                    ProfileChannel.ShowToast(
-                        UiText.DynamicString(
-                            uploadLogoResponse.message
-                        )
-                    )
-                )*/
+                /* _channel.send(
+                     ProfileChannel.ShowToast(
+                         UiText.DynamicString(
+                             uploadLogoResponse.message
+                         )
+                     )
+                 )*/
             }
             is ResultWrapper.Success -> {
                 uploadLogoResponse.value.let { response ->
@@ -990,13 +992,13 @@ class ProfileViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-               /* _channel.send(
-                    ProfileChannel.ShowToast(
-                        UiText.DynamicString(
-                            searchResponse.message
-                        )
-                    )
-                )*/
+                /* _channel.send(
+                     ProfileChannel.ShowToast(
+                         UiText.DynamicString(
+                             searchResponse.message
+                         )
+                     )
+                 )*/
             }
             is ResultWrapper.Success -> {
                 searchResponse.value.let { response ->

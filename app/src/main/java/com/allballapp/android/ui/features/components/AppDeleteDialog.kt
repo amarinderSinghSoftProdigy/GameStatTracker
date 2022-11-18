@@ -1181,6 +1181,7 @@ fun SelectGuardianRoleDialog(
     dontHaveChildClick: () -> Unit,
     onSelectionChange: (String) -> Unit,
     selected: String?,
+    //selected: ArrayList<String>,
     onDismiss: () -> Unit,
     guardianList: List<PlayerDetails>,
     onValueSelected: (PlayerDetails) -> Unit
@@ -1300,13 +1301,16 @@ fun SelectGuardianRoleDialog(
                                 modifier = Modifier
                                     .weight(1f),
                                 border = ButtonDefaults.outlinedBorder,
-                                enabled = (selected ?: "").isNotEmpty(),
+                                enabled =  (selected ?: "").isNotEmpty(),
                                 onlyBorder = false,
                             )
                         }
                     }
                     if (loading) {
-                        CommonProgressBar()
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center),
+                            color = MaterialTheme.appColors.material.primaryVariant
+                        )
                     }
                 }
 

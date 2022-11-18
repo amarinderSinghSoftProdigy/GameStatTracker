@@ -45,6 +45,7 @@ import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
@@ -79,11 +80,10 @@ fun stringResourceByName(name: String): String {
     }.getOrNull()?.let { stringResource(id = it) } ?: name else ""
 }
 
-fun fromHex(color: String? = "0177C1"):Color {
+fun fromHex(color: String? = "0177C1"): Color {
     return try {
-        Color(android.graphics.Color.parseColor("#${getCustomColorCode(color?:"")}"))
-    }
-    catch (e:Exception){
+        Color(android.graphics.Color.parseColor("#${getCustomColorCode(color ?: "")}"))
+    } catch (e: Exception) {
         Color(android.graphics.Color.parseColor("#" + "0177C1"))
     }
 }
@@ -132,7 +132,9 @@ fun BoxScope.CommonTabView(
                 tint = Color.White
             )
         }
-    } else if (topBarData.topBar == TopBar.MY_EVENT) {
+    }
+    //Dots hidden from events screen.
+    /*else if (topBarData.topBar == TopBar.MY_EVENT) {
         Row(modifier = Modifier
             .align(Alignment.CenterStart)
             .clickable {
@@ -148,9 +150,10 @@ fun BoxScope.CommonTabView(
                 tint = Color.White
             )
         }
-    }
+    }*/
     val interactionSource = remember { MutableInteractionSource() }
     Row(
+        horizontalArrangement = Arrangement.Center,
         modifier = Modifier
             .align(Alignment.Center)
             .background(Color.Transparent)
@@ -176,41 +179,35 @@ fun BoxScope.CommonTabView(
             } else {
                 stringResource(id = R.string.app_name)
             }
-
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-
-            if (topBarData.logo != null) {
-                CoilImage(
-                    src = com.allballapp.android.BuildConfig.IMAGE_SERVER + topBarData.logo,
-                    modifier = Modifier
-                        .size(dimensionResource(id = R.dimen.size_32dp))
-                        .background(
-                            color = MaterialTheme.appColors.material.primary,
-                            CircleShape
-                        )
-                        .clip(
-                            CircleShape
-                        ),
-                    isCrossFadeEnabled = false,
-                    onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
-                    onError = { Placeholder(R.drawable.ic_team_placeholder) },
-                    contentScale = ContentScale.Crop
-                )
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
-            }
-
-            Text(
-                textAlign = TextAlign.Center,
-                text = label,
-                style = MaterialTheme.typography.h3,
-                color = Color.White
+        if (topBarData.logo != null) {
+            CoilImage(
+                src = com.allballapp.android.BuildConfig.IMAGE_SERVER + topBarData.logo,
+                modifier = Modifier
+                    .size(dimensionResource(id = R.dimen.size_32dp))
+                    .background(
+                        color = MaterialTheme.appColors.material.primary,
+                        CircleShape
+                    )
+                    .clip(
+                        CircleShape
+                    ),
+                isCrossFadeEnabled = false,
+                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                onError = { Placeholder(R.drawable.ic_team_placeholder) },
+                contentScale = ContentScale.Crop
             )
+            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
         }
 
-
+        Text(
+            modifier = Modifier.widthIn(0.dp, dimensionResource(id = R.dimen.size_225dp)),
+            textAlign = TextAlign.Center,
+            text = label,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            style = MaterialTheme.typography.h3,
+            color = Color.White
+        )
         if (topBarData.topBar == TopBar.TEAMS) {
             AppSpacer(Modifier.size(dimensionResource(id = R.dimen.size_5dp)))
             Icon(
@@ -219,7 +216,6 @@ fun BoxScope.CommonTabView(
                 tint = Color.White
             )
         }
-
     }
 
     var icon: Painter? = null

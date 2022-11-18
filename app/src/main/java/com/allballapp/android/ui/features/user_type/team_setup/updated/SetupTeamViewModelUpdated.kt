@@ -12,7 +12,6 @@ import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.ResultWrapper
 import com.allballapp.android.common.getFileFromUri
-import com.allballapp.android.ui.utils.UiText
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.data.request.CreateTeamRequest
 import com.allballapp.android.data.request.Location
@@ -21,6 +20,7 @@ import com.allballapp.android.data.request.UpdateTeamRequest
 import com.allballapp.android.data.response.team.Player
 import com.allballapp.android.domain.repository.IImageUploadRepo
 import com.allballapp.android.domain.repository.ITeamRepository
+import com.allballapp.android.ui.utils.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -279,6 +279,28 @@ class SetupTeamViewModelUpdated @Inject constructor(
 
 
             }
+            is TeamSetupUIEventUpdated.AddInviteTeamMembers -> {
+                //Commented the multiple invite option
+                /*_teamSetupUiState.value =
+                    _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList
+                        .apply {
+                            this[event.index].name = event.member?.firstName ?: ""
+                            this[event.index].id = event.member?._Id ?: ""
+                            this[event.index].role = UserRoles(value = "", key = event.role)
+                            this[event.index].profileSelected = "true"
+                        })
+
+                viewModelScope.launch {
+                    invitePlayers(
+                        event.teamId,
+                        userType = event.userType,
+                        type = AppConstants.TYPE_CREATE_TEAM,
+                        profileSelected = false,
+                        member = null
+                    )
+                }*/
+            }
+
             is TeamSetupUIEventUpdated.OnInviteTeamMembers -> {
                 viewModelScope.launch {
                     invitePlayers(
@@ -361,13 +383,13 @@ class SetupTeamViewModelUpdated @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-              /*  _teamSetupChannel.send(
-                    TeamSetupChannel.ShowToast(
-                        UiText.DynamicString(
-                            userRoles.message
-                        )
-                    )
-                )*/
+                /*  _teamSetupChannel.send(
+                      TeamSetupChannel.ShowToast(
+                          UiText.DynamicString(
+                              userRoles.message
+                          )
+                      )
+                  )*/
             }
             is ResultWrapper.Success -> {
                 userRoles.value.let { response ->
@@ -420,13 +442,13 @@ class SetupTeamViewModelUpdated @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-               /* _teamSetupChannel.send(
-                    TeamSetupChannel.ShowToast(
-                        UiText.DynamicString(
-                            inviteMemberResponse.message
-                        )
-                    )
-                )*/
+                /* _teamSetupChannel.send(
+                     TeamSetupChannel.ShowToast(
+                         UiText.DynamicString(
+                             inviteMemberResponse.message
+                         )
+                     )
+                 )*/
             }
             is ResultWrapper.Success -> {
                 inviteMemberResponse.value.let { response ->
@@ -471,8 +493,9 @@ class SetupTeamViewModelUpdated @Inject constructor(
             list.mapIndexed { index, item ->
                 Members(
                     name = item.name,
-                    mobileNumber = "${item.countryCode}${item.contact}",
-                    role = item.role.key
+                    mobileNumber = item.id.ifEmpty { "${item.countryCode}${item.contact}" },
+                    role = item.role.key,
+                    //profilesSelected = item.profileSelected
                 )
             }
         }
@@ -516,13 +539,13 @@ class SetupTeamViewModelUpdated @Inject constructor(
                         _teamSetupUiState.value.teamId
                     )
                 )
-               /* _teamSetupChannel.send(
-                    TeamSetupChannel.ShowToast(
-                        UiText.DynamicString(
-                            inviteMemberResponse.message
-                        )
-                    )
-                )*/
+                /* _teamSetupChannel.send(
+                     TeamSetupChannel.ShowToast(
+                         UiText.DynamicString(
+                             inviteMemberResponse.message
+                         )
+                     )
+                 )*/
             }
             is ResultWrapper.Success -> {
                 onEvent(
@@ -593,13 +616,13 @@ class SetupTeamViewModelUpdated @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-              /*  _teamSetupChannel.send(
-                    TeamSetupChannel.ShowToast(
-                        UiText.DynamicString(
-                            playersResponse.message
-                        )
-                    )
-                )*/
+                /*  _teamSetupChannel.send(
+                      TeamSetupChannel.ShowToast(
+                          UiText.DynamicString(
+                              playersResponse.message
+                          )
+                      )
+                  )*/
             }
             is ResultWrapper.Success -> {
                 playersResponse.value.let { response ->
@@ -657,13 +680,13 @@ class SetupTeamViewModelUpdated @Inject constructor(
             }
             is ResultWrapper.NetworkError -> {
                 _teamSetupUiState.value = _teamSetupUiState.value.copy(isLoading = false)
-               /* _teamSetupChannel.send(
-                    TeamSetupChannel.ShowToast(
-                        UiText.DynamicString(
-                            uploadLogoResponse.message
-                        )
-                    )
-                )*/
+                /* _teamSetupChannel.send(
+                     TeamSetupChannel.ShowToast(
+                         UiText.DynamicString(
+                             uploadLogoResponse.message
+                         )
+                     )
+                 )*/
             }
             is ResultWrapper.Success -> {
                 uploadLogoResponse.value.let { response ->

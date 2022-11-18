@@ -33,6 +33,7 @@ sealed class EvEvents {
     data class RegisterCash(val request: String) : EvEvents()
     object ClearRegister : EvEvents()
     object ClearList : EvEvents()
+    object ClearListLeague : EvEvents()
     object ClearOpportunities : EvEvents()
     data class ShowToast(val message: String) : EvEvents()
     data class OnDeclineConfirmClick(val invitation: EventsResponse) : EvEvents()
@@ -61,7 +62,7 @@ sealed class EvEvents {
     data class GetMyLeagues(val type:String) : EvEvents()
 
     object GetDivision : EvEvents()
-    data class GetLeagueId(val id: String, val eventId: String) : EvEvents()
+    data class GetLeagueId(val eventId: String) : EvEvents()
     data class GetGender(val gender: String) : EvEvents()
 
     object GetVenues : EvEvents()

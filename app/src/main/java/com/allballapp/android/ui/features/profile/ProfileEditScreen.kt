@@ -39,7 +39,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
-import androidx.core.text.isDigitsOnly
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.allballapp.android.R
 import com.allballapp.android.common.*
@@ -310,7 +309,7 @@ fun ProfileEditScreen(
                                 imeAction = ImeAction.Next,
                                 keyboardType = KeyboardType.Email
                             ),
-                            readOnly = true
+                            readOnly = false
                         )
                         DividerCommon()
                         EditProfileFields(
@@ -328,6 +327,7 @@ fun ProfileEditScreen(
                                 capitalization = KeyboardCapitalization.Sentences,
                                 keyboardType = KeyboardType.Number
                             ),
+                            readOnly = true
                         )
                         DividerCommon()
                         EditProfileFields(
@@ -451,7 +451,7 @@ fun ProfileEditScreen(
                         keyboardOptions = KeyboardOptions(
                             imeAction = ImeAction.Next,
                             capitalization = KeyboardCapitalization.Sentences,
-                           /* keyboardType = KeyboardType.Number*/
+                            /* keyboardType = KeyboardType.Number*/
                         ),
                     )
 

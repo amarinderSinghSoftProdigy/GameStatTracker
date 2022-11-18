@@ -35,7 +35,7 @@ data class EventState(
     val declineReason: String = "",
     val myLeaguesList: ArrayList<MyLeagueResponse> = arrayListOf(),
     val divisions: MutableList<DivisionResponse> = arrayListOf(),
-    val leagueId: String = "",
+    //val leagueId: String = "",
     val eventId: String = "",
     val gender: String = "",
     val venuesList: List<VenuesId> = listOf(),

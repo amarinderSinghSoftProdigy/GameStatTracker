@@ -3,10 +3,7 @@ package com.allballapp.android.data.repository
 import com.allballapp.android.common.ResultWrapper
 import com.allballapp.android.common.safeApiCall
 import com.allballapp.android.data.datastore.DataStoreManager
-import com.allballapp.android.data.request.CreateTeamRequest
-import com.allballapp.android.data.request.Members
-import com.allballapp.android.data.request.UpdateTeamDetailRequest
-import com.allballapp.android.data.request.UpdateTeamRequest
+import com.allballapp.android.data.request.*
 import com.allballapp.android.data.response.*
 import com.allballapp.android.data.response.homepage.HomePageCoachModel
 import com.allballapp.android.data.response.invitation.InvitationData
@@ -103,15 +100,16 @@ class TeamRepository @Inject constructor(
     override suspend fun acceptTeamInvitation(
         invitationId: String,
         role: String,
-        playerId: String,
+        playerId: String,//ArrayList<String>,
         guardianGender: String
     ): ResultWrapper<BaseResponse<Any>> {
-        val request: RequestBody = FormBody.Builder()
+        /*val request: RequestBody = FormBody.Builder()
             .add("invitationId", invitationId)
             .add("role", role)
             .add("kidId", playerId)
             .add("guardianGender", guardianGender)
-            .build()
+            .build()*/
+        val request = InviteMembersRequest(invitationId, role, playerId, guardianGender)
         return safeApiCall(dispatcher) {
             service.acceptTeamInvitation(request)
         }
@@ -158,7 +156,7 @@ class TeamRepository @Inject constructor(
     }
 
     override suspend fun getMyLeagues(
-        //type: String,
+        type: String,
         teamId: String,
         page: Int,
         limit: Int,
@@ -166,7 +164,7 @@ class TeamRepository @Inject constructor(
     ): ResultWrapper<BaseResponse<ArrayList<MyLeagueResponse>>> {
         return safeApiCall(dispatcher) {
             service.getMyLeagues(
-                //type = type,
+                type = type,
                 teamId = teamId,
                 page = page,
                 limit = limit,

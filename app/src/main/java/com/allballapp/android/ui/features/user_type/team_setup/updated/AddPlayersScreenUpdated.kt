@@ -224,6 +224,21 @@ fun AddPlayersScreenUpdated(
                     vm.onEvent(TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen)
                 },
                 onNextClick = {
+                    //Commented for multiple invitations
+                    /**
+                     * val role = CommonUtils.getCheck(homeState.user.phone, state.inviteList)
+                    if (role.isNotEmpty()) {
+                    roleKey.value = role//state.inviteList[0].role.key
+                    vm.onEvent(
+                    TeamSetupUIEventUpdated.SetRequestData(
+                    roleKey.value,
+                    teamId.ifEmpty { UserStorage.teamId }
+                    )
+                    )
+                    showSwapDialog.value = true
+                    homeVm.onEvent(HomeScreenEvent.OnSwapClick())
+                    } else {
+                     * */
                     if (!state.isLoading) {
                         if (teamId.isNullOrEmpty()) {
                             vm.onEvent(TeamSetupUIEventUpdated.OnAddPlayerScreenNext)
@@ -278,6 +293,19 @@ fun AddPlayersScreenUpdated(
             users = homeState.swapUsers,
             onDismiss = { showSwapDialog.value = false },
             onConfirmClick = { swapUser ->
+                /*//Commented the logic for multiple invites
+                *  val index = CommonUtils.getIndex(homeState.user.phone, state.inviteList)
+                if (index != -1) {
+                    vm.onEvent(
+                        TeamSetupUIEventUpdated.AddInviteTeamMembers(
+                            index,
+                            userType = state.role,
+                            teamId = state.teamId,
+                            member = swapUser,
+                            role = roleKey.value,
+                        )
+                    )
+                }*/
                 vm.onEvent(
                     TeamSetupUIEventUpdated.OnInviteTeamMembers(
                         state.teamId,
@@ -437,6 +465,29 @@ fun InviteItem(
                         }
                     }
                 }
+                //Commented the delete icon
+                /*
+                *
+            }
+
+            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+            Box(modifier = Modifier
+                .background(
+                    MaterialTheme.appColors.material.primary,
+                    shape = RoundedCornerShape(50)
+                )
+                .clickable {
+                    updateItem(index, false)
+                }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_delete),
+                    contentDescription = "",
+                    tint = Color.Unspecified,
+                    modifier = Modifier
+                        .padding(dimensionResource(id = R.dimen.size_8dp))
+                )
+            }
+*/
                 /*Icon(
                     painter = painterResource(id = R.drawable.ic_remove),
                     contentDescription = "",
@@ -656,4 +707,3 @@ fun TeamMemberItem(
         }
     }
 }
-

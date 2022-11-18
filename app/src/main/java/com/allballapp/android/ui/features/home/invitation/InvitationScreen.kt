@@ -197,6 +197,7 @@ fun InvitationScreen(
             },
             onSelectionChange = { vm.onEvent(InvitationEvent.OnGuardianClick(guardian = it)) },
             selected = state.selectedGuardian,
+            //selected = state.selectedPlayerIds,
             guardianList = if (state.selectedRoleKey == UserType.PARENT.key)
                 state.playerDetails.filter { member -> member.role == UserType.PLAYER.key }
             else state.playerDetails.filter { member -> member.role != UserType.PLAYER.key },
@@ -260,8 +261,6 @@ fun InvitationScreen(
                 vm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
             },
             onConfirmClick = {
-//                vm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
-
                 if (state.selectedInvitation.team._id.isNotEmpty()) {
 
                     if (teamState.inviteList.isNotEmpty()) {
@@ -281,6 +280,7 @@ fun InvitationScreen(
                         }
                     }
                 }
+                vm.onEvent(InvitationEvent.OnAddPlayerDialogClick(false))
             },
             onIndexChange = { index ->
                 vmSetupTeam.onEvent(
@@ -363,7 +363,8 @@ fun InvitationScreen(
                         member = Members(
                             name = swapUser.firstName,
                             mobileNumber = swapUser._Id,
-                            role = roleKey.value
+                            role = roleKey.value,
+                            //profilesSelected = "true"
                         )
                     )
                 )
