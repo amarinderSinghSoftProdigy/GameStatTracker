@@ -139,7 +139,7 @@ private val DarkColorPalette = appColors(
         popupBorder = spiner_popup_border
     ),
     buttonColor = ButtonColor(
-        backgroundDisabled = button_background_disable,
+        backgroundDisabled = button_background_enable_dark_theme,
         backgroundEnabled = button_background_enable_dark_theme,
         textEnabled = button_text_enable,
         textDisabled = button_text_disable

@@ -100,7 +100,10 @@ fun AppTabLikeViewPager(
     onClick: () -> Unit,
 ) {
     Tab(modifier = modifier, selected = selected, onClick = onClick, text = {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+
+        ) {
             Icon(
                 painter = painter,
                 contentDescription = null,
@@ -110,7 +113,7 @@ fun AppTabLikeViewPager(
             Text(
                 stringResourceByName(name = title),
                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                color = if (selected) MaterialTheme.appColors.buttonColor.backgroundEnabled else MaterialTheme.appColors.textField.label
+                color = if (selected) MaterialTheme.appColors.textField.labelColor else MaterialTheme.appColors.textField.label
             )
         }
 
@@ -139,7 +142,7 @@ fun AppSingleTabLikeViewPager(
                 Text(
                     stringResourceByName(name = title),
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                    color = if (selected) MaterialTheme.appColors.buttonColor.backgroundEnabled else MaterialTheme.appColors.textField.label
+                    color = if (selected) MaterialTheme.appColors.textField.labelColor else MaterialTheme.appColors.textField.label
                 )
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_14dp)))

@@ -69,7 +69,11 @@ fun TeamsChatScreen(
     }
 
     if (AppConstants.ENABLE_CHAT) {
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = MaterialTheme.appColors.material.surface)
+        ) {
             Column {
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
                 LazyRow {
@@ -139,6 +143,13 @@ fun TeamsChatScreen(
             }
 
         }
+    }else{
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = MaterialTheme.appColors.material.surface)
+        ) {}
+
     }
 }
 

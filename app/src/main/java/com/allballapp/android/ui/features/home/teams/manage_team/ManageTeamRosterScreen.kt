@@ -57,6 +57,7 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(color = MaterialTheme.appColors.material.surface)
                     .padding(
                         start = dimensionResource(id = R.dimen.size_16dp),
                         end = dimensionResource(id = R.dimen.size_16dp),
@@ -72,7 +73,7 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                             Text(
                                 text = stringResource(id = R.string.coaches),
                                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
+                                color = MaterialTheme.appColors.textField.labelColor,
                                 fontWeight = FontWeight.W600,
                             )
                             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
@@ -93,7 +94,7 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                                 Text(
                                     text = stringResource(id = R.string.all_players),
                                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
+                                    color = MaterialTheme.appColors.textField.labelColor,
                                     fontWeight = FontWeight.W600,
                                 )
                                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
@@ -133,7 +134,7 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                                 Text(
                                     text = stringResource(id = R.string.invited),
                                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
+                                    color = MaterialTheme.appColors.textField.labelColor,
                                     fontWeight = FontWeight.W600,
                                 )
                                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
@@ -190,6 +191,7 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(color =MaterialTheme.appColors.material.surface)
             ) {
                 Column(
                     modifier = Modifier.align(Alignment.Center),
@@ -197,13 +199,13 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                 ) {
                     AppText(
                         text = stringResource(id = R.string.no_players_in_team),
-                        color = ColorBWBlack,
+                        color = MaterialTheme.appColors.textField.labelColor,
                         style = MaterialTheme.typography.h3
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
                     AppText(
                         text = stringResource(id = R.string.please_add_players),
-                        color = ColorBWBlack,
+                        color = MaterialTheme.appColors.textField.labelColor,
                         style = MaterialTheme.typography.h5
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))

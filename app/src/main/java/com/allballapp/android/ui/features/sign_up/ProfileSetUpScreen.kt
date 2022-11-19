@@ -269,12 +269,13 @@ fun ProfileSetUpScreen(
                     AppText(
                         text = stringResource(id = R.string.set_your_profile),
                         style = MaterialTheme.typography.h3,
-                        color = ColorBWBlack,
+                        color = MaterialTheme.appColors.textField.labelColor,
                         modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
 
-                    UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
+                    UserFlowBackground(modifier = Modifier.fillMaxWidth(),
+                        color = MaterialTheme.appColors.material.background) {
 
                         Column(
                             modifier = Modifier.fillMaxWidth(),
@@ -459,7 +460,7 @@ fun ProfileSetUpScreen(
                                                     )
                                                     expanded = false
                                                 }) {
-                                                    Text(text = label, textAlign = TextAlign.Center)
+                                                    Text(text = label, textAlign = TextAlign.Center , color = MaterialTheme.appColors.textField.labelColor)
                                                 }
                                             }
                                         }
@@ -477,7 +478,7 @@ fun ProfileSetUpScreen(
                                         AppText(
                                             text = stringResource(id = R.string.birthdate),
                                             style = MaterialTheme.typography.h6,
-                                            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
+                                            color = MaterialTheme.appColors.textField.labelColor,
                                             modifier = Modifier
                                                 .align(Alignment.CenterStart)
                                                 .padding(start = dimensionResource(id = R.dimen.size_3dp)),
@@ -491,6 +492,7 @@ fun ProfileSetUpScreen(
                                         ) {
                                             Text(
                                                 text = state.signUpData.birthdate,
+                                                color = MaterialTheme.appColors.textField.labelColor,
                                             )
                                             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_5dp)))
                                             Icon(
@@ -507,7 +509,7 @@ fun ProfileSetUpScreen(
                                         AppText(
                                             text = stringResource(id = R.string.phone_num),
                                             style = MaterialTheme.typography.h6,
-                                            color = ColorBWBlack,
+                                            color = MaterialTheme.appColors.textField.labelColor,
                                             modifier = Modifier
                                                 .padding(start = dimensionResource(id = R.dimen.size_16dp))
                                         )
@@ -521,7 +523,7 @@ fun ProfileSetUpScreen(
                                         ) {
 
                                             val customTextSelectionColors = TextSelectionColors(
-                                                handleColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
+                                                handleColor = MaterialTheme.appColors.textField.labelColor,
                                                 backgroundColor = Color.Transparent
                                             )
                                             CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
@@ -545,8 +547,8 @@ fun ProfileSetUpScreen(
                                                     defaultCountry = getLibCountries().single { it.countryCode == defaultLang },
                                                     focusedBorderColor = Color.Transparent,
                                                     unfocusedBorderColor = Color.Transparent,
-                                                    dialogAppBarTextColor = Color.Black,
-                                                    dialogAppBarColor = Color.White,
+                                                    dialogAppBarTextColor = MaterialTheme.appColors.textField.labelColor,
+                                                    dialogAppBarColor = MaterialTheme.appColors.material.surface,
                                                     error = true,
                                                     text = state.signUpData.phone,
                                                     onValueChange = {
@@ -558,7 +560,7 @@ fun ProfileSetUpScreen(
                                                             )
                                                     },
                                                     readOnly = state.signUpData.phoneVerified,
-                                                    cursorColor = Color.Black,
+                                                    cursorColor = MaterialTheme.appColors.textField.labelColor,
                                                     content = {
                                                     },
                                                     showDialog = false
@@ -639,7 +641,7 @@ fun ProfileSetUpScreen(
 
                                     withStyle(
                                         style = SpanStyle(
-                                            color = md_theme_light_onSurface,
+                                            color = MaterialTheme.appColors.textField.labelColor,
                                         )
                                     ) {
                                         append(stringResource(id = R.string.by_creating_an_account))
@@ -666,7 +668,7 @@ fun ProfileSetUpScreen(
                                     pop()
                                     withStyle(
                                         style = SpanStyle(
-                                            color = md_theme_light_onSurface,
+                                            color = MaterialTheme.appColors.textField.labelColor,
                                         )
                                     ) {
                                         append(" ")
@@ -687,7 +689,7 @@ fun ProfileSetUpScreen(
                                     pop()
                                     withStyle(
                                         style = SpanStyle(
-                                            color = md_theme_light_onSurface,
+                                            color = MaterialTheme.appColors.textField.labelColor,
                                         )
                                     ) {
                                         append(" ")
@@ -737,7 +739,7 @@ fun ProfileSetUpScreen(
 
                                     withStyle(
                                         style = SpanStyle(
-                                            color = md_theme_light_onSurface,
+                                            color = MaterialTheme.appColors.textField.labelColor,
                                         )
                                     ) {
                                         append(stringResource(id = R.string.i_authorize_all_ball))

@@ -196,7 +196,7 @@ fun EditFields(
             AppText(
                 text = head,
                 style = MaterialTheme.typography.h6,
-                color = ColorBWBlack,
+                color = MaterialTheme.appColors.textField.labelColor,
                 modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
             )
             CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
@@ -206,9 +206,9 @@ fun EditFields(
                         backgroundColor = Color.Transparent,
                         focusedBorderColor = Color.Transparent,
                         unfocusedBorderColor = Color.Transparent,
-                        cursorColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
+                        cursorColor = MaterialTheme.appColors.textField.labelColor,
                     ),
-                    textStyle = textStyle,
+                    textStyle = textStyle.copy(color = MaterialTheme.appColors.textField.labelColor),
                     singleLine = true,
                     keyboardActions = keyboardActions,
                     keyboardOptions = keyboardOptions,

@@ -207,6 +207,5 @@ fun OpportunitiesItem(league: OpportunitiesItem, showLabel: Boolean, OnNextClick
                 }
             }
         }
-
     }
 }

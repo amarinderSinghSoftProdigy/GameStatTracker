@@ -379,11 +379,13 @@ fun DialogButton(
 }
 
 @Composable
-fun CommonProgressBar() {
+fun CommonProgressBar(
+    bgColor : Color = MaterialTheme.appColors.material.surface
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.appColors.material.surface),
+            .background(bgColor),
         contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator(
@@ -661,20 +663,20 @@ fun LocationBlock(location: Location, padding: Dp = dimensionResource(id = R.dim
             Column(modifier = Modifier.weight(2F)) {
                 Text(
                     text = stringResource(id = R.string.location),
-                    color = ColorBWGrayLight,
+                    color = MaterialTheme.appColors.textField.label,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                 Text(
                     text = location.address,
-                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
+                    color = MaterialTheme.appColors.textField.labelColor,
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
                 Text(
                     text = location.city + ", " + location.state + ", " + location.zipCode,
-                    color = ColorBWGrayLight,
+                    color = MaterialTheme.appColors.textField.label,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                 )
             }

@@ -1883,7 +1883,7 @@ fun SwapProfile(
             buttons = {
                 Column(
                     modifier = Modifier
-                        .background(color = Color.White)
+                        .background(color = MaterialTheme.appColors.material.background)
                         .padding(
                             all = dimensionResource(
                                 id = R.dimen.size_16dp
@@ -1897,6 +1897,7 @@ fun SwapProfile(
                             text = title.ifEmpty { stringResource(id = R.string.swap_profiles) },
                             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                             fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.appColors.textField.label
                         )
 
                         Icon(
@@ -1925,7 +1926,9 @@ fun SwapProfile(
                     ) {
                         item {
                             if (showLoading) {
-                                CommonProgressBar()
+                                CommonProgressBar(
+                                    bgColor = MaterialTheme.appColors.material.background
+                                )
                             }
                         }
                         item {
@@ -1949,14 +1952,15 @@ fun SwapProfile(
                             text = stringResource(id = R.string.add_new_profile),
                             onClick = { onCreatePlayerClick.invoke() },
                             painter = painterResource(id = R.drawable.ic_add_button),
-                            isTransParent = true
+                            isTransParent = true,
+                            colors = MaterialTheme.appColors.buttonColor
 
                         )
                     }
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(color = Color.White)
+                            .background(color = Color.Transparent)
                             .padding(
                                 vertical = dimensionResource(id = R.dimen.size_16dp)
                             ),
