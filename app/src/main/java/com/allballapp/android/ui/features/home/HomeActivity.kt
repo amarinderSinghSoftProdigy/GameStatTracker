@@ -439,7 +439,8 @@ fun NavControllerComposable(
                 },
                 setupTeamViewModelUpdated = setupTeamViewModelUpdated,
                 onChatCLick = {
-                    navController.navigate(Route.TEAMS_CHAT_SCREEN)
+                    homeViewModel.setBottomNav(BottomNavKey.TEAMS)
+                    navController.navigate(Route.TEAMS_SCREEN)
                 },
                 refreshTeamListing = refreshTeamListing,
             )
@@ -1140,6 +1141,13 @@ fun NavControllerComposable(
             exitTransition = { exitTransition(animeDuration) },
             popExitTransition = { slideOutHorizont(animeDuration) }
         ) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = eventTitle,
+                    topBar = TopBar.TEAM_TAB,
+                    logo = teamLogo
+                )
+            )
             TeamsChatScreen(
                 "",
                 vm = chatViewModel,

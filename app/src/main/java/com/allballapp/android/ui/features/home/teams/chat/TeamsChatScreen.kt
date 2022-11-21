@@ -1,5 +1,6 @@
 package com.allballapp.android.ui.features.home.teams.chat
 
+import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.background
@@ -58,6 +59,7 @@ fun TeamsChatScreen(
         mutableStateOf(-1)
     }
     val key = remember { mutableStateOf("selected") }
+    val loaded = remember { mutableStateOf(false) }
 
     remember {
         homeVm.getUnreadMessageCount()
@@ -106,7 +108,7 @@ fun TeamsChatScreen(
                                         addChatIds(item, {})
                                         selected.value = index
                                         key.value = index.toString()
-
+                                        loaded.value = true
                                     })
                             }
                             if (item.unreadMessageCount > 0) {
@@ -146,9 +148,14 @@ fun TeamsChatScreen(
                             modifier = Modifier.fillMaxSize(),
                             fragmentManager = fragmentManager,
                             commit = {
-                                add(it, CometChatConversationList())
+                                try {
+                                    add(it, CometChatConversationList())
+                                } catch (ex: Exception) {
+                                    ex.printStackTrace()
+                                }
                             }
                         )
+                        loaded.value = false
 
                         /* AndroidView(
                              modifier = Modifier
@@ -174,6 +181,7 @@ fun TeamsChatScreen(
                     })
                     key.value = 0.toString()
                     selected.value = 0
+                    loaded.value = true
                     EmptyScreen(
                         singleText = false,
                         icon = com.cometchat.pro.uikit.R.drawable.ic_chat_placeholder,
@@ -346,20 +354,44 @@ fun FragmentContainer(
     val containerId by rememberSaveable {
         mutableStateOf(View.generateViewId())
     }
+    Timber.e(" id " + View.generateViewId())
     AndroidView(
         modifier = modifier,
         factory = { context ->
-            fragmentManager.findFragmentById(containerId)?.view
-                ?.also { (it.parent as? ViewGroup)?.removeView(it) }
-                ?: FragmentContainerView(context)
-                    .apply { id = containerId }
-                    .also {
-                        fragmentManager.commit { commit(it.id) }
-                    }
+            if (fragmentManager.findFragmentById(containerId) == null) {
+                loadContainer(context, containerId) {}
+            }
+            if (fragmentManager.findFragmentById(containerId)?.view == null) {
+                fragmentManager.commit {
+                    commit(containerId)
+                }
+            }
+            fragmentManager.findFragmentById(containerId)?.view?.also {
+                if (it.parent != null) {
+                    (it.parent as? ViewGroup)?.removeView(it)
+                }
+            } ?: loadContainer(context, containerId) {
+                fragmentManager.commit {
+                    commit(containerId)
+                }
+            }
         },
-        update = {}
+        update = {
+
+        }
     )
 }
+
+fun loadContainer(context: Context, containerId: Int, call: () -> Unit): View {
+    return FragmentContainerView(context)
+        .apply {
+            id = containerId
+        }
+        .also {
+            call()
+        }
+}
+
 
 /** Access to package-private method in FragmentManager through reflection */
 private fun FragmentManager.onContainerAvailable(view: FragmentContainerView) {
