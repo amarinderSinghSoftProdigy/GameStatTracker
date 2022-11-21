@@ -655,6 +655,7 @@ fun NavControllerComposable(
                     )
                     navController.navigate(Route.ADD_MY_PLAYER_SCREEN + "/${UserStorage.teamId}")
                 }, onHomeClick = {
+                    homeViewModel.showBottomAppBar(false)
                     navController.navigate(Route.HOME_SCREEN)
                 }, homeVm = homeViewModel,
                 chatViewModel = chatViewModel
