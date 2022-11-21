@@ -88,7 +88,7 @@ fun AddPlayersScreenUpdated(
 
     remember {
         vm.onEvent(TeamSetupUIEventUpdated.GetRoles)
-        vm.initialInviteCount(1)
+        vm.initialInviteCount(2)
         if (!teamId.isNullOrEmpty()) {
             if (teamData != null) {
                 teamData.onEvent(TeamUIEvent.GetTeam(teamId))
@@ -302,7 +302,7 @@ fun AddPlayersScreenUpdated(
         SwapProfile(
             title = stringResource(id = R.string.invite_from_your_profile),
             actionButtonText = stringResource(id = R.string.invite),
-            users = homeState.swapUsers,
+            users = CommonUtils.filterUsers(state.memberList, homeState.swapUsers as ArrayList),
             onDismiss = { showSwapDialog.value = false },
             onConfirmClick = { swapUser ->
                 val index = CommonUtils.getIndex(homeState.user.phone, state.inviteList)
