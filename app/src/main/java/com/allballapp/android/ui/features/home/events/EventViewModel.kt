@@ -568,13 +568,13 @@ class EventViewModel @Inject constructor(
 
         when (userResponse) {
             is ResultWrapper.GenericError -> {
-                _channel.send(
+                /*_channel.send(
                     EventChannel.ShowToast(
                         UiText.DynamicString(
                             "${userResponse.message}"
                         )
                     )
-                )
+                )*/
             }
             is ResultWrapper.NetworkError -> {
                 /*_channel.send(

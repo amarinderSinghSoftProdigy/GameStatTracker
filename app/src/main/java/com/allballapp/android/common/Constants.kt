@@ -223,16 +223,32 @@ object CometChatErrorCodes {
 
 
 fun getCustomColorCode(colorWithoutHash: String): String {
-    if (colorWithoutHash.length == 7) {
+    var validHexColor = ""
+
+    validHexColor = if (colorWithoutHash.length == 7) {
         val updatedCode = colorWithoutHash.take(6)
         Timber.i("updatedCode--$updatedCode")
-        return updatedCode
+        updatedCode
     } else if (colorWithoutHash.length == 6 || colorWithoutHash.length == 8) {
         Timber.i("colorWithoutHash--$colorWithoutHash")
-        return colorWithoutHash
+        colorWithoutHash
+
     } else {
         Timber.i("colorWithoutHash--$DEFAULT_COLOR")
-        return DEFAULT_COLOR
-
+        DEFAULT_COLOR
     }
+
+    try {
+        Color(
+            android.graphics.Color.parseColor(
+                "#${validHexColor}"
+
+            )
+        )
+    } catch (ex: Exception) {
+        ex.printStackTrace()
+        validHexColor = DEFAULT_COLOR
+    }
+
+    return validHexColor
 }

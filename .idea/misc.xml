@@ -85,6 +85,8 @@
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/layouts/others/drawable/ic_send.xml" value="0.224" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/layouts/others/drawable/ic_send_message.xml" value="0.2155" />
         <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/layouts/shared/layout/cometchat_compose_box.xml" value="0.4" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/layouts/users/layout/fragment_cometchat_userlist.xml" value="0.23802083333333332" />
+        <entry key="..\:/Users/user/AndroidStudioProjects/BallerAndroidApp/uikit-kotlin/src/main/res/layouts/users/layout/user_shimmer.xml" value="0.23802083333333332" />
         <entry key="..\:/Users/user/baller-app/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
         <entry key="..\:/Users/user/baller-app/app/src/main/res/drawable/ic_add_player.xml" value="0.1" />
         <entry key="..\:/Users/user/baller-app/app/src/main/res/drawable/ic_app_logo_foreground.xml" value="0.1" />

@@ -12,6 +12,7 @@ import com.allballapp.android.data.response.roaster.RoasterResponse
 import com.allballapp.android.data.response.team.Player
 import com.allballapp.android.data.response.team.Team
 import com.allballapp.android.domain.BaseResponse
+import com.allballapp.android.ui.features.home.invitation.AcceptInvitation
 import com.allballapp.android.ui.features.home.invitation.Invitation
 import com.allballapp.android.ui.features.venue.VenueDetails
 import javax.inject.Singleton
@@ -63,7 +64,7 @@ interface ITeamRepository {
         role: String,
         playerId: ArrayList<String>,
         guardianGender: String,
-    ): ResultWrapper<BaseResponse<Any>>
+    ): ResultWrapper<BaseResponse<AcceptInvitation>>
 
     suspend fun rejectTeamInvitation(invitationId: String): ResultWrapper<BaseResponse<Any>>
 

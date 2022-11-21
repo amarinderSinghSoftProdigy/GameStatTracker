@@ -1,6 +1,7 @@
 package com.allballapp.android.ui.features.home
 
 //import com.softprodigy.ballerapp.ui.features.home.events.NewEventScreen
+//import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.BroadcastReceiver
@@ -77,14 +78,12 @@ import com.allballapp.android.ui.utils.anims.exitTransition
 import com.allballapp.android.ui.utils.anims.slideInHorizont
 import com.allballapp.android.ui.utils.anims.slideOutHorizont
 import com.cometchat.pro.constants.CometChatConstants
-import com.cometchat.pro.models.Conversation
-import com.cometchat.pro.models.Group
-import com.cometchat.pro.models.User
+import com.cometchat.pro.core.CometChat
+import com.cometchat.pro.models.*
 import com.cometchat.pro.uikit.ui_components.chats.CometChatConversationList
 import com.cometchat.pro.uikit.ui_components.chats.CustomCometListener
 import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
 import com.cometchat.pro.uikit.ui_components.messages.message_list.CometChatMessageList
-//import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -95,7 +94,7 @@ import timber.log.Timber
 val animeDuration = 500
 
 @AndroidEntryPoint
-class HomeActivity : FragmentActivity() ,CustomCometListener {
+class HomeActivity : FragmentActivity(), CustomCometListener {
     var dataStoreManager: DataStoreManager = DataStoreManager(this)
     val cometChat = CometChatUI()
     var setupTeamViewModelUpdated: SetupTeamViewModelUpdated? = null
@@ -221,11 +220,13 @@ class HomeActivity : FragmentActivity() ,CustomCometListener {
                                 selectionColor = state.color ?: Color.Black,
                                 badgeCount = state.unReadMessageCount
                             ) {
-                                homeViewModel.setBottomNav(it)
-                                if (it == BottomNavKey.HOME) {
-                                    homeViewModel.setTopAppBar(false)
-                                } else {
-                                    homeViewModel.setTopAppBar(true)
+                                if (it != homeViewModel.state.value.bottomBar) {
+                                    homeViewModel.setBottomNav(it)
+                                    if (it == BottomNavKey.HOME) {
+                                        homeViewModel.setTopAppBar(false)
+                                    } else {
+                                        homeViewModel.setTopAppBar(true)
+                                    }
                                 }
                             }
                         }
@@ -293,6 +294,10 @@ class HomeActivity : FragmentActivity() ,CustomCometListener {
         if (::homeViewModel.isInitialized) {
             homeViewModel.getUnreadMessageCount()
         }
+
+        /* Listener for updating badge count on new conversation receive*/
+        addConversationListener()
+
     }
 
     // on below line we are calling on activity result method.
@@ -336,7 +341,48 @@ class HomeActivity : FragmentActivity() ,CustomCometListener {
     }
 
     override fun onTeamIDChange(teamId: String) {
-      Timber.i("setResult--- $teamId")
+        Timber.i("setResult--- $teamId")
+    }
+
+    private fun addConversationListener() {
+        CometChat.addMessageListener("HomeActivity", object : CometChat.MessageListener() {
+            override fun onTextMessageReceived(message: TextMessage) {
+                if (::homeViewModel.isInitialized) {
+                    homeViewModel.getUnreadMessageCount()
+                }
+            }
+
+            override fun onMediaMessageReceived(message: MediaMessage) {
+                if (::homeViewModel.isInitialized) {
+                    homeViewModel.getUnreadMessageCount()
+                }
+            }
+
+            override fun onCustomMessageReceived(message: CustomMessage) {
+                if (::homeViewModel.isInitialized) {
+                    homeViewModel.getUnreadMessageCount()
+                }
+            }
+        })
+        CometChat.addGroupListener("HomeActivity", object : CometChat.GroupListener() {
+
+            override fun onMemberAddedToGroup(
+                action: Action,
+                addedby: User,
+                userAdded: User,
+                addedTo: Group
+            ) {
+                if (::homeViewModel.isInitialized) {
+                    homeViewModel.getUnreadMessageCount()
+                }
+            }
+
+            override fun onGroupMemberJoined(action: Action, joinedUser: User, joinedGroup: Group) {
+                if (::homeViewModel.isInitialized) {
+                    homeViewModel.getUnreadMessageCount()
+                }
+            }
+        })
     }
 
 }
@@ -439,7 +485,8 @@ fun NavControllerComposable(
                 },
                 setupTeamViewModelUpdated = setupTeamViewModelUpdated,
                 onChatCLick = {
-                    navController.navigate(Route.TEAMS_CHAT_SCREEN)
+                    homeViewModel.setBottomNav(BottomNavKey.TEAMS)
+                    navController.navigate(Route.TEAMS_SCREEN)
                 },
                 refreshTeamListing = refreshTeamListing,
             )
@@ -608,6 +655,7 @@ fun NavControllerComposable(
                     )
                     navController.navigate(Route.ADD_MY_PLAYER_SCREEN + "/${UserStorage.teamId}")
                 }, onHomeClick = {
+                    homeViewModel.showBottomAppBar(false)
                     navController.navigate(Route.HOME_SCREEN)
                 }, homeVm = homeViewModel,
                 chatViewModel = chatViewModel
@@ -1140,6 +1188,13 @@ fun NavControllerComposable(
             exitTransition = { exitTransition(animeDuration) },
             popExitTransition = { slideOutHorizont(animeDuration) }
         ) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = eventTitle,
+                    topBar = TopBar.TEAM_TAB,
+                    logo = teamLogo
+                )
+            )
             TeamsChatScreen(
                 "",
                 vm = chatViewModel,
@@ -1245,8 +1300,8 @@ fun NavControllerComposable(
             remember {
                 eventViewModel.onEvent(EvEvents.ClearListLeague)
             }
-            val type = it.arguments?.getString("type") ?:""
-            MyLeagueScreen(type = type , eventViewModel) {
+            val type = it.arguments?.getString("type") ?: ""
+            MyLeagueScreen(type = type, eventViewModel) {
                 eventMainTitle = it
                 navController.navigate(Route.LEAGUE_DETAIL_SCREEN)
             }
