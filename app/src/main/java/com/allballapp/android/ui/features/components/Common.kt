@@ -72,6 +72,7 @@ import com.google.maps.android.compose.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @Composable
 fun stringResourceByName(name: String): String {
@@ -656,6 +657,7 @@ private fun animateAlignmentAsState(
 @Composable
 fun LocationBlock(location: Location, padding: Dp = dimensionResource(id = R.dimen.size_16dp)) {
     val context = LocalContext.current
+    Timber.e("Location "+location.latLong)
     Column(
         Modifier.padding(horizontal = padding)
     ) {

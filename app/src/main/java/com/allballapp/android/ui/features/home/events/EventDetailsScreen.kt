@@ -37,6 +37,7 @@ import com.allballapp.android.common.convertServerUtcDateToLocal
 import com.allballapp.android.common.uiToAPiDate
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.ui.features.components.*
+import com.allballapp.android.ui.features.components.EventType
 import com.allballapp.android.ui.features.venue.Location
 import com.allballapp.android.ui.theme.ColorButtonGreen
 import com.allballapp.android.ui.theme.ColorButtonRed
@@ -340,36 +341,37 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
 
         AppDivider(color = MaterialTheme.appColors.material.primary)
 
-        Column(
-            Modifier
-                .padding(
-                    start = dimensionResource(id = R.dimen.size_16dp),
-                    end = dimensionResource(id = R.dimen.size_16dp)
-                )
-        ) {
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
+        if (state.event.eventType == EventType.GAME.key) {
+            Column(
+                Modifier
+                    .padding(
+                        start = dimensionResource(id = R.dimen.size_16dp),
+                        end = dimensionResource(id = R.dimen.size_16dp)
+                    )
             ) {
-                AppText(
-                    text = stringResource(id = R.string.jersey_color),
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                    style = MaterialTheme.typography.h5,
-                    modifier = Modifier.weight(1f),
-                    fontWeight = FontWeight.W500
-                )
-                Text(
-                    text = state.event.jerseyColor,
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                    style = MaterialTheme.typography.h5,
-                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                )
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    AppText(
+                        text = stringResource(id = R.string.jersey_color),
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        style = MaterialTheme.typography.h5,
+                        modifier = Modifier.weight(1f),
+                        fontWeight = FontWeight.W500
+                    )
+                    Text(
+                        text = state.event.jerseyColor,
+                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        style = MaterialTheme.typography.h5,
+                        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
+                AppDivider(color = MaterialTheme.appColors.material.primary)
             }
-
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
         }
-
-        AppDivider(color = MaterialTheme.appColors.material.primary)
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
 
         Column(

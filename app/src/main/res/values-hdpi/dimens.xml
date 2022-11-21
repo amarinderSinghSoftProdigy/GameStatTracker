@@ -46,6 +46,7 @@
     <dimen name="size_70dp">52.5dp</dimen>
     <dimen name="size_72dp">54dp</dimen>
     <dimen name="size_80dp">60dp</dimen>
+    <dimen name="size_85dp">43.75dp</dimen>
     <dimen name="size_90dp">67.5dp</dimen>
     <dimen name="size_100dp">75dp</dimen>
     <dimen name="size_120dp">90dp</dimen>

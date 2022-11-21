@@ -22,6 +22,8 @@ data class MyLeagueResponse(
     val state: String,
     @SerializedName("zip")
     val zip: String,
+    @SerializedName("locationDesc")
+    val locationDesc: String = "",
     @SerializedName("participation")
     val participation: Participation = Participation(),
     @SerializedName("division")
