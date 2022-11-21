@@ -1,8 +1,5 @@
 package com.allballapp.android.ui.features.home.teams.chat
 
-import android.content.Context
-import android.view.View
-import android.view.ViewGroup
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -59,7 +56,6 @@ fun TeamsChatScreen(
         mutableStateOf(-1)
     }
     val key = remember { mutableStateOf("selected") }
-    val loaded = remember { mutableStateOf(false) }
 
     remember {
         homeVm.getUnreadMessageCount()
@@ -108,7 +104,6 @@ fun TeamsChatScreen(
                                         addChatIds(item, {})
                                         selected.value = index
                                         key.value = index.toString()
-                                        loaded.value = true
                                     })
                             }
                             if (item.unreadMessageCount > 0) {
@@ -155,25 +150,6 @@ fun TeamsChatScreen(
                                 }
                             }
                         )
-                        loaded.value = false
-
-                        /* AndroidView(
-                             modifier = Modifier
-                                 .fillMaxHeight()
-                                 .fillMaxWidth(),
-                             factory = { context ->
-                                 CometChatMessageListActivity.toolbarColor =
-                                     if (color.startsWith("#")) color else "#$color"
-                                 FrameLayout(context).apply {
-                                     FragmentConversationBinding.inflate(LayoutInflater.from(context), this, true).root
-                                 }
-                             })
-
-                         AndroidViewBinding(FragmentConversationBinding::inflate) {
-                             CometChatMessageListActivity.toolbarColor =
-                                 if (color.startsWith("#")) color else "#$color"
-                             converstionContainer.getFragment<CometChatConversationList>()
-                         }*/
                     }
                 } else if (state.teams.isNotEmpty() && selected.value == -1) {
                     addChatIds(state.teams[0], onKeyChange = {
@@ -181,7 +157,6 @@ fun TeamsChatScreen(
                     })
                     key.value = 0.toString()
                     selected.value = 0
-                    loaded.value = true
                     EmptyScreen(
                         singleText = false,
                         icon = com.cometchat.pro.uikit.R.drawable.ic_chat_placeholder,
@@ -336,7 +311,6 @@ fun ConversationItem(conversation: Conversation) {
                         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                         fontWeight = FontWeight.W400,
                         fontFamily = rubikFamily
-
                     )
 
                 }
@@ -354,44 +328,27 @@ fun FragmentContainer(
     val containerId by rememberSaveable {
         mutableStateOf(R.id.converstion_container)
     }
+    var initialized by rememberSaveable { mutableStateOf(false) }
+
     AndroidView(
         modifier = modifier,
         factory = { context ->
-            loadContainer(context, containerId) {}
-            if (fragmentManager.findFragmentById(containerId)?.view == null) {
-                fragmentManager.commit {
-                    commit(containerId)
-                }
-            }
-            fragmentManager.findFragmentById(containerId)?.view?.also {
-                if (it.parent != null) {
-                    (it.parent as? ViewGroup)?.removeView(it)
-                }
-            } ?: loadContainer(context, containerId) {
-                fragmentManager.commit {
-                    commit(containerId)
-                }
-            }
+            FragmentContainerView(context)
+                .apply { id = containerId }
         },
         update = {
-
+            if (!initialized) {
+                fragmentManager.commit { commit(it.id) }
+                initialized = true
+            } else {
+                fragmentManager.onMyContainerAvailable(it)
+            }
         }
     )
 }
 
-fun loadContainer(context: Context, containerId: Int, call: () -> Unit): View {
-    return FragmentContainerView(context)
-        .apply {
-            id = containerId
-        }
-        .also {
-            call()
-        }
-}
-
-
 /** Access to package-private method in FragmentManager through reflection */
-private fun FragmentManager.onContainerAvailable(view: FragmentContainerView) {
+fun FragmentManager.onMyContainerAvailable(view: FragmentContainerView) {
     val method = FragmentManager::class.java.getDeclaredMethod(
         "onContainerAvailable",
         FragmentContainerView::class.java
