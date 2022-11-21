@@ -40,14 +40,14 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
         preferences[ROLE] ?: ""
     }
 
-    suspend fun setTap(tap: String) {
+    suspend fun setAllBallId(tap: String) {
         settingsDataStore.edit { settings ->
-            settings[USER_TAP] = tap
+            settings[ALL_BALL_ID] = tap
         }
     }
 
-    val getTap: Flow<String> = settingsDataStore.data.map { preferences ->
-        preferences[USER_TAP] ?: ""
+    val getAllBallId: Flow<String> = settingsDataStore.data.map { preferences ->
+        preferences[ALL_BALL_ID] ?: ""
     }
 
     suspend fun setEmail(email: String) {
@@ -120,7 +120,7 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
         val USER_TOKEN = stringPreferencesKey("USER_TOKEN")
         val ROLE = stringPreferencesKey("ROLE")
         val LOGOUT = stringPreferencesKey("LOGOUT")
-        val USER_TAP = stringPreferencesKey("USER_TAP")
+        val ALL_BALL_ID = stringPreferencesKey("ALL_BALL_ID")
         val USER_DATA = stringPreferencesKey("USER_DATA")
         val COLOR = stringPreferencesKey("COLOR")
         val SKIP_WALKTHROUGH = stringPreferencesKey("SKIP_WALKTHROUGH")

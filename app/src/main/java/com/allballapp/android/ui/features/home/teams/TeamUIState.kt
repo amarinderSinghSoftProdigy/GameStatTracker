@@ -10,6 +10,7 @@ import com.allballapp.android.data.response.team.*
 
 
 data class TeamUIState(
+    val allBallId: String = "",
     val userRole: String = "",
     val isLoading: Boolean = false,
     val teams: ArrayList<Team> = ArrayList(),

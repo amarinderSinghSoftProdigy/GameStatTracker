@@ -389,7 +389,12 @@ fun DialogButton(
 
 @Composable
 fun CommonProgressBar() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .clickable(enabled = false, onClick = {}),
+        contentAlignment = Alignment.Center
+    ) {
         CircularProgressIndicator(
             color = MaterialTheme.appColors.material.primaryVariant
         )
@@ -657,7 +662,7 @@ private fun animateAlignmentAsState(
 @Composable
 fun LocationBlock(location: Location, padding: Dp = dimensionResource(id = R.dimen.size_16dp)) {
     val context = LocalContext.current
-    Timber.e("Location "+location.latLong)
+    Timber.e("Location " + location.latLong)
     Column(
         Modifier.padding(horizontal = padding)
     ) {
@@ -1042,6 +1047,6 @@ fun Modifier.scrollOnFocus(
     }
 }
 
-fun <T> getCommonElementsCount(first: List<T>, second: List<T>): Int{
+fun <T> getCommonElementsCount(first: List<T>, second: List<T>): Int {
     return first.filter(second::contains).size
 }

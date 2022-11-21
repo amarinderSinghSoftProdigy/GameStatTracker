@@ -66,6 +66,9 @@ class CometChatConversationList : Fragment(), TextWatcher {
     private var conversationList: MutableList<Conversation> = ArrayList()
     private var ivStartConversation: ImageView? = null
 
+
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
