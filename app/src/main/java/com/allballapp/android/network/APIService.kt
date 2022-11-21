@@ -10,6 +10,7 @@ import com.allballapp.android.data.response.team.*
 import com.allballapp.android.data.response.team.Team
 import com.allballapp.android.domain.BaseResponse
 import com.allballapp.android.ui.features.home.events.*
+import com.allballapp.android.ui.features.home.invitation.AcceptInvitation
 import com.allballapp.android.ui.features.home.invitation.Invitation
 import com.allballapp.android.ui.features.venue.VenueDetails
 import okhttp3.MultipartBody
@@ -103,7 +104,7 @@ open interface APIService {
     ): BaseResponse<EventsResponse>
 
     @PUT(ApiConstants.ACCEPT_TEAM_INVITATION)
-    suspend fun acceptTeamInvitation(@Body request: InviteMembersRequest): BaseResponse<Any>
+    suspend fun acceptTeamInvitation(@Body request: InviteMembersRequest): BaseResponse<AcceptInvitation>
 
     @PUT(ApiConstants.REJECT_TEAM_INVITATION)
     suspend fun rejectTeamInvitation(@Body request: RequestBody): BaseResponse<Any>
