@@ -1,5 +1,7 @@
 package com.allballapp.android.ui.features.home.teams.chat
 
+import android.view.View
+import android.view.ViewGroup
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -22,11 +24,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidViewBinding
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.fragment.app.*
 import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.data.response.team.Team
-import com.allballapp.android.databinding.FragmentConversationBinding
 import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.home.EmptyScreen
 import com.allballapp.android.ui.features.home.HomeViewModel
@@ -37,7 +39,6 @@ import com.cometchat.pro.models.Conversation
 import com.cometchat.pro.models.Group
 import com.cometchat.pro.models.User
 import com.cometchat.pro.uikit.ui_components.chats.CometChatConversationList
-import com.cometchat.pro.uikit.ui_components.messages.message_list.CometChatMessageListActivity
 import timber.log.Timber
 import kotlin.random.Random
 
@@ -50,6 +51,8 @@ fun TeamsChatScreen(
     onCreateNewConversationClick: (teamId: String) -> Unit
 ) {
 
+    val context = LocalContext.current
+    val fragmentManager = (context as FragmentActivity).supportFragmentManager
     val state = vm.chatUiState.value
     val selected = rememberSaveable {
         mutableStateOf(-1)
@@ -93,20 +96,20 @@ fun TeamsChatScreen(
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
                 LazyRow {
                     itemsIndexed(state.teams) { index, item ->
-                        Box() {
+                        Box {
                             Row {
                                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
                                 AppTab(
                                     title = item.name,
                                     selected = index == selected.value,
                                     onClick = {
-                                        addChatIds(item,{})
+                                        addChatIds(item, {})
                                         selected.value = index
                                         key.value = index.toString()
 
                                     })
                             }
-                            if (item.unreadMessageCount > 0){
+                            if (item.unreadMessageCount > 0) {
                                 Box(
                                     modifier = Modifier
                                         .background(
@@ -125,9 +128,10 @@ fun TeamsChatScreen(
                                         text = item.unreadMessageCount.toString(),
                                         fontFamily = rubikFamily,
                                         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                                        color = if(index != selected.value) MaterialTheme.appColors.material.surface else AppConstants.SELECTED_COLOR
+                                        color = if (index != selected.value) MaterialTheme.appColors.material.surface else AppConstants.SELECTED_COLOR
                                     )
-                                }}
+                                }
+                            }
                         }
 
                     }
@@ -135,22 +139,46 @@ fun TeamsChatScreen(
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_24dp)))
                     }
                 }
-
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
                 if (selected.value != -1) {
                     key(key.value) {
-                        AndroidViewBinding(FragmentConversationBinding::inflate) {
-                            CometChatMessageListActivity.toolbarColor =
-                                if (color.startsWith("#")) color else "#" + color
-                            converstionContainer.getFragment<CometChatConversationList>()
-                        }
-                    }
-                } else if (state.teams.isNotEmpty()) {
-                    addChatIds(state.teams[0], onKeyChange = {
+                        FragmentContainer(
+                            modifier = Modifier.fillMaxSize(),
+                            fragmentManager = fragmentManager,
+                            commit = {
+                                add(it, CometChatConversationList())
+                            }
+                        )
 
+                        /* AndroidView(
+                             modifier = Modifier
+                                 .fillMaxHeight()
+                                 .fillMaxWidth(),
+                             factory = { context ->
+                                 CometChatMessageListActivity.toolbarColor =
+                                     if (color.startsWith("#")) color else "#$color"
+                                 FrameLayout(context).apply {
+                                     FragmentConversationBinding.inflate(LayoutInflater.from(context), this, true).root
+                                 }
+                             })
+
+                         AndroidViewBinding(FragmentConversationBinding::inflate) {
+                             CometChatMessageListActivity.toolbarColor =
+                                 if (color.startsWith("#")) color else "#$color"
+                             converstionContainer.getFragment<CometChatConversationList>()
+                         }*/
+                    }
+                } else if (state.teams.isNotEmpty() && selected.value == -1) {
+                    addChatIds(state.teams[0], onKeyChange = {
+                        key.value = it
                     })
                     key.value = 0.toString()
                     selected.value = 0
+                    EmptyScreen(
+                        singleText = false,
+                        icon = com.cometchat.pro.uikit.R.drawable.ic_chat_placeholder,
+                        heading = stringResource(id = com.cometchat.pro.uikit.R.string.no_conversations)
+                    )
                 } else {
                     EmptyScreen(
                         singleText = false,
@@ -307,4 +335,38 @@ fun ConversationItem(conversation: Conversation) {
             }
         }
     }
+}
+
+@Composable
+fun FragmentContainer(
+    modifier: Modifier = Modifier,
+    fragmentManager: FragmentManager,
+    commit: FragmentTransaction.(containerId: Int) -> Unit
+) {
+    val containerId by rememberSaveable {
+        mutableStateOf(View.generateViewId())
+    }
+    AndroidView(
+        modifier = modifier,
+        factory = { context ->
+            fragmentManager.findFragmentById(containerId)?.view
+                ?.also { (it.parent as? ViewGroup)?.removeView(it) }
+                ?: FragmentContainerView(context)
+                    .apply { id = containerId }
+                    .also {
+                        fragmentManager.commit { commit(it.id) }
+                    }
+        },
+        update = {}
+    )
+}
+
+/** Access to package-private method in FragmentManager through reflection */
+private fun FragmentManager.onContainerAvailable(view: FragmentContainerView) {
+    val method = FragmentManager::class.java.getDeclaredMethod(
+        "onContainerAvailable",
+        FragmentContainerView::class.java
+    )
+    method.isAccessible = true
+    method.invoke(this, view)
 }
