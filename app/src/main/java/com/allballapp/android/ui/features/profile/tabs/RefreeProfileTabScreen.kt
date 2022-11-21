@@ -21,7 +21,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import com.allballapp.android.BuildConfig
 import com.allballapp.android.ui.features.components.AppText
 import com.allballapp.android.ui.features.components.CoilImage
 import com.allballapp.android.ui.features.components.Placeholder
@@ -51,6 +50,7 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(color = MaterialTheme.appColors.material.surface)
                 .padding(
                     start = dimensionResource(id = R.dimen.size_16dp),
                     end = dimensionResource(id = R.dimen.size_16dp)
@@ -63,14 +63,14 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-                    .background(color = Color.White),
+                    .background(color = MaterialTheme.appColors.material.background),
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(dimensionResource(id = R.dimen.size_16dp))
-                        .background(color = Color.White)
+                        .background(color = Color.Transparent)
                 ) {
                     CoilImage(
                         src = com.allballapp.android.BuildConfig.IMAGE_SERVER + state.user.profileImage,
@@ -86,7 +86,7 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
                     AppText(
                         text = "${state.user.firstName} ${state.user.lastName}",
                         style = MaterialTheme.typography.h6,
-                        color = ColorBWBlack,
+                        color = MaterialTheme.appColors.textField.labelColor,
                         fontSize = dimensionResource(id = R.dimen.txt_size_20).value.sp
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
@@ -103,7 +103,7 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
                     AppText(
                         text = stringResource(id = R.string.mailing_address),
                         style = MaterialTheme.typography.h4,
-                        color = ColorBWGrayLight,
+                        color = MaterialTheme.appColors.textField.label,
                         fontWeight = FontWeight.W500,
                         textAlign = TextAlign.Center
                     )
@@ -112,7 +112,7 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
                     AppText(
                         text = state.user.address,
                         style = MaterialTheme.typography.h5,
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color =MaterialTheme.appColors.textField.labelColor,
                         textAlign = TextAlign.Center
                     )
                 }
@@ -124,7 +124,7 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-                    .background(color = Color.White),
+                    .background(color = MaterialTheme.appColors.material.background),
             ) {
 
                 Column(modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_10dp))) {
@@ -135,7 +135,7 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
                         AppText(
                             text = stringResource(id = R.string.total_games),
                             style = MaterialTheme.typography.h4,
-                            color = ColorBWGrayLight,
+                            color = MaterialTheme.appColors.textField.label,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.weight(1F),
                             fontWeight = FontWeight.W500
@@ -144,7 +144,7 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
                         AppText(
                             text = stringResource(id = R.string.total_hoop_games),
                             style = MaterialTheme.typography.h4,
-                            color = ColorBWGrayLight,
+                            color = MaterialTheme.appColors.textField.label,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.weight(2F),
                             fontWeight = FontWeight.W500
@@ -153,7 +153,7 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
                         AppText(
                             text = stringResource(id = R.string.rating),
                             style = MaterialTheme.typography.h4,
-                            color = ColorBWGrayLight,
+                            color = MaterialTheme.appColors.textField.label,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.weight(1F),
                             fontWeight = FontWeight.W500
@@ -165,7 +165,7 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
                     Row {
                         AppText(
                             text = state.user.totalGames.toString(),
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            color = MaterialTheme.appColors.textField.labelColor,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.weight(1F),
                             fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp
@@ -173,7 +173,7 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
 
                         AppText(
                             text = state.user.totalHoopsGames.toString(),
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            color = MaterialTheme.appColors.textField.labelColor,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.weight(2F),
                             fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp
@@ -181,7 +181,7 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
 
                         AppText(
                             text = state.user.rating.toString(),
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            color = MaterialTheme.appColors.textField.labelColor,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.weight(1F),
                             fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp
@@ -220,7 +220,7 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-                    .background(color = Color.White)
+                    .background(color = MaterialTheme.appColors.material.background)
                     .padding(all = dimensionResource(id = R.dimen.size_16dp)),
             ) {
 
@@ -228,7 +228,7 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
                     AppText(
                         text = stringResource(id = R.string.about_exp),
                         style = MaterialTheme.typography.h5,
-                        color = ColorBWBlack,
+                        color = MaterialTheme.appColors.textField.labelColor,
                         fontWeight = FontWeight.W500
                     )
 
@@ -237,7 +237,7 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
                     AppText(
                         text = state.user.userDetails.aboutExperience,
                         style = MaterialTheme.typography.h5,
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                        color = MaterialTheme.appColors.textField.labelColor
                     )
                 }
             }

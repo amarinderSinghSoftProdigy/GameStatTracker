@@ -71,7 +71,7 @@ fun OpenVenuesDetailsScreen(venueId: String, eventViewModel: EventViewModel) {
                         text = stringResource(id = R.string.venue_details),
                         style = MaterialTheme.typography.h5,
                         fontWeight = FontWeight.W500,
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled
                     )
 
                     LocationBlock(
@@ -110,7 +110,7 @@ fun OpenVenuesDetailsScreen(venueId: String, eventViewModel: EventViewModel) {
                         text = stringResource(id = R.string.venue_photos),
                         style = MaterialTheme.typography.h5,
                         fontWeight = FontWeight.W500,
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled
                     )
                     FlowRow(
                         modifier = Modifier

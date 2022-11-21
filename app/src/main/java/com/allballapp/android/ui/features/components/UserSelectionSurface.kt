@@ -35,12 +35,12 @@ fun UserSelectionSurface(
         .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
         .border(
             width = if (!isSelected) 1.dp else 0.dp,
-            if (!isSelected) MaterialTheme.appColors.buttonColor.bckgroundDisabled else MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            if (!isSelected) MaterialTheme.appColors.buttonColor.backgroundDisabled else MaterialTheme.appColors.buttonColor.backgroundEnabled,
             shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
         )
         .background(
             color = if (isSelected) {
-                MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                MaterialTheme.appColors.buttonColor.backgroundEnabled
             } else {
                 Color.Transparent
             }

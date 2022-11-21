@@ -58,7 +58,7 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
         Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .background(color = Color.White),
+            .background(color = MaterialTheme.appColors.material.surface),
     ) {
         Timber.i("EventDetailsScreen-- $eventId")
 
@@ -139,7 +139,7 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
             AppText(
                 text = stringResource(id = R.string.events_info),
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.textField.labelColor,
                 style = MaterialTheme.typography.h5,
                 fontWeight = FontWeight.W500
             )
@@ -168,13 +168,13 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
             Row {
                 Text(
                     text = apiToUIDateFormat(state.event.date),
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    color = MaterialTheme.appColors.textField.labelColor,
                     style = MaterialTheme.typography.h5,
                     modifier = Modifier.weight(1.8f)
                 )
                 Text(
                     text = state.event.arrivalTime,
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    color = MaterialTheme.appColors.textField.labelColor,
                     style = MaterialTheme.typography.h5,
                     modifier = Modifier.weight(1.5f)
 
@@ -193,7 +193,7 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
 
                 Text(
                     text = "$startTime - $endTime",
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    color = MaterialTheme.appColors.textField.labelColor,
                     style = MaterialTheme.typography.h5,
                     modifier = Modifier.weight(1.8f)
                 )
@@ -212,7 +212,7 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
 
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
-        AppDivider(color = MaterialTheme.appColors.material.primary)
+        AppDivider(color = MaterialTheme.appColors.appDivider.dividerColor)
 
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
 
@@ -225,7 +225,7 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
         ) {
             Text(
                 text = stringResource(id = R.string.rsvp),
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.textField.labelColor,
                 style = MaterialTheme.typography.h5,
                 fontWeight = FontWeight.W500
             )
@@ -255,7 +255,7 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
                     Text(
                         text = item.name.substring(0, item.name.indexOf(' ')).capitalize()
                             .ifEmpty { stringResource(id = R.string.na) },
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.textField.labelColor,
                         style = MaterialTheme.typography.h5,
                         fontWeight = FontWeight.W500
                     )
@@ -339,7 +339,7 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
 
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
 
-        AppDivider(color = MaterialTheme.appColors.material.primary)
+        AppDivider(color = MaterialTheme.appColors.appDivider.dividerColor)
 
         if (state.event.eventType == EventType.GAME.key) {
             Column(
@@ -355,21 +355,21 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
                 ) {
                     AppText(
                         text = stringResource(id = R.string.jersey_color),
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.textField.labelColor,
                         style = MaterialTheme.typography.h5,
                         modifier = Modifier.weight(1f),
                         fontWeight = FontWeight.W500
                     )
                     Text(
                         text = state.event.jerseyColor,
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.textField.labelColor,
                         style = MaterialTheme.typography.h5,
                         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                     )
                 }
 
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
-                AppDivider(color = MaterialTheme.appColors.material.primary)
+                AppDivider(color = MaterialTheme.appColors.appDivider.dividerColor)
             }
         }
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
@@ -389,7 +389,7 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
                 if (state.isPrePracticeTimeSpan) {
                     Text(
                         text = stringResource(id = R.string.pre_practive_head),
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.textField.labelColor,
                         style = MaterialTheme.typography.h5,
                         fontWeight = FontWeight.W500
                     )
@@ -397,7 +397,7 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
                 if (state.isPrePracticeTimeSpan && state.event.prePractice.isEmpty() && state.event.createdBy == UserStorage.userId) {
                     Text(
                         text = stringResource(id = R.string.add_note),
-                        color = MaterialTheme.appColors.buttonColor.textEnabled,
+                        color = MaterialTheme.appColors.textField.labelColor,
                         style = MaterialTheme.typography.button,
                         modifier = Modifier
                             .shadow(
@@ -434,7 +434,7 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
             if (state.event.prePractice.isNotEmpty() && state.isPrePracticeTimeSpan) {
                 Text(
                     text = state.event.prePractice,
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    color = MaterialTheme.appColors.textField.labelColor,
                     style = MaterialTheme.typography.h5
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
@@ -459,7 +459,7 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
                         AppText(
                             text = state.event.coachId.name.ifEmpty { stringResource(id = R.string.na) },
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            color = MaterialTheme.appColors.textField.labelColor,
                             style = MaterialTheme.typography.h6
                         )
                     }
@@ -510,7 +510,7 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
                 if (state.isPostPracticeTimeSpan) {
                     Text(
                         text = stringResource(id = R.string.post_practive_head),
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         style = MaterialTheme.typography.h5,
                         fontWeight = FontWeight.W500
                     )
@@ -555,7 +555,7 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
             if (state.event.postPractice.isNotEmpty() && state.isPostPracticeTimeSpan) {
                 Text(
                     text = state.event.postPractice,
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                     style = MaterialTheme.typography.h5
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
@@ -580,7 +580,7 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
                         AppText(
                             text = state.event.coachId.name.ifEmpty { stringResource(id = R.string.na) },
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                             style = MaterialTheme.typography.h6
                         )
                     }

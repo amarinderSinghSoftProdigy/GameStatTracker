@@ -120,7 +120,7 @@ fun DistanceItem() {
     ) {
         Text(
             text = stringResource(id = R.string.distance),
-            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
             fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
             fontWeight = FontWeight.Bold,
         )
@@ -138,7 +138,7 @@ fun DistanceItem() {
         ) {
             Text(
                 text = stringResource(id = R.string.max_dis),
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                 style = MaterialTheme.typography.h5,
                 fontWeight = FontWeight.W500,
                 modifier = Modifier.weight(1f)
@@ -153,7 +153,7 @@ fun DistanceItem() {
             )
             Text(
                 text = distance.value.toString() + "mi",
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
@@ -185,7 +185,7 @@ fun FilterItem(
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
         Text(
             text = heading.capitalize(),
-            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            color = MaterialTheme.appColors.textField.labelColor,
             fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
             fontWeight = FontWeight.Bold,
         )
@@ -195,7 +195,7 @@ fun FilterItem(
                 .fillMaxWidth()
                 .background(
                     shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
-                    color = Color.White
+                    color = MaterialTheme.appColors.material.background
                 )
         ) {
             FlowRow(Modifier.fillMaxWidth()) {
@@ -215,7 +215,7 @@ fun FilterItem(
                         ) {
                             Text(
                                 text = value.name.capitalize(),
-                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                color = MaterialTheme.appColors.textField.labelColor,
                                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.weight(1f)

@@ -1,5 +1,6 @@
 package com.togitech.ccp.component
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -40,8 +41,10 @@ import com.togitech.ccp.data.utils.getCountryName
 import com.togitech.ccp.data.utils.getFlags
 import com.togitech.ccp.data.utils.getLibCountries
 import com.togitech.ccp.utils.searchCountry
+import androidx.compose.material.MaterialTheme
 
 class TogiCodePicker {
+
     @OptIn(ExperimentalComposeUiApi::class)
     @Composable
     fun TogiCodeDialog(
@@ -54,14 +57,17 @@ class TogiCodePicker {
         pickedCountry: (CountryData) -> Unit,
         dialogAppBarColor: Color = MaterialTheme.colors.primary,
         dialogAppBarTextColor: Color = Color.White,
+        isOpenDialog : MutableState<Boolean> = mutableStateOf(false),
+        textColor : Color = Color.Black,
     ) {
         val countryList: List<CountryData> = getLibCountries()
         var isPickCountry by remember { mutableStateOf(defaultSelectedCountry) }
-        var isOpenDialog by remember { mutableStateOf(false) }
+//        var isOpenDialog by remember { mutableStateOf(false) }
         var searchValue by remember { mutableStateOf("") }
         var isSearch by remember { mutableStateOf(false) }
         val context = LocalContext.current
         val interactionSource = remember { MutableInteractionSource() }
+
 
         Column(
             modifier = Modifier
@@ -71,12 +77,13 @@ class TogiCodePicker {
                     indication = null
                 ) {
                     if (showDialog) {
-                        isOpenDialog = true
+                        isOpenDialog.value = true
                     }
                 },
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
@@ -95,13 +102,13 @@ class TogiCodePicker {
                     Text(
                         text = isPickCountry.countryPhoneCode,
                         modifier = Modifier.padding(start = 6.dp),
-                        color = Color.Black
+                        color = textColor
                     )
                     if (!showCountryFlag) {
                         Icon(
                             imageVector = Icons.Default.ArrowDropDown,
                             contentDescription = null,
-                            tint = Color.Black
+                            tint = textColor
                         )
                     }
                 }
@@ -109,9 +116,9 @@ class TogiCodePicker {
         }
 
         //Select Country Dialog
-        if (isOpenDialog) {
+        if (isOpenDialog.value) {
             Dialog(
-                onDismissRequest = { isOpenDialog = false },
+                onDismissRequest = { isOpenDialog.value = false },
                 properties = DialogProperties(
                     usePlatformDefaultWidth = false
                 ),
@@ -159,7 +166,7 @@ class TogiCodePicker {
                             },
                             navigationIcon = {
                                 IconButton(onClick = {
-                                    isOpenDialog = false
+                                    isOpenDialog.value = false
                                     searchValue = ""
                                     isSearch = false
                                 }) {
@@ -214,7 +221,7 @@ class TogiCodePicker {
                                                 .clickable {
                                                     pickedCountry(countryItem)
                                                     isPickCountry = countryItem
-                                                    isOpenDialog = false
+                                                    isOpenDialog.value = false
                                                     searchValue = ""
                                                     isSearch = false
                                                 },

@@ -20,6 +20,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
@@ -29,7 +30,6 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
-import com.allballapp.android.BuildConfig
 import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.argbToHexString
@@ -167,10 +167,13 @@ fun ManageTeamScreen(
             topStart = dimensionResource(id = R.dimen.size_16dp),
             topEnd = dimensionResource(id = R.dimen.size_16dp)
         ),
-        sheetBackgroundColor = colorResource(id = R.color.white)
+        sheetBackgroundColor = MaterialTheme.appColors.material.background
     ) {
 
-        Box(Modifier.fillMaxSize()) {
+        Box(
+            Modifier.fillMaxSize()
+                .background(color = MaterialTheme.appColors.material.surface)
+        ) {
             Column(
                 Modifier
                     .fillMaxWidth()
@@ -187,7 +190,7 @@ fun ManageTeamScreen(
                         AppText(
                             text = stringResource(id = R.string.team_name),
                             style = MaterialTheme.typography.h6,
-                            color = ColorBWBlack
+                            color = MaterialTheme.appColors.textField.labelColor
                         )
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                         AppOutlineTextField(
@@ -204,9 +207,10 @@ fun ManageTeamScreen(
                             },
                             colors = TextFieldDefaults.outlinedTextFieldColors(
                                 unfocusedBorderColor = ColorBWGrayBorder,
-                                cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                                cursorColor = MaterialTheme.appColors.textField.labelColor
                             ),
                             isError = !validTeamName(state.teamName) && state.teamName.isNotEmpty(),
+                            textStyle = TextStyle(color = MaterialTheme.appColors.textField.labelColor),
                             errorMessage = stringResource(id = R.string.valid_team_name)
                         )
 
@@ -215,7 +219,7 @@ fun ManageTeamScreen(
                         AppText(
                             text = stringResource(id = R.string.team_name_jerseys),
                             style = MaterialTheme.typography.h6,
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                            color = MaterialTheme.appColors.textField.labelColor
                         )
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
                         AppOutlineTextField(
@@ -229,9 +233,10 @@ fun ManageTeamScreen(
                             },
                             colors = TextFieldDefaults.outlinedTextFieldColors(
                                 unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
-                                cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                                cursorColor = MaterialTheme.appColors.textField.labelColor
 
                             ),
+                            textStyle = TextStyle(color = MaterialTheme.appColors.textField.labelColor),
                             isError = !validTeamName(state.teamNameOnJerseys) && state.teamNameOnJerseys.isNotEmpty(),
                             errorMessage = stringResource(id = R.string.valid_team_name)
                         )
@@ -240,7 +245,7 @@ fun ManageTeamScreen(
                         AppText(
                             text = stringResource(id = R.string.team_name_tournament),
                             style = MaterialTheme.typography.h6,
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                            color = MaterialTheme.appColors.textField.labelColor
                         )
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
                         AppOutlineTextField(
@@ -259,9 +264,10 @@ fun ManageTeamScreen(
                             },
                             colors = TextFieldDefaults.outlinedTextFieldColors(
                                 unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
-                                cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                                cursorColor = MaterialTheme.appColors.buttonColor.backgroundEnabled
 
                             ),
+                            textStyle = TextStyle(MaterialTheme.appColors.textField.labelColor),
                             isError = !validTeamName(state.teamNameOnTournaments) && state.teamNameOnTournaments.isNotEmpty(),
                             errorMessage = stringResource(id = R.string.valid_team_name)
                         )
@@ -281,7 +287,7 @@ fun ManageTeamScreen(
                         if (state.logo != null) {
                             Text(
                                 text = stringResource(id = R.string.change),
-                                color = ColorBWGrayLight,
+                                color = MaterialTheme.appColors.textField.label,
                                 modifier = Modifier.clickable {
                                     scope.launch {
                                         modalBottomSheetState.hide()
@@ -361,7 +367,8 @@ fun ManageTeamScreen(
                     ) {
                         AppText(
                             text = stringResource(id = R.string.primary_team_color),
-                            style = MaterialTheme.typography.h6
+                            style = MaterialTheme.typography.h6,
+                            color = MaterialTheme.appColors.textField.labelColor
                         )
                         Row(
                             horizontalArrangement = Arrangement.Center,
@@ -449,7 +456,7 @@ fun ManageTeamScreen(
                         AppText(
                             text = stringResource(id = R.string.secondary_team_color),
                             style = MaterialTheme.typography.h6,
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                            color = MaterialTheme.appColors.textField.labelColor
                         )
                         Row(
                             horizontalArrangement = Arrangement.Center,
@@ -494,7 +501,7 @@ fun ManageTeamScreen(
                                     } else {
                                         ""
                                     },
-                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                                    color = MaterialTheme.appColors.textField.labelColor
 
 
                                 )
@@ -504,7 +511,7 @@ fun ManageTeamScreen(
                             Card(
                                 modifier = Modifier.size(dimensionResource(id = R.dimen.size_32dp)),
                                 backgroundColor = if (state.teamColorSec.isEmpty()) {
-                                    MaterialTheme.appColors.buttonColor.bckgroundDisabled
+                                    MaterialTheme.appColors.buttonColor.backgroundDisabled
                                 } else {
 //                                    Color(android.graphics.Color.parseColor("#" + state.teamColorSec))
                                     if (state.teamColorSec.startsWith("#")) {
@@ -534,7 +541,7 @@ fun ManageTeamScreen(
                         AppText(
                             text = stringResource(id = R.string.tertiary_team_color),
                             style = MaterialTheme.typography.h6,
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                            color = MaterialTheme.appColors.textField.labelColor
                         )
                         Row(
                             horizontalArrangement = Arrangement.Center,
@@ -581,7 +588,7 @@ fun ManageTeamScreen(
                                     } else {
                                         ""
                                     },
-                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                                    color = MaterialTheme.appColors.textField.labelColor
 
 
                                 )
@@ -591,7 +598,7 @@ fun ManageTeamScreen(
                             Card(
                                 modifier = Modifier.size(dimensionResource(id = R.dimen.size_32dp)),
                                 backgroundColor = if (state.teamColorThird.isEmpty()) {
-                                    MaterialTheme.appColors.buttonColor.bckgroundDisabled
+                                    MaterialTheme.appColors.buttonColor.backgroundDisabled
                                 } else {
 //                                    Color(android.graphics.Color.parseColor("#" + state.teamColorThird))
                                     if (state.teamColorThird.startsWith("#")) {
@@ -612,7 +619,7 @@ fun ManageTeamScreen(
                 AppText(
                     text = stringResource(id = R.string.home_court),
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    color = MaterialTheme.appColors.textField.labelColor,
                     style = MaterialTheme.typography.h6,
                     modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
                 )
@@ -629,7 +636,7 @@ fun ManageTeamScreen(
                         AppText(
                             text = stringResource(id = R.string.name_of_venue),
                             style = MaterialTheme.typography.h6,
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                            color = MaterialTheme.appColors.textField.labelColor
                         )
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
 
@@ -658,7 +665,7 @@ fun ManageTeamScreen(
                             } else {
                                 AppText(
                                     text = state.venueName,
-                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                    color = MaterialTheme.appColors.textField.labelColor,
                                     fontWeight = FontWeight.W400,
                                 )
                                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_14dp)))
@@ -669,7 +676,7 @@ fun ManageTeamScreen(
                         AppText(
                             text = stringResource(id = R.string.address),
                             style = MaterialTheme.typography.h6,
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                            color = MaterialTheme.appColors.textField.labelColor
                         )
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
 
@@ -718,7 +725,7 @@ fun ManageTeamScreen(
                             } else {
                                 AppText(
                                     text = state.selectedAddress.street,
-                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                    color = MaterialTheme.appColors.textField.labelColor,
                                     fontWeight = FontWeight.W400,
                                 )
                                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_14dp)))

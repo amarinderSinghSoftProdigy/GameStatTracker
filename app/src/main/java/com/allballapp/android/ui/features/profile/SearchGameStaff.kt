@@ -16,7 +16,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.allballapp.android.BuildConfig
 import com.allballapp.android.data.response.GetSearchStaff
 import com.allballapp.android.ui.features.components.AppOutlineTextField
 import com.allballapp.android.ui.features.components.AppText
@@ -59,8 +58,8 @@ fun SearchGameStaff(
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
                 focusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
-                cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                cursorColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
+                textColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
             ),
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
@@ -105,7 +104,7 @@ fun GameSearchList(searchStaff: GetSearchStaff, onSearchStaffClick: () -> Unit) 
                 fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                 fontWeight = FontWeight.Bold,
                 fontFamily = rubikFamily,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled
             )
 
         }

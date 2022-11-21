@@ -1,10 +1,12 @@
 package com.allballapp.android.ui.features.profile
 
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -21,6 +23,7 @@ import com.allballapp.android.R
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.profile.tabs.*
+import com.allballapp.android.ui.theme.appColors
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
@@ -30,7 +33,10 @@ fun ProfileScreen(
     updateTopBar: (TopBarData) -> Unit
 ) {
     val state = vm.state.value
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.background(color = MaterialTheme.appColors.material.background)
+    ) {
         if (UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
             val list = listOf(
                 TabItems.RefereeProfile,
@@ -62,7 +68,7 @@ fun Tabs(pagerState: PagerState) {
         TabItems.Documents,
     )
     val coroutineScope = rememberCoroutineScope()
-    Surface(color = Color.White, modifier = Modifier.fillMaxWidth()) {
+    Surface(color = MaterialTheme.appColors.material.surface, modifier = Modifier.fillMaxWidth()) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -96,7 +102,7 @@ fun Tabs(pagerState: PagerState) {
 fun Tabs(pagerState: PagerState, list: List<TabItems>) {
 
     val coroutineScope = rememberCoroutineScope()
-    Surface(color = Color.White, modifier = Modifier.fillMaxWidth()) {
+    Surface(color = MaterialTheme.appColors.material.surface, modifier = Modifier.fillMaxWidth()) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()

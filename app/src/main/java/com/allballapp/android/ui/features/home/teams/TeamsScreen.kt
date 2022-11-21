@@ -142,7 +142,9 @@ fun TeamsScreen(
     }
 
 
-    Box(Modifier.fillMaxSize()) {
+    Box(
+        Modifier.fillMaxSize()
+    ) {
         if (showDialog) {
             SelectTeamDialog(
                 teams = vm.teamUiState.value.teams,

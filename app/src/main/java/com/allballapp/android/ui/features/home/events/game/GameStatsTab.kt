@@ -61,7 +61,7 @@ fun GameStatsTab() {
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
                 Text(
                     text = stringResource(id = R.string.game_result),
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                     fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
                     fontWeight = FontWeight.Bold,
                 )
@@ -79,7 +79,7 @@ fun GameStatsTab() {
                     ) {
                         Text(
                             text = "87 : 76",
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                             fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
                             fontWeight = FontWeight.Bold,
                         )
@@ -104,7 +104,7 @@ fun GameStatsTab() {
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
                 Text(
                     text = stringResource(id = R.string.game_champions),
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                     style = MaterialTheme.typography.h5,
                     fontWeight = FontWeight.W500
                 )
@@ -143,14 +143,14 @@ fun GameStatsTab() {
                                 )
                                 Text(
                                     text = "Ruben",
-                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                     fontWeight = FontWeight.Bold,
                                 )
                             }
                             Text(
                                 text = stringResource(id = R.string.bonus_points) + " 7",
-                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                 fontWeight = FontWeight.Bold,
                             )
@@ -205,7 +205,7 @@ fun GameStatsTab() {
 
                 Text(
                     text = stringResource(id = R.string.post_game_notes),
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                     fontWeight = FontWeight.Bold,
                 )
@@ -218,7 +218,7 @@ fun GameStatsTab() {
 
                 Text(
                     text = "Risus enim egestas placerat adipiscing accumsan velit nam varius. Vulputate habitant vitae at laoreet. Arcu, vitae mi enim, aenean. Egestas cras venenatis dis augue felis.",
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -231,7 +231,7 @@ fun GameStatsTab() {
                     )
                     Text(
                         text = "Coach Sam",
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                         fontWeight = FontWeight.Bold,
                     )

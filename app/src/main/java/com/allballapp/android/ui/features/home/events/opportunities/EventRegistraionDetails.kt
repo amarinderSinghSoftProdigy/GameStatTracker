@@ -234,7 +234,7 @@ fun EventRegistraionDetails(
                     },
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         unfocusedBorderColor = ColorBWGrayBorder,
-                        cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                        cursorColor = MaterialTheme.appColors.buttonColor.backgroundEnabled
                     ),
                     errorMessage = stringResource(id = R.string.cash_message)
                 )
@@ -448,7 +448,7 @@ fun Heading(title: String) {
     Column(modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.size_16dp))) {
         Text(
             text = title,
-            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
             fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
             fontWeight = FontWeight.Bold,
         )

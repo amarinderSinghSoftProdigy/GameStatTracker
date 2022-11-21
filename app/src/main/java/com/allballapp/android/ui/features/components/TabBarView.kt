@@ -51,11 +51,11 @@ fun BottomNavigationBar(
     val selected: MutableState<BottomNavKey> = remember { mutableStateOf(navKey) }
     Surface(
         elevation = dimensionResource(id = R.dimen.size_12dp),
-        color = Color.White,
+        color = MaterialTheme.appColors.material.surface,
     ) {
         Row(
             modifier = Modifier
-                .background(Color.White)
+                .background(MaterialTheme.appColors.bottomNavColors.backgroundColor)
                 .fillMaxWidth()
                 .height(height),
             horizontalArrangement = Arrangement.SpaceAround,
@@ -112,7 +112,6 @@ fun BottomNavigationBar(
                                     )
                                     .clip(CircleShape)
                                     .align(Alignment.TopEnd)
-
                                     .padding(
                                         horizontal = dimensionResource(id = R.dimen.size_6dp),
                                         vertical = dimensionResource(id = R.dimen.size_2dp)
@@ -126,7 +125,6 @@ fun BottomNavigationBar(
                                 )
                             }
                         }
-
                     }
                 }
             }

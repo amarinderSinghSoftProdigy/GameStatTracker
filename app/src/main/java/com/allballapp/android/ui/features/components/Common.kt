@@ -367,7 +367,7 @@ fun DialogButton(
         shape = shape,
         color = if (onlyBorder) Color.Transparent
         else if (enabled) AppConstants.SELECTED_COLOR
-        else colors.bckgroundDisabled,
+        else colors.backgroundDisabled,
         contentColor = contentColor.copy(alpha = 1f),
         border = border,
     ) {
@@ -388,10 +388,13 @@ fun DialogButton(
 }
 
 @Composable
-fun CommonProgressBar() {
+fun CommonProgressBar(
+    bgColor : Color = MaterialTheme.appColors.material.surface
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(bgColor)
             .clickable(enabled = false, onClick = {}),
         contentAlignment = Alignment.Center
     ) {
@@ -526,7 +529,7 @@ fun CustomCheckBox(selected: Boolean, onClick: () -> Unit) {
             shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)),
             color = if (selected) {
                 Color.Transparent
-            } else MaterialTheme.appColors.buttonColor.bckgroundDisabled
+            } else MaterialTheme.appColors.buttonColor.backgroundDisabled
         )) {
         Icon(
             tint = if (!selected) {
@@ -560,7 +563,7 @@ fun CustomTeamCheckBox(id: String, selected: Boolean, onClick: (String) -> Unit)
             shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)),
             color = if (selected) {
                 Color.Transparent
-            } else MaterialTheme.appColors.buttonColor.bckgroundDisabled
+            } else MaterialTheme.appColors.buttonColor.backgroundDisabled
         )) {
         Icon(
             tint = if (!selected) {
@@ -579,7 +582,7 @@ fun CustomSwitch(
     width: Dp = dimensionResource(id = R.dimen.size_50dp),
     height: Dp = dimensionResource(id = R.dimen.size_32dp),
     checkedTrackColor: Color = MaterialTheme.appColors.material.primaryVariant,
-    uncheckedTrackColor: Color = MaterialTheme.appColors.buttonColor.bckgroundDisabled,
+    uncheckedTrackColor: Color = MaterialTheme.appColors.buttonColor.backgroundDisabled,
     gapBetweenThumbAndTrackEdge: Dp = dimensionResource(id = R.dimen.size_4dp),
     cornerSize: Dp = dimensionResource(id = R.dimen.size_16dp),
     iconInnerPadding: Dp = dimensionResource(id = R.dimen.size_4dp),
@@ -671,14 +674,14 @@ fun LocationBlock(location: Location, padding: Dp = dimensionResource(id = R.dim
             Column(modifier = Modifier.weight(2F)) {
                 Text(
                     text = stringResource(id = R.string.location),
-                    color = ColorBWGrayLight,
+                    color = MaterialTheme.appColors.textField.label,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                 Text(
                     text = location.address,
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    color = MaterialTheme.appColors.textField.labelColor,
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
@@ -687,8 +690,7 @@ fun LocationBlock(location: Location, padding: Dp = dimensionResource(id = R.dim
                 address += location.zipCode.ifEmpty { "" }
                 Text(
                     text = address,
-                    color = ColorBWGrayLight,
-                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                    color = MaterialTheme.appColors.textField.label,                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                 )
             }
             TransparentButtonButton(

@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
-import com.allballapp.android.BuildConfig
 import com.allballapp.android.data.response.team.Player
 import com.allballapp.android.data.response.team.TeamLeaderBoard
 import com.allballapp.android.ui.features.components.*
@@ -221,7 +220,7 @@ fun LeaderListItem(
                     color = if (selected) {
                         MaterialTheme.appColors.buttonColor.textEnabled
                     } else {
-                        MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                        MaterialTheme.appColors.buttonColor.backgroundEnabled
                     }
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_4dp)))
@@ -246,7 +245,7 @@ fun LeaderListItem(
                     color = if (selected) {
                         MaterialTheme.appColors.buttonColor.textEnabled
                     } else {
-                        MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                        MaterialTheme.appColors.buttonColor.backgroundEnabled
                     }
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))

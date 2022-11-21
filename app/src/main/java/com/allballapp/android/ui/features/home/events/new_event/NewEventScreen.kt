@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -62,6 +63,7 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity.RESULT_ERROR
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.IOException
@@ -101,6 +103,7 @@ fun NewEventScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(color = MaterialTheme.appColors.material.surface)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -111,12 +114,12 @@ fun NewEventScreen(
                 .padding(all = dimensionResource(id = R.dimen.size_16dp))
                 .background(
                     shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
-                    color = Color.White
+                    color = MaterialTheme.appColors.material.background
                 )
         ) {
             AppText(
                 text = stringResource(id = R.string.event_type),
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.textField.labelColor,
                 style = MaterialTheme.typography.h6,
                 modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp))
             )
@@ -338,7 +341,7 @@ fun PracticeScreen(
 
     Box {
         Column {
-            Divider(color = MaterialTheme.appColors.material.primary)
+            Divider(color = MaterialTheme.appColors.appDivider.dividerColor)
             PracticeItem(title = stringResource(R.string.event_name),
                 label = stringResource(id = R.string.enter_event_name),
                 selectedValue = state.eventName,
@@ -352,7 +355,7 @@ fun PracticeScreen(
                 },
                 onNotificationChange = {})
 
-            Divider(color = MaterialTheme.appColors.material.primary)
+            Divider(color = MaterialTheme.appColors.appDivider.dividerColor)
             PracticeItem(title = stringResource(R.string.date),
                 icon = painterResource(id = R.drawable.ic_calender),
                 label = stringResource(id = R.string.select_date),
@@ -365,7 +368,7 @@ fun PracticeScreen(
                 },
                 onNotificationChange = {})
 
-            Divider(color = MaterialTheme.appColors.material.primary)
+            Divider(color = MaterialTheme.appColors.appDivider.dividerColor)
 
             /* PracticeItem(title = stringResource(R.string.arrival_time),
                  label = stringResource(id = R.string.select_arrival_time),
@@ -383,7 +386,7 @@ fun PracticeScreen(
                 modifier = Modifier
                     .height(dimensionResource(id = R.dimen.size_56dp))
                     .fillMaxWidth()
-                    .background(color = Color.White),
+                    .background(color = Color.Transparent),
                 verticalArrangement = Arrangement.Center
             ) {
                 Row(
@@ -407,7 +410,7 @@ fun PracticeScreen(
                     AppText(
                         text = stringResource(id = R.string.arrival_time),
                         style = MaterialTheme.typography.h6,
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.textField.labelColor,
                     )
                     Row(verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.End,
@@ -429,7 +432,7 @@ fun PracticeScreen(
                             AppText(
                                 text = state.selectedArrivalTime,
                                 style = MaterialTheme.typography.h5,
-                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                color = MaterialTheme.appColors.textField.labelColor,
                                 fontWeight = FontWeight.W500
                             )
                             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_14dp)))
@@ -519,7 +522,7 @@ fun PracticeScreen(
                  }
              }
  */
-            Divider(color = MaterialTheme.appColors.material.primary)
+            Divider(color = MaterialTheme.appColors.appDivider.dividerColor)
 
             PracticeItem(title = stringResource(R.string.start_time),
                 label = stringResource(id = R.string.select_start_time),
@@ -533,7 +536,7 @@ fun PracticeScreen(
                 },
                 onNotificationChange = {})
 
-            Divider(color = MaterialTheme.appColors.material.primary)
+            Divider(color = MaterialTheme.appColors.appDivider.dividerColor)
 
             PracticeItem(title = stringResource(R.string.end_time),
                 label = stringResource(id = R.string.select_end_time),
@@ -548,12 +551,12 @@ fun PracticeScreen(
                 },
                 onNotificationChange = {})
 
-            Divider(color = MaterialTheme.appColors.material.primary)
+            Divider(color = MaterialTheme.appColors.appDivider.dividerColor)
 
             PracticeItem(title = stringResource(R.string.location),
                 label = stringResource(R.string.select_location),
                 icon = painterResource(id = R.drawable.ic_next),
-                color = MaterialTheme.appColors.buttonColor.bckgroundDisabled,
+                color = MaterialTheme.appColors.buttonColor.backgroundDisabled,
 //                selectedValue = state.selectedLocation,
                 selectedValue = venue,
                 onSelectedValueChange = {
@@ -564,12 +567,12 @@ fun PracticeScreen(
                 },
                 onNotificationChange = {})
 
-            Divider(color = MaterialTheme.appColors.material.primary)
+            Divider(color = MaterialTheme.appColors.appDivider.dividerColor)
 
             PracticeItem(title = stringResource(R.string.address),
                 label = stringResource(R.string.send_address),
                 icon = painterResource(id = R.drawable.ic_next),
-                color = MaterialTheme.appColors.buttonColor.bckgroundDisabled,
+                color = MaterialTheme.appColors.buttonColor.backgroundDisabled,
                 selectedValue = state.selectedAddress.street,
                 onSelectedValueChange = {
 
@@ -591,12 +594,12 @@ fun PracticeScreen(
                 },
                 onNotificationChange = {})
 
-            Divider(color = MaterialTheme.appColors.material.primary)
+            Divider(color = MaterialTheme.appColors.appDivider.dividerColor)
 
             AppText(
                 text = stringResource(id = R.string.pre_practive_head),
                 style = MaterialTheme.typography.h6,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.textField.labelColor,
                 modifier = Modifier.padding(dimensionResource(id = R.dimen.size_16dp)),
             )
 
@@ -621,15 +624,16 @@ fun PracticeScreen(
                     focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
                     unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
                     backgroundColor = MaterialTheme.appColors.material.background,
-                    textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    textColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                     placeholderColor = MaterialTheme.appColors.textField.label,
-                    cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                    cursorColor = MaterialTheme.appColors.buttonColor.backgroundEnabled
                 ),
                 singleLine = false,
-                maxLines = 6
+                maxLines = 6,
+                textStyle = TextStyle(color = MaterialTheme.appColors.textField.labelColor)
             )
 
-            Divider(color = MaterialTheme.appColors.material.primary)
+            Divider(color = MaterialTheme.appColors.appDivider.dividerColor)
 
             PracticeItem(stringResource(R.string.send_push_notification),
                 onlyIcon = true,
@@ -663,7 +667,7 @@ fun PracticeItem(
     val focusManager = LocalFocusManager.current
 
     val customTextSelectionColors = TextSelectionColors(
-        handleColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+        handleColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
         backgroundColor = Color.Transparent
     )
 
@@ -675,7 +679,7 @@ fun PracticeItem(
         modifier = Modifier
             .height(dimensionResource(id = R.dimen.size_56dp))
             .fillMaxWidth()
-            .background(color = Color.White), contentAlignment = Alignment.Center
+            .background(color = Color.Transparent), contentAlignment = Alignment.Center
     ) {
         Row(
             modifier = Modifier
@@ -691,7 +695,7 @@ fun PracticeItem(
             AppText(
                 text = title,
                 style = MaterialTheme.typography.h6,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.textField.labelColor,
             )
             Row(verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End,
@@ -714,7 +718,7 @@ fun PracticeItem(
                             AppText(
                                 text = selectedValue,
                                 style = MaterialTheme.typography.h5,
-                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                color = MaterialTheme.appColors.textField.labelColor,
                                 fontWeight = FontWeight.W500
                             )
                             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_14dp)))
@@ -730,9 +734,9 @@ fun PracticeItem(
                                         backgroundColor = Color.Transparent,
                                         focusedBorderColor = Color.Transparent,
                                         unfocusedBorderColor = Color.Transparent,
-                                        cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                        cursorColor = MaterialTheme.appColors.textField.labelColor,
                                     ),
-                                    textStyle = MaterialTheme.typography.overline,
+                                    textStyle = MaterialTheme.typography.overline.copy(color = MaterialTheme.appColors.textField.labelColor),
                                     singleLine = true,
                                     keyboardOptions = KeyboardOptions(
                                         imeAction = ImeAction.Done,

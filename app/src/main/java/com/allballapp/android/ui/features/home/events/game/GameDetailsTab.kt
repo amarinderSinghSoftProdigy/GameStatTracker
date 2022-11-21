@@ -55,7 +55,7 @@ fun GameDetailsTab(vm: EventViewModel, moveToGameRules: () -> Unit) {
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
                 AppText(
                     text = stringResource(id = R.string.events_info),
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                     style = MaterialTheme.typography.h5,
                     fontWeight = FontWeight.W500
                 )
@@ -72,7 +72,7 @@ fun GameDetailsTab(vm: EventViewModel, moveToGameRules: () -> Unit) {
                     ) {
                         Text(
                             text = "6:00pm",
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                             fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
                             style = MaterialTheme.typography.h3
                         )
@@ -105,14 +105,14 @@ fun GameDetailsTab(vm: EventViewModel, moveToGameRules: () -> Unit) {
                 Row {
                     AppText(
                         text = "5:45 PM",
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         style = MaterialTheme.typography.h5,
                         modifier = Modifier.weight(1f)
 
                     )
                     AppText(
                         text = "6:00 PM - 7:00 PM",
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         style = MaterialTheme.typography.h5,
                         modifier = Modifier.weight(1f)
                     )
@@ -181,7 +181,7 @@ fun GameDetailsTab(vm: EventViewModel, moveToGameRules: () -> Unit) {
                         end = dimensionResource(id = R.dimen.size_16dp)
                     ),
                 text = stringResource(id = R.string.rsvp),
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                 style = MaterialTheme.typography.h5,
                 fontWeight = FontWeight.W500
             )
@@ -211,7 +211,7 @@ fun GameDetailsTab(vm: EventViewModel, moveToGameRules: () -> Unit) {
 
                         Text(
                             text = "John",
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                             style = MaterialTheme.typography.h5,
                             fontWeight = FontWeight.W500
                         )
@@ -242,14 +242,14 @@ fun GameDetailsTab(vm: EventViewModel, moveToGameRules: () -> Unit) {
                 ) {
                     AppText(
                         text = stringResource(id = R.string.jersey_color),
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         style = MaterialTheme.typography.h5,
                         modifier = Modifier.weight(1f),
                         fontWeight = FontWeight.W500
                     )
                     Text(
                         text = "Light",
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         style = MaterialTheme.typography.h5,
                         fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
                     )
@@ -267,7 +267,7 @@ fun GameDetailsTab(vm: EventViewModel, moveToGameRules: () -> Unit) {
 
                 Text(
                     text = stringResource(id = R.string.pre_game_head),
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                     style = MaterialTheme.typography.h5,
                     fontWeight = FontWeight.W500
                 )
@@ -275,7 +275,7 @@ fun GameDetailsTab(vm: EventViewModel, moveToGameRules: () -> Unit) {
 
                 Text(
                     text = "Risus enim egestas placerat adipiscing accumsan velit nam varius. Vulputate habitant vitae at laoreet. Arcu, vitae mi enim, aenean. Egestas cras venenatis dis augue felis.",
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                     style = MaterialTheme.typography.h5
 
                 )
@@ -302,7 +302,7 @@ fun GameDetailsTab(vm: EventViewModel, moveToGameRules: () -> Unit) {
 
                     AppText(
                         text = "Coach Sam",
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         style = MaterialTheme.typography.h6
                     )
                 }
@@ -323,7 +323,7 @@ fun GameDetailsTab(vm: EventViewModel, moveToGameRules: () -> Unit) {
                 ) {
                     Text(
                         text = stringResource(id = R.string.games_rules),
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.weight(1f)
@@ -372,7 +372,7 @@ fun TeamItem(title: String, color: Color) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
             AppText(
                 text = title,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                 style = MaterialTheme.typography.h6,
 
                 )

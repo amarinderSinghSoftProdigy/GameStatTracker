@@ -49,7 +49,7 @@ fun AppSearchOutlinedTextField(
     errorMessage: String = ""
 ) {
     val customTextSelectionColors = TextSelectionColors(
-        handleColor = if (!isError) MaterialTheme.appColors.buttonColor.bckgroundEnabled else MaterialTheme.colors.error,
+        handleColor = if (!isError) MaterialTheme.appColors.buttonColor.backgroundEnabled else MaterialTheme.colors.error,
         backgroundColor = Color.Transparent
     )
     Column(modifier = modifier, verticalArrangement = Arrangement.Center) {
@@ -115,7 +115,7 @@ fun AppSearchOutlinedTextField2(
     errorMessage: String = ""
 ) {
     val customTextSelectionColors = TextSelectionColors(
-        handleColor = if (!isError) MaterialTheme.appColors.buttonColor.bckgroundEnabled else MaterialTheme.colors.error,
+        handleColor = if (!isError) MaterialTheme.appColors.buttonColor.backgroundEnabled else MaterialTheme.colors.error,
         backgroundColor = Color.Transparent
     )
     Column(modifier = modifier, verticalArrangement = Arrangement.Center) {

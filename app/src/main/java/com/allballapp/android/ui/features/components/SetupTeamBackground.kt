@@ -40,10 +40,11 @@ fun CoachFlowBackground(
     }
     val interactionSource = remember { MutableInteractionSource() }
 
-    Surface(color = Color.Transparent) {
+    Surface(color = MaterialTheme.appColors.material.surface) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
+//                .background(MaterialTheme.appColors.material.surface)
                 .background(color = Color.Transparent)
         ) {
             Surface(
@@ -105,6 +106,7 @@ fun CoachFlowBackground(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
+
                     .clickable(
                         interactionSource = interactionSource,
                         indication = null
@@ -167,7 +169,7 @@ fun CoachFlowBackground(
                                 Modifier
                                     .width(dimensionResource(id = R.dimen.size_150dp))
                                     .background(
-                                        color = Color.White,
+                                        color = MaterialTheme.appColors.material.background,
                                         RoundedCornerShape(dimensionResource(id = R.dimen.size_10dp))
                                     )
                             ) {
@@ -237,7 +239,7 @@ fun OptionItem(label: String, resource: Int, click: () -> Unit) {
         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
         AppText(
             text = label,
-            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            color = MaterialTheme.appColors.textField.labelColor,
             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             style = MaterialTheme.typography.h5,
             overflow = TextOverflow.Ellipsis,
@@ -250,7 +252,7 @@ fun OptionItem(label: String, resource: Int, click: () -> Unit) {
 fun UserFlowBackground(
     modifier: Modifier = Modifier,
     padding: Dp? = dimensionResource(id = R.dimen.size_16dp),
-    color: Color? = MaterialTheme.appColors.material.surface,
+    color: Color? = MaterialTheme.appColors.material.background,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Surface(
@@ -258,7 +260,7 @@ fun UserFlowBackground(
             .fillMaxSize()
             .padding(all = padding ?: 0.dp),
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
-        color = color ?: MaterialTheme.appColors.material.surface
+        color = color ?: MaterialTheme.appColors.material.background
     ) {
         Column {
             content()

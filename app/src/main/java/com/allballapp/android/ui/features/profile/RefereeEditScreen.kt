@@ -36,7 +36,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
-import com.allballapp.android.BuildConfig
 import com.allballapp.android.R
 import com.allballapp.android.common.ComposeFileProvider
 import com.allballapp.android.common.isValidEmail
@@ -165,11 +164,12 @@ fun RefereeEditScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(color = MaterialTheme.appColors.material.surface)
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
+                UserFlowBackground(modifier = Modifier.fillMaxWidth(),/* color = Color.White*/) {
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -286,13 +286,13 @@ fun RefereeEditScreen(
                 AppText(
                     text = stringResource(id = R.string.mailing_address),
                     style = MaterialTheme.typography.h2,
-                    color = ColorBWBlack,
+                    color = MaterialTheme.appColors.textField.labelColor,
                     modifier = Modifier
                         .padding(start = dimensionResource(id = R.dimen.size_16dp))
                         .fillMaxWidth(),
                 )
 
-                UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
+                UserFlowBackground(modifier = Modifier.fillMaxWidth(),/* color = Color.White*/) {
                     AppOutlineTextField(
                         value = state.user.address,
                         modifier = Modifier
@@ -314,9 +314,9 @@ fun RefereeEditScreen(
                             focusedBorderColor = Color.Transparent,
                             unfocusedBorderColor = Color.Transparent,
                             backgroundColor = MaterialTheme.appColors.material.background,
-                            textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            textColor = MaterialTheme.appColors.textField.labelColor,
                             placeholderColor = MaterialTheme.appColors.textField.label,
-                            cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                            cursorColor = MaterialTheme.appColors.textField.labelColor
                         ),
                         singleLine = false,
                         maxLines = 6
@@ -328,14 +328,14 @@ fun RefereeEditScreen(
                     AppText(
                         text = stringResource(id = R.string.teams),
                         style = MaterialTheme.typography.h2,
-                        color = ColorBWBlack,
+                        color = MaterialTheme.appColors.textField.labelColor,
                         modifier = Modifier
                             .padding(start = dimensionResource(id = R.dimen.size_16dp))
                             .fillMaxWidth(),
                     )
 
 
-                    UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
+                    UserFlowBackground(modifier = Modifier.fillMaxWidth(), /*color = Color.White*/) {
                         state.user.teamDetails.forEach {
                             RefereeTeams(
                                 teams = it,
@@ -346,12 +346,12 @@ fun RefereeEditScreen(
                 AppText(
                     text = stringResource(id = R.string.refereeing_experience),
                     style = MaterialTheme.typography.h2,
-                    color = ColorBWBlack,
+                    color = MaterialTheme.appColors.textField.labelColor,
                     modifier = Modifier
                         .padding(start = dimensionResource(id = R.dimen.size_16dp))
                         .fillMaxWidth()
                 )
-                UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
+                UserFlowBackground(modifier = Modifier.fillMaxWidth(), /*color = Color.White*/) {
                     DistanceItem(
                         if (state.user.userDetails.refereeningExperience.isEmpty()) 0
                         else
@@ -365,7 +365,7 @@ fun RefereeEditScreen(
                         AppText(
                             text = stringResource(id = R.string.about_exp),
                             style = MaterialTheme.typography.h6,
-                            color = ColorBWBlack,
+                            color = MaterialTheme.appColors.textField.labelColor,
                         )
 
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
@@ -388,9 +388,9 @@ fun RefereeEditScreen(
                                 focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
                                 unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
                                 backgroundColor = MaterialTheme.appColors.material.background,
-                                textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                textColor = MaterialTheme.appColors.textField.labelColor,
                                 placeholderColor = MaterialTheme.appColors.textField.label,
-                                cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                                cursorColor = MaterialTheme.appColors.textField.labelColor
                             ),
                             singleLine = false,
                             maxLines = 6
@@ -401,13 +401,13 @@ fun RefereeEditScreen(
                 AppText(
                     text = stringResource(id = R.string.team_age_preference),
                     style = MaterialTheme.typography.h2,
-                    color = ColorBWBlack,
+                    color = MaterialTheme.appColors.textField.labelColor,
                     modifier = Modifier
                         .padding(start = dimensionResource(id = R.dimen.size_16dp))
                         .fillMaxWidth(),
                 )
 
-                UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
+                UserFlowBackground(modifier = Modifier.fillMaxWidth(),/* color = Color.White*/) {
 
                     EditProfileFields(
                         state.user.userDetails.teamAgePerference,
@@ -450,7 +450,8 @@ fun RefereeEditScreen(
                             }) {
                                 Text(
                                     text = label,
-                                    textAlign = TextAlign.Center
+                                    textAlign = TextAlign.Center,
+                                    color = MaterialTheme.appColors.textField.labelColor
                                 )
                             }
                         }
@@ -467,7 +468,7 @@ fun RefereeEditScreen(
                     AppText(
                         text = stringResource(id = R.string.prefered_partner),
                         style = MaterialTheme.typography.h2,
-                        color = ColorBWBlack,
+                        color = MaterialTheme.appColors.textField.labelColor,
                     )
 
                     Icon(
@@ -477,7 +478,7 @@ fun RefereeEditScreen(
                     )
                 }
 
-                UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
+                UserFlowBackground(modifier = Modifier.fillMaxWidth(),/* color = Color.White*/) {
 
                     Row(
                         modifier = Modifier
@@ -489,7 +490,7 @@ fun RefereeEditScreen(
                         AppText(
                             text = stringResource(id = R.string.select_partner),
                             style = MaterialTheme.typography.h6,
-                            color = ColorBWBlack,
+                            color = MaterialTheme.appColors.textField.labelColor,
                         )
 
                         Row(
@@ -539,7 +540,7 @@ fun RefereeEditScreen(
                         AppText(
                             text = stringResource(id = R.string.referee_only_with_this_partner),
                             style = MaterialTheme.typography.h6,
-                            color = ColorBWBlack,
+                            color = MaterialTheme.appColors.textField.labelColor,
                         )
 
                         Switch(
@@ -637,7 +638,7 @@ fun RefereeTeams(
                     AppText(
                         text = teams.teamId.name,
                         style = MaterialTheme.typography.h5,
-                        color = ColorBWBlack
+                        color = MaterialTheme.appColors.textField.labelColor
                     )
                 }
                 ClickableText(
@@ -685,7 +686,7 @@ fun DistanceItem(age: Int, vm: ProfileViewModel) {
         modifier = Modifier
             .fillMaxWidth()
             .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-            .background(color = Color.White)
+            .background(color = MaterialTheme.appColors.material.background)
             .padding(
                 horizontal = dimensionResource(id = R.dimen.size_16dp),
                 vertical = dimensionResource(id = R.dimen.size_12dp)
@@ -695,7 +696,7 @@ fun DistanceItem(age: Int, vm: ProfileViewModel) {
         AppText(
             text = stringResource(id = R.string.years),
             style = MaterialTheme.typography.h6,
-            color = ColorBWBlack,
+            color = MaterialTheme.appColors.textField.labelColor,
             modifier = Modifier.weight(1F)
         )
         Image(
@@ -708,7 +709,7 @@ fun DistanceItem(age: Int, vm: ProfileViewModel) {
         )
         Text(
             text = distance.value.toString(),
-            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            color = MaterialTheme.appColors.textField.labelColor,
             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier

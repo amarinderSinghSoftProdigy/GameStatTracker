@@ -176,7 +176,7 @@ fun DivisionItems(
             text = item.divisionName,
             style = MaterialTheme.typography.h5,
             fontWeight = FontWeight.W500,
-            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
             modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
         )
 

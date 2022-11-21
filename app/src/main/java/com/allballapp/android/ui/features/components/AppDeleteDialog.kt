@@ -84,12 +84,13 @@ fun <T> DeleteDialog(
     BallerAppMainTheme {
         AlertDialog(
             onDismissRequest = onDismiss,
-            backgroundColor = Color.White,
+            backgroundColor = MaterialTheme.appColors.material.background,
             title = title,
             text = {
                 Text(
                     text = message,
-                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp
+                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                    color = MaterialTheme.appColors.textField.labelColor
                 )
             },
             buttons = {
@@ -159,7 +160,9 @@ fun SelectTeamDialog(
             buttons = {
                 Column(
                     modifier = Modifier
-                        .background(color = Color.White)
+                        .background(
+                            color = MaterialTheme.appColors.material.background
+                        )
                         .padding(
                             all = dimensionResource(
                                 id = R.dimen.size_16dp
@@ -173,6 +176,7 @@ fun SelectTeamDialog(
                             text = stringResource(id = R.string.pick_team),
                             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                             fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.appColors.textField.label
                         )
 
                         Icon(
@@ -298,7 +302,7 @@ fun ShowParentDialog(
                         AppText(
                             text = stringResource(id = R.string.parent),
                             style = MaterialTheme.typography.h5,
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                             fontWeight = FontWeight.W500
                         )
 
@@ -435,7 +439,7 @@ fun ConfirmDialog(
             buttons = {
                 Column(
                     modifier = Modifier
-                        .background(color = Color.White)
+                        .background(color = MaterialTheme.appColors.material.background)
                         .padding(all = dimensionResource(id = R.dimen.size_16dp))
                 ) {
                     if (heading.isNotEmpty()) {
@@ -443,6 +447,7 @@ fun ConfirmDialog(
                             text = heading,
                             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                             fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.appColors.textField.label
                         )
                         Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
                     }
@@ -450,13 +455,14 @@ fun ConfirmDialog(
                         text = title,
                         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                         fontWeight = FontWeight.W600,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.appColors.textField.labelColor
                     )
                     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(color = Color.White)
+                            .background(color = Color.Transparent)
                     ) {
                         DialogButton(
                             text = stringResource(R.string.dialog_button_cancel),
@@ -558,7 +564,7 @@ fun TeamListItem(team: Team, selected: Boolean, onClick: (Team) -> Unit) {
                 color = if (selected) {
                     MaterialTheme.appColors.buttonColor.textEnabled
                 } else {
-                    MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                    MaterialTheme.appColors.textField.labelColor
                 }
             )
         }
@@ -617,7 +623,7 @@ fun UserListItem(user: SwapUser, selected: Boolean, onClick: (String) -> Unit) {
                 color = if (selected) {
                     MaterialTheme.appColors.buttonColor.textEnabled
                 } else {
-                    MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                    MaterialTheme.appColors.buttonColor.backgroundEnabled
                 }
             )
         }
@@ -711,7 +717,7 @@ fun AddPlayerDialog(
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             focusedBorderColor = ColorBWGrayBorder,
                             unfocusedBorderColor = ColorBWGrayBorder,
-                            cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            cursorColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                             backgroundColor = MaterialTheme.appColors.material.background
                         ),
                         placeholder = {
@@ -909,7 +915,7 @@ fun SelectInvitationRoleDialog(
                         Text(
                             text = title,
                             style = MaterialTheme.typography.h5,
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                             fontWeight = FontWeight.W500,
                         )
 
@@ -961,7 +967,7 @@ fun SelectInvitationRoleDialog(
                             AppText(
                                 text = userName,
                                 style = MaterialTheme.typography.h3,
-                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                                color = MaterialTheme.appColors.buttonColor.backgroundEnabled
                             )
 
                             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
@@ -1160,7 +1166,7 @@ fun SelectGuardianRoleItem(
 
         AppText(
             text = name.capitalize(),
-            color = if (isSelected) MaterialTheme.appColors.buttonColor.bckgroundEnabled else ColorBWGrayMedium,
+            color = if (isSelected) MaterialTheme.appColors.buttonColor.backgroundEnabled else ColorBWGrayMedium,
             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             style = MaterialTheme.typography.h6,
             overflow = TextOverflow.Ellipsis,
@@ -1218,7 +1224,7 @@ fun SelectGuardianRoleDialog(
                                 ),
 
                                 style = MaterialTheme.typography.h5,
-                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                                 fontWeight = FontWeight.W500
                             )
                         }
@@ -1849,9 +1855,9 @@ fun DeclineEventDialog(
                             focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
                             unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
                             backgroundColor = MaterialTheme.appColors.material.background,
-                            textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            textColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                             placeholderColor = MaterialTheme.appColors.textField.label,
-                            cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                            cursorColor = MaterialTheme.appColors.buttonColor.backgroundEnabled
 
                         ),
                         keyboardActions = KeyboardActions(onDone = {
@@ -1919,7 +1925,7 @@ fun SwapProfile(
             buttons = {
                 Column(
                     modifier = Modifier
-                        .background(color = Color.White)
+                        .background(color = MaterialTheme.appColors.material.background)
                         .padding(
                             all = dimensionResource(
                                 id = R.dimen.size_16dp
@@ -1933,6 +1939,7 @@ fun SwapProfile(
                             text = title.ifEmpty { stringResource(id = R.string.swap_profiles) },
                             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                             fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.appColors.textField.label
                         )
 
                         Icon(
@@ -1961,7 +1968,9 @@ fun SwapProfile(
                     ) {
                         item {
                             if (showLoading) {
-                                CommonProgressBar()
+                                CommonProgressBar(
+                                    bgColor = MaterialTheme.appColors.material.background
+                                )
                             }
                         }
                         item {
@@ -1985,14 +1994,15 @@ fun SwapProfile(
                             text = stringResource(id = R.string.add_new_profile),
                             onClick = { onCreatePlayerClick.invoke() },
                             painter = painterResource(id = R.drawable.ic_add_button),
-                            isTransParent = true
+                            isTransParent = true,
+                            colors = MaterialTheme.appColors.buttonColor
 
                         )
                     }
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(color = Color.White)
+                            .background(color = Color.Transparent)
                             .padding(
                                 vertical = dimensionResource(id = R.dimen.size_16dp)
                             ),
@@ -2101,7 +2111,7 @@ fun AddPlayer(
                                 },
                                 colors = TextFieldDefaults.outlinedTextFieldColors(
                                     unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
-                                    cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                                    cursorColor = MaterialTheme.appColors.buttonColor.backgroundEnabled
 
                                 ),
                                 errorMessage = stringResource(id = R.string.valid_team_name)
@@ -2122,7 +2132,7 @@ fun AddPlayer(
                                 },
                                 colors = TextFieldDefaults.outlinedTextFieldColors(
                                     unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
-                                    cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                                    cursorColor = MaterialTheme.appColors.buttonColor.backgroundEnabled
 
                                 ),
                                 errorMessage = stringResource(id = R.string.valid_team_name)
@@ -2297,9 +2307,9 @@ fun AddNoteDialog(
                             focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
                             unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
                             backgroundColor = MaterialTheme.appColors.material.background,
-                            textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            textColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                             placeholderColor = MaterialTheme.appColors.textField.label,
-                            cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                            cursorColor = MaterialTheme.appColors.buttonColor.backgroundEnabled
 
                         ),
                         keyboardActions = KeyboardActions(onDone = {
@@ -2371,7 +2381,7 @@ fun AgeConfirmDialog(
             buttons = {
                 Column(
                     modifier = Modifier
-                        .background(color = Color.White)
+                        .background(color = MaterialTheme.appColors.material.background)
                         .padding(
                             all = dimensionResource(
                                 id = R.dimen.size_16dp
@@ -2385,6 +2395,7 @@ fun AgeConfirmDialog(
                             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                             fontWeight = FontWeight.Bold,
                             text = stringResource(id = R.string.age_conformation),
+                            color = MaterialTheme.appColors.textField.label,
                             modifier = Modifier
                                 .align(Alignment.CenterStart),
                         )
@@ -2403,7 +2414,7 @@ fun AgeConfirmDialog(
                     ) {
                         Text(
                             style = MaterialTheme.typography.h6,
-                            color = if (selected.value == 0) Color.White else MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            color = if (selected.value == 0) Color.White else MaterialTheme.appColors.textField.labelColor,
                             text = stringResource(id = R.string.age_zero),
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -2423,7 +2434,7 @@ fun AgeConfirmDialog(
                     ) {
                         Text(
                             style = MaterialTheme.typography.h6,
-                            color = if (selected.value == 1) Color.White else MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            color = if (selected.value == 1) Color.White else MaterialTheme.appColors.textField.labelColor,
                             text = stringResource(id = R.string.age_ok),
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -2483,7 +2494,7 @@ fun GuardianAuthorizeDialog(
                 ) {
                     Text(
                         style = MaterialTheme.typography.h6,
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         text = stringResource(id = R.string.authorize_message),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -2602,7 +2613,7 @@ fun InviteTeamMembersDialog(
                 }
                 Column(
                     modifier = Modifier
-                        .background(color = Color.White)
+                        .background(color = MaterialTheme.appColors.material.background)
                         .padding(
                             all = dimensionResource(
                                 id = R.dimen.size_16dp
@@ -2615,7 +2626,7 @@ fun InviteTeamMembersDialog(
                         Text(
                             text = stringResource(id = R.string.invite_team_member),
                             style = MaterialTheme.typography.h5,
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            color = MaterialTheme.appColors.textField.labelColor,
                             fontWeight = FontWeight.W500
                         )
                     }
@@ -2632,7 +2643,8 @@ fun InviteTeamMembersDialog(
                     }
 
                     UserFlowBackground(
-                        color = MaterialTheme.appColors.buttonColor.textEnabled, modifier = Modifier
+                        /*color = MaterialTheme.appColors.buttonColor.textEnabled*/
+                        modifier = Modifier
                             .height(
                                 dimensionResource(id = R.dimen.size_150dp)
                             )
@@ -2695,8 +2707,9 @@ fun InviteTeamMembersDialog(
                                             colors = TextFieldDefaults.outlinedTextFieldColors(
                                                 focusedBorderColor = ColorBWGrayBorder,
                                                 unfocusedBorderColor = ColorBWGrayBorder,
-                                                cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                                                backgroundColor = MaterialTheme.appColors.material.background
+                                                cursorColor = MaterialTheme.appColors.textField.labelColor,
+                                                backgroundColor = MaterialTheme.appColors.material.background,
+                                                textColor = MaterialTheme.appColors.textField.labelColor,
                                             ),
                                             placeholder = {
                                                 Text(
@@ -2775,7 +2788,8 @@ fun InviteTeamMembersDialog(
                                                     }) {
                                                         Text(
                                                             text = label.value,
-                                                            textAlign = TextAlign.Center
+                                                            textAlign = TextAlign.Center,
+                                                            color = MaterialTheme.appColors.textField.labelColor
                                                         )
                                                     }
                                                 }
@@ -2942,7 +2956,7 @@ fun InfoBox(title: String, content: String, color: Color, onCancelClick: () -> U
                     text = title,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                     fontFamily = rubikFamily
                 )
 
@@ -3041,7 +3055,7 @@ fun InvitationSuccessfullySentDialog(
                         ),
                         fontSize = dimensionResource(id = R.dimen.txt_size_18).value.sp,
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         fontFamily = rubikFamily,
                         textAlign = TextAlign.Center
                     )
@@ -3054,7 +3068,7 @@ fun InvitationSuccessfullySentDialog(
                         ),
                         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                         fontWeight = FontWeight.W400,
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         fontFamily = rubikFamily,
                         textAlign = TextAlign.Center
                     )
@@ -3102,7 +3116,7 @@ fun NumberPickerDialog(
             buttons = {
                 Column(
                     modifier = Modifier
-                        .background(color = Color.White)
+                        .background(color = MaterialTheme.appColors.material.background)
                         .padding(
                             all = dimensionResource(
                                 id = R.dimen.size_16dp
@@ -3141,7 +3155,7 @@ fun NumberPickerDialog(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(color = Color.White),
+                            .background(color = Color.Transparent),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         DialogButton(
@@ -3217,7 +3231,7 @@ fun PaymentPickerDialog(
                     ) {
                         AppText(
                             text = stringResource(id = R.string.select_payment_option),
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                             style = MaterialTheme.typography.h6
                         )
@@ -3254,7 +3268,7 @@ fun PaymentPickerDialog(
 
                             AppText(
                                 text = it,
-                                color = if (it == selectedOption) Color.White else MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                color = if (it == selectedOption) Color.White else MaterialTheme.appColors.buttonColor.backgroundEnabled,
                                 style = MaterialTheme.typography.h6,
                                 modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_5dp))
                             )

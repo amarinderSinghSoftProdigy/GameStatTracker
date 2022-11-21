@@ -21,7 +21,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
-import com.allballapp.android.BuildConfig
 import com.allballapp.android.data.response.GameSummaryResponse
 import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.theme.ColorBWBlack
@@ -234,7 +233,7 @@ fun SummaryTabItem(
                         text = " " + summary.desc,
                         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                         color =
-                        MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                        MaterialTheme.appColors.buttonColor.backgroundEnabled
                     )
                 }
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_4dp)))

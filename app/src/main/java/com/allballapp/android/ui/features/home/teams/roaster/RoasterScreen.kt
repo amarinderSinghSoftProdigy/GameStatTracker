@@ -41,6 +41,7 @@ fun RoasterScreen(vm: TeamViewModel, onAddPlayerClick: () -> Unit, showAddButton
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(color = MaterialTheme.appColors.material.surface)
     ) {
         if (state.isLoading) {
             CommonProgressBar()
@@ -49,13 +50,13 @@ fun RoasterScreen(vm: TeamViewModel, onAddPlayerClick: () -> Unit, showAddButton
                 Column(modifier = Modifier.align(Alignment.Center)) {
                     AppText(
                         text = stringResource(id = R.string.no_players_in_team),
-                        color = ColorBWBlack,
+                        color = MaterialTheme.appColors.textField.labelColor,
                         style = MaterialTheme.typography.h3
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
                     AppText(
                         text = stringResource(id = R.string.please_add_players),
-                        color = ColorBWBlack,
+                        color = MaterialTheme.appColors.textField.labelColor,
                         style = MaterialTheme.typography.h5
                     )
                 }
@@ -171,13 +172,13 @@ fun ShowHeading(id: Int, count: String) {
             text = stringResource(id = id),
             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             style = MaterialTheme.typography.h6,
-            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            color = MaterialTheme.appColors.textField.labelColor,
             fontWeight = FontWeight.Bold,
         )
         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
         Text(
             text = "(${count})",
-            color = MaterialTheme.appColors.textField.labelDark,
+            color = MaterialTheme.appColors.textField.labelColor,
             fontWeight = FontWeight.W400,
             fontSize = dimensionResource(
                 id = R.dimen.txt_size_12
@@ -213,7 +214,7 @@ fun CoachListItem(
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
         AppText(
             text = ("${data.firstName} ${data.lastName}").capitalize(),
-            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            color = MaterialTheme.appColors.textField.labelColor,
             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             style = MaterialTheme.typography.h6,
             overflow = TextOverflow.Ellipsis,

@@ -138,18 +138,18 @@ fun AddPlayersScreenUpdated(
         }
     }
 
-    Box(Modifier.fillMaxSize()) {
+    Box(Modifier.fillMaxSize().background(color = MaterialTheme.appColors.material.surface)) {
         Column(
             Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.Top
         ) {
-            UserFlowBackground(color = MaterialTheme.appColors.buttonColor.textEnabled) {
+            UserFlowBackground(color = MaterialTheme.appColors.material.background) {
                 if (state.memberList.isNotEmpty() && teamData != null) {
                     FoldableItem(
                         expanded = expanded.value,
-                        headerBackground = MaterialTheme.appColors.material.surface,
+                        headerBackground = MaterialTheme.appColors.material.background,
                         headerBorder = BorderStroke(0.dp, Color.Transparent),
                         header = { isExpanded ->
                             TeamMemberItem(
@@ -385,7 +385,7 @@ fun InviteItem(
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = ColorBWGrayBorder,
                     unfocusedBorderColor = ColorBWGrayBorder,
-                    cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    cursorColor = MaterialTheme.appColors.textField.labelColor,
                     backgroundColor = MaterialTheme.appColors.material.background
                 ),
                 placeholder = {
@@ -399,13 +399,14 @@ fun InviteItem(
                 isError = !validName(item.name)
                         && item.name.isNotEmpty(),
                 errorMessage = stringResource(id = R.string.valid_first_name),
-            )
+                textStyle = TextStyle().copy(textAlign = TextAlign.Start , color = MaterialTheme.appColors.textField.labelColor),
+                )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
             Box(modifier = Modifier.weight(1f)) {
                 Column {
                     EditFields(
                         roleObject.value.value,
-                        textStyle = TextStyle().copy(textAlign = TextAlign.Start),
+                        textStyle = TextStyle().copy(textAlign = TextAlign.Start , color = MaterialTheme.appColors.textField.labelColor),
                         onValueChange = {},
                         head = "",
                         keyboardOptions = KeyboardOptions(
@@ -443,7 +444,7 @@ fun InviteItem(
                         onDismissRequest = { expanded = false },
                         modifier = Modifier
                             .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
-                            .background(MaterialTheme.colors.background)
+                            .background(MaterialTheme.appColors.material.background)
                     ) {
                         roles.forEach { label ->
                             DropdownMenuItem(onClick = {
@@ -459,7 +460,8 @@ fun InviteItem(
                             }) {
                                 Text(
                                     text = label.value,
-                                    textAlign = TextAlign.Center
+                                    textAlign = TextAlign.Center,
+                                    color = MaterialTheme.appColors.textField.labelColor
                                 )
                             }
                         }
@@ -539,9 +541,9 @@ fun InviteItem(
                 defaultCountry = getLibCountries().single { it.countryCode == defaultLang },
                 focusedBorderColor = Color.Transparent,
                 unfocusedBorderColor = Color.Transparent,
-                dialogAppBarTextColor = Color.Black,
+                dialogAppBarTextColor = MaterialTheme.appColors.textField.labelColor,
                 showCountryFlag = false,
-                dialogAppBarColor = Color.White,
+                dialogAppBarColor = MaterialTheme.appColors.material.surface,
                 error = true,
                 text = item.contact,
                 onValueChange = { contact ->
@@ -555,7 +557,7 @@ fun InviteItem(
 
                 },
                 readOnly = false,
-                cursorColor = Color.Black,
+                cursorColor = MaterialTheme.appColors.textField.labelColor,
                 placeHolder = {
                     Text(
                         text = stringResource(id = R.string.phone_num),
@@ -631,7 +633,7 @@ fun TeamMemberItem(
 
     Box(
         Modifier
-            .background(Color.White)
+            .background(MaterialTheme.appColors.material.background)
             .fillMaxWidth()
             .padding(
                 horizontal = dimensionResource(id = R.dimen.size_16dp),
@@ -659,7 +661,7 @@ fun TeamMemberItem(
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
             Text(
                 text = data.name,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.textField.labelColor,
                 style = MaterialTheme.typography.h5,
                 fontWeight = FontWeight.SemiBold
             )
@@ -678,7 +680,7 @@ fun TeamMemberItem(
                     GreenColor
                 }
                 else -> {
-                    MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                    MaterialTheme.appColors.textField.labelColor
                 }
             }
 

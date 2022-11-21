@@ -59,10 +59,10 @@ fun AppButton(
             if (themed) {
                 AppConstants.SELECTED_COLOR
             } else {
-                colors.bckgroundEnabled
+                colors.backgroundEnabled /*MaterialTheme.colors.background*/
             }
         } else
-            colors.bckgroundDisabled,
+            colors.backgroundDisabled,
         contentColor = contentColor.copy(alpha = 1f),
         border = border,
         elevation = if (enabled && icon != null) {
@@ -191,7 +191,7 @@ fun ButtonWithLeadingIcon(
             )
             .background(
                 color = if (noTheme) {
-                    MaterialTheme.appColors.material.onSurface
+                    MaterialTheme.appColors.buttonColor.backgroundEnabled
                 } else if (isTransParent) {
                     MaterialTheme.appColors.material.surface
                 } else {

@@ -53,7 +53,10 @@ fun ManageTeamLeaderBoard(vm: TeamViewModel) {
     val onLeaderSelectionChange = { leader: TeamLeaderBoard ->
         vm.onEvent(TeamUIEvent.OnItemSelected(leader.name))
     }
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(
+        modifier = Modifier.fillMaxSize()
+            .background(color = MaterialTheme.appColors.material.surface)
+    ) {
         Column(
             modifier = Modifier.padding(
                 top = dimensionResource(id = R.dimen.size_16dp),
@@ -72,7 +75,7 @@ fun ManageTeamLeaderBoard(vm: TeamViewModel) {
                     style = MaterialTheme.typography.h4,
                     fontWeight = FontWeight.W500,
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                    color = MaterialTheme.appColors.textField.labelColor
                 )
 
                 Row(
@@ -92,7 +95,7 @@ fun ManageTeamLeaderBoard(vm: TeamViewModel) {
                             .border(
                                 width = if (!state.all) dimensionResource(id = R.dimen.size_1dp) else 0.dp,
                                 shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)),
-                                color = if (!state.all) MaterialTheme.appColors.buttonColor.bckgroundDisabled else Color.Transparent
+                                color = if (!state.all) MaterialTheme.appColors.buttonColor.backgroundDisabled else Color.Transparent
                             )
                     ) {
                         Icon(
@@ -103,7 +106,7 @@ fun ManageTeamLeaderBoard(vm: TeamViewModel) {
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
                     AppText(
                         text = stringResource(id = R.string.select_all),
-                        color = if (state.all) MaterialTheme.appColors.buttonColor.bckgroundEnabled else ColorGreyLighter,
+                        color = if (state.all) MaterialTheme.appColors.textField.labelColor else ColorGreyLighter,
                         style = if (state.all) MaterialTheme.typography.h6 else MaterialTheme.typography.h4,
                         fontSize = dimensionResource(id = R.dimen.txt_size_10).value.sp,
                     )
@@ -116,7 +119,7 @@ fun ManageTeamLeaderBoard(vm: TeamViewModel) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(
-                        color = Color.White,
+                        color = MaterialTheme.appColors.material.background,
                         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                     )
                     .then(
@@ -141,6 +144,7 @@ fun ManageTeamLeaderBoard(vm: TeamViewModel) {
                             item = item,
                             status = status,
                             all = state.all,
+                            index = index,
                         ) {
                             vm.onEvent(TeamUIEvent.OnItemSelected(it.name))
                         }
@@ -151,7 +155,7 @@ fun ManageTeamLeaderBoard(vm: TeamViewModel) {
         if (state.isLoading) {
             CircularProgressIndicator(
                 modifier = Modifier.align(Alignment.Center),
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                color = MaterialTheme.appColors.textField.labelColor
             )
         }
     }
@@ -164,6 +168,7 @@ inline fun LeaderBoardItem(
     item: TeamLeaderBoard,
     status: Boolean,
     all: Boolean,
+    index: Int,
     crossinline onSelectionChange: (TeamLeaderBoard) -> Unit,
 ) {
     val selection = remember {
@@ -219,8 +224,8 @@ inline fun LeaderBoardItem(
                             if (all)
                                 Color.Transparent
                             else
-                                MaterialTheme.appColors.buttonColor.bckgroundDisabled
-                        } else MaterialTheme.appColors.buttonColor.bckgroundDisabled
+                                MaterialTheme.appColors.buttonColor.backgroundDisabled
+                        } else MaterialTheme.appColors.buttonColor.backgroundDisabled
                     )
             ) {
                 Icon(
@@ -235,10 +240,10 @@ inline fun LeaderBoardItem(
                 text = item.name.capitalize(),
                 color =
                 if (all) {
-                    MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                    MaterialTheme.appColors.textField.labelColor
                 } else {
                     if (selection.value) {
-                        MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                        MaterialTheme.appColors.textField.labelColor
                     } else ColorGreyLighter
                 },
                 style = MaterialTheme.typography.h6
@@ -252,5 +257,6 @@ inline fun LeaderBoardItem(
                 .size(dimensionResource(id = R.dimen.size_12dp))
         )
     }
-    AppDivider(color = MaterialTheme.colors.primary)
+    if (index !=0)
+    AppDivider(color = MaterialTheme.appColors.appDivider.dividerColor)
 }

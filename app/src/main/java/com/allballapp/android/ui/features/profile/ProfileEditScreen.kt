@@ -206,11 +206,12 @@ fun ProfileEditScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
+                    .background(color = MaterialTheme.appColors.material.surface)
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
 
-                UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
+                UserFlowBackground(modifier = Modifier.fillMaxWidth(), /*color = Color.White*/) {
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -231,7 +232,7 @@ fun ProfileEditScreen(
                                 isCrossFadeEnabled = false,
                                 onLoading = { Placeholder(R.drawable.ic_user_profile_icon) },
                                 onError = { Placeholder(R.drawable.ic_user_profile_icon) },
-                                contentScale = ContentScale.Fit
+                                contentScale = ContentScale.Crop
                             )
                             Box(
                                 modifier = Modifier
@@ -385,13 +386,13 @@ fun ProfileEditScreen(
                 AppText(
                     text = stringResource(id = R.string.positons),
                     style = MaterialTheme.typography.h2,
-                    color = ColorBWBlack,
+                    color = MaterialTheme.appColors.textField.labelColor,
                     modifier = Modifier
                         .padding(start = dimensionResource(id = R.dimen.size_16dp))
                         .fillMaxWidth()
                 )
 
-                UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
+                UserFlowBackground(modifier = Modifier.fillMaxWidth(), /*color = Color.White*/) {
                     Row(modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp))) {
                         state.positionPlayed.forEachIndexed { index, item ->
                             CheckBoxItem(item = item, onCheckedChange = {
@@ -404,12 +405,12 @@ fun ProfileEditScreen(
                 AppText(
                     text = stringResource(id = R.string.teams_label),
                     style = MaterialTheme.typography.h2,
-                    color = ColorBWBlack,
+                    color = MaterialTheme.appColors.textField.labelColor,
                     modifier = Modifier
                         .padding(start = dimensionResource(id = R.dimen.size_16dp))
                         .fillMaxWidth(),
                 )
-                UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
+                UserFlowBackground(modifier = Modifier.fillMaxWidth(),/* color = Color.White*/) {
                     Teams(
                         teams = state.user.teamDetails,
                         onLeaveTeamClick = { index, teamId ->
@@ -433,12 +434,12 @@ fun ProfileEditScreen(
                 AppText(
                     text = stringResource(id = R.string.jersey_pref),
                     style = MaterialTheme.typography.h2,
-                    color = ColorBWBlack,
+                    color = MaterialTheme.appColors.textField.labelColor,
                     modifier = Modifier
                         .padding(start = dimensionResource(id = R.dimen.size_16dp))
                         .fillMaxWidth()
                 )
-                UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
+                UserFlowBackground(modifier = Modifier.fillMaxWidth(), /*color = Color.White*/) {
                     EditProfileFields(
                         data =
                         state.jerseyNumerPerferences,
@@ -489,9 +490,10 @@ fun ProfileEditScreen(
                                     vm.onEvent(ProfileEvent.OnGenderChange(label))
                                     expanded = false
                                 }) {
-                                    androidx.compose.material.Text(
+                                    Text(
                                         text = label,
-                                        textAlign = TextAlign.Center
+                                        textAlign = TextAlign.Center,
+                                        color = MaterialTheme.appColors.textField.labelColor
                                     )
                                 }
                             }
@@ -531,7 +533,8 @@ fun ProfileEditScreen(
                                 }) {
                                     Text(
                                         text = label,
-                                        textAlign = TextAlign.Center
+                                        textAlign = TextAlign.Center,
+                                        color = MaterialTheme.appColors.textField.labelColor
                                     )
                                 }
                             }
@@ -575,7 +578,8 @@ fun ProfileEditScreen(
                                 }) {
                                     Text(
                                         text = label,
-                                        textAlign = TextAlign.Center
+                                        textAlign = TextAlign.Center,
+                                        color = MaterialTheme.appColors.textField.labelColor
                                     )
                                 }
                             }
@@ -585,12 +589,12 @@ fun ProfileEditScreen(
                 AppText(
                     text = stringResource(id = R.string.fun_facts),
                     style = MaterialTheme.typography.h2,
-                    color = ColorBWBlack,
+                    color = MaterialTheme.appColors.textField.labelColor,
                     modifier = Modifier
                         .padding(start = dimensionResource(id = R.dimen.size_16dp))
                         .fillMaxWidth(),
                 )
-                UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
+                UserFlowBackground(modifier = Modifier.fillMaxWidth(), /*color = Color.White*/) {
 
 
                     EditProfileFields(
@@ -729,13 +733,13 @@ fun Teams(
         Column(
             Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.appColors.material.primary)
+//                .background(MaterialTheme.appColors.material.primary)
         ) {
             Column(
                 modifier = Modifier
                     .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
                     .fillMaxSize()
-                    .background(color = Color.White)
+//                    .background(color = Color.White)
             ) {
                 Row(
                     modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp)),
@@ -757,7 +761,7 @@ fun Teams(
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
                         AppText(
                             text = teamDetails.teamId.name.capitalize(),
-                            color = ColorBWBlack,
+                            color = MaterialTheme.appColors.textField.labelColor,
                             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                             fontWeight = FontWeight.W500
                         )
@@ -859,21 +863,21 @@ fun CheckBoxItem(item: CheckBoxData, onCheckedChange: (Boolean) -> Unit) {
                     color = if (item.isChecked)
                         Color.Transparent
                     else
-                        MaterialTheme.appColors.buttonColor.bckgroundDisabled
+                        MaterialTheme.appColors.buttonColor.backgroundDisabled
                 )
         ) {
             if (item.isChecked)
                 Icon(
                     painter = painterResource(id = R.drawable.ic_check),
                     contentDescription = null,
-                    tint = MaterialTheme.appColors.buttonColor.textEnabled
+                    tint = Color.White
                 )
         }
         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
         AppText(
             text = item.label,
             style = MaterialTheme.typography.body1,
-            color = ColorBWBlack,
+            color = MaterialTheme.appColors.textField.labelColor,
         )
     }
 }

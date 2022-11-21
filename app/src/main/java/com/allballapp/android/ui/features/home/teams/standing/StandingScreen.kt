@@ -37,7 +37,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
-import com.allballapp.android.BuildConfig
 import com.allballapp.android.R
 import com.allballapp.android.data.response.Categories
 import com.allballapp.android.data.response.Standing
@@ -185,7 +184,7 @@ fun StandingListItem(
                     color = if (selected) {
                         MaterialTheme.appColors.buttonColor.textEnabled
                     } else {
-                        MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                        MaterialTheme.appColors.buttonColor.backgroundEnabled
                     }
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_4dp)))
@@ -210,7 +209,7 @@ fun StandingListItem(
                     color = if (selected) {
                         MaterialTheme.appColors.buttonColor.textEnabled
                     } else {
-                        MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                        MaterialTheme.appColors.buttonColor.backgroundEnabled
                     }
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))

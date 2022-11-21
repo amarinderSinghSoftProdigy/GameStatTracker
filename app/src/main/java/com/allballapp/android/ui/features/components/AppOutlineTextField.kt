@@ -56,7 +56,7 @@ fun AppOutlineTextField(
     colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(),
 ) {
     val customTextSelectionColors = TextSelectionColors(
-        handleColor = if (!isError) MaterialTheme.appColors.buttonColor.bckgroundEnabled else MaterialTheme.colors.error,
+        handleColor = if (!isError) MaterialTheme.appColors.buttonColor.backgroundEnabled else MaterialTheme.colors.error,
         backgroundColor = Color.Transparent
     )
 
@@ -147,7 +147,7 @@ fun AppOutlineDateField(
                 AppText(
                     text = data,
                     textAlign = TextAlign.Center,
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                     style = androidx.compose.material.LocalTextStyle.current
                 )
             }
@@ -178,7 +178,7 @@ fun EditFields(
     placeholder: @Composable (() -> Unit)? = null
 ) {
     val customTextSelectionColors = TextSelectionColors(
-        handleColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+        handleColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
         backgroundColor = Color.Transparent
     )
 
@@ -196,7 +196,7 @@ fun EditFields(
             AppText(
                 text = head,
                 style = MaterialTheme.typography.h6,
-                color = ColorBWBlack,
+                color = MaterialTheme.appColors.textField.labelColor,
                 modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
             )
             CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
@@ -206,9 +206,9 @@ fun EditFields(
                         backgroundColor = Color.Transparent,
                         focusedBorderColor = Color.Transparent,
                         unfocusedBorderColor = Color.Transparent,
-                        cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        cursorColor = MaterialTheme.appColors.textField.labelColor,
                     ),
-                    textStyle = textStyle,
+                    textStyle = textStyle.copy(color = MaterialTheme.appColors.textField.labelColor),
                     singleLine = true,
                     keyboardActions = keyboardActions,
                     keyboardOptions = keyboardOptions,
@@ -253,7 +253,7 @@ fun EditProfileFields(
     visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     val customTextSelectionColors = TextSelectionColors(
-        handleColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+        handleColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
         backgroundColor = Color.Transparent
     )
 
@@ -271,7 +271,7 @@ fun EditProfileFields(
             AppText(
                 text = head,
                 style = MaterialTheme.typography.h6,
-                color = ColorBWBlack,
+                color = MaterialTheme.appColors.textField.labelColor,
                 modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
             )
             CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
@@ -281,12 +281,12 @@ fun EditProfileFields(
                         backgroundColor = Color.Transparent,
                         focusedBorderColor = Color.Transparent,
                         unfocusedBorderColor = Color.Transparent,
-                        cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        cursorColor = MaterialTheme.appColors.textField.labelColor,
                         disabledBorderColor = Color.Transparent
                     ),
                     textStyle = TextStyle(
                         textAlign = TextAlign.End,
-                        color = ColorBWBlack,
+                        color = MaterialTheme.appColors.textField.labelColor,
                         fontWeight = fontWeight
                     ),
                     singleLine = true,

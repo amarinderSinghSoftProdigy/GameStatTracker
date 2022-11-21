@@ -40,7 +40,10 @@ fun MyEvents(
     remember {
         vm.onEvent(EvEvents.RefreshEventScreen)
     }
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier =
+        Modifier.fillMaxSize()
+            .background(MaterialTheme.appColors.material.surface)
+    ) {
         if (state.upcomingAndGameData.isNotEmpty() || state.pastEvents.isNotEmpty()) {
             Box(modifier = Modifier.fillMaxSize()) {
                 Column(
@@ -57,7 +60,7 @@ fun MyEvents(
                         append("" + state.upcomingAndGameData.size)
                         append(" )")
                         addStyle(
-                            SpanStyle(color = MaterialTheme.appColors.textField.label),
+                            SpanStyle(color = MaterialTheme.appColors.textField.labelColor),
                             startIndex,
                             length,
                         )
@@ -65,11 +68,12 @@ fun MyEvents(
                     Text(
                         text = text,
                         style = MaterialTheme.typography.h2,
-                        color = ColorBWBlack,
+                        color = MaterialTheme.appColors.textField.labelColor,
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_6dp)))
                     FlowRow(Modifier.fillMaxWidth()) {
                         state.upcomingAndGameData.forEach { data ->
+
                             when (data) {
                                 is Events -> {
                                     EventItem(events = data, onAcceptCLick = {
@@ -101,7 +105,7 @@ fun MyEvents(
                         append("" + state.pastEvents.size)
                         append(" )")
                         addStyle(
-                            SpanStyle(color = MaterialTheme.appColors.textField.label),
+                            SpanStyle(color = MaterialTheme.appColors.textField.labelColor),
                             startIndex,
                             length,
                         )
@@ -109,7 +113,7 @@ fun MyEvents(
                     Text(
                         text = text,
                         style = MaterialTheme.typography.h2,
-                        color = ColorBWBlack,
+                        color = MaterialTheme.appColors.textField.labelColor,
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_6dp)))
                     Box {
@@ -236,7 +240,7 @@ fun GameDataItem(
                         Text(
                             modifier = Modifier.weight(1f),
                             text = publishedGames.pairname,
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                             fontWeight = FontWeight.Bold,
                         )

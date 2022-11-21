@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.allballapp.android.BuildConfig
 import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.data.response.HomeItemResponse
@@ -83,7 +84,7 @@ fun HomeFirstTimeLoginScreen(
                 if (teamState.teams.isNotEmpty()) {
                     UserFlowBackground(
                         padding = 0.dp,
-                        color = Color.White
+//                        color = Color.White
                     ) {
                         Box(
                             modifier = Modifier
@@ -101,7 +102,7 @@ fun HomeFirstTimeLoginScreen(
                                 verticalAlignment = Alignment.CenterVertically,
                                 ) {
                                 CoilImage(
-                                    src = com.allballapp.android.BuildConfig.IMAGE_SERVER + teamState.logo,
+                                    src = BuildConfig.IMAGE_SERVER + teamState.logo,
                                     modifier = Modifier
                                         .size(dimensionResource(id = R.dimen.size_48dp))
                                         .clip(CircleShape),
@@ -131,7 +132,7 @@ fun HomeFirstTimeLoginScreen(
                 if (state.homePageCoachModel.pendingInvitations > 0) {
                     UserFlowBackground(
                         padding = 0.dp,
-                        color = Color.White
+//                        color = Color.White
                     ) {
                         Box(
                             Modifier
@@ -213,7 +214,7 @@ fun HomeScreenItem(data: HomeItemResponse, onClick: () -> Unit) {
                     onClick()
                 }
                 .background(
-                    color = Color.White,
+                    color = MaterialTheme.appColors.material.background,
                     shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
                 ),
         ) {
@@ -246,7 +247,7 @@ fun HomeScreenItem(data: HomeItemResponse, onClick: () -> Unit) {
                         text = stringResource(id = if (data.item != 0) data.item else R.string.opportunities),
                         style = MaterialTheme.typography.h6,
                         fontWeight = FontWeight.W700,
-                        color = ColorBWBlack
+                        color = MaterialTheme.appColors.textField.labelColor
                     )
                 }
 
@@ -254,7 +255,7 @@ fun HomeScreenItem(data: HomeItemResponse, onClick: () -> Unit) {
                     text = data.total,
                     fontWeight = FontWeight.W300,
                     fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
-                    color = ColorBWBlack,
+                    color = MaterialTheme.appColors.textField.labelColor,
                     style = MaterialTheme.typography.h1,
                 )
             }

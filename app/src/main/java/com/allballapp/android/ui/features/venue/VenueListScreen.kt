@@ -54,8 +54,8 @@ fun VenueListScreen(vm: VenueSearchVIewModel = hiltViewModel(), onVenueClick: (S
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
                 focusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
-                cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                cursorColor = MaterialTheme.appColors.textField.labelColor,
+                textColor = MaterialTheme.appColors.textField.labelColor,
             ),
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
@@ -98,7 +98,7 @@ fun VenueList(venue: VenueDetails, onVenueClick: () -> Unit) {
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                     fontWeight = FontWeight.Bold,
                     fontFamily = rubikFamily,
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_5dp)))
                 AppText(

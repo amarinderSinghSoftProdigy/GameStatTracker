@@ -42,7 +42,11 @@ fun MyLeagueScreen(
         CommonProgressBar()
     } else if (state.myLeaguesList.isNotEmpty()) {
 
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.appColors.material.surface)
+        ) {
             Column(
                 Modifier
                     .fillMaxSize()
@@ -60,7 +64,10 @@ fun MyLeagueScreen(
         }
 
     } else {
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier.fillMaxSize()
+            .background(MaterialTheme.appColors.material.surface)
+        ) {
             Column(
                 modifier = Modifier
                     .align(Alignment.Center)
@@ -136,7 +143,7 @@ fun LeagueItem(league: MyLeagueResponse, OnNextClick: () -> Unit) {
 
                     Text(
                         text = league.name,
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.weight(1F)

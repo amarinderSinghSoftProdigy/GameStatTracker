@@ -123,7 +123,7 @@ fun EventScheduleHeaderItem(date: String, gamesCount: String, isExpanded: Boolea
             ) {
                 Text(
                     text = date,
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                     style = MaterialTheme.typography.h5,
                     fontWeight = FontWeight.W500
                 )
@@ -149,7 +149,7 @@ fun EventScheduleHeaderItem(date: String, gamesCount: String, isExpanded: Boolea
                 tint = ColorGreyLighter
             )
         }
-        AppDivider(color = MaterialTheme.appColors.buttonColor.bckgroundDisabled)
+        AppDivider(color = MaterialTheme.appColors.buttonColor.backgroundDisabled)
     }
 
 }
@@ -171,7 +171,7 @@ fun EventScheduleSubItem(
     ) {
         Text(
             text = match.timeSlot,
-            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
             fontWeight = FontWeight.Bold,
             fontSize = dimensionResource(
                 id = R.dimen.txt_size_12
@@ -209,7 +209,7 @@ fun EventScheduleSubItem(
                             ) {
                                 Text(
                                     text = it.teams[0].name,
-                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                                     fontWeight = FontWeight.Bold,
                                     fontSize = dimensionResource(
                                         id = R.dimen.txt_size_12
@@ -251,7 +251,7 @@ fun EventScheduleSubItem(
                                 Spacer(modifier = Modifier.width(dimensionResource(R.dimen.size_12dp)))
                                 Text(
                                     text = it.teams[1].name,
-                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                                     fontWeight = FontWeight.Bold,
                                     fontSize = dimensionResource(
                                         id = R.dimen.txt_size_12
@@ -260,7 +260,7 @@ fun EventScheduleSubItem(
 
                             }
                         }
-                        AppDivider(color = MaterialTheme.appColors.buttonColor.bckgroundDisabled)
+                        AppDivider(color = MaterialTheme.appColors.buttonColor.backgroundDisabled)
                         Row(
                             Modifier
                                 .fillMaxWidth()

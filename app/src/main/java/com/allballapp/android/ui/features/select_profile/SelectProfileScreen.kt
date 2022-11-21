@@ -74,7 +74,7 @@ fun SelectProfileScreen(vm: SignUpViewModel, onNextClick: () -> Unit) {
             AppText(
                 text = stringResource(id = R.string.select_profile),
                 style = MaterialTheme.typography.h3,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled
             )
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_32dp)))
@@ -140,7 +140,7 @@ fun SelectProfileItems(
         modifier = Modifier
             .fillMaxWidth()
             .background(
-                color = if (isSelected) MaterialTheme.appColors.buttonColor.bckgroundEnabled else Color.White,
+                color = if (isSelected) MaterialTheme.appColors.buttonColor.backgroundEnabled else Color.White,
                 shape = (when {
                     size == 1 -> {
                         RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
@@ -204,7 +204,7 @@ fun SelectProfileItems(
                 AppText(
                     text = users.firstName + " " + users.lastName,
                     style = MaterialTheme.typography.h3,
-                    color = if (!isSelected) MaterialTheme.appColors.buttonColor.bckgroundEnabled else Color.White
+                    color = if (!isSelected) MaterialTheme.appColors.buttonColor.backgroundEnabled else Color.White
                 )
 
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))

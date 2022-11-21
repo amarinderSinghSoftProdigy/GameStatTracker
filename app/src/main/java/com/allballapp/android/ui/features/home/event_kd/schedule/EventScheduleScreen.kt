@@ -23,7 +23,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.allballapp.android.BuildConfig
 import com.allballapp.android.R
 import com.allballapp.android.ui.features.components.CoilImage
 import com.allballapp.android.ui.features.components.FoldableItem
@@ -96,7 +95,7 @@ fun EventScheduleHeaderItem(date: String, gamesCount: String, isExpanded: Boolea
             ) {
                 Text(
                     text = date,
-                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                     fontWeight = FontWeight.Bold,
                     fontSize = dimensionResource(
                         id = R.dimen.txt_size_12
@@ -127,7 +126,7 @@ fun EventScheduleHeaderItem(date: String, gamesCount: String, isExpanded: Boolea
                 tint = MaterialTheme.appColors.buttonColor.textDisabled
             )
         }
-        Divider(color = MaterialTheme.appColors.buttonColor.bckgroundDisabled)
+        Divider(color = MaterialTheme.appColors.buttonColor.backgroundDisabled)
     }
 
 }
@@ -145,7 +144,7 @@ fun EventScheduleSubItem(match: Match, index: Int) {
         if (index == 0) {
             Text(
                 text = match.time,
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                 fontWeight = FontWeight.Bold,
                 fontSize = dimensionResource(
                     id = R.dimen.txt_size_12
@@ -178,7 +177,7 @@ fun EventScheduleSubItem(match: Match, index: Int) {
                 ) {
                     Text(
                         text = match.teamA.name,
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         fontWeight = FontWeight.Bold,
                         fontSize = dimensionResource(
                             id = R.dimen.txt_size_12
@@ -220,7 +219,7 @@ fun EventScheduleSubItem(match: Match, index: Int) {
                     Spacer(modifier = Modifier.width(dimensionResource(R.dimen.size_12dp)))
                     Text(
                         text = match.teamB.name,
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
                         fontWeight = FontWeight.Bold,
                         fontSize = dimensionResource(
                             id = R.dimen.txt_size_12
@@ -231,7 +230,7 @@ fun EventScheduleSubItem(match: Match, index: Int) {
 
 
             }
-            Divider(color = MaterialTheme.appColors.buttonColor.bckgroundDisabled)
+            Divider(color = MaterialTheme.appColors.buttonColor.backgroundDisabled)
             Row(
                 Modifier
                     .fillMaxWidth()

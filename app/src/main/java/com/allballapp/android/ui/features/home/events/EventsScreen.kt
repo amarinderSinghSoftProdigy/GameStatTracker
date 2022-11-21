@@ -54,52 +54,53 @@ fun EventsScreen(
     // on below line we are creating variable for pager state.
     // Add the count for number of pages
 
-    Box(Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            if (role.value == UserType.REFEREE.key) {
-                val list = listOf(
-                    TabItems.MyShifts,
-                    TabItems.Opportunity,
-                )
-                val pagerState = rememberPagerState(
-                    pageCount = 2,
-                    initialOffScreenLimit = 1,
-                )
-                Tabs(pagerState = pagerState, list)
-                TabsContentForReferee(
-                    pagerState = pagerState,
-                    vm,
-                    moveToOppDetails,
-                    updateTopBar,
-                    role
-                )
-            } else {
-                val list = listOf(
-                    TabItems.Events,
-                    TabItems.Leagues,
-                    TabItems.Opportunity,
-                )
-                val pagerState = rememberPagerState(
-                    pageCount = 3,
-                    initialOffScreenLimit = 1,
-                )
-                Tabs(pagerState = pagerState, list)
-                TabsContent(
-                    pagerState = pagerState,
-                    vm,
-                    moveToDetail,
-                    moveToPracticeDetail,
-                    moveToGameDetail,
-                    moveToOppDetails,
-                    moveToEventDetail,
-                    updateTopBar,
-                    role,
-                )
+    BallerAppMainTheme() {
+        Box(Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                if (role.value == UserType.REFEREE.key) {
+                    val list = listOf(
+                        TabItems.MyShifts,
+                        TabItems.Opportunity,
+                    )
+                    val pagerState = rememberPagerState(
+                        pageCount = 2,
+                        initialOffScreenLimit = 1,
+                    )
+                    Tabs(pagerState = pagerState, list)
+                    TabsContentForReferee(
+                        pagerState = pagerState,
+                        vm,
+                        moveToOppDetails,
+                        updateTopBar,
+                        role
+                    )
+                } else {
+                    val list = listOf(
+                        TabItems.Events,
+                        TabItems.Leagues,
+                        TabItems.Opportunity,
+                    )
+                    val pagerState = rememberPagerState(
+                        pageCount = 3,
+                        initialOffScreenLimit = 1,
+                    )
+                    Tabs(pagerState = pagerState, list)
+                    TabsContent(
+                        pagerState = pagerState,
+                        vm,
+                        moveToDetail,
+                        moveToPracticeDetail,
+                        moveToGameDetail,
+                        moveToOppDetails,
+                        moveToEventDetail,
+                        updateTopBar,
+                        role,
+                    )
+                }
             }
-        }
 
         if (showDialog) {
             Box(Modifier.fillMaxSize()) {
@@ -119,6 +120,8 @@ fun EventsScreen(
     }
 }
 
+}
+
 // on below line we are
 // creating a function for tabs
 @ExperimentalPagerApi
@@ -128,7 +131,7 @@ fun Tabs(pagerState: PagerState, list: List<TabItems>) {
     val scope = rememberCoroutineScope()
     TabRow(
         selectedTabIndex = pagerState.currentPage,
-        backgroundColor = Color.White,
+        backgroundColor = MaterialTheme.appColors.material.surface,
         contentColor = Color.White,
         indicator = { tabPositions ->
             TabRowDefaults.Indicator(
@@ -157,7 +160,7 @@ fun Tabs(pagerState: PagerState, list: List<TabItems>) {
                         Text(
                             stringResourceByName(name = item.stringId),
                             fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                            color = if (pagerState.currentPage == index) MaterialTheme.appColors.buttonColor.bckgroundEnabled else MaterialTheme.appColors.textField.label
+                            color = if (pagerState.currentPage == index) MaterialTheme.appColors.textField.labelColor else MaterialTheme.appColors.textField.label
                         )
                     }
                 },
@@ -451,7 +454,7 @@ fun EventItem(
                 Modifier
                     .fillMaxWidth()
                     .background(
-                        color = MaterialTheme.appColors.material.surface,
+                        color = MaterialTheme.appColors.material.background,
                         shape = RoundedCornerShape(
                             topStart = dimensionResource(id = R.dimen.size_8dp),
                             topEnd = dimensionResource(id = R.dimen.size_8dp),
@@ -472,7 +475,7 @@ fun EventItem(
                         Text(
                             modifier = Modifier.weight(1f),
                             text = events.eventName,
-                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            color = MaterialTheme.appColors.textField.labelColor,
                             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                             fontWeight = FontWeight.Bold,
                         )
@@ -569,7 +572,7 @@ fun EventItem(
                                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                                 Text(
                                     text = stringResource(id = R.string.decline),
-                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                    color = MaterialTheme.appColors.textField.labelColor,
                                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                     fontWeight = FontWeight.W500,
 
@@ -595,7 +598,7 @@ fun EventItem(
                                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                                 Text(
                                     text = stringResource(id = R.string.accept),
-                                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                    color = MaterialTheme.appColors.textField.labelColor,
                                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                     fontWeight = FontWeight.W500,
                                 )
@@ -635,7 +638,7 @@ fun EventItem(
                             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                             Text(
                                 text = stringResource(id = R.string.going),
-                                color = MaterialTheme.appColors.buttonColor.textEnabled,
+                                color = MaterialTheme.appColors.textField.labelColor,
                                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                 fontWeight = FontWeight.W500,
                             )
@@ -678,7 +681,7 @@ fun EventItem(
                                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                                 Text(
                                     text = stringResource(id = R.string.not_going),
-                                    color = MaterialTheme.appColors.buttonColor.textEnabled,
+                                    color = MaterialTheme.appColors.textField.labelColor,
                                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                     fontWeight = FontWeight.W500,
                                     fontFamily = rubikFamily
@@ -695,7 +698,7 @@ fun EventItem(
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                     text = events.reason,
-                                    color = MaterialTheme.appColors.buttonColor.textEnabled,
+                                    color = MaterialTheme.appColors.textField.labelColor,
                                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                     fontWeight = FontWeight.W500,
                                 )
@@ -708,7 +711,7 @@ fun EventItem(
                         Modifier
                             .fillMaxWidth()
                             .background(
-                                color = ColorPrimaryTransparent,
+                                color = MaterialTheme.appColors.material.background,
                                 shape = RoundedCornerShape(
                                     bottomStart = dimensionResource(
                                         id = R.dimen.size_8dp
@@ -737,7 +740,7 @@ fun EventItem(
                             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                             Text(
                                 text = events.notGoing.size.toString(),
-                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                color = MaterialTheme.appColors.textField.labelColor,
                                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                 fontWeight = FontWeight.W500,
 
@@ -746,7 +749,7 @@ fun EventItem(
 
                             Text(
                                 text = stringResource(id = R.string.not_going),
-                                color = MaterialTheme.appColors.textField.labelDark,
+                                color = MaterialTheme.appColors.textField.labelColor,
                                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                 fontWeight = FontWeight.W500,
 
@@ -772,7 +775,7 @@ fun EventItem(
                             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                             Text(
                                 text = events.going.size.toString(),
-                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                color = MaterialTheme.appColors.textField.labelColor,
                                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                 fontWeight = FontWeight.W500,
 
@@ -781,7 +784,7 @@ fun EventItem(
 
                             Text(
                                 text = stringResource(id = R.string.going),
-                                color = MaterialTheme.appColors.textField.labelDark,
+                                color = MaterialTheme.appColors.textField.labelColor,
                                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                 fontWeight = FontWeight.W500,
 
