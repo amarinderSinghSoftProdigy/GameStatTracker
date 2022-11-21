@@ -737,7 +737,7 @@ fun TeamSetupScreenUpdated(
                             Card(
                                 modifier = Modifier.size(dimensionResource(id = R.dimen.size_32dp)),
                                 backgroundColor = if (state.teamColorPrimary.isEmpty()) {
-                                    MaterialTheme.appColors.buttonColor.backgroundDisabled
+                                    MaterialTheme.appColors.textField.label
                                 } else {
                                     Color(android.graphics.Color.parseColor("#" + state.teamColorPrimary))
                                 },
@@ -812,7 +812,7 @@ fun TeamSetupScreenUpdated(
                             Card(
                                 modifier = Modifier.size(dimensionResource(id = R.dimen.size_32dp)),
                                 backgroundColor = if (state.teamColorSec.isEmpty()) {
-                                    MaterialTheme.appColors.buttonColor.backgroundDisabled
+                                    MaterialTheme.appColors.textField.label
                                 } else {
                                     Color(android.graphics.Color.parseColor("#" + state.teamColorSec))
                                 },
@@ -888,7 +888,7 @@ fun TeamSetupScreenUpdated(
                             Card(
                                 modifier = Modifier.size(dimensionResource(id = R.dimen.size_32dp)),
                                 backgroundColor = if (state.teamColorThird.isEmpty()) {
-                                    MaterialTheme.appColors.buttonColor.backgroundDisabled
+                                    MaterialTheme.appColors.textField.label
                                 } else {
                                     Color(android.graphics.Color.parseColor("#" + state.teamColorThird))
                                 },

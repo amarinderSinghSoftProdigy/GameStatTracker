@@ -435,7 +435,7 @@ fun ConfirmDialog(
             buttons = {
                 Column(
                     modifier = Modifier
-                        .background(color = Color.White)
+                        .background(color = MaterialTheme.appColors.material.background)
                         .padding(all = dimensionResource(id = R.dimen.size_16dp))
                 ) {
                     if (heading.isNotEmpty()) {
@@ -443,6 +443,7 @@ fun ConfirmDialog(
                             text = heading,
                             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                             fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.appColors.textField.label
                         )
                         Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
                     }
@@ -450,7 +451,8 @@ fun ConfirmDialog(
                         text = title,
                         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                         fontWeight = FontWeight.W600,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.appColors.textField.labelColor
                     )
                     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
                     Row(
@@ -2339,7 +2341,7 @@ fun AgeConfirmDialog(
             buttons = {
                 Column(
                     modifier = Modifier
-                        .background(color = Color.White)
+                        .background(color = MaterialTheme.appColors.material.background)
                         .padding(
                             all = dimensionResource(
                                 id = R.dimen.size_16dp
@@ -2353,6 +2355,7 @@ fun AgeConfirmDialog(
                             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                             fontWeight = FontWeight.Bold,
                             text = stringResource(id = R.string.age_conformation),
+                            color = MaterialTheme.appColors.textField.label,
                             modifier = Modifier
                                 .align(Alignment.CenterStart),
                         )
@@ -2371,7 +2374,7 @@ fun AgeConfirmDialog(
                     ) {
                         Text(
                             style = MaterialTheme.typography.h6,
-                            color = if (selected.value == 0) Color.White else MaterialTheme.appColors.buttonColor.backgroundEnabled,
+                            color = if (selected.value == 0) Color.White else MaterialTheme.appColors.textField.labelColor,
                             text = stringResource(id = R.string.age_zero),
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -2391,7 +2394,7 @@ fun AgeConfirmDialog(
                     ) {
                         Text(
                             style = MaterialTheme.typography.h6,
-                            color = if (selected.value == 1) Color.White else MaterialTheme.appColors.buttonColor.backgroundEnabled,
+                            color = if (selected.value == 1) Color.White else MaterialTheme.appColors.textField.labelColor,
                             text = stringResource(id = R.string.age_ok),
                             modifier = Modifier
                                 .fillMaxWidth()
