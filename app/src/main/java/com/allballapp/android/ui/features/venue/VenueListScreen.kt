@@ -54,8 +54,8 @@ fun VenueListScreen(vm: VenueSearchVIewModel = hiltViewModel(), onVenueClick: (S
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
                 focusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
-                cursorColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
-                textColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
+                cursorColor = MaterialTheme.appColors.textField.labelColor,
+                textColor = MaterialTheme.appColors.textField.labelColor,
             ),
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))

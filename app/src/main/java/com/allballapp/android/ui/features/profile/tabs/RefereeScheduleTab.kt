@@ -78,6 +78,7 @@ fun RefereeScheduleTab(vm: ProfileViewModel) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(MaterialTheme.appColors.material.surface)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -87,7 +88,7 @@ fun RefereeScheduleTab(vm: ProfileViewModel) {
             AppText(
                 text = stringResource(id = R.string.selectDates),
                 style = MaterialTheme.typography.h5,
-                color = ColorBWBlack,
+                color = MaterialTheme.appColors.textField.labelColor,
                 fontWeight = FontWeight.W500
             )
 
@@ -96,7 +97,9 @@ fun RefereeScheduleTab(vm: ProfileViewModel) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(color = Color.White, shape = RectangleShape)
+                    .background(
+                        color = MaterialTheme.appColors.material.background,
+                        shape = RectangleShape)
             ) {
                 AndroidView(
                     { MaterialCalendarView(it) },
@@ -149,7 +152,7 @@ fun RefereeScheduleTab(vm: ProfileViewModel) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(color = Color.White)
+                        .background(color = MaterialTheme.appColors.material.background)
                         .padding(
                             horizontal = dimensionResource(id = R.dimen.size_16dp)
                         ),
@@ -197,7 +200,7 @@ fun RefereeScheduleTab(vm: ProfileViewModel) {
                 AppText(
                     text = stringResource(id = R.string.unavailable_dates),
                     style = MaterialTheme.typography.h5,
-                    color = ColorBWBlack,
+                    color = MaterialTheme.appColors.textField.labelColor,
                     fontWeight = FontWeight.W500,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -226,7 +229,7 @@ fun UnavailableItem(data: ScheduleResponseObject) {
                 vertical = dimensionResource(id = R.dimen.size_4dp)
             )
             .background(
-                color = Color.White, shape = RoundedCornerShape(
+                color = MaterialTheme.appColors.material.background, shape = RoundedCornerShape(
                     dimensionResource(id = R.dimen.size_8dp)
                 )
             ),
@@ -236,7 +239,7 @@ fun UnavailableItem(data: ScheduleResponseObject) {
 
         AppText(
             text = CommonUtils.formatDateSingle(data.date, AppConstants.DATE_DAY_FORMAT),
-            color = ColorBWBlack,
+            color = MaterialTheme.appColors.textField.labelColor,
             fontWeight = FontWeight.W500,
             style = MaterialTheme.typography.h4,
             modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
@@ -244,7 +247,7 @@ fun UnavailableItem(data: ScheduleResponseObject) {
         Row {
             AppText(
                 text = data.startTime + " - " + data.endTime,
-                color = ColorBWBlack,
+                color = MaterialTheme.appColors.textField.labelColor,
                 fontWeight = FontWeight.W500,
                 style = MaterialTheme.typography.h4
             )

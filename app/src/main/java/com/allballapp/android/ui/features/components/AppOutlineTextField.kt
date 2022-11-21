@@ -271,7 +271,7 @@ fun EditProfileFields(
             AppText(
                 text = head,
                 style = MaterialTheme.typography.h6,
-                color = ColorBWBlack,
+                color = MaterialTheme.appColors.textField.labelColor,
                 modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
             )
             CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
@@ -281,12 +281,12 @@ fun EditProfileFields(
                         backgroundColor = Color.Transparent,
                         focusedBorderColor = Color.Transparent,
                         unfocusedBorderColor = Color.Transparent,
-                        cursorColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
+                        cursorColor = MaterialTheme.appColors.textField.labelColor,
                         disabledBorderColor = Color.Transparent
                     ),
                     textStyle = TextStyle(
                         textAlign = TextAlign.End,
-                        color = ColorBWBlack,
+                        color = MaterialTheme.appColors.textField.labelColor,
                         fontWeight = fontWeight
                     ),
                     singleLine = true,

@@ -575,7 +575,7 @@ fun PracticeItem(
                                         unfocusedBorderColor = Color.Transparent,
                                         cursorColor = MaterialTheme.appColors.textField.labelColor,
                                     ),
-                                    textStyle = MaterialTheme.typography.overline,
+                                    textStyle = MaterialTheme.typography.overline.copy(color = MaterialTheme.appColors.textField.labelColor),
                                     singleLine = true,
                                     keyboardOptions = KeyboardOptions(
                                         imeAction = ImeAction.Done,

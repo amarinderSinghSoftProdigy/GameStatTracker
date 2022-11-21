@@ -155,7 +155,7 @@ fun CoachFlowBackground(
                                 Modifier
                                     .width(dimensionResource(id = R.dimen.size_150dp))
                                     .background(
-                                        color = Color.White,
+                                        color = MaterialTheme.appColors.material.background,
                                         RoundedCornerShape(dimensionResource(id = R.dimen.size_10dp))
                                     )
                             ) {
@@ -223,7 +223,7 @@ fun OptionItem(label: String, resource: Int, click: () -> Unit) {
         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
         AppText(
             text = label,
-            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
+            color = MaterialTheme.appColors.textField.labelColor,
             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
             style = MaterialTheme.typography.h5,
             overflow = TextOverflow.Ellipsis,

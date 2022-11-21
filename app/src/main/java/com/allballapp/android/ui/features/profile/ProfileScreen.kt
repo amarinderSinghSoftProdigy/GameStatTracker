@@ -1,6 +1,7 @@
 package com.allballapp.android.ui.features.profile
 
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,7 +33,10 @@ fun ProfileScreen(
     updateTopBar: (TopBarData) -> Unit
 ) {
     val state = vm.state.value
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.background(color = MaterialTheme.appColors.material.background)
+    ) {
         if (UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
             val list = listOf(
                 TabItems.RefereeProfile,

@@ -74,6 +74,7 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
             }
         }
     }
+
     Box(
         Modifier
             .fillMaxSize()
@@ -82,6 +83,7 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(color = MaterialTheme.appColors.material.surface)
                 .padding(
                     start = dimensionResource(id = R.dimen.size_16dp),
                     end = dimensionResource(id = R.dimen.size_16dp)
@@ -94,14 +96,14 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-                    .background(color = Color.White),
+                    .background(color = MaterialTheme.appColors.material.background),
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(dimensionResource(id = R.dimen.size_16dp))
-                        .background(color = Color.White)
+                        .background(color = Color.Transparent)
                 ) {
                     CoilImage(
                         src = com.allballapp.android.BuildConfig.IMAGE_SERVER + state.user.profileImage,
@@ -117,7 +119,7 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
                     AppText(
                         text = "${state.user.firstName} ${state.user.lastName}",
                         style = MaterialTheme.typography.h6,
-                        color = ColorBWBlack,
+                        color = MaterialTheme.appColors.textField.labelColor,
                         fontSize = dimensionResource(id = R.dimen.txt_size_20).value.sp
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
@@ -139,7 +141,7 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-                        .background(color = Color.White),
+                        .background(color = MaterialTheme.appColors.material.background),
                 ) {
                     Column(
                         modifier = Modifier.padding(dimensionResource(id = R.dimen.size_16dp)),
@@ -147,7 +149,7 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
                         AppText(
                             text = stringResource(id = R.string.parents),
                             style = MaterialTheme.typography.h5,
-                            color = ColorBWBlack,
+                            color = MaterialTheme.appColors.textField.labelColor,
                             fontWeight = FontWeight.W500
                         )
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
@@ -194,14 +196,14 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-                    .background(color = Color.White)
+                    .background(color = Color.Transparent)
                     .padding(all = dimensionResource(id = R.dimen.size_16dp)),
             ) {
                 Column {
                     AppText(
                         text = stringResource(id = R.string.jersey_pref),
                         style = MaterialTheme.typography.h5,
-                        color = ColorBWBlack,
+                        color = MaterialTheme.appColors.textField.labelColor,
                         fontWeight = FontWeight.W500
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
@@ -235,14 +237,14 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-                    .background(color = Color.White)
+                    .background(color = MaterialTheme.appColors.material.background)
                     .padding(all = dimensionResource(id = R.dimen.size_16dp)),
             ) {
                 Column {
                     AppText(
                         text = stringResource(id = R.string.fun_facts),
                         style = MaterialTheme.typography.h5,
-                        color = ColorBWBlack,
+                        color = MaterialTheme.appColors.textField.labelColor,
                         fontWeight = FontWeight.W500
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
@@ -301,7 +303,7 @@ fun ProfileItem(type: String, value: String, imageUrl: String? = null) {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-            .background(color = Color.White)
+            .background(color = MaterialTheme.appColors.material.background)
             .padding(all = dimensionResource(id = R.dimen.size_16dp)),
     ) {
         Row(
@@ -312,7 +314,7 @@ fun ProfileItem(type: String, value: String, imageUrl: String? = null) {
             AppText(
                 text = type,
                 style = MaterialTheme.typography.h5,
-                color = ColorBWBlack,
+                color = MaterialTheme.appColors.textField.labelColor,
                 fontWeight = FontWeight.W500
             )
             Row(
@@ -323,7 +325,7 @@ fun ProfileItem(type: String, value: String, imageUrl: String? = null) {
                 AppText(
                     text = value,
                     style = MaterialTheme.typography.h5,
-                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled
+                    color = MaterialTheme.appColors.textField.labelColor
                 )
                 if (imageUrl != null) {
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
@@ -375,13 +377,13 @@ fun ParentItem(
             AppText(
                 text = value,
                 style = MaterialTheme.typography.h6,
-                color = ColorBWBlack
+                color = MaterialTheme.appColors.textField.labelColor
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_5dp)))
             AppText(
                 text = relation,
                 style = MaterialTheme.typography.h6,
-                color = ColorBWGrayLight,
+                color = MaterialTheme.appColors.textField.label,
                 fontWeight = FontWeight.W500
             )
         }
@@ -400,7 +402,7 @@ fun RowScope.DetailItem(heading: String, value: String) {
         AppText(
             text = heading,
             style = MaterialTheme.typography.h4,
-            color = ColorBWGrayLight,
+            color = MaterialTheme.appColors.textField.label,
             fontWeight = FontWeight.W500
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
@@ -408,7 +410,7 @@ fun RowScope.DetailItem(heading: String, value: String) {
             text = value,
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.h5,
-            color = MaterialTheme.appColors.buttonColor.backgroundEnabled
+            color = MaterialTheme.appColors.textField.labelColor
         )
     }
 }
@@ -418,7 +420,7 @@ fun TeamList(teams: SnapshotStateList<TeamDetails>) {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(5.dp))
-            .background(color = Color.White)
+            .background(color = MaterialTheme.appColors.material.background)
             .padding(all = dimensionResource(id = R.dimen.size_16dp)),
     ) {
 
@@ -428,7 +430,7 @@ fun TeamList(teams: SnapshotStateList<TeamDetails>) {
             AppText(
                 text = stringResource(id = R.string.teams),
                 style = MaterialTheme.typography.h5,
-                color = ColorBWBlack,
+                color = MaterialTheme.appColors.textField.labelColor,
                 fontWeight = FontWeight.W500
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_14dp)))
@@ -451,7 +453,7 @@ fun TeamList(teams: SnapshotStateList<TeamDetails>) {
                             AppText(
                                 text = team.teamId.name,
                                 style = MaterialTheme.typography.h5,
-                                color = ColorBWBlack
+                                color = MaterialTheme.appColors.textField.labelColor
                             )
                             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_5dp)))
                             AppText(
@@ -488,14 +490,14 @@ private fun PreferenceItem(
                 AppText(
                     text = firstKey,
                     style = MaterialTheme.typography.h5,
-                    color = ColorBWGrayLight,
+                    color = MaterialTheme.appColors.textField.label,
                     modifier = Modifier.height(dimensionResource(id = R.dimen.size_35dp))
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_5dp)))
                 AppText(
                     text = firstValue,
                     style = MaterialTheme.typography.h5,
-                    color = ColorBWBlack,
+                    color = MaterialTheme.appColors.textField.labelColor,
 
                     )
 
@@ -507,14 +509,14 @@ private fun PreferenceItem(
                 AppText(
                     text = secondKey,
                     style = MaterialTheme.typography.h5,
-                    color = ColorBWGrayLight,
+                    color = MaterialTheme.appColors.textField.label,
                     modifier = Modifier.height(dimensionResource(id = R.dimen.size_35dp))
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_5dp)))
                 AppText(
                     text = secondValue,
                     style = MaterialTheme.typography.h5,
-                    color = ColorBWBlack
+                    color = MaterialTheme.appColors.textField.labelColor
                 )
             }
         }

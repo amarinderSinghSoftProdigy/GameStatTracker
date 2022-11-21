@@ -27,7 +27,7 @@ fun CoilImage(
     isCrossFadeEnabled: Boolean = true,
     onError: @Composable (() -> Unit)? = null,
     onLoading: @Composable (() -> Unit)? = null,
-    contentScale: ContentScale = ContentScale.Inside
+    contentScale: ContentScale = ContentScale.Crop
 ) {
     val painter =
         rememberAsyncImagePainter(ImageRequest.Builder(LocalContext.current).data(src).apply(block = fun ImageRequest.Builder.() {

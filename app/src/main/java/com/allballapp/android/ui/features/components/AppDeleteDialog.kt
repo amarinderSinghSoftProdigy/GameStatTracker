@@ -86,12 +86,13 @@ fun <T> DeleteDialog(
     BallerAppMainTheme {
         AlertDialog(
             onDismissRequest = onDismiss,
-            backgroundColor = Color.White,
+            backgroundColor = MaterialTheme.appColors.material.background,
             title = title,
             text = {
                 Text(
                     text = message,
-                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp
+                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                    color = MaterialTheme.appColors.textField.labelColor
                 )
             },
             buttons = {
@@ -160,7 +161,7 @@ fun SelectTeamDialog(
                 Column(
                     modifier = Modifier
                         .background(
-                            color = MaterialTheme.appColors.material.surface
+                            color = MaterialTheme.appColors.material.background
                         )
                         .padding(
                             all = dimensionResource(
@@ -175,6 +176,7 @@ fun SelectTeamDialog(
                             text = stringResource(id = R.string.pick_team),
                             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                             fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.appColors.textField.label
                         )
 
                         Icon(
@@ -556,7 +558,7 @@ fun TeamListItem(team: Team, selected: Boolean, onClick: (Team) -> Unit) {
                 color = if (selected) {
                     MaterialTheme.appColors.buttonColor.textEnabled
                 } else {
-                    MaterialTheme.appColors.buttonColor.backgroundEnabled
+                    MaterialTheme.appColors.textField.labelColor
                 }
             )
         }
@@ -2566,7 +2568,7 @@ fun InviteTeamMembersDialog(
                 }
                 Column(
                     modifier = Modifier
-                        .background(color = Color.White)
+                        .background(color = MaterialTheme.appColors.material.background)
                         .padding(
                             all = dimensionResource(
                                 id = R.dimen.size_16dp
@@ -2579,7 +2581,7 @@ fun InviteTeamMembersDialog(
                         Text(
                             text = stringResource(id = R.string.invite_team_member),
                             style = MaterialTheme.typography.h5,
-                            color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
+                            color = MaterialTheme.appColors.textField.labelColor,
                             fontWeight = FontWeight.W500
                         )
                     }
@@ -2596,7 +2598,8 @@ fun InviteTeamMembersDialog(
                     }
 
                     UserFlowBackground(
-                        color = MaterialTheme.appColors.buttonColor.textEnabled, modifier = Modifier
+                        /*color = MaterialTheme.appColors.buttonColor.textEnabled*/
+                        modifier = Modifier
                             .height(
                                 dimensionResource(id = R.dimen.size_150dp)
                             )
@@ -2659,8 +2662,9 @@ fun InviteTeamMembersDialog(
                                             colors = TextFieldDefaults.outlinedTextFieldColors(
                                                 focusedBorderColor = ColorBWGrayBorder,
                                                 unfocusedBorderColor = ColorBWGrayBorder,
-                                                cursorColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
-                                                backgroundColor = MaterialTheme.appColors.material.background
+                                                cursorColor = MaterialTheme.appColors.textField.labelColor,
+                                                backgroundColor = MaterialTheme.appColors.material.background,
+                                                textColor = MaterialTheme.appColors.textField.labelColor,
                                             ),
                                             placeholder = {
                                                 Text(
@@ -2739,7 +2743,8 @@ fun InviteTeamMembersDialog(
                                                     }) {
                                                         Text(
                                                             text = label.value,
-                                                            textAlign = TextAlign.Center
+                                                            textAlign = TextAlign.Center,
+                                                            color = MaterialTheme.appColors.textField.labelColor
                                                         )
                                                     }
                                                 }
@@ -3062,7 +3067,7 @@ fun NumberPickerDialog(
             buttons = {
                 Column(
                     modifier = Modifier
-                        .background(color = Color.White)
+                        .background(color = MaterialTheme.appColors.material.background)
                         .padding(
                             all = dimensionResource(
                                 id = R.dimen.size_16dp
@@ -3101,7 +3106,7 @@ fun NumberPickerDialog(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(color = Color.White),
+                            .background(color = Color.Transparent),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         DialogButton(

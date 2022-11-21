@@ -55,6 +55,7 @@ fun DocumentTab(vm: ProfileViewModel) {
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(color = MaterialTheme.appColors.material.surface)
     ) {
         Column {
             LazyColumn {
@@ -114,7 +115,7 @@ fun DocumentItem(item: UserDocType, onImageClick: (String) -> Unit, onDeleteClic
                 top = dimensionResource(id = R.dimen.size_8dp)
             ),
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
-        color = Color.White
+        color = MaterialTheme.appColors.material.background
     ) {
         Box(
             modifier = Modifier
@@ -129,7 +130,7 @@ fun DocumentItem(item: UserDocType, onImageClick: (String) -> Unit, onDeleteClic
                     modifier = Modifier
                         .size(dimensionResource(id = R.dimen.size_64dp))
                         .background(
-                            color = MaterialTheme.appColors.material.primary,
+                            color = MaterialTheme.appColors.material.background,
                             shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                         )
                 ) {
@@ -190,7 +191,7 @@ fun DocumentItem(item: UserDocType, onImageClick: (String) -> Unit, onDeleteClic
                 AppText(
                     text = item.name,
                     style = MaterialTheme.typography.h6,
-                    color = ColorBWBlack
+                    color = MaterialTheme.appColors.textField.labelColor
                 )
             }
             if (item.url.isNotEmpty()) {

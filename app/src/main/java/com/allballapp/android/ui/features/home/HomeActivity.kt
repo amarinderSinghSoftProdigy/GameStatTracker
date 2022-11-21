@@ -142,7 +142,7 @@ class HomeActivity : FragmentActivity() {
             ) {
                 val navController = rememberAnimatedNavController()
                 Scaffold(
-                    backgroundColor = MaterialTheme.appColors.material.primary,
+                    backgroundColor = MaterialTheme.appColors.material.surface,
                     topBar = {
                         if (state.showTopAppBar) {
                             TabBar(color = MaterialTheme.appColors.material.primaryVariant) {
@@ -191,7 +191,7 @@ class HomeActivity : FragmentActivity() {
                             modifier = Modifier
                                 .padding(it)
                                 .background(
-                                    color = MaterialTheme.appColors.material.primary
+                                    color = MaterialTheme.appColors.material.surface
                                 )
                         ) {
                             NavControllerComposable(

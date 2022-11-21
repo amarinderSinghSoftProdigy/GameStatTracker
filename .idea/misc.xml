@@ -77,12 +77,15 @@
         <entry key="app/src/main/res/drawable/ic_hike_green.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_invite.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_logo.xml" value="0.136" />
+        <entry key="app/src/main/res/drawable/ic_logout.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_next_arrow_selected.xml" value="0.117" />
         <entry key="app/src/main/res/drawable/ic_posession_arrow_prev_selected.xml" value="0.129" />
         <entry key="app/src/main/res/drawable/ic_possesion_next_arrow_selected.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/ic_profile.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_remove.xml" value="0.104" />
         <entry key="app/src/main/res/drawable/ic_scanner.xml" value="0.131" />
         <entry key="app/src/main/res/drawable/ic_settings.xml" value="0.139" />
+        <entry key="app/src/main/res/drawable/ic_swap.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_upload.xml" value="0.131" />
         <entry key="app/src/main/res/drawable/ic_user_profile_icon.xml" value="0.129" />
         <entry key="app/src/main/res/layout/activity_details.xml" value="0.25" />
