@@ -192,9 +192,11 @@ fun TabsContent(
         when (page) {
 
             0 -> {
+                remember {
+                    vm.onEvent(EvEvents.ClearListEvents)
+                }
                 MyEvents(vm, moveToPracticeDetail, moveToGameDetail, moveToEventDetail)
             }
-
             1 -> {
                 remember {
                     vm.onEvent(EvEvents.ClearListLeague)

@@ -68,7 +68,7 @@ fun CoachFlowBackground(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .absoluteOffset(
-                        x = dimensionResource(id = R.dimen.size_80dp),
+                        x = dimensionResource(id = R.dimen.size_85dp),
                         y = -dimensionResource(id = R.dimen.size_35dp)
                     )
             ) {

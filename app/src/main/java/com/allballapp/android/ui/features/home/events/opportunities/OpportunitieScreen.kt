@@ -174,7 +174,7 @@ fun OpportunitiesItem(league: OpportunitiesItem, showLabel: Boolean, OnNextClick
                     modifier = Modifier.padding(end = dimensionResource(id = R.dimen.size_100dp)),
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 2,
-                    text = league.eventShortDescription,
+                    text = league.locationDesc,
                     color = Color.Black,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                     fontWeight = FontWeight.W400,

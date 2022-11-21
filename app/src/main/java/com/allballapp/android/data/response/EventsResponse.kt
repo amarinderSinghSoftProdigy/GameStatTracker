@@ -59,6 +59,8 @@ data class EventDetails(
     @SerializedName("coachId") val coachId: CoachId = CoachId(),
     @SerializedName("jerseyColor") val jerseyColor: String = "",
     @SerializedName("currentDate") val serverDate: String = "",
+    @SerializedName("locationDesc") val locationDesc: String = "",
+    @SerializedName("location") val location: Location = Location(),
 )
 
 

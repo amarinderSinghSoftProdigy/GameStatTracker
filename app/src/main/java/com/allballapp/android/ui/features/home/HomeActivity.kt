@@ -1263,6 +1263,9 @@ fun NavControllerComposable(
                     topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
+            remember {
+                eventViewModel.onEvent(EvEvents.ClearListEvents)
+            }
             MyEvents(eventViewModel,
                 moveToPracticeDetail = { eventId, eventName ->
                     eventTitle = eventName

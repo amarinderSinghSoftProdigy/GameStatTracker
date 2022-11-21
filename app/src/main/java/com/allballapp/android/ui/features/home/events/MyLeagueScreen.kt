@@ -175,7 +175,7 @@ fun LeagueItem(league: MyLeagueResponse, OnNextClick: () -> Unit) {
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_6dp)))
 
                 Text(
-                    text = league.zip + " " + league.city + ", " + league.state,
+                    text = league.address + ", " + league.city + ",  " + league.state + ", " + league.zip,
                     color = Color.Black,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                     fontWeight = FontWeight.W400,
