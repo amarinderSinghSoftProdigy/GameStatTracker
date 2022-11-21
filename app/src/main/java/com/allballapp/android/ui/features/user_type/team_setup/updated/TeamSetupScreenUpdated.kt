@@ -13,6 +13,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -26,6 +27,9 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -94,7 +98,9 @@ fun TeamSetupScreenUpdated(
     remember {
         inviteVm.onEvent(InvitationEvent.GetRoles)
     }
-
+    val playerName = rememberSaveable {
+        mutableStateOf("")
+    }
     val role = remember {
         mutableStateOf("")
     }
@@ -250,6 +256,7 @@ fun TeamSetupScreenUpdated(
             loading = state.isLoading,
             inviteState.selectedRoleKey,
             onBack = {
+                showNoMessage.value = true
                 inviteVm.onEvent(InvitationEvent.OnRoleDialogClick(false))
                 inviteVm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
                 vm.onEvent(TeamSetupUIEventUpdated.MoveBack(true))
@@ -267,6 +274,7 @@ fun TeamSetupScreenUpdated(
                 inviteState.playerDetails.filter { member -> member.role == UserType.PLAYER.key }
             else inviteState.playerDetails.filter { member -> member.role != UserType.PLAYER.key },
             onValueSelected = {
+                playerName.value = it.memberDetails.name
                 inviteVm.onEvent(InvitationEvent.OnValuesSelected(it))
             },
             onDismiss = {
@@ -435,13 +443,11 @@ fun TeamSetupScreenUpdated(
     if (inviteState.showPlayerAddedSuccessDialog) {
         InvitationSuccessfullySentDialog(
             onDismiss = {
-                showNoMessage.value = false
                 inviteVm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
                 vm.onEvent(TeamSetupUIEventUpdated.Clear)
             },
             onConfirmClick = {
                 inviteVm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
-                showNoMessage.value = false
                 homeVm.onEvent(HomeScreenEvent.HideSwap(false))
                 vm.onEvent(TeamSetupUIEventUpdated.Clear)
                 onNextClick(
@@ -449,15 +455,13 @@ fun TeamSetupScreenUpdated(
                         ""
                     }
                 )
-                inviteVm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
-
             },
             teamName = state.teamName,
             teamLogo = inviteState.selectedLogo.ifEmpty {
                 (state.teamImageUri ?: "").ifEmpty { "" }
             },
             playerName = if (showNoMessage.value) stringResource(id = R.string.no_player)
-            else inviteState.selectedPlayerName.ifEmpty { state.teamName.ifEmpty { "" } }
+            else if (playerName.value.isNotEmpty()) playerName.value else inviteState.selectedPlayerName.ifEmpty { "" }
         )
     }
 
@@ -529,6 +533,10 @@ fun TeamSetupScreenUpdated(
                                 cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
 
                             ),
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Text,
+                                imeAction = ImeAction.Next,
+                            ),
                             isError = !validTeamName(state.teamName) && state.teamName.isNotEmpty(),
                             errorMessage = stringResource(id = R.string.valid_team_name)
                         )
@@ -553,6 +561,11 @@ fun TeamSetupScreenUpdated(
                                 unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
                                 cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
 
+                            ),
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Text,
+                                imeAction = ImeAction.Next,
+                                capitalization = KeyboardCapitalization.Sentences
                             ),
                             isError = !validTeamName(state.teamNameOnJerseys) && state.teamNameOnJerseys.isNotEmpty(),
                             errorMessage = stringResource(id = R.string.valid_team_name)
@@ -583,6 +596,11 @@ fun TeamSetupScreenUpdated(
                                 unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
                                 cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
 
+                            ),
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Text,
+                                imeAction = ImeAction.Next,
+                                capitalization = KeyboardCapitalization.Sentences
                             ),
                             isError = !validTeamName(state.teamNameOnTournaments) && state.teamNameOnTournaments.isNotEmpty(),
                             errorMessage = stringResource(id = R.string.valid_team_name)

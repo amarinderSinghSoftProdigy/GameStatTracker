@@ -18,6 +18,7 @@ data class TeamParent(
 data class Result(@SerializedName("result") val result: ArrayList<TeamParent> = arrayListOf(), @SerializedName("teamId") val teamId:String ="")
 
 data class Team(
+    val unreadMessageCount: Int = 0,
     @SerializedName("_id")
     val _id: String = "",
     @SerializedName("coachDetails")

@@ -184,6 +184,10 @@ enum class UserType(val stringId: String, val key: String) {
   { key: "Guardian", value: "guardian"}*/
 }
 
+enum class EventType(val key: String) {
+    GAME("game")
+}
+
 @Composable
 fun ShimmerItem(padding: PaddingValues = PaddingValues(0.dp)) {
     val infiniteTransition = rememberInfiniteTransition()

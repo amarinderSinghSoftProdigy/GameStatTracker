@@ -170,7 +170,6 @@ class TeamRepository @Inject constructor(
                 limit = limit,
                 sort = sort
             )
-            //service.getMyLeagues(teamId, page = page, limit = limit, sort = sort)
         }
     }
 

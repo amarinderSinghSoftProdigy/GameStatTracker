@@ -13,6 +13,7 @@ sealed class ChatUIEvent {
   object OnInitiateNewConversation : ChatUIEvent()
   object GetChatListing : ChatUIEvent()
   object ClearData : ChatUIEvent()
+  data class RefreshChatListingAPI(val unreadUserGroupIds: List<String>) : ChatUIEvent()
   data class GetAllMembers(val teamId: String) : ChatUIEvent()
   data class TeamSelectionChange(val teamIndex: Int) : ChatUIEvent()
 

@@ -34,6 +34,7 @@ sealed class EvEvents {
     object ClearRegister : EvEvents()
     object ClearList : EvEvents()
     object ClearListLeague : EvEvents()
+    object ClearListEvents : EvEvents()
     object ClearOpportunities : EvEvents()
     data class ShowToast(val message: String) : EvEvents()
     data class OnDeclineConfirmClick(val invitation: EventsResponse) : EvEvents()
