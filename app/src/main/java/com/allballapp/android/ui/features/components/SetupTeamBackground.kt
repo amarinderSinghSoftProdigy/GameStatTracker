@@ -111,7 +111,7 @@ fun CoachFlowBackground(
                     ) {
                         showOptions.value = false
                     }
-                    .verticalScroll(rememberScrollState())
+
             ) {
                 content()
                 Column(

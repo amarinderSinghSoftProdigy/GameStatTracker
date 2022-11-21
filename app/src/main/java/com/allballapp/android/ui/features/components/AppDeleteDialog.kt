@@ -101,6 +101,7 @@ fun <T> DeleteDialog(
                             vertical = dimensionResource(id = R.dimen.size_10dp)
                         )
                 ) {
+
                     AppButton(
                         text = stringResource(R.string.dialog_button_cancel),
                         onClick = onDismiss,
@@ -110,6 +111,7 @@ fun <T> DeleteDialog(
                         border = ButtonDefaults.outlinedBorder,
                         singleButton = true
                     )
+
                     AppButton(
                         text = stringResource(R.string.dialog_button_confirm),
                         onClick = {
@@ -124,6 +126,7 @@ fun <T> DeleteDialog(
                         themed = true,
                         isForceEnableNeeded = true
                     )
+
                 }
             },
             properties = DialogProperties(dismissOnClickOutside = false)
@@ -1301,7 +1304,7 @@ fun SelectGuardianRoleDialog(
                                 modifier = Modifier
                                     .weight(1f),
                                 border = ButtonDefaults.outlinedBorder,
-                                enabled =  (selected ?: "").isNotEmpty(),
+                                enabled = (selected ?: "").isNotEmpty(),
                                 onlyBorder = false,
                             )
                         }

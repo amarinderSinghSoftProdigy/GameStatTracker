@@ -3,6 +3,7 @@ package com.allballapp.android.ui.features.user_type.team_setup.updated
 import android.app.Application
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -777,12 +778,14 @@ class SetupTeamViewModelUpdated @Inject constructor(
                 createTeamResponse.value.let { response ->
                     if (response.status && response.data != null) {
                         _teamSetupUiState.value = _teamSetupUiState.value.copy(isLoading = false)
+                        dataStoreManager.setId(response.data.Id)
                         _teamSetupChannel.send(
                             TeamSetupChannel.OnTeamCreate(
                                 response.statusMessage,
                                 response.data.Id
                             )
                         )
+
                         //inItToDefaultData()
                     } else {
                         _teamSetupUiState.value =

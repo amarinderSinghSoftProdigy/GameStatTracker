@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.allballapp.android.common.ResultWrapper
+import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.domain.repository.ITeamRepository
 import com.allballapp.android.ui.utils.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,7 +15,9 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
-class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : ViewModel() {
+class InvitationViewModel @Inject constructor(
+    val teamRepo: ITeamRepository, private val dataStoreManager: DataStoreManager,
+) : ViewModel() {
     var invitationState = mutableStateOf(InvitationState())
         private set
 
@@ -236,6 +239,7 @@ class InvitationViewModel @Inject constructor(val teamRepo: ITeamRepository) : V
             }
             is ResultWrapper.Success -> {
                 acceptInviteResponse.value.let { response ->
+                    dataStoreManager.setId(response.data.team)
                     getAllInvitation()
                     _invitationChannel.send(
                         InvitationChannel.Success(
