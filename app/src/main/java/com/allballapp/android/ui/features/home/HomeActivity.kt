@@ -1,6 +1,7 @@
 package com.allballapp.android.ui.features.home
 
 //import com.softprodigy.ballerapp.ui.features.home.events.NewEventScreen
+//import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.BroadcastReceiver
@@ -77,14 +78,12 @@ import com.allballapp.android.ui.utils.anims.exitTransition
 import com.allballapp.android.ui.utils.anims.slideInHorizont
 import com.allballapp.android.ui.utils.anims.slideOutHorizont
 import com.cometchat.pro.constants.CometChatConstants
-import com.cometchat.pro.models.Conversation
-import com.cometchat.pro.models.Group
-import com.cometchat.pro.models.User
+import com.cometchat.pro.core.CometChat
+import com.cometchat.pro.models.*
 import com.cometchat.pro.uikit.ui_components.chats.CometChatConversationList
 import com.cometchat.pro.uikit.ui_components.chats.CustomCometListener
 import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
 import com.cometchat.pro.uikit.ui_components.messages.message_list.CometChatMessageList
-//import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -295,6 +294,10 @@ class HomeActivity : FragmentActivity(), CustomCometListener {
         if (::homeViewModel.isInitialized) {
             homeViewModel.getUnreadMessageCount()
         }
+
+        /* Listener for updating badge count on new conversation receive*/
+        addConversationListener()
+
     }
 
     // on below line we are calling on activity result method.
@@ -339,6 +342,47 @@ class HomeActivity : FragmentActivity(), CustomCometListener {
 
     override fun onTeamIDChange(teamId: String) {
         Timber.i("setResult--- $teamId")
+    }
+
+    private fun addConversationListener() {
+        CometChat.addMessageListener("HomeActivity", object : CometChat.MessageListener() {
+            override fun onTextMessageReceived(message: TextMessage) {
+                if (::homeViewModel.isInitialized) {
+                    homeViewModel.getUnreadMessageCount()
+                }
+            }
+
+            override fun onMediaMessageReceived(message: MediaMessage) {
+                if (::homeViewModel.isInitialized) {
+                    homeViewModel.getUnreadMessageCount()
+                }
+            }
+
+            override fun onCustomMessageReceived(message: CustomMessage) {
+                if (::homeViewModel.isInitialized) {
+                    homeViewModel.getUnreadMessageCount()
+                }
+            }
+        })
+        CometChat.addGroupListener("HomeActivity", object : CometChat.GroupListener() {
+
+            override fun onMemberAddedToGroup(
+                action: Action,
+                addedby: User,
+                userAdded: User,
+                addedTo: Group
+            ) {
+                if (::homeViewModel.isInitialized) {
+                    homeViewModel.getUnreadMessageCount()
+                }
+            }
+
+            override fun onGroupMemberJoined(action: Action, joinedUser: User, joinedGroup: Group) {
+                if (::homeViewModel.isInitialized) {
+                    homeViewModel.getUnreadMessageCount()
+                }
+            }
+        })
     }
 
 }
