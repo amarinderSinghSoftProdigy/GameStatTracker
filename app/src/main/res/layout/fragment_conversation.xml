@@ -3,13 +3,15 @@
 
     <androidx.fragment.app.FragmentContainerView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/converstion_container"
-        android:name="com.cometchat.pro.uikit.ui_components.chats.CometChatConversationList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:orientation="vertical">
-      <!--  <fragment
+      <!--
+        android:name="com.cometchat.pro.uikit.ui_components.chats.CometChatConversationList"
+
+      <fragment
             android:id="@+id/converstion_fragment"
             android:name="com.cometchat.pro.uikit.ui_components.chats.CometChatConversationList"
             android:layout_width="match_parent"

@@ -95,7 +95,7 @@ import timber.log.Timber
 val animeDuration = 500
 
 @AndroidEntryPoint
-class HomeActivity : FragmentActivity() ,CustomCometListener {
+class HomeActivity : FragmentActivity(), CustomCometListener {
     var dataStoreManager: DataStoreManager = DataStoreManager(this)
     val cometChat = CometChatUI()
     var setupTeamViewModelUpdated: SetupTeamViewModelUpdated? = null
@@ -221,11 +221,13 @@ class HomeActivity : FragmentActivity() ,CustomCometListener {
                                 selectionColor = state.color ?: Color.Black,
                                 badgeCount = state.unReadMessageCount
                             ) {
-                                homeViewModel.setBottomNav(it)
-                                if (it == BottomNavKey.HOME) {
-                                    homeViewModel.setTopAppBar(false)
-                                } else {
-                                    homeViewModel.setTopAppBar(true)
+                                if (it != homeViewModel.state.value.bottomBar) {
+                                    homeViewModel.setBottomNav(it)
+                                    if (it == BottomNavKey.HOME) {
+                                        homeViewModel.setTopAppBar(false)
+                                    } else {
+                                        homeViewModel.setTopAppBar(true)
+                                    }
                                 }
                             }
                         }
@@ -336,7 +338,7 @@ class HomeActivity : FragmentActivity() ,CustomCometListener {
     }
 
     override fun onTeamIDChange(teamId: String) {
-      Timber.i("setResult--- $teamId")
+        Timber.i("setResult--- $teamId")
     }
 
 }
@@ -1253,8 +1255,8 @@ fun NavControllerComposable(
             remember {
                 eventViewModel.onEvent(EvEvents.ClearListLeague)
             }
-            val type = it.arguments?.getString("type") ?:""
-            MyLeagueScreen(type = type , eventViewModel) {
+            val type = it.arguments?.getString("type") ?: ""
+            MyLeagueScreen(type = type, eventViewModel) {
                 eventMainTitle = it
                 navController.navigate(Route.LEAGUE_DETAIL_SCREEN)
             }

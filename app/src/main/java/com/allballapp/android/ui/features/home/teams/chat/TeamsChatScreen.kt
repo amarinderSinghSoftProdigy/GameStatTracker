@@ -352,15 +352,12 @@ fun FragmentContainer(
     commit: FragmentTransaction.(containerId: Int) -> Unit
 ) {
     val containerId by rememberSaveable {
-        mutableStateOf(View.generateViewId())
+        mutableStateOf(R.id.converstion_container)
     }
-    Timber.e(" id " + View.generateViewId())
     AndroidView(
         modifier = modifier,
         factory = { context ->
-            if (fragmentManager.findFragmentById(containerId) == null) {
-                loadContainer(context, containerId) {}
-            }
+            loadContainer(context, containerId) {}
             if (fragmentManager.findFragmentById(containerId)?.view == null) {
                 fragmentManager.commit {
                     commit(containerId)
