@@ -626,6 +626,7 @@ class TeamViewModel @Inject constructor(
                                 profileImage = response.data.logo
                             ),
                         )
+                        updateColorData(response.data.primaryTeamColor)
                     } else {
                         _teamChannel.send(
                             TeamChannel.ShowToast(

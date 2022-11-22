@@ -37,6 +37,7 @@ import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.getCustomColorCode
 import com.allballapp.android.common.validTeamName
+import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.request.Address
 import com.allballapp.android.data.request.Members
 import com.allballapp.android.ui.features.components.*
@@ -445,6 +446,7 @@ fun TeamSetupScreenUpdated(
             onDismiss = {
                 inviteVm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
                 vm.onEvent(TeamSetupUIEventUpdated.Clear)
+                onBackClick()
             },
             onConfirmClick = {
                 inviteVm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
@@ -466,6 +468,7 @@ fun TeamSetupScreenUpdated(
     }
 
     ModalBottomSheetLayout(
+
         sheetContent = {
             ColorPickerBottomSheet(controller, colorEnvelope = { colorEnvelope ->
                 if (!colorEnvelope.hexCode.contentEquals(AppConstants.PICKER_DEFAULT_COLOR)) {
