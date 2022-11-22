@@ -50,6 +50,7 @@ import com.allballapp.android.ui.features.home.home_screen.HomeScreenEvent
 import com.allballapp.android.ui.features.home.teams.TeamUIEvent
 import com.allballapp.android.ui.features.home.teams.TeamViewModel
 import com.allballapp.android.ui.theme.*
+import com.allballapp.android.ui.utils.CommonUtils
 import com.google.accompanist.flowlayout.FlowRow
 import com.togitech.ccp.component.TogiCountryCodePicker
 import com.togitech.ccp.data.utils.getDefaultLangCode
@@ -78,6 +79,10 @@ fun AddPlayersScreenUpdated(
     val showSwapDialog = rememberSaveable {
         mutableStateOf(false)
     }
+
+    val profileName = remember {
+        mutableStateOf("")
+    }
     val expanded = remember {
         mutableStateOf(false)
     }
@@ -87,7 +92,8 @@ fun AddPlayersScreenUpdated(
 
     remember {
         vm.onEvent(TeamSetupUIEventUpdated.GetRoles)
-        vm.initialInviteCount(1)
+        if (state.inviteList.isEmpty())
+            vm.initialInviteCount(2)
         if (!teamId.isNullOrEmpty()) {
             if (teamData != null) {
                 teamData.onEvent(TeamUIEvent.GetTeam(teamId))
@@ -122,8 +128,11 @@ fun AddPlayersScreenUpdated(
                     Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
                         .show()
                 }
-                TeamSetupChannel.OnLogoUpload -> {
+                is TeamSetupChannel.OnLogoUpload -> {
                     vm.onEvent(TeamSetupUIEventUpdated.OnLogoUploadSuccess)
+                }
+                is TeamSetupChannel.OnShowDialog -> {
+                    showSwapDialog.value = true
                 }
                 is TeamSetupChannel.OnTeamCreate -> {
                     Toast.makeText(context, uiEvent.message, Toast.LENGTH_LONG)
@@ -202,18 +211,18 @@ fun AddPlayersScreenUpdated(
                     }
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
                     //Add New Row Button - Commented as per the client.
-                    /* InviteTeamMemberButton(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = stringResource(id = R.string.add),
-                            onClick = {
-                                updateItem(addIntent = true)
-                            },
-                            painter = painterResource(
-                                id = R.drawable.ic_add_button
-                            ),
-                            isTransParent = true
-                        )
-                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))*/
+                    InviteTeamMemberButton(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(id = R.string.add),
+                        onClick = {
+                            updateItem(addIntent = true)
+                        },
+                        painter = painterResource(
+                            id = R.drawable.ic_add_button
+                        ),
+                        isTransParent = true
+                    )
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
                 }
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
@@ -224,22 +233,33 @@ fun AddPlayersScreenUpdated(
                     vm.onEvent(TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen)
                 },
                 onNextClick = {
-                    //Commented for multiple invitations
-                    /**
-                     * val role = CommonUtils.getCheck(homeState.user.phone, state.inviteList)
-                    if (role.isNotEmpty()) {
-                    roleKey.value = role//state.inviteList[0].role.key
-                    vm.onEvent(
-                    TeamSetupUIEventUpdated.SetRequestData(
-                    roleKey.value,
-                    teamId.ifEmpty { UserStorage.teamId }
-                    )
-                    )
-                    showSwapDialog.value = true
-                    homeVm.onEvent(HomeScreenEvent.OnSwapClick())
-                    } else {
-                     * */
                     if (!state.isLoading) {
+                        if (teamId.isNullOrEmpty()) {
+                            vm.onEvent(TeamSetupUIEventUpdated.OnAddPlayerScreenNext)
+                        } else {
+                            val role = CommonUtils.getCheck(homeState.user.phone, state.inviteList)
+                            if (role.isNotEmpty()) {
+                                roleKey.value = role//state.inviteList[0].role.key
+                                vm.onEvent(
+                                    TeamSetupUIEventUpdated.SetRequestData(
+                                        roleKey.value,
+                                        teamId.ifEmpty { UserStorage.teamId }
+                                    )
+                                )
+                                showSwapDialog.value = true
+                                homeVm.onEvent(HomeScreenEvent.OnSwapClick())
+                            } else {
+                                vm.onEvent(
+                                    TeamSetupUIEventUpdated.OnInviteTeamMembers(
+                                        teamId,
+                                        type = AppConstants.TYPE_CREATE_TEAM,
+                                    )
+                                )
+                            }
+                        }
+                    }
+
+                    /*if (!state.isLoading) {
                         if (teamId.isNullOrEmpty()) {
                             vm.onEvent(TeamSetupUIEventUpdated.OnAddPlayerScreenNext)
                         } else {
@@ -262,7 +282,7 @@ fun AddPlayersScreenUpdated(
                                 homeVm.onEvent(HomeScreenEvent.OnSwapClick())
                             }
                         }
-                    }
+                    }*/
                 },
                 enableState = !state.isLoading && state.inviteList.isNotEmpty() &&
                         state.inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() && it.contact.length >= 10 },
@@ -287,17 +307,27 @@ fun AddPlayersScreenUpdated(
         )
     }
     if (showSwapDialog.value) {
+        val index = CommonUtils.getIndex(homeState.user.phone, state.inviteList)
+        val name = if (index == -1) {
+            profileName.value.ifEmpty { "user" }
+        } else state.inviteList[index].name
         SwapProfile(
-            title = stringResource(id = R.string.invite_from_your_profile),
+            defaultCase = true,
+            title = stringResource(id = R.string.select_profile_title).replace(
+                "user", name
+            ),
             actionButtonText = stringResource(id = R.string.invite),
-            users = homeState.swapUsers,
+            users = CommonUtils.filterUsers(
+                state.inviteList,
+                state.memberList,
+                homeState.swapUsers as ArrayList
+            ),
             onDismiss = { showSwapDialog.value = false },
             onConfirmClick = { swapUser ->
-                /*//Commented the logic for multiple invites
-                *  val index = CommonUtils.getIndex(homeState.user.phone, state.inviteList)
                 if (index != -1) {
                     vm.onEvent(
                         TeamSetupUIEventUpdated.AddInviteTeamMembers(
+                            homeState.user.phone,
                             index,
                             userType = state.role,
                             teamId = state.teamId,
@@ -305,25 +335,35 @@ fun AddPlayersScreenUpdated(
                             role = roleKey.value,
                         )
                     )
-                }*/
-                vm.onEvent(
-                    TeamSetupUIEventUpdated.OnInviteTeamMembers(
-                        state.teamId,
-                        userType = state.role,
-                        type = AppConstants.TYPE_CREATE_TEAM,
-                        profilesSelected = true,
-                        member = Members(
-                            name = swapUser.firstName,
-                            mobileNumber = swapUser._Id,
-                            role = roleKey.value
+                } else {
+                    vm.onEvent(
+                        TeamSetupUIEventUpdated.OnInviteTeamMembers(
+                            state.teamId,
+                            type = AppConstants.TYPE_CREATE_TEAM,
                         )
                     )
-                )
+                }
+                /*showSwapDialog.value = false
+                homeVm.onEvent(HomeScreenEvent.HideSwap(false))*/
+                /* vm.onEvent(
+                       TeamSetupUIEventUpdated.OnInviteTeamMembers(
+                           state.teamId,
+                           userType = state.role,
+                           type = AppConstants.TYPE_CREATE_TEAM,
+                           profilesSelected = true,
+                           member = Members(
+                               name = swapUser.firstName,
+                               mobileNumber = swapUser._Id,
+                               role = roleKey.value
+                           )
+                       )
+                   )*/
                 showSwapDialog.value = false
                 homeVm.onEvent(HomeScreenEvent.HideSwap(false))
             },
             showLoading = homeState.isDataLoading,
             onCreatePlayerClick = {
+                profileName.value = name
                 addProfileClick()
             },
             showCreatePlayerButton = true
@@ -465,47 +505,26 @@ fun InviteItem(
                         }
                     }
                 }
-                //Commented the delete icon
-                /*
-                *
             }
-
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-            Box(modifier = Modifier
-                .background(
-                    MaterialTheme.appColors.material.primary,
-                    shape = RoundedCornerShape(50)
-                )
-                .clickable {
-                    updateItem(index, false)
-                }) {
+            Box(
+                modifier = Modifier
+                    .size(dimensionResource(id = R.dimen.size_40dp))
+                    .background(
+                        MaterialTheme.appColors.material.primary,
+                        shape = RoundedCornerShape(50)
+                    )
+                    .clickable {
+                        updateItem(index, false)
+                    },
+                contentAlignment = Alignment.Center
+            ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_delete),
                     contentDescription = "",
                     tint = Color.Unspecified,
-                    modifier = Modifier
-                        .padding(dimensionResource(id = R.dimen.size_8dp))
                 )
             }
-*/
-                /*Icon(
-                    painter = painterResource(id = R.drawable.ic_remove),
-                    contentDescription = "",
-                    tint = Color.Unspecified,
-                    modifier = Modifier
-                        .offset((10).dp, (-10).dp)
-                        .align(Alignment.TopEnd)
-                        .background(
-                            AppConstants.SELECTED_COLOR,
-                            shape = RoundedCornerShape(50)
-                        )
-                        .padding(dimensionResource(id = R.dimen.size_2dp))
-                        .clickable {
-                            updateItem(index, false)
-                        }
-                )*/
-            }
-
         }
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
         Row(
@@ -574,6 +593,7 @@ fun InviteItem(
                 contentDescription = "",
                 tint = Color.Unspecified,
                 modifier = Modifier
+                    .size(dimensionResource(id = R.dimen.size_40dp))
                     .clickable {
                         vm.onEvent(
                             TeamSetupUIEventUpdated.OnIndexChange(

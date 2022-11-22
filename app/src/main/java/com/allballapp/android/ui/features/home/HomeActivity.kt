@@ -538,7 +538,7 @@ fun NavControllerComposable(
             )
         }
 
-        composable(route = Route.ADD_PROFILE_SCREEN + "/{countryCode}/{mobileNumber}",
+        /*composable(route = Route.ADD_PROFILE_SCREEN + "/{countryCode}/{mobileNumber}",
             arguments = listOf(
                 navArgument("countryCode") {
                     type = NavType.StringType
@@ -579,7 +579,7 @@ fun NavControllerComposable(
                     navController.navigate(Route.WEB_VIEW)
                 })
 
-        }
+        }*/
         composable(route = Route.PROFILE_EDIT_SCREEN,
             enterTransition = { slideInHorizont(animeDuration) },
             exitTransition = { exitTransition(animeDuration) },
@@ -1014,13 +1014,13 @@ fun NavControllerComposable(
             }
             InvitationScreen(
                 vmSetupTeam = setupTeamViewModelUpdated,
-                onNewProfileIntent = { countryCode, mobileNumber ->
+                /*onNewProfileIntent = { countryCode, mobileNumber ->
                     navController.navigate(Route.ADD_PROFILE_SCREEN + "/$countryCode/$mobileNumber")
 
                 },
                 onInvitationSuccess = {
                     navController.popBackStack()
-                },
+                },*/
                 homeVm = homeViewModel,
                 addProfileClick = {
                     navController.navigate(Route.ADD_PROFILE_SCREEN)
