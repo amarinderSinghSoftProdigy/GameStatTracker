@@ -493,6 +493,9 @@ fun HomeScreen(
             onDismiss = { dismissDialog.invoke(false) },
             onConfirmClick = { teamId, teamName ->
                 if (UserStorage.teamId != teamId) {
+                    if (teamId == teamState.allBallId) {
+                        vm.showBottomAppBar(false)
+                    }
                     onTeamSelectionConfirmed(teamState.selectedTeam)
                     teamVm.onEvent(TeamUIEvent.OnConfirmTeamClick(teamId, teamName))
                 }
