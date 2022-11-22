@@ -8,10 +8,7 @@ import androidx.annotation.FloatRange
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -43,6 +40,7 @@ import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupPositionProvider
@@ -52,6 +50,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
+import com.allballapp.android.common.getCustomColorCode
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.ui.features.home.events.schedule.Space
 import com.allballapp.android.ui.features.venue.Location
@@ -74,7 +73,13 @@ fun stringResourceByName(name: String): String {
     }.getOrNull()?.let { stringResource(id = it) } ?: name else ""
 }
 
-fun fromHex(color: String? = "0177C1") = Color(android.graphics.Color.parseColor("#" + color))
+fun fromHex(color: String? = "0177C1"): Color {
+    return try {
+        Color(android.graphics.Color.parseColor("#${getCustomColorCode(color ?: "")}"))
+    } catch (e: Exception) {
+        Color(android.graphics.Color.parseColor("#" + "0177C1"))
+    }
+}
 
 @Composable
 fun TabBar(
@@ -120,7 +125,9 @@ fun BoxScope.CommonTabView(
                 tint = Color.White
             )
         }
-    } else if (topBarData.topBar == TopBar.MY_EVENT) {
+    }
+    //Dots hidden from events screen.
+    /*else if (topBarData.topBar == TopBar.MY_EVENT) {
         Row(modifier = Modifier
             .align(Alignment.CenterStart)
             .clickable {
@@ -136,9 +143,10 @@ fun BoxScope.CommonTabView(
                 tint = Color.White
             )
         }
-    }
+    }*/
     val interactionSource = remember { MutableInteractionSource() }
     Row(
+        horizontalArrangement = Arrangement.Center,
         modifier = Modifier
             .align(Alignment.Center)
             .background(Color.Transparent)
@@ -164,41 +172,35 @@ fun BoxScope.CommonTabView(
             } else {
                 stringResource(id = R.string.app_name)
             }
-
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-
-            if (topBarData.logo != null) {
-                CoilImage(
-                    src = com.allballapp.android.BuildConfig.IMAGE_SERVER + topBarData.logo,
-                    modifier = Modifier
-                        .size(dimensionResource(id = R.dimen.size_32dp))
-                        .background(
-                            color = MaterialTheme.appColors.material.primary,
-                            CircleShape
-                        )
-                        .clip(
-                            CircleShape
-                        ),
-                    isCrossFadeEnabled = false,
-                    onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
-                    onError = { Placeholder(R.drawable.ic_team_placeholder) },
-                    contentScale = ContentScale.Crop
-                )
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
-            }
-
-            Text(
-                textAlign = TextAlign.Center,
-                text = label,
-                style = MaterialTheme.typography.h3,
-                color = Color.White
+        if (topBarData.logo != null) {
+            CoilImage(
+                src = com.allballapp.android.BuildConfig.IMAGE_SERVER + topBarData.logo,
+                modifier = Modifier
+                    .size(dimensionResource(id = R.dimen.size_32dp))
+                    .background(
+                        color = MaterialTheme.appColors.material.primary,
+                        CircleShape
+                    )
+                    .clip(
+                        CircleShape
+                    ),
+                isCrossFadeEnabled = false,
+                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                onError = { Placeholder(R.drawable.ic_team_placeholder) },
+                contentScale = ContentScale.Crop
             )
+            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
         }
 
-
+        Text(
+            modifier = Modifier.widthIn(0.dp, dimensionResource(id = R.dimen.size_225dp)),
+            textAlign = TextAlign.Center,
+            text = label,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            style = MaterialTheme.typography.h3,
+            color = Color.White
+        )
         if (topBarData.topBar == TopBar.TEAMS) {
             AppSpacer(Modifier.size(dimensionResource(id = R.dimen.size_5dp)))
             Icon(
@@ -207,7 +209,6 @@ fun BoxScope.CommonTabView(
                 tint = Color.White
             )
         }
-
     }
 
     var icon: Painter? = null
@@ -380,11 +381,12 @@ fun DialogButton(
 
 @Composable
 fun CommonProgressBar(
-    bgColor : Color = MaterialTheme.appColors.material.surface
+    bgColor: Color = MaterialTheme.appColors.material.surface
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .clickable(enabled = false, onClick = {})
             .background(bgColor),
         contentAlignment = Alignment.Center
     ) {
@@ -436,7 +438,7 @@ fun getRoleList(): List<UserType> {
         UserType.PLAYER,
         UserType.COACH,
         UserType.PARENT,
-        //UserType.GAME_STAFF,
+        UserType.PROGRAM_MANAGER,
         UserType.PROGRAM_STAFF,
         //UserType.FAN,
         UserType.REFEREE
@@ -655,6 +657,7 @@ private fun animateAlignmentAsState(
 @Composable
 fun LocationBlock(location: Location, padding: Dp = dimensionResource(id = R.dimen.size_16dp)) {
     val context = LocalContext.current
+    Timber.e("Location " + location.latLong)
     Column(
         Modifier.padding(horizontal = padding)
     ) {
@@ -674,8 +677,11 @@ fun LocationBlock(location: Location, padding: Dp = dimensionResource(id = R.dim
                     fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
+                var address = if (location.city.isNotEmpty()) location.city + ", " else ""
+                address += if (location.state.isNotEmpty()) location.state + ", " else ""
+                address += location.zipCode.ifEmpty { "" }
                 Text(
-                    text = location.city + ", " + location.state + ", " + location.zipCode,
+                    text = address,
                     color = MaterialTheme.appColors.textField.label,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                 )
@@ -979,7 +985,11 @@ fun hasContactPermission(context: Context): Boolean {
 fun requestContactPermission(context: Context, activity: Activity) {
     // on below line if permission is not granted requesting permissions.
     if (!hasContactPermission(context)) {
-        ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.READ_CONTACTS), AppConstants.REQUEST_CONTACT)
+        ActivityCompat.requestPermissions(
+            activity,
+            arrayOf(Manifest.permission.READ_CONTACTS),
+            AppConstants.REQUEST_CONTACT
+        )
     }
 }
 
@@ -992,7 +1002,11 @@ fun hasFileManagerPermission(context: Context): Boolean {
 
 fun requestFileManagerPermission(context: Context, activity: Activity) {
     if (!hasFileManagerPermission(context)) {
-        ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),1)
+        ActivityCompat.requestPermissions(
+            activity,
+            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+            1
+        )
     }
 }
 
@@ -1007,4 +1021,27 @@ fun requestCameraPermission(context: Context, activity: Activity) {
     if (!hasContactPermission(context)) {
         ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.CAMERA), 1)
     }
+}
+
+class RectHolder(var rect: Rect? = null)
+
+
+fun Modifier.scrollOnFocus(
+    scrollState: ScrollState,
+    coroutineScope: CoroutineScope,
+): Modifier {
+    val rectHolder = RectHolder()
+    return composed {
+        onGloballyPositioned { rectHolder.rect = it.boundsInParent() }
+            .onFocusEvent {
+                if (it.isFocused) {
+                    rectHolder.rect.takeIf { !scrollState.isScrollInProgress }
+                        ?.let { coroutineScope.launch { scrollState.animateScrollTo(it.top.toInt()) } }
+                }
+            }
+    }
+}
+
+fun <T> getCommonElementsCount(first: List<T>, second: List<T>): Int {
+    return first.filter(second::contains).size
 }

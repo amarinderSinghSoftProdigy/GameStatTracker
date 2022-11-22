@@ -132,7 +132,7 @@ fun AppSingleTabLikeViewPager(
 
         Column(verticalArrangement = Arrangement.Center) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_14dp)))
-            Row(horizontalArrangement = Arrangement.Center) {
+            Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     painter = painter,
                     contentDescription = null,

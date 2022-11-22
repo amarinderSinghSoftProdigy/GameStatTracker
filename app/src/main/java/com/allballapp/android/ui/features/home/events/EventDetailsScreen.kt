@@ -37,6 +37,7 @@ import com.allballapp.android.common.convertServerUtcDateToLocal
 import com.allballapp.android.common.uiToAPiDate
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.ui.features.components.*
+import com.allballapp.android.ui.features.components.EventType
 import com.allballapp.android.ui.features.venue.Location
 import com.allballapp.android.ui.theme.ColorButtonGreen
 import com.allballapp.android.ui.theme.ColorButtonRed
@@ -339,8 +340,9 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
 
         AppDivider(color = MaterialTheme.appColors.appDivider.dividerColor)
+        if (state.event.eventType == EventType.GAME.key) {
 
-        Column(
+            Column(
             Modifier
                 .padding(
                     start = dimensionResource(id = R.dimen.size_16dp),
@@ -367,9 +369,9 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
             }
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
+                AppDivider(color = MaterialTheme.appColors.material.primary)
+            }
         }
-
-        AppDivider(color = MaterialTheme.appColors.appDivider.dividerColor)
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
 
         Column(

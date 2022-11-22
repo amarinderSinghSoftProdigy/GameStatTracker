@@ -25,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.togitech.ccp.R
 import com.togitech.ccp.data.CountryData
+import com.togitech.ccp.transformation.PhoneNumberTransformation
 
 @Composable
 fun TogiCountryCodePicker(
@@ -49,7 +50,14 @@ fun TogiCountryCodePicker(
     showDialog: Boolean = true,
     isAlreadyOpenPicker : MutableState<Boolean> = mutableStateOf(false),
 ) {
-    var textFieldValueState by remember { mutableStateOf(TextFieldValue(text = text)) }
+
+    var textFieldValueState by remember {
+        mutableStateOf(
+            TextFieldValue(
+                text = text,
+            )
+        )
+    }
     val textFieldValue = textFieldValueState.copy(text = text)
     val keyboardController = LocalTextInputService.current
     val pattern = remember { Regex("^\\d+\$") }
@@ -112,12 +120,12 @@ fun TogiCountryCodePicker(
                         },
 
                         colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = focusedBorderColor,
-                            unfocusedBorderColor = unfocusedBorderColor,
+                            focusedBorderColor = Color.Transparent,
+                            unfocusedBorderColor = Color.Transparent,
                             cursorColor = cursorColor
                         ),
                         singleLine = true,
-                        visualTransformation = MaskTransformation(),
+                        visualTransformation = PhoneNumberTransformation(defaultCountry.countryCode.uppercase()),
                         /* MaskTransformation(),*///PhoneNumberTransformation(defaultCountry.countryCode.uppercase()),
                         placeholder = placeHolder,
                         keyboardOptions = KeyboardOptions.Default.copy(

@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.allballapp.android.R
@@ -91,9 +92,9 @@ fun EventRegistraionDetails(
     }
 
     LaunchedEffect(true) {
-        if(teamVm.teamUiState.value.teams.isNotEmpty()) {
+        if (teamVm.teamUiState.value.teams.isNotEmpty()) {
             teamVm.teamUiState.value.teams.forEach {
-                if(UserStorage.teamId == it._id) {
+                if (UserStorage.teamId == it._id) {
                     vm.onEvent(EvEvents.RegisterTeam(it))
                     teamVm.onEvent(TeamUIEvent.OnTeamIdSelected(it._id))
                 }
@@ -191,8 +192,9 @@ fun EventRegistraionDetails(
                 DividerCommon()
                 RegisterItem(
                     stringResource(id = R.string.payment_options),
-                   if(state.registerRequest.paymentOption.isNotEmpty()) state.registerRequest.paymentOption else stringResource(
-                       id = R.string.select_payment_option),
+                    if (state.registerRequest.paymentOption.isNotEmpty()) state.registerRequest.paymentOption else stringResource(
+                        id = R.string.select_payment_option
+                    ),
                     showIcon = false,
                     updated = state.registerRequest.paymentOption.isNotEmpty()
                 ) {
@@ -200,8 +202,8 @@ fun EventRegistraionDetails(
                 }
                 AppOutlineTextField(
                     isError = showError.value,
-                   /* leadingIcon = {
-                        *//*AppText(
+                    /* leadingIcon = {
+                         *//*AppText(
                             text = stringResource(id = R.string.dollar),
                             fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp
                         )*//*
@@ -486,6 +488,7 @@ fun RegisterItem(
         ) {
             AppText(
                 text = value,
+                textAlign = TextAlign.End,
                 style = if (!updated) MaterialTheme.typography.h6 else MaterialTheme.typography.h2,
                 color = if (!updated) MaterialTheme.appColors.textField.label else ColorBWBlack,
             )

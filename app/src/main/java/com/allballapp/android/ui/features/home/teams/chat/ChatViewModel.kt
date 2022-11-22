@@ -1,5 +1,6 @@
 package com.allballapp.android.ui.features.home.teams.chat
 
+//import com.cometchat.pro.uikit.ui_settings.UIKitSettings
 import android.app.Application
 import android.util.Log
 import androidx.compose.runtime.State
@@ -9,19 +10,24 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.allballapp.android.R
 import com.allballapp.android.common.ResultWrapper
-import com.allballapp.android.core.util.UiText
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
+import com.allballapp.android.data.response.team.Team
 import com.allballapp.android.domain.repository.IChatRepository
 import com.allballapp.android.domain.repository.IImageUploadRepo
 import com.allballapp.android.domain.repository.ITeamRepository
+import com.allballapp.android.ui.features.components.getCommonElementsCount
+import com.allballapp.android.ui.utils.UiText
 import com.cometchat.pro.constants.CometChatConstants
 import com.cometchat.pro.core.CometChat
+import com.cometchat.pro.core.ConversationsRequest
 import com.cometchat.pro.exceptions.CometChatException
+import com.cometchat.pro.models.Conversation
 import com.cometchat.pro.models.Group
 import com.cometchat.pro.models.GroupMember
 import com.cometchat.pro.models.User
 import com.cometchat.pro.uikit.ui_settings.UIKitSettings
+import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -59,6 +65,9 @@ class ChatViewModel @Inject constructor(
             is ChatUIEvent.OnGroupNameChange -> {
                 _chatUiState.value = _chatUiState.value.copy(groupName = event.groupName)
             }
+            is ChatUIEvent.OnSearchValueChange -> {
+                _chatUiState.value = _chatUiState.value.copy(searchText = event.searchText)
+            }
             is ChatUIEvent.ShowDialog -> {
                 _chatUiState.value =
                     _chatUiState.value.copy(showCreateGroupNameDialog = event.showDialog)
@@ -83,7 +92,7 @@ class ChatViewModel @Inject constructor(
                     _chatUiState.value.copy(teamIndex = event.teamIndex)
 
                 /* Saving team Id  */
-                if (_chatUiState.value.teams.isNotEmpty() && event.teamIndex > 0) {
+                if (_chatUiState.value.teams.isNotEmpty() && event.teamIndex > -1) {
                     UIKitSettings.selectedTeamId = _chatUiState.value.teams[event.teamIndex]._id
                 }
             }
@@ -92,11 +101,22 @@ class ChatViewModel @Inject constructor(
                     getChatListings()
                 }
             }
+
+            is ChatUIEvent.RefreshChatListingAPI -> {
+                viewModelScope.launch {
+                    getChatListings(event.unreadUserGroupIds)
+                }
+            }
+
             ChatUIEvent.ClearData -> {
                 _chatUiState.value =
-                    _chatUiState.value.copy(selectedPlayersForNewGroup = mutableStateListOf())
-                _chatUiState.value =
-                    _chatUiState.value.copy(selectedCoachesForNewGroup = mutableStateListOf())
+                    _chatUiState.value.copy(
+                        selectedPlayersForNewGroup = mutableStateListOf(),
+                        selectedCoachesForNewGroup = mutableStateListOf(),
+                        searchText = "",
+                        groupName = ""
+                    )
+
             }
 
 
@@ -114,9 +134,7 @@ class ChatViewModel @Inject constructor(
     }
 
 
-
-
-    private suspend fun getChatListings() {
+    private suspend fun getChatListings(unreadUserGroupIds: List<String> = listOf()) {
         _chatUiState.value = _chatUiState.value.copy(isLoading = true)
         val response = chatRepo.getAllChats(userId = UserStorage.userId)
         _chatUiState.value = _chatUiState.value.copy(isLoading = false)
@@ -142,9 +160,64 @@ class ChatViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 response.value.let { resp ->
                     if (!resp.data.isNullOrEmpty()) {
+
+                        val teams = resp.data
+
+                        /*According to requirement setting default teams as first element of chat team list*/
+                        val team = teams.find { team -> team._id == UserStorage.teamId }
+
+                        team?.let {
+                            teams.remove(team)
+                            teams.add(0, team)
+                        }
+
+                        var mappedList = listOf<Team>()
+
+                        if (unreadUserGroupIds.isNotEmpty()) {
+                            mappedList = teams.map { orderedTeam ->
+                                val mergedIds = mutableListOf<String>()
+                                val playerIds = orderedTeam.players.map {
+                                    it._id
+                                }
+                                val coachIds = orderedTeam.coaches.map {
+                                    it._id
+                                }
+                                val supportingStaffIds = orderedTeam.supportingCastDetails.map {
+                                    it._Id
+                                }
+                                val groupId = orderedTeam.teamChatGroups.map {
+                                    it.groupId
+                                }
+                                mergedIds.addAll(playerIds)
+                                mergedIds.addAll(coachIds)
+                                mergedIds.addAll(supportingStaffIds)
+                                mergedIds.addAll(groupId)
+
+                                val commonCount =
+                                    getCommonElementsCount(
+                                        mergedIds,
+                                        unreadUserGroupIds
+                                    )
+
+                                Timber.i("findCommon--$commonCount ${orderedTeam.name}")
+
+                                orderedTeam.copy(unreadMessageCount = commonCount)
+
+                            }
+                        }
+
+
                         _chatUiState.value =
-                            _chatUiState.value.copy(teams = resp.data)
-                        _chatChannel.send(ChatChannel.OnNewChatListingSuccess)
+                            _chatUiState.value.copy(
+                                teams = if (unreadUserGroupIds.isNotEmpty()) {
+                                    mappedList
+                                } else teams
+                            )
+                        _chatChannel.send(ChatChannel.OnNewChatListingSuccess(teams))
+
+                        /*Getting list of comet chat conversation*/
+//                        getConversation()
+
                     } else {
                         _chatUiState.value =
                             _chatUiState.value.copy(isLoading = false)
@@ -164,7 +237,10 @@ class ChatViewModel @Inject constructor(
 
     private suspend fun saveChatGroup(groupId: String) {
         _chatUiState.value = _chatUiState.value.copy(isLoading = true)
-        val response = chatRepo.saveChatGroup(teamId = UserStorage.teamId, groupId = groupId)
+        val response = chatRepo.saveChatGroup(
+            teamId = chatUiState.value.teams[chatUiState.value.teamIndex]._id,
+            groupId = groupId
+        )
         _chatUiState.value = _chatUiState.value.copy(isLoading = false)
 
         when (response) {
@@ -226,10 +302,10 @@ class ChatViewModel @Inject constructor(
                         override fun onSuccess(group: Group, hashMap: HashMap<String?, String?>) {
                             Timber.i("CreateGroupWithMembersListener-- $group")
                             Timber.i("CreateGroupWithMembersListener-- $hashMap")
-                            ChatChannel.OnNewConversationResponse(
-                                isSuccess = true,
-                                UiText.StringResource(R.string.new_group_created_successfully)
-                            )
+                            /* ChatChannel.OnNewConversationResponse(
+                                 isSuccess = true,
+                                 UiText.StringResource(R.string.new_group_created_successfully), groupId = group.guid
+                             )*/
                             viewModelScope.launch {
                                 saveChatGroup(randomUid)
                                 _chatChannel.send(
@@ -297,8 +373,39 @@ class ChatViewModel @Inject constructor(
             }
 
         }
+    private fun getConversation() {
+        _chatUiState.value = _chatUiState.value.copy(isLoading = true)
+
+        val conversationRequest = ConversationsRequest.ConversationsRequestBuilder()
+            .setLimit(50).setConversationType(ConversationMode.ALL_CHATS.toString())
+            .build()
+
+        conversationRequest.fetchNext(object : CometChat.CallbackListener<List<Conversation?>?>() {
+
+            override fun onSuccess(conversations: List<Conversation?>?) {
+                _chatUiState.value = _chatUiState.value.copy(isLoading = false)
+
+                Timber.i("getConversation-- ${conversations}")
+                val json= Gson().toJson(conversations).replace("\\","")
+                Timber.i("getConversation json-- $json")
+                _chatUiState.value = _chatUiState.value.copy(conversation = conversations)
+
+
+            }
+
+            override fun onError(e: CometChatException) {
+                _chatUiState.value = _chatUiState.value.copy(isLoading = false)
+
+                Timber.i("getConversation-- ${e.message}")
+                e.printStackTrace()
+            }
+
+        })
+    }
+
 
 }
+
 
 sealed class ChatChannel {
     data class ShowToast(val message: UiText) : ChatChannel()
@@ -311,6 +418,17 @@ sealed class ChatChannel {
         val message: UiText? = null
     ) : ChatChannel()
 
-    object OnNewChatListingSuccess : ChatChannel()
+    data class OnNewChatListingSuccess(val teams: ArrayList<com.allballapp.android.data.response.team.Team>) :
+        ChatChannel()
 
+}
+
+enum class ConversationMode(private val label: String) {
+    ALL_CHATS("all_chats"), GROUP("groups"), USER("users");
+}
+
+fun getConvoType(conversation: Conversation): Any {
+    return if (conversation.conversationType == CometChatConstants.CONVERSATION_TYPE_GROUP)
+        conversation.conversationWith as Group else
+        conversation.conversationWith as User
 }

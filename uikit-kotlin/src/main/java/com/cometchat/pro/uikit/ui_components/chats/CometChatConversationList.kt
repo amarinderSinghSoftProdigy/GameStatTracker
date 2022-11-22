@@ -36,6 +36,7 @@ import com.cometchat.pro.uikit.ui_settings.FeatureRestriction
 import com.cometchat.pro.uikit.ui_settings.UIKitSettings
 import com.cometchat.pro.uikit.ui_settings.enum.ConversationMode
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.google.gson.Gson
 
 /*
 
@@ -64,6 +65,9 @@ class CometChatConversationList : Fragment(), TextWatcher {
    private var conversation: Conversation? = null
     private var conversationList: MutableList<Conversation> = ArrayList()
     private var ivStartConversation: ImageView? = null
+
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -239,7 +243,8 @@ class CometChatConversationList : Fragment(), TextWatcher {
         }
         conversationsRequest?.fetchNext(object : CallbackListener<List<Conversation>>() {
             override fun onSuccess(conversations: List<Conversation>) {
-                Log.i("conversationsRequest", "onSuccess:1 ")
+                val jsonConvo=Gson().toJson(conversations).replace("\\",  "")
+                Log.i("conversationsRequest", "onSuccess:1 -- $jsonConvo ")
 
                 if (conversations.isNotEmpty()) {
                     stopHideShimmer()
@@ -330,6 +335,8 @@ class CometChatConversationList : Fragment(), TextWatcher {
                     rvConversation?.refreshConversation(message)
                     checkNoConverstaion()
                 }
+                Log.i(TAG, "onTextMessageReceived: $message")
+                newCustomCometListener.onTeamIDChange(message.metadata.getString("id"))
             }
 
             override fun onMediaMessageReceived(message: MediaMessage) {
@@ -497,6 +504,7 @@ class CometChatConversationList : Fragment(), TextWatcher {
         fun setItemClickListener(onItemClickListener: OnItemClickListener<Any>) {
             events = onItemClickListener
         }
+        lateinit var newCustomCometListener: CustomCometListener
     }
 }
 
@@ -504,4 +512,8 @@ fun getConvoType(conversation: Conversation): Any {
     return if (conversation.conversationType == CometChatConstants.CONVERSATION_TYPE_GROUP)
         conversation.conversationWith as Group else
         conversation.conversationWith as User
+}
+
+interface CustomCometListener{
+    fun onTeamIDChange(teamId:String)
 }

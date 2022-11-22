@@ -1,6 +1,7 @@
 package com.allballapp.android.ui.features.home
 
 //import com.softprodigy.ballerapp.ui.features.home.events.NewEventScreen
+//import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.BroadcastReceiver
@@ -77,10 +78,12 @@ import com.allballapp.android.ui.utils.anims.exitTransition
 import com.allballapp.android.ui.utils.anims.slideInHorizont
 import com.allballapp.android.ui.utils.anims.slideOutHorizont
 import com.cometchat.pro.constants.CometChatConstants
-import com.cometchat.pro.models.Conversation
-import com.cometchat.pro.models.Group
-import com.cometchat.pro.models.User
+import com.cometchat.pro.core.CometChat
+import com.cometchat.pro.models.*
+import com.cometchat.pro.uikit.ui_components.chats.CometChatConversationList
+import com.cometchat.pro.uikit.ui_components.chats.CustomCometListener
 import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
+import com.cometchat.pro.uikit.ui_components.messages.message_list.CometChatMessageList
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -91,8 +94,7 @@ import timber.log.Timber
 val animeDuration = 500
 
 @AndroidEntryPoint
-class HomeActivity : FragmentActivity() {
-
+class HomeActivity : FragmentActivity(), CustomCometListener {
     var dataStoreManager: DataStoreManager = DataStoreManager(this)
     val cometChat = CometChatUI()
     var setupTeamViewModelUpdated: SetupTeamViewModelUpdated? = null
@@ -105,6 +107,8 @@ class HomeActivity : FragmentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, true)
         cometChat.context = this
         cometChat.setConversationClickListener()
+        CometChatConversationList.newCustomCometListener = this
+        CometChatMessageList.newCustomCometListener = this
         setContent {
             //val fromSplash = intent.getBooleanExtra(IntentData.FROM_SPLASH, false)
             homeViewModel = hiltViewModel()
@@ -216,11 +220,13 @@ class HomeActivity : FragmentActivity() {
                                 selectionColor = state.color ?: Color.Black,
                                 badgeCount = state.unReadMessageCount
                             ) {
-                                homeViewModel.setBottomNav(it)
-                                if (it == BottomNavKey.HOME) {
-                                    homeViewModel.setTopAppBar(false)
-                                } else {
-                                    homeViewModel.setTopAppBar(true)
+                                if (it != homeViewModel.state.value.bottomBar) {
+                                    homeViewModel.setBottomNav(it)
+                                    if (it == BottomNavKey.HOME) {
+                                        homeViewModel.setTopAppBar(false)
+                                    } else {
+                                        homeViewModel.setTopAppBar(true)
+                                    }
                                 }
                             }
                         }
@@ -288,6 +294,10 @@ class HomeActivity : FragmentActivity() {
         if (::homeViewModel.isInitialized) {
             homeViewModel.getUnreadMessageCount()
         }
+
+        /* Listener for updating badge count on new conversation receive*/
+        addConversationListener()
+
     }
 
     // on below line we are calling on activity result method.
@@ -330,6 +340,51 @@ class HomeActivity : FragmentActivity() {
         }
     }
 
+    override fun onTeamIDChange(teamId: String) {
+        Timber.i("setResult--- $teamId")
+    }
+
+    private fun addConversationListener() {
+        CometChat.addMessageListener("HomeActivity", object : CometChat.MessageListener() {
+            override fun onTextMessageReceived(message: TextMessage) {
+                if (::homeViewModel.isInitialized) {
+                    homeViewModel.getUnreadMessageCount()
+                }
+            }
+
+            override fun onMediaMessageReceived(message: MediaMessage) {
+                if (::homeViewModel.isInitialized) {
+                    homeViewModel.getUnreadMessageCount()
+                }
+            }
+
+            override fun onCustomMessageReceived(message: CustomMessage) {
+                if (::homeViewModel.isInitialized) {
+                    homeViewModel.getUnreadMessageCount()
+                }
+            }
+        })
+        CometChat.addGroupListener("HomeActivity", object : CometChat.GroupListener() {
+
+            override fun onMemberAddedToGroup(
+                action: Action,
+                addedby: User,
+                userAdded: User,
+                addedTo: Group
+            ) {
+                if (::homeViewModel.isInitialized) {
+                    homeViewModel.getUnreadMessageCount()
+                }
+            }
+
+            override fun onGroupMemberJoined(action: Action, joinedUser: User, joinedGroup: Group) {
+                if (::homeViewModel.isInitialized) {
+                    homeViewModel.getUnreadMessageCount()
+                }
+            }
+        })
+    }
+
 }
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -362,7 +417,7 @@ fun NavControllerComposable(
     }
 
     AnimatedNavHost(navController, startDestination = Route.HOME_SCREEN) {
-        composable(route = Route.HOME_SCREEN,   enterTransition = { slideInHorizont(animeDuration) },
+        composable(route = Route.HOME_SCREEN, enterTransition = { slideInHorizont(animeDuration) },
             exitTransition = { exitTransition(animeDuration) },
             popExitTransition = { slideOutHorizont(animeDuration) }
         ) { backStackEntry ->
@@ -375,13 +430,13 @@ fun NavControllerComposable(
             HomeScreen(
                 role,
                 onOpportunityClick = {
-                    navController.navigate(Route.OPPORTUNITIES_SCREEN)
+                    navController.navigate(Route.OPPORTUNITIES_SCREEN + "/" + it)
                 },
                 onEventsClick = {
                     navController.navigate(Route.MY_EVENTS)
                 },
                 onLeagueClick = {
-                    navController.navigate(Route.MY_LEAGUE)
+                    navController.navigate(Route.MY_LEAGUE + "/" + it)
                 },
                 onInvitationCLick = {
                     navController.navigate(Route.INVITATION_SCREEN)
@@ -430,7 +485,8 @@ fun NavControllerComposable(
                 },
                 setupTeamViewModelUpdated = setupTeamViewModelUpdated,
                 onChatCLick = {
-                    navController.navigate(Route.TEAMS_CHAT_SCREEN)
+                    homeViewModel.setBottomNav(BottomNavKey.TEAMS)
+                    navController.navigate(Route.TEAMS_SCREEN)
                 },
                 refreshTeamListing = refreshTeamListing,
             )
@@ -482,7 +538,7 @@ fun NavControllerComposable(
             )
         }
 
-        composable(route = Route.ADD_PROFILE_SCREEN + "/{countryCode}/{mobileNumber}",
+        /*composable(route = Route.ADD_PROFILE_SCREEN + "/{countryCode}/{mobileNumber}",
             arguments = listOf(
                 navArgument("countryCode") {
                     type = NavType.StringType
@@ -523,7 +579,7 @@ fun NavControllerComposable(
                     navController.navigate(Route.WEB_VIEW)
                 })
 
-        }
+        }*/
         composable(route = Route.PROFILE_EDIT_SCREEN,
             enterTransition = { slideInHorizont(animeDuration) },
             exitTransition = { exitTransition(animeDuration) },
@@ -599,6 +655,7 @@ fun NavControllerComposable(
                     )
                     navController.navigate(Route.ADD_MY_PLAYER_SCREEN + "/${UserStorage.teamId}")
                 }, onHomeClick = {
+                    homeViewModel.showBottomAppBar(false)
                     navController.navigate(Route.HOME_SCREEN)
                 }, homeVm = homeViewModel,
                 chatViewModel = chatViewModel
@@ -634,7 +691,6 @@ fun NavControllerComposable(
             )
 
         }
-
 
 
         composable(route = Route.EVENTS_SCREEN) {
@@ -694,6 +750,9 @@ fun NavControllerComposable(
                     label = eventTitle
                 )
             )
+            remember {
+                eventViewModel.onEvent(EvEvents.ClearOpportunities)
+            }
             OppEventDetails(eventViewModel, moveToRegistration = {
                 //eventViewModel.onEvent(EvEvents.ClearRegister)
                 navController.navigate(Route.EVENT_REGISTRATION)
@@ -769,9 +828,10 @@ fun NavControllerComposable(
                     eventTitle = divisionName
                     navController.navigate(Route.DIVISION_TAB + "/${divisionId}")
                 }, moveToOpenTeams = { title, logo ->
-                    eventTitle = title
+                    //Commented the Team screen
+                    /*eventTitle = title
                     teamLogo = logo
-                    navController.navigate(Route.TEAM_TAB)
+                    navController.navigate(Route.TEAM_TAB)*/
                 },
                 eventViewModel = eventViewModel
             )
@@ -953,13 +1013,13 @@ fun NavControllerComposable(
             }
             InvitationScreen(
                 vmSetupTeam = setupTeamViewModelUpdated,
-                onNewProfileIntent = { countryCode, mobileNumber ->
+                /*onNewProfileIntent = { countryCode, mobileNumber ->
                     navController.navigate(Route.ADD_PROFILE_SCREEN + "/$countryCode/$mobileNumber")
 
                 },
                 onInvitationSuccess = {
                     navController.popBackStack()
-                },
+                },*/
                 homeVm = homeViewModel,
                 addProfileClick = {
                     navController.navigate(Route.ADD_PROFILE_SCREEN)
@@ -1113,14 +1173,14 @@ fun NavControllerComposable(
                     logo = teamLogo
                 )
             )
-            EventTeamTabs(vm = teamViewModel)
+            EventTeamTabs(vm = teamViewModel, eventVm = eventViewModel)
         }
         composable(route = Route.MY_CHAT_DETAIL,
             enterTransition = { slideInHorizont(animeDuration) },
             exitTransition = { exitTransition(animeDuration) },
             popExitTransition = { slideOutHorizont(animeDuration) }
         ) {
-            Timber.e("data " + CometChatUI.convo)
+//            Timber.e("data " + CometChatUI.convo)
             TeamsChatDetailScreen()
         }
         composable(route = Route.TEAMS_CHAT_SCREEN,
@@ -1128,6 +1188,13 @@ fun NavControllerComposable(
             exitTransition = { exitTransition(animeDuration) },
             popExitTransition = { slideOutHorizont(animeDuration) }
         ) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = eventTitle,
+                    topBar = TopBar.TEAM_TAB,
+                    logo = teamLogo
+                )
+            )
             TeamsChatScreen(
                 "",
                 vm = chatViewModel,
@@ -1189,35 +1256,52 @@ fun NavControllerComposable(
             })
         }
 
-        composable(route = Route.OPPORTUNITIES_SCREEN,
+        composable(route = Route.OPPORTUNITIES_SCREEN + "/{type}",
+            arguments = listOf(
+                navArgument("type") {
+                    type = NavType.StringType
+                }),
             enterTransition = { slideInHorizont(animeDuration) },
             exitTransition = { exitTransition(animeDuration) },
             popExitTransition = { slideOutHorizont(animeDuration) }
         ) {
+
+            val type = it.arguments?.getString("type")
             homeViewModel.setTopBar(
                 TopBarData(
                     label = stringResource(id = R.string.events_label),
                     topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
-            OpportunitiesScreen(eventViewModel) {
+            remember {
+                eventViewModel.onEvent(EvEvents.ClearList)
+            }
+            OpportunitiesScreen(type = type ?: "", vm = eventViewModel) {
                 eventTitle = it
                 navController.navigate(Route.OPP_DETAIL_SCREEN)
             }
         }
 
-        composable(route = Route.MY_LEAGUE,
+        composable(route = Route.MY_LEAGUE + "/{type}",
+            arguments = listOf(
+                navArgument("type") {
+                    type = NavType.StringType
+                }),
             enterTransition = { slideInHorizont(animeDuration) },
             exitTransition = { exitTransition(animeDuration) },
             popExitTransition = { slideOutHorizont(animeDuration) }
         ) {
             homeViewModel.setTopBar(
                 TopBarData(
-                    label = stringResource(id = R.string.events_label),
+                    label = stringResource(id = R.string.leagues),
                     topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
-            MyLeagueScreen(eventViewModel) {
+            remember {
+                eventViewModel.onEvent(EvEvents.ClearListLeague)
+            }
+            val type = it.arguments?.getString("type") ?: ""
+            MyLeagueScreen(type = type, eventViewModel) {
                 eventMainTitle = it
                 navController.navigate(Route.LEAGUE_DETAIL_SCREEN)
             }
@@ -1234,6 +1318,9 @@ fun NavControllerComposable(
                     topBar = TopBar.SINGLE_LABEL_BACK,
                 )
             )
+            remember {
+                eventViewModel.onEvent(EvEvents.ClearListEvents)
+            }
             MyEvents(eventViewModel,
                 moveToPracticeDetail = { eventId, eventName ->
                     eventTitle = eventName

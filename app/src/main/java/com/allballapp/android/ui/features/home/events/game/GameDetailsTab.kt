@@ -118,13 +118,14 @@ fun GameDetailsTab(vm: EventViewModel, moveToGameRules: () -> Unit) {
                     )
                 }
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+
                 LocationBlock(
                     Location(
                         state.event.landmarkLocation,
                         state.event.address.street,
                         state.event.address.city,
                         state.event.address.zip,
-                        latLong = if (state.event.address.lat != 0.0 && state.event.address.long != 0.0) {
+                        latLong = if (state.event.address.lat == 0.0 && state.event.address.long == 0.0) {
                             LatLng(0.0, 0.0)
                         } else {
                             LatLng(

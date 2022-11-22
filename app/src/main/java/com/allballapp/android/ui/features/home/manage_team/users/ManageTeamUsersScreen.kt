@@ -20,7 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.allballapp.android.R
-import com.allballapp.android.core.util.UiText
+import com.allballapp.android.ui.utils.UiText
 import com.allballapp.android.data.response.ManagedUserResponse
 import com.allballapp.android.ui.features.components.AppText
 import com.allballapp.android.ui.theme.appColors

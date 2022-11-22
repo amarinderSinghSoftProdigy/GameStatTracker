@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.NumberPicker
 import android.widget.Toast
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
 import androidx.compose.foundation.layout.*
@@ -50,10 +51,7 @@ import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.window.DialogProperties
 import com.allballapp.android.R
-import com.allballapp.android.common.AppConstants
-import com.allballapp.android.common.argbToHexString
-import com.allballapp.android.common.validName
-import com.allballapp.android.common.validPhoneNumber
+import com.allballapp.android.common.*
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.response.ParentDetails
 import com.allballapp.android.data.response.PlayerDetails
@@ -104,6 +102,7 @@ fun <T> DeleteDialog(
                             vertical = dimensionResource(id = R.dimen.size_10dp)
                         )
                 ) {
+
                     AppButton(
                         text = stringResource(R.string.dialog_button_cancel),
                         onClick = onDismiss,
@@ -113,6 +112,7 @@ fun <T> DeleteDialog(
                         border = ButtonDefaults.outlinedBorder,
                         singleButton = true
                     )
+
                     AppButton(
                         text = stringResource(R.string.dialog_button_confirm),
                         onClick = {
@@ -127,6 +127,7 @@ fun <T> DeleteDialog(
                         themed = true,
                         isForceEnableNeeded = true
                     )
+
                 }
             },
             properties = DialogProperties(dismissOnClickOutside = false)
@@ -156,7 +157,9 @@ fun SelectTeamDialog(
         AlertDialog(
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
-            onDismissRequest = onDismiss,
+            onDismissRequest = {
+                /*   onDismiss()   */
+            },
             buttons = {
                 Column(
                     modifier = Modifier
@@ -283,7 +286,9 @@ fun ShowParentDialog(
         AlertDialog(
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
-            onDismissRequest = onDismiss,
+            onDismissRequest = {
+                /*onDismiss()*/
+            },
             buttons = {
                 Column(
                     modifier = Modifier
@@ -431,7 +436,9 @@ fun ConfirmDialog(
     BallerAppMainTheme {
         AlertDialog(
             modifier = Modifier.clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
-            onDismissRequest = onDismiss,
+            onDismissRequest = {
+                /* onDismiss*/
+            },
             buttons = {
                 Column(
                     modifier = Modifier
@@ -646,7 +653,9 @@ fun AddPlayerDialog(
         AlertDialog(
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
-            onDismissRequest = onDismiss,
+            onDismissRequest = {
+                /* onDismiss()*/
+            },
             buttons = {
                 Column(
                     modifier = Modifier
@@ -854,7 +863,7 @@ fun CheckBoxButton(icon: Painter, tintColor: String, selected: Boolean, onItemCl
             .background(
                 shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)),
                 color = if (selected)
-                    Color(android.graphics.Color.parseColor("#$tintColor"))
+                    Color(android.graphics.Color.parseColor("#${getCustomColorCode(tintColor)}"))
                 else {
                     Color.Transparent
                 }
@@ -890,7 +899,9 @@ fun SelectInvitationRoleDialog(
         AlertDialog(
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
-            onDismissRequest = onDismiss,
+            onDismissRequest = {
+//                onDismiss
+            },
             buttons = {
                 Column(
                     modifier = Modifier
@@ -1081,22 +1092,32 @@ fun SelectInvitationRoleItem(
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
             Box(
                 modifier = Modifier
-                    .border(
-                        width = 1.dp,
-                        color = MaterialTheme.appColors.textField.label,
-                        shape = RoundedCornerShape(50)
-                    )
                     .background(
                         shape = RoundedCornerShape(50),
-                        color = if (isSelected)
-                            MaterialTheme.appColors.material.primaryVariant
-                        else {
-                            Color.Transparent
-                        }
+                        color = if (isSelected) MaterialTheme.appColors.material.primaryVariant.copy(
+                            alpha = 0.4f
+                        ) else Color.Transparent
                     )
-                    .padding(dimensionResource(id = R.dimen.size_8dp))
-            )
-
+                    .padding(dimensionResource(id = R.dimen.size_2dp))
+            ) {
+                Box(
+                    modifier = Modifier
+                        .border(
+                            width = if (!isSelected) 1.dp else 0.dp,
+                            color = if (!isSelected) MaterialTheme.appColors.textField.label else Color.Transparent,
+                            shape = RoundedCornerShape(50)
+                        )
+                        .background(
+                            shape = RoundedCornerShape(50),
+                            color = if (isSelected)
+                                MaterialTheme.appColors.material.primaryVariant
+                            else {
+                                Color.Transparent
+                            },
+                        )
+                        .padding(dimensionResource(id = R.dimen.size_8dp))
+                )
+            }
         }
     }
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_4dp)))
@@ -1168,7 +1189,8 @@ fun SelectGuardianRoleDialog(
     onChildNotListedCLick: () -> Unit,
     dontHaveChildClick: () -> Unit,
     onSelectionChange: (String) -> Unit,
-    selected: String?,
+    //selected: String?,
+    selected: ArrayList<String>?,
     onDismiss: () -> Unit,
     guardianList: List<PlayerDetails>,
     onValueSelected: (PlayerDetails) -> Unit
@@ -1176,9 +1198,15 @@ fun SelectGuardianRoleDialog(
 
     BallerAppMainTheme {
         AlertDialog(
+            properties = DialogProperties(usePlatformDefaultWidth = false),
             modifier = Modifier
-                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
-            onDismissRequest = onDismiss,
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                .padding(horizontal = dimensionResource(id = R.dimen.size_32dp))
+                .wrapContentSize()
+                .animateContentSize(),
+            onDismissRequest = {
+                /*   onDismiss*/
+            },
             buttons = {
                 Box {
                     Column(
@@ -1220,7 +1248,8 @@ fun SelectGuardianRoleDialog(
                                                 onSelectionChange(guardian)
                                                 onValueSelected(member)
                                             },
-                                            isSelected = selected == member.id,
+                                            isSelected = (selected
+                                                ?: arrayListOf()).contains(member.id),
                                             id = member.id
                                         )
                                     }
@@ -1276,19 +1305,23 @@ fun SelectGuardianRoleDialog(
                             DialogButton(
                                 text = stringResource(R.string.dialog_button_confirm),
                                 onClick = {
-                                    if ((selected ?: "").isNotEmpty())
+                                    if (!selected.isNullOrEmpty()) {
                                         onConfirmClick.invoke()
+                                    }
                                 },
                                 modifier = Modifier
                                     .weight(1f),
                                 border = ButtonDefaults.outlinedBorder,
-                                enabled = (selected ?: "").isNotEmpty(),
+                                enabled = !selected.isNullOrEmpty(),
                                 onlyBorder = false,
                             )
                         }
                     }
                     if (loading) {
-                        CommonProgressBar()
+                        CircularProgressIndicator(
+                            modifier = Modifier.align(Alignment.Center),
+                            color = MaterialTheme.appColors.material.primaryVariant
+                        )
                     }
                 }
 
@@ -1374,7 +1407,9 @@ fun SwitchTeamDialog(
                     shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                 )
                 .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
-            onDismissRequest = onDismiss,
+            onDismissRequest = {
+                /* onDismiss()*/
+            },
             buttons = {
                 Column(
                     modifier = Modifier
@@ -1508,7 +1543,9 @@ fun SwitchPlayerDialog(
                     shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                 )
                 .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
-            onDismissRequest = onDismiss,
+            onDismissRequest = {
+                /*onDismiss()*/
+            },
             buttons = {
                 Column(
                     modifier = Modifier
@@ -1647,7 +1684,9 @@ fun SelectDivisionDialog(
                     shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                 )
                 .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
-            onDismissRequest = onDismiss,
+            onDismissRequest = {
+                /*onDismiss()*/
+            },
             buttons = {
                 Column(
                     modifier = Modifier
@@ -1763,7 +1802,9 @@ fun DeclineEventDialog(
         AlertDialog(
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
-            onDismissRequest = onDismiss,
+            onDismissRequest = {
+                /*onDismiss()*/
+            },
             buttons = {
                 Column(
                     modifier = Modifier
@@ -1874,16 +1915,19 @@ fun SwapProfile(
     users: List<SwapUser>,
     onCreatePlayerClick: () -> Unit,
     showCreatePlayerButton: Boolean = false,
+    defaultCase: Boolean = false,
 ) {
 
     val selectedUser = remember {
-        mutableStateOf(SwapUser(_Id = UserStorage.userId))
+        mutableStateOf(SwapUser(_Id = if (defaultCase) "" else UserStorage.userId))
     }
     BallerAppMainTheme {
         AlertDialog(
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
-            onDismissRequest = onDismiss,
+            onDismissRequest = {
+                /*  onDismiss()*/
+            },
             buttons = {
                 Column(
                     modifier = Modifier
@@ -1989,7 +2033,7 @@ fun SwapProfile(
                             modifier = Modifier
                                 .weight(1f),
                             border = ButtonDefaults.outlinedBorder,
-                            enabled = true,
+                            enabled = selectedUser.value._Id.isNotEmpty(),
                             onlyBorder = false,
                         )
                     }
@@ -2011,7 +2055,9 @@ fun AddPlayer(
         AlertDialog(
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
-            onDismissRequest = onDismiss,
+            onDismissRequest = {
+                /*onDismiss()*/
+            },
             buttons = {
                 Column(
                     modifier = Modifier
@@ -2203,9 +2249,9 @@ fun AddNoteDialog(
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
             onDismissRequest = {
-                noteType?.let {
+                /*noteType?.let {
                     onDismiss.invoke(it)
-                }
+                }*/
             },
             buttons = {
                 Column(
@@ -2336,7 +2382,7 @@ fun AgeConfirmDialog(
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
             onDismissRequest = {
-                onDismiss.invoke()
+                /*  onDismiss.invoke()*/
             },
             buttons = {
                 Column(
@@ -2438,7 +2484,7 @@ fun GuardianAuthorizeDialog(
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
             onDismissRequest = {
-                onDismiss.invoke()
+                /* onDismiss.invoke()*/
             },
             buttons = {
                 Column(
@@ -2538,6 +2584,7 @@ fun GuardianAuthorizeDialog(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun InviteTeamMembersDialog(
     role: String = "",
@@ -2555,13 +2602,14 @@ fun InviteTeamMembersDialog(
     val context = LocalContext.current
     val focusRequester = remember { FocusRequester() }
 
-
-
-
     BallerAppMainTheme {
         AlertDialog(
+            properties = DialogProperties(usePlatformDefaultWidth = false),
             modifier = Modifier
-                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                .wrapContentSize()
+                .animateContentSize()
+                .padding(horizontal = dimensionResource(id = R.dimen.size_32dp)),
             onDismissRequest = {
 
             },
@@ -2596,7 +2644,7 @@ fun InviteTeamMembersDialog(
                             content = stringResource(id = R.string.info_text),
                             color = ColorMainPrimary,
                             onCancelClick = {
-//                                showInfoBox.value = false
+                                showInfoBox.value = false
                             })
                     }
 
@@ -2957,10 +3005,14 @@ fun InvitationSuccessfullySentDialog(
 ) {
     BallerAppMainTheme {
         AlertDialog(
+            properties = DialogProperties(
+                dismissOnBackPress = false,
+                dismissOnClickOutside = false
+            ),
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
             onDismissRequest = {
-                onDismiss.invoke()
+                /*onDismiss.invoke()*/
             },
             buttons = {
                 Column(
@@ -3065,7 +3117,7 @@ fun NumberPickerDialog(
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
             onDismissRequest = {
-                onDismiss.invoke()
+                /* onDismiss.invoke()*/
             },
             buttons = {
                 Column(
@@ -3165,7 +3217,7 @@ fun PaymentPickerDialog(
             modifier = Modifier
                 .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
             onDismissRequest = {
-                onDismiss.invoke()
+                /*onDismiss.invoke()*/
             },
             buttons = {
                 Column(
@@ -3228,6 +3280,61 @@ fun PaymentPickerDialog(
                             )
                         }
                     }
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun ShowImageUploaded(
+    onDismiss: () -> Unit,
+    image: String
+) {
+
+    BallerAppMainTheme {
+        AlertDialog(
+            modifier = Modifier
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+            onDismissRequest = {
+                /*onDismiss.invoke()*/
+            },
+            buttons = {
+                Column(
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(
+                            all = dimensionResource(
+                                id = R.dimen.size_16dp
+                            )
+                        ),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_close_color_picker),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(dimensionResource(id = R.dimen.size_12dp))
+                                .clickable {
+                                    onDismiss.invoke()
+                                }
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
+
+                    CoilImage(
+                        src = com.allballapp.android.BuildConfig.IMAGE_SERVER + image,
+                        modifier = Modifier.size(dimensionResource(id = R.dimen.size_300dp)),
+                        isCrossFadeEnabled = false,
+                        onLoading = { PlaceholderRect(R.drawable.ic_events_placeholder) },
+                        onError = { PlaceholderRect(R.drawable.ic_events_placeholder) }
+                    )
                 }
             }
         )

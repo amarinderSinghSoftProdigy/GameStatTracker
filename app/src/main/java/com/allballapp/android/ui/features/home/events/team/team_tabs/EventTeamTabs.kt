@@ -14,20 +14,18 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.allballapp.android.R
 import com.allballapp.android.ui.features.components.stringResourceByName
+import com.allballapp.android.ui.features.home.events.EventViewModel
 import com.allballapp.android.ui.features.home.events.schedule.EventScheduleChildScreen
 import com.allballapp.android.ui.features.home.teams.TeamViewModel
-import com.allballapp.android.ui.features.home.teams.roaster.RoasterScreen
-import com.allballapp.android.ui.features.home.teams.standing.StandingScreen
 import com.allballapp.android.ui.theme.appColors
 import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun EventTeamTabs(vm: TeamViewModel = hiltViewModel()) {
+fun EventTeamTabs(vm: TeamViewModel, eventVm: EventViewModel) {
 
     val scope = rememberCoroutineScope()
     remember {
@@ -110,9 +108,9 @@ fun TeamTabs(pagerState: PagerState, list: List<TeamTabs>) {
 fun TeamTabsContent(pagerState: PagerState, vm: TeamViewModel) {
     HorizontalPager(state = pagerState) { page ->
         when (page) {
-            0 -> StandingScreen()
-            1 -> EventScheduleChildScreen(moveToOpenDetails = {})
-            2 -> RoasterScreen(vm, {})
+            //0 -> StandingScreen()
+            0 -> EventScheduleChildScreen(moveToOpenDetails = {})
+           // 2 -> RoasterScreen(vm, {})
         }
     }
 }

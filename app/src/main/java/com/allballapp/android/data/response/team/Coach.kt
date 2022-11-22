@@ -26,13 +26,13 @@ data class Coach(
     @SerializedName("fgPerc")
     val fgPerc: String? = "",
     @SerializedName("firstName")
-    val firstName: String? = "",
+    val firstName: String = "",
     @SerializedName("gender")
     val gender: String? = "",
     @SerializedName("isDelete")
     val isDelete: Boolean = false,
     @SerializedName("lastName")
-    val lastName: String? = "",
+    val lastName: String = "",
     @SerializedName("loginType")
     val loginType: String? = "",
 //    @SerializedName("name")

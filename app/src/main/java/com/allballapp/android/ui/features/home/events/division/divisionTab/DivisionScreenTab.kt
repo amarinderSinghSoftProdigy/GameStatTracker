@@ -13,12 +13,11 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.accompanist.pager.*
 import com.allballapp.android.R
 import com.allballapp.android.ui.features.components.stringResourceByName
 import com.allballapp.android.ui.features.home.events.EventViewModel
-import com.allballapp.android.ui.features.home.events.schedule.EventScheduleScreen
 import com.allballapp.android.ui.theme.appColors
+import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
 
 
@@ -39,7 +38,7 @@ fun DivisionScreenTab(divisionId: String, eventViewModel: EventViewModel) {
             .fillMaxSize()
             .background(Color.White),
     ) {
-        DivisionTabs(pagerState = pagerState, list = list)
+        //DivisionTabs(pagerState = pagerState, list = list)
         DivisionTabsContent(pagerState = pagerState, divisionId, eventViewModel)
     }
 }
@@ -104,8 +103,8 @@ fun DivisionTabsContent(
     HorizontalPager(state = pagerState) { page ->
         when (page) {
             0 -> DivisionTeamScreen(divisionId, eventViewModel)
-            1 -> StandingByLeagueAndDivisionScreen(divisionId, eventViewModel)
-            2 -> EventScheduleScreen(eventViewModel, moveToOpenDetails = {})
+            /*1 -> StandingByLeagueAndDivisionScreen(divisionId, eventViewModel)
+            2 -> EventScheduleScreen(eventViewModel, moveToOpenDetails = {})*/
         }
     }
 }

@@ -171,6 +171,7 @@ enum class UserType(val stringId: String, val key: String) {
     COACH("coach_label", "coach"),
     REFEREE("referee_label", "gameStaff"),
     PARENT("parent_label", "guardian"),
+    PROGRAM_MANAGER("program_manager", "programManager"),
     PROGRAM_STAFF("program_label", "assistantCoach"),
     //GAME_STAFF("game_staff_label", "gameStaff"),
     //FAN("fan_label", "fan")//Add items to add in the usertypes in the app.
@@ -179,6 +180,10 @@ enum class UserType(val stringId: String, val key: String) {
   { key: "Assistant Coach", value: "assistantCoach"},
   { key: "Player", value: "player"},
   { key: "Guardian", value: "guardian"}*/
+}
+
+enum class EventType(val key: String) {
+    GAME("game")
 }
 
 @Composable

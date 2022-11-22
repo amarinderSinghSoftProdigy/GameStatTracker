@@ -33,11 +33,11 @@ import com.allballapp.android.ui.theme.appColors
 import com.allballapp.android.ui.utils.CommonUtils
 
 @Composable
-fun OpportunitiesScreen(vm: EventViewModel, moveToOppDetails: (String) -> Unit) {
+fun OpportunitiesScreen(type: String = "", vm: EventViewModel, moveToOppDetails: (String) -> Unit) {
 
     val state = vm.eventState.value
     remember {
-        vm.onEvent(EvEvents.GetOpportunities)
+        vm.onEvent(EvEvents.GetOpportunities(type))
     }
     if (state.isLoading) {
         CommonProgressBar()
@@ -149,7 +149,7 @@ fun OpportunitiesItem(league: OpportunitiesItem, showLabel: Boolean, OnNextClick
                     )
 
                     Row(
-                        modifier = Modifier.weight(0.8F),
+                        modifier = Modifier.weight(0.5F),
                         horizontalArrangement = Arrangement.End
                     ) {
                         Box(
@@ -177,7 +177,7 @@ fun OpportunitiesItem(league: OpportunitiesItem, showLabel: Boolean, OnNextClick
                     modifier = Modifier.padding(end = dimensionResource(id = R.dimen.size_100dp)),
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 2,
-                    text = league.eventShortDescription,
+                    text = league.locationDesc,
                     color = MaterialTheme.appColors.textField.labelColor,
                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                     fontWeight = FontWeight.W400,

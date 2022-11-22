@@ -26,3 +26,17 @@ enum class InvitationStatus(val status: String) {
     DECLINED("Declined"),
     PENDING("Pending")
 }
+
+data class AcceptInvitation(
+    @SerializedName("_id") val id: String = "",
+    @SerializedName("memberId") val memberId: String = "",
+    @SerializedName("name") val name: String = "",
+    @SerializedName("teamId") val team: String = "",
+    @SerializedName("status") val status: String = "",
+    @SerializedName("createdBy") val createdBy: String = "",
+    @SerializedName("createdAt") val createdAt: String = "",
+    @SerializedName("updatedAt") val updatedAt: String = "",
+    @SerializedName("jersey") val jersey: String = "",
+    @SerializedName("position") val position: String = "",
+    @SerializedName("role") val role: String = ""
+)

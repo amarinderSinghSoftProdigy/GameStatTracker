@@ -5,7 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import com.allballapp.android.R
+import com.allballapp.android.common.comet_chat.UIKitConstants
+import com.allballapp.android.data.request.Members
 import com.allballapp.android.data.response.AllUser
+import com.allballapp.android.data.response.SwapUser
 import com.allballapp.android.data.response.UserRoles
 import com.allballapp.android.data.response.team.Player
 import com.allballapp.android.data.response.team.Team
@@ -15,6 +18,11 @@ import com.allballapp.android.ui.features.components.UserType
 import com.allballapp.android.ui.features.components.getRoleList
 import com.allballapp.android.ui.features.home.events.FilterPreference
 import com.allballapp.android.ui.features.home.events.Participation
+import com.allballapp.android.ui.features.user_type.team_setup.updated.InviteObject
+import com.cometchat.pro.constants.CometChatConstants
+import com.cometchat.pro.core.Call
+import com.cometchat.pro.core.CometChat
+import com.cometchat.pro.models.*
 import com.google.android.gms.maps.model.LatLng
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -43,6 +51,12 @@ class CommonUtils {
             } else {
                 for (item in list) {
                     if (key.key == item.role) {
+                        listing.add(item)
+                    } else if (item.role.equals(
+                            UserType.PROGRAM_STAFF.key,
+                            ignoreCase = true
+                        ) && key.key != UserType.PLAYER.key && key.key != UserType.PROGRAM_MANAGER.key
+                    ) {
                         listing.add(item)
                     }
                 }
@@ -80,31 +94,27 @@ class CommonUtils {
 
         @SuppressLint("SimpleDateFormat")
         fun formatDate(startDate: String, endDate: String): String {
-            val startTime =
-                if (startDate.contains("T")) startDate.substring(
-                    0,
-                    startDate.indexOf("T")
-                ) else startDate
-            val endTime =
-                if (endDate.contains("T")) endDate.substring(
-                    0,
-                    endDate.indexOf("T")
-                ) else endDate
-            val inputPattern = "yyyy-MM-dd"
-            val outputStartPattern = "MMM dd"
-            val outputPattern = "MMM dd, yyyy"
-            val inputFormat = SimpleDateFormat(inputPattern)
-
-            val startFormat = SimpleDateFormat(outputStartPattern)
-            val endFormat = SimpleDateFormat(outputPattern)
-
-            val firstDate: Date
-            val lastDate: Date
             var str = ""
-
             try {
-                firstDate = inputFormat.parse(startTime)!!
-                lastDate = inputFormat.parse(endTime)!!
+                val startTime =
+                    if (startDate.contains("T")) startDate.substring(
+                        0,
+                        startDate.indexOf("T")
+                    ) else startDate
+                val endTime =
+                    if (endDate.contains("T")) endDate.substring(
+                        0,
+                        endDate.indexOf("T")
+                    ) else endDate
+                val inputPattern = "yyyy-MM-dd"
+                val outputStartPattern = "MMM dd"
+                val outputPattern = "MMM dd, yyyy"
+                val inputFormat = SimpleDateFormat(inputPattern)
+
+                val startFormat = SimpleDateFormat(outputStartPattern)
+                val endFormat = SimpleDateFormat(outputPattern)
+                val firstDate: Date = inputFormat.parse(startTime)!!
+                val lastDate: Date = inputFormat.parse(endTime)!!
                 str = startFormat.format(firstDate) + " - " + endFormat.format(lastDate)
             } catch (e: ParseException) {
                 e.printStackTrace()
@@ -122,21 +132,17 @@ class CommonUtils {
 
         @SuppressLint("SimpleDateFormat")
         fun formatDateSingle(startDate: String, format: String = ""): String {
-            val startTime =
-                if (startDate.contains("T")) startDate.substring(
+            var str = ""
+            try {
+                val startTime = if (startDate.contains("T")) startDate.substring(
                     0,
                     startDate.indexOf("T")
                 ) else startDate
-            val inputPattern = "yyyy-MM-dd"
-            val outputPattern = format.ifEmpty { "MMM dd, yyyy" }
-            val inputFormat = SimpleDateFormat(inputPattern)
-            val endFormat = SimpleDateFormat(outputPattern)
-
-            val firstDate: Date
-            var str = ""
-
-            try {
-                firstDate = inputFormat.parse(startTime)!!
+                val inputPattern = "yyyy-MM-dd"
+                val outputPattern = format.ifEmpty { "MMM dd, yyyy" }
+                val inputFormat = SimpleDateFormat(inputPattern)
+                val endFormat = SimpleDateFormat(outputPattern)
+                val firstDate: Date = inputFormat.parse(startTime)!!
                 str = endFormat.format(firstDate)
             } catch (e: ParseException) {
 
@@ -147,10 +153,10 @@ class CommonUtils {
 
         @SuppressLint("SimpleDateFormat")
         fun formatDateRequest(startDate: Date): String {
-            val outputPattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
-            val endFormat = SimpleDateFormat(outputPattern)
             var str = ""
             try {
+                val outputPattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+                val endFormat = SimpleDateFormat(outputPattern)
                 str = endFormat.format(startDate)
             } catch (e: ParseException) {
 
@@ -199,7 +205,7 @@ class CommonUtils {
                     return item.stringId
                 }
             }
-            return "user_type"
+            return "supporting_staff"
         }
 
         fun getUserRole(role: String, list: List<UserRoles>): UserRoles {
@@ -218,5 +224,196 @@ class CommonUtils {
             mapIntent.setPackage("com.google.android.apps.maps")
             context.startActivity(mapIntent)
         }
+
+
+        fun getLastMessage(context: Context, lastMessage: BaseMessage): String? {
+            var message: String? = null
+            if (lastMessage.deletedAt == 0L) {
+                when (lastMessage.category) {
+                    CometChatConstants.CATEGORY_MESSAGE ->
+                        if (lastMessage is TextMessage) {
+                            if (isLoggedInUser(lastMessage.getSender()))
+                                message =
+                                    context.getString(R.string.you) + ": " + if (lastMessage.text == null) context.getString(
+                                        R.string.this_message_deleted
+                                    ) else lastMessage.text
+                            else
+                                message = lastMessage.getSender().name + ": " + lastMessage.text
+
+                        } else if (lastMessage is MediaMessage) {
+                            if (lastMessage.getDeletedAt() == 0L) {
+                                if (lastMessage.getType() == CometChatConstants.MESSAGE_TYPE_IMAGE) message =
+                                    context.getString(R.string.message_image) else if (lastMessage.getType() == CometChatConstants.MESSAGE_TYPE_VIDEO) message =
+                                    context.getString(R.string.message_video) else if (lastMessage.getType() == CometChatConstants.MESSAGE_TYPE_FILE) message =
+                                    context.getString(R.string.message_file) else if (lastMessage.getType() == CometChatConstants.MESSAGE_TYPE_AUDIO) message =
+                                    context.getString(R.string.message_audio)
+                            } else message = context.getString(R.string.this_message_deleted)
+                        }
+                    CometChatConstants.CATEGORY_CUSTOM ->
+                        message = if (lastMessage.deletedAt == 0L) {
+                            if (lastMessage.type == UIKitConstants.IntentStrings.LOCATION) context.getString(
+                                R.string.custom_message_location
+                            ) else if (lastMessage.type == UIKitConstants.IntentStrings.POLLS) context.getString(
+                                R.string.custom_message_poll
+                            ) else if (lastMessage.type.equals(
+                                    UIKitConstants.IntentStrings.STICKERS,
+                                    ignoreCase = true
+                                )
+                            ) context.getString(R.string.custom_message_sticker) else if (lastMessage.type.equals(
+                                    UIKitConstants.IntentStrings.WHITEBOARD,
+                                    ignoreCase = true
+                                )
+                            ) context.getString(R.string.custom_message_whiteboard) else if (lastMessage.type.equals(
+                                    UIKitConstants.IntentStrings.WRITEBOARD,
+                                    ignoreCase = true
+                                )
+                            ) context.getString(R.string.custom_message_document) else if (lastMessage.type.equals(
+                                    UIKitConstants.IntentStrings.MEETING,
+                                    ignoreCase = true
+                                )
+                            ) context.getString(R.string.custom_message_meeting) else String.format(
+                                context.getString(R.string.you_received),
+                                lastMessage.type
+                            )
+                        } else context.getString(R.string.this_message_deleted)
+//                    CometChatConstants.CATEGORY_ACTION -> message = (lastMessage as Action).message
+                    CometChatConstants.CATEGORY_ACTION -> if (lastMessage is Action) {
+                        if (lastMessage.action == CometChatConstants.ActionKeys.ACTION_JOINED)
+                            message =
+                                (lastMessage.actioBy as User).name + " " + context.getString(R.string.joined)
+                        else if (lastMessage.action == CometChatConstants.ActionKeys.ACTION_MEMBER_ADDED) message =
+                            ((lastMessage.actioBy as User).name + " "
+                                    + context.getString(R.string.added) + " " + (lastMessage.actionOn as User).name)
+                        else if (lastMessage.action == CometChatConstants.ActionKeys.ACTION_KICKED) message =
+                            ((lastMessage.actioBy as User).name + " "
+                                    + context.getString(R.string.kicked_by) + " " + (lastMessage.actionOn as User).name)
+                        else if (lastMessage.action == CometChatConstants.ActionKeys.ACTION_BANNED) message =
+                            ((lastMessage.actioBy as User).name + " "
+                                    + context.getString(R.string.ban) + " " + (lastMessage.actionOn as User).name)
+                        else if (lastMessage.action == CometChatConstants.ActionKeys.ACTION_UNBANNED) message =
+                            ((lastMessage.actioBy as User).name + " "
+                                    + context.getString(R.string.unban) + " " + (lastMessage.actionOn as User).name)
+                        else if (lastMessage.action == CometChatConstants.ActionKeys.ACTION_LEFT) message =
+                            (lastMessage.actioBy as User).name + " " + context.getString(R.string.left)
+                        else if (lastMessage.action == CometChatConstants.ActionKeys.ACTION_SCOPE_CHANGED)
+                            message =
+                                if (lastMessage.newScope == CometChatConstants.SCOPE_MODERATOR) {
+                                    ((lastMessage.actioBy as User).name + " " + context.getString(R.string.made) + " "
+                                            + (lastMessage.actionOn as User).name + " " + context.getString(
+                                        R.string.moderator
+                                    ))
+                                } else if (lastMessage.newScope == CometChatConstants.SCOPE_ADMIN) {
+                                    ((lastMessage.actioBy as User).name + " " + context.getString(R.string.made) + " "
+                                            + (lastMessage.actionOn as User).name + " " + context.getString(
+                                        R.string.admin
+                                    ))
+                                } else if (lastMessage.newScope == CometChatConstants.SCOPE_PARTICIPANT) {
+                                    ((lastMessage.actioBy as User).name + " " + context.getString(R.string.made) + " "
+                                            + (lastMessage.actionOn as User).name + " " + context.getString(
+                                        R.string.participant
+                                    ))
+                                } else lastMessage.message
+                    }
+                    CometChatConstants.CATEGORY_CALL ->
+                        message = if ((lastMessage as Call).callStatus.equals(
+                                CometChatConstants.CALL_STATUS_ENDED,
+                                ignoreCase = true
+                            ) ||
+                            lastMessage.callStatus.equals(
+                                CometChatConstants.CALL_STATUS_CANCELLED,
+                                ignoreCase = true
+                            )
+                        ) {
+                            if (lastMessage.getType()
+                                    .equals(CometChatConstants.CALL_TYPE_AUDIO, ignoreCase = true)
+                            ) context.getString(R.string.incoming_audio_call) else context.getString(
+                                R.string.incoming_video_call
+                            )
+                        } else if (lastMessage.callStatus.equals(
+                                CometChatConstants.CALL_STATUS_ONGOING,
+                                ignoreCase = true
+                            )
+                        ) {
+                            context.getString(R.string.ongoing_call)
+                        } else if (lastMessage.callStatus.equals(
+                                CometChatConstants.CALL_STATUS_CANCELLED,
+                                ignoreCase = true
+                            ) ||
+                            lastMessage.callStatus.equals(
+                                CometChatConstants.CALL_STATUS_UNANSWERED,
+                                ignoreCase = true
+                            ) ||
+                            lastMessage.callStatus.equals(
+                                CometChatConstants.CALL_STATUS_BUSY,
+                                ignoreCase = true
+                            )
+                        ) {
+                            if (lastMessage.getType()
+                                    .equals(CometChatConstants.CALL_TYPE_AUDIO, ignoreCase = true)
+                            ) context.getString(R.string.missed_voice_call) else context.getString(R.string.missed_video_call)
+                        } else lastMessage.callStatus + " " + lastMessage.getType() + " Call"
+                    else -> message = context.getString(R.string.tap_to_start_conversation)
+                }
+                return message
+            } else return context.getString(R.string.this_message_deleted)
+        }
+
+        fun isLoggedInUser(user: User): Boolean {
+            return user.uid == CometChat.getLoggedInUser().uid
+        }
+
+        fun getCheck(phone: String, list: List<InviteObject>): String {
+            list.forEach {
+                if (phone == it.countryCode + it.contact) {
+                    return it.role.key
+                }
+            }
+            return ""
+        }
+
+        fun getIndex(phone: String, list: List<InviteObject>): Int {
+            list.forEachIndexed { index, item ->
+                if ((phone == item.countryCode + item.contact) && item.id.isEmpty()) {
+                    return index
+                }
+            }
+            return -1
+        }
+
+        fun getIndexId(phone: String, list: List<InviteObject>): Int {
+            list.forEachIndexed { index, item ->
+                if ((phone == item.countryCode + item.contact) && item.id.isEmpty()) {
+                    return index
+                }
+            }
+            return -1
+        }
+
+        fun filterUsers(
+            inviteList: List<InviteObject>,
+            memberList: List<Members>,
+            swapUsers: ArrayList<SwapUser>
+        ): List<SwapUser> {
+            return try {
+                val ids = ArrayList<String>()
+                val idsLocal = ArrayList<String>()
+                for (item in memberList) {
+                    if (!ids.contains(item.memberId))
+                        ids.add(item.memberId)
+                }
+                for (item in inviteList) {
+                    if (!idsLocal.contains(item.id) && item.id.isNotEmpty())
+                        idsLocal.add(item.id)
+                }
+
+                val result = swapUsers.filter {
+                    !ids.contains(it._Id) && !idsLocal.contains(it._Id)
+                }
+                result
+            } catch (ex: Exception) {
+                swapUsers
+            }
+        }
+
     }
 }

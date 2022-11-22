@@ -10,7 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.ResultWrapper
 import com.allballapp.android.common.getFileFromUri
-import com.allballapp.android.core.util.UiText
+import com.allballapp.android.ui.utils.UiText
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.data.request.AuthorizeRequest
@@ -846,13 +846,13 @@ class SignUpViewModel @Inject constructor(
                             errorMessage = verifyResponseResponse.message,
                             isLoading = false
                         )
-                    /*_signUpChannel.send(
+                    _signUpChannel.send(
                         SignUpChannel.ShowToast(
                             UiText.DynamicString(
                                 verifyResponseResponse.message
                             )
                         )
-                    )*/
+                    )
                 }
             }
         }

@@ -310,7 +310,7 @@ fun ProfileEditScreen(
                                 imeAction = ImeAction.Next,
                                 keyboardType = KeyboardType.Email
                             ),
-                            readOnly = true
+                            readOnly = false
                         )
                         DividerCommon()
                         EditProfileFields(
@@ -328,6 +328,7 @@ fun ProfileEditScreen(
                                 capitalization = KeyboardCapitalization.Sentences,
                                 keyboardType = KeyboardType.Number
                             ),
+                            readOnly = true
                         )
                         DividerCommon()
                         EditProfileFields(
@@ -451,7 +452,7 @@ fun ProfileEditScreen(
                         keyboardOptions = KeyboardOptions(
                             imeAction = ImeAction.Next,
                             capitalization = KeyboardCapitalization.Sentences,
-                           /* keyboardType = KeyboardType.Number*/
+                            /* keyboardType = KeyboardType.Number*/
                         ),
                     )
 

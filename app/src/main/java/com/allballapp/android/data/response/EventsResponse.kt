@@ -59,6 +59,8 @@ data class EventDetails(
     @SerializedName("coachId") val coachId: CoachId = CoachId(),
     @SerializedName("jerseyColor") val jerseyColor: String = "",
     @SerializedName("currentDate") val serverDate: String = "",
+    @SerializedName("locationDesc") val locationDesc: String = "",
+    @SerializedName("location") val location: Location = Location(),
 )
 
 
@@ -235,7 +237,10 @@ data class Matches(
     @SerializedName("timeSlot") val timeSlot: String = "",
 )
 
-data class ScheduleTeam(@SerializedName("teams") val teams: List<Pairs> = mutableListOf())
+data class ScheduleTeam(
+    @SerializedName("teams") val teams: List<Pairs> = mutableListOf(),
+    @SerializedName("divisionName") val divisionName: String = ""
+)
 
 data class Pairs(
     @SerializedName("_id") val _id: String = "",
@@ -248,6 +253,7 @@ data class PublishedGames(
     @SerializedName("_id") val Id: String = "",
     @SerializedName("pairname") val pairname: String = "",
     @SerializedName("date") val date: String = "",
+    @SerializedName("timeslot") val timeslot: String = "",
     @SerializedName("teams") val teams: ArrayList<Team> = arrayListOf(),
     @SerializedName("gameData") val gameData: GameData = GameData()
 

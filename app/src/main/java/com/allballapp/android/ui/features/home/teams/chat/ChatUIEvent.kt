@@ -9,9 +9,11 @@ sealed class ChatUIEvent {
   data class OnPlayerChange(val selectedPlayers: SnapshotStateList<String>) : ChatUIEvent()
   data class ShowDialog(val showDialog: Boolean) : ChatUIEvent()
   data class OnGroupNameChange(val groupName: String) : ChatUIEvent()
+  data class OnSearchValueChange(val searchText: String) : ChatUIEvent()
   object OnInitiateNewConversation : ChatUIEvent()
   object GetChatListing : ChatUIEvent()
   object ClearData : ChatUIEvent()
+  data class RefreshChatListingAPI(val unreadUserGroupIds: List<String>) : ChatUIEvent()
   data class GetAllMembers(val teamId: String) : ChatUIEvent()
   data class TeamSelectionChange(val teamIndex: Int) : ChatUIEvent()
 

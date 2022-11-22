@@ -35,6 +35,7 @@ import com.allballapp.android.ui.features.profile.ProfileViewModel
 import com.allballapp.android.ui.theme.ColorBWBlack
 import com.allballapp.android.ui.theme.appColors
 
+
 @Composable
 fun DocumentTab(vm: ProfileViewModel) {
     val context = LocalContext.current
@@ -70,6 +71,9 @@ fun DocumentTab(vm: ProfileViewModel) {
                         } else {
                             requestFileManagerPermission(context, context as Activity)
                         }
+                    }, {
+                        vm.onEvent(ProfileEvent.SetDeleteDocument(item))
+                        vm.onEvent(ProfileEvent.ImageUploadedDialog(true))
                     }) {
                         vm.onEvent(ProfileEvent.SetDeleteDocument(item))
                         vm.onEvent(ProfileEvent.ShowDeleteDialog(true))
@@ -78,6 +82,17 @@ fun DocumentTab(vm: ProfileViewModel) {
                 item {
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                 }
+            }
+        }
+
+        if (state.showImage) {
+            state.deleteDocument?.let {
+                ShowImageUploaded(
+                    onDismiss = {
+                        vm.onEvent(ProfileEvent.ImageUploadedDialog(false))
+                    },
+                    it.url
+                )
             }
         }
 
@@ -103,7 +118,12 @@ fun DocumentTab(vm: ProfileViewModel) {
 
 
 @Composable
-fun DocumentItem(item: UserDocType, onImageClick: (String) -> Unit, onDeleteClick: () -> Unit) {
+fun DocumentItem(
+    item: UserDocType,
+    onImageClick: (String) -> Unit,
+    onImageViewClick: () -> Unit,
+    onDeleteClick: () -> Unit
+) {
     val uriHandler = LocalUriHandler.current
     val context = LocalContext.current
     Surface(
@@ -157,13 +177,26 @@ fun DocumentItem(item: UserDocType, onImageClick: (String) -> Unit, onDeleteClic
                                     shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
                                 )
                                 .clickable {
-                                    try {
-                                        uriHandler.openUri(item.url)
+                                    val extension: String =
+                                        item.url.substring(item.url.lastIndexOf("."))
 
-                                    } catch (e: Exception) {
-                                        Toast
-                                            .makeText(context, e.message, Toast.LENGTH_SHORT)
-                                            .show()
+                                    if (extension.equals(
+                                            ".png",
+                                            ignoreCase = true
+                                        ) || extension.equals(
+                                            ".jpg",
+                                            ignoreCase = true
+                                        ) || extension.equals(".jpeg", ignoreCase = true)
+                                    ) {
+                                        onImageViewClick()
+                                    } else {
+                                        try {
+                                            uriHandler.openUri(com.allballapp.android.BuildConfig.IMAGE_SERVER + item.url)
+                                        } catch (e: Exception) {
+                                            Toast
+                                                .makeText(context, e.message, Toast.LENGTH_SHORT)
+                                                .show()
+                                        }
                                     }
                                 },
                             onLoading = {
@@ -212,5 +245,7 @@ fun DocumentItem(item: UserDocType, onImageClick: (String) -> Unit, onDeleteClic
         }
     }
 }
+
+
 
 

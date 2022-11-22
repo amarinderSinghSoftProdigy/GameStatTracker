@@ -10,6 +10,7 @@ import com.allballapp.android.data.response.team.*
 import com.allballapp.android.data.response.team.Team
 import com.allballapp.android.domain.BaseResponse
 import com.allballapp.android.ui.features.home.events.*
+import com.allballapp.android.ui.features.home.invitation.AcceptInvitation
 import com.allballapp.android.ui.features.home.invitation.Invitation
 import com.allballapp.android.ui.features.venue.VenueDetails
 import okhttp3.MultipartBody
@@ -103,7 +104,7 @@ open interface APIService {
     ): BaseResponse<EventsResponse>
 
     @PUT(ApiConstants.ACCEPT_TEAM_INVITATION)
-    suspend fun acceptTeamInvitation(@Body request: RequestBody): BaseResponse<Any>
+    suspend fun acceptTeamInvitation(@Body request: InviteMembersRequest): BaseResponse<AcceptInvitation>
 
     @PUT(ApiConstants.REJECT_TEAM_INVITATION)
     suspend fun rejectTeamInvitation(@Body request: RequestBody): BaseResponse<Any>
@@ -152,7 +153,7 @@ open interface APIService {
     ): BaseResponse<ArrayList<VenueDetails>>
 
     @GET(ApiConstants.GET_ALL_OPPORTUNITIES)
-    suspend fun getAllOpportunities(@Query("teamId") id: String): BaseResponse<List<OpportunitiesItem>>
+    suspend fun getAllOpportunities(@Query("type") type: String="",@Query("teamId") id: String): BaseResponse<List<OpportunitiesItem>>
 
     @GET(ApiConstants.GET_OPPORTUNITY_ID)
     suspend fun getOpportunityDetail(@Query("eventId") id: String): BaseResponse<OpportunitiesDetail>
@@ -184,6 +185,7 @@ open interface APIService {
 
     @GET(ApiConstants.GET_MY_LEAGUE)
     suspend fun getMyLeagues(
+        @Query("type") type: String,
         @Query("teamId") teamId: String,
         @Query("page") page: Int,
         @Query("limit") limit: Int,
@@ -195,7 +197,7 @@ open interface APIService {
         @Query("page") page: Int,
         @Query("limit") limit: Int,
         @Query("sort") sort: String,
-        @Query("leagueId") leagueId: String,
+        @Query("eventId") leagueId: String,
         @Query("gender") gender: String,
     ): BaseResponse<ArrayList<DivisionResponse>>
 
@@ -204,7 +206,7 @@ open interface APIService {
         @Query("page") page: Int,
         @Query("limit") limit: Int,
         @Query("sort") sort: String,
-        @Query("leagueId") leagueId: String,
+        @Query("eventId") leagueId: String,
     ): BaseResponse<VenuesResponse>
 
     @GET(ApiConstants.GET_EVENT_DETAILS)
@@ -221,13 +223,13 @@ open interface APIService {
         @Query("page") page: Int,
         @Query("limit") limit: Int,
         @Query("sort") sort: String,
-        @Query("leagueId") leagueId: String,
+        @Query("eventId") leagueId: String,
         @Query("divisionId") divisionId: String,
     ): BaseResponse<ArrayList<TeamsByLeagueDivisionResponse>>
 
     @GET(ApiConstants.GET_ALL_TEAMS_BY_LEAGUE_ID_All_DIVISIONS)
     suspend fun getTeamsByLeagueIdAllDivision(
-        @Query("leagueId") leagueId: String,
+        @Query("eventId") leagueId: String,
     ): BaseResponse<ArrayList<DivisionWiseTeamResponse>>
 
     @GET(ApiConstants.GET_ALL_TEAMS_STANDING_BY_LEAGUE_AND_DIVISION)
@@ -235,13 +237,14 @@ open interface APIService {
         @Query("page") page: Int,
         @Query("limit") limit: Int,
         @Query("sort") sort: String,
-        @Query("leagueId") leagueId: String,
+        @Query("eventId") leagueId: String,
         @Query("divisionId") divisionId: String,
     ): BaseResponse<StandingByLeagueAndDivisionData>
 
     @GET(ApiConstants.GET_VENUE_DETAILS_BY_ID)
     suspend fun getVenueDetailsById(
         @Query("id") venueId: String,
+        @Query("eventId") eventId: String,
     ): BaseResponse<VenueDetails>
 
     @GET(ApiConstants.GET_EVENT_SCHEDULE)

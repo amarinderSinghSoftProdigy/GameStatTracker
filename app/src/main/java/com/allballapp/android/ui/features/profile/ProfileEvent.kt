@@ -56,4 +56,5 @@ sealed class ProfileEvent {
     object ProfileUpload : ProfileEvent()
     object GetStaffSchedule : ProfileEvent()
     data class UpdateScheduleStaff(val list: ArrayList<Date>) : ProfileEvent()
+    data class ImageUploadedDialog(val showImage: Boolean) : ProfileEvent()
 }

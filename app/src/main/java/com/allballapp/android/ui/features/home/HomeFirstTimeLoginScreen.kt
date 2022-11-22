@@ -1,8 +1,7 @@
 package com.allballapp.android.ui.features.home
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,6 +11,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,6 +26,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.allballapp.android.BuildConfig
+import com.allballapp.android.R
+import com.allballapp.android.common.AppConstants
 import com.allballapp.android.data.response.HomeItemResponse
 import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.home.teams.TeamViewModel
@@ -34,13 +36,14 @@ import com.allballapp.android.ui.theme.ColorGreyLighter
 import com.allballapp.android.ui.theme.appColors
 import com.allballapp.android.ui.theme.rubikFamily
 import com.google.accompanist.flowlayout.FlowRow
-import com.allballapp.android.R
+
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeFirstTimeLoginScreen(
     viewModel: HomeViewModel,
     teamVm: TeamViewModel,
-    onLeagueClick: () -> Unit,
-    onOpportunityClick: () -> Unit,
+    onLeagueClick: (String) -> Unit,
+    onOpportunityClick: (String) -> Unit,
     onTeamNameClick: (Boolean) -> Unit,
     onCreateTeamClick: () -> Unit,
     onInvitationCLick: () -> Unit
@@ -58,8 +61,7 @@ fun HomeFirstTimeLoginScreen(
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))
             AppText(
                 text = stringResource(id = R.string.hey_label).replace(
-                    "name",
-                    state.user.firstName
+                    "name", state.user.firstName
                 ),
                 style = MaterialTheme.typography.h5,
                 fontWeight = FontWeight.W500,
@@ -77,118 +79,118 @@ fun HomeFirstTimeLoginScreen(
             )
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
+            CompositionLocalProvider(
+                LocalOverScrollConfiguration provides null
+            ) {
 
-            Column(modifier = Modifier.fillMaxWidth()) {
-                if (teamState.teams.isNotEmpty()) {
-                    UserFlowBackground(
-                        padding = 0.dp,
-//                        color = Color.White
-                    ) {
-                        Box(
-                            modifier = Modifier
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    if (teamState.teams.isNotEmpty()) {
+                        UserFlowBackground(
+                            padding = 0.dp, color = Color.White
+                        ) {
+                            Box(modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
                                     onTeamNameClick.invoke(true)
                                 }
                                 .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-                            contentAlignment = Alignment.CenterStart
-                        ) {
-                            Row(
-                                Modifier
-                                    .fillMaxWidth()
-                                    .align(Alignment.CenterStart),
-                                verticalAlignment = Alignment.CenterVertically,
+                                contentAlignment = Alignment.CenterStart) {
+                                Row(
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .align(Alignment.CenterStart),
+                                    verticalAlignment = Alignment.CenterVertically,
                                 ) {
-                                CoilImage(
-                                    src = BuildConfig.IMAGE_SERVER + teamState.logo,
-                                    modifier = Modifier
-                                        .size(dimensionResource(id = R.dimen.size_48dp))
-                                        .clip(CircleShape),
-                                    isCrossFadeEnabled = false,
-                                    onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
-                                    onError = { Placeholder(R.drawable.ic_team_placeholder) },
-                                    contentScale = ContentScale.Crop
-                                )
-                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
-                                Text(
-                                    text = teamState.teamName.ifEmpty { context.getString(R.string.team_total_hoop) },
-                                    style = MaterialTheme.typography.h3,
-                                    fontWeight = FontWeight.W700,
-                                    modifier = Modifier.weight(1f)
-                                )
-                            }
-                            Icon(
-                                modifier = Modifier.align(Alignment.CenterEnd),
-                                imageVector = Icons.Default.KeyboardArrowDown,
-                                contentDescription = null,
-                                tint = ColorGreyLighter
-                            )
-                        }
-                    }
-                }
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                if (state.homePageCoachModel.pendingInvitations > 0) {
-                    UserFlowBackground(
-                        padding = 0.dp,
-//                        color = Color.White
-                    ) {
-                        Box(
-                            Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    onInvitationCLick.invoke()
+                                    CoilImage(
+                                        src = BuildConfig.IMAGE_SERVER + teamState.logo,
+                                        modifier = Modifier
+                                            .size(dimensionResource(id = R.dimen.size_48dp))
+                                            .clip(CircleShape),
+                                        isCrossFadeEnabled = false,
+                                        onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                                        onError = { Placeholder(R.drawable.ic_team_placeholder) },
+                                        contentScale = ContentScale.Crop
+                                    )
+                                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+                                    Text(
+                                        text = teamState.teamName.ifEmpty { context.getString(R.string.team_total_hoop) },
+                                        style = MaterialTheme.typography.h3,
+                                        fontWeight = FontWeight.W700,
+                                        modifier = Modifier.weight(1f)
+                                    )
                                 }
-                                .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Row(
-                                Modifier
-                                    .fillMaxSize(),
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.ic_invite),
-                                    contentDescription = "",
-                                    tint = MaterialTheme.appColors.material.primaryVariant,
-                                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
-                                )
-                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
-                                Text(
-                                    text = stringResource(id = R.string.pending_invitations),
-                                    style = MaterialTheme.typography.h6,
-                                    modifier = Modifier.weight(1f),
-                                    color = ColorBWBlack
+                                    modifier = Modifier.align(Alignment.CenterEnd),
+                                    imageVector = Icons.Default.KeyboardArrowDown,
+                                    contentDescription = null,
+                                    tint = ColorGreyLighter
                                 )
                             }
-                            Text(
-                                text = state.homePageCoachModel.pendingInvitations.toString(),
-                                fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
-                                modifier = Modifier.align(Alignment.CenterEnd),
-                                color = ColorBWBlack
-                            )
                         }
                     }
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                }
-                FlowRow {
-                    state.homeItemList.forEachIndexed { index, item ->
-                        HomeScreenItem(item) {
-                            when (index) {
-                                0 -> {
-                                    onOpportunityClick()
+                    if (state.homePageCoachModel.pendingInvitations > 0) {
+                        UserFlowBackground(
+                            padding = 0.dp,// color = Color.White
+                        ) {
+                            Box(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        onInvitationCLick.invoke()
+                                    }
+                                    .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                                contentAlignment = Alignment.Center) {
+                                Row(
+                                    Modifier.fillMaxSize(),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.ic_invite),
+                                        contentDescription = "",
+                                        tint = MaterialTheme.appColors.material.primaryVariant,
+                                        modifier = Modifier.size(dimensionResource(id = R.dimen.size_14dp))
+                                    )
+                                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+                                    Text(
+                                        text = stringResource(id = R.string.pending_invitations),
+                                        style = MaterialTheme.typography.h6,
+                                        modifier = Modifier.weight(1f),
+                                        color = ColorBWBlack
+                                    )
                                 }
-                                1 -> {
-                                    onLeagueClick()
-                                }
-                                2 -> {
-                                    onOpportunityClick()
+                                Text(
+                                    text = state.homePageCoachModel.pendingInvitations.toString(),
+                                    fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
+                                    modifier = Modifier.align(Alignment.CenterEnd),
+                                    color = ColorBWBlack
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                    }
+                    FlowRow {
+                        state.homeItemList.forEachIndexed { index, item ->
+                            HomeScreenItem(item) {
+                                when (index) {
+                                    0 -> {
+                                        onOpportunityClick(AppConstants.OPP_PLAY)
+                                    }
+                                    1 -> {
+                                        onLeagueClick(AppConstants.ALL_LEAGUE)
+                                    }
+                                    2 -> {
+                                        onOpportunityClick(AppConstants.OPP_WORK)
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                if (state.homeItemList.isNotEmpty())
-                    ButtonWithLeadingIcon(
+                    if (state.homeItemList.isNotEmpty()) ButtonWithLeadingIcon(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(id = R.string.create_new_team),
                         onClick = onCreateTeamClick,
@@ -197,6 +199,7 @@ fun HomeFirstTimeLoginScreen(
                         iconSize = dimensionResource(id = R.dimen.size_20dp),
                         noTheme = true
                     )
+                }
             }
         }
     }

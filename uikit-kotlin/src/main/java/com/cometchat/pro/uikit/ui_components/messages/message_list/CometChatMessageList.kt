@@ -56,8 +56,8 @@ import com.cometchat.pro.exceptions.CometChatException
 import com.cometchat.pro.helpers.CometChatHelper
 import com.cometchat.pro.models.*
 import com.cometchat.pro.uikit.R
+import com.cometchat.pro.uikit.ui_components.chats.CustomCometListener
 import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
-import com.cometchat.pro.uikit.ui_components.groups.group_detail.CometChatGroupDetailActivity
 import com.cometchat.pro.uikit.ui_components.messages.extensions.ExtensionResponseListener
 import com.cometchat.pro.uikit.ui_components.messages.extensions.Extensions
 import com.cometchat.pro.uikit.ui_components.messages.forward_message.CometChatForwardMessageActivity
@@ -76,7 +76,6 @@ import com.cometchat.pro.uikit.ui_components.shared.cometchatSmartReplies.CometC
 import com.cometchat.pro.uikit.ui_components.shared.cometchatStickers.StickerView
 import com.cometchat.pro.uikit.ui_components.shared.cometchatStickers.listener.StickerClickListener
 import com.cometchat.pro.uikit.ui_components.shared.cometchatStickers.model.Sticker
-import com.cometchat.pro.uikit.ui_components.users.user_details.CometChatUserDetailScreenActivity
 import com.cometchat.pro.uikit.ui_resources.constants.UIKitConstants
 import com.cometchat.pro.uikit.ui_resources.utils.ErrorMessagesUtils
 import com.cometchat.pro.uikit.ui_resources.utils.FontUtils
@@ -236,6 +235,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.i("CometChatMessageList","onCreate")
         if (activity != null) fontUtils = FontUtils.getInstance(activity)
         FeatureRestriction.isThreadedMessagesEnabled(object : FeatureRestriction.OnSuccessListener {
             override fun onSuccess(p0: Boolean) {
@@ -564,7 +564,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
         onGoingCallView = view?.findViewById(R.id.ongoing_call_view)
         onGoingCallClose = view?.findViewById(R.id.close_ongoing_view)
         onGoingCallTxt = view?.findViewById(R.id.ongoing_call)
-        checkOnGoingCall()
+        //checkOnGoingCall()
         if (isOngoingCall) {
             ivAudioCallBtn?.isEnabled = false
             ivVideoCallBtn?.isEnabled = false
@@ -688,7 +688,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
         }
     }
 
-    private fun checkOnGoingCall() {
+   /* private fun checkOnGoingCall() {
         if (getActiveCall() != null && getActiveCall().callStatus == CometChatConstants.CALL_STATUS_ONGOING && getActiveCall().sessionId != null) {
             isOngoingCall = true
             ivAudioCallBtn?.isEnabled = false
@@ -711,7 +711,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
             if (onGoingCallView != null) onGoingCallView?.visibility = View.GONE
             Log.e(TAG, "checkOnGoingCall: " + getActiveCall().toString())
         }
-    }
+    }*/
 
     private fun setComposeBoxListener() {
         composeBox?.setComposeBoxListener(object : ComposeActionListener() {
@@ -1383,11 +1383,11 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
                 if (messageAdapter != null) {
                     messageAdapter?.addMessage(customMessage)
                     scrollToBottom()
-                    if (customMessage.customData.has("sessionID"))
+                    /*if (customMessage.customData.has("sessionID"))
                         Utils.startVideoCallIntent(
                             context!!,
                             customMessage.customData.getString("sessionID")
-                        )
+                        )*/
                 }
             }
 
@@ -2296,6 +2296,8 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
             override fun onTextMessageReceived(message: TextMessage) {
                 Log.d(TAG, "onTextMessageReceived: $message")
                 onMessageReceived(message)
+                newCustomCometListener.onTeamIDChange(message.metadata.getString("id"))
+
             }
 
             override fun onMediaMessageReceived(message: MediaMessage) {
@@ -2574,7 +2576,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
         super.onResume()
         Log.d(TAG, "onResume: ")
         Log.e(TAG, "onResume: " + intentRequestCode)
-        checkOnGoingCall()
+        //checkOnGoingCall()
         stickyHeaderDecoration?.let { this.rvChatListView?.removeItemDecoration(it) }
         if (!(intentRequestCode == UIKitConstants.RequestCode.AUDIO || intentRequestCode == UIKitConstants.RequestCode.GALLERY ||
                     intentRequestCode == UIKitConstants.RequestCode.FILE || intentRequestCode == UIKitConstants.RequestCode.CAMERA)
@@ -2710,7 +2712,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
             replyMessageLayout?.visibility = View.GONE
         } else if (id == R.id.btn_unblock_user) {
             unblockUser()
-        } else if (id == R.id.iv_user_info) {
+        } /*else if (id == R.id.iv_user_info) {
             if (type == CometChatConstants.RECEIVER_TYPE_USER) {
                 val intent = Intent(context, CometChatUserDetailScreenActivity::class.java)
                 intent.putExtra(UIKitConstants.IntentStrings.UID, Id)
@@ -2735,7 +2737,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
                 intent.putExtra(UIKitConstants.IntentStrings.GROUP_PASSWORD, groupPassword)
                 startActivity(intent)
             }
-        } else if (id == R.id.iv_back_arrow) {
+        } */else if (id == R.id.iv_back_arrow) {
             activity?.onBackPressed()
         }
     }
@@ -3557,6 +3559,8 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
     companion object {
         private const val TAG = "CometChatMessageScreen"
         private const val LIMIT = 30
+        lateinit var newCustomCometListener: CustomCometListener
+
     }
 
     private fun shareMessage() {

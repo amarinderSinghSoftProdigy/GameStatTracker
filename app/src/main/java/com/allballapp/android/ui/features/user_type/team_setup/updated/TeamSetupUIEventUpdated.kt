@@ -2,6 +2,7 @@ package com.allballapp.android.ui.features.user_type.team_setup.updated
 
 import com.allballapp.android.data.request.Address
 import com.allballapp.android.data.request.Members
+import com.allballapp.android.data.response.SwapUser
 import com.allballapp.android.data.response.UserRoles
 import com.allballapp.android.data.response.team.Player
 
@@ -22,7 +23,7 @@ sealed class TeamSetupUIEventUpdated {
     data class OnDismissDialogCLick(val showDialog: Boolean) : TeamSetupUIEventUpdated()
     object OnAddPlayerScreenNext : TeamSetupUIEventUpdated()
     data class OnRole(val role: String) : TeamSetupUIEventUpdated()
-    data class SetRequestData(val role: String,val teamId: String) : TeamSetupUIEventUpdated()
+    data class SetRequestData(val role: String, val teamId: String) : TeamSetupUIEventUpdated()
     object OnLogoUploadSuccess : TeamSetupUIEventUpdated()
     object GetRoles : TeamSetupUIEventUpdated()
     data class MoveBack(val check: Boolean = false) : TeamSetupUIEventUpdated()
@@ -42,6 +43,15 @@ sealed class TeamSetupUIEventUpdated {
         val type: String = "",
         val member: Members? = null,
         val profilesSelected: Boolean = false,
+    ) : TeamSetupUIEventUpdated()
+
+    data class AddInviteTeamMembers(
+        val phone:String,
+        val index: Int,
+        val userType: String,
+        val teamId: String,
+        val role: String,
+        val member: SwapUser? = null,
     ) : TeamSetupUIEventUpdated()
 
     object OnBackButtonClickFromPlayerScreen : TeamSetupUIEventUpdated()

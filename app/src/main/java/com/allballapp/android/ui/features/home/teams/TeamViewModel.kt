@@ -9,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.ResultWrapper
 import com.allballapp.android.common.getFileFromUri
-import com.allballapp.android.core.util.UiText
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.data.request.Location
@@ -23,6 +22,7 @@ import com.allballapp.android.domain.repository.IImageUploadRepo
 import com.allballapp.android.domain.repository.ITeamRepository
 import com.allballapp.android.ui.features.components.fromHex
 import com.allballapp.android.ui.utils.CommonUtils
+import com.allballapp.android.ui.utils.UiText
 import com.allballapp.android.ui.utils.dragDrop.ItemPosition
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -197,6 +197,7 @@ class TeamViewModel @Inject constructor(
                 _teamUiState.value =
                     _teamUiState.value.copy(selectedAddress = event.addressReq)
             }
+            else -> {}
         }
     }
 
@@ -336,13 +337,13 @@ class TeamViewModel @Inject constructor(
                     )
             }
             is ResultWrapper.NetworkError -> {
-               /* _teamChannel.send(
-                    TeamChannel.ShowToast(
-                        UiText.DynamicString(
-                            teamResponse.message
-                        )
-                    )
-                )*/
+                /* _teamChannel.send(
+                     TeamChannel.ShowToast(
+                         UiText.DynamicString(
+                             teamResponse.message
+                         )
+                     )
+                 )*/
                 _teamUiState.value =
                     _teamUiState.value.copy(
                         isLoading = false
@@ -352,6 +353,9 @@ class TeamViewModel @Inject constructor(
                 teamResponse.value.let { response ->
                     if (response.status) {
                         if (response.data.result.size > 0) {
+                            setTeamAllBallId(response.data.result[0].teamId._id)
+                            _teamUiState.value =
+                                _teamUiState.value.copy(allBallId = response.data.result[0].teamId._id)
                             if (response.data.result.size == 1) {
                                 setRole(response.data.result[0].role)
                                 setDefaultTeam(response.data.result[0].teamId)
@@ -549,13 +553,13 @@ class TeamViewModel @Inject constructor(
                     )
                 }
                 is ResultWrapper.NetworkError -> {
-                  /*  _teamChannel.send(
-                        TeamChannel.ShowToast(
-                            UiText.DynamicString(
-                                uploadLogoResponse.message
-                            )
-                        )
-                    )*/
+                    /*  _teamChannel.send(
+                          TeamChannel.ShowToast(
+                              UiText.DynamicString(
+                                  uploadLogoResponse.message
+                              )
+                          )
+                      )*/
                 }
                 is ResultWrapper.Success -> {
                     uploadLogoResponse.value.let { response ->
@@ -641,8 +645,6 @@ class TeamViewModel @Inject constructor(
             _teamUiState.value.copy(isLoading = true)
         val teamResponse = teamRepo.getTeamsByTeamID(userId)
         Timber.i("getTeamByTeamId--teamViewModel")
-        _teamUiState.value =
-            _teamUiState.value.copy(isLoading = false)
         when (teamResponse) {
             is ResultWrapper.GenericError -> {
                 if (_teamUiState.value.selectedTeam != null) {
@@ -660,13 +662,13 @@ class TeamViewModel @Inject constructor(
                 if (_teamUiState.value.selectedTeam != null) {
                     setDefaultData(_teamUiState.value.selectedTeam!!)
                 }
-              /*  _teamChannel.send(
-                    TeamChannel.ShowToast(
-                        UiText.DynamicString(
-                            teamResponse.message
-                        )
-                    )
-                )*/
+                /*  _teamChannel.send(
+                      TeamChannel.ShowToast(
+                          UiText.DynamicString(
+                              teamResponse.message
+                          )
+                      )
+                  )*/
             }
             is ResultWrapper.Success -> {
                 teamResponse.value.let { response ->
@@ -695,7 +697,7 @@ class TeamViewModel @Inject constructor(
                             TeamChannel.OnTeamDetailsSuccess(
                                 response.data._id,
                                 response.data.name,
-                                true
+                                response.data._id != _teamUiState.value.allBallId
                             )
                         )
                         /*update Color code to db*/
@@ -718,6 +720,8 @@ class TeamViewModel @Inject constructor(
                 }
             }
         }
+        _teamUiState.value =
+            _teamUiState.value.copy(isLoading = false)
     }
 
     private suspend fun updateColorData(colorCode: String) {
@@ -744,13 +748,13 @@ class TeamViewModel @Inject constructor(
             is ResultWrapper.NetworkError -> {
                 _teamUiState.value = _teamUiState.value.copy(isLoading = false)
 
-               /* _teamChannel.send(
-                    TeamChannel.ShowToast(
-                        UiText.DynamicString(
-                            userRoles.message
-                        )
-                    )
-                )*/
+                /* _teamChannel.send(
+                     TeamChannel.ShowToast(
+                         UiText.DynamicString(
+                             userRoles.message
+                         )
+                     )
+                 )*/
             }
             is ResultWrapper.Success -> {
                 userRoles.value.let { response ->
@@ -782,6 +786,12 @@ class TeamViewModel @Inject constructor(
     private fun setRole(role: String) {
         viewModelScope.launch {
             dataStoreManager.setRole(role)
+        }
+    }
+
+    private fun setTeamAllBallId(role: String) {
+        viewModelScope.launch {
+            dataStoreManager.setAllBallId(role)
         }
     }
 }

@@ -3,10 +3,7 @@ package com.allballapp.android.data.repository
 import com.allballapp.android.common.ResultWrapper
 import com.allballapp.android.common.safeApiCall
 import com.allballapp.android.data.datastore.DataStoreManager
-import com.allballapp.android.data.request.CreateTeamRequest
-import com.allballapp.android.data.request.Members
-import com.allballapp.android.data.request.UpdateTeamDetailRequest
-import com.allballapp.android.data.request.UpdateTeamRequest
+import com.allballapp.android.data.request.*
 import com.allballapp.android.data.response.*
 import com.allballapp.android.data.response.homepage.HomePageCoachModel
 import com.allballapp.android.data.response.invitation.InvitationData
@@ -16,13 +13,13 @@ import com.allballapp.android.data.response.team.Team
 import com.allballapp.android.domain.BaseResponse
 import com.allballapp.android.domain.repository.ITeamRepository
 import com.allballapp.android.network.APIService
+import com.allballapp.android.ui.features.home.invitation.AcceptInvitation
 import com.allballapp.android.ui.features.home.invitation.Invitation
 import com.allballapp.android.ui.features.venue.VenueDetails
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import okhttp3.FormBody
 import okhttp3.RequestBody
-import retrofit2.http.Query
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -104,15 +101,16 @@ class TeamRepository @Inject constructor(
     override suspend fun acceptTeamInvitation(
         invitationId: String,
         role: String,
-        playerId: String,
+        playerId: ArrayList<String>,
         guardianGender: String
-    ): ResultWrapper<BaseResponse<Any>> {
-        val request: RequestBody = FormBody.Builder()
+    ): ResultWrapper<BaseResponse<AcceptInvitation>> {
+        /*val request: RequestBody = FormBody.Builder()
             .add("invitationId", invitationId)
             .add("role", role)
             .add("kidId", playerId)
             .add("guardianGender", guardianGender)
-            .build()
+            .build()*/
+        val request = InviteMembersRequest(invitationId, role, playerId, guardianGender)
         return safeApiCall(dispatcher) {
             service.acceptTeamInvitation(request)
         }
@@ -159,14 +157,20 @@ class TeamRepository @Inject constructor(
     }
 
     override suspend fun getMyLeagues(
+        type: String,
         teamId: String,
         page: Int,
         limit: Int,
         sort: String
     ): ResultWrapper<BaseResponse<ArrayList<MyLeagueResponse>>> {
         return safeApiCall(dispatcher) {
-            service.getMyLeagues(teamId = teamId,page = page, limit = limit, sort = sort)
-            service.getMyLeagues(teamId, page = page, limit = limit, sort = sort)
+            service.getMyLeagues(
+                type = type,
+                teamId = teamId,
+                page = page,
+                limit = limit,
+                sort = sort
+            )
         }
     }
 

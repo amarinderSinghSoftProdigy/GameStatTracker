@@ -13,6 +13,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -26,11 +27,15 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
+import com.allballapp.android.common.getCustomColorCode
 import com.allballapp.android.common.validTeamName
 import com.allballapp.android.data.request.Address
 import com.allballapp.android.data.request.Members
@@ -93,7 +98,9 @@ fun TeamSetupScreenUpdated(
     remember {
         inviteVm.onEvent(InvitationEvent.GetRoles)
     }
-
+    val playerName = rememberSaveable {
+        mutableStateOf("")
+    }
     val role = remember {
         mutableStateOf("")
     }
@@ -246,10 +253,11 @@ fun TeamSetupScreenUpdated(
 
     if (inviteState.showGuardianDialog) {
         SelectGuardianRoleDialog(
-            loading=state.isLoading,
+            loading = state.isLoading,
             inviteState.selectedRoleKey,
             onBack = {
-                inviteVm.onEvent(InvitationEvent.OnRoleDialogClick(true))
+                showNoMessage.value = true
+                inviteVm.onEvent(InvitationEvent.OnRoleDialogClick(false))
                 inviteVm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
                 vm.onEvent(TeamSetupUIEventUpdated.MoveBack(true))
             },
@@ -260,11 +268,13 @@ fun TeamSetupScreenUpdated(
                 vm.onEvent(TeamSetupUIEventUpdated.MoveBack(true))
             },
             onSelectionChange = { inviteVm.onEvent(InvitationEvent.OnGuardianClick(guardian = it)) },
-            selected = inviteState.selectedGuardian,
+            //selected = inviteState.selectedGuardian,
+            selected = inviteState.selectedIds,
             guardianList = if (state.role != UserType.PLAYER.key)
                 inviteState.playerDetails.filter { member -> member.role == UserType.PLAYER.key }
             else inviteState.playerDetails.filter { member -> member.role != UserType.PLAYER.key },
             onValueSelected = {
+                playerName.value = it.memberDetails.name
                 inviteVm.onEvent(InvitationEvent.OnValuesSelected(it))
             },
             onDismiss = {
@@ -275,7 +285,6 @@ fun TeamSetupScreenUpdated(
                 inviteVm.onEvent(InvitationEvent.OnAddPlayerDialogClick(true))
             },
             dontHaveChildClick = {
-                showNoMessage.value = true
                 inviteVm.onEvent(InvitationEvent.ConfirmGuardianWithoutChildAlert(true))
             }
         )
@@ -284,9 +293,11 @@ fun TeamSetupScreenUpdated(
     if (inviteState.showGuardianOnlyConfirmDialog) {
         ConfirmDialog(
             title = stringResource(id = R.string.join_team_without_child_selection), onDismiss = {
+                showNoMessage.value = false
                 inviteVm.onEvent(InvitationEvent.ConfirmGuardianWithoutChildAlert(false))
             },
             onConfirmClick = { //inviteVm.onEvent(InvitationEvent.OnInvitationConfirm(homeState.user.gender))
+                showNoMessage.value = true
                 inviteVm.onEvent(InvitationEvent.ConfirmGuardianWithoutChildAlert(false))
                 inviteVm.onEvent(InvitationEvent.OnRoleDialogClick(false))
                 inviteVm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
@@ -414,7 +425,8 @@ fun TeamSetupScreenUpdated(
                         member = Members(
                             name = swapUser.firstName,
                             mobileNumber = swapUser._Id,
-                            role = roleKey.value
+                            role = roleKey.value,
+                            profilesSelected = "true"
                         )
                     )
                 )
@@ -431,11 +443,11 @@ fun TeamSetupScreenUpdated(
     if (inviteState.showPlayerAddedSuccessDialog) {
         InvitationSuccessfullySentDialog(
             onDismiss = {
-                showNoMessage.value = false
                 inviteVm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
+                vm.onEvent(TeamSetupUIEventUpdated.Clear)
             },
             onConfirmClick = {
-                showNoMessage.value = false
+                inviteVm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
                 homeVm.onEvent(HomeScreenEvent.HideSwap(false))
                 vm.onEvent(TeamSetupUIEventUpdated.Clear)
                 onNextClick(
@@ -449,7 +461,7 @@ fun TeamSetupScreenUpdated(
                 (state.teamImageUri ?: "").ifEmpty { "" }
             },
             playerName = if (showNoMessage.value) stringResource(id = R.string.no_player)
-            else inviteState.selectedPlayerName.ifEmpty { state.teamName.ifEmpty { "" } }
+            else if (playerName.value.isNotEmpty()) playerName.value else inviteState.selectedPlayerName.ifEmpty { "" }
         )
     }
 
@@ -522,6 +534,10 @@ fun TeamSetupScreenUpdated(
                                 textColor = MaterialTheme.appColors.textField.labelColor
 
                             ),
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Text,
+                                imeAction = ImeAction.Next,
+                            ),
                             isError = !validTeamName(state.teamName) && state.teamName.isNotEmpty(),
                             errorMessage = stringResource(id = R.string.valid_team_name)
                         )
@@ -547,6 +563,11 @@ fun TeamSetupScreenUpdated(
                                 cursorColor = MaterialTheme.appColors.textField.labelColor,
                                 textColor = MaterialTheme.appColors.textField.labelColor
 
+                            ),
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Text,
+                                imeAction = ImeAction.Next,
+                                capitalization = KeyboardCapitalization.Sentences
                             ),
                             isError = !validTeamName(state.teamNameOnJerseys) && state.teamNameOnJerseys.isNotEmpty(),
                             errorMessage = stringResource(id = R.string.valid_team_name)
@@ -578,6 +599,11 @@ fun TeamSetupScreenUpdated(
                                 cursorColor = MaterialTheme.appColors.textField.labelColor,
                                 textColor = MaterialTheme.appColors.textField.labelColor
 
+                            ),
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Text,
+                                imeAction = ImeAction.Next,
+                                capitalization = KeyboardCapitalization.Sentences
                             ),
                             isError = !validTeamName(state.teamNameOnTournaments) && state.teamNameOnTournaments.isNotEmpty(),
                             errorMessage = stringResource(id = R.string.valid_team_name)
@@ -739,7 +765,15 @@ fun TeamSetupScreenUpdated(
                                 backgroundColor = if (state.teamColorPrimary.isEmpty()) {
                                     MaterialTheme.appColors.textField.label
                                 } else {
-                                    Color(android.graphics.Color.parseColor("#" + state.teamColorPrimary))
+                                    Color(
+                                        android.graphics.Color.parseColor(
+                                            "#${
+                                                getCustomColorCode(
+                                                    state.teamColorPrimary
+                                                )
+                                            }"
+                                        )
+                                    )
                                 },
                                 shape = RoundedCornerShape(
                                     dimensionResource(id = R.dimen.size_4dp)
@@ -814,7 +848,15 @@ fun TeamSetupScreenUpdated(
                                 backgroundColor = if (state.teamColorSec.isEmpty()) {
                                     MaterialTheme.appColors.textField.label
                                 } else {
-                                    Color(android.graphics.Color.parseColor("#" + state.teamColorSec))
+                                    Color(
+                                        android.graphics.Color.parseColor(
+                                            "#${
+                                                getCustomColorCode(
+                                                    state.teamColorSec
+                                                )
+                                            }"
+                                        )
+                                    )
                                 },
                                 shape = RoundedCornerShape(
                                     dimensionResource(id = R.dimen.size_4dp)
@@ -890,7 +932,15 @@ fun TeamSetupScreenUpdated(
                                 backgroundColor = if (state.teamColorThird.isEmpty()) {
                                     MaterialTheme.appColors.textField.label
                                 } else {
-                                    Color(android.graphics.Color.parseColor("#" + state.teamColorThird))
+                                    Color(
+                                        android.graphics.Color.parseColor(
+                                            "#${
+                                                getCustomColorCode(
+                                                    state.teamColorThird
+                                                )
+                                            }"
+                                        )
+                                    )
                                 },
                                 shape = RoundedCornerShape(
                                     dimensionResource(id = R.dimen.size_4dp)

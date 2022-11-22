@@ -22,11 +22,13 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.allballapp.android.R
+import com.allballapp.android.common.getCustomColorCode
 import com.allballapp.android.ui.theme.ColorGreyLighter
 import com.allballapp.android.ui.theme.appColors
 
 @Composable
 fun CoachFlowBackground(
+    show: Boolean = false,
     colorCode: String? = null,
     teamLogo: String? = "",
     click: (Options) -> Unit = {},
@@ -47,15 +49,27 @@ fun CoachFlowBackground(
         ) {
             Surface(
                 shape = CircleShape,
-                color = (if (colorCode.isNullOrEmpty()) ballColor else Color(
-                    android.graphics.Color.parseColor(
-                        "#$colorCode"
-                    )
-                )).copy(alpha = 0.05F),
+                color = (if (colorCode.isNullOrEmpty()) ballColor else
+                    try {
+                        Color(
+                            android.graphics.Color.parseColor(
+                                "#${getCustomColorCode(colorCode)}"
+
+                            )
+                        )
+                    } catch (e: Exception) {
+                        Color(
+                            android.graphics.Color.parseColor(
+                                "#${getCustomColorCode(colorCode)}"
+
+                            )
+                        )
+                    }
+                        ).copy(alpha = 0.05F),
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .absoluteOffset(
-                        x = dimensionResource(id = R.dimen.size_80dp),
+                        x = dimensionResource(id = R.dimen.size_85dp),
                         y = -dimensionResource(id = R.dimen.size_35dp)
                     )
             ) {
@@ -63,7 +77,7 @@ fun CoachFlowBackground(
                     shape = CircleShape,
                     color = if (colorCode.isNullOrEmpty()) ballColor else Color(
                         android.graphics.Color.parseColor(
-                            "#$colorCode"
+                            "#${getCustomColorCode(colorCode)}"
                         )
                     ),
                     modifier = Modifier
@@ -99,7 +113,7 @@ fun CoachFlowBackground(
                     ) {
                         showOptions.value = false
                     }
-                    .verticalScroll(rememberScrollState())
+
             ) {
                 content()
                 Column(
@@ -183,14 +197,16 @@ fun CoachFlowBackground(
                                     click(Options.SWAP_PROFILES)
                                 }
                                 Divider(thickness = dimensionResource(id = R.dimen.divider))
-                                OptionItem(
-                                    stringResource(id = R.string.invite),
-                                    R.drawable.ic_invite
-                                ) {
-                                    showOptions.value = false
-                                    click(Options.INVITE)
+                                if (show) {
+                                    OptionItem(
+                                        stringResource(id = R.string.invite),
+                                        R.drawable.ic_invite
+                                    ) {
+                                        showOptions.value = false
+                                        click(Options.INVITE)
+                                    }
+                                    Divider(thickness = dimensionResource(id = R.dimen.divider))
                                 }
-                                Divider(thickness = dimensionResource(id = R.dimen.divider))
                                 OptionItem(
                                     stringResource(id = R.string.logout),
                                     R.drawable.ic_logout

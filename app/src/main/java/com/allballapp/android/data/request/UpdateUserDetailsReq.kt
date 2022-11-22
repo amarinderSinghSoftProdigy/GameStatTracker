@@ -7,7 +7,7 @@ data class UpdateUserDetailsReq(
     @SerializedName("firstName") val firstName: String = "",
     @SerializedName("lastName") val lastName: String = "",
     @SerializedName("birthdate") val birthdate: String = "",
-    @SerializedName("phone") val phone: String = "",
+    @SerializedName("phone") val phone: String? = null,
     @SerializedName("gender") val gender: String = "",
     @SerializedName("grade") val grade: String = "",
     @SerializedName("email") val email: String = "",

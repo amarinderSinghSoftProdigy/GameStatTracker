@@ -8,8 +8,8 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -64,7 +64,10 @@ import kotlinx.coroutines.launch
 import java.util.*
 
 @SuppressLint("RememberReturnType")
-@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
+@OptIn(
+    ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class,
+    ExperimentalFoundationApi::class
+)
 @Composable
 fun ProfileSetUpScreen(
     isToAddProfile: Boolean = false,
@@ -259,30 +262,34 @@ fun ProfileSetUpScreen(
                         .fillMaxWidth()
                 ) {
 
-                    Column(
-                        Modifier
-                            .fillMaxWidth()
-                        /*.verticalScroll(rememberScrollState())*/,
-                        verticalArrangement = Arrangement.Center
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                    /*.verticalScroll(rememberScrollState())*/,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_64dp)))
+                    AppText(
+                        text = stringResource(id = R.string.set_your_profile),
+                        style = MaterialTheme.typography.h3,
+                        color = MaterialTheme.appColors.textField.labelColor,
+                        modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
+                    )
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_40dp)))
+
+                    CompositionLocalProvider(
+                        LocalOverScrollConfiguration provides null
                     ) {
-                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_64dp)))
-                        AppText(
-                            text = stringResource(id = R.string.set_your_profile),
-                            style = MaterialTheme.typography.h3,
-                            color = MaterialTheme.appColors.textField.labelColor,
-                            modifier = Modifier.padding(start = dimensionResource(id = R.dimen.size_16dp))
-                        )
-                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
+                        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
 
-                        UserFlowBackground(
-                            modifier = Modifier.fillMaxWidth(),
-                            color = MaterialTheme.appColors.material.background
-                        ) {
+                    UserFlowBackground(        modifier = Modifier.fillMaxWidth(),
+                        color = MaterialTheme.appColors.material.background
 
-                            Column(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalArrangement = Arrangement.Center
-                            ) {
+                    ) {
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    verticalArrangement = Arrangement.Center
+                                ) {
 
                                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_48dp)))
 
@@ -301,8 +308,8 @@ fun ProfileSetUpScreen(
                                                 )
                                             }
 
-                                        }
-                                        .align(Alignment.CenterHorizontally),
+                                            }
+                                            .align(Alignment.CenterHorizontally),
 
                                     contentAlignment = Alignment.Center
 
@@ -338,65 +345,69 @@ fun ProfileSetUpScreen(
 
                                 AppDivider()
 
-                                EditFields(
-                                    data = state.signUpData.firstName,
-                                    onValueChange = {
-                                        if (it.length <= maxChar)
-                                            signUpViewModel.onEvent(
-                                                SignUpUIEvent.OnFirstNameChanged(
-                                                    it
+                                    EditFields(
+                                        data = state.signUpData.firstName,
+                                        onValueChange = {
+                                            if (it.length <= maxChar)
+                                                signUpViewModel.onEvent(
+                                                    SignUpUIEvent.OnFirstNameChanged(
+                                                        it
+                                                    )
                                                 )
-                                            )
-                                    },
-                                    head = stringResource(id = R.string.first_name),
-                                    isError = !validName(state.signUpData.firstName) && state.signUpData.firstName.isNotEmpty() || state.signUpData.firstName.length > 30,
-                                    errorMessage = stringResource(id = R.string.valid_first_name),
-                                    keyboardOptions = KeyboardOptions(
-                                        imeAction = ImeAction.Next,
-                                        capitalization = KeyboardCapitalization.Sentences
+                                        },
+                                        head = stringResource(id = R.string.first_name),
+                                        isError = !validName(state.signUpData.firstName) && state.signUpData.firstName.isNotEmpty() || state.signUpData.firstName.length > 30,
+                                        errorMessage = stringResource(id = R.string.valid_first_name),
+                                        keyboardOptions = KeyboardOptions(
+                                            imeAction = ImeAction.Next,
+                                            capitalization = KeyboardCapitalization.Sentences
+                                        )
                                     )
-                                )
 
-                                AppDivider()
+                                    AppDivider()
 
-                                EditFields(
-                                    state.signUpData.lastName,
-                                    onValueChange = {
-                                        if (it.length <= maxChar)
-                                            signUpViewModel.onEvent(SignUpUIEvent.OnLastNameChanged(it))
-                                    },
-                                    stringResource(id = R.string.last_name),
-                                    isError = !validName(state.signUpData.lastName) && state.signUpData.lastName.isNotEmpty() || state.signUpData.lastName.length > 30,
-                                    errorMessage = stringResource(id = R.string.valid_last_name),
-                                    keyboardOptions = KeyboardOptions(
-                                        imeAction = ImeAction.Next,
-                                        capitalization = KeyboardCapitalization.Sentences
-                                    ),
-                                )
-                                AppDivider()
+                                    EditFields(
+                                        state.signUpData.lastName,
+                                        onValueChange = {
+                                            if (it.length <= maxChar)
+                                                signUpViewModel.onEvent(
+                                                    SignUpUIEvent.OnLastNameChanged(
+                                                        it
+                                                    )
+                                                )
+                                        },
+                                        stringResource(id = R.string.last_name),
+                                        isError = !validName(state.signUpData.lastName) && state.signUpData.lastName.isNotEmpty() || state.signUpData.lastName.length > 30,
+                                        errorMessage = stringResource(id = R.string.valid_last_name),
+                                        keyboardOptions = KeyboardOptions(
+                                            imeAction = ImeAction.Next,
+                                            capitalization = KeyboardCapitalization.Sentences
+                                        ),
+                                    )
+                                    AppDivider()
 
-                                EditFields(
-                                    data = state.signUpData.email ?: "",
-                                    onValueChange = {
-                                        signUpViewModel.onEvent(SignUpUIEvent.OnEmailChanged(it))
-                                    },
-                                    stringResource(id = R.string.email),
-                                    keyboardOptions = KeyboardOptions(
-                                        keyboardType = KeyboardType.Email,
-                                        imeAction = ImeAction.Done,
-                                        capitalization = KeyboardCapitalization.Sentences
-                                    ),
-                                    keyboardActions = KeyboardActions(onDone = {
-                                        keyboardController?.hideSoftwareKeyboard()
-                                    }),
-                                    isError = (state.signUpData.email
-                                        ?: "").isNotEmpty() && state.signUpData.email?.isValidEmail() != true,
-                                    errorMessage = stringResource(id = R.string.email_error),
-                                    enabled = false
-                                )
-                                if (!isToAddProfile) {
-                                    state.signUpData.token?.let { _ ->
-                                        AppDivider()
+                            EditFields(
+                                data = state.signUpData.email ?: "",
+                                onValueChange = {
+                                    signUpViewModel.onEvent(SignUpUIEvent.OnEmailChanged(it))
+                                },
+                                stringResource(id = R.string.email),
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Email,
+                                    imeAction = ImeAction.Done,
+                                    capitalization = KeyboardCapitalization.Sentences
+                                ),
+                                keyboardActions = KeyboardActions(onDone = {
+                                    keyboardController?.hideSoftwareKeyboard()
+                                }),
+                                isError = (state.signUpData.email
+                                    ?: "").isNotEmpty() && state.signUpData.email?.isValidEmail() != true,
+                                errorMessage = stringResource(id = R.string.email_error),
+                                enabled = false
+                            )
+                            if (!isToAddProfile) {
+                                state.signUpData.token?.let { _ ->
+                                    AppDivider()
 
                                         EditFields(
                                             state.signUpData.address,
@@ -418,158 +429,157 @@ fun ProfileSetUpScreen(
                                         )
                                         AppDivider()
 
-                                        Column {
-                                            EditFields(
-                                                state.signUpData.gender,
-                                                onValueChange = {
+                                    Column {
+                                        EditFields(
+                                            state.signUpData.gender,
+                                            onValueChange = {
+                                                signUpViewModel.onEvent(
+                                                    SignUpUIEvent.OnGenderChange(
+                                                        it
+                                                    )
+                                                )
+                                            },
+                                            stringResource(id = R.string.gender),
+                                            KeyboardOptions(
+                                                imeAction = ImeAction.Next,
+                                                keyboardType = KeyboardType.Text
+                                            ),
+                                            modifier = Modifier.onGloballyPositioned {
+                                                textFieldSize = it.size.toSize()
+                                            },
+                                            trailingIcon = {
+                                                Icon(
+                                                    icon,
+                                                    contentDescription = null,
+                                                    modifier = Modifier.clickable {
+                                                        expanded = !expanded
+                                                    })
+                                            },
+                                            enabled = true
+                                        )
+                                        DropdownMenu(
+                                            expanded = expanded,
+                                            onDismissRequest = { expanded = false },
+                                            modifier = Modifier
+                                                .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
+                                                .background(MaterialTheme.colors.background)
+                                        ) {
+                                            genderList.forEach { label ->
+                                                DropdownMenuItem(onClick = {
                                                     signUpViewModel.onEvent(
                                                         SignUpUIEvent.OnGenderChange(
-                                                            it
+                                                            label
                                                         )
                                                     )
-                                                },
-                                                stringResource(id = R.string.gender),
-                                                KeyboardOptions(
-                                                    imeAction = ImeAction.Next,
-                                                    keyboardType = KeyboardType.Text
-                                                ),
-                                                modifier = Modifier.onGloballyPositioned {
-                                                    textFieldSize = it.size.toSize()
-                                                },
-                                                trailingIcon = {
-                                                    Icon(
-                                                        icon,
-                                                        contentDescription = null,
-                                                        modifier = Modifier.clickable {
-                                                            expanded = !expanded
-                                                        })
-                                                },
-                                                enabled = true
-                                            )
-                                            DropdownMenu(
-                                                expanded = expanded,
-                                                onDismissRequest = { expanded = false },
-                                                modifier = Modifier
-                                                    .width(with(LocalDensity.current) { textFieldSize.width.toDp() })
-                                                    .background(MaterialTheme.colors.background)
-                                            ) {
-                                                genderList.forEach { label ->
-                                                    DropdownMenuItem(onClick = {
-                                                        signUpViewModel.onEvent(
-                                                            SignUpUIEvent.OnGenderChange(
-                                                                label
-                                                            )
-                                                        )
-                                                        expanded = false
-                                                    }) {
-                                                        Text(text = label, textAlign = TextAlign.Center , color = MaterialTheme.appColors.textField.labelColor)
-                                                    }
+                                                    expanded = false
+                                                }) {
+                                                    Text(text = label, textAlign = TextAlign.Center)
                                                 }
-                                            }
-                                        }
-                                        AppDivider()
-                                        Box(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(
-                                                    start = dimensionResource(id = R.dimen.size_16dp),
-                                                    end = dimensionResource(id = R.dimen.size_16dp)
-                                                )
-                                                .height(dimensionResource(id = R.dimen.size_56dp))
-                                        ) {
-                                            AppText(
-                                                text = stringResource(id = R.string.birthdate),
-                                                style = MaterialTheme.typography.h6,
-                                                color = MaterialTheme.appColors.textField.labelColor,
-                                                modifier = Modifier
-                                                    .align(Alignment.CenterStart)
-                                                    .padding(start = dimensionResource(id = R.dimen.size_3dp)),
-                                                textAlign = TextAlign.Start
-                                            )
-                                            Row(
-                                                modifier = Modifier
-                                                    .align(Alignment.CenterEnd)
-                                                    .clickable { mDatePickerDialog.show() },
-                                                verticalAlignment = Alignment.CenterVertically,
-                                            ) {
-                                                Text(
-                                                    text = state.signUpData.birthdate,
-                                                    color = MaterialTheme.appColors.textField.labelColor,
-                                                )
-                                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_5dp)))
-                                                Icon(
-                                                    painter = painterResource(id = R.drawable.ic_baseline_calendar_month_24),
-                                                    contentDescription = null,
-                                                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_24dp))
-                                                )
                                             }
                                         }
                                     }
                                     AppDivider()
-                                    Column {
-                                        Row(verticalAlignment = Alignment.CenterVertically) {
-                                            AppText(
-                                                text = stringResource(id = R.string.phone_num),
-                                                style = MaterialTheme.typography.h6,
-                                                color = MaterialTheme.appColors.textField.labelColor,
-                                                modifier = Modifier
-                                                    .padding(start = dimensionResource(id = R.dimen.size_16dp))
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(
+                                                start = dimensionResource(id = R.dimen.size_16dp),
+                                                end = dimensionResource(id = R.dimen.size_16dp)
                                             )
-                                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
-                                            Box(
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .height(IntrinsicSize.Min),
-                                                /* verticalAlignment = Alignment.CenterVertically,
-                                                 horizontalArrangement = Arrangement.SpaceBetween*/
-                                            ) {
+                                            .height(dimensionResource(id = R.dimen.size_56dp))
+                                    ) {
+                                        AppText(
+                                            text = stringResource(id = R.string.birthdate),
+                                            style = MaterialTheme.typography.h6,
+                                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                            modifier = Modifier
+                                                .align(Alignment.CenterStart)
+                                                .padding(start = dimensionResource(id = R.dimen.size_3dp)),
+                                            textAlign = TextAlign.Start
+                                        )
+                                        Row(
+                                            modifier = Modifier
+                                                .align(Alignment.CenterEnd)
+                                                .clickable { mDatePickerDialog.show() },
+                                            verticalAlignment = Alignment.CenterVertically,
+                                        ) {
+                                            Text(
+                                                text = state.signUpData.birthdate,
+                                            )
+                                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_5dp)))
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.ic_baseline_calendar_month_24),
+                                                contentDescription = null,
+                                                modifier = Modifier.size(dimensionResource(id = R.dimen.size_24dp))
+                                            )
+                                        }
+                                    }
+                                }
+                                AppDivider()
+                                Column {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        AppText(
+                                            text = stringResource(id = R.string.phone_num),
+                                            style = MaterialTheme.typography.h6,
+                                            color = MaterialTheme.appColors.textField.labelColor,
+                                            modifier = Modifier
+                                                .padding(start = dimensionResource(id = R.dimen.size_16dp))
+                                        )
+                                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(IntrinsicSize.Min),
+                                            /* verticalAlignment = Alignment.CenterVertically,
+                                             horizontalArrangement = Arrangement.SpaceBetween*/
+                                        ) {
 
-                                                val customTextSelectionColors = TextSelectionColors(
-                                                    handleColor = MaterialTheme.appColors.textField.labelColor,
-                                                    backgroundColor = Color.Transparent
-                                                )
-                                                CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
-                                                    /* state.phoneCode = getDefaultPhoneCode*/
-                                                    signUpViewModel.onEvent(
-                                                        SignUpUIEvent.OnCountryCode(
-                                                            getDefaultPhoneCode
-                                                        )
+                                            val customTextSelectionColors = TextSelectionColors(
+                                                handleColor = MaterialTheme.appColors.textField.labelColor,
+                                                backgroundColor = Color.Transparent
+                                            )
+                                            CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
+                                                /* state.phoneCode = getDefaultPhoneCode*/
+                                                signUpViewModel.onEvent(
+                                                    SignUpUIEvent.OnCountryCode(
+                                                        getDefaultPhoneCode
                                                     )
-                                                    TogiCountryCodePicker(
-                                                        showCountryFlag = false,
-                                                        pickedCountry = {
-                                                            /*  state.phoneCode = it.countryPhoneCode*/
+                                                )
+                                                TogiCountryCodePicker(
+                                                    showCountryFlag = false,
+                                                    pickedCountry = {
+                                                        /*  state.phoneCode = it.countryPhoneCode*/
+                                                        signUpViewModel.onEvent(
+                                                            SignUpUIEvent.OnCountryCode(
+                                                                it.countryCode
+                                                            )
+                                                        )
+                                                        defaultLang = it.countryCode
+                                                    },
+                                                    defaultCountry = getLibCountries().single { it.countryCode == defaultLang },
+                                                    focusedBorderColor = Color.Transparent,
+                                                    unfocusedBorderColor = Color.Transparent,
+                                                    dialogAppBarTextColor = MaterialTheme.appColors.textField.labelColor,
+                                                    dialogAppBarColor = MaterialTheme.appColors.material.surface,
+                                                    error = true,
+                                                    text = state.signUpData.phone,
+                                                    onValueChange = {
+                                                        if (it.length <= maxPhoneNumber)
                                                             signUpViewModel.onEvent(
-                                                                SignUpUIEvent.OnCountryCode(
-                                                                    it.countryCode
+                                                                SignUpUIEvent.OnPhoneNumberChanged(
+                                                                    it
                                                                 )
                                                             )
-                                                            defaultLang = it.countryCode
-                                                        },
-                                                        defaultCountry = getLibCountries().single { it.countryCode == defaultLang },
-                                                        focusedBorderColor = Color.Transparent,
-                                                        unfocusedBorderColor = Color.Transparent,
-                                                        dialogAppBarTextColor = MaterialTheme.appColors.textField.labelColor,
-                                                        dialogAppBarColor = MaterialTheme.appColors.material.surface,
-                                                        error = true,
-                                                        text = state.signUpData.phone,
-                                                        onValueChange = {
-                                                            if (it.length <= maxPhoneNumber)
-                                                                signUpViewModel.onEvent(
-                                                                    SignUpUIEvent.OnPhoneNumberChanged(
-                                                                        it
-                                                                    )
-                                                                )
-                                                        },
-                                                        readOnly = state.signUpData.phoneVerified,
-                                                        cursorColor = MaterialTheme.appColors.textField.labelColor,
-                                                        content = {
-                                                        },
-                                                        showDialog = false
-                                                    )
-                                                }
+                                                    },
+                                                    readOnly = state.signUpData.phoneVerified,
+                                                    cursorColor = MaterialTheme.appColors.textField.labelColor,,
+                                                    content = {
+                                                    },
+                                                    showDialog = false
+                                                )
                                             }
                                         }
+                                    }
 
                                         if ((!validPhoneNumber(state.signUpData.phone) && state.signUpData.phone.isNotEmpty())) {
                                             Text(
@@ -588,116 +598,116 @@ fun ProfileSetUpScreen(
 
                                 /*if (validPhoneNumber(state.signUpData.phone) && !state.signUpData.phoneVerified) {
 
-                                    Column(
-                                        modifier = Modifier
-                                            .align(Alignment.End)
-                                            .clickable {
-                                                scope.launch {
-                                                    signUpViewModel.onEvent(
-                                                        SignUpUIEvent.OnVerifyNumber
-                                                    )
-                                                    focus.clearFocus()
-                                                }
-                                            },
-                                        horizontalAlignment = Alignment.End
-                                    ) {
+                                        Column(
+                                            modifier = Modifier
+                                                .align(Alignment.End)
+                                                .clickable {
+                                                    scope.launch {
+                                                        signUpViewModel.onEvent(
+                                                            SignUpUIEvent.OnVerifyNumber
+                                                        )
+                                                        focus.clearFocus()
+                                                    }
+                                                },
+                                            horizontalAlignment = Alignment.End
+                                        ) {
+                                            AppText(
+                                                text = stringResource(id = R.string.verify),
+                                                style = MaterialTheme.typography.h6,
+                                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                                modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_20dp)),
+                                                textAlign = TextAlign.End
+                                            )
+                                        }
+                                    }
+                                    if (state.signUpData.phoneVerified) {
                                         AppText(
-                                            text = stringResource(id = R.string.verify),
+                                            text = stringResource(id = R.string.verified),
                                             style = MaterialTheme.typography.h6,
-                                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                                            modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_20dp)),
+                                            color = Color.Green,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(all = dimensionResource(id = R.dimen.size_20dp)),
                                             textAlign = TextAlign.End
                                         )
-                                    }
-                                }
-                                if (state.signUpData.phoneVerified) {
-                                    AppText(
-                                        text = stringResource(id = R.string.verified),
-                                        style = MaterialTheme.typography.h6,
-                                        color = Color.Green,
+                                    }*/
+                                    AppDivider()
+                                    Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(all = dimensionResource(id = R.dimen.size_20dp)),
-                                        textAlign = TextAlign.End
-                                    )
-                                }*/
-                                AppDivider()
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-                                    verticalAlignment = Alignment.Top
-                                ) {
-                                    CustomCheckBox(
-                                        state.signUpData.termsAndCondition
+                                            .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                                        verticalAlignment = Alignment.Top
                                     ) {
-                                        signUpViewModel.onEvent(
-                                            SignUpUIEvent.OnTermsAndConditionChanged(
-                                                !state.signUpData.termsAndCondition
+                                        CustomCheckBox(
+                                            state.signUpData.termsAndCondition
+                                        ) {
+                                            signUpViewModel.onEvent(
+                                                SignUpUIEvent.OnTermsAndConditionChanged(
+                                                    !state.signUpData.termsAndCondition
+                                                )
                                             )
-                                        )
-                                    }
-                                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_20dp)))
+                                        }
+                                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_20dp)))
 
                                     val annotatedText = buildAnnotatedString {
 
-                                        withStyle(
-                                            style = SpanStyle(
-                                                color = MaterialTheme.appColors.textField.labelColor,
-                                            )
-                                        ) {
-                                            append(stringResource(id = R.string.by_creating_an_account))
-                                        }
-                                        pushStringAnnotation(
-                                            tag = stringResource(id = R.string.all_ball_terms_condition),
-                                            annotation = stringResource(id = R.string.all_ball_terms_condition)
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = MaterialTheme.appColors.textField.labelColor,
                                         )
-                                        withStyle(
-                                            style = SpanStyle(
-                                                color = ColorMainPrimary,
-                                            )
-                                        ) {
-                                            append(stringResource(id = R.string.all_ball_terms_condition))
-                                        }
-                                        withStyle(
-                                            style = SpanStyle(
-                                                color = ColorMainPrimary,
-                                            )
-                                        ) {
-                                            append(" ")
-                                            append(stringResource(id = R.string.text_message_agreement))
-                                        }
-                                        pop()
-                                        withStyle(
-                                            style = SpanStyle(
-                                                color = MaterialTheme.appColors.textField.labelColor,
-                                            )
-                                        ) {
-                                            append(" ")
-                                            append(stringResource(id = R.string.authorizing_all_ball))
-                                        }
-                                        pushStringAnnotation(
-                                            tag = stringResource(id = R.string.privacy_policy),
-                                            annotation = stringResource(id = R.string.privacy_policy)
-                                        )
-                                        withStyle(
-                                            style = SpanStyle(
-                                                color = ColorMainPrimary,
-                                            )
-                                        ) {
-                                            append(" ")
-                                            append(stringResource(id = R.string.privacy_policy))
-                                        }
-                                        pop()
-                                        withStyle(
-                                            style = SpanStyle(
-                                                color = MaterialTheme.appColors.textField.labelColor,
-                                            )
-                                        ) {
-                                            append(" ")
-                                            append(stringResource(id = R.string.including_child_online_privacy_protection))
-                                        }
+                                    ) {
+                                        append(stringResource(id = R.string.by_creating_an_account))
                                     }
+                                    pushStringAnnotation(
+                                        tag = stringResource(id = R.string.all_ball_terms_condition),
+                                        annotation = stringResource(id = R.string.all_ball_terms_condition)
+                                    )
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = ColorMainPrimary,
+                                        )
+                                    ) {
+                                        append(stringResource(id = R.string.all_ball_terms_condition))
+                                    }
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = ColorMainPrimary,
+                                        )
+                                    ) {
+                                        append(" ")
+                                        append(stringResource(id = R.string.text_message_agreement))
+                                    }
+                                    pop()
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = MaterialTheme.appColors.textField.labelColor,
+                                        )
+                                    ) {
+                                        append(" ")
+                                        append(stringResource(id = R.string.authorizing_all_ball))
+                                    }
+                                    pushStringAnnotation(
+                                        tag = stringResource(id = R.string.privacy_policy),
+                                        annotation = stringResource(id = R.string.privacy_policy)
+                                    )
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = ColorMainPrimary,
+                                        )
+                                    ) {
+                                        append(" ")
+                                        append(stringResource(id = R.string.privacy_policy))
+                                    }
+                                    pop()
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = MaterialTheme.appColors.textField.labelColor,
+                                        )
+                                    ) {
+                                        append(" ")
+                                        append(stringResource(id = R.string.including_child_online_privacy_protection))
+                                    }
+                                }
 
                                     ClickableText(
                                         text = annotatedText,
@@ -739,42 +749,42 @@ fun ProfileSetUpScreen(
                                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_20dp)))
                                     val annotatedText = buildAnnotatedString {
 
-                                        withStyle(
-                                            style = SpanStyle(
-                                                color = MaterialTheme.appColors.textField.labelColor,
-                                            )
-                                        ) {
-                                            append(stringResource(id = R.string.i_authorize_all_ball))
-                                            append(" ")
-                                        }
-                                        pushStringAnnotation(
-                                            tag = stringResource(id = R.string.all_ball_privacy_policy),
-                                            annotation = stringResource(id = R.string.all_ball_privacy_policy)
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color =MaterialTheme.appColors.textField.labelColor,
                                         )
-                                        withStyle(
-                                            style = SpanStyle(
-                                                color = ColorMainPrimary,
-                                            )
-                                        ) {
-                                            append(stringResource(id = R.string.all_ball_privacy_policy))
-                                        }
-                                        pop()
+                                    ) {
+                                        append(stringResource(id = R.string.i_authorize_all_ball))
+                                        append(" ")
                                     }
-                                    ClickableText(
-                                        text = annotatedText,
-                                        onClick = { offset ->
-                                            annotatedText.getStringAnnotations(
-                                                tag = context.getString(R.string.all_ball_privacy_policy),
-                                                start = offset,
-                                                end = offset
-                                            ).firstOrNull()?.let {
-                                                moveToPrivacyAndPolicy("")
-                                            }
-                                        },
+                                    pushStringAnnotation(
+                                        tag = stringResource(id = R.string.all_ball_privacy_policy),
+                                        annotation = stringResource(id = R.string.all_ball_privacy_policy)
                                     )
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = ColorMainPrimary,
+                                        )
+                                    ) {
+                                        append(stringResource(id = R.string.all_ball_privacy_policy))
+                                    }
+                                    pop()
                                 }
+                                ClickableText(
+                                    text = annotatedText,
+                                    onClick = { offset ->
+                                        annotatedText.getStringAnnotations(
+                                            tag = context.getString(R.string.all_ball_privacy_policy),
+                                            start = offset,
+                                            end = offset
+                                        ).firstOrNull()?.let {
+                                            moveToPrivacyAndPolicy("")
+                                        }
+                                    },
+                                )
                             }
                         }
+                    }
 
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_44dp)))
 
@@ -785,45 +795,54 @@ fun ProfileSetUpScreen(
                                 && state.signUpData.address.isNotEmpty()
                                 && state.signUpData.gender.isNotEmpty()
                     } ?: true*/
-                        BottomButtons(
-                            onBackClick = {
-                                signUpViewModel.onEvent(SignUpUIEvent.ClearPhoneField)
-                                onBack()
-                            },
-                            onNextClick = {
-                                if (state.signUpData.profileImageUri.isNullOrEmpty()) {
-                                    signUpViewModel.onEvent(SignUpUIEvent.ShowToast(context.getString(R.string.please_select_profile)))
-                                } else {
-                                    if (state.registered) {
-                                        signUpViewModel.onEvent(SignUpUIEvent.OnAddProfile)
+                            BottomButtons(
+                                onBackClick = {
+                                    signUpViewModel.onEvent(SignUpUIEvent.ClearPhoneField)
+                                    onBack()
+                                },
+                                onNextClick = {
+                                    if (state.signUpData.profileImageUri.isNullOrEmpty()) {
+                                        signUpViewModel.onEvent(
+                                            SignUpUIEvent.ShowToast(
+                                                context.getString(
+                                                    R.string.please_select_profile
+                                                )
+                                            )
+                                        )
                                     } else {
-                                        signUpViewModel.onEvent(SignUpUIEvent.OnScreenNext)
+                                        if (state.registered) {
+                                            signUpViewModel.onEvent(SignUpUIEvent.OnAddProfile)
+                                        } else {
+                                            signUpViewModel.onEvent(SignUpUIEvent.OnScreenNext)
+                                        }
                                     }
-                                }
 
-                                /*check.value = false*/
-                            },
-                            enableState = !state.isLoading && validName(state.signUpData.firstName)
-                                    && validName(state.signUpData.lastName) && state.signUpData.termsAndCondition && state.signUpData.privacyAndPolicy && !state.signUpData.email.isNullOrEmpty() && state.signUpData.email?.isValidEmail() == true
-                                    && if (isToAddProfile) true else validPhoneNumber(state.signUpData.phone)
-                            /*&& check.value*/,
-                            //&& (state.signUpData.email ?: "".isValidEmail()) != true
-                            //&& state.signUpData.profileImageUri != null
-                            //&& state.signUpData.phoneVerified
-                            //&& check,
-                            firstText = stringResource(id = R.string.back),
-                            secondText = stringResource(id = R.string.next)
-                        )
+                                    /*check.value = false*/
+                                },
+                                enableState = !state.isLoading && validName(state.signUpData.firstName)
+                                        && validName(state.signUpData.lastName) && state.signUpData.termsAndCondition
+                                        && state.signUpData.privacyAndPolicy && state.signUpData.profileImageUri != null
+                                        && state.signUpData.email != null && state.signUpData.email?.isValidEmail() == true
+                                        && if (isToAddProfile) true else validPhoneNumber(state.signUpData.phone)
+                                /*&& check.value*/,
+                                //&& (state.signUpData.email ?: "".isValidEmail()) != true
+                                //&& state.signUpData.profileImageUri != null
+                                //&& state.signUpData.phoneVerified
+                                //&& check,
+                                firstText = stringResource(id = R.string.back),
+                                secondText = stringResource(id = R.string.next)
+                            )
 
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
+                        }
                     }
                 }
             }
-            if (state.isLoading) {
-                CommonProgressBar()
-            }
         }
+    }
+    if (state.isLoading) {
+        CommonProgressBar()
     }
 
 

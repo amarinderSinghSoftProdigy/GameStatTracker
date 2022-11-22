@@ -5,10 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -19,6 +16,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.allballapp.android.R
@@ -198,15 +196,20 @@ fun TabsContent(
         when (page) {
 
             0 -> {
-                MyEvents(vm, moveToPracticeDetail, moveToGameDetail,moveToEventDetail)
+                remember {
+                    vm.onEvent(EvEvents.ClearListEvents)
+                }
+                MyEvents(vm, moveToPracticeDetail, moveToGameDetail, moveToEventDetail)
             }
-
             1 -> {
-                MyLeagueScreen(vm, moveToDetail)
+                remember {
+                    vm.onEvent(EvEvents.ClearListLeague)
+                }
+                MyLeagueScreen(type = "", vm, moveToDetail)
             }
 
             2 -> {
-                OpportunitiesScreen(vm, moveToOppDetails)
+                OpportunitiesScreen(vm = vm, moveToOppDetails = moveToOppDetails)
             }
 
         }
@@ -232,7 +235,7 @@ fun TabsContentForReferee(
             }
 
             1 -> {
-                OpportunitiesScreen(vm, moveToOppDetails)
+                OpportunitiesScreen(vm = vm, moveToOppDetails = moveToOppDetails)
             }
 
         }
@@ -693,6 +696,8 @@ fun EventItem(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
                                     text = events.reason,
                                     color = MaterialTheme.appColors.textField.labelColor,
                                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,

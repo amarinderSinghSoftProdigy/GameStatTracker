@@ -28,7 +28,7 @@ interface IEventsRepository {
 
     suspend fun rejectEventInvite(eventId: String, reason: String): ResultWrapper<BaseResponse<Any>>
     suspend fun getFilters(): ResultWrapper<BaseResponse<FilterResponse>>
-    suspend fun getEventOpportunities(teamId:String): ResultWrapper<BaseResponse<List<OpportunitiesItem>>>
+    suspend fun getEventOpportunities(type:String,teamId:String): ResultWrapper<BaseResponse<List<OpportunitiesItem>>>
     suspend fun getEventOpportunityDetails(id: String): ResultWrapper<BaseResponse<OpportunitiesDetail>>
     suspend fun getEventDivisions(id: String): ResultWrapper<BaseResponse<List<DivisionData>>>
     suspend fun registerForEvent(request: RegisterRequest): ResultWrapper<BaseResponse<Any>>
@@ -38,21 +38,21 @@ interface IEventsRepository {
         page: Int = 1,
         limit: Int = 50,
         sort: String = "",
-        leagueId: String,
+        eventId: String,
         divisionId: String
     ): ResultWrapper<BaseResponse<ArrayList<TeamsByLeagueDivisionResponse>>>
 
-    suspend fun getTeamsByLeagueIdAllDivision(leagueId: String): ResultWrapper<BaseResponse<ArrayList<DivisionWiseTeamResponse>>>
+    suspend fun getTeamsByLeagueIdAllDivision(eventId: String): ResultWrapper<BaseResponse<ArrayList<DivisionWiseTeamResponse>>>
 
     suspend fun getAllTeamsStandingByLeaguedAndDivision(
         page: Int = 1,
         limit: Int = 50,
         sort: String = "",
-        leagueId: String,
+        eventId: String,
         divisionId: String
     ): ResultWrapper<BaseResponse<StandingByLeagueAndDivisionData>>
 
-    suspend fun getVenueDetailsById(venueId: String): ResultWrapper<BaseResponse<VenueDetails>>
+    suspend fun getVenueDetailsById(venueId: String,  eventId: String): ResultWrapper<BaseResponse<VenueDetails>>
 
     suspend fun getEventScheduleDetails(eventId: String): ResultWrapper<BaseResponse<List<ScheduleResponse>>>
 

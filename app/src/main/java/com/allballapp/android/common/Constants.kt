@@ -1,7 +1,9 @@
 package com.allballapp.android.common
 
 import androidx.compose.ui.graphics.Color
+import com.allballapp.android.common.AppConstants.DEFAULT_COLOR
 import com.allballapp.android.ui.theme.Yellow700
+import timber.log.Timber
 
 object AppConstants {
     const val DATE_DAY_FORMAT: String="EEE, MMM DD"
@@ -37,6 +39,12 @@ object AppConstants {
     const val PAGE_LIMIT = 20
     var DEFAULT_COLOR = "FF923D"
     var SELECTED_COLOR: Color = Yellow700
+
+    const val OPP_PLAY = "opportunitiesToPlay"
+    const val ALL_LEAGUE = "allLeagues"
+    const val MY_LEAGUE = "myLeagues"
+    const val OPP_WORK = "opportunitiesToWork"
+
 }
 
 object Route {
@@ -211,4 +219,36 @@ object IntentData {
 
 object CometChatErrorCodes {
     const val ERR_UID_ALREADY_EXISTS = "ERR_UID_ALREADY_EXISTS"
+}
+
+
+fun getCustomColorCode(colorWithoutHash: String): String {
+    var validHexColor = ""
+
+    validHexColor = if (colorWithoutHash.length == 7) {
+        val updatedCode = colorWithoutHash.take(6)
+        Timber.i("updatedCode--$updatedCode")
+        updatedCode
+    } else if (colorWithoutHash.length == 6 || colorWithoutHash.length == 8) {
+        Timber.i("colorWithoutHash--$colorWithoutHash")
+        colorWithoutHash
+
+    } else {
+        Timber.i("colorWithoutHash--$DEFAULT_COLOR")
+        DEFAULT_COLOR
+    }
+
+    try {
+        Color(
+            android.graphics.Color.parseColor(
+                "#${validHexColor}"
+
+            )
+        )
+    } catch (ex: Exception) {
+        ex.printStackTrace()
+        validHexColor = DEFAULT_COLOR
+    }
+
+    return validHexColor
 }

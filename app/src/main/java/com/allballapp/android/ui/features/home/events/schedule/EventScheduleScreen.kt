@@ -25,20 +25,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.allballapp.android.R
 import com.allballapp.android.ui.features.components.*
+import com.allballapp.android.ui.features.home.EmptyScreen
 import com.allballapp.android.ui.features.home.events.EvEvents
 import com.allballapp.android.ui.features.home.events.EventDetail
 import com.allballapp.android.ui.features.home.events.EventViewModel
 import com.allballapp.android.ui.features.home.events.Matches
-import com.allballapp.android.ui.features.components.AppDivider
-import com.allballapp.android.ui.features.components.CoilImage
-import com.allballapp.android.ui.features.components.FoldableItem
-import com.allballapp.android.ui.features.components.Placeholder
 import com.allballapp.android.ui.theme.ColorGreyLighter
 import com.allballapp.android.ui.theme.appColors
 import com.allballapp.android.ui.utils.CommonUtils
-import com.allballapp.android.R
-import com.allballapp.android.ui.features.home.EmptyScreen
+import com.google.accompanist.flowlayout.FlowRow
+import timber.log.Timber
 
 @Composable
 fun EventScheduleScreen(
@@ -62,34 +60,34 @@ fun EventScheduleScreen(
         } else {
             LazyColumn(Modifier.fillMaxWidth()) {
                 items(state.scheduleResponse) { item ->
-                    FoldableItem(
-                        expanded = expand,
-                        headerBackground = MaterialTheme.appColors.material.surface,
-                        headerBorder = BorderStroke(0.dp, Color.Transparent),
-                        header = { isExpanded ->
-                            EventScheduleHeaderItem(
-                                isExpanded = isExpanded,
-                                date = CommonUtils.formatDateSingle(item._id),
-                                gamesCount = item.totalgames
-                            )
-                        },
-                        childItems = item.matches,
-                        hasItemLeadingSpacing = false,
-                        hasItemTrailingSpacing = false,
-                        itemSpacing = 0.dp,
-                        itemHorizontalPadding = 0.dp,
-                        itemsBackground = MaterialTheme.appColors.material.primary,
-                        item = { match, index ->
-                            EventScheduleSubItem(match, item.event, index) {
-                                //moveToOpenDetails(match.divisions)
+                    if (item.matches.isNotEmpty()) {
+                        FoldableItem(
+                            expanded = expand,
+                            headerBackground = MaterialTheme.appColors.material.surface,
+                            headerBorder = BorderStroke(0.dp, Color.Transparent),
+                            header = { isExpanded ->
+                                EventScheduleHeaderItem(
+                                    isExpanded = isExpanded,
+                                    date = CommonUtils.formatDateSingle(item._id),
+                                    gamesCount = item.totalgames
+                                )
+                            },
+                            childItems = item.matches,
+                            hasItemLeadingSpacing = false,
+                            hasItemTrailingSpacing = false,
+                            itemSpacing = 0.dp,
+                            itemHorizontalPadding = 0.dp,
+                            itemsBackground = MaterialTheme.appColors.material.primary,
+                            item = { match, index ->
+                                EventScheduleSubItem(match, item.event, index) {
+                                    //moveToOpenDetails(match.divisions)
+                                }
                             }
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }
-
-
     }
 
     if (state.showLoading) {
@@ -181,114 +179,119 @@ fun EventScheduleSubItem(
         )
         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.size_8dp)))
 
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .clickable { moveToOpenDetails() }
-                .background(
-                    color = MaterialTheme.appColors.material.surface.copy(0.9f),
-                    shape = RoundedCornerShape(
-                        dimensionResource(id = R.dimen.size_8dp)
-                    )
-                )
+        FlowRow {
+            Timber.e("match " + match.timeSlot + " - " + match.pairs.size)
+            match.pairs.forEach {
+                Column {
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                            .clickable { moveToOpenDetails() }
+                            .background(
+                                color = MaterialTheme.appColors.material.surface.copy(0.9f),
+                                shape = RoundedCornerShape(
+                                    dimensionResource(id = R.dimen.size_8dp)
+                                )
+                            )
 
-        ) {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(dimensionResource(id = R.dimen.size_8dp)),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(
-                    modifier = Modifier.weight(1f),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    Text(
-                        text = match.pairs[index].teams[0].name,
-                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = dimensionResource(
-                            id = R.dimen.txt_size_12
-                        ).value.sp
-                    )
-                    Spacer(modifier = Modifier.width(dimensionResource(R.dimen.size_12dp)))
-                    CoilImage(src = com.allballapp.android.BuildConfig.IMAGE_SERVER + match.pairs[index].teams[0].logo,
-                        modifier = Modifier
-                            .size(dimensionResource(id = R.dimen.size_32dp))
-                            .clip(CircleShape),
-                        isCrossFadeEnabled = false,
-                        onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
-                        onError = { Placeholder(R.drawable.ic_team_placeholder) })
+                    ) {
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(dimensionResource(id = R.dimen.size_8dp)),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Row(
+                                modifier = Modifier.weight(1f),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.End
+                            ) {
+                                Text(
+                                    text = it.teams[0].name,
+                                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = dimensionResource(
+                                        id = R.dimen.txt_size_12
+                                    ).value.sp
+                                )
+                                Spacer(modifier = Modifier.width(dimensionResource(R.dimen.size_12dp)))
+                                CoilImage(src = com.allballapp.android.BuildConfig.IMAGE_SERVER + it.teams[0].logo,
+                                    modifier = Modifier
+                                        .size(dimensionResource(id = R.dimen.size_32dp))
+                                        .clip(CircleShape),
+                                    isCrossFadeEnabled = false,
+                                    onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                                    onError = { Placeholder(R.drawable.ic_team_placeholder) })
+                            }
+                            Spacer(modifier = Modifier.width(dimensionResource(R.dimen.size_12dp)))
+                            Text(
+                                text = stringResource(id = R.string.vs),
+                                color = MaterialTheme.appColors.textField.labelDark,
+                                fontWeight = FontWeight.W400,
+                                fontSize = dimensionResource(
+                                    id = R.dimen.txt_size_12
+                                ).value.sp
+                            )
+                            Spacer(modifier = Modifier.width(dimensionResource(R.dimen.size_12dp)))
+                            Row(
+                                modifier = Modifier.weight(1f),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Start
+                            ) {
+                                Spacer(modifier = Modifier.width(dimensionResource(R.dimen.size_12dp)))
+
+                                CoilImage(src = com.allballapp.android.BuildConfig.IMAGE_SERVER + it.teams[1].logo,
+                                    modifier = Modifier
+                                        .size(dimensionResource(id = R.dimen.size_32dp))
+                                        .clip(CircleShape),
+                                    isCrossFadeEnabled = false,
+                                    onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                                    onError = { Placeholder(R.drawable.ic_team_placeholder) })
+                                Spacer(modifier = Modifier.width(dimensionResource(R.dimen.size_12dp)))
+                                Text(
+                                    text = it.teams[1].name,
+                                    color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = dimensionResource(
+                                        id = R.dimen.txt_size_12
+                                    ).value.sp
+                                )
+
+                            }
+                        }
+                        AppDivider(color = MaterialTheme.appColors.buttonColor.backgroundEnabled)
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    horizontal = dimensionResource(id = R.dimen.size_8dp),
+                                    vertical = dimensionResource(
+                                        id = R.dimen.size_4dp
+                                    )
+                                ), horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = event.address,
+                                color = MaterialTheme.appColors.textField.labelDark,
+                                fontWeight = FontWeight.W400,
+                                fontSize = dimensionResource(
+                                    id = R.dimen.txt_size_12
+                                ).value.sp
+                            )
+                            Text(
+                                text = it.divisionName,
+                                color = MaterialTheme.appColors.textField.labelDark,
+                                fontWeight = FontWeight.W400,
+                                fontSize = dimensionResource(
+                                    id = R.dimen.txt_size_12
+                                ).value.sp
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(dimensionResource(R.dimen.size_8dp)))
                 }
-                Spacer(modifier = Modifier.width(dimensionResource(R.dimen.size_12dp)))
-                Text(
-                    text = stringResource(id = R.string.vs),
-                    color = MaterialTheme.appColors.textField.labelDark,
-                    fontWeight = FontWeight.W400,
-                    fontSize = dimensionResource(
-                        id = R.dimen.txt_size_12
-                    ).value.sp
-                )
-                Spacer(modifier = Modifier.width(dimensionResource(R.dimen.size_12dp)))
-                Row(
-                    modifier = Modifier.weight(1f),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
-                ) {
-                    Spacer(modifier = Modifier.width(dimensionResource(R.dimen.size_12dp)))
-
-                    CoilImage(src = com.allballapp.android.BuildConfig.IMAGE_SERVER + match.pairs[index].teams[1].logo,
-                        modifier = Modifier
-                            .size(dimensionResource(id = R.dimen.size_32dp))
-                            .clip(CircleShape),
-                        isCrossFadeEnabled = false,
-                        onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
-                        onError = { Placeholder(R.drawable.ic_team_placeholder) })
-                    Spacer(modifier = Modifier.width(dimensionResource(R.dimen.size_12dp)))
-                    Text(
-                        text = match.pairs[index].teams[1].name,
-                        color = MaterialTheme.appColors.buttonColor.backgroundEnabled,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = dimensionResource(
-                            id = R.dimen.txt_size_12
-                        ).value.sp
-                    )
-
-                }
-
-
-            }
-            AppDivider(color = MaterialTheme.appColors.buttonColor.backgroundDisabled)
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        horizontal = dimensionResource(id = R.dimen.size_8dp),
-                        vertical = dimensionResource(
-                            id = R.dimen.size_4dp
-                        )
-                    ), horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = event.address,
-                    color = MaterialTheme.appColors.textField.labelDark,
-                    fontWeight = FontWeight.W400,
-                    fontSize = dimensionResource(
-                        id = R.dimen.txt_size_12
-                    ).value.sp
-                )
-                Text(
-                    text = match.timeSlot,
-                    color = MaterialTheme.appColors.textField.labelDark,
-                    fontWeight = FontWeight.W400,
-                    fontSize = dimensionResource(
-                        id = R.dimen.txt_size_12
-                    ).value.sp
-                )
             }
         }
-        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.size_8dp)))
     }
 }

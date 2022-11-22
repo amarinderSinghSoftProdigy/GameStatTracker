@@ -13,15 +13,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.allballapp.android.R
+import com.allballapp.android.common.AppConstants
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.response.team.Team
 import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.home.HomeViewModel
 import com.allballapp.android.ui.features.home.teams.chat.ChatViewModel
 import com.allballapp.android.ui.features.home.teams.chat.TeamsChatScreen
-import com.allballapp.android.ui.features.home.teams.leaderboard.LeaderBoardScreen
 import com.allballapp.android.ui.features.home.teams.roaster.RoasterScreen
-import com.allballapp.android.ui.features.home.teams.standing.StandingScreen
 import com.allballapp.android.ui.features.user_type.team_setup.updated.SetupTeamViewModelUpdated
 import com.allballapp.android.ui.features.user_type.team_setup.updated.TeamSetupUIEventUpdated
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -97,15 +96,16 @@ fun TeamsScreen(
 
     val tabData = if (UserStorage.role == UserType.REFEREE.key) {
         listOf(TeamsTabItems.Chat)
-    } else {
+    } else if (!AppConstants.ENABLE_CHAT)
+        listOf(TeamsTabItems.Roaster)
+    else {
         listOf(
-          /*  TeamsTabItems.Standings,*/
+            /*  TeamsTabItems.Standings,*/
             TeamsTabItems.Chat,
             TeamsTabItems.Roaster,
-           /* TeamsTabItems.Leaderboard,*/
+            /* TeamsTabItems.Leaderboard,*/
         )
     }
-
 
     val pagerState = rememberPagerState(
         pageCount = tabData.size,
@@ -113,7 +113,20 @@ fun TeamsScreen(
     )
 
     Column {
-        if (UserStorage.role != UserType.REFEREE.key) {
+        if (UserStorage.role == UserType.REFEREE.key) {
+            RefereeTeamsTopTabs(pagerState = pagerState, tabData = tabData)
+            TeamsChatScreen(
+                vm.teamUiState.value.teamColorPrimary,
+                onTeamItemClick = onTeamItemClick,
+                onCreateNewConversationClick = onCreateNewConversationClick,
+                homeVm = homeVm,
+                vm = chatViewModel
+            )
+
+        } else if (!AppConstants.ENABLE_CHAT) {
+            RefereeTeamsTopTabs(pagerState = pagerState, tabData = tabData)
+            RoasterScreen(vm, onAddPlayerClick, true)
+        } else {
             TeamsTopTabs(pagerState = pagerState, tabData = tabData)
             TeamsContent(
                 pagerState = pagerState,
@@ -123,15 +136,6 @@ fun TeamsScreen(
                 onAddPlayerClick = onAddPlayerClick,
                 homeVm = homeVm,
                 chatViewModel = chatViewModel
-            )
-        } else {
-            RefereeTeamsTopTabs(pagerState = pagerState, tabData = tabData)
-            TeamsChatScreen(
-                vm.teamUiState.value.teamColorPrimary,
-                onTeamItemClick = onTeamItemClick,
-                onCreateNewConversationClick = onCreateNewConversationClick,
-                homeVm = homeVm,
-                vm = chatViewModel
             )
             //EmptyScreen(singleText = true, heading = stringResource(id = R.string.coming_soon))
         }
@@ -149,7 +153,8 @@ fun TeamsScreen(
                     if (UserStorage.teamId != teamId) {
                         onTeamSelectionConfirmed(state.selectedTeam)
                         vm.onEvent(TeamUIEvent.OnConfirmTeamClick(teamId, teamName))
-                        if(teamName == context.getString(R.string.team_total_hoop)) {
+                        //if (teamName == context.getString(R.string.team_total_hoop)) {
+                        if (teamId == state.allBallId) {
                             onHomeClick()
                         }
                     }
@@ -183,7 +188,7 @@ fun TeamsContent(
         modifier = Modifier.fillMaxSize()
     ) { index ->
         when (index) {
-           /* 0 -> StandingScreen()*/
+            /* 0 -> StandingScreen()*/
             0 -> TeamsChatScreen(
                 viewModel.teamUiState.value.teamColorPrimary,
                 homeVm = homeVm,
@@ -192,7 +197,7 @@ fun TeamsContent(
                 vm = chatViewModel
             )
             1 -> RoasterScreen(viewModel, onAddPlayerClick, true)
-           /* 3 -> LeaderBoardScreen()*/
+            /* 3 -> LeaderBoardScreen()*/
         }
     }
 }
@@ -245,8 +250,8 @@ fun RefereeTeamsTopTabs(pagerState: PagerState, tabData: List<TeamsTabItems>) {
 }
 
 enum class TeamsTabItems(val icon: Int, val stringId: String) {
-//    Standings(R.drawable.ic_standing, stringId = "standings"),
+    //    Standings(R.drawable.ic_standing, stringId = "standings"),
     Chat(R.drawable.ic_chat, stringId = "chat"),
     Roaster(R.drawable.ic_roaster, stringId = "roaster"),
- //   Leaderboard(R.drawable.ic_leaderboard, stringId = "leaderboards")
+    //   Leaderboard(R.drawable.ic_leaderboard, stringId = "leaderboards")
 }
