@@ -54,8 +54,8 @@ fun InvitationScreen(
     vmSetupTeam: SetupTeamViewModelUpdated,
     homeVm: HomeViewModel,
     signUpViewModel: SignUpViewModel,
-    onNewProfileIntent: (countryCode: String, mobileNumber: String) -> Unit,
-    onInvitationSuccess: () -> Unit,
+    //onNewProfileIntent: (countryCode: String, mobileNumber: String) -> Unit,
+    //onInvitationSuccess: () -> Unit,
     addProfileClick: () -> Unit,
     onInviteClick: (teamId: String) -> Unit,
 ) {

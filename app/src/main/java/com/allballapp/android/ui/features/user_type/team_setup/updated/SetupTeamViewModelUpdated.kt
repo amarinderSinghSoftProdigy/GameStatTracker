@@ -3,7 +3,6 @@ package com.allballapp.android.ui.features.user_type.team_setup.updated
 import android.app.Application
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -22,6 +21,7 @@ import com.allballapp.android.data.response.UserRoles
 import com.allballapp.android.data.response.team.Player
 import com.allballapp.android.domain.repository.IImageUploadRepo
 import com.allballapp.android.domain.repository.ITeamRepository
+import com.allballapp.android.ui.utils.CommonUtils
 import com.allballapp.android.ui.utils.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -47,7 +47,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
 
     init {
         context = application.applicationContext
-        initialInviteCount()
+        //initialInviteCount()
     }
 
     fun initialInviteCount(size: Int = 2) {
@@ -282,7 +282,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
 
             }
             is TeamSetupUIEventUpdated.AddInviteTeamMembers -> {
-                 _teamSetupUiState.value =
+                _teamSetupUiState.value =
                     _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList
                         .apply {
                             this[event.index].name = event.member?.firstName ?: ""
@@ -290,15 +290,21 @@ class SetupTeamViewModelUpdated @Inject constructor(
                             this[event.index].role = UserRoles(value = "", key = event.role)
                             this[event.index].profileSelected = "true"
                         })
-
+                val index = CommonUtils.getIndex(event.phone, _teamSetupUiState.value.inviteList)
                 viewModelScope.launch {
-                    invitePlayers(
-                        event.teamId,
-                        userType = event.userType,
-                        type = AppConstants.TYPE_CREATE_TEAM,
-                        profileSelected = false,
-                        member = null
-                    )
+                    if (index == -1) {
+                        invitePlayers(
+                            event.teamId,
+                            userType = event.userType,
+                            type = AppConstants.TYPE_CREATE_TEAM,
+                            profileSelected = false,
+                            member = null
+                        )
+                    } else if (index != event.index) {
+                        _teamSetupChannel.send(
+                            TeamSetupChannel.OnShowDialog
+                        )
+                    }
                 }
             }
 
@@ -820,6 +826,7 @@ sealed class TeamSetupChannel {
     data class OnInvitationDone(val message: UiText, val showToast: Boolean) : TeamSetupChannel()
     object OnTeamSetupNextClick : TeamSetupChannel()
     object OnLogoUpload : TeamSetupChannel()
+    object OnShowDialog : TeamSetupChannel()
     data class OnTeamCreate(val message: String, val id: String = "") : TeamSetupChannel()
 
 }

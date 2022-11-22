@@ -79,6 +79,10 @@ fun AddPlayersScreenUpdated(
     val showSwapDialog = rememberSaveable {
         mutableStateOf(false)
     }
+
+    val profileName = remember {
+        mutableStateOf("")
+    }
     val expanded = remember {
         mutableStateOf(false)
     }
@@ -88,7 +92,8 @@ fun AddPlayersScreenUpdated(
 
     remember {
         vm.onEvent(TeamSetupUIEventUpdated.GetRoles)
-        vm.initialInviteCount(2)
+        if (state.inviteList.isEmpty())
+            vm.initialInviteCount(2)
         if (!teamId.isNullOrEmpty()) {
             if (teamData != null) {
                 teamData.onEvent(TeamUIEvent.GetTeam(teamId))
@@ -123,8 +128,11 @@ fun AddPlayersScreenUpdated(
                     Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
                         .show()
                 }
-                TeamSetupChannel.OnLogoUpload -> {
+                is TeamSetupChannel.OnLogoUpload -> {
                     vm.onEvent(TeamSetupUIEventUpdated.OnLogoUploadSuccess)
+                }
+                is TeamSetupChannel.OnShowDialog -> {
+                    showSwapDialog.value = true
                 }
                 is TeamSetupChannel.OnTeamCreate -> {
                     Toast.makeText(context, uiEvent.message, Toast.LENGTH_LONG)
@@ -300,17 +308,26 @@ fun AddPlayersScreenUpdated(
     }
     if (showSwapDialog.value) {
         val index = CommonUtils.getIndex(homeState.user.phone, state.inviteList)
+        val name = if (index == -1) {
+            profileName.value.ifEmpty { "user" }
+        } else state.inviteList[index].name
         SwapProfile(
+            defaultCase = true,
             title = stringResource(id = R.string.select_profile_title).replace(
-                "user", state.inviteList[index].name
+                "user", name
             ),
             actionButtonText = stringResource(id = R.string.invite),
-            users = CommonUtils.filterUsers(state.memberList, homeState.swapUsers as ArrayList),
+            users = CommonUtils.filterUsers(
+                state.inviteList,
+                state.memberList,
+                homeState.swapUsers as ArrayList
+            ),
             onDismiss = { showSwapDialog.value = false },
             onConfirmClick = { swapUser ->
                 if (index != -1) {
                     vm.onEvent(
                         TeamSetupUIEventUpdated.AddInviteTeamMembers(
+                            homeState.user.phone,
                             index,
                             userType = state.role,
                             teamId = state.teamId,
@@ -318,25 +335,35 @@ fun AddPlayersScreenUpdated(
                             role = roleKey.value,
                         )
                     )
+                } else {
+                    vm.onEvent(
+                        TeamSetupUIEventUpdated.OnInviteTeamMembers(
+                            state.teamId,
+                            type = AppConstants.TYPE_CREATE_TEAM,
+                        )
+                    )
                 }
+                /*showSwapDialog.value = false
+                homeVm.onEvent(HomeScreenEvent.HideSwap(false))*/
                 /* vm.onEvent(
-                     TeamSetupUIEventUpdated.OnInviteTeamMembers(
-                         state.teamId,
-                         userType = state.role,
-                         type = AppConstants.TYPE_CREATE_TEAM,
-                         profilesSelected = true,
-                         member = Members(
-                             name = swapUser.firstName,
-                             mobileNumber = swapUser._Id,
-                             role = roleKey.value
-                         )
-                     )
-                 )*/
+                       TeamSetupUIEventUpdated.OnInviteTeamMembers(
+                           state.teamId,
+                           userType = state.role,
+                           type = AppConstants.TYPE_CREATE_TEAM,
+                           profilesSelected = true,
+                           member = Members(
+                               name = swapUser.firstName,
+                               mobileNumber = swapUser._Id,
+                               role = roleKey.value
+                           )
+                       )
+                   )*/
                 showSwapDialog.value = false
                 homeVm.onEvent(HomeScreenEvent.HideSwap(false))
             },
             showLoading = homeState.isDataLoading,
             onCreatePlayerClick = {
+                profileName.value = name
                 addProfileClick()
             },
             showCreatePlayerButton = true

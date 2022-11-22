@@ -1909,10 +1909,11 @@ fun SwapProfile(
     users: List<SwapUser>,
     onCreatePlayerClick: () -> Unit,
     showCreatePlayerButton: Boolean = false,
+    defaultCase: Boolean = false,
 ) {
 
     val selectedUser = remember {
-        mutableStateOf(SwapUser(_Id = UserStorage.userId))
+        mutableStateOf(SwapUser(_Id = if (defaultCase) "" else UserStorage.userId))
     }
     BallerAppMainTheme {
         AlertDialog(
@@ -2022,7 +2023,7 @@ fun SwapProfile(
                             modifier = Modifier
                                 .weight(1f),
                             border = ButtonDefaults.outlinedBorder,
-                            enabled = true,
+                            enabled = selectedUser.value._Id.isNotEmpty(),
                             onlyBorder = false,
                         )
                     }
