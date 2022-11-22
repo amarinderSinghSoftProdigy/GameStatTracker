@@ -2,7 +2,6 @@ package com.allballapp.android.ui.features.profile
 
 import android.app.Application
 import android.net.Uri
-import android.provider.ContactsContract.Profile
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
@@ -572,7 +571,16 @@ class ProfileViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 leaveTeamResponse.value.let { response ->
-                    if (response.status && response.data != null) {
+                    if (response.status) {
+
+                        /* Check  if remove request is for default team or not*/
+                        if (_state.value.selectedTeamId.equals(UserStorage.teamId)) {
+                            _channel.send(
+                                ProfileChannel.OnDefaultTeamRemove
+                            )
+                        }
+
+
                         _state.value.selectedTeamIndex?.let {
                             _state.value.user.teamDetails.toMutableList().removeAt(index = it)
                         }
@@ -584,6 +592,7 @@ class ProfileViewModel @Inject constructor(
                                 )
                             )
                         )
+
                         getUserDetails()
 
                     } else {
@@ -1013,6 +1022,7 @@ class ProfileViewModel @Inject constructor(
 
 sealed class ProfileChannel {
     data class ShowToast(val message: UiText) : ProfileChannel()
+    object OnDefaultTeamRemove : ProfileChannel()
     data class OnUpdateSuccess(val message: String) : ProfileChannel()
     object OnProfileImageUpload : ProfileChannel()
 }

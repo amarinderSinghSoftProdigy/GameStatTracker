@@ -45,6 +45,7 @@ import com.allballapp.android.common.*
 import com.allballapp.android.data.response.CheckBoxData
 import com.allballapp.android.data.response.TeamDetails
 import com.allballapp.android.ui.features.components.*
+import com.allballapp.android.ui.features.home.teams.TeamViewModel
 import com.allballapp.android.ui.theme.ColorBWBlack
 import com.allballapp.android.ui.theme.appColors
 import com.allballapp.android.ui.theme.error
@@ -58,7 +59,8 @@ import java.util.*
 fun ProfileEditScreen(
     vm: ProfileViewModel = hiltViewModel(),
     onBackClick: () -> Unit,
-    onUpdateSuccess: () -> Unit
+    onUpdateSuccess: () -> Unit,
+    teamViewModel: TeamViewModel
 ) {
 
     val state = vm.state.value
@@ -172,6 +174,12 @@ fun ProfileEditScreen(
                         it.message.asString(context),
                         Toast.LENGTH_LONG
                     ).show()
+                }
+
+                ProfileChannel.OnDefaultTeamRemove ->{
+                    scope.launch {
+                        teamViewModel.updateColorData("")
+                    }
                 }
             }
         }
