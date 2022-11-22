@@ -106,7 +106,8 @@ fun NewConversationScreen(
         AppOutlineTextField(
             value = chatState.searchText,
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(dimensionResource(id = R.dimen.size_10dp)),
             onValueChange = {
                 chatVM.onEvent(ChatUIEvent.OnSearchValueChange(it))
             },
@@ -139,9 +140,9 @@ fun NewConversationScreen(
                 focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
                 unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
                 backgroundColor = MaterialTheme.appColors.material.background,
-                textColor = MaterialTheme.appColors.buttonColor.backgroundEnabled,
+                textColor = MaterialTheme.appColors.textField.labelColor,
                 placeholderColor = MaterialTheme.appColors.textField.label,
-                cursorColor = MaterialTheme.appColors.buttonColor.backgroundEnabled
+                cursorColor = MaterialTheme.appColors.textField.labelColor
             ),
             singleLine = false,
             maxLines = 6,
