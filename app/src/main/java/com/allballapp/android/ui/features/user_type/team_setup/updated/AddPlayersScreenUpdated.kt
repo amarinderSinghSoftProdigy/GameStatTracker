@@ -299,13 +299,15 @@ fun AddPlayersScreenUpdated(
         )
     }
     if (showSwapDialog.value) {
+        val index = CommonUtils.getIndex(homeState.user.phone, state.inviteList)
         SwapProfile(
-            title = stringResource(id = R.string.invite_from_your_profile),
+            title = stringResource(id = R.string.select_profile_title).replace(
+                "user", state.inviteList[index].name
+            ),
             actionButtonText = stringResource(id = R.string.invite),
             users = CommonUtils.filterUsers(state.memberList, homeState.swapUsers as ArrayList),
             onDismiss = { showSwapDialog.value = false },
             onConfirmClick = { swapUser ->
-                val index = CommonUtils.getIndex(homeState.user.phone, state.inviteList)
                 if (index != -1) {
                     vm.onEvent(
                         TeamSetupUIEventUpdated.AddInviteTeamMembers(
