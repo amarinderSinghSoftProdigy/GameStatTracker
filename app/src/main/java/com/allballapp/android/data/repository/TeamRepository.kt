@@ -101,7 +101,7 @@ class TeamRepository @Inject constructor(
     override suspend fun acceptTeamInvitation(
         invitationId: String,
         role: String,
-        playerId: String,//ArrayList<String>,
+        playerId: ArrayList<String>,
         guardianGender: String
     ): ResultWrapper<BaseResponse<AcceptInvitation>> {
         /*val request: RequestBody = FormBody.Builder()

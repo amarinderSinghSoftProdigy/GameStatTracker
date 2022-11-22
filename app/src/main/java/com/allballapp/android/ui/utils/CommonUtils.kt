@@ -6,7 +6,9 @@ import android.content.Intent
 import android.net.Uri
 import com.allballapp.android.R
 import com.allballapp.android.common.comet_chat.UIKitConstants
+import com.allballapp.android.data.request.Members
 import com.allballapp.android.data.response.AllUser
+import com.allballapp.android.data.response.SwapUser
 import com.allballapp.android.data.response.UserRoles
 import com.allballapp.android.data.response.team.Player
 import com.allballapp.android.data.response.team.Team
@@ -371,11 +373,46 @@ class CommonUtils {
 
         fun getIndex(phone: String, list: List<InviteObject>): Int {
             list.forEachIndexed { index, item ->
-                if (phone == item.countryCode + item.contact) {
+                if ((phone == item.countryCode + item.contact) && item.id.isEmpty()) {
                     return index
                 }
             }
             return -1
+        }
+
+        fun getIndexId(phone: String, list: List<InviteObject>): Int {
+            list.forEachIndexed { index, item ->
+                if ((phone == item.countryCode + item.contact) && item.id.isEmpty()) {
+                    return index
+                }
+            }
+            return -1
+        }
+
+        fun filterUsers(
+            inviteList: List<InviteObject>,
+            memberList: List<Members>,
+            swapUsers: ArrayList<SwapUser>
+        ): List<SwapUser> {
+            return try {
+                val ids = ArrayList<String>()
+                val idsLocal = ArrayList<String>()
+                for (item in memberList) {
+                    if (!ids.contains(item.memberId))
+                        ids.add(item.memberId)
+                }
+                for (item in inviteList) {
+                    if (!idsLocal.contains(item.id) && item.id.isNotEmpty())
+                        idsLocal.add(item.id)
+                }
+
+                val result = swapUsers.filter {
+                    !ids.contains(it._Id) && !idsLocal.contains(it._Id)
+                }
+                result
+            } catch (ex: Exception) {
+                swapUsers
+            }
         }
 
     }

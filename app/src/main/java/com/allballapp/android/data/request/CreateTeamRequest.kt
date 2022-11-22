@@ -55,12 +55,13 @@ data class Members(
     @SerializedName("mobileNumber") var mobileNumber: String = "", /*need to send profile _id with mobileNumber field in case of invitation from select swap profile dialog */
     @SerializedName("role") var role: String = "",
     @SerializedName("profileImage") var profileImage: String = "",
-    //@SerializedName("profilesSelected") var profilesSelected: String = "false"
+    @SerializedName("profilesSelected") var profilesSelected: String = "false",
+    @SerializedName("memberId") var memberId: String = ""
 )
 
 data class InviteMembersRequest(
     val invitationId: String = "",
     val role: String = "",
-    val kidId: String,//ArrayList<String> = arrayListOf(),
+    val kidId: ArrayList<String> = arrayListOf(),
     val guardianGender: String = "",
 )

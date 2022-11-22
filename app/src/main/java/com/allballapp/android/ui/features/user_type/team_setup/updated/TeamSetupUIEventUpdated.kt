@@ -46,6 +46,7 @@ sealed class TeamSetupUIEventUpdated {
     ) : TeamSetupUIEventUpdated()
 
     data class AddInviteTeamMembers(
+        val phone:String,
         val index: Int,
         val userType: String,
         val teamId: String,
