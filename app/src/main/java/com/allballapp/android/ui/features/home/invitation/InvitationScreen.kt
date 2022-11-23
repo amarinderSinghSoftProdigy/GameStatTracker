@@ -58,6 +58,7 @@ fun InvitationScreen(
     //onInvitationSuccess: () -> Unit,
     addProfileClick: () -> Unit,
     onInviteClick: (teamId: String) -> Unit,
+    onBackClick : () -> Unit
 ) {
     val showNoMessage = remember {
         mutableStateOf(false)
@@ -387,6 +388,7 @@ fun InvitationScreen(
         InvitationSuccessfullySentDialog(
             onDismiss = {
                 vm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
+                onBackClick()
             },
             onConfirmClick = {
                 onInviteClick.invoke(state.selectedInvitation.team._id)
