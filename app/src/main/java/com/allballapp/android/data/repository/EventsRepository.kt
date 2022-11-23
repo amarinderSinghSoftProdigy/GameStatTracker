@@ -43,17 +43,25 @@ class EventsRepository @Inject constructor(
         }
     }
 
-    override suspend fun acceptEventInvite(eventId: String): ResultWrapper<BaseResponse<Any>> {
+    override suspend fun acceptEventInvite(
+        eventId: String,
+        eventType: String
+    ): ResultWrapper<BaseResponse<Any>> {
         val request: RequestBody = FormBody.Builder()
-            .add("eventId", eventId).build()
+            .add("eventId", eventId)
+            .add("gameType", eventType.toLowerCase())
+            .build()
         return safeApiCall(dispatcher) {
             service.acceptEventInvite(request)
         }
     }
 
-    override suspend fun getEventDetails(eventId: String): ResultWrapper<BaseResponse<EventDetails>> {
+    override suspend fun getEventDetails(
+        eventId: String,
+        eventType: String
+    ): ResultWrapper<BaseResponse<EventDetails>> {
         return safeApiCall(dispatcher) {
-            service.getEventDetails(eventId)
+            service.getEventDetails(eventId, eventType.toLowerCase())
         }
     }
 
@@ -78,11 +86,13 @@ class EventsRepository @Inject constructor(
 
     override suspend fun rejectEventInvite(
         eventId: String,
-        reason: String
+        reason: String,
+        eventType: String,
     ): ResultWrapper<BaseResponse<Any>> {
         val request: RequestBody = FormBody.Builder()
             .add("eventId", eventId)
             .add("reason", reason)
+            .add("gameType", eventType.toLowerCase())
             .build()
         return safeApiCall(dispatcher) {
             service.rejectEventInvite(request)

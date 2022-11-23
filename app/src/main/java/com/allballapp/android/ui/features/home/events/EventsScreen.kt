@@ -620,7 +620,7 @@ fun EventItem(
                                     )
                                 )
                                 .clickable {
-
+                                    moveToPracticeDetail(events.id, events.eventName)
                                 }
                                 .padding(dimensionResource(id = R.dimen.size_14dp)),
                             horizontalArrangement = Arrangement.Center,
@@ -658,7 +658,7 @@ fun EventItem(
                                     )
                                 )
                                 .clickable {
-
+                                    moveToPracticeDetail(events.id, events.eventName)
                                 }
                                 .padding(dimensionResource(id = R.dimen.size_14dp)),
                             horizontalArrangement = Arrangement.Center,

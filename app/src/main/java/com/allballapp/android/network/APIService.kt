@@ -212,6 +212,7 @@ open interface APIService {
     @GET(ApiConstants.GET_EVENT_DETAILS)
     suspend fun getEventDetails(
         @Query("id") eventId: String,
+        @Query("gameType") eventType: String,
     ): BaseResponse<EventDetails>
 
 
