@@ -128,7 +128,7 @@ open interface APIService {
     ): BaseResponse<ArrayList<PlayerDetails>>
 
     @GET(ApiConstants.GET_USER_FULL_DETAILS)
-    suspend fun getUserFullDetails(): BaseResponse<User>
+    suspend fun getUserFullDetails(@Query("userId") id: String): BaseResponse<User>
 
     @PUT(ApiConstants.UPDATE_USER_FULL_DETAILS)
     suspend fun updateUserFullDetails(@Body userDetailsReq: UpdateUserDetailsReq): BaseResponse<Any>
@@ -153,7 +153,10 @@ open interface APIService {
     ): BaseResponse<ArrayList<VenueDetails>>
 
     @GET(ApiConstants.GET_ALL_OPPORTUNITIES)
-    suspend fun getAllOpportunities(@Query("type") type: String="",@Query("teamId") id: String): BaseResponse<List<OpportunitiesItem>>
+    suspend fun getAllOpportunities(
+        @Query("type") type: String = "",
+        @Query("teamId") id: String
+    ): BaseResponse<List<OpportunitiesItem>>
 
     @GET(ApiConstants.GET_OPPORTUNITY_ID)
     suspend fun getOpportunityDetail(@Query("eventId") id: String): BaseResponse<OpportunitiesDetail>

@@ -154,7 +154,7 @@ fun OtpScreen(
                 AppOutlineTextField(
                     value = editValue,
                     onValueChange = {
-                        if (it.length <= otpLength ) {
+                        if (it.length <= otpLength) {
                             setEditValue(it)
                             otp = it
                             if (otpLength == otp.length) {
@@ -286,9 +286,9 @@ fun OtpScreen(
                 },
                 onConfirmClick = {
                     if (it == 0) {
-                        showGuardianDialog.value = true
-                    } else {
                         onSuccess(0, null)
+                    } else {
+                        showGuardianDialog.value = true
                     }
                 })
         }

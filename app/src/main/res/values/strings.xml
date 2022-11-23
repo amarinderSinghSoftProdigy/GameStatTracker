@@ -296,7 +296,7 @@
     <string name="halftime">Halftime Length</string>
     <string name="shot_clock">Shot Clock</string>
     <string name="fouling_out">Fouling Out</string>
-    <string name="no_data_found">No data found!!</string>
+    <string name="no_data_found">No data found!</string>
     <string name="try_something_else">Please try again later.</string>
     <string name="all_players">All Players</string>
     <string name="new_event">New Event</string>
@@ -463,8 +463,8 @@
     <string name="no_player">No player</string>
     <string name="yes_label">Yes</string>
     <string name="no_label">No</string>
-    <string name="age_ok">I\'m 13 years or older</string>
-    <string name="age_zero">I\'m 0–12 years</string>
+    <string name="age_ok">I\'m 13 or older</string>
+    <string name="age_zero">I\'m younger than 13</string>
     <string name="age_conformation">To begin, Please select your age</string>
     <string name="authorize_message">Awesome! We need your parents help to get started. Enter either of your parent\'s phone number below and we\'ll send them a message to help you get started.</string>
     <string name="valid_cash_message">Cash must be greater or equal to league price</string>
@@ -547,4 +547,5 @@
     <string name="dummy_terms_and_conditions">https://qa.dlvdkc2jsd6h5.amplifyapp.com/terms-and-conditions/636a369414fbe7f538c3d1bb</string>
     <string name="search_users">Search users</string>
     <string name="select_profile_title">Select user\'s profile below. If they don\'t yet have a profile, please add it now.</string>
+    <string name="enter_valid_time">Enter valid Time</string>
 </resources>

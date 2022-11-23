@@ -93,6 +93,9 @@ class NewEventViewModel @Inject constructor(val eventsRepository: IEventsReposit
                     )
                 }
             }
+            is NewEvEvent.OnDateSaved -> {
+                _state.value = _state.value.copy(savedDate = event.date)
+            }
         }
     }
 
@@ -138,18 +141,18 @@ class NewEventViewModel @Inject constructor(val eventsRepository: IEventsReposit
                 )
             }
             is ResultWrapper.NetworkError -> {
-               /* _channel.send(
-                    NewEventChannel.ShowToast(
-                        UiText.DynamicString(
-                            eventResponse.message
-                        )
-                    )
-                )*/
+                /* _channel.send(
+                     NewEventChannel.ShowToast(
+                         UiText.DynamicString(
+                             eventResponse.message
+                         )
+                     )
+                 )*/
 
             }
             is ResultWrapper.Success -> {
                 eventResponse.value.let { response ->
-                    if (response.status ) {
+                    if (response.status) {
                         _channel.send(
                             NewEventChannel.OnEventCreationSuccess(
                                 response.statusMessage

@@ -42,7 +42,8 @@ fun TeamsScreen(
     onCreateNewConversationClick: (teamId: String) -> Unit,
     onTeamItemClick: () -> Unit,
     onAddPlayerClick: () -> Unit,
-    onHomeClick: () -> Unit
+    onHomeClick: () -> Unit,
+    onProfileDetailScreen: (String, String) -> Unit
 ) {
     //val dataStoreManager = DataStoreManager(LocalContext.current)
     //val role = dataStoreManager.getRole.collectAsState(initial = "")
@@ -125,7 +126,7 @@ fun TeamsScreen(
 
         } else if (!AppConstants.ENABLE_CHAT) {
             RefereeTeamsTopTabs(pagerState = pagerState, tabData = tabData)
-            RoasterScreen(vm, onAddPlayerClick, true)
+            RoasterScreen(vm, onAddPlayerClick, true, onProfileDetailScreen)
         } else {
             TeamsTopTabs(pagerState = pagerState, tabData = tabData)
             TeamsContent(
@@ -135,7 +136,8 @@ fun TeamsScreen(
                 viewModel = vm,
                 onAddPlayerClick = onAddPlayerClick,
                 homeVm = homeVm,
-                chatViewModel = chatViewModel
+                chatViewModel = chatViewModel,
+                onProfileDetailScreen = onProfileDetailScreen
             )
             //EmptyScreen(singleText = true, heading = stringResource(id = R.string.coming_soon))
         }
@@ -179,7 +181,8 @@ fun TeamsContent(
     onAddPlayerClick: () -> Unit,
     viewModel: TeamViewModel,
     homeVm: HomeViewModel,
-    chatViewModel: ChatViewModel
+    chatViewModel: ChatViewModel,
+    onProfileDetailScreen : (String, String) -> Unit
 ) {
     HorizontalPager(
         state = pagerState,
@@ -194,7 +197,7 @@ fun TeamsContent(
                 onCreateNewConversationClick = onCreateNewConversationClick,
                 vm = chatViewModel
             )
-            1 -> RoasterScreen(viewModel, onAddPlayerClick, true)
+            1 -> RoasterScreen(viewModel, onAddPlayerClick, true, onProfileDetailScreen)
             /* 3 -> LeaderBoardScreen()*/
         }
     }
