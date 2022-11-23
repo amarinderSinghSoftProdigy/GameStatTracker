@@ -426,6 +426,7 @@ fun NavControllerComposable(
             val refreshTeamListing: String = backStackEntry
                 .savedStateHandle.get<String>("refreshTeamListing") ?: ""
 
+            homeViewModel.setBottomNav(BottomNavKey.HOME)
             homeViewModel.setTopAppBar(false)
             HomeScreen(
                 role,
@@ -613,6 +614,7 @@ fun NavControllerComposable(
 
         }
         composable(route = Route.TEAMS_SCREEN) {
+            homeViewModel.setBottomNav(BottomNavKey.TEAMS)
             homeViewModel.setTopBar(
                 TopBarData(
                     label = teamViewModel.teamUiState.value.teamName,
@@ -621,6 +623,7 @@ fun NavControllerComposable(
             )
             BackHandler {
                 homeViewModel.setScreen(false)
+                navController.popBackStack()
             }
             TeamsScreen(
                 teamViewModel,
@@ -695,6 +698,7 @@ fun NavControllerComposable(
 
 
         composable(route = Route.EVENTS_SCREEN) {
+            homeViewModel.setBottomNav(BottomNavKey.EVENTS)
             EventsScreen(
                 teamViewModel,
                 eventViewModel,

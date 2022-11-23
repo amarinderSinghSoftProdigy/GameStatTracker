@@ -12,10 +12,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,7 +45,7 @@ fun BottomNavigationBar(
     selectionColor: Color = MaterialTheme.appColors.material.primaryVariant,
     selectedValue: (BottomNavKey) -> Unit,
 ) {
-    val selected: MutableState<BottomNavKey> = remember { mutableStateOf(navKey) }
+    //val selected: MutableState<BottomNavKey> = remember { mutableStateOf(navKey) }
     Surface(
         elevation = dimensionResource(id = R.dimen.size_12dp),
         color = Color.White,
@@ -72,7 +69,7 @@ fun BottomNavigationBar(
                         .weight(1f)
                         .height(height)
                         .clickable {
-                            selected.value = item.key
+                            //selected.value = item.key
                             selectedValue(item.key)
                             navController.navigate(item.key.route)
                         }
@@ -89,7 +86,8 @@ fun BottomNavigationBar(
                                 modifier = Modifier.align(Alignment.CenterHorizontally),
                                 painter = painterResource(id = item.icon),
                                 contentDescription = null,
-                                tint = if (selected.value == item.key) selectionColor else ColorGreyLighter
+                                //tint = if (selected.value == item.key) selectionColor else ColorGreyLighter
+                                tint = if (navKey == item.key) selectionColor else ColorGreyLighter
                             )
                             Text(
                                 modifier = Modifier
@@ -98,7 +96,8 @@ fun BottomNavigationBar(
                                 textAlign = TextAlign.Center,
                                 text = stringResourceByName(item.key.resId),
                                 fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                                color = if (selected.value == item.key) selectionColor else ColorGreyLighter,
+                                //color = if (selected.value == item.key) selectionColor else ColorGreyLighter,
+                                color = if (navKey == item.key) selectionColor else ColorGreyLighter,
                                 fontWeight = FontWeight.W700
                             )
                         }

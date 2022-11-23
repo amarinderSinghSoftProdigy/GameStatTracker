@@ -1256,7 +1256,7 @@ fun SelectGuardianRoleDialog(
                             text = if (selectedRole != UserType.PLAYER.key) stringResource(R.string.child_not_listed) else stringResource(
                                 R.string.my_guardian_not_listed
                             ),
-                            onClick = onChildNotListedCLick,
+                            onClick = { if (!loading) onChildNotListedCLick() },
                             modifier = Modifier.fillMaxWidth(),
                             border = ButtonDefaults.outlinedBorder,
                             onlyBorder = true,
@@ -1268,7 +1268,7 @@ fun SelectGuardianRoleDialog(
                         if (selectedRole != UserType.PLAYER.key)
                             DialogButton(
                                 text = stringResource(R.string.i_dont_have_child_on_this_team),
-                                onClick = dontHaveChildClick,
+                                onClick = { if (!loading) dontHaveChildClick() },
                                 modifier = Modifier.fillMaxWidth(),
                                 border = ButtonDefaults.outlinedBorder,
                                 onlyBorder = true,
@@ -1299,7 +1299,7 @@ fun SelectGuardianRoleDialog(
                             DialogButton(
                                 text = stringResource(R.string.dialog_button_confirm),
                                 onClick = {
-                                    if (!selected.isNullOrEmpty()) {
+                                    if (!selected.isNullOrEmpty() && !loading) {
                                         onConfirmClick.invoke()
                                     }
                                 },

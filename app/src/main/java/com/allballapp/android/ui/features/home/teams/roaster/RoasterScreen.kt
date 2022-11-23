@@ -45,7 +45,7 @@ fun RoasterScreen(vm: TeamViewModel, onAddPlayerClick: () -> Unit, showAddButton
         if (state.isLoading) {
             CommonProgressBar()
         } else {
-            if (state.coaches.isEmpty() && state.players.isEmpty() && state.supportStaff.isEmpty() && state.acceptPending.isEmpty()) {
+            if (state.allUsers.isEmpty()) {
                 Column(modifier = Modifier.align(Alignment.Center)) {
                     AppText(
                         text = stringResource(id = R.string.no_players_in_team),
@@ -237,13 +237,17 @@ fun CoachListItem(
             if (data.role == UserType.PLAYER.key) {
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                 AppText(
-                    text = data.jersey + " " +  data.position,
+                    text = data.jersey + " " + data.position,
                     color = MaterialTheme.appColors.textField.label,
                     style = MaterialTheme.typography.h6
                 )
             }
         }
-        if (data.status.equals(InvitationStatus.PENDING.status, true) || data.status.equals(InvitationStatus.DECLINED.status, true))
+        if (data.status.equals(InvitationStatus.PENDING.status, true) || data.status.equals(
+                InvitationStatus.DECLINED.status,
+                true
+            )
+        )
             AppText(
                 text = data.status,
                 color = MaterialTheme.appColors.textField.label,

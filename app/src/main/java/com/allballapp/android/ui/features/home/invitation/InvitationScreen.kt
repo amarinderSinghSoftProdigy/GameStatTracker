@@ -398,7 +398,14 @@ fun InvitationScreen(
             },
             teamLogo = BuildConfig.IMAGE_SERVER + state.selectedInvitation.team.logo,
             teamName = state.selectedInvitation.team.name,
-            playerName = if (showNoMessage.value) stringResource(id = R.string.no_player) else if (playerName.value.isNotEmpty()) playerName.value else if (teamState.inviteList.isNotEmpty()) teamState.inviteList[0].name else ""
+            playerName = if (showNoMessage.value) stringResource(id = R.string.no_player)
+            else if (state.selectedIds.isNotEmpty()) {
+                if (state.selectedIds.size == 1) stringResource(id = R.string.no_player).replace(
+                    "No",
+                    state.selectedIds.size.toString() + ""
+                )
+                else state.selectedIds.size.toString() + " " + stringResource(id = R.string.members)
+            } else stringResource(id = R.string.no_player)
         )
     }
 }

@@ -14,13 +14,14 @@ import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.data.request.Location
 import com.allballapp.android.data.request.Members
 import com.allballapp.android.data.request.UpdateTeamDetailRequest
-import com.allballapp.android.data.response.SwapUser
-import com.allballapp.android.data.response.team.Player
+import com.allballapp.android.data.response.AllUser
 import com.allballapp.android.data.response.team.Team
 import com.allballapp.android.data.response.team.TeamRoaster
 import com.allballapp.android.domain.repository.IImageUploadRepo
 import com.allballapp.android.domain.repository.ITeamRepository
+import com.allballapp.android.ui.features.components.UserType
 import com.allballapp.android.ui.features.components.fromHex
+import com.allballapp.android.ui.features.home.invitation.InvitationStatus
 import com.allballapp.android.ui.utils.CommonUtils
 import com.allballapp.android.ui.utils.UiText
 import com.allballapp.android.ui.utils.dragDrop.ItemPosition
@@ -49,8 +50,7 @@ class TeamViewModel @Inject constructor(
 
     fun isDragEnabled(pos: ItemPosition) = true
 
-    fun isRoasterDragEnabled(pos: ItemPosition) =
-        _teamUiState.value.players.toMutableList().getOrNull(pos.index)?.locked != true
+    fun isRoasterDragEnabled(pos: ItemPosition) = true
 
     fun isUserDragEnabled(pos: ItemPosition) = true
 
@@ -67,20 +67,19 @@ class TeamViewModel @Inject constructor(
     fun moveItemRoaster(from: ItemPosition, to: ItemPosition) {
         _teamUiState.value =
             _teamUiState.value.copy(
-                players = _teamUiState.value.players.toMutableList()
+                players = _teamUiState.value.players
                     .apply {
                         add(to.index, removeAt(from.index))
-                    } as ArrayList<Player>
+                    }
             )
     }
 
     fun moveItemUser(from: ItemPosition, to: ItemPosition) {
         _teamUiState.value =
             _teamUiState.value.copy(
-                acceptPending = _teamUiState.value.acceptPending.toMutableList()
-                    .apply {
-                        add(to.index, removeAt(from.index))
-                    } as ArrayList<SwapUser>
+                acceptPending = _teamUiState.value.acceptPending.apply {
+                    add(to.index, removeAt(from.index))
+                }
             )
     }
 
@@ -674,13 +673,36 @@ class TeamViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 teamResponse.value.let { response ->
                     if (response.status && response.data != null) {
+                        val allMembers = response.data.allMembers
                         _teamUiState.value = _teamUiState.value.copy(
                             isLoading = false,
-                            players = CommonUtils.getPlayerTabs(response.data.players),
-                            supportStaff = response.data.supportingCastDetails,
-                            acceptPending = response.data.pendingAndDeclinedMembers,
-                            coaches = response.data.coaches,
-                            allUsers = response.data.allMembers,
+                            players = CommonUtils.getUsersList(allMembers, UserType.PLAYER)
+                                .filter { player ->
+                                    (!player.status.equals(
+                                        InvitationStatus.PENDING.status,
+                                        true
+                                    )) && (!player.status.equals(
+                                        InvitationStatus.DECLINED.status,
+                                        true
+                                    ))
+                                }
+                                    as ArrayList<AllUser>,
+                            //supportStaff = response.data.supportingCastDetails,
+                            acceptPending = CommonUtils.getUsersList(allMembers, UserType.PARENT).filter {parent->
+                                (!parent.status.equals(InvitationStatus.PENDING.status,true)) && (!parent.status.equals(InvitationStatus.DECLINED.status,true))}
+                                    as ArrayList<AllUser>,
+                            coaches = CommonUtils.getUsersList(
+                                allMembers,
+                                UserType.COACH
+                            ).filter { coach ->
+                                (!coach.status.equals(
+                                    InvitationStatus.PENDING.status,
+                                    true
+                                )) && (!coach.status.equals(
+                                    InvitationStatus.DECLINED.status, true
+                                ))
+                            } as ArrayList<AllUser>,
+                            allUsers = allMembers,
                             teamName = response.data.name,
                             createdBy = response.data.createdBy,
                             teamColorPrimary = response.data.colorCode,
@@ -725,7 +747,7 @@ class TeamViewModel @Inject constructor(
             _teamUiState.value.copy(isLoading = false)
     }
 
-     suspend fun updateColorData(colorCode: String) {
+    suspend fun updateColorData(colorCode: String) {
         dataStoreManager.setColor(colorCode)
         AppConstants.SELECTED_COLOR =
             fromHex(colorCode.replace("#", "").ifEmpty { AppConstants.DEFAULT_COLOR })
