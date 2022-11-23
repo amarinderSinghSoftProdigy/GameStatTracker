@@ -605,7 +605,8 @@ fun NavControllerComposable(
                     onBackClick = { navController.popBackStack() },
                     onUpdateSuccess = {
                         navController.popBackStack()
-                    }
+                    },
+                    teamViewModel = teamViewModel
                 )
             }
 
