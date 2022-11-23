@@ -73,7 +73,6 @@ fun OpenVenuesDetailsScreen(venueId: String, eventViewModel: EventViewModel) {
                         fontWeight = FontWeight.W500,
                         color = MaterialTheme.appColors.buttonColor.backgroundEnabled
                     )
-
                     LocationBlock(
                         Location(
                             state.venueAddress.address,
@@ -81,8 +80,8 @@ fun OpenVenuesDetailsScreen(venueId: String, eventViewModel: EventViewModel) {
                             state.venueAddress.state,
                             state.venueAddress.zipCode,
                             latLong = if (state.venueLocation.coordinates.isNotEmpty()) LatLng(
-                                state.venueLocation.coordinates[1],
-                                state.venueLocation.coordinates[0]
+                                state.venueLocation.coordinates[0],
+                                state.venueLocation.coordinates[1]
                             ) else LatLng(0.0, 0.0)
                         )
                     )
@@ -129,7 +128,7 @@ fun OpenVenuesDetailsScreen(venueId: String, eventViewModel: EventViewModel) {
                 Space(dp = dimensionResource(id = R.dimen.size_14dp))
             }
         }
-    } else {
+    }else {
         EmptyScreen(singleText = true, stringResource(id = R.string.no_data_found))
     }
     if (vmState.isLoading) {

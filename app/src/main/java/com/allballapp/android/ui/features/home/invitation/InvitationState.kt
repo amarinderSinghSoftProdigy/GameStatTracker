@@ -19,6 +19,7 @@ data class InvitationState(
     val teamId: String = "",
     val playerDetails: ArrayList<PlayerDetails> = arrayListOf(),
     val selectedPlayerId: String = "",
+    val selectedIds: ArrayList<String> = arrayListOf(),
     val selectedPlayerIds: ArrayList<String> = arrayListOf(),
     val selectedGender: String = "",
     val selectedPlayerName: String = "",

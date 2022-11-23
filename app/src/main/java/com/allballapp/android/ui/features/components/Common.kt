@@ -389,13 +389,13 @@ fun DialogButton(
 
 @Composable
 fun CommonProgressBar(
-    bgColor : Color = MaterialTheme.appColors.material.surface
+    bgColor: Color = MaterialTheme.appColors.material.surface
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(bgColor)
-            .clickable(enabled = false, onClick = {}),
+            .clickable(enabled = false, onClick = {})
+            .background(bgColor),
         contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator(
@@ -690,7 +690,8 @@ fun LocationBlock(location: Location, padding: Dp = dimensionResource(id = R.dim
                 address += location.zipCode.ifEmpty { "" }
                 Text(
                     text = address,
-                    color = MaterialTheme.appColors.textField.label,                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                    color = MaterialTheme.appColors.textField.label,
+                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                 )
             }
             TransparentButtonButton(

@@ -54,8 +54,8 @@ fun InvitationScreen(
     vmSetupTeam: SetupTeamViewModelUpdated,
     homeVm: HomeViewModel,
     signUpViewModel: SignUpViewModel,
-    onNewProfileIntent: (countryCode: String, mobileNumber: String) -> Unit,
-    onInvitationSuccess: () -> Unit,
+    //onNewProfileIntent: (countryCode: String, mobileNumber: String) -> Unit,
+    //onInvitationSuccess: () -> Unit,
     addProfileClick: () -> Unit,
     onInviteClick: (teamId: String) -> Unit,
 ) {
@@ -199,8 +199,8 @@ fun InvitationScreen(
                 vm.onEvent(InvitationEvent.OnGuardianDialogClick(false))
             },
             onSelectionChange = { vm.onEvent(InvitationEvent.OnGuardianClick(guardian = it)) },
-            selected = state.selectedGuardian,
-            //selected = state.selectedPlayerIds,
+            //selected = state.selectedGuardian,
+            selected = state.selectedIds,
             guardianList = if (state.selectedRoleKey == UserType.PARENT.key)
                 state.playerDetails.filter { member -> member.role == UserType.PLAYER.key }
             else state.playerDetails.filter { member -> member.role != UserType.PLAYER.key },
@@ -367,7 +367,7 @@ fun InvitationScreen(
                             name = swapUser.firstName,
                             mobileNumber = swapUser._Id,
                             role = roleKey.value,
-                            //profilesSelected = "true"
+                            profilesSelected = "true"
                         )
                     )
                 )

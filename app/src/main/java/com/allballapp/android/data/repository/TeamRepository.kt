@@ -13,6 +13,7 @@ import com.allballapp.android.data.response.team.Team
 import com.allballapp.android.domain.BaseResponse
 import com.allballapp.android.domain.repository.ITeamRepository
 import com.allballapp.android.network.APIService
+import com.allballapp.android.ui.features.home.invitation.AcceptInvitation
 import com.allballapp.android.ui.features.home.invitation.Invitation
 import com.allballapp.android.ui.features.venue.VenueDetails
 import kotlinx.coroutines.CoroutineDispatcher
@@ -100,9 +101,9 @@ class TeamRepository @Inject constructor(
     override suspend fun acceptTeamInvitation(
         invitationId: String,
         role: String,
-        playerId: String,//ArrayList<String>,
+        playerId: ArrayList<String>,
         guardianGender: String
-    ): ResultWrapper<BaseResponse<Any>> {
+    ): ResultWrapper<BaseResponse<AcceptInvitation>> {
         /*val request: RequestBody = FormBody.Builder()
             .add("invitationId", invitationId)
             .add("role", role)

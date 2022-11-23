@@ -153,7 +153,8 @@ fun TeamsScreen(
                     if (UserStorage.teamId != teamId) {
                         onTeamSelectionConfirmed(state.selectedTeam)
                         vm.onEvent(TeamUIEvent.OnConfirmTeamClick(teamId, teamName))
-                        if (teamName == context.getString(R.string.team_total_hoop)) {
+                        //if (teamName == context.getString(R.string.team_total_hoop)) {
+                        if (teamId == state.allBallId) {
                             onHomeClick()
                         }
                     }

@@ -1,6 +1,8 @@
 package com.allballapp.android.ui.features.home.home_screen
 
 import android.widget.Toast
+import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -46,6 +48,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     role: String,
@@ -228,11 +231,16 @@ fun HomeScreen(
                         color = MaterialTheme.appColors.material.primaryVariant
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
+                    CompositionLocalProvider(
+                        LocalOverScrollConfiguration provides null
+                    ) {
+
+                        Column(Modifier.verticalScroll(rememberScrollState())) {
 
                     if (teamState.teams.isNotEmpty()) {
                         UserFlowBackground(
                             padding = 0.dp,
-//                            color = Color.White
+                            color = Color.White
                         ) {
                             Box(
                                 modifier = Modifier
@@ -250,20 +258,20 @@ fun HomeScreen(
                                         .align(Alignment.CenterStart),
                                     verticalAlignment = Alignment.CenterVertically,
 
-                                    ) {
-                                    CoilImage(
-                                        src = com.allballapp.android.BuildConfig.IMAGE_SERVER + teamState.logo,
-                                        modifier = Modifier
-                                            .size(dimensionResource(id = R.dimen.size_48dp))
-                                            .clip(CircleShape),
-                                        isCrossFadeEnabled = false,
-                                        onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
-                                        onError = { Placeholder(R.drawable.ic_team_placeholder) },
-                                        contentScale = ContentScale.Crop
-                                    )
-                                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
-                                    Text(
-                                        text =/* if (UserStorage.role.equals(
+                                            ) {
+                                            CoilImage(
+                                                src = com.allballapp.android.BuildConfig.IMAGE_SERVER + teamState.logo,
+                                                modifier = Modifier
+                                                    .size(dimensionResource(id = R.dimen.size_48dp))
+                                                    .clip(CircleShape),
+                                                isCrossFadeEnabled = false,
+                                                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                                                onError = { Placeholder(R.drawable.ic_team_placeholder) },
+                                                contentScale = ContentScale.Crop
+                                            )
+                                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+                                            Text(
+                                                text =/* if (UserStorage.role.equals(
                                                 UserType.REFEREE.key,
                                                 ignoreCase = true
                                             )
@@ -288,6 +296,7 @@ fun HomeScreen(
                     if (homeState.unReadMessageCount > 0) {
                         UserFlowBackground(
                             padding = 0.dp,
+                           // color = Color.White
                         ) {
                             Box(
                                 Modifier
@@ -327,7 +336,7 @@ fun HomeScreen(
                     }
                     UserFlowBackground(
                         padding = 0.dp,
-//                        color = Color.White
+                        color = Color.White
                     ) {
                         Box(
                             Modifier
@@ -359,8 +368,8 @@ fun HomeScreen(
                             }
                             Text(
                                 text = homeState.homePageCoachModel.pendingInvitations.toString(),
-                                fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
                                 color = MaterialTheme.appColors.textField.labelColor,
+                                fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
                                 modifier = Modifier.align(Alignment.CenterEnd)
                             )
                         }
@@ -368,13 +377,13 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                     UserFlowBackground(
                         padding = 0.dp,
-//                        color = Color.White
+                        color = Color.White
                     ) {
                         Box(
                             Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    onOpportunityClick.invoke(AppConstants.OPP_WORK)
+                                    onOpportunityClick.invoke()
                                 }
                                 .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                             contentAlignment = Alignment.Center
@@ -409,17 +418,17 @@ fun HomeScreen(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
-                    Row {
-                        EventItem(
-                            "my_events",
-                            "events_label",
-                            homeState.homePageCoachModel.myEvents.toString()
-                        ) { onEventsClick() }
-                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                        EventInviteItem("invite_members", onInviteClick = onInviteClick)
-                    }
+                            Row {
+                                EventItem(
+                                    "my_events",
+                                    "events_label",
+                                    homeState.homePageCoachModel.myEvents.toString()
+                                ) { onEventsClick() }
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+                                EventInviteItem("invite_members", onInviteClick = onInviteClick)
+                            }
 
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                     UserFlowBackground(
@@ -429,7 +438,7 @@ fun HomeScreen(
                         Box(
                             Modifier
                                 .fillMaxWidth()
-                                .clickable { onOpportunityClick(AppConstants.OPP_PLAY) }
+                                .clickable { onOpportunityClick() }
                                 .padding(all = dimensionResource(id = R.dimen.size_16dp)),
                             contentAlignment = Alignment.Center
                         ) {
@@ -444,46 +453,71 @@ fun HomeScreen(
                                     modifier = Modifier.size(dimensionResource(id = R.dimen.size_18dp))
                                 )
                                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
+                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                            UserFlowBackground(
+                                padding = 0.dp,
+                                color = Color.White
+                            ) {
+                                Box(
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .clickable { onOpportunityClick(AppConstants.OPP_PLAY) }
+                                        .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Row(
+                                        Modifier.fillMaxWidth(),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.ic_home),
+                                            contentDescription = "",
+                                            tint = MaterialTheme.appColors.material.primaryVariant,
+                                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_18dp))
+                                        )
+                                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
 
-                                Text(
-                                    text = stringResource(id = R.string.opportunities_to_play),
-                                    style = MaterialTheme.typography.h6,
-                                    modifier = Modifier.weight(1f)
-                                )
+                                        Text(
+                                            text = stringResource(id = R.string.opportunities_to_play),
+                                            style = MaterialTheme.typography.h6,
+                                            modifier = Modifier.weight(1f)
+                                        )
+                                    }
+                                    Text(
+                                        text = homeState.homePageCoachModel.opportunityToPlay.toString(),
+                                        fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
+                                        modifier = Modifier.align(Alignment.CenterEnd)
+                                    )
+                                }
                             }
-                            Text(
-                                text = homeState.homePageCoachModel.opportunityToPlay.toString(),
-                                fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
-                                modifier = Modifier.align(Alignment.CenterEnd)
-                            )
+
+                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+
+                            Row {
+                                EventItem(
+                                    "my_leagues",
+                                    "leagues",
+                                    homeState.homePageCoachModel.myLeagues.toString(),
+                                    R.drawable.ic_leagues
+                                ) {
+                                    onLeagueClick(AppConstants.MY_LEAGUE)
+                                }
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
+
+                                EventItem(
+                                    "all_leagues",
+                                    "leagues",
+                                    homeState.homePageCoachModel.allLeagues.toString(),
+                                    R.drawable.ic_leagues
+                                ) {
+                                    //onOpportunityClick(AppConstants.ALL_LEAGUE)
+                                    onLeagueClick(AppConstants.ALL_LEAGUE)
+                                }
+
+                            }
+                            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
                         }
                     }
-
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-
-                    Row {
-                        EventItem(
-                            "my_leagues",
-                            "leagues",
-                            homeState.homePageCoachModel.myLeagues.toString(),
-                            R.drawable.ic_leagues
-                        ) {
-                            onLeagueClick(AppConstants.MY_LEAGUE)
-                        }
-                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-
-                        EventItem(
-                            "all_leagues",
-                            "leagues",
-                            homeState.homePageCoachModel.allLeagues.toString(),
-                            R.drawable.ic_leagues
-                        ) {
-                            //onOpportunityClick(AppConstants.ALL_LEAGUE)
-                            onLeagueClick(AppConstants.ALL_LEAGUE)
-                        }
-
-                    }
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
                 }
             }
         }
@@ -495,6 +529,9 @@ fun HomeScreen(
             onDismiss = { dismissDialog.invoke(false) },
             onConfirmClick = { teamId, teamName ->
                 if (UserStorage.teamId != teamId) {
+                    if (teamId == teamState.allBallId) {
+                        vm.showBottomAppBar(false)
+                    }
                     onTeamSelectionConfirmed(teamState.selectedTeam)
                     teamVm.onEvent(TeamUIEvent.OnConfirmTeamClick(teamId, teamName))
                 }

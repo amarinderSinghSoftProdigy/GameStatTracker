@@ -260,7 +260,7 @@ fun EventScheduleSubItem(
 
                             }
                         }
-                        AppDivider(color = MaterialTheme.appColors.buttonColor.backgroundDisabled)
+                        AppDivider(color = MaterialTheme.appColors.buttonColor.backgroundEnabled)
                         Row(
                             Modifier
                                 .fillMaxWidth()

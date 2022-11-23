@@ -340,36 +340,36 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
 
         AppDivider(color = MaterialTheme.appColors.appDivider.dividerColor)
-
         if (state.event.eventType == EventType.GAME.key) {
-            Column(
-                Modifier
-                    .padding(
-                        start = dimensionResource(id = R.dimen.size_16dp),
-                        end = dimensionResource(id = R.dimen.size_16dp)
-                    )
-            ) {
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    AppText(
-                        text = stringResource(id = R.string.jersey_color),
-                        color = MaterialTheme.appColors.textField.labelColor,
-                        style = MaterialTheme.typography.h5,
-                        modifier = Modifier.weight(1f),
-                        fontWeight = FontWeight.W500
-                    )
-                    Text(
-                        text = state.event.jerseyColor,
-                        color = MaterialTheme.appColors.textField.labelColor,
-                        style = MaterialTheme.typography.h5,
-                        fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
-                    )
-                }
 
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
-                AppDivider(color = MaterialTheme.appColors.appDivider.dividerColor)
+            Column(
+            Modifier
+                .padding(
+                    start = dimensionResource(id = R.dimen.size_16dp),
+                    end = dimensionResource(id = R.dimen.size_16dp)
+                )
+        ) {
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                AppText(
+                    text = stringResource(id = R.string.jersey_color),
+                    color = MaterialTheme.appColors.textField.labelColor,
+                    style = MaterialTheme.typography.h5,
+                    modifier = Modifier.weight(1f),
+                    fontWeight = FontWeight.W500
+                )
+                Text(
+                    text = state.event.jerseyColor,
+                    color = MaterialTheme.appColors.textField.labelColor,
+                    style = MaterialTheme.typography.h5,
+                    fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                )
+            }
+
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
+                AppDivider(color = MaterialTheme.appColors.material.primary)
             }
         }
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
