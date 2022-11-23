@@ -235,6 +235,7 @@ fun TeamSetupScreenUpdated(
             onSelectionChange = { inviteVm.onEvent(InvitationEvent.OnRoleClick(roleKey = it)) },
             title = stringResource(
                 id = R.string.what_is_your_role,
+                "${homeState.user.firstName} ${homeState.user.lastName}",
                 inviteState.selectedInvitation.team.name.ifEmpty {
                     state.teamName.ifEmpty {
                         context.getString(
