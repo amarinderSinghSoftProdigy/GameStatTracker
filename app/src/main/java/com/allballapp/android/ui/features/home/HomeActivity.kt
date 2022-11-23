@@ -605,7 +605,8 @@ fun NavControllerComposable(
                     onBackClick = { navController.popBackStack() },
                     onUpdateSuccess = {
                         navController.popBackStack()
-                    }
+                    },
+                    teamViewModel = teamViewModel
                 )
             }
 
@@ -1031,7 +1032,11 @@ fun NavControllerComposable(
                         teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
                     )*/
                     navController.navigate(Route.ADD_MY_PLAYER_SCREEN + "/${teamId}")
-                })
+                },
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
         }
         composable(route = Route.TEAM_SETUP_SCREEN,
             enterTransition = { slideInHorizont(animeDuration) },

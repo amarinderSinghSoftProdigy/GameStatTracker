@@ -58,6 +58,7 @@ fun InvitationScreen(
     //onInvitationSuccess: () -> Unit,
     addProfileClick: () -> Unit,
     onInviteClick: (teamId: String) -> Unit,
+    onBackClick : () -> Unit
 ) {
     val showNoMessage = remember {
         mutableStateOf(false)
@@ -175,7 +176,8 @@ fun InvitationScreen(
             onSelectionChange = { vm.onEvent(InvitationEvent.OnRoleClick(roleKey = it)) },
             title = stringResource(
                 id = R.string.what_is_your_role,
-                state.selectedInvitation.team.name
+                "${homeState.user.firstName} ${homeState.user.lastName}"
+                ,state.selectedInvitation.team.name
             ),
             selected = state.selectedRoleKey,
             showLoading = state.showLoading,
@@ -386,6 +388,7 @@ fun InvitationScreen(
         InvitationSuccessfullySentDialog(
             onDismiss = {
                 vm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
+                onBackClick()
             },
             onConfirmClick = {
                 onInviteClick.invoke(state.selectedInvitation.team._id)

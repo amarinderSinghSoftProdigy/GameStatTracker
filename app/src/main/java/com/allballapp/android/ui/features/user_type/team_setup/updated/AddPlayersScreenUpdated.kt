@@ -89,14 +89,15 @@ fun AddPlayersScreenUpdated(
     val roleKey = rememberSaveable {
         mutableStateOf("")
     }
-
     remember {
         vm.onEvent(TeamSetupUIEventUpdated.GetRoles)
         if (state.inviteList.isEmpty())
             vm.initialInviteCount(2)
+
         if (!teamId.isNullOrEmpty()) {
             if (teamData != null) {
                 teamData.onEvent(TeamUIEvent.GetTeam(teamId))
+
             }
             vm.onEvent(TeamSetupUIEventUpdated.GetInvitedTeamPlayers(teamId))
         }

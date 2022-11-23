@@ -626,6 +626,7 @@ class TeamViewModel @Inject constructor(
                                 profileImage = response.data.logo
                             ),
                         )
+                        updateColorData(response.data.primaryTeamColor)
                     } else {
                         _teamChannel.send(
                             TeamChannel.ShowToast(
@@ -724,7 +725,7 @@ class TeamViewModel @Inject constructor(
             _teamUiState.value.copy(isLoading = false)
     }
 
-    private suspend fun updateColorData(colorCode: String) {
+     suspend fun updateColorData(colorCode: String) {
         dataStoreManager.setColor(colorCode)
         AppConstants.SELECTED_COLOR =
             fromHex(colorCode.replace("#", "").ifEmpty { AppConstants.DEFAULT_COLOR })

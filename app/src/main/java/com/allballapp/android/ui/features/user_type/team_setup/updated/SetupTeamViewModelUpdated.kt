@@ -92,6 +92,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
                     dataStoreManager.setColor(event.primaryColor)
                 }
             }
+
             is TeamSetupUIEventUpdated.OnSecColorSelected -> {
                 _teamSetupUiState.value =
                     _teamSetupUiState.value.copy(teamColorSec = event.secondaryColor)
