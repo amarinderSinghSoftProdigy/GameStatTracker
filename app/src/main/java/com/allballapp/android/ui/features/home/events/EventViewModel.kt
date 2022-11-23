@@ -590,13 +590,13 @@ class EventViewModel @Inject constructor(
                     if (response.status && response.data != null) {
                         _state.value = _state.value.copy(eventDivision = response.data)
                     } else {
-                        _channel.send(
+                        /*_channel.send(
                             EventChannel.ShowToast(
                                 UiText.DynamicString(
                                     response.statusMessage
                                 )
                             )
-                        )
+                        )*/
                     }
                 }
             }
