@@ -176,7 +176,8 @@ fun InvitationScreen(
             onSelectionChange = { vm.onEvent(InvitationEvent.OnRoleClick(roleKey = it)) },
             title = stringResource(
                 id = R.string.what_is_your_role,
-                state.selectedInvitation.team.name
+                "${homeState.user.firstName} ${homeState.user.lastName}"
+                ,state.selectedInvitation.team.name
             ),
             selected = state.selectedRoleKey,
             showLoading = state.showLoading,
