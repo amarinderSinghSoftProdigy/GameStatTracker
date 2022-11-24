@@ -39,7 +39,7 @@ fun RefereeProfileScreen(vm: ProfileViewModel) {
     val configuration = LocalConfiguration.current
 
     remember {
-        vm.onEvent(ProfileEvent.GetProfile)
+        vm.onEvent(ProfileEvent.GetProfile(""))
     }
 
     Box(

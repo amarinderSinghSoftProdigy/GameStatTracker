@@ -1,6 +1,7 @@
 package com.allballapp.android.ui.features.home.teams.roaster
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -27,6 +28,9 @@ import com.allballapp.android.data.response.AllUser
 import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.home.invitation.InvitationStatus
 import com.allballapp.android.ui.features.home.teams.TeamViewModel
+import com.allballapp.android.ui.features.profile.ProfileEvent
+import com.allballapp.android.ui.features.profile.ProfileViewModel
+import com.allballapp.android.ui.features.profile.tabs.ProfileTabScreen
 import com.allballapp.android.ui.theme.ColorBWBlack
 import com.allballapp.android.ui.theme.appColors
 import com.allballapp.android.ui.utils.CommonUtils
@@ -34,7 +38,12 @@ import com.google.accompanist.flowlayout.FlowRow
 import kotlin.math.ceil
 
 @Composable
-fun RoasterScreen(vm: TeamViewModel, onAddPlayerClick: () -> Unit, showAddButton: Boolean = false) {
+fun RoasterScreen(
+    vm: TeamViewModel,
+    onAddPlayerClick: () -> Unit,
+    showAddButton: Boolean = false,
+    onProfileDetailScreen: (String, String) -> Unit
+) {
 
     val state = vm.teamUiState.value
 
@@ -73,19 +82,22 @@ fun RoasterScreen(vm: TeamViewModel, onAddPlayerClick: () -> Unit, showAddButton
                             ParentItem(
                                 id = R.string.coaches,
                                 count = list.size,
-                                list
+                                list,
+                                onProfileDetailScreen
                             )
                             list = CommonUtils.getUsersList(state.allUsers, UserType.PLAYER)
                             ParentItem(
                                 id = R.string.players,
                                 count = list.size,
-                                list
+                                list,
+                                onProfileDetailScreen
                             )
                             list = CommonUtils.getUsersList(state.allUsers, UserType.PARENT)
                             ParentItem(
                                 id = R.string.supporting_staff,
                                 count = list.size,
-                                list
+                                list,
+                                onProfileDetailScreen
                             )
                             /*ParentItem(
                                 id = R.string.invited,
@@ -126,7 +138,12 @@ fun RoasterScreen(vm: TeamViewModel, onAddPlayerClick: () -> Unit, showAddButton
 }
 
 @Composable
-fun ParentItem(id: Int, count: Int, listing: List<AllUser>) {
+fun ParentItem(
+    id: Int,
+    count: Int,
+    listing: List<AllUser>,
+    onProfileDetailScreen: (String, String) -> Unit
+) {
     if (count != 0)
         Column {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
@@ -154,7 +171,9 @@ fun ParentItem(id: Int, count: Int, listing: List<AllUser>) {
                                 )
                             ),
                             it,
-                        )
+                        ) {
+                            onProfileDetailScreen(it.userId, it.firstName)
+                        }
                     }
                 })
             DividerCommon()
@@ -190,9 +209,12 @@ fun ShowHeading(id: Int, count: String) {
 fun CoachListItem(
     modifier: Modifier = Modifier,
     data: AllUser,
+    onClick: () -> Unit
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier.clickable {
+            onClick()
+        },
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -237,17 +259,29 @@ fun CoachListItem(
             if (data.role == UserType.PLAYER.key) {
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                 AppText(
-                    text = data.jersey + " " +  data.position,
+                    text = data.jersey + " " + data.position,
                     color = MaterialTheme.appColors.textField.label,
                     style = MaterialTheme.typography.h6
                 )
             }
         }
-        if (data.status.equals(InvitationStatus.PENDING.status, true) || data.status.equals(InvitationStatus.DECLINED.status, true))
+        if (data.status.equals(InvitationStatus.PENDING.status, true) || data.status.equals(
+                InvitationStatus.DECLINED.status,
+                true
+            )
+        )
             AppText(
                 text = data.status,
                 color = MaterialTheme.appColors.textField.label,
                 style = MaterialTheme.typography.h6
             )
     }
+}
+
+@Composable
+fun RoasterProfileDetails(vm: ProfileViewModel, userId:String) {
+
+
+    ProfileTabScreen(vm = vm, userId)
+
 }

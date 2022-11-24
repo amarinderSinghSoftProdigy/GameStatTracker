@@ -1,6 +1,7 @@
 package com.allballapp.android.ui.features.profile.tabs
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -45,7 +46,7 @@ import com.google.accompanist.flowlayout.FlowRow
 import com.allballapp.android.R
 
 @Composable
-fun ProfileTabScreen(vm: ProfileViewModel) {
+fun ProfileTabScreen(vm: ProfileViewModel, id: String) {
     /* val showParentDialog = remember {
          mutableStateOf(false)
      }*/
@@ -58,9 +59,10 @@ fun ProfileTabScreen(vm: ProfileViewModel) {
     val role = dataStoreManager.getRole.collectAsState(initial = "")
 
     remember {
-        if (!UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true))
-            vm.onEvent(ProfileEvent.GetProfile)
+        vm.onEvent(ProfileEvent.ClearUserData)
+        vm.onEvent(ProfileEvent.GetProfile(id))
     }
+
     LaunchedEffect(key1 = Unit) {
         vm.channel.collect { uiEvent ->
             when (uiEvent) {

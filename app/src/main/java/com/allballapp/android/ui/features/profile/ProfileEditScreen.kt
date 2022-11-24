@@ -148,7 +148,7 @@ fun ProfileEditScreen(
     mDatePickerDialog.datePicker.maxDate = System.currentTimeMillis()
 
     remember {
-        vm.onEvent(ProfileEvent.GetProfile)
+        vm.onEvent(ProfileEvent.GetProfile(""))
     }
 
     val scope = rememberCoroutineScope()

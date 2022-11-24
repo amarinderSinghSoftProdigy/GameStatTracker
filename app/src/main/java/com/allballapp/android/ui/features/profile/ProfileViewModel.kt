@@ -252,7 +252,7 @@ class ProfileViewModel @Inject constructor(
             is ProfileEvent.GetReferee -> {
             }
             is ProfileEvent.GetProfile -> {
-                viewModelScope.launch { getUserDetails() }
+                viewModelScope.launch { getUserDetails(event.userId) }
             }
             is ProfileEvent.OnReferringExperience -> {
                 _state.value = _state.value.copy(
@@ -292,6 +292,10 @@ class ProfileViewModel @Inject constructor(
             }
             is ProfileEvent.ImageUploadedDialog -> {
                 _state.value = _state.value.copy(showImage = event.showImage)
+            }
+
+            is ProfileEvent.ClearUserData -> {
+                _state.value = _state.value.copy(user = User())
             }
         }
     }
@@ -593,7 +597,7 @@ class ProfileViewModel @Inject constructor(
                             )
                         )
 
-                        getUserDetails()
+                        getUserDetails("")
 
                     } else {
                         _channel.send(
@@ -611,9 +615,9 @@ class ProfileViewModel @Inject constructor(
 
     }
 
-    private suspend fun getUserDetails() {
+    private suspend fun getUserDetails(userId:String) {
         _state.value = _state.value.copy(isLoading = true)
-        val userResponse = userRepository.getFullUserFullDetails()
+        val userResponse = userRepository.getFullUserFullDetails(userId)
         _state.value = _state.value.copy(isLoading = false)
 
         when (userResponse) {

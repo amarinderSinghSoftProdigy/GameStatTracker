@@ -20,7 +20,23 @@ fun checkTimings(time: String, endTime: String): Boolean {
     try {
         val date1 = sdf.parse(time)
         val date2 = sdf.parse(endTime)
-        return if(date2.after(date1)) {
+        return if (date2.after(date1)) {
+            true
+        } else {
+            false
+        }
+    } catch (e: ParseException) {
+        e.printStackTrace()
+    }
+    return false
+}
+
+fun checkDate(date: String): Boolean {
+    val sdf = SimpleDateFormat("dd/MM/yyyy")
+    try {
+        val strDate = sdf.parse(date)
+
+        return if (strDate.after(Date())) {
             true
         } else {
             false
