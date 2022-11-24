@@ -497,6 +497,7 @@ fun RegisterItem(
                 Icon(
                     modifier = Modifier
                         .clickable {
+                                   onClick()
                         },
                     painter = painterResource(id = R.drawable.ic_forward),
                     contentDescription = "", tint = ColorGreyLighter

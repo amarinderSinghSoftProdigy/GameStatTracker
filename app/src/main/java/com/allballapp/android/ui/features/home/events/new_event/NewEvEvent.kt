@@ -13,6 +13,7 @@ sealed class NewEvEvent{
     data class OnAddressChanged(val address: Address) : NewEvEvent()
     data class OnNotificationChange(val showNotification: Boolean) : NewEvEvent()
     data class OnPrePracticeChange(val prePracticePrep: String) : NewEvEvent()
+    data class OnDateSaved(val date:String) : NewEvEvent()
     object OnSaveButtonClick : NewEvEvent()
     data class ShowToast(val message:String) : NewEvEvent()
 }

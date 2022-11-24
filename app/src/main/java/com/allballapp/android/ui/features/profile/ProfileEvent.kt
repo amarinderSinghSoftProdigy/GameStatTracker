@@ -42,7 +42,7 @@ sealed class ProfileEvent {
     data class OnRefereeWithPartner(val refereeWithPartner: Boolean) : ProfileEvent()
     data class OnReferringExperience(val refereeningExperience: String) : ProfileEvent()
     data class GetDocumentTypes(val teamId: String) : ProfileEvent()
-    object GetProfile : ProfileEvent()
+    data class GetProfile(val userId: String) : ProfileEvent()
     data class ShowDeleteDialog(val show: Boolean) : ProfileEvent()
     data class SetDeleteDocument(val docType: UserDocType) : ProfileEvent()
     data class DeleteDocument(val docType: UserDocType?) : ProfileEvent()
@@ -57,4 +57,5 @@ sealed class ProfileEvent {
     object GetStaffSchedule : ProfileEvent()
     data class UpdateScheduleStaff(val list: ArrayList<Date>) : ProfileEvent()
     data class ImageUploadedDialog(val showImage: Boolean) : ProfileEvent()
+    object ClearUserData : ProfileEvent()
 }

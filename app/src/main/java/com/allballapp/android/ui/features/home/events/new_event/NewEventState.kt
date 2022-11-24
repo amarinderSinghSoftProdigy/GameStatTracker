@@ -14,5 +14,6 @@ data class NewEventState(
 //    val selectedLocation: String = "",
     val selectedVenueName: String = "",
     val selectedAddress: Address = Address(),
-    val pre_practice_prep: String = ""
+    val pre_practice_prep: String = "",
+    val savedDate: String = ""
 )
