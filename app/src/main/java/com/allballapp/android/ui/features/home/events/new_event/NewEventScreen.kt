@@ -43,10 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.allballapp.android.R
-import com.allballapp.android.common.apiToUIDateFormat2
-import com.allballapp.android.common.checkTimings
-import com.allballapp.android.common.get24HoursTimeWithAMPM
-import com.allballapp.android.common.validEventName
+import com.allballapp.android.common.*
 import com.allballapp.android.data.request.Address
 import com.allballapp.android.ui.features.components.AppButton
 import com.allballapp.android.ui.features.components.AppOutlineTextField
@@ -234,15 +231,16 @@ fun PracticeScreen(
     }
     val sdf = SimpleDateFormat("HH:mm")
     val str = sdf.format(Date())
+    val calendar = Calendar.getInstance()
 
-    Log.d("time", "PracticeScreen: " + str)
     var dateString = ""
     val mDatePickerDialog = DatePickerDialog(
         context, { _: DatePicker, year: Int, month: Int, dayOfMonth: Int ->
-            val calendar = Calendar.getInstance()
             calendar[year, month] = dayOfMonth
             val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+            val checkTimeFormat = SimpleDateFormat("dd/MM/yyyy")
             dateString = format.format(calendar.time)
+            vm.onEvent(NewEvEvent.OnDateSaved(checkTimeFormat.format(calendar.time)))
             vm.onEvent(NewEvEvent.OnDateChanged(dateString))
         }, mYear, mMonth, mDay
     )
@@ -254,18 +252,28 @@ fun PracticeScreen(
                 arrivalTime = "$mHour:$mMinute"
                 vm.onEvent(NewEvEvent.OnArrivalTimeChanged(get24HoursTimeWithAMPM("$mHour:$mMinute")))
             } else {
-                vm.onEvent(NewEvEvent.ShowToast("Enter valid Time"))
+                vm.onEvent(NewEvEvent.ShowToast(context.getString(R.string.enter_valid_time)))
+
             }
         }, mHour, mMinute, false
     )
 
     val mStartTimePickerDialog = TimePickerDialog(
         context, { _, mHour: Int, mMinute: Int ->
-            if (checkTimings(str, "$mHour:${mMinute + 1}")) {
-                vm.onEvent(NewEvEvent.OnStartTimeChanged(get24HoursTimeWithAMPM("$mHour:$mMinute")))
-                startTime = "$mHour:$mMinute"
+
+            if (state.selectedDate.isNotEmpty()) {
+                if (checkTimings(
+                        str,
+                        "$mHour:${mMinute + 1}"
+                    ) || checkDate(state.savedDate)
+                ) {
+                    vm.onEvent(NewEvEvent.OnStartTimeChanged(get24HoursTimeWithAMPM("$mHour:$mMinute")))
+                    startTime = "$mHour:$mMinute"
+                } else {
+                    vm.onEvent(NewEvEvent.ShowToast(context.getString(R.string.enter_valid_time)))
+                }
             } else {
-                vm.onEvent(NewEvEvent.ShowToast("Enter valid Time"))
+                vm.onEvent(NewEvEvent.ShowToast(context.getString(R.string.select_date)))
             }
         }, mHour, mMinute, false
     )
@@ -273,11 +281,11 @@ fun PracticeScreen(
     val mEndTimePickerDialog = TimePickerDialog(
         context, { _, mHour: Int, mMinute: Int ->
             if (startTime.isEmpty()) {
-                vm.onEvent(NewEvEvent.ShowToast("Enter start Time"))
+                vm.onEvent(NewEvEvent.ShowToast(context.getString(R.string.select_start_time)))
             } else if (checkTimings(startTime, "$mHour:$mMinute")) {
                 vm.onEvent(NewEvEvent.OnEndTimeChanged(get24HoursTimeWithAMPM("$mHour:$mMinute")))
             } else {
-                vm.onEvent(NewEvEvent.ShowToast("Enter valid Time"))
+                vm.onEvent(NewEvEvent.ShowToast(context.getString(R.string.enter_valid_time)))
             }
         }, mHour, mMinute, false
     )
@@ -409,7 +417,8 @@ fun PracticeScreen(
                         style = MaterialTheme.typography.h6,
                         color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                     )
-                    Row(verticalAlignment = Alignment.CenterVertically,
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.End,
                         modifier = Modifier
                             .weight(1f)

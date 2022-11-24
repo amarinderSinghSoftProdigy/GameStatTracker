@@ -65,6 +65,7 @@ import com.allballapp.android.ui.features.home.teams.chat.ChatViewModel
 import com.allballapp.android.ui.features.home.teams.chat.NewConversationScreen
 import com.allballapp.android.ui.features.home.teams.chat.TeamsChatDetailScreen
 import com.allballapp.android.ui.features.home.teams.chat.TeamsChatScreen
+import com.allballapp.android.ui.features.home.teams.roaster.RoasterProfileDetails
 import com.allballapp.android.ui.features.home.webview.CommonWebView
 import com.allballapp.android.ui.features.profile.*
 import com.allballapp.android.ui.features.sign_up.ProfileSetUpScreen
@@ -415,6 +416,13 @@ fun NavControllerComposable(
     var url by rememberSaveable {
         mutableStateOf("")
     }
+    var userid by rememberSaveable {
+        mutableStateOf("")
+    }
+
+    var name by rememberSaveable {
+        mutableStateOf("")
+    }
 
     AnimatedNavHost(navController, startDestination = Route.HOME_SCREEN) {
         composable(route = Route.HOME_SCREEN, enterTransition = { slideInHorizont(animeDuration) },
@@ -659,7 +667,12 @@ fun NavControllerComposable(
                     homeViewModel.showBottomAppBar(false)
                     navController.navigate(Route.HOME_SCREEN)
                 }, homeVm = homeViewModel,
-                chatViewModel = chatViewModel
+                chatViewModel = chatViewModel,
+                onProfileDetailScreen = { userId, userName ->
+                    userid = userId
+                    name = userName
+                    navController.navigate(Route.ROASTER_PROFILE_VIEW)
+                }
             )
         }
 
@@ -1339,6 +1352,19 @@ fun NavControllerComposable(
                     navController.navigate(Route.OPP_DETAIL_SCREEN)
                 })
         }
+
+        composable(route = Route.ROASTER_PROFILE_VIEW) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = name,
+                    topBar = TopBar.SINGLE_LABEL_BACK,
+                )
+            )
+
+            RoasterProfileDetails(vm = profileViewModel, userId = userid)
+
+        }
+
     }
 
 }
