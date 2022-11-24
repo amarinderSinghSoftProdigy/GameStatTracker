@@ -91,12 +91,16 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import timber.log.Timber
+import javax.inject.Inject
 
 val animeDuration = 500
 
 @AndroidEntryPoint
 class HomeActivity : FragmentActivity(), CustomCometListener {
-    var dataStoreManager: DataStoreManager = DataStoreManager(this)
+
+    @Inject
+    lateinit var dataStoreManager: DataStoreManager
+
     val cometChat = CometChatUI()
     var setupTeamViewModelUpdated: SetupTeamViewModelUpdated? = null
     lateinit var homeViewModel: HomeViewModel

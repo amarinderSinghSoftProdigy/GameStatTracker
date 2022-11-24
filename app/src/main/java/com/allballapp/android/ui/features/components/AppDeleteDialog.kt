@@ -70,6 +70,7 @@ import com.togitech.ccp.component.TogiCountryCodePicker
 import com.togitech.ccp.data.utils.getDefaultLangCode
 import com.togitech.ccp.data.utils.getDefaultPhoneCode
 import com.togitech.ccp.data.utils.getLibCountries
+import timber.log.Timber
 import java.util.*
 
 
@@ -1189,7 +1190,7 @@ fun SelectGuardianRoleDialog(
     guardianList: List<PlayerDetails>,
     onValueSelected: (PlayerDetails) -> Unit
 ) {
-
+    Timber.e("selected " + selected)
     BallerAppMainTheme {
         AlertDialog(
             properties = DialogProperties(usePlatformDefaultWidth = false),
@@ -1942,6 +1943,7 @@ fun SwapProfile(
                             text = title.ifEmpty { stringResource(id = R.string.swap_profiles) },
                             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                             fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(end = dimensionResource(id = R.dimen.size_16dp))
                         )
 
                         Icon(
@@ -3044,9 +3046,9 @@ fun InvitationSuccessfullySentDialog(
                     val user = stringResource(id = R.string.user)
                     AppText(
                         text = stringResource(
-                            id = R.string.success_player_has_been_added_to_the_team,
+                            id = R.string.success_player_has_been_added_to_the_team/*,
                             playerName.ifEmpty { user },
-                            teamName.ifEmpty { team }
+                            teamName.ifEmpty { team }*/
                         ),
                         fontSize = dimensionResource(id = R.dimen.txt_size_18).value.sp,
                         fontWeight = FontWeight.Bold,
