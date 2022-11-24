@@ -40,6 +40,7 @@ sealed class EvEvents {
     data class OnDeclineConfirmClick(val invitation: EventsResponse) : EvEvents()
     object RefreshEventScreen : EvEvents()
     data class RefreshEventDetailsScreen(val eventId: String,val eventType:String) : EvEvents()
+    data class RefreshGameDetailsScreen(val gameId: String) : EvEvents()
     data class OnConfirmGoing(val eventType:String) : EvEvents()
     data class OnDeclineReasonChange(val reason: String) : EvEvents()
     data class OnGoingDialogClick(val showGoingDialog: Boolean) : EvEvents()

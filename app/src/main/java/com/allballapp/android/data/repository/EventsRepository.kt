@@ -6,6 +6,7 @@ import com.allballapp.android.common.safeApiCall
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.data.request.CreateEventReq
 import com.allballapp.android.data.response.StandingByLeagueAndDivisionData
+import com.allballapp.android.data.response.game.GameDetails
 import com.allballapp.android.data.response.team.DivisionWiseTeamResponse
 import com.allballapp.android.data.response.team.TeamsByLeagueDivisionResponse
 import com.allballapp.android.domain.BaseResponse
@@ -64,6 +65,16 @@ class EventsRepository @Inject constructor(
             service.getEventDetails(eventId, eventType.toLowerCase())
         }
     }
+
+    override suspend fun getGameDetails(
+        gameId: String,
+        eventType: String
+    ): ResultWrapper<BaseResponse<GameDetails>> {
+        return safeApiCall(dispatcher) {
+            service.getGameDetails(gameId, eventType.toLowerCase())
+        }
+    }
+
 
     override suspend fun addPrePostNote(
         eventId: String,

@@ -3,6 +3,7 @@ package com.allballapp.android.domain.repository
 import com.allballapp.android.common.ResultWrapper
 import com.allballapp.android.data.request.CreateEventReq
 import com.allballapp.android.data.response.StandingByLeagueAndDivisionData
+import com.allballapp.android.data.response.game.GameDetails
 import com.allballapp.android.data.response.team.DivisionWiseTeamResponse
 import com.allballapp.android.data.response.team.TeamsByLeagueDivisionResponse
 import com.allballapp.android.domain.BaseResponse
@@ -22,6 +23,7 @@ interface IEventsRepository {
 
     suspend fun acceptEventInvite(eventId: String,eventType: String): ResultWrapper<BaseResponse<Any>>
     suspend fun getEventDetails(eventId: String,eventType: String): ResultWrapper<BaseResponse<EventDetails>>
+    suspend fun getGameDetails(gameId: String,eventType: String): ResultWrapper<BaseResponse<GameDetails>>
     suspend fun addPrePostNote(
         eventId: String, note: String, noteType: NoteType,
     ): ResultWrapper<BaseResponse<Any>>

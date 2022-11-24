@@ -41,7 +41,7 @@ fun EventsScreen(
     showDialog: Boolean,
     dismissDialog: (Boolean) -> Unit,
     moveToDetail: (String) -> Unit,
-    moveToPracticeDetail: (String, String) -> Unit, moveToGameDetail: (String) -> Unit,
+    moveToPracticeDetail: (String, String) -> Unit, moveToGameDetail: (String,String) -> Unit,
     moveToOppDetails: (String) -> Unit,
     updateTopBar: (TopBarData) -> Unit,
     moveToEventDetail: (String) -> Unit
@@ -181,7 +181,7 @@ fun TabsContent(
     vm: EventViewModel,
     moveToDetail: (String) -> Unit,
     moveToPracticeDetail: (String, String) -> Unit,
-    moveToGameDetail: (String) -> Unit,
+    moveToGameDetail: (String,String) -> Unit,
     moveToOppDetails: (String) -> Unit,
     moveToEventDetail: (String) -> Unit,
     updateTopBar: (TopBarData) -> Unit,
@@ -425,7 +425,6 @@ fun EventItem(
     onAcceptCLick: (Events) -> Unit,
     onDeclineCLick: (Events) -> Unit,
     moveToPracticeDetail: (String, String) -> Unit,
-    moveToGameDetail: (String) -> Unit,
     isPast: Boolean,
     isSelfCreatedEvent: Boolean = false,
 ) {
@@ -436,9 +435,6 @@ fun EventItem(
                     events.eventType.equals(EventType.ACTIVITY.type, ignoreCase = true)
                 )
                     moveToPracticeDetail(events.id, events.eventName)
-                else if (events.eventType.equals(EventType.GAME.type, ignoreCase = true)) {
-                    moveToGameDetail(events.eventName)
-                }
             }
     ) {
         Column(
