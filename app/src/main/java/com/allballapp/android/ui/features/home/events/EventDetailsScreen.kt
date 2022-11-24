@@ -37,7 +37,6 @@ import com.allballapp.android.common.convertServerUtcDateToLocal
 import com.allballapp.android.common.uiToAPiDate
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.ui.features.components.*
-import com.allballapp.android.ui.features.components.EventType
 import com.allballapp.android.ui.features.venue.Location
 import com.allballapp.android.ui.theme.ColorButtonGreen
 import com.allballapp.android.ui.theme.ColorButtonRed
@@ -52,7 +51,7 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
     val state = vm.eventState.value
     val context = LocalContext.current
     remember {
-        vm.onEvent(EvEvents.RefreshEventDetailsScreen(eventId))
+        vm.onEvent(EvEvents.RefreshEventDetailsScreen(eventId,EventType.PRACTICE.type))
     }
     Column(
         Modifier
@@ -122,7 +121,7 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
                             Toast.LENGTH_LONG
                         )
                             .show()
-                        vm.onEvent(EvEvents.RefreshEventDetailsScreen(eventId = eventId))
+                        vm.onEvent(EvEvents.RefreshEventDetailsScreen(eventId = eventId,EventType.PRACTICE.type))
                     }
                 }
             }
@@ -341,7 +340,7 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
 
         AppDivider(color = MaterialTheme.appColors.material.primary)
 
-        if (state.event.eventType == EventType.GAME.key) {
+        if (state.event.eventType == EventType.GAME.type) {
             Column(
                 Modifier
                     .padding(

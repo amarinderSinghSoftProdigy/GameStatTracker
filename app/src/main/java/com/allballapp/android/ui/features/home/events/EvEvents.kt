@@ -4,8 +4,8 @@ import com.allballapp.android.data.response.Standing
 import com.allballapp.android.data.response.team.Team
 
 sealed class EvEvents {
-    data class OnGoingCLick(val event: Events) : EvEvents()
-    data class OnDeclineCLick(val event: Events) : EvEvents()
+    data class OnGoingCLick(val eventId: String,val eventType: String) : EvEvents()
+    data class OnDeclineCLick(val eventId: String,val eventType: String) : EvEvents()
     data class OnRoleClick(val role: String) : EvEvents()
     data class OnRoleDialogClick(val showRoleDialog: Boolean) : EvEvents()
     data class onCancel(val showGoingDialog: Boolean) : EvEvents()
@@ -39,13 +39,13 @@ sealed class EvEvents {
     data class ShowToast(val message: String) : EvEvents()
     data class OnDeclineConfirmClick(val invitation: EventsResponse) : EvEvents()
     object RefreshEventScreen : EvEvents()
-    data class RefreshEventDetailsScreen(val eventId: String) : EvEvents()
-    object OnConfirmGoing : EvEvents()
+    data class RefreshEventDetailsScreen(val eventId: String,val eventType:String) : EvEvents()
+    data class OnConfirmGoing(val eventType:String) : EvEvents()
     data class OnDeclineReasonChange(val reason: String) : EvEvents()
     data class OnGoingDialogClick(val showGoingDialog: Boolean) : EvEvents()
     data class OnSelection(val selected: String) : EvEvents()
     data class OnReasonSelection(val text: String) : EvEvents()
-    object OnConfirmDeclineClick : EvEvents()
+    data class OnConfirmDeclineClick(val eventType: String) : EvEvents()
     data class PreNoteTimeSpan(val showPreNoteButton: Boolean) : EvEvents()
     data class PostNoteTimeSpan(val showPostNoteButton: Boolean) : EvEvents()
     data class ShowPrePostPracticeAddNoteDialog(
