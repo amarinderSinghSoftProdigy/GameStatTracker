@@ -587,7 +587,7 @@ fun RowScope.EventItem(
                 color = ColorBWBlack
             )
             AppText(
-                modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_5dp)),
+             /*   modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_5dp)),*/
                 text = stringResourceByName(stringId),
                 style = MaterialTheme.typography.h6,
                 color = MaterialTheme.appColors.textField.label
