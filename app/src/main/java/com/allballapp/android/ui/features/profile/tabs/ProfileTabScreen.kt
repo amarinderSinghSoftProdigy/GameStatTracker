@@ -137,7 +137,7 @@ fun ProfileTabScreen(vm: ProfileViewModel, id: String) {
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
-            if (!state.user.parentDetails.isNullOrEmpty())
+            if (state.user.parentDetails.isNotEmpty())
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -148,7 +148,7 @@ fun ProfileTabScreen(vm: ProfileViewModel, id: String) {
                         modifier = Modifier.padding(dimensionResource(id = R.dimen.size_16dp)),
                     ) {
                         AppText(
-                            text = stringResource(id = R.string.parents),
+                            text = stringResource(id = R.string.players),
                             style = MaterialTheme.typography.h5,
                             color = ColorBWBlack,
                             fontWeight = FontWeight.W500
@@ -157,12 +157,12 @@ fun ProfileTabScreen(vm: ProfileViewModel, id: String) {
                         FlowRow {
                             state.user.parentDetails.forEachIndexed { index, item ->
 
-                                if (item.parent != null) {
+                                if (item != null) {
                                     ParentItem(
                                         width,
                                         item.parentType,
-                                        "${item.parent?.firstName} ${item.parent?.lastName}",
-                                        item.parent.profileImage
+                                        "${item.firstName} ${item.lastName}",
+                                        item.profileImage
                                     ) {
                                         vm.onEvent(
                                             ProfileEvent.OnParentDialogChange(true)
@@ -294,8 +294,6 @@ fun ProfileTabScreen(vm: ProfileViewModel, id: String) {
             parentDetails = state.selectedParentDetails
         )
     }
-
-
 }
 
 @Composable

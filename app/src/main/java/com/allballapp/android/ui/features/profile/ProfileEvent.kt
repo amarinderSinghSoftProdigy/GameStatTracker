@@ -1,13 +1,14 @@
 package com.allballapp.android.ui.features.profile
 
 import com.allballapp.android.data.response.GetSearchStaff
+import com.allballapp.android.data.response.Parent
 import com.allballapp.android.data.response.ParentDetails
 import com.allballapp.android.data.response.UserDocType
 import java.util.*
 
 sealed class ProfileEvent {
     data class OnParentDialogChange(val showDialog: Boolean) : ProfileEvent()
-    data class OnParentClick(val selectedParentDetails: ParentDetails) : ProfileEvent()
+    data class OnParentClick(val selectedParentDetails: Parent) : ProfileEvent()
 
     data class OnFirstNameChange(val firstName: String) : ProfileEvent()
     data class OnLastNameChange(val lastName: String) : ProfileEvent()
