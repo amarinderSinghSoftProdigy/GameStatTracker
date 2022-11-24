@@ -20,7 +20,8 @@ data class User(
     @SerializedName("phone") val phone: String = "",
     @SerializedName("teamDetails") val teamDetails: SnapshotStateList<TeamDetails> = mutableStateListOf(),
     @SerializedName("userDetails") var userDetails: UserDetails = UserDetails(),
-    @SerializedName("parentDetails") var parentDetails: ArrayList<ParentDetails> = arrayListOf(),
+    @SerializedName("parentDetail") var parentDetails: ArrayList<Parent> = arrayListOf(),
+    @SerializedName("kidDetail") val kidDetails: ArrayList<Parent> = arrayListOf(),
     @SerializedName("age") val age: Int? = null,
     @SerializedName("totalGames") val totalGames: Int? = 0,
     @SerializedName("totalHoopGames") val totalHoopsGames: Int? = 0,
@@ -160,7 +161,8 @@ data class Parent(
     @SerializedName("email") val email: String = "",
     @SerializedName("phone") val phone: String = "",
     @SerializedName("name") val name: String = "",
-    @SerializedName("id") val id: String = ""
+    @SerializedName("id") val id: String = "",
+    @SerializedName("parentType") val parentType: String = ""
 
 )
 

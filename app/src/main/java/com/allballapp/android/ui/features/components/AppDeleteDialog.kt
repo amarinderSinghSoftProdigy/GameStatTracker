@@ -53,10 +53,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.allballapp.android.R
 import com.allballapp.android.common.*
 import com.allballapp.android.data.UserStorage
-import com.allballapp.android.data.response.ParentDetails
-import com.allballapp.android.data.response.PlayerDetails
-import com.allballapp.android.data.response.SwapUser
-import com.allballapp.android.data.response.UserRoles
+import com.allballapp.android.data.response.*
 import com.allballapp.android.data.response.team.Player
 import com.allballapp.android.data.response.team.Team
 import com.allballapp.android.ui.features.home.events.DivisionData
@@ -273,7 +270,7 @@ fun SelectTeamDialog(
 
 @Composable
 fun ShowParentDialog(
-    parentDetails: ParentDetails,
+    parentDetails: Parent,
     onDismiss: () -> Unit,
     onConfirmClick: () -> Unit,
 ) {
@@ -328,7 +325,7 @@ fun ShowParentDialog(
                     ) {
 
                         CoilImage(
-                            src = com.allballapp.android.BuildConfig.IMAGE_SERVER + parentDetails.parent?.profileImage,
+                            src = com.allballapp.android.BuildConfig.IMAGE_SERVER + parentDetails.profileImage,
                             modifier = Modifier
                                 .size(dimensionResource(id = R.dimen.size_200dp))
                                 .clip(CircleShape),
@@ -338,7 +335,7 @@ fun ShowParentDialog(
                         )
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
                         AppText(
-                            text = "${parentDetails.parent?.firstName} ${parentDetails.parent?.lastName}",
+                            text = "${parentDetails.firstName} ${parentDetails.lastName}",
                             style = MaterialTheme.typography.h6,
                             color = ColorBWBlack,
                             fontSize = dimensionResource(id = R.dimen.txt_size_20).value.sp
@@ -354,14 +351,14 @@ fun ShowParentDialog(
                         Row(
                             modifier = Modifier
                         ) {
-                            parentDetails.parent?.let {
+                            parentDetails.email.let {
                                 DetailItem(
                                     stringResource(id = R.string.email),
-                                    it.email
+                                    it
                                 )
                             }
                             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                            parentDetails.parent?.phone?.let {
+                            parentDetails.phone.let {
                                 DetailItem(
                                     stringResource(id = R.string.number),
                                     it
@@ -380,7 +377,7 @@ fun ShowParentDialog(
                         ButtonWithLeadingIconGrayed(
                             text = stringResource(R.string.message_),
                             onClick = {
-                                val u = Uri.parse("sms:" + parentDetails.parent?.phone)
+                                val u = Uri.parse("sms:" + parentDetails.phone)
                                 val i = Intent(Intent.ACTION_VIEW, u)
                                 try {
                                     context.startActivity(i)
@@ -399,7 +396,7 @@ fun ShowParentDialog(
                             text = stringResource(R.string.call),
                             onClick = {
 
-                                val u = Uri.parse("tel:" + parentDetails.parent?.phone)
+                                val u = Uri.parse("tel:" + parentDetails.phone)
                                 val i = Intent(Intent.ACTION_DIAL, u)
                                 try {
                                     context.startActivity(i)

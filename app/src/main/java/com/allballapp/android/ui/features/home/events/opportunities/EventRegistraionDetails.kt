@@ -162,7 +162,6 @@ fun EventRegistraionDetails(
                             )
                         }
                     }
-
                 }
                 DividerCommon()
                 RegisterItem(
