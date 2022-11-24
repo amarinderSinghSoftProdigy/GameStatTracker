@@ -18,10 +18,10 @@ class ErrorMessagesUtils {
         fun cometChatErrorMessage(context: Context?, e : String?) {
             when (e) {
                 ERROR_INTERNET_UNAVAILABLE -> {
-                    showCometChatErrorDialog(context, context?.resources?.getString(R.string.please_check_your_internet_connection))
+//                    showCometChatErrorDialog(context, context?.resources?.getString(R.string.please_check_your_internet_connection))
                 }
                 else -> {
-                    showCometChatErrorDialog(context, context?.resources?.getString(R.string.something_went_wrong_please_try_again))
+//                    showCometChatErrorDialog(context, context?.resources?.getString(R.string.something_went_wrong_please_try_again))
                 }
             }
         }

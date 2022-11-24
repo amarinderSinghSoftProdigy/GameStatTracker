@@ -56,10 +56,10 @@ class UIKitSettings(context: Context) {
         var sendTypingIndicator: Boolean = true
         var showReadDeliveryReceipts = true
         var replyingToMessage: Boolean = true
-        var threadedChats: Boolean  = true
-        var sendPhotoVideos: Boolean = true
-        var sendFiles = true
-        var sendVoiceNotes = true
+        var threadedChats: Boolean  = false
+        var sendPhotoVideos: Boolean = false
+        var sendFiles = false
+        var sendVoiceNotes = false
         var messageHistory: Boolean = true
         var unreadCount: Boolean = true
         var searchUsers: Boolean = true
@@ -83,7 +83,7 @@ class UIKitSettings(context: Context) {
         var voiceTranscription: Boolean = true
 
         //User Engagement
-        var sendEmojis = true
+        var sendEmojis = false
         var mentions: Boolean = true
         var sendMessageReaction: Boolean = true
         var sendLiveReaction: Boolean = true
@@ -110,8 +110,8 @@ class UIKitSettings(context: Context) {
 
 
         var deleteMessage = true
-        var shareCopyForwardMessage = true
-        var sendEmojisInLargerSize = true
+        var shareCopyForwardMessage = false
+        var sendEmojisInLargerSize = false
         var editMessage = true
         var shareLocation = true
 
@@ -119,8 +119,8 @@ class UIKitSettings(context: Context) {
         var enableSoundForMessages = false
         var enableSoundForCalls = false
         var joinOrLeaveGroup = true
-        var sendGifs: Boolean = true
-        var viewShareMedia = true
+        var sendGifs: Boolean = false
+        var viewShareMedia = false
         var viewGroupMembers = true
         var callNotifications = true
         var allowPromoteDemoteMembers = true
@@ -130,7 +130,7 @@ class UIKitSettings(context: Context) {
         var emailReplies = true
         var hideDeletedMessages = true
         var chatListMode = true
-        var sendStickers = true
+        var sendStickers = false
         var showReplyPrivately = false
 
         var emailColor: Int = R.color.primaryTextColor

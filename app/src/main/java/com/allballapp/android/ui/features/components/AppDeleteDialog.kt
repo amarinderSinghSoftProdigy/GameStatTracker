@@ -32,16 +32,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.*
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -1791,8 +1789,16 @@ fun DeclineEventDialog(
     title: String,
     reason: String,
     onReasonChange: (String) -> Unit,
-    placeholderText: String = ""
+    placeholderText: String = "",
+    textLimit: Int? = null
 ) {
+    val focusRequester = remember { FocusRequester() }
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+    LocalView.current.viewTreeObserver.addOnWindowFocusChangeListener {
+        if (it) focusRequester.requestFocus()
+    }
 
     val keyboardController = LocalSoftwareKeyboardController.current
     BallerAppMainTheme {
@@ -1836,9 +1842,16 @@ fun DeclineEventDialog(
                     AppOutlineTextField(
                         value = reason,
                         modifier = Modifier
-                            .fillMaxWidth(),
-                        onValueChange = {
-                            onReasonChange(it)
+                            .fillMaxWidth()
+                            .focusRequester(focusRequester),
+                        onValueChange = { reason ->
+                            if ((textLimit != null)) {
+                                if (reason.length <= textLimit) {
+                                    onReasonChange(reason)
+                                }
+                            } else {
+                                onReasonChange(reason)
+                            }
                         },
                         maxLines = 1,
                         singleLine = true,
@@ -1851,7 +1864,8 @@ fun DeclineEventDialog(
                         },
                         keyboardOptions = KeyboardOptions(
                             imeAction = ImeAction.Next,
-                            keyboardType = KeyboardType.Text
+                            keyboardType = KeyboardType.Text,
+                            capitalization = KeyboardCapitalization.Words
                         ),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
@@ -1886,8 +1900,10 @@ fun DeclineEventDialog(
                         DialogButton(
                             text = stringResource(R.string.dialog_button_confirm),
                             onClick = {
-                                onConfirmClick.invoke()
-                                onDismiss.invoke()
+                                if (reason.trim().length > 3) {
+                                    onConfirmClick.invoke()
+                                    onDismiss.invoke()
+                                }
                             },
                             modifier = Modifier
                                 .weight(1f),
