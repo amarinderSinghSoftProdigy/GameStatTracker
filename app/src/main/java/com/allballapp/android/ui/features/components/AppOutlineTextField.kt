@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.LocalTextSelectionColors
@@ -19,11 +20,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -201,7 +204,8 @@ fun EditFields(
             )
             CompositionLocalProvider(LocalTextSelectionColors provides customTextSelectionColors) {
                 TextField(
-                    value = data, onValueChange = onValueChange,
+                    value = data,
+                    onValueChange = onValueChange,
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         backgroundColor = Color.Transparent,
                         focusedBorderColor = Color.Transparent,
@@ -216,6 +220,7 @@ fun EditFields(
                     trailingIcon = trailingIcon,
                     placeholder = placeholder
                 )
+
             }
         }
 
@@ -315,3 +320,70 @@ fun EditProfileFields(
     }
 }
 
+@Composable
+fun InviteField(
+    data: String,
+    isError: Boolean = false,
+    errorMessage: String = "",
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    val customTextSelectionColors = TextSelectionColors(
+        handleColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+        backgroundColor = Color.Transparent
+    )
+
+    Column(
+        modifier = modifier
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+
+            if (data.isEmpty()) {
+                Text(
+                    text = stringResource(id = R.string.select_role),
+                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                    color = MaterialTheme.appColors.textField.label,
+                    modifier = Modifier
+                        .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
+                        .weight(2F)
+                )
+            } else {
+                Text(
+                    text = data,
+                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                    color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                    modifier = Modifier
+                        .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
+                        .weight(2F).align(Alignment.CenterVertically),
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+
+            Icon(
+                painterResource(id = R.drawable.ic_arrow_down),
+                contentDescription = null,
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable {
+                        onClick()
+                    })
+
+        }
+
+        if (isError) {
+            Text(
+                text = errorMessage,
+                color = MaterialTheme.colors.error,
+                style = MaterialTheme.typography.caption,
+                modifier = Modifier
+                    .padding(4.dp)
+                    .fillMaxWidth(),
+                textAlign = TextAlign.End
+            )
+        }
+    }
+}
