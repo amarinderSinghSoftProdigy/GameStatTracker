@@ -1667,7 +1667,7 @@ fun SelectDivisionDialog(
     teams: List<DivisionData>,
     division: DivisionData,
 ) {
-    val divisionSelected = remember {
+    var divisionSelected = remember {
         mutableStateOf(division)
     }
     BallerAppMainTheme {
@@ -1753,7 +1753,10 @@ fun SelectDivisionDialog(
                     ) {
                         DialogButton(
                             text = stringResource(R.string.dialog_button_cancel),
-                            onClick = onDismiss,
+                            onClick = {
+                                onDismiss()
+                                divisionSelected.value = DivisionData()
+                            },
                             modifier = Modifier
                                 .weight(1f)
                                 .padding(end = dimensionResource(id = R.dimen.size_10dp)),
@@ -2410,7 +2413,7 @@ fun AgeConfirmDialog(
                         Text(
                             style = MaterialTheme.typography.h6,
                             color = if (selected.value == 0) Color.White else MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                            text = stringResource(id = R.string.age_zero),
+                            text = stringResource(id = R.string.age_ok),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(all = dimensionResource(id = R.dimen.size_16dp))
@@ -2430,7 +2433,7 @@ fun AgeConfirmDialog(
                         Text(
                             style = MaterialTheme.typography.h6,
                             color = if (selected.value == 1) Color.White else MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                            text = stringResource(id = R.string.age_ok),
+                            text = stringResource(id = R.string.age_zero),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(all = dimensionResource(id = R.dimen.size_16dp))

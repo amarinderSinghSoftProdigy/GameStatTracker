@@ -27,7 +27,7 @@ interface IUserRepository {
 
     suspend fun getUserProfile(): ResultWrapper<BaseResponse<User>>
 
-    suspend fun getFullUserFullDetails(): ResultWrapper<BaseResponse<User>>
+    suspend fun getFullUserFullDetails(userId: String): ResultWrapper<BaseResponse<User>>
 
     suspend fun updateUserFullDetails(userDetailsReq: UpdateUserDetailsReq): ResultWrapper<BaseResponse<Any>>
 

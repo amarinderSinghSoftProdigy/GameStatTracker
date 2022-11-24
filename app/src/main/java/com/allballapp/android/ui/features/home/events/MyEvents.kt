@@ -18,10 +18,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.allballapp.android.R
 import com.allballapp.android.common.apiToUIDateFormat
-import com.allballapp.android.data.UserStorage
 import com.allballapp.android.ui.features.components.CommonProgressBar
 import com.allballapp.android.ui.features.components.DeclineEventDialog
 import com.allballapp.android.ui.features.components.DeleteDialog
@@ -72,22 +72,28 @@ fun MyEvents(
                         state.upcomingAndGameData.forEach { data ->
                             when (data) {
                                 is Events -> {
-                                    EventItem(events = data, onAcceptCLick = {
-                                        vm.onEvent(EvEvents.OnGoingCLick(it))
-                                    }, onDeclineCLick = {
-                                        vm.onEvent(EvEvents.OnDeclineCLick(it))
+                                    EventItem(events = data, onAcceptCLick = { event ->
+                                        vm.onEvent(EvEvents.OnGoingCLick(event.id,EventType.PRACTICE.type))
+                                    }, onDeclineCLick = { event ->
+                                        vm.onEvent(EvEvents.OnDeclineCLick(event.id,EventType.PRACTICE.type))
                                     }, moveToPracticeDetail = moveToPracticeDetail,
                                         moveToGameDetail = moveToGameDetail,
                                         isPast = false,
-                                        isSelfCreatedEvent = data.createdBy == UserStorage.userId
+//                                        isSelfCreatedEvent = data.createdBy == UserStorage.userId
+                                        isSelfCreatedEvent = false
                                     )
                                 }
                                 is PublishedGames -> {
                                     GameDataItem(
                                         publishedGames = data,
-                                        moveToEventDetail = { gameData ->
-                                            vm.onEvent(EvEvents.SetEventId(gameData.Id))
-                                            moveToEventDetail.invoke(gameData.name)
+                                        moveToGameDetail = { gameId ->
+//                                            moveToGameDetail.invoke(gameId)
+                                        }, onAcceptCLick = { eventId ->
+                                            vm.onEvent(EvEvents.OnGoingCLick(eventId,EventType.GAME.type))
+
+                                        },
+                                        onDeclineCLick = { eventId ->
+                                            vm.onEvent(EvEvents.OnDeclineCLick(eventId,EventType.GAME.type))
                                         })
                                 }
                             }
@@ -116,8 +122,8 @@ fun MyEvents(
                         FlowRow(Modifier.fillMaxWidth()) {
                             state.pastEvents.forEach {
                                 EventItem(events = it, onAcceptCLick = {
-                                }, onDeclineCLick = {
-                                    vm.onEvent(EvEvents.OnDeclineCLick(it))
+                                }, onDeclineCLick = { eventId ->
+                                    vm.onEvent(EvEvents.OnDeclineCLick(eventId.id,EventType.PRACTICE.type))
                                 }, moveToPracticeDetail = moveToPracticeDetail,
                                     moveToGameDetail = moveToGameDetail,
                                     isPast = true
@@ -132,14 +138,14 @@ fun MyEvents(
 
                 if (state.showGoingDialog) {
                     DeleteDialog(
-                        item = state.selectedEvent,
+                        item = state.selectedMyEventId,
                         message = stringResource(id = R.string.alert_going_event_confirm),
                         onDismiss = {
                             vm.onEvent(EvEvents.OnGoingDialogClick(false))
                         },
-                        onDelete = { event ->
-                            if (event.id.isNotEmpty()) {
-                                vm.onEvent(EvEvents.OnConfirmGoing)
+                        onDelete = { eventId ->
+                            if (eventId.isNotEmpty()) {
+                                vm.onEvent(EvEvents.OnConfirmGoing(EventType.PRACTICE.type))
                             }
                         }
                     )
@@ -151,7 +157,7 @@ fun MyEvents(
                             vm.onEvent(EvEvents.onCancelDeclineDialog(false))
                         },
                         onConfirmClick = {
-                            vm.onEvent(EvEvents.OnConfirmDeclineClick)
+                            vm.onEvent(EvEvents.OnConfirmDeclineClick(EventType.PRACTICE.type))
                         },
                         onReasonChange = {
                             vm.onEvent(EvEvents.OnDeclineReasonChange(it))
@@ -200,13 +206,15 @@ fun MyEvents(
 fun GameDataItem(
     modifier: Modifier = Modifier,
     publishedGames: PublishedGames,
-    moveToEventDetail: (GameData) -> Unit,
+    moveToGameDetail: (gameId: String) -> Unit,
+    onAcceptCLick: (String) -> Unit,
+    onDeclineCLick: (String) -> Unit,
 ) {
 
     Box(
         modifier = modifier
             .clickable {
-//                moveToEventDetail.invoke(publishedGames.gameData)
+                moveToGameDetail.invoke(publishedGames.Id)
             }
     ) {
         Column(
@@ -277,38 +285,176 @@ fun GameDataItem(
 
                 }
             }
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .background(
-                        color = ColorButtonGreen,
-                        shape = RoundedCornerShape(
-                            bottomStart = dimensionResource(
-                                id = R.dimen.size_8dp
-                            ),
-                            bottomEnd = dimensionResource(id = R.dimen.size_8dp)
-                        )
-                    )
-                    .clickable {
-//                        moveToEventDetail.invoke(publishedGames.gameData)
-                    }
-                    .padding(dimensionResource(id = R.dimen.size_14dp)),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
+            if (publishedGames.invitationStatus.equals(
+                    EventStatus.MAY_BE.status,
+                    ignoreCase = true
+                )
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_check),
-                    contentDescription = "",
-                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_6dp)),
-                    tint = MaterialTheme.appColors.buttonColor.textEnabled,
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = ColorPrimaryTransparent,
+                            shape = RoundedCornerShape(
+                                bottomStart = dimensionResource(
+                                    id = R.dimen.size_8dp
+                                ),
+                                bottomEnd = dimensionResource(id = R.dimen.size_8dp)
+                            )
+                        ),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(
+                        Modifier
+                            .weight(1f)
+                            .clickable {
+                                onDeclineCLick.invoke(publishedGames.Id)
+                            }
+                            .padding(dimensionResource(id = R.dimen.size_14dp)),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_cross_2),
+                            contentDescription = "",
+                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_6dp)),
+                            tint = MaterialTheme.appColors.material.primaryVariant
+                        )
+                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
+                        Text(
+                            text = stringResource(id = R.string.decline),
+                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                            fontWeight = FontWeight.W500,
+
+                            )
+                    }
+
+                    Row(
+                        Modifier
+                            .weight(1f)
+                            .clickable {
+                                onAcceptCLick.invoke(publishedGames.Id)
+                            }
+                            .padding(dimensionResource(id = R.dimen.size_14dp)),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_check),
+                            contentDescription = "",
+                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_6dp)),
+                            tint = MaterialTheme.appColors.material.primaryVariant
+                        )
+                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
+                        Text(
+                            text = stringResource(id = R.string.accept),
+                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                            fontWeight = FontWeight.W500,
+                        )
+                    }
+
+                }
+            } else if (publishedGames.invitationStatus.equals(
+                    EventStatus.GOING.status,
+                    ignoreCase = true
                 )
-                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
-                Text(
-                    text = stringResource(id = R.string.going),
-                    color = MaterialTheme.appColors.buttonColor.textEnabled,
-                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                    fontWeight = FontWeight.W500,
+            ) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = ColorButtonGreen,
+                            shape = RoundedCornerShape(
+                                bottomStart = dimensionResource(
+                                    id = R.dimen.size_8dp
+                                ),
+                                bottomEnd = dimensionResource(id = R.dimen.size_8dp)
+                            )
+                        )
+                        .clickable {
+
+                        }
+                        .padding(dimensionResource(id = R.dimen.size_14dp)),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_check),
+                        contentDescription = "",
+                        modifier = Modifier.size(dimensionResource(id = R.dimen.size_6dp)),
+                        tint = MaterialTheme.appColors.buttonColor.textEnabled,
+                    )
+                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
+                    Text(
+                        text = stringResource(id = R.string.going),
+                        color = MaterialTheme.appColors.buttonColor.textEnabled,
+                        fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                        fontWeight = FontWeight.W500,
+                    )
+                }
+            } else if (publishedGames.invitationStatus.equals(
+                    EventStatus.NOT_GOING.status,
+                    ignoreCase = true
                 )
+            ) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = ColorButtonRed,
+                            shape = RoundedCornerShape(
+                                bottomStart = dimensionResource(
+                                    id = R.dimen.size_8dp
+                                ),
+                                bottomEnd = dimensionResource(id = R.dimen.size_8dp)
+                            )
+                        )
+                        .clickable {
+
+                        }
+                        .padding(dimensionResource(id = R.dimen.size_14dp)),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_cross_2),
+                            contentDescription = "",
+                            modifier = Modifier.size(dimensionResource(id = R.dimen.size_6dp)),
+                            tint = MaterialTheme.appColors.buttonColor.textEnabled,
+                        )
+                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
+                        Text(
+                            text = stringResource(id = R.string.not_going),
+                            color = MaterialTheme.appColors.buttonColor.textEnabled,
+                            fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                            fontWeight = FontWeight.W500,
+                            fontFamily = rubikFamily
+                        )
+                        Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_10dp)))
+
+                    }
+                    Row(
+                        modifier = Modifier.weight(1f),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            text = publishedGames.reason,
+                            color = MaterialTheme.appColors.buttonColor.textEnabled,
+                            fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                            fontWeight = FontWeight.W500,
+                        )
+                    }
+                }
             }
         }
     }

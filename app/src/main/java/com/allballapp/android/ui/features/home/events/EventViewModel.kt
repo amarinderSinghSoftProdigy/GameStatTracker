@@ -108,10 +108,10 @@ class EventViewModel @Inject constructor(
         }
     }
 
-    suspend fun getEventDetails(eventId: String) {
+    suspend fun getEventDetails(eventId: String, eventType: String) {
         _state.value =
             eventState.value.copy(showLoading = true)
-        val eventResponse = eventsRepo.getEventDetails(eventId)
+        val eventResponse = eventsRepo.getEventDetails(eventId, eventType)
         _state.value =
             eventState.value.copy(showLoading = false)
 
@@ -267,14 +267,16 @@ class EventViewModel @Inject constructor(
             is EvEvents.OnGoingCLick -> {
                 _state.value = _state.value.copy(
                     showGoingDialog = true,
-                    selectedEvent = event.event
+                    selectedMyEventId = event.eventId,
+                    selectedEventType = event.eventType
                 )
 
             }
             is EvEvents.OnDeclineCLick -> {
                 _state.value = _state.value.copy(
                     showDeclineDialog = true,
-                    selectedEvent = event.event
+                    selectedMyEventId = event.eventId,
+                    selectedEventType = event.eventType
                 )
             }
             is EvEvents.onCancel -> {
@@ -295,7 +297,7 @@ class EventViewModel @Inject constructor(
             }
 
             is EvEvents.RefreshEventDetailsScreen -> {
-                viewModelScope.launch { getEventDetails(event.eventId) }
+                viewModelScope.launch { getEventDetails(event.eventId, event.eventType) }
             }
 
             is EvEvents.OnConfirmGoing -> {
@@ -856,7 +858,11 @@ class EventViewModel @Inject constructor(
         _state.value =
             _state.value.copy(showLoading = true)
 
-        val acceptResponse = eventsRepo.acceptEventInvite(eventState.value.selectedEvent.id)
+        val acceptResponse = eventsRepo.acceptEventInvite(
+            eventState.value.selectedMyEventId,
+            eventType = eventState.value.selectedEventType
+        )
+
 
         _state.value =
             _state.value.copy(showLoading = false)
@@ -904,8 +910,9 @@ class EventViewModel @Inject constructor(
             eventState.value.copy(showLoading = true)
 
         val rejectResponse = eventsRepo.rejectEventInvite(
-            eventState.value.selectedEvent.id,
-            eventState.value.declineReason
+            eventState.value.selectedMyEventId,
+            eventState.value.declineReason,
+            eventType = eventState.value.selectedEventType,
         )
 
         _state.value =

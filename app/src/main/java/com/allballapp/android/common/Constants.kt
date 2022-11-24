@@ -91,6 +91,7 @@ object Route {
     const val DIVISION_TAB = "divisionTab"
     const val TEAM_TAB = "teamTab"
     const val WEB_VIEW = "webview"
+    const val ROASTER_PROFILE_VIEW = "roasterProfileView"
 }
 
 object ApiConstants {

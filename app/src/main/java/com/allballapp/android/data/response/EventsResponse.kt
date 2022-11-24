@@ -255,9 +255,11 @@ data class PublishedGames(
     @SerializedName("date") val date: String = "",
     @SerializedName("timeslot") val timeslot: String = "",
     @SerializedName("teams") val teams: ArrayList<Team> = arrayListOf(),
-    @SerializedName("gameData") val gameData: GameData = GameData()
+    @SerializedName("gameData") val gameData: GameData = GameData(),
+    @SerializedName("invitationStatus") val invitationStatus: String = "",
+    @SerializedName("reason") val reason: String = "",
 
-)
+    )
 
 data class GameData(
     @SerializedName("_id") val Id: String = "",

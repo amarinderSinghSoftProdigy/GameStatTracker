@@ -166,6 +166,7 @@ data class Parent(
 
 data class AllUser(
     @SerializedName("_id") val _id: String = "",
+    @SerializedName("userId") val userId: String = "",
     @SerializedName("status") val status: String = "",
     @SerializedName("firstName") val firstName: String = "",
     @SerializedName("lastName") val lastName: String = "",
