@@ -5,8 +5,9 @@ import com.allballapp.android.data.request.Members
 import com.allballapp.android.data.request.UpdateTeamDetailRequest
 import com.allballapp.android.data.response.AllUser
 import com.allballapp.android.data.response.PlayerDetails
-import com.allballapp.android.data.response.SwapUser
-import com.allballapp.android.data.response.team.*
+import com.allballapp.android.data.response.team.Team
+import com.allballapp.android.data.response.team.TeamLeaderBoard
+import com.allballapp.android.data.response.team.TeamRoaster
 
 
 data class TeamUIState(
@@ -14,11 +15,11 @@ data class TeamUIState(
     val userRole: String = "",
     val isLoading: Boolean = false,
     val teams: ArrayList<Team> = ArrayList(),
-    val players: ArrayList<Player> = ArrayList(),
-    val supportStaff: ArrayList<SwapUser> = ArrayList(),
-    val acceptPending: ArrayList<SwapUser> = ArrayList(),
+    val players: ArrayList<AllUser> = ArrayList(),
+    val supportStaff: ArrayList<AllUser> = ArrayList(),
+    val acceptPending: ArrayList<AllUser> = ArrayList(),
     val playersList: ArrayList<PlayerDetails> = ArrayList(),
-    val coaches: ArrayList<Coach> = ArrayList(),
+    val coaches: ArrayList<AllUser> = ArrayList(),
     val allUsers: ArrayList<AllUser> = ArrayList(),
     val leaderBoard: List<TeamLeaderBoard> = emptyList(),
     //val roasterTabs: List<Player> = emptyList(),

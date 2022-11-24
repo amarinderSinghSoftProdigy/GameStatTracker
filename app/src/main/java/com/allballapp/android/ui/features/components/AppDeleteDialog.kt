@@ -51,10 +51,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.allballapp.android.R
 import com.allballapp.android.common.*
 import com.allballapp.android.data.UserStorage
-import com.allballapp.android.data.response.ParentDetails
-import com.allballapp.android.data.response.PlayerDetails
-import com.allballapp.android.data.response.SwapUser
-import com.allballapp.android.data.response.UserRoles
+import com.allballapp.android.data.response.*
 import com.allballapp.android.data.response.team.Player
 import com.allballapp.android.data.response.team.Team
 import com.allballapp.android.ui.features.home.events.DivisionData
@@ -68,6 +65,7 @@ import com.togitech.ccp.component.TogiCountryCodePicker
 import com.togitech.ccp.data.utils.getDefaultLangCode
 import com.togitech.ccp.data.utils.getDefaultPhoneCode
 import com.togitech.ccp.data.utils.getLibCountries
+import timber.log.Timber
 import java.util.*
 
 
@@ -271,7 +269,7 @@ fun SelectTeamDialog(
 
 @Composable
 fun ShowParentDialog(
-    parentDetails: ParentDetails,
+    parentDetails: Parent,
     onDismiss: () -> Unit,
     onConfirmClick: () -> Unit,
 ) {
@@ -326,7 +324,7 @@ fun ShowParentDialog(
                     ) {
 
                         CoilImage(
-                            src = com.allballapp.android.BuildConfig.IMAGE_SERVER + parentDetails.parent?.profileImage,
+                            src = com.allballapp.android.BuildConfig.IMAGE_SERVER + parentDetails.profileImage,
                             modifier = Modifier
                                 .size(dimensionResource(id = R.dimen.size_200dp))
                                 .clip(CircleShape),
@@ -336,7 +334,7 @@ fun ShowParentDialog(
                         )
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
                         AppText(
-                            text = "${parentDetails.parent?.firstName} ${parentDetails.parent?.lastName}",
+                            text = "${parentDetails.firstName} ${parentDetails.lastName}",
                             style = MaterialTheme.typography.h6,
                             color = ColorBWBlack,
                             fontSize = dimensionResource(id = R.dimen.txt_size_20).value.sp
@@ -352,14 +350,14 @@ fun ShowParentDialog(
                         Row(
                             modifier = Modifier
                         ) {
-                            parentDetails.parent?.let {
+                            parentDetails.email.let {
                                 DetailItem(
                                     stringResource(id = R.string.email),
-                                    it.email
+                                    it
                                 )
                             }
                             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                            parentDetails.parent?.phone?.let {
+                            parentDetails.phone.let {
                                 DetailItem(
                                     stringResource(id = R.string.number),
                                     it
@@ -378,7 +376,7 @@ fun ShowParentDialog(
                         ButtonWithLeadingIconGrayed(
                             text = stringResource(R.string.message_),
                             onClick = {
-                                val u = Uri.parse("sms:" + parentDetails.parent?.phone)
+                                val u = Uri.parse("sms:" + parentDetails.phone)
                                 val i = Intent(Intent.ACTION_VIEW, u)
                                 try {
                                     context.startActivity(i)
@@ -397,7 +395,7 @@ fun ShowParentDialog(
                             text = stringResource(R.string.call),
                             onClick = {
 
-                                val u = Uri.parse("tel:" + parentDetails.parent?.phone)
+                                val u = Uri.parse("tel:" + parentDetails.phone)
                                 val i = Intent(Intent.ACTION_DIAL, u)
                                 try {
                                     context.startActivity(i)
@@ -1187,7 +1185,7 @@ fun SelectGuardianRoleDialog(
     guardianList: List<PlayerDetails>,
     onValueSelected: (PlayerDetails) -> Unit
 ) {
-
+    Timber.e("selected " + selected)
     BallerAppMainTheme {
         AlertDialog(
             properties = DialogProperties(usePlatformDefaultWidth = false),
@@ -1254,7 +1252,7 @@ fun SelectGuardianRoleDialog(
                             text = if (selectedRole != UserType.PLAYER.key) stringResource(R.string.child_not_listed) else stringResource(
                                 R.string.my_guardian_not_listed
                             ),
-                            onClick = onChildNotListedCLick,
+                            onClick = { if (!loading) onChildNotListedCLick() },
                             modifier = Modifier.fillMaxWidth(),
                             border = ButtonDefaults.outlinedBorder,
                             onlyBorder = true,
@@ -1266,7 +1264,7 @@ fun SelectGuardianRoleDialog(
                         if (selectedRole != UserType.PLAYER.key)
                             DialogButton(
                                 text = stringResource(R.string.i_dont_have_child_on_this_team),
-                                onClick = dontHaveChildClick,
+                                onClick = { if (!loading) dontHaveChildClick() },
                                 modifier = Modifier.fillMaxWidth(),
                                 border = ButtonDefaults.outlinedBorder,
                                 onlyBorder = true,
@@ -1297,7 +1295,7 @@ fun SelectGuardianRoleDialog(
                             DialogButton(
                                 text = stringResource(R.string.dialog_button_confirm),
                                 onClick = {
-                                    if (!selected.isNullOrEmpty()) {
+                                    if (!selected.isNullOrEmpty() && !loading) {
                                         onConfirmClick.invoke()
                                     }
                                 },
@@ -1958,6 +1956,7 @@ fun SwapProfile(
                             text = title.ifEmpty { stringResource(id = R.string.swap_profiles) },
                             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                             fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(end = dimensionResource(id = R.dimen.size_16dp))
                         )
 
                         Icon(
@@ -3060,9 +3059,9 @@ fun InvitationSuccessfullySentDialog(
                     val user = stringResource(id = R.string.user)
                     AppText(
                         text = stringResource(
-                            id = R.string.success_player_has_been_added_to_the_team,
+                            id = R.string.success_player_has_been_added_to_the_team/*,
                             playerName.ifEmpty { user },
-                            teamName.ifEmpty { team }
+                            teamName.ifEmpty { team }*/
                         ),
                         fontSize = dimensionResource(id = R.dimen.txt_size_18).value.sp,
                         fontWeight = FontWeight.Bold,

@@ -31,14 +31,6 @@ import java.util.*
 
 class CommonUtils {
     companion object {
-        fun getPlayerTabs(list: ArrayList<Player>): ArrayList<Player> {
-            var count = 0
-            for (item in list) {
-                item.uniqueId = count
-                count += 1
-            }
-            return list
-        }
 
         fun getUsersList(list: ArrayList<AllUser>, key: UserType): ArrayList<AllUser> {
             val listing = arrayListOf<AllUser>()

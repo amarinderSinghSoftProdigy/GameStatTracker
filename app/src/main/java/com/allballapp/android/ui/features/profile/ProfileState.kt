@@ -7,7 +7,7 @@ import com.allballapp.android.data.response.*
 data class ProfileState(
     val isLoading: Boolean = false,
     val showParentDialog: Boolean = false,
-    val selectedParentDetails: ParentDetails = ParentDetails(),
+    val selectedParentDetails: Parent = Parent(),
     val deleteDocument: UserDocType? = null,
     val showDeleteDialog: Boolean = false,
     val user: User = User(),

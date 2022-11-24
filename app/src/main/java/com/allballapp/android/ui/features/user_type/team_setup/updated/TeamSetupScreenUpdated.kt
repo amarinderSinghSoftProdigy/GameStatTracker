@@ -37,7 +37,6 @@ import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.getCustomColorCode
 import com.allballapp.android.common.validTeamName
-import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.request.Address
 import com.allballapp.android.data.request.Members
 import com.allballapp.android.ui.features.components.*
@@ -464,7 +463,13 @@ fun TeamSetupScreenUpdated(
                 (state.teamImageUri ?: "").ifEmpty { "" }
             },
             playerName = if (showNoMessage.value) stringResource(id = R.string.no_player)
-            else if (playerName.value.isNotEmpty()) playerName.value else inviteState.selectedPlayerName.ifEmpty { "" }
+            else if (inviteState.selectedIds.isNotEmpty()) {
+                if (inviteState.selectedIds.size == 1) stringResource(id = R.string.no_player).replace(
+                    "No",
+                    inviteState.selectedIds.size.toString() + ""
+                )
+                else inviteState.selectedIds.size.toString() + " " + stringResource(id = R.string.members)
+            } else stringResource(id = R.string.no_player)
         )
     }
 
