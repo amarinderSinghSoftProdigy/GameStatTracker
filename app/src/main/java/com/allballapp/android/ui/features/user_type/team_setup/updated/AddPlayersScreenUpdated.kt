@@ -500,7 +500,7 @@ fun InviteItem(
                             }) {
                                 Text(
                                     text = label.value,
-                                    textAlign = TextAlign.Center
+                                    textAlign = TextAlign.Start
                                 )
                             }
                         }

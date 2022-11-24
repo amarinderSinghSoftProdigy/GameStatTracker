@@ -233,7 +233,7 @@
     <string name="declined">Declined</string>
     <string name="invitation">Invitation</string>
     <string name="sent_by">Sent by</string>
-    <string name="what_is_your_role">What will %1$s role be on %2$s?</string>
+    <string name="what_is_your_role">What will %1$s\'s role be on %2$s?</string>
     <string name="finish">Finish</string>
     <string name="resend_code_in">Resend code in</string>
     <string name="pending_invitations">Pending Invitation</string>
@@ -390,7 +390,7 @@
     <string name="wait_for_response">Wait for lorem ipsum to dolor sit amet.</string>
     <string name="child_not_listed">My child is not listed</string>
     <string name="i_dont_have_child_on_this_team">I don\'t have child on this team</string>
-    <string name="select_the_players_guardian">Select the player/s you\'re guardian of</string>
+    <string name="select_the_players_guardian">Please select the player profile(s) you want to invite.</string>
     <string name="search_venue_by_name">Search venue by name</string>
     <string name="cash">Cash</string>
     <string name="cash_message">Please enter cash value.</string>
@@ -448,11 +448,11 @@
     <string name="supporting_staff">Supporting Staff</string>
     <string name="mobile_number">Mobile Number</string>
     <string name="my_guardian_not_listed">My guardian is not listed</string>
-    <string name="confirm_your_guardin">Confirm your guardian</string>
+    <string name="confirm_your_guardin">Please select the guardian profile(s) you want to invite.</string>
     <string name="select_your_role_on_specific_team">Select your role on this specific team</string>
     <string name="info_text">"At ultrices adipiscing convallis sed elit tellus sollicitun sit. Ac non eu sed congue ipsum, suscipit diam molestie. Mauris arcu dolor aliquet sed sit. "</string>
     <string name="invite_others_to_the_team">Invite others to the team</string>
-    <string name="success_player_has_been_added_to_the_team">Success! %1$s has been added to %2$s</string>
+    <string name="success_player_has_been_added_to_the_team">Success!<!-- %1$s has been added to %2$s--></string>
     <string name="best_time_to_invite">Now is the best time to invite anyone else that needs to be a part of this team.</string>
     <string name="invite_from_your_profile">Invite from your profile</string>
     <string name="valid_class_of">class should be of 4 characters</string>
@@ -460,7 +460,7 @@
     <string name="aau_card_number">AAU Card Number</string>
     <string name="assistance_coach">Assistance Coach</string>
     <string name="invite_done_message">Success! No player has been added to the team.</string>
-    <string name="no_player">No player</string>
+    <string name="no_player">No member</string>
     <string name="yes_label">Yes</string>
     <string name="no_label">No</string>
     <string name="age_ok">I\'m 13 or older</string>

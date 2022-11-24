@@ -18,6 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -27,17 +29,16 @@ import androidx.compose.ui.unit.sp
 import com.allballapp.android.R
 import com.allballapp.android.data.response.AllUser
 import com.allballapp.android.ui.features.components.*
-import com.allballapp.android.ui.features.home.invitation.InvitationStatus
 import com.allballapp.android.ui.features.home.teams.TeamViewModel
 import com.allballapp.android.ui.theme.ColorBWBlack
 import com.allballapp.android.ui.theme.ColorBWGrayStatus
 import com.allballapp.android.ui.theme.appColors
-import com.allballapp.android.ui.utils.CommonUtils
 import com.allballapp.android.ui.utils.dragDrop.ReorderableItem
 import com.allballapp.android.ui.utils.dragDrop.detectReorderAfterLongPress
 import com.allballapp.android.ui.utils.dragDrop.rememberReorderableLazyListState
 import com.allballapp.android.ui.utils.dragDrop.reorderable
 import com.google.accompanist.flowlayout.FlowRow
+import timber.log.Timber
 
 @Composable
 fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
@@ -54,7 +55,7 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
             canDragOver = vm::isUserDragEnabled
         )
     Box {
-        if (state.coaches.isNotEmpty() || state.players.isNotEmpty() || state.acceptPending.isNotEmpty()) {
+        if (state.allUsers.isNotEmpty()) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -66,10 +67,7 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
             ) {
                 FlowRow {
                     Column {
-                        val list =
-                            CommonUtils.getUsersList(state.allUsers, UserType.COACH).filter {coach->
-                                (!coach.status.equals(InvitationStatus.PENDING.status,true)) && (!coach.status.equals(InvitationStatus.DECLINED.status,true))}
-                        if (list.isNotEmpty()) {
+                        if (state.coaches.isNotEmpty()) {
                             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
                             Text(
                                 text = stringResource(id = R.string.coaches),
@@ -81,16 +79,14 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                             LazyColumn(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(dimensionResource(id = R.dimen.size_56dp) * list.size)
+                                    .height(dimensionResource(id = R.dimen.size_56dp) * state.coaches.size)
                             ) {
-                                items(list) {
+                                items(state.coaches) {
                                     MangeTeamDataHeaderItem(data = it)
                                 }
                             }
                         }
-                        val listplayers = CommonUtils.getUsersList(state.allUsers, UserType.PLAYER).filter {player->
-                            (!player.status.equals(InvitationStatus.PENDING.status,true)) && (!player.status.equals(InvitationStatus.DECLINED.status,true))}
-                        if (listplayers.isNotEmpty()) {
+                        if (state.players.isNotEmpty()) {
                             Column {
                                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
                                 Text(
@@ -105,14 +101,14 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                                 state = recordState.listState,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(dimensionResource(id = R.dimen.size_56dp) * listplayers.size)
+                                    .height(dimensionResource(id = R.dimen.size_56dp) * state.players.size)
                                     .then(
                                         Modifier
                                             .reorderable(recordState)
                                             .detectReorderAfterLongPress(recordState)
                                     ),
                             ) {
-                                items(listplayers, key = { item -> item._id }) { item ->
+                                items(state.players, key = { item -> item._id }) { item ->
                                     ReorderableItem(
                                         reorderableState = recordState,
                                         key = item._id,
@@ -129,9 +125,7 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                                 }
                             }
                         }
-                        val listuser = CommonUtils.getUsersList(state.allUsers, UserType.PARENT).filter {parent->
-                            (!parent.status.equals(InvitationStatus.PENDING.status,true)) && (!parent.status.equals(InvitationStatus.DECLINED.status,true))}
-                        if (listuser.isNotEmpty()) {
+                        if (state.acceptPending.isNotEmpty()) {
                             Column {
                                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_18dp)))
                                 Text(
@@ -146,14 +140,14 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                                 state = recordStatePending.listState,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(dimensionResource(id = R.dimen.size_56dp) * listuser.size)
+                                    .height(dimensionResource(id = R.dimen.size_56dp) * state.acceptPending.size)
                                     .then(
                                         Modifier
                                             .reorderable(recordStatePending)
                                             .detectReorderAfterLongPress(recordStatePending)
                                     ),
                             ) {
-                                items(listuser, key = { item -> item._id }) { item ->
+                                items(state.acceptPending, key = { item -> item._id }) { item ->
                                     ReorderableItem(
                                         reorderableState = recordStatePending,
                                         key = item._id,
@@ -162,6 +156,9 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                                             animateDpAsState(if (dragging) dimensionResource(id = R.dimen.size_10dp) else 0.dp)
                                         MangeTeamDataHeaderItem(
                                             modifier = Modifier
+                                                .onGloballyPositioned { coordinates ->
+                                                    Timber.e("points " + coordinates.positionInRoot())
+                                                }
                                                 .shadow(elevation.value),
                                             item
                                         )

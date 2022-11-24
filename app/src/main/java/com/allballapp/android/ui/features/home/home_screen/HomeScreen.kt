@@ -176,7 +176,7 @@ fun HomeScreen(
                     onInviteClick()
                 }
                 else -> {
-                    //vm.onEvent(HomeScreenEvent.OnSwapClick)
+
                 }
             }
         }) {

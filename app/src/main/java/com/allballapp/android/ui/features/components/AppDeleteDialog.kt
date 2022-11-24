@@ -67,6 +67,7 @@ import com.togitech.ccp.component.TogiCountryCodePicker
 import com.togitech.ccp.data.utils.getDefaultLangCode
 import com.togitech.ccp.data.utils.getDefaultPhoneCode
 import com.togitech.ccp.data.utils.getLibCountries
+import timber.log.Timber
 import java.util.*
 
 
@@ -1186,7 +1187,7 @@ fun SelectGuardianRoleDialog(
     guardianList: List<PlayerDetails>,
     onValueSelected: (PlayerDetails) -> Unit
 ) {
-
+    Timber.e("selected " + selected)
     BallerAppMainTheme {
         AlertDialog(
             properties = DialogProperties(usePlatformDefaultWidth = false),
@@ -1253,7 +1254,7 @@ fun SelectGuardianRoleDialog(
                             text = if (selectedRole != UserType.PLAYER.key) stringResource(R.string.child_not_listed) else stringResource(
                                 R.string.my_guardian_not_listed
                             ),
-                            onClick = onChildNotListedCLick,
+                            onClick = { if (!loading) onChildNotListedCLick() },
                             modifier = Modifier.fillMaxWidth(),
                             border = ButtonDefaults.outlinedBorder,
                             onlyBorder = true,
@@ -1265,7 +1266,7 @@ fun SelectGuardianRoleDialog(
                         if (selectedRole != UserType.PLAYER.key)
                             DialogButton(
                                 text = stringResource(R.string.i_dont_have_child_on_this_team),
-                                onClick = dontHaveChildClick,
+                                onClick = { if (!loading) dontHaveChildClick() },
                                 modifier = Modifier.fillMaxWidth(),
                                 border = ButtonDefaults.outlinedBorder,
                                 onlyBorder = true,
@@ -1296,7 +1297,7 @@ fun SelectGuardianRoleDialog(
                             DialogButton(
                                 text = stringResource(R.string.dialog_button_confirm),
                                 onClick = {
-                                    if (!selected.isNullOrEmpty()) {
+                                    if (!selected.isNullOrEmpty() && !loading) {
                                         onConfirmClick.invoke()
                                     }
                                 },
@@ -1939,6 +1940,7 @@ fun SwapProfile(
                             text = title.ifEmpty { stringResource(id = R.string.swap_profiles) },
                             fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                             fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(end = dimensionResource(id = R.dimen.size_16dp))
                         )
 
                         Icon(
@@ -3041,9 +3043,9 @@ fun InvitationSuccessfullySentDialog(
                     val user = stringResource(id = R.string.user)
                     AppText(
                         text = stringResource(
-                            id = R.string.success_player_has_been_added_to_the_team,
+                            id = R.string.success_player_has_been_added_to_the_team/*,
                             playerName.ifEmpty { user },
-                            teamName.ifEmpty { team }
+                            teamName.ifEmpty { team }*/
                         ),
                         fontSize = dimensionResource(id = R.dimen.txt_size_18).value.sp,
                         fontWeight = FontWeight.Bold,

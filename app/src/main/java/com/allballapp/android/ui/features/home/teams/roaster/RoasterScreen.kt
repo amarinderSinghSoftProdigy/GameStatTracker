@@ -28,7 +28,6 @@ import com.allballapp.android.data.response.AllUser
 import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.home.invitation.InvitationStatus
 import com.allballapp.android.ui.features.home.teams.TeamViewModel
-import com.allballapp.android.ui.features.profile.ProfileEvent
 import com.allballapp.android.ui.features.profile.ProfileViewModel
 import com.allballapp.android.ui.features.profile.tabs.ProfileTabScreen
 import com.allballapp.android.ui.theme.ColorBWBlack
@@ -54,7 +53,7 @@ fun RoasterScreen(
         if (state.isLoading) {
             CommonProgressBar()
         } else {
-            if (state.coaches.isEmpty() && state.players.isEmpty() && state.supportStaff.isEmpty() && state.acceptPending.isEmpty()) {
+            if (state.allUsers.isEmpty()) {
                 Column(modifier = Modifier.align(Alignment.Center)) {
                     AppText(
                         text = stringResource(id = R.string.no_players_in_team),
@@ -256,14 +255,14 @@ fun CoachListItem(
                 )
             }
 
-            if (data.role == UserType.PLAYER.key) {
+           /* if (data.role == UserType.PLAYER.key) {
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
                 AppText(
                     text = data.jersey + " " + data.position,
                     color = MaterialTheme.appColors.textField.label,
                     style = MaterialTheme.typography.h6
                 )
-            }
+            }*/
         }
         if (data.status.equals(InvitationStatus.PENDING.status, true) || data.status.equals(
                 InvitationStatus.DECLINED.status,

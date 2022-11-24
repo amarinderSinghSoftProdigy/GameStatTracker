@@ -91,12 +91,16 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import timber.log.Timber
+import javax.inject.Inject
 
 val animeDuration = 500
 
 @AndroidEntryPoint
 class HomeActivity : FragmentActivity(), CustomCometListener {
-    var dataStoreManager: DataStoreManager = DataStoreManager(this)
+
+    @Inject
+    lateinit var dataStoreManager: DataStoreManager
+
     val cometChat = CometChatUI()
     var setupTeamViewModelUpdated: SetupTeamViewModelUpdated? = null
     lateinit var homeViewModel: HomeViewModel
@@ -434,6 +438,7 @@ fun NavControllerComposable(
             val refreshTeamListing: String = backStackEntry
                 .savedStateHandle.get<String>("refreshTeamListing") ?: ""
 
+            homeViewModel.setBottomNav(BottomNavKey.HOME)
             homeViewModel.setTopAppBar(false)
             HomeScreen(
                 role,
@@ -621,6 +626,7 @@ fun NavControllerComposable(
 
         }
         composable(route = Route.TEAMS_SCREEN) {
+            homeViewModel.setBottomNav(BottomNavKey.TEAMS)
             homeViewModel.setTopBar(
                 TopBarData(
                     label = teamViewModel.teamUiState.value.teamName,
@@ -629,6 +635,7 @@ fun NavControllerComposable(
             )
             BackHandler {
                 homeViewModel.setScreen(false)
+                navController.popBackStack()
             }
             TeamsScreen(
                 teamViewModel,
@@ -708,6 +715,7 @@ fun NavControllerComposable(
 
 
         composable(route = Route.EVENTS_SCREEN) {
+            homeViewModel.setBottomNav(BottomNavKey.EVENTS)
             EventsScreen(
                 teamViewModel,
                 eventViewModel,
