@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import com.allballapp.android.R
 import com.allballapp.android.ui.features.components.AppText
 import com.allballapp.android.ui.features.components.LeadingIconAppButton
+import com.allballapp.android.ui.theme.ColorBWGrayMedium
 import com.allballapp.android.ui.theme.GreenColor
 import com.allballapp.android.ui.theme.appColors
 
@@ -58,7 +59,7 @@ fun EventRegisterSuccessScreen(
             }
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_44dp)))
             AppText(
-                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                color = if (heading.isEmpty()) ColorBWGrayMedium else MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                 text = heading.ifEmpty { stringResource(id = R.string.no_data_found) },
                 fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
                 fontWeight = FontWeight.Bold
