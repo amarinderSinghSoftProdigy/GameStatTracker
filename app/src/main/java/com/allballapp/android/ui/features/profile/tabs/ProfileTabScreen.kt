@@ -326,6 +326,7 @@ fun ProfileItem(type: String, value: String, imageUrl: String? = null) {
                     style = MaterialTheme.typography.h5,
                     color = MaterialTheme.appColors.buttonColor.bckgroundEnabled
                 )
+
                 if (imageUrl != null) {
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
                     CoilImage(
@@ -492,12 +493,13 @@ private fun PreferenceItem(
                     color = ColorBWGrayLight,
                     modifier = Modifier.height(dimensionResource(id = R.dimen.size_35dp))
                 )
+
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_5dp)))
+
                 AppText(
                     text = firstValue,
                     style = MaterialTheme.typography.h5,
                     color = ColorBWBlack,
-
                     )
 
             }
