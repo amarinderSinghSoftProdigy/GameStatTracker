@@ -1701,7 +1701,10 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
                 )
             }
             rvChatListView?.adapter = messageAdapter
-            stickyHeaderDecoration = StickyHeaderDecoration(messageAdapter!!)
+
+            messageAdapter?.let {
+                stickyHeaderDecoration = StickyHeaderDecoration(it)
+            }
             rvChatListView?.addItemDecoration(stickyHeaderDecoration!!, 0)
             scrollToBottom()
             messageAdapter?.notifyDataSetChanged()
@@ -2701,6 +2704,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
             }
             isEdit = false
             baseMessage = null
+            composeBox?.setText("")
             editMessageLayout?.visibility = View.GONE
         } else if (id == R.id.iv_reply_close) {
             if (messageAdapter != null) {
