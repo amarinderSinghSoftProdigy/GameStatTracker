@@ -412,7 +412,8 @@ fun InviteItem(
             AppSearchOutlinedTextField(
                 modifier = Modifier
                     .weight(0.7f)
-                    .focusRequester(focusRequester),
+                    .focusRequester(focusRequester)
+                    .height(dimensionResource(id = R.dimen.size_56dp)),
                 value = item.name,
                 onValueChange = { name ->
                     if (name.length <= maxChar)
@@ -444,41 +445,22 @@ fun InviteItem(
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
             Box(modifier = Modifier.weight(1f)) {
                 Column {
-                    EditFields(
+                    InviteField(
                         roleObject.value.value,
-                        textStyle = TextStyle().copy(textAlign = TextAlign.Start),
-                        onValueChange = {},
-                        head = "",
-                        keyboardOptions = KeyboardOptions(
-                            imeAction = ImeAction.Next,
-                            keyboardType = KeyboardType.Text
-                        ),
-                        placeholder = {
-                            Text(
-                                text = stringResource(id = R.string.select_role),
-                                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                                color = MaterialTheme.appColors.textField.label,
-                            )
-                        },
                         modifier = Modifier
+                            .height(dimensionResource(id = R.dimen.size_56dp))
                             .onGloballyPositioned {
                                 textFieldSize = it.size.toSize()
                             }
                             .border(
-                                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
+                                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)),
                                 width = dimensionResource(id = R.dimen.size_1dp),
                                 color = ColorBWGrayBorder
                             ),
-                        trailingIcon = {
-                            Icon(
-                                painterResource(id = R.drawable.ic_arrow_down),
-                                contentDescription = null,
-                                modifier = Modifier.clickable {
-                                    expanded = !expanded
-                                })
-                        },
-                        enabled = true
-                    )
+                    ) {
+                        expanded = !expanded
+
+                    }
                     DropdownMenu(
                         expanded = expanded,
                         onDismissRequest = { expanded = false },
