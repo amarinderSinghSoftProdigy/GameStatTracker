@@ -69,7 +69,6 @@
                     android:layout_height="wrap_content"/>
             </HorizontalScrollView>
             <LinearLayout
-                android:layout_marginBottom="16dp"
                 android:layout_width="wrap_content"
                 android:layout_alignEnd="@+id/cv_message_container"
                 android:layout_below="@+id/reaction_group"
@@ -92,19 +91,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
-            <TextView
-                android:id="@+id/txt_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:textSize="12sp"
-                android:layout_marginBottom="8dp"
-                android:layout_alignBottom="@+id/cv_message_container"
-                android:layout_toStartOf="@+id/cv_message_container"
-                android:textStyle="bold"
-                android:visibility="gone"
-                tools:text="11:00 PM"
-                tools:visibility="visible" />
+
         </RelativeLayout>
+        <TextView
+            android:id="@+id/txt_time"
+            android:layout_marginEnd="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:textSize="12sp"
+            android:layout_marginBottom="8dp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            tools:text="11:00 PM"
+            tools:visibility="visible" />
     </LinearLayout>
 </layout>
