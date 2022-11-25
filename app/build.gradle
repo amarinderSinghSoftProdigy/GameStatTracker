@@ -7,7 +7,8 @@ plugins {
     id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
     // Add the Google services Gradle plugin
     id 'com.google.gms.google-services'
-
+    // Add the Crashlytics Gradle plugin
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -105,8 +106,6 @@ dependencies {
 
     // Import the Firebase BoM
     implementation platform('com.google.firebase:firebase-bom:31.0.1')
-    implementation 'com.google.firebase:firebase-analytics'
-
 
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation "androidx.compose.ui:ui:$compose_version"
@@ -197,4 +196,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging'
 
     implementation "com.github.prolificinteractive:material-calendarview:1.6.1"
+
+    // Add the dependencies for the Crashlytics and Analytics libraries
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-analytics'
 }
