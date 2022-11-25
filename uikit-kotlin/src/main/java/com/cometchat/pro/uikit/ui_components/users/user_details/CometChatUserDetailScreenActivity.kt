@@ -1,11 +1,13 @@
 package com.cometchat.pro.uikit.ui_components.users.user_details
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -30,6 +32,7 @@ import com.cometchat.pro.uikit.ui_resources.utils.ErrorMessagesUtils
 import com.cometchat.pro.uikit.ui_resources.utils.FontUtils
 import com.cometchat.pro.uikit.ui_resources.utils.Utils
 import com.cometchat.pro.uikit.ui_settings.FeatureRestriction
+import com.cometchat.pro.uikit.ui_settings.UIKitSettings
 import com.google.android.material.appbar.MaterialToolbar
 
 class CometChatUserDetailScreenActivity constructor() : AppCompatActivity() {
@@ -49,9 +52,10 @@ class CometChatUserDetailScreenActivity constructor() : AppCompatActivity() {
     private var isAddMember: Boolean = false
     private var isAlreadyAdded: Boolean = false
     private var tvSendMessage: TextView? = null
+    private var tv_close: TextView? = null
     private var blockUserLayout: LinearLayout? = null
     private var tvBlockUser: TextView? = null
-    private var toolbar: MaterialToolbar? = null
+//    private var toolbar: MaterialToolbar? = null
     private var isBlocked: Boolean = false
     private var fontUtils: FontUtils? = null
 //    private var callBtn: ImageView? = null
@@ -68,6 +72,8 @@ class CometChatUserDetailScreenActivity constructor() : AppCompatActivity() {
     private var divider2: View? = null
     private var divider3: View? = null
     private val callList: MutableList<BaseMessage> = ArrayList()
+    private var ivBackArrow: ImageView? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,18 +88,26 @@ class CometChatUserDetailScreenActivity constructor() : AppCompatActivity() {
         userAvatar = findViewById(R.id.iv_user)
         userName = findViewById(R.id.tv_name)
         userStatus = findViewById(R.id.tv_status)
+        ivBackArrow = findViewById(R.id.iv_back_arrow)
+        tv_close=findViewById(R.id.tv_close)
+
+
 //        callBtn = findViewById(R.id.callBtn_iv)
 //        vidoeCallBtn = findViewById(R.id.video_callBtn_iv)
         addBtn = findViewById(R.id.btn_add)
         tvViewProfile = findViewById(R.id.tv_view_profile)
         tvAction = findViewById(R.id.tv_action)
         tvSendMessage = findViewById(R.id.tv_send_message)
-        toolbar = findViewById(R.id.user_detail_toolbar)
+//        toolbar = findViewById(R.id.user_detail_toolbar)
         divider1 = findViewById(R.id.divider_1)
         divider2 = findViewById(R.id.divider_2)
         divider3 = findViewById(R.id.divider_3)
-        setSupportActionBar(toolbar)
-        if (supportActionBar != null) supportActionBar?.setDisplayHomeAsUpEnabled(true)
+//        setSupportActionBar(toolbar)
+//        if (supportActionBar != null) supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+//        if (UIKitSettings.color.isNotEmpty())
+//            toolbar?.setBackgroundColor(Color.parseColor(UIKitSettings.color))
+
         addBtn!!.typeface = fontUtils!!.getTypeFace(FontUtils.robotoRegular)
         blockUserLayout = findViewById(R.id.block_user_layout)
         tvBlockUser = findViewById(R.id.tv_blockUser)
@@ -115,9 +129,20 @@ class CometChatUserDetailScreenActivity constructor() : AppCompatActivity() {
                 tvViewProfile?.visibility = View.GONE
             } else {
                 tvAction?.visibility = View.VISIBLE
-                tvViewProfile?.visibility = View.VISIBLE
+
+                /*Hiding option as per requirement*/
+                tvViewProfile?.visibility = View.GONE
             }
         }
+
+        ivBackArrow?.setOnClickListener{
+           onBackPressed()
+        }
+
+        tv_close?.setOnClickListener {
+            onBackPressed()
+        }
+
 
         tvViewProfile?.setOnClickListener {
             var intent = Intent(this, CometChatCollaborativeActivity::class.java)

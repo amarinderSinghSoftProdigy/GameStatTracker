@@ -279,6 +279,7 @@
     <string name="yesterday">Yesterday</string>
     <string name="back">back</string>
     <string name="ban">Ban</string>
+    <string name="banned">banned</string>
     <string name="banned_successfully">Banned Successfully</string>
     <string name="blocked_successfully">Blocked Successfully</string>
     <string name="create">Create</string>
@@ -316,7 +317,7 @@
     <string name="thread">Thread</string>
     <string name="no_messages_found">No messages found</string>
     <string name="emoji">emoji</string>
-    <string name="close">close</string>
+    <string name="close">Close</string>
     <string name="error">Error</string>
     <string name="group_members">Group Members</string>
     <string name="no_thread_message">No Thread Messages</string>
@@ -327,6 +328,7 @@
     <string name="kick">kick</string>
     <string name="joined">joined</string>
     <string name="unban">Unban</string>
+    <string name="unbanned">unbanned</string>
     <string name="group_member_kicked_successfully">Group member kicked successfully</string>
     <string name="add_member_to_group_failed">Add member to group failed</string>
     <string name="made">made</string>

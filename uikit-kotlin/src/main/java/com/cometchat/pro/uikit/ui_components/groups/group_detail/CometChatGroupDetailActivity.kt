@@ -90,6 +90,8 @@ class CometChatGroupDetailActivity() : AppCompatActivity() {
     private var fontUtils: FontUtils? = null
     private var sharedMediaLayout: LinearLayout? = null
     private var sharedMediaView: CometChatSharedMedia? = null
+    private var tv_close: TextView? = null
+
 
     //    private var videoCallBtn: ImageView? = null
 //    private var callBtn: ImageView? = null
@@ -98,7 +100,7 @@ class CometChatGroupDetailActivity() : AppCompatActivity() {
     private var dividerModerator: TextView? = null
     private var divider2: TextView? = null
     private var banMemberRequest: BannedGroupMembersRequest? = null
-    private var toolbar: MaterialToolbar? = null
+//    private var toolbar: MaterialToolbar? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cometchat_group_detail)
@@ -124,6 +126,11 @@ class CometChatGroupDetailActivity() : AppCompatActivity() {
         tvLoadMore = findViewById(R.id.tv_load_more)
         tvLoadMore!!.text = String.format(resources.getString(R.string.load_more_members), LIMIT)
         val tvAddMember = findViewById<TextView>(R.id.tv_add_member)
+
+        tv_close=findViewById(R.id.tv_close)
+        tv_close?.setOnClickListener {
+            onBackPressed()
+        }
 //        callBtn = findViewById(R.id.callBtn_iv)
 //        videoCallBtn = findViewById(R.id.video_callBtn_iv)
         rlBanMembers = findViewById(R.id.rlBanView)
@@ -152,12 +159,12 @@ class CometChatGroupDetailActivity() : AppCompatActivity() {
         })
         tvDelete = findViewById(R.id.tv_delete)
         val tvExit = findViewById<TextView>(R.id.tv_exit)
-        toolbar = findViewById(R.id.groupDetailToolbar)
+//        toolbar = findViewById(R.id.groupDetailToolbar)
         tvDelete!!.typeface = fontUtils!!.getTypeFace(FontUtils.robotoMedium)
         tvExit.typeface = fontUtils!!.getTypeFace(FontUtils.robotoMedium)
         tvAddMember.typeface = fontUtils!!.getTypeFace(FontUtils.robotoRegular)
-        setSupportActionBar(toolbar)
-        if (supportActionBar != null) supportActionBar?.setDisplayHomeAsUpEnabled(true)
+//        setSupportActionBar(toolbar)
+//        if (supportActionBar != null) supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val linearLayoutManager = LinearLayoutManager(this)
         rvMemberList!!.layoutManager = linearLayoutManager
         //        rvMemberList.setNestedScrollingEnabled(false);
@@ -269,14 +276,14 @@ class CometChatGroupDetailActivity() : AppCompatActivity() {
 
     private fun checkDarkMode() {
         if (Utils.isDarkMode(this)) {
-            toolbar!!.setTitleTextColor(resources.getColor(R.color.textColorWhite))
+//            toolbar!!.setTitleTextColor(resources.getColor(R.color.textColorWhite))
             tvGroupName!!.setTextColor(resources.getColor(R.color.textColorWhite))
             dividerAdmin!!.setBackgroundColor(resources.getColor(R.color.grey))
             dividerModerator!!.setBackgroundColor(resources.getColor(R.color.grey))
             dividerBan!!.setBackgroundColor(resources.getColor(R.color.grey))
             divider2!!.setBackgroundColor(resources.getColor(R.color.grey))
         } else {
-            toolbar!!.setTitleTextColor(resources.getColor(R.color.primaryTextColor))
+//            toolbar!!.setTitleTextColor(resources.getColor(R.color.primaryTextColor))
             tvGroupName!!.setTextColor(resources.getColor(R.color.primaryTextColor))
             dividerAdmin!!.setBackgroundColor(resources.getColor(R.color.light_grey))
             dividerModerator!!.setBackgroundColor(resources.getColor(R.color.light_grey))
@@ -407,7 +414,7 @@ class CometChatGroupDetailActivity() : AppCompatActivity() {
         if (intent.hasExtra(UIKitConstants.IntentStrings.MEMBER_SCOPE)) {
             loggedInUserScope = intent.getStringExtra(UIKitConstants.IntentStrings.MEMBER_SCOPE)
             if (loggedInUserScope != null && (loggedInUserScope == CometChatConstants.SCOPE_ADMIN)) {
-                rlAddMemberView!!.visibility = View.VISIBLE
+//                rlAddMemberView!!.visibility = View.VISIBLE
                 rlBanMembers!!.visibility = View.VISIBLE
                 rlModeratorView!!.visibility = View.VISIBLE
                 tvDelete!!.visibility = View.VISIBLE
@@ -754,7 +761,7 @@ class CometChatGroupDetailActivity() : AppCompatActivity() {
                     adminCount = adminCount + 1
                     tvAdminCount!!.text = adminCount.toString()
                     if ((user.uid == loggedInUser.uid)) {
-                        rlAddMemberView!!.visibility = View.VISIBLE
+//                        rlAddMemberView!!.visibility = View.VISIBLE
                         loggedInUserScope = CometChatConstants.SCOPE_ADMIN
                         tvDelete!!.visibility = View.VISIBLE
                     }
@@ -890,6 +897,8 @@ class CometChatGroupDetailActivity() : AppCompatActivity() {
                     group
                 }
                 dialog.dismiss()
+                onBackPressed()
+
             }
 
             override fun onError(e: CometChatException) {

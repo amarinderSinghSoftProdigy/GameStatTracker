@@ -2730,7 +2730,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
             replyMessageLayout?.visibility = View.GONE
         } else if (id == R.id.btn_unblock_user) {
             unblockUser()
-        } else if (id == R.id.iv_user_info) {
+        } else if (id == R.id.chatList_toolbar) {
             if (type == CometChatConstants.RECEIVER_TYPE_USER) {
                 val intent = Intent(context, CometChatUserDetailScreenActivity::class.java)
                 intent.putExtra(UIKitConstants.IntentStrings.UID, Id)

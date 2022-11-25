@@ -10,6 +10,12 @@
         android:orientation="vertical"
         tools:context=".ui_components.chats.CometChatConversationList">
 
+        <ProgressBar
+            android:layout_centerInParent="true"
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -122,6 +128,7 @@
                 android:background="@drawable/layout_background"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/cometchat_conversation_list_item" />
+
 
         </LinearLayout>
 

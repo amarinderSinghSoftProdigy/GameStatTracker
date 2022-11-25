@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         app:title="@string/privacy_and_security"
         app:navigationIcon="@drawable/ic_back"
+        android:background="@color/colorPrimary"
         android:layout_height="wrap_content"/>
 
     <RelativeLayout

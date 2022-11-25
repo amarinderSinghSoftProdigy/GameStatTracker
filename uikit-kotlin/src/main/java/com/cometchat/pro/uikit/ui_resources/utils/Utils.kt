@@ -213,9 +213,9 @@ public class Utils {
                         else if (lastMessage.action == CometChatConstants.ActionKeys.ACTION_KICKED) message = ((lastMessage.actioBy as User).name + " "
                                 + context.getString(R.string.kicked_by) + " " + (lastMessage.actionOn as User).name)
                         else if (lastMessage.action == CometChatConstants.ActionKeys.ACTION_BANNED) message = ((lastMessage.actioBy as User).name + " "
-                                + context.getString(R.string.ban) + " " + (lastMessage.actionOn as User).name)
+                                + context.getString(R.string.banned) + " " + (lastMessage.actionOn as User).name)
                         else if (lastMessage.action == CometChatConstants.ActionKeys.ACTION_UNBANNED) message = ((lastMessage.actioBy as User).name + " "
-                                + context.getString(R.string.unban) + " " + (lastMessage.actionOn as User).name)
+                                + context.getString(R.string.unbanned) + " " + (lastMessage.actionOn as User).name)
                         else if (lastMessage.action == CometChatConstants.ActionKeys.ACTION_LEFT) message = (lastMessage.actioBy as User).name + " " + context.getString(R.string.left)
                         else if (lastMessage.action == CometChatConstants.ActionKeys.ACTION_SCOPE_CHANGED)
                             message = if (lastMessage.newScope == CometChatConstants.SCOPE_MODERATOR) {
