@@ -313,11 +313,19 @@ class CometChatAvatar : AppCompatImageView {
      * @param name is a object of String.class. Its first 2 character are used in image with no avatar or icon.
      */
     fun setInitials(name: String) {
-        text = if (name.length >= 2) {
-            name.substring(0, 2)
-        } else {
-            name
-        }
+
+        /* text = if (name.length >= 2) {
+             name.substring(0, 2)
+         } else {
+             name
+         }
+ */
+        /* For getting name initials from gull name*/
+        val initials = name.trim().splitToSequence(" ", limit = 2)
+            .map { it.first() }.joinToString("").toUpperCase()
+
+        text = initials
+
         setDrawable()
         setImageDrawable(drawable)
     }

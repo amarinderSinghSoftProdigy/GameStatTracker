@@ -32,7 +32,7 @@ import com.google.accompanist.flowlayout.FlowRow
 fun MyEvents(
     vm: EventViewModel,
     moveToPracticeDetail: (String, String) -> Unit,
-    moveToGameDetail: (String) -> Unit,
+    moveToGameDetail: (gameId: String, gameName: String) -> Unit,
     moveToEventDetail: (String) -> Unit
 ) {
 
@@ -77,7 +77,6 @@ fun MyEvents(
                                     }, onDeclineCLick = { event ->
                                         vm.onEvent(EvEvents.OnDeclineCLick(event.id,EventType.PRACTICE.type))
                                     }, moveToPracticeDetail = moveToPracticeDetail,
-                                        moveToGameDetail = moveToGameDetail,
                                         isPast = false,
 //                                        isSelfCreatedEvent = data.createdBy == UserStorage.userId
                                         isSelfCreatedEvent = false
@@ -86,14 +85,24 @@ fun MyEvents(
                                 is PublishedGames -> {
                                     GameDataItem(
                                         publishedGames = data,
-                                        moveToGameDetail = { gameId ->
-//                                            moveToGameDetail.invoke(gameId)
+                                        moveToGameDetail = { gameId, gameNmae ->
+                                            moveToGameDetail.invoke(gameId, gameNmae)
                                         }, onAcceptCLick = { eventId ->
-                                            vm.onEvent(EvEvents.OnGoingCLick(eventId,EventType.GAME.type))
+                                            vm.onEvent(
+                                                EvEvents.OnGoingCLick(
+                                                    eventId,
+                                                    EventType.GAME.type
+                                                )
+                                            )
 
                                         },
                                         onDeclineCLick = { eventId ->
-                                            vm.onEvent(EvEvents.OnDeclineCLick(eventId,EventType.GAME.type))
+                                            vm.onEvent(
+                                                EvEvents.OnDeclineCLick(
+                                                    eventId,
+                                                    EventType.GAME.type
+                                                )
+                                            )
                                         })
                                 }
                             }
@@ -125,7 +134,6 @@ fun MyEvents(
                                 }, onDeclineCLick = { eventId ->
                                     vm.onEvent(EvEvents.OnDeclineCLick(eventId.id,EventType.PRACTICE.type))
                                 }, moveToPracticeDetail = moveToPracticeDetail,
-                                    moveToGameDetail = moveToGameDetail,
                                     isPast = true
                                 )
                             }
@@ -206,7 +214,7 @@ fun MyEvents(
 fun GameDataItem(
     modifier: Modifier = Modifier,
     publishedGames: PublishedGames,
-    moveToGameDetail: (gameId: String) -> Unit,
+    moveToGameDetail: (gameId: String, gameName: String) -> Unit,
     onAcceptCLick: (String) -> Unit,
     onDeclineCLick: (String) -> Unit,
 ) {
@@ -214,7 +222,7 @@ fun GameDataItem(
     Box(
         modifier = modifier
             .clickable {
-                moveToGameDetail.invoke(publishedGames.Id)
+                moveToGameDetail.invoke(publishedGames.Id, publishedGames.pairname)
             }
     ) {
         Column(

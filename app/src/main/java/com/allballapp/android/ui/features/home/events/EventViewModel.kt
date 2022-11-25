@@ -300,6 +300,10 @@ class EventViewModel @Inject constructor(
                 viewModelScope.launch { getEventDetails(event.eventId, event.eventType) }
             }
 
+            is EvEvents.RefreshGameDetailsScreen -> {
+                viewModelScope.launch { getGameDetails(event.gameId) }
+            }
+
             is EvEvents.OnConfirmGoing -> {
                 viewModelScope.launch { acceptEventInvite() }
             }
@@ -461,6 +465,53 @@ class EventViewModel @Inject constructor(
                 }
             }
             else -> {}
+        }
+    }
+
+    private suspend fun getGameDetails(gameId: String) {
+        _state.value =
+            eventState.value.copy(showLoading = true)
+        val gameResponse = eventsRepo.getGameDetails(gameId,EventType.GAME.type)
+        _state.value =
+            eventState.value.copy(showLoading = false)
+
+        when (gameResponse) {
+            is ResultWrapper.GenericError -> {
+                _channel.send(
+                    EventChannel.ShowEventDetailsToast(
+                        UiText.DynamicString(
+                            "${gameResponse.message}"
+                        )
+                    )
+                )
+            }
+            is ResultWrapper.NetworkError -> {
+                /* _channel.send(
+                     EventChannel.ShowEventDetailsToast(
+                         UiText.DynamicString(
+                             eventResponse.message
+                         )
+                     )
+                 )*/
+            }
+            is ResultWrapper.Success -> {
+                gameResponse.value.let { response ->
+                    if (response.status && response.data != null) {
+                        _state.value =
+                            _state.value.copy(
+                                gameDetails = response.data
+                            )
+                    } else {
+                        _channel.send(
+                            EventChannel.ShowEventDetailsToast(
+                                UiText.DynamicString(
+                                    response.statusMessage
+                                )
+                            )
+                        )
+                    }
+                }
+            }
         }
     }
 

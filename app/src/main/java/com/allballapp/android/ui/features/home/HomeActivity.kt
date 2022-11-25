@@ -48,7 +48,7 @@ import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.home.events.*
 import com.allballapp.android.ui.features.home.events.division.divisionTab.DivisionScreenTab
-import com.allballapp.android.ui.features.home.events.game.GameDetailsScreen
+import com.allballapp.android.ui.features.home.events.game.GameDetailsTab
 import com.allballapp.android.ui.features.home.events.game.GameRuleScreen
 import com.allballapp.android.ui.features.home.events.new_event.NewEventScreen
 import com.allballapp.android.ui.features.home.events.opportunities.*
@@ -729,9 +729,9 @@ fun NavControllerComposable(
                     eventTitle = eventName
                     navController.navigate(Route.EVENTS_DETAIL_SCREEN + "/$eventId")
                 },
-                moveToGameDetail = {
-                    eventTitle = it
-                    navController.navigate(Route.GAME_DETAIL_SCREEN)
+                moveToGameDetail = { gameId, gameName ->
+                    eventTitle = gameName
+                    navController.navigate(Route.GAME_DETAIL_SCREEN + "/$gameId")
                 },
                 moveToOppDetails = {
                     eventTitle = it
@@ -746,7 +746,11 @@ fun NavControllerComposable(
             )
         }
 
-        composable(route = Route.GAME_DETAIL_SCREEN,
+        composable(route = Route.GAME_DETAIL_SCREEN + "/{gameId}",
+            arguments = listOf(
+                navArgument("gameId") {
+                    type = NavType.StringType
+                }),
             enterTransition = { slideInHorizont(animeDuration) },
             exitTransition = { exitTransition(animeDuration) },
             popExitTransition = { slideOutHorizont(animeDuration) }
@@ -757,7 +761,13 @@ fun NavControllerComposable(
                     label = eventTitle
                 )
             )
-            GameDetailsScreen(eventViewModel, moveToGameRules = {
+            /* GameDetailsScreen(eventViewModel, moveToGameRules = {
+                 navController.navigate(Route.GAME_RULES_SCREENS)
+             })*/
+
+            val gameId = it.arguments?.getString("gameId") ?: ""
+
+            GameDetailsTab(gameId, eventViewModel, moveToGameRules = {
                 navController.navigate(Route.GAME_RULES_SCREENS)
             })
         }
@@ -1352,9 +1362,9 @@ fun NavControllerComposable(
                     eventTitle = eventName
                     navController.navigate(Route.EVENTS_DETAIL_SCREEN + "/$eventId")
                 },
-                moveToGameDetail = {
-                    eventTitle = it
-                    navController.navigate(Route.GAME_DETAIL_SCREEN)
+                moveToGameDetail = { gameId, gameName ->
+                    eventTitle = gameName
+                    navController.navigate(Route.GAME_DETAIL_SCREEN + "/$gameId")
                 }, moveToEventDetail = {
                     eventTitle = it
                     navController.navigate(Route.OPP_DETAIL_SCREEN)

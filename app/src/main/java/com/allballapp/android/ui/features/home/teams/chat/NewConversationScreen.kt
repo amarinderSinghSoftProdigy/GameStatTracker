@@ -179,8 +179,15 @@ fun NewConversationScreen(
                         val filteredCoaches= chatState.teams[chatState.teamIndex].coaches.filter { coach ->
                             if (chatState.searchText.isNotEmpty()) {
                                 (coach.firstName.contains(
-                                    chatState.searchText,ignoreCase = true
-                                ) || coach.lastName.contains(chatState.searchText,ignoreCase = true))
+                                    chatState.searchText, ignoreCase = true
+                                )
+                                        || coach.lastName.contains(
+                                    chatState.searchText,
+                                    ignoreCase = true
+                                )
+                                        || ("${coach.firstName} ${coach.lastName}".contains(
+                                    chatState.searchText, ignoreCase = true
+                                )))
                             } else true
                         }
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
@@ -209,13 +216,7 @@ fun NewConversationScreen(
                         )
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                         LazyColumn {
-                            items(filteredCoaches /*chatState.teams[chatState.teamIndex].coaches.filter { coach ->
-                                if (chatState.searchText.isNotEmpty()) {
-                                    (coach.firstName.contains(
-                                        chatState.searchText,ignoreCase = true
-                                    ) || coach.lastName.contains(chatState.searchText,ignoreCase = true))
-                                } else true
-                            }*/) { coach ->
+                            items(filteredCoaches) { coach ->
                                 TeamUserListCheckbox(
                                     isCoach = true,
                                     coachUser = coach,
@@ -234,8 +235,13 @@ fun NewConversationScreen(
                         val filteredPlayer= chatState.teams[chatState.teamIndex].players.filter { coach ->
                             if (chatState.searchText.isNotEmpty()) {
                                 (coach.firstName.contains(
-                                    chatState.searchText,ignoreCase = true
-                                ) || coach.lastName.contains(chatState.searchText,ignoreCase = true))
+                                    chatState.searchText, ignoreCase = true
+                                ) || coach.lastName.contains(
+                                    chatState.searchText,
+                                    ignoreCase = true
+                                ) || ("${coach.firstName} ${coach.lastName}".contains(
+                                    chatState.searchText, ignoreCase = true
+                                )))
                             } else true
                         }
                         AppDivider()
@@ -265,13 +271,7 @@ fun NewConversationScreen(
                         )
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
                         LazyColumn {
-                            items(filteredPlayer/*chatState.teams[chatState.teamIndex].players.filter { coach ->
-                                if (chatState.searchText.isNotEmpty()) {
-                                    (coach.firstName.contains(
-                                        chatState.searchText,ignoreCase = true
-                                    ) || coach.lastName.contains(chatState.searchText,ignoreCase = true))
-                                } else true
-                            }*/) { player ->
+                            items(filteredPlayer) { player ->
                                 TeamUserListCheckbox(
                                     isCoach = false,
                                     teamUser = player,
@@ -301,8 +301,14 @@ fun NewConversationScreen(
                         val filteredSupportingStaff = chatState.teams[chatState.teamIndex].supportingCastDetails.filter { coach ->
                             if (chatState.searchText.isNotEmpty()) {
                                 (coach.firstName.contains(
-                                    chatState.searchText,ignoreCase = true
-                                ) || coach.lastName.contains(chatState.searchText,ignoreCase = true))
+                                    chatState.searchText, ignoreCase = true
+                                ) || coach.lastName.contains(
+                                    chatState.searchText,
+                                    ignoreCase = true
+                                )
+                                        || ("${coach.firstName} ${coach.lastName}".contains(
+                                    chatState.searchText, ignoreCase = true
+                                )))
                             } else true
                         }
                         AppDivider()
@@ -332,13 +338,7 @@ fun NewConversationScreen(
                         )
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
                         LazyColumn {
-                            items(filteredSupportingStaff /*chatState.teams[chatState.teamIndex].supportingCastDetails.filter { coach ->
-                                if (chatState.searchText.isNotEmpty()) {
-                                    (coach.firstName.contains(
-                                        chatState.searchText,ignoreCase = true
-                                    ) || coach.lastName.contains(chatState.searchText,ignoreCase = true))
-                                } else true
-                            }*/) { staff ->
+                            items(filteredSupportingStaff) { staff ->
                                 TeamUserListCheckbox(
                                     isCoach = false,
 //                                teamUser = player,
@@ -411,6 +411,7 @@ fun NewConversationScreen(
             title = stringResource(id = R.string.enter_group_name),
             onDismiss = {
                 chatVM.onEvent(ChatUIEvent.ShowDialog(false))
+                chatVM.onEvent(ChatUIEvent.ClearGroupName)
             },
             onConfirmClick = {
                 chatVM.onEvent(ChatUIEvent.ShowDialog(false))
@@ -420,7 +421,9 @@ fun NewConversationScreen(
                 chatVM.onEvent(ChatUIEvent.OnGroupNameChange(it))
             },
             reason = chatState.groupName,
-            placeholderText = stringResource(id = R.string.enter_group_name)
+            placeholderText = stringResource(id = R.string.enter_group_name),
+            textLimit = 30
+
         )
     }
 

@@ -1,17 +1,8 @@
 package com.allballapp.android.ui.features.home.events.game
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.width
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
-import androidx.compose.material.TabRowDefaults
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -22,20 +13,16 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.PagerState
-import com.google.accompanist.pager.pagerTabIndicatorOffset
-import com.google.accompanist.pager.rememberPagerState
 import com.allballapp.android.R
 import com.allballapp.android.ui.features.components.stringResourceByName
 import com.allballapp.android.ui.features.home.events.EventViewModel
 import com.allballapp.android.ui.theme.appColors
+import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun GameDetailsScreen(vm: EventViewModel, moveToGameRules: () -> Unit) {
+fun GameDetailsScreen(gameId: String, vm: EventViewModel, moveToGameRules: () -> Unit) {
     val pagerState = rememberPagerState(pageCount = 3)
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -44,7 +31,7 @@ fun GameDetailsScreen(vm: EventViewModel, moveToGameRules: () -> Unit) {
             .background(Color.White),
     ) {
         Tabs(pagerState = pagerState)
-        TabsContent(pagerState = pagerState, vm, moveToGameRules)
+        TabsContent(gameId, pagerState = pagerState, vm, moveToGameRules)
     }
 }
 
@@ -104,11 +91,16 @@ fun Tabs(pagerState: PagerState) {
 
 @ExperimentalPagerApi
 @Composable
-fun TabsContent(pagerState: PagerState, vm: EventViewModel, moveToGameRules: () -> Unit) {
+fun TabsContent(
+    gameId: String,
+    pagerState: PagerState,
+    vm: EventViewModel,
+    moveToGameRules: () -> Unit
+) {
     HorizontalPager(state = pagerState) { page ->
         when (page) {
-            0 -> GameDetailsTab(vm, moveToGameRules)
-            1 -> GameStatsTab()
+            0 -> GameDetailsTab(gameId, vm, moveToGameRules)
+            1 -> GameStatsTab(vm)
             2 -> GameSumTab()
         }
     }

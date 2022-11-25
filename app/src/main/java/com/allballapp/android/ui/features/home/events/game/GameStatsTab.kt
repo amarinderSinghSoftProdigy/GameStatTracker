@@ -2,17 +2,7 @@ package com.allballapp.android.ui.features.home.events.game
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -33,18 +23,13 @@ import com.allballapp.android.R
 import com.allballapp.android.data.response.AverageStatsResponse
 import com.allballapp.android.data.response.GameStatsResponse
 import com.allballapp.android.ui.features.components.AppDivider
-import com.allballapp.android.ui.theme.ColorBWBlack
-import com.allballapp.android.ui.theme.ColorBWGrayDark
-import com.allballapp.android.ui.theme.ColorBWGrayLight
-import com.allballapp.android.ui.theme.ColorButtonRed
-import com.allballapp.android.ui.theme.ColorMainPrimary
-import com.allballapp.android.ui.theme.GreenColor
-import com.allballapp.android.ui.theme.appColors
-import com.allballapp.android.ui.theme.button_text_enable
-import com.allballapp.android.ui.theme.md_theme_light_primary
+import com.allballapp.android.ui.features.home.events.EventViewModel
+import com.allballapp.android.ui.theme.*
 
 @Composable
-fun GameStatsTab() {
+fun GameStatsTab(vm: EventViewModel) {
+    val state = vm.eventState.value
+
     Box(
         Modifier
             .fillMaxSize()
@@ -72,7 +57,11 @@ fun GameStatsTab() {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    TeamItem("My Team", ColorMainPrimary)
+                    TeamItem(
+                        title = if (state.gameDetails.teams.isNotEmpty()) state.gameDetails.teams[0].name else "",
+                        ColorMainPrimary,
+                        if (state.gameDetails.teams.isNotEmpty()) state.gameDetails.teams[0].logo else ""
+                    )
                     Column(
                         modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.size_16dp)),
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -93,7 +82,12 @@ fun GameStatsTab() {
 
 
                     }
-                    TeamItem("Other Team", ColorButtonRed)
+                    TeamItem(
+                        title = if (state.gameDetails.teams.isNotEmpty()) state.gameDetails.teams[1].name else "",
+                        ColorButtonRed,
+                        if (state.gameDetails.teams.isNotEmpty()) state.gameDetails.teams[1].logo else ""
+
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))

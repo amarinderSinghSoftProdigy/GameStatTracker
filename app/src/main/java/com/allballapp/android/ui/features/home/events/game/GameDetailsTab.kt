@@ -1,40 +1,45 @@
 package com.allballapp.android.ui.features.home.events.game
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.allballapp.android.BuildConfig
 import com.allballapp.android.R
-import com.allballapp.android.ui.features.components.*
+import com.allballapp.android.common.apiToUIDateFormat
+import com.allballapp.android.ui.features.components.AppText
+import com.allballapp.android.ui.features.components.CoilImage
+import com.allballapp.android.ui.features.components.Placeholder
+import com.allballapp.android.ui.features.home.events.EvEvents
 import com.allballapp.android.ui.features.home.events.EventViewModel
-import com.allballapp.android.ui.features.venue.Location
-import com.allballapp.android.ui.theme.*
-import com.google.android.gms.maps.model.LatLng
+import com.allballapp.android.ui.theme.ColorButtonRed
+import com.allballapp.android.ui.theme.ColorMainPrimary
+import com.allballapp.android.ui.theme.appColors
+import com.allballapp.android.ui.theme.md_theme_light_primary
 
 @Composable
-fun GameDetailsTab(vm: EventViewModel, moveToGameRules: () -> Unit) {
+fun GameDetailsTab(gameId: String, vm: EventViewModel, moveToGameRules: () -> Unit) {
     val state = vm.eventState.value
     val images = arrayListOf("", "", "", "", "", "", "", "", "")
+
+    remember {
+        vm.onEvent(EvEvents.RefreshGameDetailsScreen(gameId))
+    }
 
     Box(
         modifier = Modifier
@@ -65,98 +70,109 @@ fun GameDetailsTab(vm: EventViewModel, moveToGameRules: () -> Unit) {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    TeamItem("My Team", ColorMainPrimary)
+                    TeamItem(
+                        title = if (state.gameDetails.teams.isNotEmpty()) state.gameDetails.teams[0].name else "",
+                        ColorMainPrimary,
+                        if (state.gameDetails.teams.isNotEmpty()) state.gameDetails.teams[0].logo else ""
+                    )
                     Column(
                         modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.size_16dp)),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "6:00pm",
+                            text = state.gameDetails.timeslot,
                             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                             fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
                             style = MaterialTheme.typography.h3
                         )
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
                         Text(
-                            text = "Fri, May 27",
+
+                            text = apiToUIDateFormat(state.gameDetails.date),
                             color = MaterialTheme.appColors.textField.label,
                             style = MaterialTheme.typography.h6
                         )
 
                     }
-                    TeamItem("Other Team", ColorButtonRed)
-                }
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-                Row {
-                    AppText(
-                        text = stringResource(id = R.string.arrival_time),
-                        style = MaterialTheme.typography.h6,
-                        color = MaterialTheme.appColors.textField.label,
-                        modifier = Modifier.weight(1f)
-                    )
-                    AppText(
-                        text = stringResource(id = R.string.duration),
-                        style = MaterialTheme.typography.h6,
-                        color = MaterialTheme.appColors.textField.label,
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                Row {
-                    AppText(
-                        text = "5:45 PM",
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                        style = MaterialTheme.typography.h5,
-                        modifier = Modifier.weight(1f)
+                    TeamItem(
+                        title = if (state.gameDetails.teams.isNotEmpty()) state.gameDetails.teams[1].name else "",
+                        ColorButtonRed,
+                        if (state.gameDetails.teams.isNotEmpty()) state.gameDetails.teams[1].logo else ""
 
                     )
-                    AppText(
-                        text = "6:00 PM - 7:00 PM",
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                        style = MaterialTheme.typography.h5,
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
-                LocationBlock(
-                    Location(
-                        state.event.landmarkLocation,
-                        state.event.address.street,
-                        state.event.address.city,
-                        state.event.address.zip,
-                        latLong = if (state.event.address.lat == 0.0 && state.event.address.long == 0.0) {
-                            LatLng(0.0, 0.0)
-                        } else {
-                            LatLng(
-                                state.event.address.lat,
-                                state.event.address.long
-                            )
-                        }
-                    ),
-                    padding = 0.dp
-                )
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
-                CoilImage(
-                    src = R.drawable.ic_ball,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-                        .background(
-                            color = Color.White,
-                            RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
-                        )
-                        .height(dimensionResource(id = R.dimen.size_160dp))
-                        .fillMaxWidth(),
-                    onError = {
-                        Placeholder(R.drawable.ic_team_placeholder)
-                    },
-                    onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
-                    isCrossFadeEnabled = false,
-                    contentScale = ContentScale.Crop
-                )
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-            }
-            /*LazyRow {
+                }
+                /*              Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                              Row {
+                                  AppText(
+                                      text = stringResource(id = R.string.arrival_time),
+                                      style = MaterialTheme.typography.h6,
+                                      color = MaterialTheme.appColors.textField.label,
+                                      modifier = Modifier.weight(1f)
+                                  )
+                                  AppText(
+                                      text = stringResource(id = R.string.duration),
+                                      style = MaterialTheme.typography.h6,
+                                      color = MaterialTheme.appColors.textField.label,
+                                      modifier = Modifier.weight(1f)
+                                  )
+                              }
+                              Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                              Row {
+                                  AppText(
+                                      text = "5:45 PM",
+                                      color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                      style = MaterialTheme.typography.h5,
+                                      modifier = Modifier.weight(1f)
+
+                                  )
+                                  AppText(
+                                      text = "6:00 PM - 7:00 PM",
+                                      color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                      style = MaterialTheme.typography.h5,
+                                      modifier = Modifier.weight(1f)
+                                  )
+                              }
+                              Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+
+                              LocationBlock(
+                                  Location(
+                                      state.event.landmarkLocation,
+                                      state.event.address.street,
+                                      state.event.address.city,
+                                      state.event.address.zip,
+                                      latLong = if (state.event.address.lat == 0.0 && state.event.address.long == 0.0) {
+                                          LatLng(0.0, 0.0)
+                                      } else {
+                                          LatLng(
+                                              state.event.address.lat,
+                                              state.event.address.long
+                                          )
+                                      }
+                                  ),
+                                  padding = 0.dp
+                              )
+                              Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+                              CoilImage(
+                                  src = R.drawable.ic_ball,
+                                  modifier = Modifier
+                                      .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                                      .background(
+                                          color = Color.White,
+                                          RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+                                      )
+                                      .height(dimensionResource(id = R.dimen.size_160dp))
+                                      .fillMaxWidth(),
+                                  onError = {
+                                      Placeholder(R.drawable.ic_team_placeholder)
+                                  },
+                                  onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                                  isCrossFadeEnabled = false,
+                                  contentScale = ContentScale.Crop
+                              )
+                              Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                          }
+                          *//*LazyRow {
                 item {
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_16dp)))
                 }
@@ -171,7 +187,7 @@ fun GameDetailsTab(vm: EventViewModel, moveToGameRules: () -> Unit) {
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))*/
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))*//*
             AppDivider(color = MaterialTheme.appColors.material.primary)
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_20dp)))
             Text(
@@ -341,12 +357,14 @@ fun GameDetailsTab(vm: EventViewModel, moveToGameRules: () -> Unit) {
                 }
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
             }
+        }*/
+            }
         }
     }
 }
 
 @Composable
-fun TeamItem(title: String, color: Color) {
+fun TeamItem(title: String, color: Color, teamImage: String) {
     Box(
         modifier = Modifier
             .height(dimensionResource(id = R.dimen.size_80dp))
@@ -363,11 +381,17 @@ fun TeamItem(title: String, color: Color) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Box(
+            CoilImage(
+                src = BuildConfig.IMAGE_SERVER + teamImage,
                 modifier = Modifier
-                    .clip(shape = CircleShape)
-                    .size(dimensionResource(id = R.dimen.size_32dp))
-                    .background(color = color)
+                    .clip(CircleShape)
+                    .size(dimensionResource(id = R.dimen.size_32dp)),
+                onError = {
+                    Placeholder(R.drawable.ic_team_placeholder)
+                },
+                onLoading = { Placeholder(R.drawable.ic_team_placeholder) },
+                isCrossFadeEnabled = false,
+                contentScale = ContentScale.Crop
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
             AppText(
