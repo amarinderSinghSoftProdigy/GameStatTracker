@@ -33,5 +33,6 @@
 
     <color name="text_color">#808A9BA8</color>
     <color name="textColorDark">#000000</color>
+    <color name="colorToolbarIcon">#3DACF7</color>
 
 </resources>
