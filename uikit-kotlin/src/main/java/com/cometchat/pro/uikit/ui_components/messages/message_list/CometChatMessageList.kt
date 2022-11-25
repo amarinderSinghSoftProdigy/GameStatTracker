@@ -58,6 +58,7 @@ import com.cometchat.pro.models.*
 import com.cometchat.pro.uikit.R
 import com.cometchat.pro.uikit.ui_components.chats.CustomCometListener
 import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
+import com.cometchat.pro.uikit.ui_components.groups.group_detail.CometChatGroupDetailActivity
 import com.cometchat.pro.uikit.ui_components.messages.extensions.ExtensionResponseListener
 import com.cometchat.pro.uikit.ui_components.messages.extensions.Extensions
 import com.cometchat.pro.uikit.ui_components.messages.forward_message.CometChatForwardMessageActivity
@@ -76,6 +77,7 @@ import com.cometchat.pro.uikit.ui_components.shared.cometchatSmartReplies.CometC
 import com.cometchat.pro.uikit.ui_components.shared.cometchatStickers.StickerView
 import com.cometchat.pro.uikit.ui_components.shared.cometchatStickers.listener.StickerClickListener
 import com.cometchat.pro.uikit.ui_components.shared.cometchatStickers.model.Sticker
+import com.cometchat.pro.uikit.ui_components.users.user_details.CometChatUserDetailScreenActivity
 import com.cometchat.pro.uikit.ui_resources.constants.UIKitConstants
 import com.cometchat.pro.uikit.ui_resources.utils.ErrorMessagesUtils
 import com.cometchat.pro.uikit.ui_resources.utils.FontUtils
@@ -2283,6 +2285,18 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
         }
     }
 
+    /**
+     * This method is used to mark users & group message as read.
+     *
+     * @param baseMessage is object of BaseMessage.class. It is message which is been marked as read.
+     */
+    private fun markMessageAsRead(baseMessage: BaseMessage) {
+        if (type == CometChatConstants.RECEIVER_TYPE_USER) markAsRead(
+            baseMessage.id,
+            baseMessage.sender.uid,
+            baseMessage.receiverType
+        ) else markAsRead(baseMessage.id, baseMessage.receiverUid, baseMessage.receiverType)
+    }
 
     /**
      * This method is used to add message listener to recieve real time messages between users &
@@ -2712,7 +2726,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
             replyMessageLayout?.visibility = View.GONE
         } else if (id == R.id.btn_unblock_user) {
             unblockUser()
-        } /*else if (id == R.id.iv_user_info) {
+        } else if (id == R.id.iv_user_info) {
             if (type == CometChatConstants.RECEIVER_TYPE_USER) {
                 val intent = Intent(context, CometChatUserDetailScreenActivity::class.java)
                 intent.putExtra(UIKitConstants.IntentStrings.UID, Id)
@@ -2737,7 +2751,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
                 intent.putExtra(UIKitConstants.IntentStrings.GROUP_PASSWORD, groupPassword)
                 startActivity(intent)
             }
-        } */else if (id == R.id.iv_back_arrow) {
+        } else if (id == R.id.iv_back_arrow) {
             activity?.onBackPressed()
         }
     }
@@ -2827,6 +2841,13 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
                         threadVisible
                     }
                     copyVisible = false
+
+                    if (baseMessage?.type.equals(CometChatConstants.MESSAGE_TYPE_AUDIO, true) ||
+                        baseMessage?.type.equals(CometChatConstants.MESSAGE_TYPE_VIDEO, true) ||
+                        baseMessage?.type.equals(CometChatConstants.MESSAGE_TYPE_FILE, true)
+                    )
+                        shareVisible = false
+
                     if (basemessage.sender.uid == getLoggedInUser().uid) {
                         deleteVisible = FeatureRestriction.isDeleteMessageEnabled()
                         editVisible = false

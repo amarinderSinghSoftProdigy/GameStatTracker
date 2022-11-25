@@ -91,7 +91,6 @@
             android:layout_alignTop="@id/iv_chat_avatar"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:visibility="gone"
             android:layout_marginEnd="5dp"
             android:orientation="horizontal">
 
@@ -100,6 +99,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
+                android:visibility="gone"
                 android:foreground="?attr/selectableItemBackground"
                 android:padding="8dp"
                 android:layout_gravity="center"
@@ -110,6 +110,7 @@
             <ImageView
                 android:id="@+id/iv_audio_call_btn"
                 android:layout_width="wrap_content"
+                android:visibility="gone"
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:foreground="?attr/selectableItemBackground"
