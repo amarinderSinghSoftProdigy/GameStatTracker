@@ -1,6 +1,7 @@
 package com.allballapp.android.ui.features.home.events
 
 import com.allballapp.android.data.response.*
+import com.allballapp.android.data.response.game.GameDetails
 import com.allballapp.android.data.response.team.DivisionWiseTeamResponse
 import com.allballapp.android.data.response.team.Team
 import com.allballapp.android.data.response.team.TeamsByLeagueDivisionResponse
@@ -41,6 +42,7 @@ data class EventState(
     val gender: String = "",
     val venuesList: List<VenuesId> = listOf(),
     val event: EventDetails = EventDetails(),
+    val gameDetails: GameDetails = GameDetails(),
     val isPrePracticeTimeSpan: Boolean = false,
     val isPostPracticeTimeSpan: Boolean = false,
     val showPrePostNoteDialog: Boolean = false,

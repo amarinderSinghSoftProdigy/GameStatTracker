@@ -83,7 +83,7 @@
             android:background="@android:color/transparent"
             android:hint="@string/message"
             android:imeOptions="actionSend"
-            android:inputType="textMultiLine"
+            android:inputType="textEmailAddress|textMultiLine|textCapSentences"
             android:maxLines="3"
             android:padding="8dp"
             android:paddingStart="16dp"

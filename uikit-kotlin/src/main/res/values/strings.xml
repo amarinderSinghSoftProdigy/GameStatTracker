@@ -21,7 +21,7 @@
 
 
     <!--ComposeBox-->
-    <string name="message">Type Something…</string>
+    <string name="message">Type a Message…</string>
     <string name="tap_to_start_conversation">Tap to start conversation</string>
     <string name="edit_message">Edit Message</string>
 

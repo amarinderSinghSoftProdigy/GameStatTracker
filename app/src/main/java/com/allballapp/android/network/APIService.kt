@@ -3,6 +3,7 @@ package com.allballapp.android.network
 import com.allballapp.android.common.ApiConstants
 import com.allballapp.android.data.request.*
 import com.allballapp.android.data.response.*
+import com.allballapp.android.data.response.game.GameDetails
 import com.allballapp.android.data.response.homepage.HomePageCoachModel
 import com.allballapp.android.data.response.invitation.InvitationData
 import com.allballapp.android.data.response.roaster.RoasterResponse
@@ -217,6 +218,12 @@ open interface APIService {
         @Query("id") eventId: String,
         @Query("gameType") eventType: String,
     ): BaseResponse<EventDetails>
+
+    @GET(ApiConstants.GET_EVENT_DETAILS)
+    suspend fun getGameDetails(
+        @Query("id") eventId: String,
+        @Query("gameType") eventType: String,
+    ): BaseResponse<GameDetails>
 
 
     @PUT(ApiConstants.UPDATE_EVENT_NOTE)
