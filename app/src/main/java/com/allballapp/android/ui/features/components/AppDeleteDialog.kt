@@ -1137,7 +1137,7 @@ fun SelectGuardianRoleItem(
             )
         ) {
             CoilImage(
-                src = profile,
+                src = com.allballapp.android.BuildConfig.IMAGE_SERVER + profile,
                 modifier =
                 Modifier
                     .padding(all = dimensionResource(id = R.dimen.size_4dp))
@@ -1984,18 +1984,20 @@ fun SwapProfile(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         item {
-                            if (showLoading) {
-                                CommonProgressBar()
-                            }
+
                         }
                         item {
-                            users.forEach { item ->
-                                UserListItem(
-                                    user = item,
-                                    selectedUser.value._Id == item._Id
-                                ) {
-                                    if (selectedUser.value._Id != it) {
-                                        selectedUser.value = item
+                            if (showLoading) {
+                                CommonProgressBar()
+                            } else {
+                                users.forEach { item ->
+                                    UserListItem(
+                                        user = item,
+                                        selectedUser.value._Id == item._Id
+                                    ) {
+                                        if (selectedUser.value._Id != it) {
+                                            selectedUser.value = item
+                                        }
                                     }
                                 }
                             }
@@ -2036,7 +2038,7 @@ fun SwapProfile(
                             text = actionButtonText.ifEmpty { stringResource(R.string.dialog_button_confirm) },
                             onClick = {
                                 onConfirmClick.invoke(selectedUser.value)
-                                onDismiss.invoke()
+                               /* onDismiss.invoke()*/
                             },
                             modifier = Modifier
                                 .weight(1f),
@@ -2908,7 +2910,7 @@ fun InviteTeamMembersDialog(
                             text = stringResource(R.string.invite),
                             onClick = {
                                 if (inviteList.isNotEmpty() &&
-                                    inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() && it.role.key.isNotEmpty() }
+                                    inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() && it.role.key.isNotEmpty() && it.contact.length == 10}
                                 ) {
                                     onConfirmClick.invoke()
                                 }
@@ -2917,7 +2919,7 @@ fun InviteTeamMembersDialog(
                                 .weight(1f),
                             border = ButtonDefaults.outlinedBorder,
                             enabled = inviteList.isNotEmpty() &&
-                                    inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() && it.role.key.isNotEmpty() },
+                                    inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() && it.role.key.isNotEmpty() && it.contact.length == 10 },
                             onlyBorder = false,
                         )
                     }
