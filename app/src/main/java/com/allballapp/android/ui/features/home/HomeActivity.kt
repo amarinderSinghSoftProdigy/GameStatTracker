@@ -722,6 +722,7 @@ fun NavControllerComposable(
         composable(route = Route.EVENTS_SCREEN) {
             homeViewModel.setBottomNav(BottomNavKey.EVENTS)
             EventsScreen(
+                homeViewModel,
                 teamViewModel,
                 eventViewModel,
                 showDialog = showDialog,
@@ -1364,7 +1365,7 @@ fun NavControllerComposable(
             remember {
                 eventViewModel.onEvent(EvEvents.ClearListEvents)
             }
-            MyEvents(eventViewModel,
+            MyEvents(eventViewModel,homeViewModel,
                 moveToPracticeDetail = { eventId, eventName ->
                     eventTitle = eventName
                     navController.navigate(Route.EVENTS_DETAIL_SCREEN + "/$eventId")

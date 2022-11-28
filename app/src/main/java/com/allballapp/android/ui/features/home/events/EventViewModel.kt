@@ -453,6 +453,22 @@ class EventViewModel @Inject constructor(
             is EvEvents.ClearOpportunities -> {
                 _state.value = _state.value.copy(opportunitiesDetail = OpportunitiesDetail())
             }
+            is EvEvents.ShowAcceptEditDialog -> {
+                _state.value = _state.value.copy(showAcceptDialog = event.show)
+            }
+            is EvEvents.SetSelectedEventId -> {
+                _state.value = _state.value.copy(selectedMyEventId = event.id)
+            }
+            is EvEvents.SetSelectedId -> {
+                _state.value = _state.value.copy(
+                    selectedUsers = _state.value.selectedUsers.toMutableList().apply {
+                        if (this.contains(event.id)) {
+                            this.remove(event.id)
+                        } else {
+                            this.add(event.id)
+                        }
+                    })
+            }
 
             is EvEvents.PaymentOption -> {
                 if (event.paymentOption != _state.value.registerRequest.paymentOption) {
@@ -471,7 +487,7 @@ class EventViewModel @Inject constructor(
     private suspend fun getGameDetails(gameId: String) {
         _state.value =
             eventState.value.copy(showLoading = true)
-        val gameResponse = eventsRepo.getGameDetails(gameId,EventType.GAME.type)
+        val gameResponse = eventsRepo.getGameDetails(gameId, EventType.GAME.type)
         _state.value =
             eventState.value.copy(showLoading = false)
 
@@ -911,7 +927,8 @@ class EventViewModel @Inject constructor(
 
         val acceptResponse = eventsRepo.acceptEventInvite(
             eventState.value.selectedMyEventId,
-            eventType = eventState.value.selectedEventType
+            eventType = eventState.value.selectedEventType,
+            userId = eventState.value.selectedUsers.toMutableList().map { it._Id }
         )
 
 
@@ -964,6 +981,7 @@ class EventViewModel @Inject constructor(
             eventState.value.selectedMyEventId,
             eventState.value.declineReason,
             eventType = eventState.value.selectedEventType,
+            userId = eventState.value.selectedUsers.toMutableList().map { it._Id }
         )
 
         _state.value =

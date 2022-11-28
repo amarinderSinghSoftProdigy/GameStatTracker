@@ -63,5 +63,8 @@ data class EventState(
     val scheduleResponse: List<ScheduleResponse> = mutableListOf(),
     val price: String? = null,
     val roles: List<UserRoles> = mutableListOf(),
-    val selectedRole:String = ""
+    val selectedRole: String = "",
+    val showAcceptDialog: Boolean = false,
+    val selectedUsers: List<SwapUser> = mutableListOf(),
+    val users: Boolean = false
 )

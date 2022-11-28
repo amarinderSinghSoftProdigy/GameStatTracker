@@ -559,4 +559,7 @@
     <string name="adult_xl">AdultXL</string>
     <string name="payment_method">Payment Method</string>
     <string name="loren_ipsum">Loren ipsum</string>
+    <string name="edit">Edit</string>
+    <string name="please_select_everyone_coming">Please select everyone the is coming:</string>
+    <string name="please_select_everyone_cannot_makeit">Please select everyone who can\'t make it:</string>
 </resources>

@@ -46,12 +46,14 @@ class EventsRepository @Inject constructor(
 
     override suspend fun acceptEventInvite(
         eventId: String,
-        eventType: String
+        eventType: String,
+        userId: List<String>
     ): ResultWrapper<BaseResponse<Any>> {
-        val request: RequestBody = FormBody.Builder()
-            .add("eventId", eventId)
-            .add("gameType", eventType.toLowerCase())
-            .build()
+        val request = AcceptDeclineRequest(
+            eventId = eventId,
+            gameType = eventType.toLowerCase(),
+            userId = userId
+        )
         return safeApiCall(dispatcher) {
             service.acceptEventInvite(request)
         }
@@ -99,12 +101,14 @@ class EventsRepository @Inject constructor(
         eventId: String,
         reason: String,
         eventType: String,
+        userId: List<String>
     ): ResultWrapper<BaseResponse<Any>> {
-        val request: RequestBody = FormBody.Builder()
-            .add("eventId", eventId)
-            .add("reason", reason)
-            .add("gameType", eventType.toLowerCase())
-            .build()
+        val request = AcceptDeclineRequest(
+            eventId = eventId,
+            reason = reason,
+            gameType = eventType.toLowerCase(),
+            userId = userId
+        )
         return safeApiCall(dispatcher) {
             service.rejectEventInvite(request)
         }

@@ -25,20 +25,29 @@ import com.allballapp.android.common.apiToUIDateFormat
 import com.allballapp.android.ui.features.components.CommonProgressBar
 import com.allballapp.android.ui.features.components.DeclineEventDialog
 import com.allballapp.android.ui.features.components.DeleteDialog
+import com.allballapp.android.ui.features.components.EditEventDialog
+import com.allballapp.android.ui.features.home.HomeViewModel
+import com.allballapp.android.ui.features.home.home_screen.HomeScreenEvent
 import com.allballapp.android.ui.theme.*
 import com.google.accompanist.flowlayout.FlowRow
 
 @Composable
 fun MyEvents(
     vm: EventViewModel,
+    homeVm: HomeViewModel,
     moveToPracticeDetail: (String, String) -> Unit,
     moveToGameDetail: (gameId: String, gameName: String) -> Unit,
     moveToEventDetail: (String) -> Unit
 ) {
 
+    /*  val showEditDialog = remember {
+          mutableStateOf(false)
+      }*/
     val state = vm.eventState.value
+    val homeState = homeVm.state.value
     remember {
         vm.onEvent(EvEvents.RefreshEventScreen)
+        homeVm.onEvent(HomeScreenEvent.OnSwapClick())
     }
     Box(modifier = Modifier.fillMaxSize()) {
         if (state.upcomingAndGameData.isNotEmpty() || state.pastEvents.isNotEmpty()) {
@@ -73,13 +82,28 @@ fun MyEvents(
                             when (data) {
                                 is Events -> {
                                     EventItem(events = data, onAcceptCLick = { event ->
-                                        vm.onEvent(EvEvents.OnGoingCLick(event.id,EventType.PRACTICE.type))
+                                        vm.onEvent(
+                                            EvEvents.OnGoingCLick(
+                                                event.id,
+                                                EventType.PRACTICE.type
+                                            )
+                                        )
                                     }, onDeclineCLick = { event ->
-                                        vm.onEvent(EvEvents.OnDeclineCLick(event.id,EventType.PRACTICE.type))
+                                        vm.onEvent(
+                                            EvEvents.OnDeclineCLick(
+                                                event.id,
+                                                EventType.PRACTICE.type
+                                            )
+                                        )
                                     }, moveToPracticeDetail = moveToPracticeDetail,
                                         isPast = false,
 //                                        isSelfCreatedEvent = data.createdBy == UserStorage.userId
-                                        isSelfCreatedEvent = false
+                                        isSelfCreatedEvent = false,
+                                        onEditClick = { events, isGoing ->
+                                            vm.onEvent(EvEvents.SetSelectedEventId(events.id))
+                                            vm.onEvent(EvEvents.EventType(EventType.PRACTICE.type))
+                                            vm.onEvent(EvEvents.ShowAcceptEditDialog(true))
+                                        }
                                     )
                                 }
                                 is PublishedGames -> {
@@ -124,7 +148,7 @@ fun MyEvents(
                     Text(
                         text = text,
                         style = MaterialTheme.typography.h2,
-                        color = ColorBWBlack,
+                        color = MaterialTheme.appColors.textField.label,
                     )
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_6dp)))
                     Box {
@@ -132,9 +156,12 @@ fun MyEvents(
                             state.pastEvents.forEach {
                                 EventItem(events = it, onAcceptCLick = {
                                 }, onDeclineCLick = { eventId ->
-                                    vm.onEvent(EvEvents.OnDeclineCLick(eventId.id,EventType.PRACTICE.type))
+
                                 }, moveToPracticeDetail = moveToPracticeDetail,
-                                    isPast = true
+                                    isPast = true,
+                                    onEditClick = { events, isGoing ->
+
+                                    }
                                 )
                             }
                         }
@@ -173,7 +200,30 @@ fun MyEvents(
                         reason = state.declineReason
                     )
                 }
-
+                if (state.showAcceptDialog) {
+                    EditEventDialog(
+                        onDismiss = {
+                            vm.onEvent(EvEvents.ShowAcceptEditDialog(false))
+                        },
+                        onConfirmClick = {
+                            if (it.isEmpty()) {
+                                vm.onEvent(EvEvents.OnConfirmGoing(EventType.PRACTICE.type))
+                            } else {
+                                vm.onEvent(EvEvents.OnConfirmDeclineClick(EventType.PRACTICE.type))
+                            }
+                            vm.onEvent(EvEvents.ShowAcceptEditDialog(false))
+                        },
+                        onReasonChange = {
+                            vm.onEvent(EvEvents.OnDeclineReasonChange(it))
+                        },
+                        reason = state.declineReason,
+                        selectUsers = homeState.swapUsers.filter { state.selectedUsers.contains(it) },
+                        users = homeState.swapUsers,
+                        onSelectionChange = {
+                            vm.onEvent(EvEvents.SetSelectedId(it))
+                        }
+                    )
+                }
             }
         } else {
             Column(

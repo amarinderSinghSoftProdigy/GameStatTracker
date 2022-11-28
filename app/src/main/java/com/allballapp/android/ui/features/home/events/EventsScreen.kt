@@ -16,6 +16,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,6 +25,7 @@ import com.allballapp.android.common.apiToUIDateFormat
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.home.EmptyScreen
+import com.allballapp.android.ui.features.home.HomeViewModel
 import com.allballapp.android.ui.features.home.events.opportunities.OpportunitiesScreen
 import com.allballapp.android.ui.features.home.teams.TeamViewModel
 import com.allballapp.android.ui.theme.*
@@ -36,6 +38,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun EventsScreen(
+    homeVm: HomeViewModel,
     teamVm: TeamViewModel,
     vm: EventViewModel,
     showDialog: Boolean,
@@ -90,6 +93,7 @@ fun EventsScreen(
                 TabsContent(
                     pagerState = pagerState,
                     vm,
+                    homeVm,
                     moveToDetail,
                     moveToPracticeDetail,
                     moveToGameDetail,
@@ -179,6 +183,7 @@ fun Tabs(pagerState: PagerState, list: List<TabItems>) {
 fun TabsContent(
     pagerState: PagerState,
     vm: EventViewModel,
+    homeVm: HomeViewModel,
     moveToDetail: (String) -> Unit,
     moveToPracticeDetail: (String, String) -> Unit,
     moveToGameDetail: (String,String) -> Unit,
@@ -195,7 +200,7 @@ fun TabsContent(
                 remember {
                     vm.onEvent(EvEvents.ClearListEvents)
                 }
-                MyEvents(vm, moveToPracticeDetail, moveToGameDetail, moveToEventDetail)
+                MyEvents(vm,homeVm, moveToPracticeDetail, moveToGameDetail, moveToEventDetail)
             }
             1 -> {
                 remember {
@@ -424,6 +429,7 @@ fun EventItem(
     events: Events,
     onAcceptCLick: (Events) -> Unit,
     onDeclineCLick: (Events) -> Unit,
+    onEditClick: (Events,Boolean) -> Unit,
     moveToPracticeDetail: (String, String) -> Unit,
     isPast: Boolean,
     isSelfCreatedEvent: Boolean = false,
@@ -546,6 +552,7 @@ fun EventItem(
                                 ),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
+                            /** Action Accept event  */
                             Row(
                                 Modifier
                                     .weight(1f)
@@ -571,7 +578,7 @@ fun EventItem(
 
                                     )
                             }
-
+                            /** Action Decline event  */
                             Row(
                                 Modifier
                                     .weight(1f)
@@ -603,44 +610,84 @@ fun EventItem(
                             ignoreCase = true
                         )
                     ) {
+
+                        /** GOING EVENT  */
                         Row(
-                            Modifier
-                                .fillMaxWidth()
-                                .background(
-                                    color = ColorButtonGreen,
-                                    shape = RoundedCornerShape(
-                                        bottomStart = dimensionResource(
-                                            id = R.dimen.size_8dp
-                                        ),
-                                        bottomEnd = dimensionResource(id = R.dimen.size_8dp)
-                                    )
-                                )
-                                .clickable {
-                                    moveToPracticeDetail(events.id, events.eventName)
-                                }
-                                .padding(dimensionResource(id = R.dimen.size_14dp)),
+                            Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_check),
-                                contentDescription = "",
-                                modifier = Modifier.size(dimensionResource(id = R.dimen.size_6dp)),
-                                tint = MaterialTheme.appColors.buttonColor.textEnabled,
+                            Row(
+                                Modifier
+                                    .weight(7.5F)
+                                    .background(
+                                        color = ColorButtonGreen,
+                                        shape = RoundedCornerShape(
+                                            bottomStart = dimensionResource(
+                                                id = R.dimen.size_8dp
+                                            )
+                                        )
+                                    )
+                                    .clickable {
+                                        moveToPracticeDetail(events.id, events.eventName)
+                                    }
+                                    .padding(dimensionResource(id = R.dimen.size_14dp)),
+                                horizontalArrangement = Arrangement.Start,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.ic_check),
+                                    contentDescription = "",
+                                    modifier = Modifier.size(dimensionResource(id = R.dimen.size_6dp)),
+                                    tint = MaterialTheme.appColors.buttonColor.textEnabled,
+                                )
+                                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
+                                Text(
+                                    text = stringResource(id = R.string.going),
+                                    color = Color.White,
+                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                    fontWeight = FontWeight.W500,
+                                )
+                            }
+                            Divider(
+                                color = Color.Transparent,
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .width(1.dp)
                             )
-                            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
-                            Text(
-                                text = stringResource(id = R.string.going),
-                                color = MaterialTheme.appColors.buttonColor.textEnabled,
-                                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                                fontWeight = FontWeight.W500,
-                            )
+                            Row(
+                                Modifier
+                                    .weight(2.5F)
+                                    .background(
+                                        color = ColorButtonGreen,
+                                        shape = RoundedCornerShape(
+                                            bottomEnd = dimensionResource(id = R.dimen.size_8dp)
+                                        )
+                                    )
+                                    .clickable {
+                                        onEditClick(events , true)
+                                    }
+                                    .padding(dimensionResource(id = R.dimen.size_14dp)),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+
+                                Text(
+                                    text = stringResource(id = R.string.edit),
+                                    color = Color.White,
+                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                    fontWeight = FontWeight.W500,
+                                )
+
+                            }
+
                         }
                     } else if (events.invitationStatus.equals(
                             EventStatus.NOT_GOING.status,
                             ignoreCase = true
                         )
                     ) {
+                        /** NOT GOING EVENT  */
                         Row(
                             Modifier
                                 .fillMaxWidth()
@@ -656,12 +703,17 @@ fun EventItem(
                                 .clickable {
                                     moveToPracticeDetail(events.id, events.eventName)
                                 }
-                                .padding(dimensionResource(id = R.dimen.size_14dp)),
+                            ,
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
 
                             Row(
+
+                                Modifier.padding(dimensionResource(id = R.dimen.size_14dp))
+                                    .background(
+                                        color = ColorButtonRed
+                                    ),
                                 horizontalArrangement = Arrangement.Center,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -683,15 +735,49 @@ fun EventItem(
 
                             }
                             Row(
-                                modifier = Modifier.weight(1f),
-                                horizontalArrangement = Arrangement.Center,
+                                modifier = Modifier.weight(0.7f).padding(dimensionResource(id = R.dimen.size_14dp))
+                                    .background(
+                                        color = ColorButtonRed
+                                    ),
+                                horizontalArrangement = Arrangement.Start,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                     text = events.reason,
-                                    color = MaterialTheme.appColors.buttonColor.textEnabled,
+                                    textAlign=TextAlign.Start,
+                                    color = Color.White,
+                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                    fontWeight = FontWeight.W500,
+                                )
+                            }
+                            Divider(
+                                color = Color.White,
+                                modifier = Modifier
+                                    .height(dimensionResource(id = R.dimen.size_35dp))
+                                    .width(1.dp),
+                            )
+                            Row(
+                                Modifier
+                                    .weight(0.3F)
+                                    .background(
+                                        color = ColorButtonRed,
+                                        shape = RoundedCornerShape(
+                                            bottomEnd = dimensionResource(id = R.dimen.size_8dp)
+                                        )
+                                    )
+                                    .clickable {
+                                        onEditClick(events , true)
+                                    }
+                                    .padding(dimensionResource(id = R.dimen.size_14dp)),
+                                horizontalArrangement = Arrangement.Center,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+
+                                Text(
+                                    text = stringResource(id = R.string.edit),
+                                    color = Color.White,
                                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                     fontWeight = FontWeight.W500,
                                 )

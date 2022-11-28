@@ -1,6 +1,7 @@
 package com.allballapp.android.ui.features.home.events
 
 import com.allballapp.android.data.response.Standing
+import com.allballapp.android.data.response.SwapUser
 import com.allballapp.android.data.response.team.Team
 
 sealed class EvEvents {
@@ -19,6 +20,7 @@ sealed class EvEvents {
     data class GetOpportunities(val type: String = "") : EvEvents()
     object GetOpportunityDetail : EvEvents()
     data class SetEventId(val id: String) : EvEvents()
+    data class SetSelectedEventId(val id: String) : EvEvents()
     data class GetDivisions(val id: String) : EvEvents()
     object RegisterForEvent : EvEvents()
     object RegisterGameStaff : EvEvents()
@@ -78,6 +80,8 @@ sealed class EvEvents {
     data class Format(val format: String) : EvEvents()
     data class PaymentOption(val paymentOption: String) : EvEvents()
     data class GetSchedule(val eventId: String) : EvEvents()
+    data class ShowAcceptEditDialog(val show: Boolean) : EvEvents()
+    data class SetSelectedId(val id: SwapUser) : EvEvents()
     object ClearRequest : EvEvents()
     object ClearTeam : EvEvents()
     //data class Format(val format: String) : EvEvents()

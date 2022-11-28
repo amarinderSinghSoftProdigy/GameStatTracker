@@ -59,11 +59,14 @@ import com.allballapp.android.data.response.team.Player
 import com.allballapp.android.data.response.team.Team
 import com.allballapp.android.ui.features.home.events.DivisionData
 import com.allballapp.android.ui.features.home.events.NoteType
+import com.allballapp.android.ui.features.home.events.new_event.EventTabItems
+import com.allballapp.android.ui.features.home.events.new_event.EventTabs
 import com.allballapp.android.ui.features.home.teams.TeamViewModel
 import com.allballapp.android.ui.features.profile.tabs.DetailItem
 import com.allballapp.android.ui.features.user_type.team_setup.updated.InviteObject
 import com.allballapp.android.ui.theme.*
 import com.allballapp.android.ui.utils.CommonUtils
+import com.google.accompanist.pager.ExperimentalPagerApi
 import com.togitech.ccp.component.TogiCountryCodePicker
 import com.togitech.ccp.data.utils.getDefaultLangCode
 import com.togitech.ccp.data.utils.getDefaultPhoneCode
@@ -2041,7 +2044,7 @@ fun SwapProfile(
                             text = actionButtonText.ifEmpty { stringResource(R.string.dialog_button_confirm) },
                             onClick = {
                                 onConfirmClick.invoke(selectedUser.value)
-                               /* onDismiss.invoke()*/
+                                /* onDismiss.invoke()*/
                             },
                             modifier = Modifier
                                 .weight(1f),
@@ -2913,7 +2916,7 @@ fun InviteTeamMembersDialog(
                             text = stringResource(R.string.invite),
                             onClick = {
                                 if (inviteList.isNotEmpty() &&
-                                    inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() && it.role.key.isNotEmpty() && it.contact.length == 10}
+                                    inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() && it.role.key.isNotEmpty() && it.contact.length == 10 }
                                 ) {
                                     onConfirmClick.invoke()
                                 }
@@ -3349,3 +3352,257 @@ fun ShowImageUploaded(
         )
     }
 }
+
+
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalPagerApi::class)
+@Composable
+fun EditEventDialog(
+    onDismiss: () -> Unit,
+    onConfirmClick: (String) -> Unit,
+    onReasonChange: (String) -> Unit,
+    reason: String = "",
+    placeholderText: String = "",
+    textLimit: Int? = null,
+    selectUsers: List<SwapUser>,
+    users: List<SwapUser>,
+    onSelectionChange: (SwapUser) -> Unit,
+) {
+    val title = remember {
+        mutableStateOf(false)
+    }
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+    BallerAppMainTheme {
+        AlertDialog(
+            properties = DialogProperties(usePlatformDefaultWidth = false),
+            modifier = Modifier
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                .padding(horizontal = dimensionResource(id = R.dimen.size_14dp))
+                .wrapContentSize()
+                .animateContentSize(),
+            onDismissRequest = {
+                /*onDismiss()*/
+            },
+            buttons = {
+                Column(
+                    modifier = Modifier
+                        .background(color = MaterialTheme.appColors.material.background)
+                        .padding(
+                            all = dimensionResource(
+                                id = R.dimen.size_16dp
+                            )
+                        ),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(dimensionResource(id = R.dimen.size_8dp)),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            val pagerState =
+                                com.google.accompanist.pager.rememberPagerState(pageCount = 2)
+                            val configuration = LocalConfiguration.current
+                            val screenWidth = configuration.screenWidthDp.dp
+                            val width =
+                                screenWidth.minus(dimensionResource(id = R.dimen.size_16dp).times(8))
+                            val list =
+                                listOf(EventTabItems.Accept, EventTabItems.Decline)
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                EventTabs(
+                                    pagerState = pagerState,
+                                    width,
+                                    list,
+                                    onSelectionChange = {
+                                        title.value = it != "accept"
+                                    })
+                            }
+                        }
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_close_color_picker),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(dimensionResource(id = R.dimen.size_20dp))
+                                .align(Alignment.CenterEnd)
+                                .clickable {
+                                    onDismiss()
+                                },
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
+
+                    Text(
+                        text = if (title.value) stringResource(id = R.string.please_select_everyone_cannot_makeit)
+                        else stringResource(id = R.string.please_select_everyone_coming),
+                        style = MaterialTheme.typography.h6,
+                        color = ColorBWBlack,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Start
+                    )
+
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
+
+                    LazyColumn(
+                        modifier = Modifier.height(dimensionResource(id = R.dimen.size_200dp))
+                    ) {
+                        item {
+                            users.forEach {
+                                EventUsersDialogItem(
+                                    player = it,
+                                    onItemClick = { player ->
+                                        focusManager.clearFocus()
+                                        keyboardController?.hide()
+                                        onSelectionChange.invoke(player)
+                                    },
+                                    selected = selectUsers.contains(it)
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
+                    if (title.value) {
+                        AppOutlineTextField(
+                            value = reason,
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            onValueChange = { reason ->
+                                if ((textLimit != null)) {
+                                    if (reason.length <= textLimit) {
+                                        onReasonChange(reason)
+                                    }
+                                } else {
+                                    onReasonChange(reason)
+                                }
+                            },
+                            maxLines = 1,
+                            singleLine = true,
+                            placeholder = {
+                                Text(
+                                    text = if (placeholderText.isEmpty()) stringResource(id = R.string.reason_not_going)
+                                    else placeholderText,
+                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                    textAlign = TextAlign.Start
+                                )
+                            },
+                            keyboardOptions = KeyboardOptions(
+                                imeAction = ImeAction.Next,
+                                keyboardType = KeyboardType.Text,
+                                capitalization = KeyboardCapitalization.Words
+                            ),
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
+                                unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
+                                backgroundColor = MaterialTheme.appColors.material.background,
+                                textColor = MaterialTheme.appColors.textField.labelDark,
+                                placeholderColor = MaterialTheme.appColors.textField.label,
+                                cursorColor = MaterialTheme.appColors.textField.labelDark
+                            ),
+                            keyboardActions = KeyboardActions(onDone = {
+                                keyboardController?.hide()
+                            }),
+                        )
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+                    }
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(color = Color.Transparent),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        DialogButton(
+                            text = stringResource(R.string.dialog_button_cancel),
+                            onClick = onDismiss,
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(end = dimensionResource(id = R.dimen.size_10dp)),
+                            border = ButtonDefaults.outlinedBorder,
+                            onlyBorder = true,
+                            enabled = false
+                        )
+                        DialogButton(
+                            text = stringResource(R.string.dialog_button_confirm),
+                            onClick = {
+                                if (!title.value) {
+                                    onConfirmClick.invoke("")
+                                } else if (reason.trim().length > 3) {
+                                    onConfirmClick.invoke(reason.trim())
+                                }
+                                onDismiss.invoke()
+                            },
+                            modifier = Modifier
+                                .weight(1f),
+                            border = ButtonDefaults.outlinedBorder,
+                            onlyBorder = false,
+                            enabled = if (selectUsers.isNotEmpty()) true else reason.trim().length > 3
+                        )
+                    }
+                }
+            },
+        )
+    }
+}
+
+@Composable
+fun EventUsersDialogItem(
+    player: SwapUser,
+    onItemClick: (SwapUser) -> Unit,
+    selected: Boolean
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                color = Color.Transparent,
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))
+            ),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = dimensionResource(id = R.dimen.size_10dp)),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            CoilImage(
+                src = com.allballapp.android.BuildConfig.IMAGE_SERVER + player.profileImage,
+                modifier = Modifier
+                    .size(dimensionResource(id = R.dimen.size_40dp))
+                    .clip(CircleShape)
+                    .background(
+                        color = MaterialTheme.appColors.material.onSurface,
+                        CircleShape
+                    ),
+                isCrossFadeEnabled = false,
+                onLoading = { Placeholder(R.drawable.ic_profile_placeholder) },
+                onError = { Placeholder(R.drawable.ic_profile_placeholder) }
+            )
+            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = player.firstName,
+                    style = MaterialTheme.typography.h5,
+                    color = ColorBWBlack
+                )
+                Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))
+                Text(
+                    text = player.phone,
+                    style = MaterialTheme.typography.h6,
+                    color = ColorMainPrimary,
+                )
+            }
+            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
+            CustomCheckBox(selected) {
+                onItemClick(player)
+            }
+        }
+    }
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+}
+
