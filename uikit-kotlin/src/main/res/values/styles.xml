@@ -1,6 +1,6 @@
 <resources>
 
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar" />
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge" />
 
     <style name="TransparentCompat" parent="AppTheme">
         <item name="android:windowNoTitle">true</item>
@@ -18,7 +18,7 @@
         <item name="android:windowIsFloating">false</item>
         <item name="android:background">#fff</item>
     </style>
-      
+
     <style name="DialogAnimation">
         <item name="android:windowEnterAnimation">@anim/animate_slides_down</item>
         <item name="android:windowExitAnimation">@anim/animate_slides_up</item>

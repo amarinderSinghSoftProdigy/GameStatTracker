@@ -21,6 +21,9 @@
             android:id="@+id/add_member_toolbar"
             android:layout_width="match_parent"
             app:title="@string/add_members"
+            app:titleTextColor="@color/textColorWhite"
+            app:subtitleTextColor="@color/textColorWhite"
+            android:background="@color/colorPrimary"
             app:navigationIcon="@drawable/ic_back"
             android:layout_height="wrap_content"/>
 

@@ -334,11 +334,25 @@ fun FragmentContainer(
         modifier = modifier,
         factory = { context ->
             FragmentContainerView(context)
-                .apply { id = containerId }
+                .apply {
+                    try {
+                        id = containerId
+                    } catch (ex: Exception) {
+                        Timber.i("FragmentContainerView------ ex1")
+                        ex.printStackTrace()
+                    }
+                }
         },
         update = {
             if (!initialized) {
-                fragmentManager.commit { commit(it.id) }
+                fragmentManager.commit {
+                    try {
+                        commit(it.id)
+                    } catch (ex: Exception) {
+                        Timber.i("FragmentContainerView------ ex2")
+                        ex.printStackTrace()
+                    }
+                }
                 initialized = true
             } else {
                 fragmentManager.onMyContainerAvailable(it)
@@ -349,10 +363,17 @@ fun FragmentContainer(
 
 /** Access to package-private method in FragmentManager through reflection */
 fun FragmentManager.onMyContainerAvailable(view: FragmentContainerView) {
-    val method = FragmentManager::class.java.getDeclaredMethod(
-        "onContainerAvailable",
-        FragmentContainerView::class.java
-    )
-    method.isAccessible = true
-    method.invoke(this, view)
+    try {
+        val method = FragmentManager::class.java.getDeclaredMethod(
+            "onContainerAvailable",
+            FragmentContainerView::class.java
+        )
+        method.isAccessible = true
+        method.invoke(this, view)
+    } catch (ex: Exception) {
+        Timber.i("FragmentContainerView------ ex3")
+        ex.printStackTrace()
+    }
+
+
 }

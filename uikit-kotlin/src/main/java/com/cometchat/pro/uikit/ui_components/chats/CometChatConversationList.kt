@@ -2,7 +2,9 @@ package com.cometchat.pro.uikit.ui_components.chats
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -65,6 +67,7 @@ class CometChatConversationList : Fragment(), TextWatcher {
    private var conversation: Conversation? = null
     private var conversationList: MutableList<Conversation> = ArrayList()
     private var ivStartConversation: ImageView? = null
+    private var progress_bar: ProgressBar? = null
 
 
 
@@ -75,6 +78,7 @@ class CometChatConversationList : Fragment(), TextWatcher {
     ): View? {
         // Inflate the layout for this fragment
         vw = inflater.inflate(R.layout.fragment_conversation_screen, container, false)
+        progress_bar=vw?.findViewById(R.id.progress_bar)
         rvConversation = vw?.findViewById(R.id.rv_conversation_list)
         noConversationView = vw?.findViewById(R.id.no_conversation_view)
         searchEdit = vw?.findViewById(R.id.search_bar)
@@ -292,11 +296,13 @@ class CometChatConversationList : Fragment(), TextWatcher {
         if(filteredConversation.isNotEmpty()) {
             conversationList = filteredConversation as MutableList<Conversation>
             rvConversation?.setConversationList(filteredConversation)
+            progress_bar?.let { it.visibility =View.GONE }
 
         }
         else
         {
             checkNoConverstaion()
+            progress_bar?.let { it.visibility =View.GONE }
 
         }
 
@@ -454,6 +460,14 @@ class CometChatConversationList : Fragment(), TextWatcher {
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "onResume: ")
+        progress_bar?.let {
+            it.visibility =View.VISIBLE
+            /* Setting progress bar color from theme color of app*/
+            it.indeterminateTintList = ColorStateList.valueOf(Color.parseColor(UIKitSettings.color))
+        }
+
+
+
         conversationsRequest = null
         searchEdit?.addTextChangedListener(this)
         rvConversation?.clearList()

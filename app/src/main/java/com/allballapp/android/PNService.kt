@@ -54,7 +54,7 @@ class PNService :
         createNotificationChannel()
 
         //*Sending app level broadcast on notification *//*
-        sendBroadcastToUpdateUnreadChatCount()
+//        sendBroadcastToUpdateUnreadChatCount()
 
 
         Timber.i("PNService onMessageReceived: ${message.data} ${message.notification?.title}")
@@ -78,11 +78,11 @@ class PNService :
         }
     }
 
-    private fun sendBroadcastToUpdateUnreadChatCount() {
+/*    private fun sendBroadcastToUpdateUnreadChatCount() {
 
         val intent = Intent(IntentData.COMET_CHAT_READ_COUNT)
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent)
-    }
+    }*/
 
     override fun onSendError(msgId: String, exception: Exception) {
         super.onSendError(msgId, exception)
