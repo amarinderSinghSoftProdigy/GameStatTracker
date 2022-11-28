@@ -3,6 +3,7 @@ package com.cometchat.pro.uikit.ui_components.groups.group_detail
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -43,6 +44,7 @@ import com.cometchat.pro.uikit.ui_resources.utils.Utils
 import com.cometchat.pro.uikit.ui_resources.utils.recycler_touch.ClickListener
 import com.cometchat.pro.uikit.ui_resources.utils.recycler_touch.RecyclerTouchListener
 import com.cometchat.pro.uikit.ui_settings.FeatureRestriction
+import com.cometchat.pro.uikit.ui_settings.UIKitSettings
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -265,26 +267,20 @@ class CometChatGroupDetailActivity() : AppCompatActivity() {
             }
         })
 
-//        if (UIKitSettings.color != null) {
-//            window.statusBarColor = Color.parseColor(UIKitSettings.color)
-//            callBtn!!.imageTintList = ColorStateList.valueOf(
-//                    Color.parseColor(UIKitSettings.color))
-//            videoCallBtn!!.imageTintList = ColorStateList.valueOf(
-//                    Color.parseColor(UIKitSettings.color))
-//        }
+        window.statusBarColor = Color.parseColor(UIKitSettings.color)
     }
 
     private fun checkDarkMode() {
         if (Utils.isDarkMode(this)) {
 //            toolbar!!.setTitleTextColor(resources.getColor(R.color.textColorWhite))
-            tvGroupName!!.setTextColor(resources.getColor(R.color.textColorWhite))
+            tvGroupName!!.setTextColor(Color.parseColor(UIKitSettings.color))
             dividerAdmin!!.setBackgroundColor(resources.getColor(R.color.grey))
             dividerModerator!!.setBackgroundColor(resources.getColor(R.color.grey))
             dividerBan!!.setBackgroundColor(resources.getColor(R.color.grey))
             divider2!!.setBackgroundColor(resources.getColor(R.color.grey))
         } else {
 //            toolbar!!.setTitleTextColor(resources.getColor(R.color.primaryTextColor))
-            tvGroupName!!.setTextColor(resources.getColor(R.color.primaryTextColor))
+            tvGroupName!!.setTextColor(Color.parseColor(UIKitSettings.color))
             dividerAdmin!!.setBackgroundColor(resources.getColor(R.color.light_grey))
             dividerModerator!!.setBackgroundColor(resources.getColor(R.color.light_grey))
             dividerBan!!.setBackgroundColor(resources.getColor(R.color.light_grey))

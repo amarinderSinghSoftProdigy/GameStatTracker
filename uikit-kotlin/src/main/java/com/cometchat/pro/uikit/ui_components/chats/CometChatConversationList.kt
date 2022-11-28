@@ -2,7 +2,9 @@ package com.cometchat.pro.uikit.ui_components.chats
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -458,7 +460,14 @@ class CometChatConversationList : Fragment(), TextWatcher {
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "onResume: ")
-        progress_bar?.let { it.visibility =View.VISIBLE }
+        progress_bar?.let {
+            it.visibility =View.VISIBLE
+            /* Setting progress bar color from theme color of app*/
+            it.indeterminateTintList = ColorStateList.valueOf(Color.parseColor(UIKitSettings.color))
+        }
+
+
+
         conversationsRequest = null
         searchEdit?.addTextChangedListener(this)
         rvConversation?.clearList()

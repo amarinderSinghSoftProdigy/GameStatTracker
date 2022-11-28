@@ -161,7 +161,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
     private var tvName: TextView? = null
     private var tvStatus: TextView? = null
     private lateinit var Id: String
-    private var c: Context? = null
+    private var mContext: Context? = null
     private var blockUserLayout: LinearLayout? = null
     private var blockedUserName: TextView? = null
     private var stickyHeaderDecoration: StickyHeaderDecoration? = null
@@ -1707,7 +1707,10 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
             messageAdapter?.let {
                 stickyHeaderDecoration = StickyHeaderDecoration(it)
             }
-            rvChatListView?.addItemDecoration(stickyHeaderDecoration!!, 0)
+            stickyHeaderDecoration?.let {
+                rvChatListView?.addItemDecoration(it, 0)
+
+            }
             scrollToBottom()
             messageAdapter?.notifyDataSetChanged()
         } else {
@@ -2030,6 +2033,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
      * @see CometChat.deleteMessage
      */
     private fun deleteMessage(baseMessage: BaseMessage?) {
+
         deleteMessage(baseMessage!!.id, object : CallbackListener<BaseMessage?>() {
             override fun onSuccess(baseMessage: BaseMessage?) {
 //                if (messageAdapter != null) messageAdapter?.setUpdatedMessage(baseMessage!!)
@@ -2641,7 +2645,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        this.c = context
+        this.mContext = context
     }
 
     override fun onDetach() {
@@ -3081,20 +3085,26 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
             CometChatMessageActions.MessageActionListener {
 
             override fun onEditMessageClick() {
-                if (baseMessage != null && baseMessage?.type == CometChatConstants.MESSAGE_TYPE_TEXT) {
-                    isEdit = true
-                    isReply = false
-                    tvMessageTitle?.text = resources.getString(R.string.edit_message)
-                    tvMessageSubTitle?.text = (baseMessage as TextMessage).text
-                    composeBox?.ivMic?.visibility = View.GONE
-                    composeBox?.ivSend?.visibility = View.VISIBLE
-                    editMessageLayout?.visibility = View.VISIBLE
-                    composeBox?.etComposeBox?.setText((baseMessage as TextMessage).text)
-                    if (messageAdapter != null) {
-                        baseMessage?.id?.let { messageAdapter?.setSelectedMessage(it) }
-                        messageAdapter?.notifyDataSetChanged()
+
+                try {
+                    if (baseMessage != null && baseMessage?.type == CometChatConstants.MESSAGE_TYPE_TEXT) {
+                        isEdit = true
+                        isReply = false
+                        tvMessageTitle?.text = resources.getString(R.string.edit_message)
+                        tvMessageSubTitle?.text = (baseMessage as TextMessage).text
+                        composeBox?.ivMic?.visibility = View.GONE
+                        composeBox?.ivSend?.visibility = View.VISIBLE
+                        editMessageLayout?.visibility = View.VISIBLE
+                        composeBox?.etComposeBox?.setText((baseMessage as TextMessage).text)
+                        if (messageAdapter != null) {
+                            baseMessage?.id?.let { messageAdapter?.setSelectedMessage(it) }
+                            messageAdapter?.notifyDataSetChanged()
+                        }
                     }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
+
             }
 
             override fun onThreadMessageClick() {
@@ -3110,11 +3120,18 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
             }
 
             override fun onDeleteMessageClick() {
-                deleteMessage(baseMessage)
-                if (messageAdapter != null) {
-                    messageAdapter?.clearLongClickSelectedItem()
-                    messageAdapter?.notifyDataSetChanged()
+                mContext?.let {
+                    baseMessage?.let { it1 ->
+                        deleteMessageConfirmation(it, onMessageDeleteSuccess = {
+                            deleteMessage(baseMessage)
+                            if (messageAdapter != null) {
+                                messageAdapter?.clearLongClickSelectedItem()
+                                messageAdapter?.notifyDataSetChanged()
+                            }
+                        })
+                    }
                 }
+
             }
 
             override fun onCopyMessageClick() {
@@ -3737,4 +3754,22 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
         if (messageAdapter != null) messageAdapter?.clearLongClickSelectedItem()
         dialog?.dismiss()
     }
+}
+
+fun deleteMessageConfirmation(context: Context, onMessageDeleteSuccess: () -> Unit) {
+    val builder = AlertDialog.Builder(context)
+    builder.setTitle(context.resources.getString(R.string.delete_message))
+    builder.setMessage(context.resources.getString(R.string.delete_message_confirmation))
+    builder.setPositiveButton(
+        context.resources.getString(R.string.delete)
+    ) { dialog, _ -> // continue with delete
+        onMessageDeleteSuccess.invoke()
+        dialog.cancel()
+    }
+    builder.setNegativeButton(
+        context.resources.getString(R.string.cancel)
+    ) { dialog, _ -> // close dialog
+        dialog.cancel()
+    }
+    builder.show()
 }

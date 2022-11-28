@@ -216,16 +216,20 @@ class CometChatUserDetailScreenActivity constructor() : AppCompatActivity() {
 //                checkOnGoingCall(CometChatConstants.CALL_TYPE_VIDEO)
 //            }
 //        })
+
     }
 
     private fun checkDarkMode() {
+        window.statusBarColor = Color.parseColor(UIKitSettings.color)
+        tvSendMessage?.setTextColor(Color.parseColor(UIKitSettings.color))
         if (Utils.isDarkMode(this)) {
+            userName!!.setTextColor(Color.parseColor(UIKitSettings.color))
             userName!!.setTextColor(resources.getColor(R.color.textColorWhite))
             divider1!!.setBackgroundColor(resources.getColor(R.color.grey))
             divider2!!.setBackgroundColor(resources.getColor(R.color.grey))
             divider3!!.setBackgroundColor(resources.getColor(R.color.grey))
         } else {
-            userName!!.setTextColor(resources.getColor(R.color.primaryTextColor))
+            userName!!.setTextColor(Color.parseColor(UIKitSettings.color))
             divider1!!.setBackgroundColor(resources.getColor(R.color.light_grey))
             divider2!!.setBackgroundColor(resources.getColor(R.color.light_grey))
             divider3!!.setBackgroundColor(resources.getColor(R.color.light_grey))
