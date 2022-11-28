@@ -356,7 +356,10 @@ fun ParentItem(
         modifier = Modifier
             .background(color = Color.Transparent)
             .width(width)
-            .padding(bottom = dimensionResource(id = R.dimen.size_12dp))
+            .padding(
+                bottom = dimensionResource(id = R.dimen.size_12dp),
+                end = dimensionResource(id = R.dimen.size_2dp)
+            )
             .clickable {
                 click()
             },
@@ -379,15 +382,16 @@ fun ParentItem(
                 style = MaterialTheme.typography.h6,
                 color = ColorBWBlack
             )
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_5dp)))
-            AppText(
-                text = relation,
-                style = MaterialTheme.typography.h6,
-                color = ColorBWGrayLight,
-                fontWeight = FontWeight.W500
-            )
+            if(relation.isNotEmpty()){
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_5dp)))
+                AppText(
+                    text = relation,
+                    style = MaterialTheme.typography.h6,
+                    color = ColorBWGrayLight,
+                    fontWeight = FontWeight.W500
+                )
+            }
         }
-
     }
 }
 

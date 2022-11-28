@@ -38,6 +38,7 @@ import com.allballapp.android.data.request.Members
 import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.home.EmptyScreen
 import com.allballapp.android.ui.features.home.HomeViewModel
+import com.allballapp.android.ui.features.home.event_kd.schedule.Space
 import com.allballapp.android.ui.features.home.home_screen.HomeScreenEvent
 import com.allballapp.android.ui.features.sign_up.SignUpChannel
 import com.allballapp.android.ui.features.sign_up.SignUpViewModel
@@ -58,7 +59,7 @@ fun InvitationScreen(
     //onInvitationSuccess: () -> Unit,
     addProfileClick: () -> Unit,
     onInviteClick: (teamId: String) -> Unit,
-    onBackClick : () -> Unit
+    onBackClick: () -> Unit
 ) {
     val showNoMessage = remember {
         mutableStateOf(false)
@@ -176,8 +177,8 @@ fun InvitationScreen(
             onSelectionChange = { vm.onEvent(InvitationEvent.OnRoleClick(roleKey = it)) },
             title = stringResource(
                 id = R.string.what_is_your_role,
-                "${homeState.user.firstName} ${homeState.user.lastName}"
-                ,state.selectedInvitation.team.name
+                "${homeState.user.firstName} ${homeState.user.lastName}",
+                state.selectedInvitation.team.name
             ),
             selected = state.selectedRoleKey,
             showLoading = state.showLoading,
@@ -475,6 +476,8 @@ fun InvitationItem(
                         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                         fontWeight = FontWeight.W500,
                     )
+                    
+                    Space(dp = dimensionResource(id = R.dimen.size_5dp))
 
                     Text(
                         text = apiToUIDateFormat(invitation.createdAt),
@@ -523,8 +526,7 @@ fun InvitationItem(
                         color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                         fontWeight = FontWeight.W500,
-
-                        )
+                    )
                 }
 
                 Row(
