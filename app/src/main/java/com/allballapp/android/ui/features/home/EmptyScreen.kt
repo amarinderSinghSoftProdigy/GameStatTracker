@@ -14,10 +14,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.allballapp.android.ui.features.components.AppText
 import com.allballapp.android.ui.features.components.LeadingIconAppButton
-import com.allballapp.android.ui.theme.ColorBWBlack
-import com.allballapp.android.ui.theme.appColors
-import com.allballapp.android.ui.theme.rubikFamily
 import com.allballapp.android.R
+import com.allballapp.android.ui.theme.*
+
 @Composable
 fun EmptyScreen(
     singleText: Boolean,
@@ -32,7 +31,7 @@ fun EmptyScreen(
                 modifier = Modifier.align(Alignment.Center).fillMaxWidth(0.95f),
                 text = heading.ifEmpty { stringResource(id = R.string.coming_soon) },
                 fontSize = dimensionResource(id = R.dimen.txt_size_18).value.sp,
-                color = ColorBWBlack,
+                color = ColorBWGrayStatus,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 fontFamily = rubikFamily
@@ -51,7 +50,7 @@ fun EmptyScreen(
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_44dp)))
                 AppText(
-                    color = MaterialTheme.appColors.editField.borderUnFocused,
+                    color = SkipColor,
                     text = heading.ifEmpty { stringResource(id = R.string.no_data_found) },
                     fontSize = dimensionResource(id = R.dimen.txt_size_16).value.sp,
                 )

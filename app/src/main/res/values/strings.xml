@@ -557,4 +557,6 @@
     <string name="adult_m">AdultM</string>
     <string name="adult_l">AdultL</string>
     <string name="adult_xl">AdultXL</string>
+    <string name="payment_method">Payment Method</string>
+    <string name="loren_ipsum">Loren ipsum</string>
 </resources>

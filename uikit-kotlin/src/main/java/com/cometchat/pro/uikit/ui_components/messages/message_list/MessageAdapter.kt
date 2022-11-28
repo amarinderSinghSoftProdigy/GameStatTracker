@@ -2412,9 +2412,9 @@ class MessageAdapter(context: Context, messageList: List<BaseMessage>, type: Str
             else if (baseMessage.action == CometChatConstants.ActionKeys.ACTION_KICKED) actionMessage = ((baseMessage.actioBy as User).name + " "
                     + context.getString(R.string.kicked_by) + " " + (baseMessage.actionOn as User).name)
             else if (baseMessage.action == CometChatConstants.ActionKeys.ACTION_BANNED) actionMessage = ((baseMessage.actioBy as User).name + " "
-                    + context.getString(R.string.ban) + " " + (baseMessage.actionOn as User).name)
+                    + context.getString(R.string.banned) + " " + (baseMessage.actionOn as User).name)
             else if (baseMessage.action == CometChatConstants.ActionKeys.ACTION_UNBANNED) actionMessage = ((baseMessage.actioBy as User).name + " "
-                    + context.getString(R.string.unban) + " " + (baseMessage.actionOn as User).name)
+                    + context.getString(R.string.unbanned) + " " + (baseMessage.actionOn as User).name)
             else if (baseMessage.action == CometChatConstants.ActionKeys.ACTION_LEFT) actionMessage = (baseMessage.actioBy as User).name + " " + context.getString(R.string.left)
             else if (baseMessage.action == CometChatConstants.ActionKeys.ACTION_SCOPE_CHANGED)
                 actionMessage = if (baseMessage.newScope == CometChatConstants.SCOPE_MODERATOR) {

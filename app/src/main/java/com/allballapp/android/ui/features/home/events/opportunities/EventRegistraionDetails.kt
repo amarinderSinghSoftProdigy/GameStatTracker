@@ -165,15 +165,6 @@ fun EventRegistraionDetails(
                 }
                 DividerCommon()
                 RegisterItem(
-                    stringResource(id = R.string.division),
-                    if (state.registerRequest.division.isNotEmpty()) state.divisionData.divisionName
-                    else stringResource(id = R.string.choose_division),
-                    updated = state.registerRequest.division.isNotEmpty()
-                ) {
-                    showDivisionDialog.value = true
-                }
-                DividerCommon()
-                RegisterItem(
                     stringResource(id = R.string.players),
                     if (state.registerRequest.players.isNotEmpty()) state.registerRequest.players.size.toString() else stringResource(
                         id = R.string.choose_playerr
@@ -190,11 +181,20 @@ fun EventRegistraionDetails(
                 }
                 DividerCommon()
                 RegisterItem(
+                    stringResource(id = R.string.division),
+                    if (state.registerRequest.division.isNotEmpty()) state.divisionData.divisionName
+                    else stringResource(id = R.string.choose_division),
+                    updated = state.registerRequest.division.isNotEmpty()
+                ) {
+                    showDivisionDialog.value = true
+                }
+                DividerCommon()
+
+                RegisterItem(
                     stringResource(id = R.string.payment_options),
                     if (state.registerRequest.paymentOption.isNotEmpty()) state.registerRequest.paymentOption else stringResource(
-                        id = R.string.select_payment_option
+                        id = R.string.payment_method
                     ),
-                    showIcon = false,
                     updated = state.registerRequest.paymentOption.isNotEmpty()
                 ) {
                     showPaymentDialog.value = true
@@ -242,15 +242,15 @@ fun EventRegistraionDetails(
             /*}
             Heading(stringResource(id = R.string.division))
             UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {*/
-            Column(
+           /* Column(
                 modifier = Modifier
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                /* RegisterItem(
+                *//* RegisterItem(
                      stringResource(id = R.string.division),
                      "Division 1"
-                 )*/
+                 )*//*
                 DividerCommon()
                 Row(
                     modifier = Modifier
@@ -275,7 +275,7 @@ fun EventRegistraionDetails(
                         )
                     )
                 }
-            }
+            }*/
         }
         Surface(
             modifier = Modifier
@@ -314,7 +314,7 @@ fun EventRegistraionDetails(
                     )
                 }
                 DividerCommon()
-                Surface(color = MaterialTheme.appColors.material.primary)
+                Surface(color = Color.White)
                 {
 
                     Row(
@@ -330,7 +330,11 @@ fun EventRegistraionDetails(
                         }
 
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_20dp)))
-
+                        AppText(
+                            text = stringResource(id = R.string.loren_ipsum) + " ",
+                            fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                            color = md_theme_light_onSurface,
+                        )
                         AppText(
                             text = stringResource(id = R.string.privacy),
                             fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
@@ -339,11 +343,9 @@ fun EventRegistraionDetails(
                                 moveToPrivacy("")
                             }
                         )
-
                     }
                 }
             }
-
         }
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_24dp)))
 
@@ -488,7 +490,7 @@ fun RegisterItem(
             AppText(
                 text = value,
                 textAlign = TextAlign.End,
-                style = if (!updated) MaterialTheme.typography.h6 else MaterialTheme.typography.h2,
+                style = if (!updated) MaterialTheme.typography.h5 else MaterialTheme.typography.h2,
                 color = if (!updated) MaterialTheme.appColors.textField.label else ColorBWBlack,
             )
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))

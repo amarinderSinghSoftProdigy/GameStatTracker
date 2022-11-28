@@ -22,6 +22,7 @@
             android:id="@+id/forward_toolbar"
             android:layout_width="match_parent"
             app:title="Forward Message"
+            android:background="@color/colorPrimary"
             app:navigationIcon="@drawable/ic_back"
             android:layout_height="wrap_content"/>
 

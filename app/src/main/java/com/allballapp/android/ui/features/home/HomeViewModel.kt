@@ -417,7 +417,7 @@ class HomeViewModel @Inject constructor(
                         _state.value.copy(unreadUsersGroupsIds = mergedUnreadIds)
 
                     Timber.i(
-                        "CometChatUI onSuccess: unread count $count -- stringHashMapHashMap$stringHashMapHashMap"
+                        "CometChatUI onSuccess: unread count $count -- mergedUnreadIds-- $mergedUnreadIds"
                     )
 
                 }

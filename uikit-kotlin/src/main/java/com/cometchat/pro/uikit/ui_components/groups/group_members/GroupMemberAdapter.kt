@@ -1,6 +1,7 @@
 package com.cometchat.pro.uikit.ui_components.groups.group_members
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import com.cometchat.pro.uikit.databinding.CometchatUserListItemBinding
 import com.cometchat.pro.uikit.ui_components.groups.group_members.GroupMemberAdapter.GroupMemberViewHolder
 import com.cometchat.pro.uikit.ui_resources.utils.FontUtils
 import com.cometchat.pro.uikit.ui_resources.utils.Utils
+import com.cometchat.pro.uikit.ui_settings.UIKitSettings
 import java.util.*
 
 /**
@@ -99,11 +101,11 @@ class GroupMemberAdapter : RecyclerView.Adapter<GroupMemberViewHolder> {
         groupMemberViewHolder.userListRowBinding.statusIndicator.setUserStatus(groupMember.status)
 
         if (Utils.isDarkMode(context)) {
-            groupMemberViewHolder.userListRowBinding.txtUserName.setTextColor(context.resources.getColor(R.color.textColorWhite))
+            groupMemberViewHolder.userListRowBinding.txtUserName.setTextColor(Color.parseColor(UIKitSettings.color))
             groupMemberViewHolder.userListRowBinding.tvSeprator.setBackgroundColor(context.resources.getColor(R.color.grey))
             groupMemberViewHolder.userListRowBinding.txtUserScope.setTextColor(context.resources.getColor(R.color.textColorWhite))
         } else {
-            groupMemberViewHolder.userListRowBinding.txtUserName.setTextColor(context.resources.getColor(R.color.primaryTextColor))
+            groupMemberViewHolder.userListRowBinding.txtUserName.setTextColor(Color.parseColor(UIKitSettings.color))
             groupMemberViewHolder.userListRowBinding.tvSeprator.setBackgroundColor(context.resources.getColor(R.color.light_grey))
             groupMemberViewHolder.userListRowBinding.txtUserScope.setTextColor(context.resources.getColor(R.color.secondaryTextColor))
         }

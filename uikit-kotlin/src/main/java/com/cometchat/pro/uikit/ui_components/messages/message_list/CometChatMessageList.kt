@@ -58,6 +58,7 @@ import com.cometchat.pro.models.*
 import com.cometchat.pro.uikit.R
 import com.cometchat.pro.uikit.ui_components.chats.CustomCometListener
 import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
+import com.cometchat.pro.uikit.ui_components.groups.group_detail.CometChatGroupDetailActivity
 import com.cometchat.pro.uikit.ui_components.messages.extensions.ExtensionResponseListener
 import com.cometchat.pro.uikit.ui_components.messages.extensions.Extensions
 import com.cometchat.pro.uikit.ui_components.messages.forward_message.CometChatForwardMessageActivity
@@ -76,6 +77,7 @@ import com.cometchat.pro.uikit.ui_components.shared.cometchatSmartReplies.CometC
 import com.cometchat.pro.uikit.ui_components.shared.cometchatStickers.StickerView
 import com.cometchat.pro.uikit.ui_components.shared.cometchatStickers.listener.StickerClickListener
 import com.cometchat.pro.uikit.ui_components.shared.cometchatStickers.model.Sticker
+import com.cometchat.pro.uikit.ui_components.users.user_details.CometChatUserDetailScreenActivity
 import com.cometchat.pro.uikit.ui_resources.constants.UIKitConstants
 import com.cometchat.pro.uikit.ui_resources.utils.ErrorMessagesUtils
 import com.cometchat.pro.uikit.ui_resources.utils.FontUtils
@@ -159,7 +161,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
     private var tvName: TextView? = null
     private var tvStatus: TextView? = null
     private lateinit var Id: String
-    private var c: Context? = null
+    private var mContext: Context? = null
     private var blockUserLayout: LinearLayout? = null
     private var blockedUserName: TextView? = null
     private var stickyHeaderDecoration: StickyHeaderDecoration? = null
@@ -1701,8 +1703,14 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
                 )
             }
             rvChatListView?.adapter = messageAdapter
-            stickyHeaderDecoration = StickyHeaderDecoration(messageAdapter!!)
-            rvChatListView?.addItemDecoration(stickyHeaderDecoration!!, 0)
+
+            messageAdapter?.let {
+                stickyHeaderDecoration = StickyHeaderDecoration(it)
+            }
+            stickyHeaderDecoration?.let {
+                rvChatListView?.addItemDecoration(it, 0)
+
+            }
             scrollToBottom()
             messageAdapter?.notifyDataSetChanged()
         } else {
@@ -2025,6 +2033,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
      * @see CometChat.deleteMessage
      */
     private fun deleteMessage(baseMessage: BaseMessage?) {
+
         deleteMessage(baseMessage!!.id, object : CallbackListener<BaseMessage?>() {
             override fun onSuccess(baseMessage: BaseMessage?) {
 //                if (messageAdapter != null) messageAdapter?.setUpdatedMessage(baseMessage!!)
@@ -2283,6 +2292,18 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
         }
     }
 
+    /**
+     * This method is used to mark users & group message as read.
+     *
+     * @param baseMessage is object of BaseMessage.class. It is message which is been marked as read.
+     */
+    private fun markMessageAsRead(baseMessage: BaseMessage) {
+        if (type == CometChatConstants.RECEIVER_TYPE_USER) markAsRead(
+            baseMessage.id,
+            baseMessage.sender.uid,
+            baseMessage.receiverType
+        ) else markAsRead(baseMessage.id, baseMessage.receiverUid, baseMessage.receiverType)
+    }
 
     /**
      * This method is used to add message listener to recieve real time messages between users &
@@ -2624,7 +2645,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        this.c = context
+        this.mContext = context
     }
 
     override fun onDetach() {
@@ -2701,6 +2722,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
             }
             isEdit = false
             baseMessage = null
+            composeBox?.setText("")
             editMessageLayout?.visibility = View.GONE
         } else if (id == R.id.iv_reply_close) {
             if (messageAdapter != null) {
@@ -2712,7 +2734,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
             replyMessageLayout?.visibility = View.GONE
         } else if (id == R.id.btn_unblock_user) {
             unblockUser()
-        } /*else if (id == R.id.iv_user_info) {
+        } else if (id == R.id.chatList_toolbar) {
             if (type == CometChatConstants.RECEIVER_TYPE_USER) {
                 val intent = Intent(context, CometChatUserDetailScreenActivity::class.java)
                 intent.putExtra(UIKitConstants.IntentStrings.UID, Id)
@@ -2737,7 +2759,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
                 intent.putExtra(UIKitConstants.IntentStrings.GROUP_PASSWORD, groupPassword)
                 startActivity(intent)
             }
-        } */else if (id == R.id.iv_back_arrow) {
+        } else if (id == R.id.iv_back_arrow) {
             activity?.onBackPressed()
         }
     }
@@ -2827,6 +2849,13 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
                         threadVisible
                     }
                     copyVisible = false
+
+                    if (baseMessage?.type.equals(CometChatConstants.MESSAGE_TYPE_AUDIO, true) ||
+                        baseMessage?.type.equals(CometChatConstants.MESSAGE_TYPE_VIDEO, true) ||
+                        baseMessage?.type.equals(CometChatConstants.MESSAGE_TYPE_FILE, true)
+                    )
+                        shareVisible = false
+
                     if (basemessage.sender.uid == getLoggedInUser().uid) {
                         deleteVisible = FeatureRestriction.isDeleteMessageEnabled()
                         editVisible = false
@@ -3056,20 +3085,26 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
             CometChatMessageActions.MessageActionListener {
 
             override fun onEditMessageClick() {
-                if (baseMessage != null && baseMessage?.type == CometChatConstants.MESSAGE_TYPE_TEXT) {
-                    isEdit = true
-                    isReply = false
-                    tvMessageTitle?.text = resources.getString(R.string.edit_message)
-                    tvMessageSubTitle?.text = (baseMessage as TextMessage).text
-                    composeBox?.ivMic?.visibility = View.GONE
-                    composeBox?.ivSend?.visibility = View.VISIBLE
-                    editMessageLayout?.visibility = View.VISIBLE
-                    composeBox?.etComposeBox?.setText((baseMessage as TextMessage).text)
-                    if (messageAdapter != null) {
-                        baseMessage?.id?.let { messageAdapter?.setSelectedMessage(it) }
-                        messageAdapter?.notifyDataSetChanged()
+
+                try {
+                    if (baseMessage != null && baseMessage?.type == CometChatConstants.MESSAGE_TYPE_TEXT) {
+                        isEdit = true
+                        isReply = false
+                        tvMessageTitle?.text = resources.getString(R.string.edit_message)
+                        tvMessageSubTitle?.text = (baseMessage as TextMessage).text
+                        composeBox?.ivMic?.visibility = View.GONE
+                        composeBox?.ivSend?.visibility = View.VISIBLE
+                        editMessageLayout?.visibility = View.VISIBLE
+                        composeBox?.etComposeBox?.setText((baseMessage as TextMessage).text)
+                        if (messageAdapter != null) {
+                            baseMessage?.id?.let { messageAdapter?.setSelectedMessage(it) }
+                            messageAdapter?.notifyDataSetChanged()
+                        }
                     }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
+
             }
 
             override fun onThreadMessageClick() {
@@ -3085,11 +3120,18 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
             }
 
             override fun onDeleteMessageClick() {
-                deleteMessage(baseMessage)
-                if (messageAdapter != null) {
-                    messageAdapter?.clearLongClickSelectedItem()
-                    messageAdapter?.notifyDataSetChanged()
+                mContext?.let {
+                    baseMessage?.let { it1 ->
+                        deleteMessageConfirmation(it, onMessageDeleteSuccess = {
+                            deleteMessage(baseMessage)
+                            if (messageAdapter != null) {
+                                messageAdapter?.clearLongClickSelectedItem()
+                                messageAdapter?.notifyDataSetChanged()
+                            }
+                        })
+                    }
                 }
+
             }
 
             override fun onCopyMessageClick() {
@@ -3712,4 +3754,22 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
         if (messageAdapter != null) messageAdapter?.clearLongClickSelectedItem()
         dialog?.dismiss()
     }
+}
+
+fun deleteMessageConfirmation(context: Context, onMessageDeleteSuccess: () -> Unit) {
+    val builder = AlertDialog.Builder(context)
+    builder.setTitle(context.resources.getString(R.string.delete_message))
+    builder.setMessage(context.resources.getString(R.string.delete_message_confirmation))
+    builder.setPositiveButton(
+        context.resources.getString(R.string.delete)
+    ) { dialog, _ -> // continue with delete
+        onMessageDeleteSuccess.invoke()
+        dialog.cancel()
+    }
+    builder.setNegativeButton(
+        context.resources.getString(R.string.cancel)
+    ) { dialog, _ -> // close dialog
+        dialog.cancel()
+    }
+    builder.show()
 }
