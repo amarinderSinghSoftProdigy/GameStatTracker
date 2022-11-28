@@ -22,7 +22,10 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -101,12 +104,15 @@ fun NewConversationScreen(
         }
     }
 
+    val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+
 
     Column() {
         AppOutlineTextField(
             value = chatState.searchText,
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth().focusRequester(focusRequester),
             onValueChange = {
                 chatVM.onEvent(ChatUIEvent.OnSearchValueChange(it))
             },
@@ -407,6 +413,10 @@ fun NewConversationScreen(
         }
     }
     if (chatState.showCreateGroupNameDialog) {
+
+        /*removing focus from edittext if dialog is open*/
+        focusManager.clearFocus()
+
         DeclineEventDialog(
             title = stringResource(id = R.string.enter_group_name),
             onDismiss = {

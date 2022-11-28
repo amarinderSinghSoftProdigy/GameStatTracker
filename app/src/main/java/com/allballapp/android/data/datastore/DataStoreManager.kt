@@ -103,7 +103,15 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
             settings[ID] = id
         }
     }
+    suspend fun setFCMToken(token: String) {
+        settingsDataStore.edit { settings ->
+            settings[FCM] = token
+        }
+    }
 
+    val getFCM: Flow<String> = settingsDataStore.data.map { preferences ->
+        preferences[FCM] ?: ""
+    }
     val getId: Flow<String> = settingsDataStore.data.map { preferences ->
         preferences[ID] ?: ""
     }
@@ -126,6 +134,7 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
         val SKIP_WALKTHROUGH = stringPreferencesKey("SKIP_WALKTHROUGH")
         val EMAIL = stringPreferencesKey("EMAIL")
         val ID = stringPreferencesKey("ID")
+        val FCM = stringPreferencesKey("FCM")
         val TEAM_NAME = stringPreferencesKey("TEAM_NAME")
     }
 }

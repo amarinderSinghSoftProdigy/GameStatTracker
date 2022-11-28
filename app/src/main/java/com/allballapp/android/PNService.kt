@@ -1,7 +1,10 @@
 package com.allballapp.android
 
 
-import android.app.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -9,9 +12,8 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.allballapp.android.common.AppConstants
-import com.allballapp.android.common.IntentData
+import com.allballapp.android.data.datastore.DataStoreManager
 import com.cometchat.pro.constants.CometChatConstants
 import com.cometchat.pro.helpers.CometChatHelper
 import com.cometchat.pro.models.BaseMessage
@@ -21,9 +23,11 @@ import com.cometchat.pro.uikit.ui_components.messages.message_list.CometChatMess
 import com.cometchat.pro.uikit.ui_resources.constants.UIKitConstants
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
@@ -32,10 +36,15 @@ import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class PNService :
     FirebaseMessagingService() {
+
+    @Inject
+    lateinit var dataStoreManager: DataStoreManager
+
     private val job = SupervisorJob()
     private val scope = CoroutineScope(Dispatchers.IO + job)
 
@@ -93,6 +102,11 @@ class PNService :
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         Log.i("PNService", "onNewToken: $token")
+
+        /* Storing token to datastore every time it changes*/
+        CoroutineScope(Dispatchers.IO).launch {
+            dataStoreManager.setFCMToken(token)
+        }
 
     }
 

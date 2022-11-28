@@ -304,4 +304,7 @@ open interface APIService {
     @PUT(ApiConstants.UPDATE_SCHEDULE)
     suspend fun updateStaffSchedule(@Body request: StaffScheduleRequest): BaseResponse<Any>
 
+    @PUT(ApiConstants.UPDATE_FCM_TOKEN)
+    suspend fun updateFCMToken(@Body token: RequestBody): BaseResponse<Any>
+
 }
