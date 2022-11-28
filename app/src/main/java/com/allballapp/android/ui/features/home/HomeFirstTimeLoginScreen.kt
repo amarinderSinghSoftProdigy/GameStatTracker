@@ -90,7 +90,7 @@ fun HomeFirstTimeLoginScreen(
                 ) {
                     if (teamState.teams.isNotEmpty()) {
                         UserFlowBackground(
-                            padding = 0.dp, color = Color.White
+                            padding = 0.dp, color = Color.White.copy(0.95F)
                         ) {
                             Box(modifier = Modifier
                                 .fillMaxWidth()
@@ -120,7 +120,8 @@ fun HomeFirstTimeLoginScreen(
                                         text = teamState.teamName.ifEmpty { context.getString(R.string.team_total_hoop) },
                                         style = MaterialTheme.typography.h3,
                                         fontWeight = FontWeight.W700,
-                                        modifier = Modifier.weight(1f)
+                                        modifier = Modifier.weight(1f),
+                                        color = ColorBWBlack
                                     )
                                 }
                                 Icon(
@@ -135,7 +136,7 @@ fun HomeFirstTimeLoginScreen(
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                     if (state.homePageCoachModel.pendingInvitations > 0) {
                         UserFlowBackground(
-                            padding = 0.dp, color = Color.White
+                            padding = 0.dp, color = Color.White.copy(0.95F)
                         ) {
                             Box(
                                 Modifier

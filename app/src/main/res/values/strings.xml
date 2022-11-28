@@ -548,4 +548,6 @@
     <string name="search_users">Search users</string>
     <string name="select_profile_title">Select user\'s profile below. If they don\'t yet have a profile, please add it now.</string>
     <string name="enter_valid_time">Enter valid Time</string>
+    <string name="payment_method">Payment Method</string>
+    <string name="loren_ipsum">Loren ipsum</string>
 </resources>
