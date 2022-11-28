@@ -103,8 +103,7 @@ fun HomeScreen(
         setupTeamViewModelUpdated.onEvent(
             TeamSetupUIEventUpdated.OnColorSelected(
                 (team?.colorCode ?: "").replace(
-                    "#",
-                    ""
+                    "#", ""
                 )
             )
         )
@@ -122,9 +121,7 @@ fun HomeScreen(
                 }
                 is HomeChannel.ShowToast -> {
                     Toast.makeText(
-                        context,
-                        uiEvent.message.asString(context),
-                        Toast.LENGTH_LONG
+                        context, uiEvent.message.asString(context), Toast.LENGTH_LONG
                     ).show()
                 }
             }
@@ -157,8 +154,7 @@ fun HomeScreen(
 
         }) {*/
 
-    CoachFlowBackground(
-        show = homeState.showBottomAppBar,
+    CoachFlowBackground(show = homeState.showBottomAppBar,
         colorCode = color.value.ifEmpty { AppConstants.DEFAULT_COLOR },
         teamLogo = com.allballapp.android.BuildConfig.IMAGE_SERVER + homeState.user.profileImage,
         click = {
@@ -181,19 +177,17 @@ fun HomeScreen(
             }
         }) {
         if (!homeState.showBottomAppBar) {
-            HomeFirstTimeLoginScreen(vm, teamVm,
-                {
-                    onLeagueClick(it)
-                }, {
-                    onOpportunityClick(it)
-                }, {
-                    onTeamNameClick(it)
-                }, {
-                    onCreateTeamClick(null)
-                }, {
-                    onInvitationCLick()
-                }
-            )
+            HomeFirstTimeLoginScreen(vm, teamVm, {
+                onLeagueClick(it)
+            }, {
+                onOpportunityClick(it)
+            }, {
+                onTeamNameClick(it)
+            }, {
+                onCreateTeamClick(null)
+            }, {
+                onInvitationCLick()
+            })
         } else if (role.isNotEmpty()) {
             Box {
                 Column(
@@ -203,8 +197,7 @@ fun HomeScreen(
                             top = dimensionResource(id = R.dimen.size_16dp),
                             end = dimensionResource(id = R.dimen.size_20dp),
                             start = dimensionResource(id = R.dimen.size_20dp)
-                        ),
-                    verticalArrangement = Arrangement.Center
+                        ), verticalArrangement = Arrangement.Center
                 ) {
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_50dp)))
                     AppText(
@@ -232,18 +225,15 @@ fun HomeScreen(
 
                             if (teamState.teams.isNotEmpty()) {
                                 UserFlowBackground(
-                                    padding = 0.dp,
-                                    color = Color.White
+                                    padding = 0.dp, color = Color.White.copy(0.95F)
                                 ) {
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .clickable { /*logoClick()*/
-                                                onTeamNameClick.invoke(true)
-                                            }
-                                            .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-                                        contentAlignment = Alignment.CenterStart
-                                    ) {
+                                    Box(modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable { /*logoClick()*/
+                                            onTeamNameClick.invoke(true)
+                                        }
+                                        .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                                        contentAlignment = Alignment.CenterStart) {
                                         Row(
                                             Modifier
                                                 .fillMaxWidth()
@@ -270,7 +260,8 @@ fun HomeScreen(
                                         ) stringResource(id = R.string.team_total_hoop) else*/ teamState.teamName.ifEmpty { teamName.value },
                                                 style = MaterialTheme.typography.h3,
                                                 fontWeight = FontWeight.W700,
-                                                modifier = Modifier.weight(1f)
+                                                modifier = Modifier.weight(1f),
+                                                color = ColorBWBlack
                                             )
                                         }
                                         Icon(
@@ -286,8 +277,7 @@ fun HomeScreen(
                             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                             if (homeState.unReadMessageCount > 0) {
                                 UserFlowBackground(
-                                    padding = 0.dp,
-                                    color = Color.White
+                                    padding = 0.dp, color = Color.White.copy(0.95F)
                                 ) {
                                     Box(
                                         Modifier
@@ -296,11 +286,9 @@ fun HomeScreen(
                                                 onChatCLick.invoke()
                                             }
                                             .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-                                        contentAlignment = Alignment.Center
-                                    ) {
+                                        contentAlignment = Alignment.Center) {
                                         Row(
-                                            Modifier
-                                                .fillMaxSize(),
+                                            Modifier.fillMaxSize(),
                                             verticalAlignment = Alignment.CenterVertically,
                                         ) {
                                             Icon(
@@ -314,20 +302,21 @@ fun HomeScreen(
                                                 text = stringResource(id = R.string.team_chat),
                                                 style = MaterialTheme.typography.h6,
                                                 modifier = Modifier.weight(1f),
+                                                color = ColorBWBlack
                                             )
                                         }
                                         Text(
                                             text = homeState.unReadMessageCount.toString(),
                                             fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
-                                            modifier = Modifier.align(Alignment.CenterEnd)
+                                            modifier = Modifier.align(Alignment.CenterEnd),
+                                            color = ColorBWBlack
                                         )
                                     }
                                 }
                                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                             }
                             UserFlowBackground(
-                                padding = 0.dp,
-                                color = Color.White
+                                padding = 0.dp, color = Color.White.copy(0.95F)
                             ) {
                                 Box(
                                     Modifier
@@ -336,11 +325,9 @@ fun HomeScreen(
                                             onInvitationCLick.invoke()
                                         }
                                         .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-                                    contentAlignment = Alignment.Center
-                                ) {
+                                    contentAlignment = Alignment.Center) {
                                     Row(
-                                        Modifier
-                                            .fillMaxSize(),
+                                        Modifier.fillMaxSize(),
                                         verticalAlignment = Alignment.CenterVertically,
                                     ) {
                                         Icon(
@@ -354,19 +341,20 @@ fun HomeScreen(
                                             text = stringResource(id = R.string.pending_invitations),
                                             style = MaterialTheme.typography.h6,
                                             modifier = Modifier.weight(1f),
+                                            color = ColorBWBlack
                                         )
                                     }
                                     Text(
                                         text = homeState.homePageCoachModel.pendingInvitations.toString(),
                                         fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
-                                        modifier = Modifier.align(Alignment.CenterEnd)
+                                        modifier = Modifier.align(Alignment.CenterEnd),
+                                        color = ColorBWBlack
                                     )
                                 }
                             }
                             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                             UserFlowBackground(
-                                padding = 0.dp,
-                                color = Color.White
+                                padding = 0.dp, color = Color.White.copy(0.95F)
                             ) {
                                 Box(
                                     Modifier
@@ -375,12 +363,10 @@ fun HomeScreen(
                                             onOpportunityClick.invoke(AppConstants.OPP_WORK)
                                         }
                                         .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-                                    contentAlignment = Alignment.Center
-                                ) {
+                                    contentAlignment = Alignment.Center) {
 
                                     Row(
-                                        Modifier
-                                            .fillMaxSize(),
+                                        Modifier.fillMaxSize(),
                                         verticalAlignment = Alignment.CenterVertically,
                                     ) {
                                         Icon(
@@ -394,13 +380,15 @@ fun HomeScreen(
                                             text = stringResource(id = R.string.opportunities_to_work),
                                             style = MaterialTheme.typography.h6,
                                             modifier = Modifier.weight(1f),
+                                            color = ColorBWBlack
                                         )
                                     }
 
                                     Text(
                                         text = homeState.homePageCoachModel.opportunityToWork.toString(),
                                         fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
-                                        modifier = Modifier.align(Alignment.CenterEnd)
+                                        modifier = Modifier.align(Alignment.CenterEnd),
+                                        color = ColorBWBlack
                                     )
                                 }
                             }
@@ -419,16 +407,13 @@ fun HomeScreen(
 
                             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                             UserFlowBackground(
-                                padding = 0.dp,
-                                color = Color.White
+                                padding = 0.dp, color = Color.White
                             ) {
-                                Box(
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .clickable { onOpportunityClick(AppConstants.OPP_PLAY) }
-                                        .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-                                    contentAlignment = Alignment.Center
-                                ) {
+                                Box(Modifier
+                                    .fillMaxWidth()
+                                    .clickable { onOpportunityClick(AppConstants.OPP_PLAY) }
+                                    .padding(all = dimensionResource(id = R.dimen.size_16dp)),
+                                    contentAlignment = Alignment.Center) {
                                     Row(
                                         Modifier.fillMaxWidth(),
                                         verticalAlignment = Alignment.CenterVertically
@@ -488,8 +473,7 @@ fun HomeScreen(
         //}
     }
     if (showDialog) {
-        SelectTeamDialog(
-            teams = teamVm.teamUiState.value.teams,
+        SelectTeamDialog(teams = teamVm.teamUiState.value.teams,
             onDismiss = { dismissDialog.invoke(false) },
             onConfirmClick = { teamId, teamName ->
                 if (UserStorage.teamId != teamId) {
@@ -509,25 +493,19 @@ fun HomeScreen(
     }
 
     if (homeState.showSwapProfile) {
-        SwapProfile(
-            users = homeState.swapUsers,
-            onDismiss = {
-                vm.onEvent(HomeScreenEvent.HideSwap(false))
-                //showSwapDialog.value = false
-            },
-            onConfirmClick = {
-                if (it._Id != UserStorage.userId) {
-                    vm.onEvent(HomeScreenEvent.OnSwapUpdate(it._Id))
-                }
-                vm.onEvent(HomeScreenEvent.HideSwap(false))
-                //showSwapDialog.value = false
-            },
-            showLoading = homeState.isDataLoading,
-            onCreatePlayerClick = {
-                addProfileClick()
-                vm.onEvent(HomeScreenEvent.HideSwap(false))
-            },
-            showCreatePlayerButton = true
+        SwapProfile(users = homeState.swapUsers, onDismiss = {
+            vm.onEvent(HomeScreenEvent.HideSwap(false))
+            //showSwapDialog.value = false
+        }, onConfirmClick = {
+            if (it._Id != UserStorage.userId) {
+                vm.onEvent(HomeScreenEvent.OnSwapUpdate(it._Id))
+            }
+            vm.onEvent(HomeScreenEvent.HideSwap(false))
+            //showSwapDialog.value = false
+        }, showLoading = homeState.isDataLoading, onCreatePlayerClick = {
+            addProfileClick()
+            vm.onEvent(HomeScreenEvent.HideSwap(false))
+        }, showCreatePlayerButton = true
         )
     }
     if (homeState.isDataLoading || teamState.isLoading) {
@@ -557,8 +535,7 @@ fun RowScope.EventItem(
         Column(
             modifier = Modifier
                 .padding(all = dimensionResource(id = R.dimen.size_16dp))
-                .clickable { click() },
-            horizontalAlignment = Alignment.CenterHorizontally
+                .clickable { click() }, horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -587,7 +564,7 @@ fun RowScope.EventItem(
                 color = ColorBWBlack
             )
             AppText(
-             /*   modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_5dp)),*/
+                /*   modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_5dp)),*/
                 text = stringResourceByName(stringId),
                 style = MaterialTheme.typography.h6,
                 color = MaterialTheme.appColors.textField.label
@@ -598,9 +575,7 @@ fun RowScope.EventItem(
 
 @Composable
 fun RowScope.EventInviteItem(
-    headingId: String,
-    painter: Int = R.drawable.ic_invite,
-    onInviteClick: () -> Unit
+    headingId: String, painter: Int = R.drawable.ic_invite, onInviteClick: () -> Unit
 ) {
     UserFlowBackground(
         padding = 0.dp,
@@ -635,8 +610,7 @@ fun RowScope.EventInviteItem(
             }
 
             Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center
+                modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center
             ) {
                 ButtonWithLeadingIcon(
                     modifier = Modifier
@@ -670,13 +644,10 @@ fun MessageComponent() {
     )
 
     Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally
     ) {
         HorizontalPager(
-            state = pagerState,
-            modifier = Modifier
-                .fillMaxWidth()
+            state = pagerState, modifier = Modifier.fillMaxWidth()
         ) { page ->
             Row(
                 Modifier
