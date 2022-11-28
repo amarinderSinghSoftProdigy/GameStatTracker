@@ -51,7 +51,10 @@ import androidx.compose.ui.window.DialogProperties
 import com.allballapp.android.R
 import com.allballapp.android.common.*
 import com.allballapp.android.data.UserStorage
-import com.allballapp.android.data.response.*
+import com.allballapp.android.data.response.Parent
+import com.allballapp.android.data.response.PlayerDetails
+import com.allballapp.android.data.response.SwapUser
+import com.allballapp.android.data.response.UserRoles
 import com.allballapp.android.data.response.team.Player
 import com.allballapp.android.data.response.team.Team
 import com.allballapp.android.ui.features.home.events.DivisionData
@@ -1409,7 +1412,7 @@ fun SwitchTeamDialog(
                                 id = R.dimen.size_16dp
                             )
                         ),
-                    verticalArrangement = Arrangement.Center,
+                    verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Box(modifier = Modifier.fillMaxWidth()) {
@@ -1541,7 +1544,7 @@ fun SwitchPlayerDialog(
                     modifier = Modifier
                         .background(color = Color.White)
                         .padding(all = dimensionResource(id = R.dimen.size_16dp)),
-                    verticalArrangement = Arrangement.Center,
+                    verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Box(modifier = Modifier.fillMaxWidth()) {
@@ -3234,7 +3237,7 @@ fun PaymentPickerDialog(
                                 id = R.dimen.size_16dp
                             )
                         ),
-                    verticalArrangement = Arrangement.Center,
+                    verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Row(

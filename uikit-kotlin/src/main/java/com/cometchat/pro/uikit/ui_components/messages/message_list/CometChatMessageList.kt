@@ -237,7 +237,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i("CometChatMessageList","onCreate")
+        Log.i("CometChatMessageList", "onCreate")
         if (activity != null) fontUtils = FontUtils.getInstance(activity)
         FeatureRestriction.isThreadedMessagesEnabled(object : FeatureRestriction.OnSuccessListener {
             override fun onSuccess(p0: Boolean) {
@@ -320,20 +320,28 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
     ): View? {
         // Inflate the layout for this fragment
         vw = inflater.inflate(R.layout.fragment_cometchat_messagelist, container, false)
-        handleArguments()
+        try {
+            handleArguments()
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
         return vw
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViewComponent(view)
-        if (isReplyPrivately && replyMessageJson != null) {
-            if (replyMessageJson.has("category")) {
-                baseMessage = CometChatHelper.processMessage(replyMessageJson)
-                Log.e(TAG, "onCreate: base" + baseMessage)
-                replyMessage()
-            }
+        try {
+            initViewComponent(view)
+            if (isReplyPrivately && replyMessageJson != null) {
+                if (replyMessageJson.has("category")) {
+                    baseMessage = CometChatHelper.processMessage(replyMessageJson)
+                    Log.e(TAG, "onCreate: base" + baseMessage)
+                    replyMessage()
+                }
 
+            }
+        } catch (ex: Exception) {
+            ex.printStackTrace()
         }
     }
 
@@ -690,30 +698,30 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
         }
     }
 
-   /* private fun checkOnGoingCall() {
-        if (getActiveCall() != null && getActiveCall().callStatus == CometChatConstants.CALL_STATUS_ONGOING && getActiveCall().sessionId != null) {
-            isOngoingCall = true
-            ivAudioCallBtn?.isEnabled = false
-            ivVideoCallBtn?.isEnabled = false
-            if (onGoingCallView != null) onGoingCallView!!.visibility = View.VISIBLE
-            if (onGoingCallTxt != null) {
-                onGoingCallTxt?.setOnClickListener {
-                    onGoingCallView?.visibility = View.GONE
-                    Utils.joinOnGoingCall(requireContext())
-                }
-            }
-            if (onGoingCallClose != null) {
-                onGoingCallClose!!.setOnClickListener {
-                    onGoingCallView!!.visibility = View.GONE
-                    ivAudioCallBtn?.isEnabled = true
-                    ivVideoCallBtn?.isEnabled = true
-                }
-            }
-        } else if (getActiveCall() != null) {
-            if (onGoingCallView != null) onGoingCallView?.visibility = View.GONE
-            Log.e(TAG, "checkOnGoingCall: " + getActiveCall().toString())
-        }
-    }*/
+    /* private fun checkOnGoingCall() {
+         if (getActiveCall() != null && getActiveCall().callStatus == CometChatConstants.CALL_STATUS_ONGOING && getActiveCall().sessionId != null) {
+             isOngoingCall = true
+             ivAudioCallBtn?.isEnabled = false
+             ivVideoCallBtn?.isEnabled = false
+             if (onGoingCallView != null) onGoingCallView!!.visibility = View.VISIBLE
+             if (onGoingCallTxt != null) {
+                 onGoingCallTxt?.setOnClickListener {
+                     onGoingCallView?.visibility = View.GONE
+                     Utils.joinOnGoingCall(requireContext())
+                 }
+             }
+             if (onGoingCallClose != null) {
+                 onGoingCallClose!!.setOnClickListener {
+                     onGoingCallView!!.visibility = View.GONE
+                     ivAudioCallBtn?.isEnabled = true
+                     ivVideoCallBtn?.isEnabled = true
+                 }
+             }
+         } else if (getActiveCall() != null) {
+             if (onGoingCallView != null) onGoingCallView?.visibility = View.GONE
+             Log.e(TAG, "checkOnGoingCall: " + getActiveCall().toString())
+         }
+     }*/
 
     private fun setComposeBoxListener() {
         composeBox?.setComposeBoxListener(object : ComposeActionListener() {
@@ -2453,16 +2461,20 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
      * @see BaseMessage
      */
     private fun setMessage(message: BaseMessage) {
-        if (message.parentMessageId == 0) {
-            if (messageAdapter != null) {
-                messageAdapter?.addMessage(message)
-                checkSmartReply(message)
-                markAsRead(message)
-                if (messageAdapter!!.itemCount - 1 - (rvChatListView?.layoutManager as LinearLayoutManager?)!!.findLastVisibleItemPosition() < 5) scrollToBottom()
-            } else {
-                messageList.add(message)
-                initMessageAdapter(messageList)
+        try {
+            if (message.parentMessageId == 0) {
+                if (messageAdapter != null) {
+                    messageAdapter?.addMessage(message)
+                    checkSmartReply(message)
+                    markAsRead(message)
+                    if (messageAdapter!!.itemCount - 1 - (rvChatListView?.layoutManager as LinearLayoutManager?)!!.findLastVisibleItemPosition() < 5) scrollToBottom()
+                } else {
+                    messageList.add(message)
+                    initMessageAdapter(messageList)
+                }
             }
+        } catch (ex: Exception) {
+            ex.printStackTrace()
         }
     }
 

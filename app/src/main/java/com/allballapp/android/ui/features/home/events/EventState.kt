@@ -12,7 +12,7 @@ import com.allballapp.android.ui.features.venue.VenueDetails
 data class EventState(
     val isLoading: Boolean = false,
     val upcomingAndGameData: List<Any> = arrayListOf(),
-    val currentEvents: ArrayList<Events> = arrayListOf(),
+    //val currentEvents: ArrayList<Events> = arrayListOf(),
     val pastEvents: ArrayList<Events> = arrayListOf(),
     val leagues: ArrayList<Leagues> = arrayListOf(),
     val oppotuntities: ArrayList<Leagues> = arrayListOf(),

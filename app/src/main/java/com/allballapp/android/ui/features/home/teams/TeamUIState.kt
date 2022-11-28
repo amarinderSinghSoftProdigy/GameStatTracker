@@ -29,6 +29,7 @@ data class TeamUIState(
     val teamColorPrimary: String = "",
 
     val teamName: String = "",
+    val saveEnable: Boolean = true,
     val createdBy: String = "",
     val logo: String? = null, //server
     val localLogo: String? = null, //local uri

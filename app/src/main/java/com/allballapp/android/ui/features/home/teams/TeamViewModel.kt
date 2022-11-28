@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.ResultWrapper
 import com.allballapp.android.common.getFileFromUri
+import com.allballapp.android.common.validTeamName
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.data.request.Location
@@ -143,9 +144,8 @@ class TeamViewModel @Inject constructor(
             }
 
             is TeamUIEvent.ShowToast -> {
-                viewModelScope.launch {
-                    showToast(event.message)
-                }
+                _teamUiState.value = _teamUiState.value.copy(saveEnable = false)
+                showToast(event.message)
             }
             is TeamUIEvent.OnTeamSelected -> {
                 _teamUiState.value = _teamUiState.value.copy(selectedTeam = event.team)
@@ -169,7 +169,12 @@ class TeamViewModel @Inject constructor(
             }
 
             is TeamUIEvent.OnTeamNameChange -> {
-                _teamUiState.value = _teamUiState.value.copy(teamName = event.teamName)
+                _teamUiState.value = _teamUiState.value.copy(
+                    teamName = event.teamName,
+                    saveEnable = checkValidity(event.teamName)
+                            && checkValidity(_teamUiState.value.teamNameOnJerseys)
+                            && checkValidity(_teamUiState.value.teamNameOnTournaments)
+                )
             }
 
             is TeamUIEvent.OnItemSelected -> {
@@ -180,12 +185,22 @@ class TeamViewModel @Inject constructor(
             }
             is TeamUIEvent.OnTeamNameJerseyChange -> {
                 _teamUiState.value =
-                    _teamUiState.value.copy(teamNameOnJerseys = event.teamNameOnJersey)
+                    _teamUiState.value.copy(
+                        teamNameOnJerseys = event.teamNameOnJersey,
+                        saveEnable = checkValidity(event.teamNameOnJersey)
+                                && checkValidity(_teamUiState.value.teamName)
+                                && checkValidity(_teamUiState.value.teamNameOnTournaments)
+                    )
 
             }
             is TeamUIEvent.OnTeamNameTournamentsChange -> {
                 _teamUiState.value =
-                    _teamUiState.value.copy(teamNameOnTournaments = event.teamNameOnTournaments)
+                    _teamUiState.value.copy(
+                        teamNameOnTournaments = event.teamNameOnTournaments,
+                        saveEnable = checkValidity(event.teamNameOnTournaments)
+                                && checkValidity(_teamUiState.value.teamNameOnJerseys)
+                                && checkValidity(_teamUiState.value.teamName)
+                    )
 
             }
             is TeamUIEvent.OnVenueChange -> {
@@ -200,14 +215,16 @@ class TeamViewModel @Inject constructor(
         }
     }
 
-    private suspend fun showToast(message: String) {
-        _teamChannel.send(
-            TeamChannel.ShowToast(
-                UiText.DynamicString(
-                    message
+    private fun showToast(message: String) {
+        viewModelScope.launch {
+            _teamChannel.send(
+                TeamChannel.ShowToast(
+                    UiText.DynamicString(
+                        message
+                    )
                 )
             )
-        )
+        }
     }
 
     suspend fun getTeams() {
@@ -688,8 +705,16 @@ class TeamViewModel @Inject constructor(
                                 }
                                     as ArrayList<AllUser>,
                             //supportStaff = response.data.supportingCastDetails,
-                            acceptPending = CommonUtils.getUsersList(allMembers, UserType.PARENT).filter {parent->
-                                (!parent.status.equals(InvitationStatus.PENDING.status,true)) && (!parent.status.equals(InvitationStatus.DECLINED.status,true))}
+                            acceptPending = CommonUtils.getUsersList(allMembers, UserType.PARENT)
+                                .filter { parent ->
+                                    (!parent.status.equals(
+                                        InvitationStatus.PENDING.status,
+                                        true
+                                    )) && (!parent.status.equals(
+                                        InvitationStatus.DECLINED.status,
+                                        true
+                                    ))
+                                }
                                     as ArrayList<AllUser>,
                             coaches = CommonUtils.getUsersList(
                                 allMembers,
@@ -816,6 +841,11 @@ class TeamViewModel @Inject constructor(
         viewModelScope.launch {
             dataStoreManager.setAllBallId(role)
         }
+    }
+
+
+    private fun checkValidity(teamName: String): Boolean {
+        return validTeamName(teamName) && teamName.isNotEmpty()
     }
 }
 

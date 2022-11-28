@@ -90,7 +90,7 @@ class EventViewModel @Inject constructor(
 
                         _state.value =
                             _state.value.copy(
-                                currentEvents = response.data.upcommingEvents,
+                                //currentEvents = response.data.upcommingEvents,
                                 pastEvents = response.data.pastEvents,
                                 upcomingAndGameData = sortedUpcomingAndGameData
                             )
@@ -160,7 +160,7 @@ class EventViewModel @Inject constructor(
             is EvEvents.ClearListEvents -> {
                 _state.value =
                     _state.value.copy(
-                        currentEvents = arrayListOf(),
+                        //currentEvents = arrayListOf(),
                         pastEvents = arrayListOf(),
                         upcomingAndGameData = arrayListOf()
                     )

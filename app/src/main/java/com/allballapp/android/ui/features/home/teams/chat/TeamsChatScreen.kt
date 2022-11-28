@@ -144,7 +144,7 @@ fun TeamsChatScreen(
                             fragmentManager = fragmentManager,
                             commit = {
                                 try {
-                                    add(it, CometChatConversationList())
+                                    replace(it, CometChatConversationList())
                                 } catch (ex: Exception) {
                                     ex.printStackTrace()
                                 }

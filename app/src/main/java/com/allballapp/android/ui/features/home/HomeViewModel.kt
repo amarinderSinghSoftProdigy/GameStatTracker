@@ -375,7 +375,6 @@ class HomeViewModel @Inject constructor(
 
     private fun setToken(token: String) {
         viewModelScope.launch {
-            UserStorage.token = token
             dataStoreManager.saveToken(token)
         }
     }

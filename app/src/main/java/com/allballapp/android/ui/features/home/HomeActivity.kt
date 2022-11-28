@@ -26,7 +26,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.FragmentActivity
@@ -115,6 +114,9 @@ class HomeActivity : FragmentActivity(), CustomCometListener {
         CometChatConversationList.newCustomCometListener = this
         CometChatMessageList.newCustomCometListener = this
         setContent {
+            val userToken = dataStoreManager.userToken.collectAsState(initial = "")
+            if (userToken.value.isNotEmpty())
+                UserStorage.token = userToken.value
             //val fromSplash = intent.getBooleanExtra(IntentData.FROM_SPLASH, false)
             homeViewModel = hiltViewModel()
             val signUpViewModel: SignUpViewModel = hiltViewModel()
@@ -122,11 +124,8 @@ class HomeActivity : FragmentActivity(), CustomCometListener {
             val eventViewModel: EventViewModel = hiltViewModel()
             setupTeamViewModelUpdated = hiltViewModel()
             val state = homeViewModel.state.value
-            dataStoreManager = DataStoreManager(LocalContext.current)
-            /* val userToken = dataStoreManager.userToken.collectAsState(initial = "")
-             UserStorage.token = userToken.value
-             */
-            val color =
+            //dataStoreManager = DataStoreManager(LocalContext.current)
+             val color =
                 dataStoreManager.getColor.collectAsState(initial = AppConstants.DEFAULT_COLOR)
             val teamId = dataStoreManager.getId.collectAsState(initial = "")
             val teamName = dataStoreManager.getTeamName.collectAsState(initial = "")
@@ -145,6 +144,7 @@ class HomeActivity : FragmentActivity(), CustomCometListener {
             /*Check for internet availability*/
             ListenForConnectionAvailability(homeViewModel)
 
+            Timber.e("token home " + UserStorage.token)
             //homeViewModel.showBottomAppBar(true)
             BallerAppMainTheme(
                 customColor = state.color ?: MaterialTheme.appColors.material.primaryVariant
@@ -178,8 +178,13 @@ class HomeActivity : FragmentActivity(), CustomCometListener {
                                                 navController.navigate(Route.MANAGED_TEAM_SCREEN)
                                             }
                                             TopBar.MANAGE_TEAM -> {
-                                                if (!teamViewModel.teamUiState.value.isLoading)
-                                                    teamViewModel.onEvent(TeamUIEvent.OnTeamUpdate)
+                                                if (!teamViewModel.teamUiState.value.isLoading) {
+                                                    if(teamViewModel.teamUiState.value.saveEnable) {
+                                                        teamViewModel.onEvent(TeamUIEvent.OnTeamUpdate)
+                                                    }else{
+                                                        teamViewModel.onEvent(TeamUIEvent.ShowToast(this@HomeActivity.getString(R.string.valid_team_name)))
+                                                    }
+                                                }
                                             }
                                             TopBar.PROFILE -> {
                                                 navController.navigate(Route.PROFILE_EDIT_SCREEN)
@@ -1092,7 +1097,6 @@ fun NavControllerComposable(
                     homeViewModel,
                     teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
                 )
-                navController.popBackStack()
             }
             remember {
                 setupTeamViewModelUpdated.onEvent(TeamSetupUIEventUpdated.Clear)
@@ -1103,7 +1107,6 @@ fun NavControllerComposable(
                 vm = setupTeamViewModelUpdated,
                 addProfileClick = {
                     navController.navigate(Route.ADD_PROFILE_SCREEN)
-
                 },
                 onBackClick = {
                     setColorToOriginalOnBack(

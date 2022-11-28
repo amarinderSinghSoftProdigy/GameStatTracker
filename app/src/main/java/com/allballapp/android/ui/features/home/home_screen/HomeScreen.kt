@@ -407,7 +407,7 @@ fun HomeScreen(
 
                             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
                             UserFlowBackground(
-                                padding = 0.dp, color = Color.White
+                                padding = 0.dp, color = Color.White.copy(0.95F)
                             ) {
                                 Box(Modifier
                                     .fillMaxWidth()
@@ -428,12 +428,14 @@ fun HomeScreen(
 
                                         Text(
                                             text = stringResource(id = R.string.opportunities_to_play),
+                                            color = ColorBWBlack,
                                             style = MaterialTheme.typography.h6,
                                             modifier = Modifier.weight(1f)
                                         )
                                     }
                                     Text(
                                         text = homeState.homePageCoachModel.opportunityToPlay.toString(),
+                                        color = ColorBWBlack,
                                         fontSize = dimensionResource(id = R.dimen.txt_size_36).value.sp,
                                         modifier = Modifier.align(Alignment.CenterEnd)
                                     )
@@ -529,7 +531,7 @@ fun RowScope.EventItem(
             .fillMaxWidth()
             .weight(1F)
             .height(dimensionResource(id = R.dimen.size_160dp)),
-        color = color
+        color = color.copy(0.95F)
 
     ) {
         Column(
@@ -583,7 +585,7 @@ fun RowScope.EventInviteItem(
             .fillMaxWidth()
             .weight(1F)
             .height(dimensionResource(id = R.dimen.size_160dp)),
-        color = Color.White
+        color = Color.White.copy(0.95F)
     ) {
         Column(
             modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp)),
