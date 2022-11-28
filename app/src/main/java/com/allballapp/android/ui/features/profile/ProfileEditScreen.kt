@@ -176,7 +176,7 @@ fun ProfileEditScreen(
                     ).show()
                 }
 
-                ProfileChannel.OnDefaultTeamRemove ->{
+                ProfileChannel.OnDefaultTeamRemove -> {
                     scope.launch {
                         teamViewModel.updateColorData("")
                     }
@@ -510,7 +510,7 @@ fun ProfileEditScreen(
                         EditProfileFields(
                             state.shirtSize,
                             onValueChange = {
-                                vm.onEvent(ProfileEvent.OnShirtChange(it))
+                                //vm.onEvent(ProfileEvent.OnShirtChange(it))
                             },
                             stringResource(id = R.string.shirt_size),
                             errorMessage = stringResource(id = R.string.valid_first_name),
@@ -534,11 +534,11 @@ fun ProfileEditScreen(
                         ) {
                             vm.size.forEach { label ->
                                 DropdownMenuItem(onClick = {
-                                    vm.onEvent(ProfileEvent.OnShirtChange(label))
+                                    vm.onEvent(ProfileEvent.OnShirtChange(label.key))
                                     shirtSizeExpanded = false
                                 }) {
                                     Text(
-                                        text = label,
+                                        text = stringResourceByName(name = label.stringId),
                                         textAlign = TextAlign.Center
                                     )
                                 }
@@ -547,11 +547,11 @@ fun ProfileEditScreen(
                     }
                     DividerCommon()
 
-                    Column() {
+                    Column {
                         EditProfileFields(
                             state.waistSize,
                             onValueChange = {
-                                vm.onEvent(ProfileEvent.OnWaistChange(it))
+                                //vm.onEvent(ProfileEvent.OnWaistChange(it))
                             },
                             stringResource(id = R.string.waist_size),
                             errorMessage = stringResource(id = R.string.valid_first_name),
@@ -578,11 +578,11 @@ fun ProfileEditScreen(
                         ) {
                             vm.waistSize.forEach { label ->
                                 DropdownMenuItem(onClick = {
-                                    vm.onEvent(ProfileEvent.OnWaistChange(label))
+                                    vm.onEvent(ProfileEvent.OnWaistChange(label.key))
                                     waistSizeExpanded = false
                                 }) {
                                     Text(
-                                        text = label,
+                                        text = stringResourceByName(name = label.stringId),
                                         textAlign = TextAlign.Center
                                     )
                                 }

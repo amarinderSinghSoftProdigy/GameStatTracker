@@ -16,6 +16,7 @@ import com.allballapp.android.data.request.*
 import com.allballapp.android.data.response.*
 import com.allballapp.android.domain.repository.IImageUploadRepo
 import com.allballapp.android.domain.repository.IUserRepository
+import com.allballapp.android.ui.features.components.SizeList
 import com.allballapp.android.ui.features.components.UserType
 import com.allballapp.android.ui.utils.CommonUtils
 import com.allballapp.android.ui.utils.UiText
@@ -41,24 +42,34 @@ class ProfileViewModel @Inject constructor(
 
     private val _channel = Channel<ProfileChannel>()
     val channel = _channel.receiveAsFlow()
-    val waistSize = arrayListOf<String>()
+    val waistSize = arrayListOf(
+        SizeList.YouthXS,
+        SizeList.YouthS,
+        SizeList.YouthM,
+        SizeList.YouthL,
+        SizeList.YouthXL,
+        SizeList.AdultS,
+        SizeList.AdultM,
+        SizeList.AdultL,
+        SizeList.AdultXL
+    )
     val size = arrayListOf(
-        "YouthXS",
-        "YouthS",
-        "YouthM",
-        "YouthL",
-        "YouthXL",
-        "AdultS",
-        "AdultM",
-        "AdultL",
-        "AdultXL"
+        SizeList.YouthXS,
+        SizeList.YouthS,
+        SizeList.YouthM,
+        SizeList.YouthL,
+        SizeList.YouthXL,
+        SizeList.AdultS,
+        SizeList.AdultM,
+        SizeList.AdultL,
+        SizeList.AdultXL
     )
 
 
     init {
-        for (i in 30..50) {
+       /*for (i in 30..50) {
             waistSize.add(i.toString())
-        }
+        }*/
         viewModelScope.launch {
             dataStoreManager.getRole.collect {
                 if (it == UserType.REFEREE.key) {

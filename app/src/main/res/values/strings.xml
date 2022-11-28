@@ -548,4 +548,13 @@
     <string name="search_users">Search users</string>
     <string name="select_profile_title">Select user\'s profile below. If they don\'t yet have a profile, please add it now.</string>
     <string name="enter_valid_time">Enter valid Time</string>
+    <string name="youth_xs">YouthXS</string>
+    <string name="youth_s">YouthS</string>
+    <string name="youth_m">YouthM</string>
+    <string name="youth_l">YouthL</string>
+    <string name="youth_xl">YouthXL</string>
+    <string name="adult_s">AdultS</string>
+    <string name="adult_m">AdultM</string>
+    <string name="adult_l">AdultL</string>
+    <string name="adult_xl">AdultXL</string>
 </resources>

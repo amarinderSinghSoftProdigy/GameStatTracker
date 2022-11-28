@@ -183,6 +183,18 @@ enum class UserType(val stringId: String, val key: String) {
   { key: "Guardian", value: "guardian"}*/
 }
 
+enum class SizeList(val stringId: String, val key: String) {
+    YouthXS("youth_xs","YouthXS"),
+    YouthS("youth_s","YouthS"),
+    YouthM("youth_m","YouthM"),
+    YouthL("youth_l","YouthL"),
+    YouthXL("youth_xl","YouthXL"),
+    AdultS("adult_s","AdultS"),
+    AdultM("adult_m","AdultM"),
+    AdultL("adult_l","AdultL"),
+    AdultXL("adult_xl","AdultXL")
+}
+
 enum class EventType(val key: String) {
     GAME("game")
 }
