@@ -88,7 +88,7 @@ class UIKitSettings(context: Context) {
         var sendMessageReaction: Boolean = true
         var sendLiveReaction: Boolean = true
         var messageTranslation: Boolean = true
-        var smartReplies: Boolean = true
+        var smartReplies: Boolean = false
         var polls: Boolean  = true
         var collaborativeWhiteboard: Boolean = true
         var collaborativeDocument: Boolean = true

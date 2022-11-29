@@ -1664,7 +1664,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
 
     private fun getSmartReplyList(baseMessage: BaseMessage) {
         val extensionList = Extensions.extensionCheck(baseMessage)
-        if (extensionList != null && extensionList.containsKey("smartReply")) {
+        if (extensionList != null && extensionList.containsKey("smartReply") && UIKitSettings.smartReplies) {
             rvSmartReply!!.visibility = View.VISIBLE
             val replyObject = extensionList["smartReply"]
             val replyList: MutableList<String> = ArrayList()

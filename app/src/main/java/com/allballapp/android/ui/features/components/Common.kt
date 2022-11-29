@@ -65,6 +65,8 @@ import com.allballapp.android.ui.theme.ColorBWBlack
 import com.allballapp.android.ui.theme.ColorBWGrayLight
 import com.allballapp.android.ui.theme.appColors
 import com.allballapp.android.ui.utils.CommonUtils
+import com.cometchat.pro.core.CometChat
+import com.cometchat.pro.exceptions.CometChatException
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -1063,9 +1065,25 @@ fun getFCMToken(onNewToken: (String) -> Unit) {
                 task.exception
             )
             return@OnCompleteListener
-        }
-        else{
+        } else {
             onNewToken.invoke(task.result)
         }
     })
+}
+
+fun leaveMultipleGroups(groupIds: ArrayList<String>) {
+    Timber.i("leaveMultipleGroups-- $groupIds")
+    if (groupIds.isNotEmpty()) {
+        groupIds.forEach { groupId ->
+            CometChat.leaveGroup(groupId, object : CometChat.CallbackListener<String?>() {
+                override fun onSuccess(s: String?) {
+                    Timber.i("leaveMultipleGroups--onSuccess--$s")
+                }
+
+                override fun onError(e: CometChatException) {
+                    Timber.e(" leaveMultipleGroups-- onError: ${e.message}")
+                }
+            })
+        }
+    }
 }
