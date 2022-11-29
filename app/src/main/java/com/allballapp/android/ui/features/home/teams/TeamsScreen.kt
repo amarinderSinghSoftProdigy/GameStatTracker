@@ -102,8 +102,8 @@ fun TeamsScreen(
     else {
         listOf(
             /*  TeamsTabItems.Standings,*/
-            TeamsTabItems.Chat,
             TeamsTabItems.Roaster,
+            TeamsTabItems.Chat,
             /* TeamsTabItems.Leaderboard,*/
         )
     }
@@ -190,14 +190,14 @@ fun TeamsContent(
     ) { index ->
         when (index) {
             /* 0 -> StandingScreen()*/
-            0 -> TeamsChatScreen(
+            0 -> RoasterScreen(viewModel, onAddPlayerClick, true, onProfileDetailScreen)
+            1 -> TeamsChatScreen(
                 viewModel.teamUiState.value.teamColorPrimary,
                 homeVm = homeVm,
                 onTeamItemClick = onTeamItemClick,
                 onCreateNewConversationClick = onCreateNewConversationClick,
                 vm = chatViewModel
             )
-            1 -> RoasterScreen(viewModel, onAddPlayerClick, true, onProfileDetailScreen)
             /* 3 -> LeaderBoardScreen()*/
         }
     }

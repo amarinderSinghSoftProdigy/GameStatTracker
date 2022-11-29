@@ -165,7 +165,7 @@ object ApiConstants {
     const val RESEND_OTP = "/resendOtp"
 
     const val GET_USER_DETAILS = "v1/auth/getUserProfile"
-     const val GET_USER_FULL_DETAILS = "v1/userDetails/"
+    const val GET_USER_FULL_DETAILS = "v1/userDetails/"
     const val UPDATE_USER_FULL_DETAILS = "v1/userDetails"
 
     const val LEAVE_TEAM = "v1/userDetails/leaveTeam"
