@@ -3652,6 +3652,9 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
 
     private fun replyMessage() {
         if (baseMessage != null) {
+            /*Requesting focus on edit text*/
+            composeBox?.etComposeBox?.requestFocus()
+
             isReply = true
             replyTitle?.text = baseMessage?.sender?.name
             replyMedia?.visibility = View.VISIBLE
