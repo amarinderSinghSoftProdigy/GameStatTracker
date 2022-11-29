@@ -97,7 +97,6 @@ fun AddPlayersScreenUpdated(
         if (!teamId.isNullOrEmpty()) {
             if (teamData != null) {
                 teamData.onEvent(TeamUIEvent.GetTeam(teamId))
-
             }
             vm.onEvent(TeamSetupUIEventUpdated.GetInvitedTeamPlayers(teamId))
         }
@@ -359,7 +358,6 @@ fun AddPlayersScreenUpdated(
                            )
                        )
                    )*/
-                showSwapDialog.value = false
                 homeVm.onEvent(HomeScreenEvent.HideSwap(false))
             },
             showLoading = homeState.isDataLoading,

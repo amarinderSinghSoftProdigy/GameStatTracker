@@ -550,4 +550,5 @@
     <string name="enter_valid_time">Enter valid Time</string>
     <string name="payment_method">Payment Method</string>
     <string name="loren_ipsum">Loren ipsum</string>
+    <string name="please_select_payment_method">Please select payment method.</string>
 </resources>

@@ -109,6 +109,7 @@ fun TeamSetupScreenUpdated(
         mutableStateOf("")
     }
     remember {
+        vm.onEvent(TeamSetupUIEventUpdated.Clear)
         homeVm.onEvent(HomeScreenEvent.OnSwapClick())
     }
 
