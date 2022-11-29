@@ -172,6 +172,25 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    private suspend fun getUserDetails(userId: String) {
+        val userResponse = userRepo.getFullUserFullDetails(userId)
+        when (userResponse) {
+            is ResultWrapper.GenericError -> {
+
+            }
+            is ResultWrapper.NetworkError -> {
+
+            }
+            is ResultWrapper.Success -> {
+                userResponse.value.let { response ->
+                    if (response.status && response.data != null) {
+                        _state.value = _state.value.copy(user = response.data)
+                    }
+                }
+            }
+        }
+    }
+
     private suspend fun getUserInfo(showToast: Boolean = false) {
         _state.value = _state.value.copy(isDataLoading = true)
         val userResponse = userRepo.getUserProfile()

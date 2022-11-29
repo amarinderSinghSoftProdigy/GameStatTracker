@@ -53,17 +53,7 @@ class ProfileViewModel @Inject constructor(
         SizeList.AdultL,
         SizeList.AdultXL
     )
-    val size = arrayListOf(
-        SizeList.YouthXS,
-        SizeList.YouthS,
-        SizeList.YouthM,
-        SizeList.YouthL,
-        SizeList.YouthXL,
-        SizeList.AdultS,
-        SizeList.AdultM,
-        SizeList.AdultL,
-        SizeList.AdultXL
-    )
+    val size = waistSize
 
 
     init {
@@ -673,10 +663,7 @@ class ProfileViewModel @Inject constructor(
 
         _state.value = _state.value.copy(isLoading = true)
 
-        val request = if (UserStorage.role.equals(
-                UserType.REFEREE.key, ignoreCase = true
-            )
-        ) {
+        val request = if (UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
             generateRefereeUpdateRequest()
         } else {
             generateUpdateRequest()
@@ -804,7 +791,7 @@ class ProfileViewModel @Inject constructor(
         return UpdateUserDetailsReq(
             firstName = _state.value.user.firstName,
             lastName = _state.value.user.lastName,
-            phone = _state.value.user.phone,
+            //phone = _state.value.user.phone,
             email = _state.value.user.email,
             address = _state.value.user.address,
             teamDetailsReq = arrayListOf(),

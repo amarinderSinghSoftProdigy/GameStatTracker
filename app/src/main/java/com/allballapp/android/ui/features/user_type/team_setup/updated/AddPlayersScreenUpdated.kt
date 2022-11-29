@@ -281,7 +281,7 @@ fun AddPlayersScreenUpdated(
                     }*/
                 },
                 enableState = !state.isLoading && state.inviteList.isNotEmpty() &&
-                        state.inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() && it.contact.length >= 10 },
+                        state.inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() && it.contact.length >= 10 && it.role.key.isNotEmpty() },
                 themed = true,
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
@@ -466,7 +466,6 @@ fun InviteItem(
                         roles.forEach { label ->
                             DropdownMenuItem(onClick = {
                                 roleObject.value = label
-
                                 vm.onEvent(
                                     TeamSetupUIEventUpdated.OnRoleValueChange(
                                         index = index,

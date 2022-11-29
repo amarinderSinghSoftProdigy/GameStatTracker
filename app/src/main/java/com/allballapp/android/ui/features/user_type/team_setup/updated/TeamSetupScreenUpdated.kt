@@ -429,6 +429,7 @@ fun TeamSetupScreenUpdated(
                     )
                 )
                 homeVm.onEvent(HomeScreenEvent.HideSwap(false))
+                showSwapDialog.value = false
             },
             showLoading = homeState.isDataLoading,
             onCreatePlayerClick = {
@@ -1102,9 +1103,9 @@ fun TeamSetupScreenUpdated(
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
-               /* if (enable) {
-                    BackHandler {}
-                }*/
+                /* if (enable) {
+                     BackHandler {}
+                 }*/
             }
         }
     }

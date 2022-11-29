@@ -204,7 +204,7 @@ fun InvitationScreen(
             onSelectionChange = { vm.onEvent(InvitationEvent.OnGuardianClick(guardian = it)) },
             //selected = state.selectedGuardian,
             selected = state.selectedIds,
-            guardianList = if (state.selectedRoleKey == UserType.PARENT.key)
+            guardianList = if (state.selectedRoleKey != UserType.PLAYER.key)
                 state.playerDetails.filter { member -> member.role == UserType.PLAYER.key }
             else state.playerDetails.filter { member -> member.role != UserType.PLAYER.key },
             onValueSelected = {
@@ -476,7 +476,7 @@ fun InvitationItem(
                         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                         fontWeight = FontWeight.W500,
                     )
-                    
+
                     Space(dp = dimensionResource(id = R.dimen.size_5dp))
 
                     Text(

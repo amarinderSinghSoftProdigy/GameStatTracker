@@ -125,7 +125,7 @@ class HomeActivity : FragmentActivity(), CustomCometListener {
             setupTeamViewModelUpdated = hiltViewModel()
             val state = homeViewModel.state.value
             //dataStoreManager = DataStoreManager(LocalContext.current)
-             val color =
+            val color =
                 dataStoreManager.getColor.collectAsState(initial = AppConstants.DEFAULT_COLOR)
             val teamId = dataStoreManager.getId.collectAsState(initial = "")
             val teamName = dataStoreManager.getTeamName.collectAsState(initial = "")
@@ -179,10 +179,14 @@ class HomeActivity : FragmentActivity(), CustomCometListener {
                                             }
                                             TopBar.MANAGE_TEAM -> {
                                                 if (!teamViewModel.teamUiState.value.isLoading) {
-                                                    if(teamViewModel.teamUiState.value.saveEnable) {
+                                                    if (teamViewModel.teamUiState.value.saveEnable) {
                                                         teamViewModel.onEvent(TeamUIEvent.OnTeamUpdate)
-                                                    }else{
-                                                        teamViewModel.onEvent(TeamUIEvent.ShowToast(this@HomeActivity.getString(R.string.valid_team_name)))
+                                                    } else {
+                                                        teamViewModel.onEvent(
+                                                            TeamUIEvent.ShowToast(
+                                                                this@HomeActivity.getString(R.string.valid_team_name)
+                                                            )
+                                                        )
                                                     }
                                                 }
                                             }
@@ -975,7 +979,10 @@ fun NavControllerComposable(
                     navController.navigate(Route.ADD_PROFILE_SCREEN)
                 },
                 vm = setupTeamViewModelUpdated,
-                onBackClick = { navController.popBackStack() },
+                onBackClick = {
+                    setupTeamViewModelUpdated.initialInviteCount(2)
+                    navController.popBackStack()
+                },
                 onNextClick = {
                     navController.navigate(state.bottomBar.route) {
                         popUpTo(Route.TEAM_SETUP_SCREEN) {
@@ -1010,6 +1017,10 @@ fun NavControllerComposable(
                 //homeViewModel.showBottomAppBar(true)
                 moveBackFromAddPlayer(homeViewModel, navController)
             }
+            remember {
+                setupTeamViewModelUpdated.initialInviteCount(2)
+            }
+
             val teamId = it.arguments?.getString("teamId")
             AddPlayersScreenUpdated(
                 homeVm = homeViewModel,
@@ -1017,6 +1028,7 @@ fun NavControllerComposable(
                 teamId = teamId,
                 vm = setupTeamViewModelUpdated,
                 onBackClick = {
+                    setupTeamViewModelUpdated.initialInviteCount(2)
                     moveBackFromAddPlayer(homeViewModel, navController)
                 },
                 onNextClick = {
@@ -1365,7 +1377,7 @@ fun NavControllerComposable(
             remember {
                 eventViewModel.onEvent(EvEvents.ClearListEvents)
             }
-            MyEvents(eventViewModel,homeViewModel,
+            MyEvents(eventViewModel, homeViewModel,
                 moveToPracticeDetail = { eventId, eventName ->
                     eventTitle = eventName
                     navController.navigate(Route.EVENTS_DETAIL_SCREEN + "/$eventId")

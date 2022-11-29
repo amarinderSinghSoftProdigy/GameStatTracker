@@ -455,7 +455,7 @@ fun ProfileEditScreen(
                                 vm.onEvent(ProfileEvent.OnPrefJerseyNoChange(it))
                         },
                         stringResource(id = R.string.jersey_number),
-                        errorMessage = stringResource(id = R.string.valid_first_name),
+                        errorMessage = "",
                         keyboardOptions = KeyboardOptions(
                             imeAction = ImeAction.Next,
                             capitalization = KeyboardCapitalization.Sentences,
@@ -472,7 +472,7 @@ fun ProfileEditScreen(
                                 vm.onEvent(ProfileEvent.OnGenderChange(it))
                             },
                             stringResource(id = R.string.gender),
-                            errorMessage = stringResource(id = R.string.valid_first_name),
+                            errorMessage = "",
                             keyboardOptions = KeyboardOptions(
                                 imeAction = ImeAction.Next,
                                 capitalization = KeyboardCapitalization.Sentences
@@ -513,7 +513,7 @@ fun ProfileEditScreen(
                                 //vm.onEvent(ProfileEvent.OnShirtChange(it))
                             },
                             stringResource(id = R.string.shirt_size),
-                            errorMessage = stringResource(id = R.string.valid_first_name),
+                            errorMessage = "",
                             keyboardOptions = KeyboardOptions(
                                 imeAction = ImeAction.Next,
                                 capitalization = KeyboardCapitalization.Sentences
@@ -554,7 +554,7 @@ fun ProfileEditScreen(
                                 //vm.onEvent(ProfileEvent.OnWaistChange(it))
                             },
                             stringResource(id = R.string.waist_size),
-                            errorMessage = stringResource(id = R.string.valid_first_name),
+                            errorMessage = "",
                             keyboardOptions = KeyboardOptions(
                                 imeAction = ImeAction.Next,
                                 capitalization = KeyboardCapitalization.Sentences,
@@ -639,7 +639,7 @@ fun ProfileEditScreen(
 
                         },
                         stringResource(id = R.string.favorite_active_player),
-                        errorMessage = stringResource(id = R.string.valid_first_name),
+                        errorMessage = "",
                         keyboardOptions = KeyboardOptions(
                             imeAction = ImeAction.Next,
                             capitalization = KeyboardCapitalization.Sentences,
@@ -655,7 +655,7 @@ fun ProfileEditScreen(
                                 vm.onEvent(ProfileEvent.OnAllTimeFavChange(it))
                         },
                         stringResource(id = R.string.favoritea_all_time_tlayer),
-                        errorMessage = stringResource(id = R.string.valid_first_name),
+                        errorMessage = "",
                         keyboardOptions = KeyboardOptions(
                             imeAction = ImeAction.Next,
                             capitalization = KeyboardCapitalization.Sentences,
@@ -786,7 +786,7 @@ fun Teams(
 
                     },
                     stringResource(id = R.string.role),
-                    errorMessage = stringResource(id = R.string.valid_first_name),
+                    errorMessage = "",
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Next,
                         capitalization = KeyboardCapitalization.Sentences
@@ -801,7 +801,7 @@ fun Teams(
                         onPositionChange.invoke(index, it)
                     },
                     stringResource(id = R.string.position),
-                    errorMessage = stringResource(id = R.string.valid_first_name),
+                    errorMessage = "",
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Next,
                         capitalization = KeyboardCapitalization.Sentences
@@ -818,7 +818,7 @@ fun Teams(
                             onJerseyNumberChange.invoke(index, it)
                     },
                     stringResource(id = R.string.jersey_number),
-                    errorMessage = stringResource(id = R.string.valid_first_name),
+                    errorMessage = "",
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Next,
                         capitalization = KeyboardCapitalization.Sentences,
