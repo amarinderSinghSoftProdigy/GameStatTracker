@@ -19,13 +19,12 @@ import com.allballapp.android.domain.repository.ITeamRepository
 import com.allballapp.android.domain.repository.IUserRepository
 import com.allballapp.android.ui.features.components.BottomNavKey
 import com.allballapp.android.ui.features.components.TopBarData
+import com.allballapp.android.ui.features.components.getFCMToken
 import com.allballapp.android.ui.features.home.home_screen.HomeScreenEvent
 import com.allballapp.android.ui.utils.UiText
 import com.cometchat.pro.core.CometChat
 import com.cometchat.pro.exceptions.CometChatException
 import com.cometchat.pro.models.User
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
@@ -197,6 +196,10 @@ class HomeViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 userResponse.value.let { response ->
                     if (response.status && response.data != null) {
+
+                        /* On success updating FCM token to server*/
+                        updateFCMTokenToServer()
+
                         _state.value =
                             _state.value.copy(
                                 user = response.data
@@ -475,39 +478,47 @@ class HomeViewModel @Inject constructor(
 
     private fun registerTokenForPN() {
         if (AppConstants.ENABLE_CHAT) {
-            FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-                if (!task.isSuccessful) {
-                    Log.w(
-                        "registerTokenForPN",
-                        "Fetching FCM registration token failed",
-                        task.exception
-                    )
-                    return@OnCompleteListener
-                }
 
-                // Get new FCM registration token
-                val token = task.result
+            getFCMToken(onNewToken = { token ->
 
                 Timber.i("registerTokenForPN-- Token--  $token")
 
-                CometChat.registerTokenForPushNotification(
-                    token,
+                CometChat.registerTokenForPushNotification(token,
                     object : CometChat.CallbackListener<String?>() {
                         override fun onError(e: CometChatException) {
-                            Log.e("onErrorPN: ", e.message!!)
+                            Timber.i("registerTokenForPN-- ${e.message}")
+
                         }
 
                         override fun onSuccess(p0: String?) {
-                            Log.e("ononSuccessPN: ", p0.toString())
+                            Timber.i("onSuccessPN-- ${p0}")
+
                         }
                     })
             })
 
-
         }
     }
 
+    fun updateFCMTokenToServer() {
+        getFCMToken { token ->
+            viewModelScope.launch {
+                when (userRepo.updateFCMToken(token)) {
+                    is ResultWrapper.GenericError -> {
 
+                    }
+                    is ResultWrapper.NetworkError -> {
+
+                    }
+                    is ResultWrapper.Success -> {
+                        Timber.i("Token updated to server")
+                    }
+                }
+            }
+
+        }
+
+    }
 }
 
 private fun logoutFromCometChat() {
@@ -522,6 +533,7 @@ private fun logoutFromCometChat() {
             }
         })
     }
+
 }
 
 

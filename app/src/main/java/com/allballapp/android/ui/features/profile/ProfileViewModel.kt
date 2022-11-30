@@ -14,9 +14,11 @@ import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.data.request.*
 import com.allballapp.android.data.response.*
+import com.allballapp.android.domain.repository.IChatRepository
 import com.allballapp.android.domain.repository.IImageUploadRepo
 import com.allballapp.android.domain.repository.IUserRepository
 import com.allballapp.android.ui.features.components.UserType
+import com.allballapp.android.ui.features.components.leaveMultipleGroups
 import com.allballapp.android.ui.utils.CommonUtils
 import com.allballapp.android.ui.utils.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,6 +34,7 @@ class ProfileViewModel @Inject constructor(
     val dataStoreManager: DataStoreManager,
     private val imageUploadRepo: IImageUploadRepo,
     val userRepository: IUserRepository,
+    val chatRepo: IChatRepository,
     application: Application
 ) : AndroidViewModel(application) {
 
@@ -550,6 +553,11 @@ class ProfileViewModel @Inject constructor(
 
     private suspend fun removeFromTeam() {
         Timber.i("selectedTeamId--${_state.value.selectedTeamId}")
+
+        /*Getting groupIds for selected team*/
+        captureGroupIdsFromSelectedTeam()
+
+
         _state.value = _state.value.copy(isLoading = true)
         val leaveTeamResponse = userRepository.leaveTeam(_state.value.selectedTeamId)
         _state.value = _state.value.copy(isLoading = false)
@@ -576,6 +584,9 @@ class ProfileViewModel @Inject constructor(
             is ResultWrapper.Success -> {
                 leaveTeamResponse.value.let { response ->
                     if (response.status) {
+
+                        /*on success removing from group of comet chat*/
+                        leaveMultipleGroups(_state.value.leaveGroupIds)
 
                         /* Check  if remove request is for default team or not*/
                         if (_state.value.selectedTeamId.equals(UserStorage.teamId)) {
@@ -613,6 +624,32 @@ class ProfileViewModel @Inject constructor(
             }
         }
 
+    }
+
+    private suspend fun captureGroupIdsFromSelectedTeam() {
+        when (val response = chatRepo.getAllChats(userId = UserStorage.userId)) {
+            is ResultWrapper.GenericError -> {
+
+            }
+            is ResultWrapper.NetworkError -> {
+            }
+            is ResultWrapper.Success -> {
+                response.value.let { resp ->
+
+                    /*Getting selected team to leave*/
+                    val team = resp.data.find { team ->
+                        team._id == _state.value.selectedTeamId
+                    }
+
+                    /*Getting all group ids from selected team to remove from chat in Leave API success*/
+                    val groupIds = team?.teamChatGroups?.map { teamChatGroup ->
+                        teamChatGroup.groupId
+                    }
+
+                    _state.value = _state.value.copy(leaveGroupIds = groupIds as ArrayList<String>)
+                }
+            }
+        }
     }
 
     private suspend fun getUserDetails(userId:String) {
