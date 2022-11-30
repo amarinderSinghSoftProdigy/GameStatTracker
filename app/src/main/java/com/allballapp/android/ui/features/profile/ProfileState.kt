@@ -38,5 +38,6 @@ data class ProfileState(
     val searchGameStaff: String = "",
     val searchGameStaffList: List<GetSearchStaff> = emptyList(),
     val selectedImage: String = "",
-    val showImage: Boolean = false
+    val showImage: Boolean = false,
+    val leaveGroupIds: ArrayList<String> = arrayListOf()
 )

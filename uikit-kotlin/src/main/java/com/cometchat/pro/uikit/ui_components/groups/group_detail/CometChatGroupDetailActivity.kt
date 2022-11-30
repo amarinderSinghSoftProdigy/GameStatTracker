@@ -45,7 +45,6 @@ import com.cometchat.pro.uikit.ui_resources.utils.recycler_touch.ClickListener
 import com.cometchat.pro.uikit.ui_resources.utils.recycler_touch.RecyclerTouchListener
 import com.cometchat.pro.uikit.ui_settings.FeatureRestriction
 import com.cometchat.pro.uikit.ui_settings.UIKitSettings
-import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
@@ -930,6 +929,8 @@ class CometChatGroupDetailActivity() : AppCompatActivity() {
                 groupType = group.groupType
                 gDesc = group.description
                 tvMemberCount!!.text = "$groupMemberCount Members"
+
+                Log.i("CometChatGroupDetailActivity", "GroupId--$guid Name--$gName")
             }
 
             override fun onError(e: CometChatException) {
