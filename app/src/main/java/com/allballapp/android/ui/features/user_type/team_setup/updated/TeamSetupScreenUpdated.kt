@@ -95,9 +95,12 @@ fun TeamSetupScreenUpdated(
     val state = vm.teamSetupUiState.value
     val homeState = homeVm.state.value
     val inviteState = inviteVm.invitationState.value
+
     remember {
         inviteVm.onEvent(InvitationEvent.GetRoles)
+        homeVm.onEvent(HomeScreenEvent.OnSwapClick())
     }
+
     val playerName = rememberSaveable {
         mutableStateOf("")
     }
@@ -107,10 +110,6 @@ fun TeamSetupScreenUpdated(
 
     val teamId = remember {
         mutableStateOf("")
-    }
-    remember {
-        vm.onEvent(TeamSetupUIEventUpdated.Clear)
-        homeVm.onEvent(HomeScreenEvent.OnSwapClick())
     }
 
     val launcher =
