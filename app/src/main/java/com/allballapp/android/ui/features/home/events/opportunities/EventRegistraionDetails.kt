@@ -50,6 +50,7 @@ fun EventRegistraionDetails(
     val state = vm.eventState.value
     val teamState = teamVm.teamUiState.value
     val maxCash = 10
+    var toast : Toast? = null
     remember {
         vm.onEvent(EvEvents.GetDivisions(state.selectedEventId))
     }
@@ -73,19 +74,25 @@ fun EventRegistraionDetails(
         vm.eventChannel.collect { uiEvent ->
             when (uiEvent) {
                 is EventChannel.ShowToast -> {
-                    Toast.makeText(
+                    if(toast != null)
+                        toast?.cancel()
+
+                     toast = Toast.makeText(
                         context,
                         uiEvent.message.asString(context),
                         Toast.LENGTH_LONG
-                    ).show()
+                    )
+                    toast?.show()
                 }
                 is EventChannel.OnSuccess -> {
-                    Toast.makeText(
+                    if(toast != null)
+                        toast?.cancel()
+                     toast = Toast.makeText(
                         context,
                         uiEvent.message.asString(context),
                         Toast.LENGTH_LONG
-                    ).show()
-                    onSuccess()
+                    )
+                    toast?.show()
                 }
             }
         }

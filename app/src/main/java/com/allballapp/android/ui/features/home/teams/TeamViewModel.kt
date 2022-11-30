@@ -67,7 +67,7 @@ class TeamViewModel @Inject constructor(
     fun moveItemRoaster(from: ItemPosition, to: ItemPosition) {
         _teamUiState.value =
             _teamUiState.value.copy(
-                players = _teamUiState.value.players
+                players = _teamUiState.value.players.toMutableList()
                     .apply {
                         add(to.index, removeAt(from.index))
                     }
@@ -77,7 +77,7 @@ class TeamViewModel @Inject constructor(
     fun moveItemUser(from: ItemPosition, to: ItemPosition) {
         _teamUiState.value =
             _teamUiState.value.copy(
-                acceptPending = _teamUiState.value.acceptPending.apply {
+                acceptPending = _teamUiState.value.acceptPending.toMutableList().apply {
                     add(to.index, removeAt(from.index))
                 }
             )

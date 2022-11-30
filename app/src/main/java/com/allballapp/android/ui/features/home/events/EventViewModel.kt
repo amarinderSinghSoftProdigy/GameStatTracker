@@ -444,6 +444,7 @@ class EventViewModel @Inject constructor(
             }
 
             is EvEvents.ClearRequest -> {
+                _state.value = _state.value.copy(divisionData = DivisionData())
                 _state.value = _state.value.copy(registerRequest = RegisterRequest())
             }
 

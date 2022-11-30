@@ -62,6 +62,7 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                     .padding(
                         start = dimensionResource(id = R.dimen.size_16dp),
                         end = dimensionResource(id = R.dimen.size_16dp),
+                        bottom = dimensionResource(id = R.dimen.size_80dp)
                     )
                     .verticalScroll(rememberScrollState())
             ) {
@@ -82,7 +83,7 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                                     .height(dimensionResource(id = R.dimen.size_56dp) * state.coaches.size)
                             ) {
                                 items(state.coaches) {
-                                    MangeTeamDataHeaderItem(data = it)
+                                    MangeTeamDataHeaderItem(data = it , isShowDragIcon = false)
                                 }
                             }
                         }
@@ -167,7 +168,7 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
                                 }
                             }
                         }
-                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_80dp)))
+//                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_80dp)))
                     }
                 }
             }
@@ -228,16 +229,18 @@ fun ManageTeamRoster(vm: TeamViewModel, onAddPlayerCLick: () -> Unit) {
 fun MangeTeamDataHeaderItem(
     modifier: Modifier = Modifier,
     data: AllUser,
+    isShowDragIcon : Boolean =  true
 ) {
     Column(modifier = modifier) {
-        TeamUserListItem(modifier, data = data)
+        TeamUserListItem(modifier, data = data , isShowDragIcon = isShowDragIcon)
     }
 }
 
 @Composable
 fun TeamUserListItem(
     modifier: Modifier = Modifier,
-    data: AllUser
+    data: AllUser,
+    isShowDragIcon : Boolean =  true
 ) {
     Column {
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
@@ -307,6 +310,7 @@ fun TeamUserListItem(
                 }
 
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_14dp)))
+                if(isShowDragIcon){
                 Icon(
                     painter = painterResource(id = R.drawable.ic_drag),
                     contentDescription = "",
@@ -316,6 +320,7 @@ fun TeamUserListItem(
                     tint = Color.Unspecified
                 )
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_20dp)))
+                }
 
             }
 

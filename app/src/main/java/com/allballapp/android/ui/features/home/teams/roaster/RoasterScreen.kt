@@ -71,6 +71,11 @@ fun RoasterScreen(
                 Column(
                     Modifier
                         .fillMaxSize()
+                        .padding(
+                            bottom = if (showAddButton) dimensionResource(
+                                id = R.dimen.size_72dp
+                            ) else 0.dp
+                        )
                         .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -103,13 +108,6 @@ fun RoasterScreen(
                                 count = state.acceptPending.size,
 
                                 )*/
-                            Spacer(
-                                modifier = Modifier.height(
-                                    if (showAddButton) dimensionResource(
-                                        id = R.dimen.size_72dp
-                                    ) else 0.dp
-                                )
-                            )
                         }
                     }
                 }
