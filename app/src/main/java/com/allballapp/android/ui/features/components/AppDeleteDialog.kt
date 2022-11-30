@@ -58,6 +58,7 @@ import com.allballapp.android.data.response.UserRoles
 import com.allballapp.android.data.response.team.Player
 import com.allballapp.android.data.response.team.Team
 import com.allballapp.android.ui.features.home.events.DivisionData
+import com.allballapp.android.ui.features.home.events.EventStatus
 import com.allballapp.android.ui.features.home.events.NoteType
 import com.allballapp.android.ui.features.home.events.new_event.EventTabItems
 import com.allballapp.android.ui.features.home.events.new_event.EventTabs
@@ -3342,7 +3343,7 @@ fun ShowImageUploaded(
 
                     CoilImage(
                         src = com.allballapp.android.BuildConfig.IMAGE_SERVER + image,
-                        modifier = Modifier.size(dimensionResource(id = R.dimen.size_300dp)),
+                        modifier = Modifier.size(dimensionResource(id = R.dimen.size_400dp)),
                         isCrossFadeEnabled = false,
                         onLoading = { PlaceholderRect(R.drawable.ic_events_placeholder) },
                         onError = { PlaceholderRect(R.drawable.ic_events_placeholder) }
@@ -3357,6 +3358,7 @@ fun ShowImageUploaded(
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalPagerApi::class)
 @Composable
 fun EditEventDialog(
+    status: String = "",
     onDismiss: () -> Unit,
     onConfirmClick: (String) -> Unit,
     onReasonChange: (String) -> Unit,
@@ -3370,6 +3372,7 @@ fun EditEventDialog(
     val title = remember {
         mutableStateOf(false)
     }
+    val scope = rememberCoroutineScope()
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     BallerAppMainTheme {
@@ -3415,6 +3418,11 @@ fun EditEventDialog(
                                 modifier = Modifier.fillMaxWidth()
                             ) {
                                 EventTabs(
+                                    if (status.equals(
+                                            EventStatus.NOT_GOING.status,
+                                            ignoreCase = true
+                                        )
+                                    ) 1 else 0,
                                     pagerState = pagerState,
                                     width,
                                     list,
@@ -3484,8 +3492,7 @@ fun EditEventDialog(
                             singleLine = true,
                             placeholder = {
                                 Text(
-                                    text = if (placeholderText.isEmpty()) stringResource(id = R.string.reason_not_going)
-                                    else placeholderText,
+                                    text = placeholderText.ifEmpty { stringResource(id = R.string.reason_not_going) },
                                     fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                                     textAlign = TextAlign.Start
                                 )
@@ -3499,7 +3506,7 @@ fun EditEventDialog(
                                 focusedBorderColor = MaterialTheme.appColors.editField.borderFocused,
                                 unfocusedBorderColor = MaterialTheme.appColors.editField.borderUnFocused,
                                 backgroundColor = MaterialTheme.appColors.material.background,
-                                textColor = MaterialTheme.appColors.textField.labelDark,
+                                textColor = ColorBWBlack,
                                 placeholderColor = MaterialTheme.appColors.textField.label,
                                 cursorColor = MaterialTheme.appColors.textField.labelDark
                             ),

@@ -20,6 +20,7 @@ data class EventState(
     val showDeclineDialog: Boolean = false,
     val showLoading: Boolean = false,
     val selectedMyEventId: String = "",
+    val status : String = "",
     val selectedMyEventType: String = "",
     val selectionTeam: String = "",
     val reasonTeam: String = "",

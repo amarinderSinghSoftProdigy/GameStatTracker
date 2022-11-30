@@ -1,7 +1,6 @@
 package com.allballapp.android.ui.features.home
 
 import android.app.Application
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
@@ -165,25 +164,6 @@ class HomeViewModel @Inject constructor(
                 if (event.isAvailable) {
                     viewModelScope.launch {
                         getUserInfo()
-                    }
-                }
-            }
-        }
-    }
-
-    private suspend fun getUserDetails(userId: String) {
-        val userResponse = userRepo.getFullUserFullDetails(userId)
-        when (userResponse) {
-            is ResultWrapper.GenericError -> {
-
-            }
-            is ResultWrapper.NetworkError -> {
-
-            }
-            is ResultWrapper.Success -> {
-                userResponse.value.let { response ->
-                    if (response.status && response.data != null) {
-                        _state.value = _state.value.copy(user = response.data)
                     }
                 }
             }

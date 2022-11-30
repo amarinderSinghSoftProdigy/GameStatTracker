@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.allballapp.android.R
 import com.allballapp.android.common.apiToUIDateFormat
+import com.allballapp.android.data.UserStorage
 import com.allballapp.android.ui.features.components.CommonProgressBar
 import com.allballapp.android.ui.features.components.DeclineEventDialog
 import com.allballapp.android.ui.features.components.DeleteDialog
@@ -84,6 +85,8 @@ fun MyEvents(
                                     EventItem(events = data, onAcceptCLick = { event ->
                                         vm.onEvent(
                                             EvEvents.OnGoingCLick(
+                                                UserStorage.userId.ifEmpty { homeState.user._Id },
+                                                homeState.swapUsers,
                                                 event.id,
                                                 EventType.PRACTICE.type
                                             )
@@ -91,6 +94,8 @@ fun MyEvents(
                                     }, onDeclineCLick = { event ->
                                         vm.onEvent(
                                             EvEvents.OnDeclineCLick(
+                                                UserStorage.userId.ifEmpty { homeState.user._Id },
+                                                homeState.swapUsers,
                                                 event.id,
                                                 EventType.PRACTICE.type
                                             )
@@ -100,7 +105,14 @@ fun MyEvents(
 //                                        isSelfCreatedEvent = data.createdBy == UserStorage.userId
                                         isSelfCreatedEvent = false,
                                         onEditClick = { events, isGoing ->
-                                            vm.onEvent(EvEvents.SetSelectedEventId(events.id))
+                                            vm.onEvent(
+                                                EvEvents.SetSelectedEventId(
+                                                    events.id,
+                                                    events.invitationStatus,
+                                                    homeState.swapUsers.filter {
+                                                        events.going.contains(it._Id)
+                                                    })
+                                            )
                                             vm.onEvent(EvEvents.EventType(EventType.PRACTICE.type))
                                             vm.onEvent(EvEvents.ShowAcceptEditDialog(true))
                                         }
@@ -114,6 +126,8 @@ fun MyEvents(
                                         }, onAcceptCLick = { eventId ->
                                             vm.onEvent(
                                                 EvEvents.OnGoingCLick(
+                                                    UserStorage.userId.ifEmpty { homeState.user._Id },
+                                                    homeState.swapUsers,
                                                     eventId,
                                                     EventType.GAME.type
                                                 )
@@ -123,6 +137,8 @@ fun MyEvents(
                                         onDeclineCLick = { eventId ->
                                             vm.onEvent(
                                                 EvEvents.OnDeclineCLick(
+                                                    UserStorage.userId.ifEmpty { homeState.user._Id },
+                                                    homeState.swapUsers,
                                                     eventId,
                                                     EventType.GAME.type
                                                 )
@@ -202,6 +218,7 @@ fun MyEvents(
                 }
                 if (state.showAcceptDialog) {
                     EditEventDialog(
+                        status = state.status,
                         onDismiss = {
                             vm.onEvent(EvEvents.ShowAcceptEditDialog(false))
                         },

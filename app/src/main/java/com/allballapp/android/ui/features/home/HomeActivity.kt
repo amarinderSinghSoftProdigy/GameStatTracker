@@ -80,10 +80,8 @@ import com.allballapp.android.ui.utils.anims.slideOutHorizont
 import com.cometchat.pro.constants.CometChatConstants
 import com.cometchat.pro.core.CometChat
 import com.cometchat.pro.models.*
-import com.cometchat.pro.uikit.ui_components.chats.CometChatConversationList
 import com.cometchat.pro.uikit.ui_components.chats.CustomCometListener
 import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
-import com.cometchat.pro.uikit.ui_components.messages.message_list.CometChatMessageList
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -144,7 +142,6 @@ class HomeActivity : FragmentActivity(), CustomCometListener {
             /*Check for internet availability*/
             ListenForConnectionAvailability(homeViewModel)
 
-            Timber.e("token home " + UserStorage.token)
             //homeViewModel.showBottomAppBar(true)
             BallerAppMainTheme(
                 customColor = state.color ?: MaterialTheme.appColors.material.primaryVariant

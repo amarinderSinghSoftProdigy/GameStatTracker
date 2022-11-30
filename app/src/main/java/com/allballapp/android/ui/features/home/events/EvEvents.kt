@@ -5,8 +5,20 @@ import com.allballapp.android.data.response.SwapUser
 import com.allballapp.android.data.response.team.Team
 
 sealed class EvEvents {
-    data class OnGoingCLick(val eventId: String,val eventType: String) : EvEvents()
-    data class OnDeclineCLick(val eventId: String,val eventType: String) : EvEvents()
+    data class OnGoingCLick(
+        val id: String,
+        val list: List<SwapUser>,
+        val eventId: String,
+        val eventType: String
+    ) : EvEvents()
+
+    data class OnDeclineCLick(
+        val id: String,
+        val list: List<SwapUser>,
+        val eventId: String,
+        val eventType: String
+    ) : EvEvents()
+
     data class OnRoleClick(val role: String) : EvEvents()
     data class OnRoleDialogClick(val showRoleDialog: Boolean) : EvEvents()
     data class onCancel(val showGoingDialog: Boolean) : EvEvents()
@@ -20,7 +32,9 @@ sealed class EvEvents {
     data class GetOpportunities(val type: String = "") : EvEvents()
     object GetOpportunityDetail : EvEvents()
     data class SetEventId(val id: String) : EvEvents()
-    data class SetSelectedEventId(val id: String) : EvEvents()
+    data class SetSelectedEventId(val id: String, val status: String, val list: List<SwapUser>) :
+        EvEvents()
+
     data class GetDivisions(val id: String) : EvEvents()
     object RegisterForEvent : EvEvents()
     object RegisterGameStaff : EvEvents()
@@ -41,9 +55,9 @@ sealed class EvEvents {
     data class ShowToast(val message: String) : EvEvents()
     data class OnDeclineConfirmClick(val invitation: EventsResponse) : EvEvents()
     object RefreshEventScreen : EvEvents()
-    data class RefreshEventDetailsScreen(val eventId: String,val eventType:String) : EvEvents()
+    data class RefreshEventDetailsScreen(val eventId: String, val eventType: String) : EvEvents()
     data class RefreshGameDetailsScreen(val gameId: String) : EvEvents()
-    data class OnConfirmGoing(val eventType:String) : EvEvents()
+    data class OnConfirmGoing(val eventType: String) : EvEvents()
     data class OnDeclineReasonChange(val reason: String) : EvEvents()
     data class OnGoingDialogClick(val showGoingDialog: Boolean) : EvEvents()
     data class OnSelection(val selected: String) : EvEvents()
@@ -63,7 +77,7 @@ sealed class EvEvents {
         val eventId: String
     ) : EvEvents()
 
-    data class GetMyLeagues(val type:String) : EvEvents()
+    data class GetMyLeagues(val type: String) : EvEvents()
 
     object GetDivision : EvEvents()
     data class GetLeagueId(val eventId: String) : EvEvents()

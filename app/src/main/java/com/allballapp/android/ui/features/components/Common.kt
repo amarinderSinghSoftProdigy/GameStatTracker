@@ -1015,7 +1015,7 @@ fun requestFileManagerPermission(context: Context, activity: Activity) {
         ActivityCompat.requestPermissions(
             activity,
             arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-            1
+            AppConstants.REQUEST_GALLERY
         )
     }
 }

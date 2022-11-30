@@ -60,9 +60,9 @@ class ProfileViewModel @Inject constructor(
 
 
     init {
-       /*for (i in 30..50) {
-            waistSize.add(i.toString())
-        }*/
+        /*for (i in 30..50) {
+             waistSize.add(i.toString())
+         }*/
         viewModelScope.launch {
             dataStoreManager.getRole.collect {
                 if (it == UserType.REFEREE.key) {
@@ -210,7 +210,7 @@ class ProfileViewModel @Inject constructor(
                 }
             }
             is ProfileEvent.OnPositionPlayedChanges -> {
-                _state.value.positionPlayed[event.index] =
+                _state.value.positionPlayed.toMutableList()[event.index] =
                     _state.value.positionPlayed[event.index].copy(isChecked = event.isChecked)
             }
             is ProfileEvent.OnLeaveConfirmClick -> {
@@ -653,7 +653,7 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getUserDetails(userId:String) {
+    private suspend fun getUserDetails(userId: String) {
         _state.value = _state.value.copy(isLoading = true)
         val userResponse = userRepository.getFullUserFullDetails(userId)
         _state.value = _state.value.copy(isLoading = false)
@@ -899,28 +899,52 @@ class ProfileViewModel @Inject constructor(
     }
 
     private fun saveResponseToState(user: User) {
-        _state.value = _state.value.copy(
+        /*_state.value = _state.value.copy(
             user = user,
         )
         if (user.userDetails.jerseyPerferences.isNotEmpty()) {
             _state.value = _state.value.copy(
-                jerseyNumerPerferences = user.userDetails.jerseyPerferences[0].jerseyNumberPerferences.joinToString { jerseyPerferences ->
+                jerseyNumerPerferences = if (user.userDetails.jerseyPerferences.isNotEmpty()) user.userDetails.jerseyPerferences[0].jerseyNumberPerferences.joinToString { jerseyPerferences ->
                     jerseyPerferences
-                },
-                shirtSize = user.userDetails.jerseyPerferences[0].shirtSize,
-                waistSize = user.userDetails.jerseyPerferences[0].waistSize
+                } else "",
+                shirtSize = if (user.userDetails.jerseyPerferences.isNotEmpty()) user.userDetails.jerseyPerferences[0].shirtSize else "",
+                waistSize = if (user.userDetails.jerseyPerferences.isNotEmpty()) user.userDetails.jerseyPerferences[0].waistSize else ""
             )
-        }
-        if (user.userDetails.funFacts.isNotEmpty()) {
-            _state.value = _state.value.copy(
-                favCollegeTeam = user.userDetails.funFacts[0].favCollegeTeam,
-                favActivePlayer = user.userDetails.funFacts[0].favActivePlayer,
-                favAllTimePlayer = user.userDetails.funFacts[0].favAllTimePlayer,
-                favProfessionalTeam = user.userDetails.funFacts[0].favProfessionalTeam
-            )
-        }
-        if (user.userDetails.positionPlayed.isNotEmpty()) {
+        }*/
+        //if (user.userDetails.funFacts.isNotEmpty()) {
+        _state.value = _state.value.copy(
+            user = user,
+            jerseyNumerPerferences = if (user.userDetails.jerseyPerferences.isNotEmpty()) user.userDetails.jerseyPerferences[0].jerseyNumberPerferences.joinToString { jerseyPerferences ->
+                jerseyPerferences
+            } else "",
+            shirtSize = if (user.userDetails.jerseyPerferences.isNotEmpty()) user.userDetails.jerseyPerferences[0].shirtSize
+            else "",
+            waistSize = if (user.userDetails.jerseyPerferences.isNotEmpty()) user.userDetails.jerseyPerferences[0].waistSize
+            else "",
+            favCollegeTeam = if (user.userDetails.funFacts.isNotEmpty()) user.userDetails.funFacts[0].favCollegeTeam
+            else "",
+            favActivePlayer = if (user.userDetails.funFacts.isNotEmpty()) user.userDetails.funFacts[0].favActivePlayer
+            else "",
+            favAllTimePlayer = if (user.userDetails.funFacts.isNotEmpty()) user.userDetails.funFacts[0].favAllTimePlayer
+            else "",
+            favProfessionalTeam = if (user.userDetails.funFacts.isNotEmpty()) user.userDetails.funFacts[0].favProfessionalTeam
+            else "",
+            positionPlayed = _state.value.positionPlayed.apply {
+                this.forEachIndexed { index, it ->
+                    if (user.userDetails.positionPlayed.contains(it.label)) {
+                        it.isChecked = true
+                    }
+                }
+            }
+        )
+        // }
+        /*if (user.userDetails.positionPlayed.isNotEmpty()) {
 
+            _state.value.positionPlayed.forEachIndexed { index, item ->
+                if (user.userDetails.positionPlayed.contains(item.label)) {
+                    item.isChecked = true
+                }
+            }
             user.userDetails.positionPlayed.forEachIndexed { index1, positionSTring ->
                 for (i in _state.value.positionPlayed.indices) {
                     if (positionSTring.equals(
@@ -933,7 +957,7 @@ class ProfileViewModel @Inject constructor(
                 }
 
             }
-        }
+        }*/
     }
 
 

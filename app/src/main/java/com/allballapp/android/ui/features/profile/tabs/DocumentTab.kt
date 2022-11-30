@@ -1,6 +1,6 @@
 package com.allballapp.android.ui.features.profile.tabs
 
-import android.app.Activity
+import android.Manifest
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -53,6 +53,13 @@ fun DocumentTab(vm: ProfileViewModel) {
                 vm.onEvent(ProfileEvent.OnImageSelected(state.selectedDocKey, uri.toString()))
         }
 
+    val launcherPermission = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            launcher.launch("*/*")
+        }
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -64,11 +71,12 @@ fun DocumentTab(vm: ProfileViewModel) {
                 }
                 itemsIndexed(state.userDocTypes) { index, item ->
                     DocumentItem(item, {
+                        vm.onEvent(ProfileEvent.SetUploadKey(it))
                         if (hasFileManagerPermission(context)) {
                             launcher.launch("*/*")
-                            vm.onEvent(ProfileEvent.SetUploadKey(it))
                         } else {
-                            requestFileManagerPermission(context, context as Activity)
+                            launcherPermission.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                            //requestFileManagerPermission(context, context as Activity)
                         }
                     }, {
                         vm.onEvent(ProfileEvent.SetDeleteDocument(item))

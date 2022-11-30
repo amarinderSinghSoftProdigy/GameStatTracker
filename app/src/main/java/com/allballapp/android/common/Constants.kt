@@ -12,6 +12,7 @@ object AppConstants {
     const val TYPE_CREATE_TEAM = "createTeam"
     val REQUEST_CONTACT_CODE: Int = 1122
     val REQUEST_CONTACT: Int = 1125
+    val REQUEST_GALLERY: Int = 1130
     val REQUEST_CAMERA_CODE: Int = 1123
     const val ROLE = "role"
     const val TEAM_LOGO: String = "teamLogo"

@@ -123,7 +123,7 @@ fun NewEventScreen(
             val list =
                 listOf(EventTabItems.Practice, /*EventTabItems.Game,*/ EventTabItems.Activity)
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
-                EventTabs(pagerState = pagerState, width, list, onSelectionChange = {
+                EventTabs(pagerState = pagerState, width = width, list = list, onSelectionChange = {
                     vm.onEvent(NewEvEvent.OnEventTypeChange(it))
                 })
             }
@@ -159,6 +159,7 @@ fun NewEventScreen(
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun EventTabs(
+    index: Int = 0,
     pagerState: PagerState,
     width: Dp,
     list: List<EventTabItems>,
@@ -195,7 +196,10 @@ fun EventTabs(
 }
 
 enum class EventTabItems(val stringId: String) {
-    Accept(stringId = "accept"),Decline(stringId = "decline"),Practice(stringId = "practice"), Game(stringId = "game"), Activity(stringId = "activity")
+    Accept(stringId = "accept"), Decline(stringId = "decline"), Practice(stringId = "practice"), Game(
+        stringId = "game"
+    ),
+    Activity(stringId = "activity")
 }
 
 @SuppressLint("SimpleDateFormat")
