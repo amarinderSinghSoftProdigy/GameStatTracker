@@ -49,14 +49,13 @@ class HomeViewModel @Inject constructor(
     private val _homeChannel = Channel<HomeChannel>()
     val homeChannel = _homeChannel.receiveAsFlow()
 
-    init {
-
+/*    init {
         viewModelScope.launch {
             if (UserStorage.token.isNotEmpty()) {
                 getUserInfo()
             }
         }
-    }
+    }*/
 
     private fun getHomeList() {
         val homeList = ArrayList<HomeItemResponse>()
@@ -172,10 +171,9 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getUserInfo(showToast: Boolean = false) {
+    suspend fun getUserInfo(showToast: Boolean = false) {
         _state.value = _state.value.copy(isDataLoading = true)
         val userResponse = userRepo.getUserProfile()
-
 
         when (userResponse) {
             is ResultWrapper.GenericError -> {
