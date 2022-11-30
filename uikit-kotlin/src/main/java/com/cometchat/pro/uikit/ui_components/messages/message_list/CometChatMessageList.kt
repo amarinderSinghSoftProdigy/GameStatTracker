@@ -56,7 +56,6 @@ import com.cometchat.pro.exceptions.CometChatException
 import com.cometchat.pro.helpers.CometChatHelper
 import com.cometchat.pro.models.*
 import com.cometchat.pro.uikit.R
-import com.cometchat.pro.uikit.ui_components.chats.CustomCometListener
 import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
 import com.cometchat.pro.uikit.ui_components.groups.group_detail.CometChatGroupDetailActivity
 import com.cometchat.pro.uikit.ui_components.messages.extensions.ExtensionResponseListener
@@ -1673,7 +1672,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
 
     private fun getSmartReplyList(baseMessage: BaseMessage) {
         val extensionList = Extensions.extensionCheck(baseMessage)
-        if (extensionList != null && extensionList.containsKey("smartReply")) {
+        if (extensionList != null && extensionList.containsKey("smartReply") && UIKitSettings.smartReplies) {
             rvSmartReply!!.visibility = View.VISIBLE
             val replyObject = extensionList["smartReply"]
             val replyList: MutableList<String> = ArrayList()
@@ -2325,7 +2324,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
             override fun onTextMessageReceived(message: TextMessage) {
                 Log.d(TAG, "onTextMessageReceived: $message")
                 onMessageReceived(message)
-                newCustomCometListener.onTeamIDChange(message.metadata.getString("id"))
+//                newCustomCometListener.onTeamIDChange(message.metadata.getString("id"))
 
             }
 
@@ -3108,6 +3107,13 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
                         composeBox?.ivSend?.visibility = View.VISIBLE
                         editMessageLayout?.visibility = View.VISIBLE
                         composeBox?.etComposeBox?.setText((baseMessage as TextMessage).text)
+
+                        /*Requesting focus on edit text*/
+                        composeBox?.etComposeBox?.requestFocus()
+
+                        /*Setting cursor to the end of text*/
+                        composeBox?.etComposeBox?.setSelection(((baseMessage as TextMessage).text).toString().length)
+
                         if (messageAdapter != null) {
                             baseMessage?.id?.let { messageAdapter?.setSelectedMessage(it) }
                             messageAdapter?.notifyDataSetChanged()
@@ -3613,7 +3619,7 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
     companion object {
         private const val TAG = "CometChatMessageScreen"
         private const val LIMIT = 30
-        lateinit var newCustomCometListener: CustomCometListener
+//        lateinit var newCustomCometListener: CustomCometListener
 
     }
 
@@ -3658,6 +3664,9 @@ class CometChatMessageList : Fragment(), View.OnClickListener, OnMessageLongClic
 
     private fun replyMessage() {
         if (baseMessage != null) {
+            /*Requesting focus on edit text*/
+            composeBox?.etComposeBox?.requestFocus()
+
             isReply = true
             replyTitle?.text = baseMessage?.sender?.name
             replyMedia?.visibility = View.VISIBLE

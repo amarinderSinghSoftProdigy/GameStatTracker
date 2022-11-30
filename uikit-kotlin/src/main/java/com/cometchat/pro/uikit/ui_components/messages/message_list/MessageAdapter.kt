@@ -3380,11 +3380,16 @@ class MessageAdapter(context: Context, messageList: List<BaseMessage>, type: Str
 
     override fun onBindHeaderViewHolder(var1: Any, var2: Int, var3: Long) {
         val baseMessage = messageList[var2]
-        val date = Date(baseMessage.sentAt * 1000L)
-        val formattedDate = Utils.getDate(date.time)
-        var dateItemHolder = var1 as DateItemHolder;
-        dateItemHolder.txtMessageDate.background = context.resources.getDrawable(R.drawable.cc_rounded_date_button)
-        dateItemHolder.txtMessageDate.text = formattedDate
+
+        /*Only updating time if sent time is greater than zero to restrict showing default time 1970 for some sec*/
+        if (baseMessage.sentAt > 0) {
+            val date = Date(baseMessage.sentAt * 1000L)
+            val formattedDate = Utils.getDate(date.time)
+            var dateItemHolder = var1 as DateItemHolder;
+            dateItemHolder.txtMessageDate.background =
+                context.resources.getDrawable(R.drawable.cc_rounded_date_button)
+            dateItemHolder.txtMessageDate.text = formattedDate
+        }
     }
 
     /**

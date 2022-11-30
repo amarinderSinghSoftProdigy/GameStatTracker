@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
+import android.util.Log
 import androidx.annotation.FloatRange
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -64,10 +65,14 @@ import com.allballapp.android.ui.theme.ColorBWBlack
 import com.allballapp.android.ui.theme.ColorBWGrayLight
 import com.allballapp.android.ui.theme.appColors
 import com.allballapp.android.ui.utils.CommonUtils
+import com.cometchat.pro.core.CometChat
+import com.cometchat.pro.exceptions.CometChatException
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.maps.android.compose.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -1049,4 +1054,36 @@ fun Modifier.scrollOnFocus(
 
 fun <T> getCommonElementsCount(first: List<T>, second: List<T>): Int {
     return first.filter(second::contains).size
+}
+
+fun getFCMToken(onNewToken: (String) -> Unit) {
+    FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+        if (!task.isSuccessful) {
+            Log.w(
+                "registerTokenForPN",
+                "Fetching FCM registration token failed",
+                task.exception
+            )
+            return@OnCompleteListener
+        } else {
+            onNewToken.invoke(task.result)
+        }
+    })
+}
+
+fun leaveMultipleGroups(groupIds: ArrayList<String>) {
+    Timber.i("leaveMultipleGroups-- $groupIds")
+    if (groupIds.isNotEmpty()) {
+        groupIds.forEach { groupId ->
+            CometChat.leaveGroup(groupId, object : CometChat.CallbackListener<String?>() {
+                override fun onSuccess(s: String?) {
+                    Timber.i("leaveMultipleGroups--onSuccess--$s")
+                }
+
+                override fun onError(e: CometChatException) {
+                    Timber.e(" leaveMultipleGroups-- onError: ${e.message}")
+                }
+            })
+        }
+    }
 }

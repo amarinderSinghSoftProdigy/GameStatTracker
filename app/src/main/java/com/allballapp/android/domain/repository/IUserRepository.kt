@@ -55,4 +55,6 @@ interface IUserRepository {
 
     suspend fun updateStaffSchedule(request: StaffScheduleRequest): ResultWrapper<BaseResponse<Any>>
 
+    suspend fun updateFCMToken(token: String): ResultWrapper<BaseResponse<Any>>
+
 }

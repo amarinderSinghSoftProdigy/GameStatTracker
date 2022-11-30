@@ -160,4 +160,13 @@ class UserRepository @Inject constructor(
             service.updateStaffSchedule(request)
         }
     }
+
+    override suspend fun updateFCMToken(token: String): ResultWrapper<BaseResponse<Any>> {
+        val request: RequestBody = FormBody.Builder()
+            .add("fcmToken", token)
+            .build()
+        return safeApiCall(dispatcher = dispatcher) {
+            service.updateFCMToken(request)
+        }
+    }
 }

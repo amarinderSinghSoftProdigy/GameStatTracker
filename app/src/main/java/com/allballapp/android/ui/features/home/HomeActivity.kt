@@ -111,8 +111,8 @@ class HomeActivity : FragmentActivity(), CustomCometListener {
         WindowCompat.setDecorFitsSystemWindows(window, true)
         cometChat.context = this
         cometChat.setConversationClickListener()
-        CometChatConversationList.newCustomCometListener = this
-        CometChatMessageList.newCustomCometListener = this
+//        CometChatConversationList.newCustomCometListener = this
+//        CometChatMessageList.newCustomCometListener = this
         setContent {
             val userToken = dataStoreManager.userToken.collectAsState(initial = "")
             if (userToken.value.isNotEmpty())

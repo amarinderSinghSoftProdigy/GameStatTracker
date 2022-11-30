@@ -178,6 +178,7 @@ object ApiConstants {
     const val REGISTER_GAME_STAFF = "v1/staff/registerGameStaff"
     const val GET_STAFF_SCHEDULE = "v1/schedule/bystaff"
     const val UPDATE_SCHEDULE = "v1/schedule/updateStaff/schedule"
+    const val UPDATE_FCM_TOKEN = "/api/v1/auth/updateFcmToken"
 
 
     const val EMAIL = "email"

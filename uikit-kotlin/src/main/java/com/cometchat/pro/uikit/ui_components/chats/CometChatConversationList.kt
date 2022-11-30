@@ -342,7 +342,7 @@ class CometChatConversationList : Fragment(), TextWatcher {
                     checkNoConverstaion()
                 }
                 Log.i(TAG, "onTextMessageReceived: $message")
-                newCustomCometListener.onTeamIDChange(message.metadata.getString("id"))
+//                newCustomCometListener.onTeamIDChange(message.metadata.getString("id"))
             }
 
             override fun onMediaMessageReceived(message: MediaMessage) {
@@ -518,7 +518,7 @@ class CometChatConversationList : Fragment(), TextWatcher {
         fun setItemClickListener(onItemClickListener: OnItemClickListener<Any>) {
             events = onItemClickListener
         }
-        lateinit var newCustomCometListener: CustomCometListener
+//        lateinit var newCustomCometListener: CustomCometListener
     }
 }
 

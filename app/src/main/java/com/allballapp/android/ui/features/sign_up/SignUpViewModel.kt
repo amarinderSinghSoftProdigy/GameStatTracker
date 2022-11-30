@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.ResultWrapper
 import com.allballapp.android.common.getFileFromUri
+import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.data.request.AuthorizeRequest
 import com.allballapp.android.data.request.SignUpData
@@ -19,6 +20,8 @@ import com.allballapp.android.data.response.SwapUser
 import com.allballapp.android.data.response.UserInfo
 import com.allballapp.android.domain.repository.IImageUploadRepo
 import com.allballapp.android.domain.repository.IUserRepository
+import com.allballapp.android.ui.features.components.getFCMToken
+import com.allballapp.android.ui.utils.UiText
 import com.allballapp.android.ui.utils.UiText
 import com.cometchat.pro.core.CometChat
 import com.cometchat.pro.exceptions.CometChatException
@@ -958,8 +961,9 @@ class SignUpViewModel @Inject constructor(
                 e.printStackTrace()
             }
         })
+        }
     }
-    }
+
 }
 
 sealed class SignUpChannel {
