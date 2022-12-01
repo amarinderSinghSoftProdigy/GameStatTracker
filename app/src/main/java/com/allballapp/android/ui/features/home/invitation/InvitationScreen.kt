@@ -466,7 +466,7 @@ fun InvitationItem(
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
-                Row(
+                Row(modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -477,7 +477,7 @@ fun InvitationItem(
                         fontWeight = FontWeight.W500,
                     )
                     
-                    Space(dp = dimensionResource(id = R.dimen.size_5dp))
+                   /* Space(dp = dimensionResource(id = R.dimen.size_5dp))*/
 
                     Text(
                         text = apiToUIDateFormat(invitation.createdAt),

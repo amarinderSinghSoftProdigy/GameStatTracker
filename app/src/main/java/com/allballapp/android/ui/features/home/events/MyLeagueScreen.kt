@@ -19,6 +19,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.allballapp.android.R
 import com.allballapp.android.data.response.MyLeagueResponse
@@ -139,12 +140,14 @@ fun LeagueItem(league: MyLeagueResponse, OnNextClick: () -> Unit) {
                         color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.weight(1F)
+                        modifier = Modifier.width(dimensionResource(id = R.dimen.size_70dp)),
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis
                     )
 
                     if (league.divisionDetail != null && league.divisionDetail.divisionName.isNotEmpty()) {
                         Row(
-                            modifier = Modifier.weight(1.8F),
+                            modifier = Modifier.weight(2F),
                             horizontalArrangement = Arrangement.End
                         ) {
                             Box(
@@ -152,7 +155,7 @@ fun LeagueItem(league: MyLeagueResponse, OnNextClick: () -> Unit) {
                                     .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
                                     .background(MaterialTheme.appColors.material.primaryVariant)
                                     .padding(
-                                        horizontal = dimensionResource(id = R.dimen.size_12dp),
+                                        horizontal = dimensionResource(id = R.dimen.size_8dp),
                                         vertical = dimensionResource(
                                             id = R.dimen.size_6dp
                                         )
@@ -162,7 +165,7 @@ fun LeagueItem(league: MyLeagueResponse, OnNextClick: () -> Unit) {
                                 Text(
                                     text = league.divisionDetail.divisionName,
                                     color = Color.White,
-                                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                    fontSize = dimensionResource(id = R.dimen.txt_size_10).value.sp,
                                     fontWeight = FontWeight.Bold,
                                 )
                             }

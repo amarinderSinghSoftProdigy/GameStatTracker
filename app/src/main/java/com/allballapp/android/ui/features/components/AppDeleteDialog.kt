@@ -910,6 +910,7 @@ fun SelectInvitationRoleDialog(
                             style = MaterialTheme.typography.h5,
                             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                             fontWeight = FontWeight.W500,
+                            modifier = Modifier.padding(end = dimensionResource(id = R.dimen.size_20dp))
                         )
 
                         Icon(

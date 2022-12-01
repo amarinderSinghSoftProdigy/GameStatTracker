@@ -1,8 +1,11 @@
 package com.allballapp.android.common
 
+import android.util.Log
 import timber.log.Timber
 import java.text.DateFormat
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 /* Convert type "2022-09-20T02:30:00.000Z" date to type "Tue, Sep 01"*/
@@ -16,7 +19,17 @@ fun apiToUIDateFormat(apiDate: String): String {
         return formattedDate
     } else return apiDate
 }
-
+/* Convert type "2022-09-20T02:30:00.000Z" date to type "Tuesday, Sep 01"*/
+fun apiToUIDateFormat3(apiDate: String): String {
+    if (apiDate.isNotEmpty()) {
+        val originalFormat: DateFormat =
+            SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH)
+        val targetFormat: DateFormat = SimpleDateFormat("EEEE, MMM dd", Locale.ENGLISH) //Tue, Sep 22
+        val date: Date = originalFormat.parse(apiDate) ?: Date()
+        val formattedDate: String = targetFormat.format(date)
+        return formattedDate
+    } else return apiDate
+}
 /* Convert type "2022-09-20T02:30:00.000Z" date to type "May 15, 1999"*/
 fun apiToUIDateFormat2(apiDate: String): String {
     if (apiDate.isNotEmpty()) {
@@ -73,12 +86,34 @@ fun uiToAPiDate(uiDate: String): Date? {
         return null
     }
 }
+
+
+
 /* Convert type "2022-09-20T02:30:00.000Z" date to long*/
 
 fun convertStringDateToLong(stringDate: String): Long {
     val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
     val date: Date? = formatter.parse(stringDate)
-    val timeInMillis= date?.time ?: 0
+    val timeInMillis = date?.time ?: 0
     Timber.i("timeInMillis--$timeInMillis")
-    return  timeInMillis
+    return timeInMillis
+}
+
+fun getArrivalTime(arrivalTime: String, startTime: String, date: String): LocalDateTime? {
+
+    val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzzz yyyy", Locale.ENGLISH)
+
+    var aTime = arrivalTime.filter {
+        it.isDigit()
+    }
+
+    val sTime = uiToAPiDate("${apiToUIDateFormat2(date)} $startTime").toString()
+
+    if (aTime == "1"){
+        aTime = "60"
+    }
+
+    val dateTime = LocalDateTime.parse(sTime, formatter)
+
+    return dateTime.minusMinutes(aTime.toLong())
 }

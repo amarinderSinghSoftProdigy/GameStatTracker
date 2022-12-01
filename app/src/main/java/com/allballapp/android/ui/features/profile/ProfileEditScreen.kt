@@ -176,7 +176,7 @@ fun ProfileEditScreen(
                     ).show()
                 }
 
-                ProfileChannel.OnDefaultTeamRemove ->{
+                ProfileChannel.OnDefaultTeamRemove -> {
                     scope.launch {
                         teamViewModel.updateColorData("")
                     }
@@ -326,7 +326,7 @@ fun ProfileEditScreen(
                             result = state.user.phone.substring(
                                 0,
                                 state.user.phone.length - 10
-                            ) + " " + state.user.phone.substring(state.user.phone.length-10)
+                            ) + " " + state.user.phone.substring(state.user.phone.length - 10)
                         }
 
                         EditProfileFields(
@@ -458,10 +458,13 @@ fun ProfileEditScreen(
                 UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {
                     EditProfileFields(
                         data =
-                        state.jerseyNumerPerferences,
+                        state.jerseyNumerPerferences.filter { !it.isWhitespace() },
                         onValueChange = {
-                            if (p.matches(it))
-                                vm.onEvent(ProfileEvent.OnPrefJerseyNoChange(it))
+                            if(it.length <= 8){
+                                if (p.matches(it))
+                                    vm.onEvent(ProfileEvent.OnPrefJerseyNoChange(it))
+                            }
+
                         },
                         stringResource(id = R.string.jersey_number),
                         errorMessage = stringResource(id = R.string.valid_first_name),

@@ -503,7 +503,7 @@ private fun PreferenceItem(
             ) {
                 AppText(
                     text = firstKey,
-                    style = MaterialTheme.typography.h5,
+                    style = MaterialTheme.typography.h4,
                     color = ColorBWGrayLight,
                     modifier = Modifier.height(dimensionResource(id = R.dimen.size_35dp))
                 )
@@ -523,7 +523,7 @@ private fun PreferenceItem(
             ) {
                 AppText(
                     text = secondKey,
-                    style = MaterialTheme.typography.h5,
+                    style = MaterialTheme.typography.h4,
                     color = ColorBWGrayLight,
                     modifier = Modifier.height(dimensionResource(id = R.dimen.size_35dp))
                 )

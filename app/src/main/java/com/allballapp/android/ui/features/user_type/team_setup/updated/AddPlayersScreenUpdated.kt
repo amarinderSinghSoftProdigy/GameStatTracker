@@ -104,7 +104,7 @@ fun AddPlayersScreenUpdated(
     }
     BackHandler {
         onBackClick.invoke()
-        vm.onEvent(TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen)
+       /* vm.onEvent(TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen)*/
     }
 
     fun updateItem(index: Int? = null, addIntent: Boolean) {
@@ -230,7 +230,7 @@ fun AddPlayersScreenUpdated(
                 secondText = stringResource(id = R.string.finish),
                 onBackClick = {
                     onBackClick.invoke()
-                    vm.onEvent(TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen)
+                /*    vm.onEvent(TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen)*/
                 },
                 onNextClick = {
                     if (!state.isLoading) {

@@ -46,15 +46,15 @@ class ProfileViewModel @Inject constructor(
     val channel = _channel.receiveAsFlow()
     val waistSize = arrayListOf<String>()
     val size = arrayListOf(
-        "YouthXS",
-        "YouthS",
-        "YouthM",
-        "YouthL",
-        "YouthXL",
-        "AdultS",
-        "AdultM",
-        "AdultL",
-        "AdultXL"
+        "Youth,XS",
+        "Youth,S",
+        "Youth,M",
+        "Youth,L",
+        "Youth,XL",
+        "Adult,S",
+        "Adult,M",
+        "Adult,L",
+        "Adult,XL"
     )
 
 

@@ -6,6 +6,8 @@ import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.allballapp.android.R
@@ -259,7 +261,8 @@ class SetupTeamViewModelUpdated @Inject constructor(
                     _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList
                         .apply {
                             this[event.index].role = event.role
-                        })
+                        }.toMutableStateList()
+                    )
 
             }
 
@@ -424,10 +427,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
     private fun resetMemberValues() {
         _teamSetupUiState.value =
             _teamSetupUiState.value.copy(
-                inviteList = mutableStateListOf()
-                /*inviteMemberCount = 3,
-                inviteMemberName = arrayListOf("", "", ""),
-                inviteMemberEmail = arrayListOf("", "", "")*/
+                inviteList = mutableStateListOf(),
             )
     }
 
