@@ -66,9 +66,9 @@ class EventViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 eventResponse.value.let { response ->
-                    if (response.status && (response.data.upcommingEvents.isNotEmpty())
-                        || (response.data.upcommingEvents.isNotEmpty())
-                        || (response.data.publishedGames.isNotEmpty())
+                    if (response.status && (response.data.upcommingEvents.isNotEmpty()
+                                || response.data.pastEvents.isNotEmpty()
+                                || response.data.publishedGames.isNotEmpty())
                     ) {
                         val upcomingAndGameData =
                             response.data.upcommingEvents + response.data.publishedGames

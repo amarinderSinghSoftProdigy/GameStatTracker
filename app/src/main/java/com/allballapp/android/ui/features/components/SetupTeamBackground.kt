@@ -185,7 +185,7 @@ fun CoachFlowBackground(
                                     R.drawable.ic_settings
                                 ) {
                                     showOptions.value = false
-                                    //click(Options.SWAP_PROFILES)
+                                    click(Options.SETTINGS)
                                 }
                                 Divider(thickness = dimensionResource(id = R.dimen.divider))
                                 OptionItem(

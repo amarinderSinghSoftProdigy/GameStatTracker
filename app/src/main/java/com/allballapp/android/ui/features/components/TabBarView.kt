@@ -197,8 +197,10 @@ enum class SizeList(val stringId: String, val key: String) {
     AdultXL("adult_xl", "AdultXL")
 }
 
-enum class EventType(val key: String) {
-    GAME("game")
+enum class Environment(val key: String, val value: String) {
+    DEVELOP("env_develop", AppConstants.ENV_DEVELOP),
+    QA("env_qa", AppConstants.ENV_QA),
+    PROD("env_prod", AppConstants.ENV_PROD),
 }
 
 @Composable

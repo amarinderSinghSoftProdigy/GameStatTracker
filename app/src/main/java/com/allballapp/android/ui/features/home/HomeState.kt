@@ -6,6 +6,7 @@ import com.allballapp.android.data.response.SwapUser
 import com.allballapp.android.data.response.User
 import com.allballapp.android.data.response.homepage.HomePageCoachModel
 import com.allballapp.android.ui.features.components.BottomNavKey
+import com.allballapp.android.ui.features.components.Environment
 import com.allballapp.android.ui.features.components.TopBar
 import com.allballapp.android.ui.features.components.TopBarData
 
@@ -34,4 +35,10 @@ data class HomeState(
     val unReadMessageCount: Int = 0,
     val unreadUsersGroupsIds: List<String> = arrayListOf(),
     val showNoInternetDialog: Boolean = false,
-    )
+    val evnList: List<Environment> = mutableListOf(
+        Environment.DEVELOP,
+        Environment.QA,
+        Environment.PROD
+    ),
+    val selectedEnv: String = Environment.DEVELOP.value
+)

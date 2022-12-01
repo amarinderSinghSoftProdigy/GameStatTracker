@@ -54,6 +54,11 @@ fun validTeamName(name: String): Boolean {
     val regex = "^[A-Za-z0-9@$ ]*$"
     return name.matches(regex = regex.toRegex())
 }
+
+fun validPoints(name: String): Boolean {
+    val regex = "^[A-Za-z0-9@$ ]*$"
+    return name.matches(regex = regex.toRegex())
+}
 fun validEventName(name: String): Boolean {
     val regex = "^[A-Za-z0-9@$ ]*$"
     return name.matches(regex = regex.toRegex())

@@ -26,6 +26,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.FragmentActivity
@@ -55,6 +56,7 @@ import com.allballapp.android.ui.features.home.events.team.team_tabs.EventTeamTa
 import com.allballapp.android.ui.features.home.events.venues.openVenue.OpenVenueTopTabs
 import com.allballapp.android.ui.features.home.home_screen.HomeScreen
 import com.allballapp.android.ui.features.home.home_screen.HomeScreenEvent
+import com.allballapp.android.ui.features.home.home_screen.SettingsScreen
 import com.allballapp.android.ui.features.home.invitation.InvitationScreen
 import com.allballapp.android.ui.features.home.manage_team.MainManageTeamScreen
 import com.allballapp.android.ui.features.home.teams.TeamUIEvent
@@ -448,6 +450,9 @@ fun NavControllerComposable(
             homeViewModel.setTopAppBar(false)
             HomeScreen(
                 role,
+                onSettingClick = {
+                    navController.navigate(Route.SETTINGS_SCREEN)
+                },
                 onOpportunityClick = {
                     navController.navigate(Route.OPPORTUNITIES_SCREEN + "/" + it)
                 },
@@ -1388,7 +1393,11 @@ fun NavControllerComposable(
                 })
         }
 
-        composable(route = Route.ROASTER_PROFILE_VIEW) {
+        composable(route = Route.ROASTER_PROFILE_VIEW,
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+        ) {
             homeViewModel.setTopBar(
                 TopBarData(
                     label = name,
@@ -1398,6 +1407,25 @@ fun NavControllerComposable(
 
             RoasterProfileDetails(vm = profileViewModel, userId = userid)
 
+        }
+
+        composable(route = Route.SETTINGS_SCREEN,
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+        ) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = stringResource(id = R.string.change_env),
+                    topBar = TopBar.SINGLE_LABEL_BACK,
+                )
+            )
+            val context = LocalContext.current
+            SettingsScreen(type = state.selectedEnv, vm = homeViewModel) {
+                AppConstants.ENV = it
+                homeViewModel.clearToken()
+                moveToLogin(activity = context as HomeActivity)
+            }
         }
 
     }

@@ -145,6 +145,9 @@ class HomeViewModel @Inject constructor(
 
     fun onEvent(event: HomeScreenEvent) {
         when (event) {
+            is HomeScreenEvent.OnEnvUpdate -> {
+                _state.value = _state.value.copy(selectedEnv = event.env)
+            }
             is HomeScreenEvent.OnSwapClick -> {
                 viewModelScope.launch {
                     getSwapProfiles(event.check)

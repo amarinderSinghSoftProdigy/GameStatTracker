@@ -61,6 +61,7 @@ fun HomeScreen(
     onCreateTeamClick: (Team?) -> Unit,
     onTeamNameClick: (Boolean) -> Unit,
     onInviteClick: () -> Unit,
+    onSettingClick: () -> Unit,
     onOpportunityClick: (String) -> Unit,
     onLeagueClick: (String) -> Unit,
     onEventsClick: () -> Unit,
@@ -170,6 +171,9 @@ fun HomeScreen(
                 }
                 Options.INVITE -> {
                     onInviteClick()
+                }
+                Options.SETTINGS -> {
+                    onSettingClick()
                 }
                 else -> {
 

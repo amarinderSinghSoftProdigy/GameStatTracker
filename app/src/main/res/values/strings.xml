@@ -562,4 +562,12 @@
     <string name="edit">Edit</string>
     <string name="please_select_everyone_coming">Please select everyone the is coming:</string>
     <string name="please_select_everyone_cannot_makeit">Please select everyone who can\'t make it:</string>
+
+    <!--Environments-->
+    <string name="env_develop">Develop</string>
+    <string name="env_qa">QA</string>
+    <string name="env_prod">Production</string>
+    <string name="change_env">Select Environment</string>
+    <string name="env_change_message">Are you sure you want to change the Environment and Log-out?</string>
+
 </resources>
