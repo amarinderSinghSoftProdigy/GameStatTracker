@@ -41,10 +41,12 @@ fun DocumentTab(vm: ProfileViewModel) {
     val context = LocalContext.current
     val state = vm.state.value
     val dataStoreManager = DataStoreManager(LocalContext.current)
-    val role = dataStoreManager.getRole.collectAsState(initial = "")
+//    val role = dataStoreManager.getRole.collectAsState(initial = "")
+    val isOrganization = dataStoreManager.getOrganisation.collectAsState(initial = false).value
 
     remember {
-        if (role.value != UserType.REFEREE.key)
+//        if (role.value != UserType./**/REFEREE.key)
+        if (!isOrganization)
             vm.onEvent(ProfileEvent.GetDocumentTypes(state.selectedTeamId))
     }
     val launcher =

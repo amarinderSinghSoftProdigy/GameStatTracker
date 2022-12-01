@@ -107,7 +107,7 @@ class MainActivity : ComponentActivity() {
                                 TabBar(color = MaterialTheme.appColors.material.primaryVariant) {
                                     CommonTabView(
                                         topBarData = state.topBar,
-                                        userRole = "",
+//                                        userRole = "",
                                         backClick = {
                                             mainViewModel.onEvent(MainEvent.OnShowTopBar(showAppBar = false))
                                             navController.popBackStack()

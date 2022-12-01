@@ -1,6 +1,7 @@
 package com.allballapp.android.data.datastore
 
 import android.content.Context
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -38,6 +39,17 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
 
     val getRole: Flow<String> = settingsDataStore.data.map { preferences ->
         preferences[ROLE] ?: ""
+    }
+
+    suspend fun isOrganisation(organization: Boolean) {
+        UserStorage.isOrganization = organization
+        settingsDataStore.edit { settings ->
+            settings[ORGANIZATION] = organization
+        }
+    }
+
+    val getOrganisation: Flow<Boolean> = settingsDataStore.data.map { preferences ->
+        preferences[ORGANIZATION] ?: false
     }
 
     suspend fun setAllBallId(tap: String) {
@@ -136,5 +148,6 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
         val ID = stringPreferencesKey("ID")
         val FCM = stringPreferencesKey("FCM")
         val TEAM_NAME = stringPreferencesKey("TEAM_NAME")
+        val ORGANIZATION = booleanPreferencesKey("ORGANIZATION")
     }
 }

@@ -17,7 +17,6 @@ import com.allballapp.android.data.response.*
 import com.allballapp.android.domain.repository.IChatRepository
 import com.allballapp.android.domain.repository.IImageUploadRepo
 import com.allballapp.android.domain.repository.IUserRepository
-import com.allballapp.android.ui.features.components.UserType
 import com.allballapp.android.ui.features.components.leaveMultipleGroups
 import com.allballapp.android.ui.utils.CommonUtils
 import com.allballapp.android.ui.utils.UiText
@@ -63,8 +62,13 @@ class ProfileViewModel @Inject constructor(
             waistSize.add(i.toString())
         }
         viewModelScope.launch {
-            dataStoreManager.getRole.collect {
+           /* dataStoreManager.getRole.collect {
                 if (it == UserType.REFEREE.key) {
+                    getPayData()
+                }
+            }*/
+            dataStoreManager.getOrganisation.collect {
+                if (it) {
                     getPayData()
                 }
             }
@@ -699,10 +703,11 @@ class ProfileViewModel @Inject constructor(
 
         _state.value = _state.value.copy(isLoading = true)
 
-        val request = if (UserStorage.role.equals(
+/*        val request = if (UserStorage.role.equals(
                 UserType.REFEREE.key, ignoreCase = true
             )
-        ) {
+        ) */
+        val request = if (UserStorage.isOrganization) {
             generateRefereeUpdateRequest()
         } else {
             generateUpdateRequest()

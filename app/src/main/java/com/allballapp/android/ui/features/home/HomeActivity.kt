@@ -130,7 +130,9 @@ class HomeActivity : FragmentActivity(), CustomCometListener {
                 dataStoreManager.getColor.collectAsState(initial = AppConstants.DEFAULT_COLOR)
             val teamId = dataStoreManager.getId.collectAsState(initial = "")
             val teamName = dataStoreManager.getTeamName.collectAsState(initial = "")
-            val role = dataStoreManager.getRole.collectAsState(initial = "")
+//            val role = dataStoreManager.getRole.collectAsState(initial = "")
+            val isOrganization = dataStoreManager.getOrganisation.collectAsState(initial = false)
+            UserStorage.isOrganization = isOrganization.value
             UserStorage.teamId = teamId.value
             UserStorage.teamName = teamName.value
             AppConstants.SELECTED_COLOR =
@@ -158,7 +160,7 @@ class HomeActivity : FragmentActivity(), CustomCometListener {
                                 CommonTabView(
                                     topBarData = state.topBar,
                                     selectedTeamCreatedBy = teamViewModel.teamUiState.value.createdBy,
-                                    userRole = role.value,
+//                                    userRole = role.value,
                                     backClick = {
                                         if (state.topBar.topBar == TopBar.MY_EVENT) {
                                             homeViewModel.setDialog(true)
@@ -210,7 +212,8 @@ class HomeActivity : FragmentActivity(), CustomCometListener {
                                 signUpViewModel,
                                 navController = navController,
                                 showDialog = state.showDialog,
-                                role = role.value,
+//                                role = role.value,
+                                isOrganization = isOrganization.value,
                                 cometChat = cometChat,
                                 setupTeamViewModelUpdated = setupTeamViewModelUpdated
                                     ?: hiltViewModel()
@@ -401,7 +404,8 @@ fun NavControllerComposable(
     signUpViewModel: SignUpViewModel,
     showDialog: Boolean = false,
     navController: NavHostController = rememberAnimatedNavController(),
-    role: String = "",
+//    role: String = "",
+    isOrganization: Boolean = false,
     cometChat: CometChatUI,
     setupTeamViewModelUpdated: SetupTeamViewModelUpdated
 ) {
@@ -441,7 +445,7 @@ fun NavControllerComposable(
             homeViewModel.setBottomNav(BottomNavKey.HOME)
             homeViewModel.setTopAppBar(false)
             HomeScreen(
-                role,
+//                isOrganization,
                 onOpportunityClick = {
                     navController.navigate(Route.OPPORTUNITIES_SCREEN + "/" + it)
                 },
@@ -603,7 +607,8 @@ fun NavControllerComposable(
                     topBar = TopBar.EDIT_PROFILE,
                 )
             )
-            if (UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
+//            if (UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
+            if (isOrganization) {
                 RefereeEditScreen(
                     profileViewModel,
                     onBackClick = { navController.popBackStack() },
@@ -802,7 +807,8 @@ fun NavControllerComposable(
                 )
             )
 
-            if (role == UserType.REFEREE.key) {
+//            if (role == UserType.REFEREE.key) {
+            if (isOrganization) {
                 EventRefereeRegistrationScreen(vm = eventViewModel) {
                     navController.navigate(Route.EVENT_REGISTRATION_SUCCESS)
                 }
@@ -878,11 +884,12 @@ fun NavControllerComposable(
                     topBar = TopBar.FILTER_EVENT,
                 )
             )
-            /* if (role.value == UserType.REFEREE.key)
+//             if (role.value == UserType.REFEREE.key)
+             if (isOrganization)
                  RefereeFiltersScreen(eventViewModel) {
                      navController.popBackStack()
                  }
-             else*/
+             else
             FilterScreen(eventViewModel) {
                 navController.popBackStack()
             }

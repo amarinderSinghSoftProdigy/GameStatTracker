@@ -96,7 +96,7 @@ fun TeamSetupScreenUpdated(
     val homeState = homeVm.state.value
     val inviteState = inviteVm.invitationState.value
     remember {
-        inviteVm.onEvent(InvitationEvent.GetRoles)
+        inviteVm.onEvent(InvitationEvent.GetRoles())
     }
     val playerName = rememberSaveable {
         mutableStateOf("")
