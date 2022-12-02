@@ -21,14 +21,14 @@ interface IEventsRepository {
         sort: String = ""
     ): ResultWrapper<BaseResponse<EventsResponse>>
 
-    suspend fun acceptEventInvite(eventId: String,eventType: String): ResultWrapper<BaseResponse<Any>>
+    suspend fun acceptEventInvite(eventId: String,eventType: String,userId:List<String>): ResultWrapper<BaseResponse<Any>>
     suspend fun getEventDetails(eventId: String,eventType: String): ResultWrapper<BaseResponse<EventDetails>>
     suspend fun getGameDetails(gameId: String,eventType: String): ResultWrapper<BaseResponse<GameDetails>>
     suspend fun addPrePostNote(
         eventId: String, note: String, noteType: NoteType,
     ): ResultWrapper<BaseResponse<Any>>
 
-    suspend fun rejectEventInvite(eventId: String, reason: String,eventType: String): ResultWrapper<BaseResponse<Any>>
+    suspend fun rejectEventInvite(eventId: String, reason: String,eventType: String,userId:List<String>): ResultWrapper<BaseResponse<Any>>
     suspend fun getFilters(): ResultWrapper<BaseResponse<FilterResponse>>
     suspend fun getEventOpportunities(type:String,teamId:String): ResultWrapper<BaseResponse<List<OpportunitiesItem>>>
     suspend fun getEventOpportunityDetails(id: String): ResultWrapper<BaseResponse<OpportunitiesDetail>>

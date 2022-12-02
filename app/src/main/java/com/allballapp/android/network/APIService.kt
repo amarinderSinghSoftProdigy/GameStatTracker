@@ -182,10 +182,10 @@ open interface APIService {
     suspend fun createNewEvent(@Body createEventReq: CreateEventReq): BaseResponse<Any>
 
     @PUT(ApiConstants.ACCEPT_COACH_EVENT)
-    suspend fun acceptEventInvite(@Body request: RequestBody): BaseResponse<Any>
+    suspend fun acceptEventInvite(@Body request: AcceptDeclineRequest): BaseResponse<Any>
 
     @PUT(ApiConstants.DECLINE_COACH_EVENT)
-    suspend fun rejectEventInvite(@Body request: RequestBody): BaseResponse<Any>
+    suspend fun rejectEventInvite(@Body request: AcceptDeclineRequest): BaseResponse<Any>
 
     @GET(ApiConstants.GET_MY_LEAGUE)
     suspend fun getMyLeagues(

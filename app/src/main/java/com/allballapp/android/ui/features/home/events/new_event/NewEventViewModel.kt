@@ -5,13 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.allballapp.android.common.ResultWrapper
-import com.allballapp.android.ui.utils.UiText
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.request.CreateEventReq
 import com.allballapp.android.data.request.Location
 import com.allballapp.android.domain.repository.IEventsRepository
-import com.allballapp.android.ui.features.home.events.EvEvents
-import com.allballapp.android.ui.features.home.events.EventChannel
+import com.allballapp.android.ui.utils.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -29,10 +27,8 @@ class NewEventViewModel @Inject constructor(val eventsRepository: IEventsReposit
 
     fun onEvent(event: NewEvEvent) {
         when (event) {
-
             is NewEvEvent.OnEventNameChange -> {
                 _state.value = _state.value.copy(eventName = event.eventName)
-
             }
 
             is NewEvEvent.OnEventTypeChange -> {
@@ -46,17 +42,14 @@ class NewEventViewModel @Inject constructor(val eventsRepository: IEventsReposit
             is NewEvEvent.OnArrivalTimeChanged -> {
                 _state.value =
                     _state.value.copy(selectedArrivalTime = event.time)
-
             }
 
             is NewEvEvent.OnStartTimeChanged -> {
                 _state.value = _state.value.copy(selectedStartTime = event.time)
-
             }
 
             is NewEvEvent.OnEndTimeChanged -> {
                 _state.value = _state.value.copy(selectedEndTime = event.time)
-
             }
 
             is NewEvEvent.OnLocationVenueChange -> {
@@ -78,10 +71,12 @@ class NewEventViewModel @Inject constructor(val eventsRepository: IEventsReposit
                     createEvent()
                 }
             }
+
             is NewEvEvent.OnNotificationChange -> {
                 _state.value =
                     _state.value.copy(showNotification = event.showNotification)
             }
+
             is NewEvEvent.ShowToast -> {
                 viewModelScope.launch {
                     _channel.send(
@@ -93,6 +88,7 @@ class NewEventViewModel @Inject constructor(val eventsRepository: IEventsReposit
                     )
                 }
             }
+
             is NewEvEvent.OnDateSaved -> {
                 _state.value = _state.value.copy(savedDate = event.date)
             }

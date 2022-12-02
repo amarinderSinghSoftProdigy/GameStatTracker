@@ -6,8 +6,6 @@ import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.allballapp.android.R
@@ -255,14 +253,43 @@ class SetupTeamViewModelUpdated @Inject constructor(
                         .apply {
                             this[event.index].countryCode = event.code
                         })
+                /* To achieve recomposition only*/
+
+                _teamSetupUiState.value =
+                    _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList
+                        .apply {
+                            add(InviteObject())
+                        })
+
+                event.index.let {
+                    _teamSetupUiState.value =
+                        _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList
+                            .apply {
+                                removeLast()
+                            })
+                }
             }
             is TeamSetupUIEventUpdated.OnRoleValueChange -> {
                 _teamSetupUiState.value =
                     _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList
                         .apply {
                             this[event.index].role = event.role
-                        }.toMutableStateList()
-                    )
+                        })
+                /* To achieve recomposition only*/
+
+                _teamSetupUiState.value =
+                    _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList
+                        .apply {
+                            add(InviteObject())
+                        })
+
+                event.index.let {
+                    _teamSetupUiState.value =
+                        _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList
+                            .apply {
+                                removeLast()
+                            })
+                }
 
             }
 
@@ -427,7 +454,10 @@ class SetupTeamViewModelUpdated @Inject constructor(
     private fun resetMemberValues() {
         _teamSetupUiState.value =
             _teamSetupUiState.value.copy(
-                inviteList = mutableStateListOf(),
+                inviteList = mutableStateListOf()
+                /*inviteMemberCount = 3,
+                inviteMemberName = arrayListOf("", "", ""),
+                inviteMemberEmail = arrayListOf("", "", "")*/
             )
     }
 

@@ -548,7 +548,27 @@
     <string name="search_users">Search users</string>
     <string name="select_profile_title">Select user\'s profile below. If they don\'t yet have a profile, please add it now.</string>
     <string name="enter_valid_time">Enter valid Time</string>
+    <string name="youth_xs">YouthXS</string>
+    <string name="youth_s">YouthS</string>
+    <string name="youth_m">YouthM</string>
+    <string name="youth_l">YouthL</string>
+    <string name="youth_xl">YouthXL</string>
+    <string name="adult_s">AdultS</string>
+    <string name="adult_m">AdultM</string>
+    <string name="adult_l">AdultL</string>
+    <string name="adult_xl">AdultXL</string>
     <string name="payment_method">Payment Method</string>
     <string name="loren_ipsum">Loren ipsum</string>
+    <string name="edit">Edit</string>
+    <string name="please_select_everyone_coming">Please select everyone the is coming:</string>
+    <string name="please_select_everyone_cannot_makeit">Please select everyone who can\'t make it:</string>
+
+    <!--Environments-->
+    <string name="env_develop">Develop</string>
+    <string name="env_qa">QA</string>
+    <string name="env_prod">Production</string>
+    <string name="change_env">Select Environment</string>
+    <string name="env_change_message">Are you sure you want to change the Environment and Log-out?</string>
+
     <string name="please_select_payment_method">Please select payment method.</string>
 </resources>

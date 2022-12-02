@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.allballapp.android.R
+import com.allballapp.android.common.validTeamName
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.home.events.EvEvents
@@ -200,7 +201,7 @@ fun EventRegistraionDetails(
                     showPaymentDialog.value = true
                 }
                 AppOutlineTextField(
-                    isError = showError.value,
+                    isError = showError.value&&!validTeamName(state.registerRequest.payment) && state.registerRequest.payment.isNotEmpty(),
                     /* leadingIcon = {
                          *//*AppText(
                             text = stringResource(id = R.string.dollar),

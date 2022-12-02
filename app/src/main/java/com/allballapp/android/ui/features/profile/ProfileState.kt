@@ -1,7 +1,5 @@
 package com.allballapp.android.ui.features.profile
 
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.allballapp.android.data.response.*
 
 data class ProfileState(
@@ -22,7 +20,7 @@ data class ProfileState(
     val favAllTimePlayer: String = "",
     val userDocTypes: List<UserDocType> = mutableListOf(),
     val userUploadedDocs: List<UserDocType> = mutableListOf(),
-    val positionPlayed: SnapshotStateList<CheckBoxData> = mutableStateListOf(
+    val positionPlayed: List<CheckBoxData> = mutableListOf(
         CheckBoxData("PG"),
         CheckBoxData("SG"),
         CheckBoxData("SF"),
