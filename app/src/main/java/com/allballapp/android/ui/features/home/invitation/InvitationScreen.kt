@@ -347,7 +347,7 @@ fun InvitationScreen(
             else state.roles.filter { member -> member.key != UserType.PLAYER.key },
             onRoleValueChange = { index, role ->
                 vmSetupTeam.onEvent(
-                    TeamSetupUIEventUpdated.OnRoleValueChange(
+                    TeamSetupUIEventUpdated.OnUpdatedRoleValueChange(
                         index = index,
                         role = role
                     )
@@ -470,7 +470,8 @@ fun InvitationItem(
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
 
-                Row(modifier = Modifier.fillMaxWidth(),
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -480,8 +481,8 @@ fun InvitationItem(
                         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                         fontWeight = FontWeight.W500,
                     )
-                    
-                   /* Space(dp = dimensionResource(id = R.dimen.size_5dp))*/
+
+                    /* Space(dp = dimensionResource(id = R.dimen.size_5dp))*/
 
                     Text(
                         text = apiToUIDateFormat(invitation.createdAt),

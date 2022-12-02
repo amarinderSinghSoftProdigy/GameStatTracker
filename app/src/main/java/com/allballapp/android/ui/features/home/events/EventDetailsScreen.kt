@@ -183,7 +183,6 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
                     color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                     style = MaterialTheme.typography.h5,
                     modifier = Modifier.weight(1.8f),
-                    textAlign = TextAlign.Center
 
                 )
                 Text(
@@ -191,7 +190,6 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
                     color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                     style = MaterialTheme.typography.h5,
                     modifier = Modifier.weight(1.5f),
-                    textAlign = TextAlign.Center
 
                 )
                 var startTime = state.event.startTime
@@ -211,7 +209,6 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
                     color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                     style = MaterialTheme.typography.h5,
                     modifier = Modifier.weight(1.8f),
-                    textAlign = TextAlign.Center
                 )
             }
             LocationBlock(

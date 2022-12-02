@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.allballapp.android.R
 import com.allballapp.android.common.apiToUIDateFormat2
+import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.data.response.TeamDetails
 import com.allballapp.android.ui.features.components.*
@@ -134,7 +135,7 @@ fun ProfileTabScreen(vm: ProfileViewModel, id: String) {
                             result = state.user.phone.substring(
                                 0,
                                 state.user.phone.length - 10
-                            ) + " " + state.user.phone.substring(state.user.phone.length-10)
+                            ) + " " + state.user.phone.substring(state.user.phone.length - 10)
                         }
 
                         DetailItem(stringResource(id = R.string.number), result)
@@ -143,45 +144,78 @@ fun ProfileTabScreen(vm: ProfileViewModel, id: String) {
             }
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+            val label =
+                if (UserStorage.role.equals(UserType.PLAYER.key, ignoreCase = true)) {
+                    stringResource(id = R.string.guardians)
+                } else {
+                    stringResource(id = R.string.players)
+                }
+            val list = if (UserStorage.role.equals(
+                    UserType.PLAYER.key,
+                    ignoreCase = true
+                ) && state.user.parentDetails.isNotEmpty()
+            ) {
+                state.user.parentDetails.filter { it._id != UserStorage.userId }
+            } else if (!UserStorage.role.equals(
+                    UserType.PLAYER.key,
+                    ignoreCase = true
+                ) && state.user.kidDetails.isNotEmpty()
+            ) {
+                state.user.kidDetails.filter { it._id != UserStorage.userId }
+            } else {
+                emptyList()
+            }
 
-            if (state.user.parentDetails.isNotEmpty())
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
-                        .background(color = Color.White),
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
+                    .background(color = Color.White),
+            ) {
+                Column(
+                    modifier = Modifier.padding(dimensionResource(id = R.dimen.size_16dp)),
                 ) {
-                    Column(
-                        modifier = Modifier.padding(dimensionResource(id = R.dimen.size_16dp)),
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         AppText(
-                            text = stringResource(id = R.string.players),
+                            text = label,
                             style = MaterialTheme.typography.h5,
                             color = ColorBWBlack,
                             fontWeight = FontWeight.W500
                         )
-                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
-                        FlowRow {
-                            state.user.parentDetails.forEachIndexed { index, item ->
-                                if (item != null) {
-                                    ParentItem(
-                                        width,
-                                        item.parentType,
-                                        "${item.firstName} ${item.lastName}",
-                                        item.profileImage
-                                    ) {
-                                        vm.onEvent(
-                                            ProfileEvent.OnParentDialogChange(true)
-                                        )
-                                        vm.onEvent(
-                                            ProfileEvent.OnParentClick(item)
-                                        )
-                                    }
+                        AppText(
+                            text = "+" + stringResource(id = R.string.invite),
+                            style = MaterialTheme.typography.h4,
+                            color = MaterialTheme.colors.primaryVariant,
+                            fontWeight = FontWeight.W500
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+                    FlowRow {
+                        list.forEachIndexed { index, item ->
+                            if (item != null) {
+                                ParentItem(
+                                    width,
+                                    item.parentType,
+                                    "${item.firstName} ${item.lastName}",
+                                    item.profileImage
+                                ) {
+                                    vm.onEvent(
+                                        ProfileEvent.OnParentDialogChange(true)
+                                    )
+                                    vm.onEvent(
+                                        ProfileEvent.OnParentClick(item)
+                                    )
                                 }
                             }
                         }
                     }
                 }
+            }
 
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
             if (state.user.birthdate != null)
@@ -297,7 +331,12 @@ fun ProfileTabScreen(vm: ProfileViewModel, id: String) {
                     ProfileEvent.OnParentDialogChange(false)
                 )
             },
-            parentDetails = state.selectedParentDetails
+            parentDetails = state.selectedParentDetails,
+            label = if (UserStorage.role.equals(UserType.PLAYER.key, ignoreCase = true)) {
+                stringResource(id = R.string.guardian)
+            } else {
+                stringResource(id = R.string.players)
+            }
         )
     }
 }

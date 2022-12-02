@@ -1125,9 +1125,6 @@ fun NavControllerComposable(
                 )
                 setupTeamViewModelUpdated.onEvent(TeamSetupUIEventUpdated.Clear)
             }
-            remember {
-                setupTeamViewModelUpdated.onEvent(TeamSetupUIEventUpdated.Clear)
-            }
             TeamSetupScreenUpdated(
                 homeVm = homeViewModel,
                 venue = venue,

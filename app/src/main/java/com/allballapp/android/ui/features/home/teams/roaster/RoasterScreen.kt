@@ -164,17 +164,18 @@ fun ParentItem(
                 content = {
                     items(listing) {
                         CoachListItem(
-                            modifier = Modifier.padding(
+                          /*  modifier = Modifier.padding(
                                 bottom = dimensionResource(
                                     id = R.dimen.size_16dp
                                 )
-                            ),
+                            ),*/
                             it,
                         ) {
                             onProfileDetailScreen(it.userId, it.firstName)
                         }
                     }
                 })
+            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
             DividerCommon()
         }
 }
@@ -206,12 +207,12 @@ fun ShowHeading(id: Int, count: String) {
 
 @Composable
 fun CoachListItem(
-    modifier: Modifier = Modifier,
+    /*modifier: Modifier = Modifier,*/
     data: AllUser,
     onClick: () -> Unit
 ) {
     Column(
-        modifier = modifier.clickable {
+        modifier = Modifier.clickable {
             onClick()
         },
         verticalArrangement = Arrangement.Center,
@@ -268,12 +269,15 @@ fun CoachListItem(
                 InvitationStatus.DECLINED.status,
                 true
             )
-        )
+        ){
             AppText(
                 text = data.status,
                 color = MaterialTheme.appColors.textField.label,
                 style = MaterialTheme.typography.h6
             )
+        }
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+
     }
 }
 

@@ -51,6 +51,9 @@ fun EventRegistraionDetails(
     val state = vm.eventState.value
     val teamState = teamVm.teamUiState.value
     val maxCash = 10
+    val paymentOption = remember {
+        mutableStateOf(false)
+    }
     remember {
         vm.onEvent(EvEvents.GetDivisions(state.selectedEventId))
     }
@@ -201,7 +204,7 @@ fun EventRegistraionDetails(
                     showPaymentDialog.value = true
                 }
                 AppOutlineTextField(
-                    isError = showError.value&&!validTeamName(state.registerRequest.payment) && state.registerRequest.payment.isNotEmpty(),
+                    isError = showError.value && !validTeamName(state.registerRequest.payment) && state.registerRequest.payment.isNotEmpty(),
                     /* leadingIcon = {
                          *//*AppText(
                             text = stringResource(id = R.string.dollar),
@@ -210,9 +213,10 @@ fun EventRegistraionDetails(
                     },*/
                     value = state.registerRequest.payment,
                     onValueChange = {
-                        if (state.registerRequest.paymentOption.isEmpty()) {
+                        if (state.registerRequest.paymentOption.isEmpty() && !paymentOption.value) {
                             vm.onEvent(EvEvents.ShowToast(context.getString(R.string.please_select_payment_method)))
-                        } else {
+                            paymentOption.value = true
+                        } else if (state.registerRequest.paymentOption.isNotEmpty()) {
                             if (it.isNotEmpty() || it != "0") {
                                 showError.value = false
                                 if (it.length <= maxCash) {
@@ -400,6 +404,10 @@ fun EventRegistraionDetails(
                 vm.onEvent(EvEvents.RegisterTeam(it))
                 teamVm.onEvent(TeamUIEvent.OnTeamIdSelected(it._id))
                 showDialog.value = false
+
+                if (state.team != it) {
+                    vm.onEvent(EvEvents.ClearRegisterData)
+                }
             }
         )
     }
@@ -410,11 +418,12 @@ fun EventRegistraionDetails(
             title = stringResource(id = R.string.select_player),
             onDismiss = {
                 showPlayerDialog.value = false
+                vm.onEvent(EvEvents.ClearPlayer)
             },
             onConfirmClick = {
                 vm.onEvent(EvEvents.RegisterPlayer(it))
                 showPlayerDialog.value = false
-            }
+            },
         )
     }
 
@@ -436,10 +445,14 @@ fun EventRegistraionDetails(
             title = stringResource(id = R.string.select_division),
             onDismiss = {
                 showDivisionDialog.value = false
+                vm.onEvent(EvEvents.ClearDivisionData)
             },
             onConfirmClick = {
                 vm.onEvent(EvEvents.RegisterDivision(it))
                 showDivisionDialog.value = false
+            },
+            onDivisionSelection = {
+                vm.onEvent(EvEvents.RegisterDivision(it))
             }
         )
     }
@@ -480,7 +493,7 @@ fun RegisterItem(
             style = MaterialTheme.typography.caption,
             color = ColorBWBlack,
             modifier = Modifier
-                .weight(1f)
+                .weight(0.8f)
         )
         Row(
             modifier = Modifier
@@ -497,8 +510,8 @@ fun RegisterItem(
                 textAlign = TextAlign.End,
                 style = if (!updated) MaterialTheme.typography.h5 else MaterialTheme.typography.h2,
                 color = if (!updated) MaterialTheme.appColors.textField.label else ColorBWBlack,
+                modifier = Modifier.padding(end = dimensionResource(id = R.dimen.size_12dp))
             )
-            Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_12dp)))
             if (showIcon)
                 Icon(
                     modifier = Modifier

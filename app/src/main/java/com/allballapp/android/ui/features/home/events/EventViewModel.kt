@@ -187,6 +187,27 @@ class EventViewModel @Inject constructor(
             is EvEvents.ClearRegister -> {
                 _state.value =
                     _state.value.copy(registerRequest = RegisterRequest())
+                _state.value = _state.value.copy(divisionData = DivisionData())
+
+            }
+            is EvEvents.ClearRegisterData -> {
+                _state.value = _state.value.copy(
+                    registerRequest = _state.value.registerRequest.copy(
+                        players = arrayListOf(),
+                        paymentOption = "",
+                        payment = "",
+                        division = "",
+                        termsAndCondition = false,
+                        privacy = false
+                    )
+                )
+            }
+            is EvEvents.ClearDivisionData -> {
+                _state.value = _state.value.copy(divisionData = DivisionData())
+            }
+            is EvEvents.ClearPlayer -> {
+                _state.value =
+                    _state.value.copy(registerRequest = _state.value.registerRequest.copy(players = arrayListOf()))
             }
             is EvEvents.RegisterPrivacy -> {
                 _state.value =

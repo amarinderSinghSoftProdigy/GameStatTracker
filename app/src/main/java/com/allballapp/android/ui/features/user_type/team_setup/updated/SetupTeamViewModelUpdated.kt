@@ -6,6 +6,8 @@ import android.net.Uri
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.allballapp.android.R
@@ -253,6 +255,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
                         .apply {
                             this[event.index].countryCode = event.code
                         })
+
                 /* To achieve recomposition only*/
 
                 _teamSetupUiState.value =
@@ -269,6 +272,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
                             })
                 }
             }
+
             is TeamSetupUIEventUpdated.OnRoleValueChange -> {
                 _teamSetupUiState.value =
                     _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList
@@ -290,8 +294,16 @@ class SetupTeamViewModelUpdated @Inject constructor(
                                 removeLast()
                             })
                 }
-
             }
+            is TeamSetupUIEventUpdated.OnUpdatedRoleValueChange -> {
+                _teamSetupUiState.value =
+                    _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList
+                        .apply {
+                            this[event.index].role = event.role
+                        }
+                    )
+            }
+
 
             is TeamSetupUIEventUpdated.OnInviteCountValueChange -> {
                 if (event.addIntent) {
@@ -313,6 +325,7 @@ class SetupTeamViewModelUpdated @Inject constructor(
 
             }
             is TeamSetupUIEventUpdated.AddInviteTeamMembers -> {
+
                 _teamSetupUiState.value =
                     _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList
                         .apply {
