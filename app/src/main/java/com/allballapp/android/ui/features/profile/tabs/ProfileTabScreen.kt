@@ -56,7 +56,7 @@ fun ProfileTabScreen(vm: ProfileViewModel, id: String) {
     val screenWidth = configuration.screenWidthDp.dp / 2
     val width = screenWidth.minus(dimensionResource(id = R.dimen.size_16dp).times(2))
     val dataStoreManager = DataStoreManager(LocalContext.current)
-    val role = dataStoreManager.getRole.collectAsState(initial = "")
+//    val role = dataStoreManager.getRole.collectAsState(initial = "")
 
     remember {
         vm.onEvent(ProfileEvent.ClearUserData)

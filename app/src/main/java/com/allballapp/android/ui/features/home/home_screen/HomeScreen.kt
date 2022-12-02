@@ -47,7 +47,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
-    role: String,
+//    role: String,
+//    isOrganization: Boolean,
     vm: HomeViewModel,
     teamVm: TeamViewModel,
     addProfileClick: () -> Unit,
@@ -189,7 +190,7 @@ fun HomeScreen(
             }, {
                 onInvitationCLick()
             })
-        } else if (role.isNotEmpty()) {
+        } else /*if (role.isNotEmpty())*/ {
             Box {
                 Column(
                     Modifier
@@ -476,13 +477,13 @@ fun HomeScreen(
     if (showDialog) {
         SelectTeamDialog(teams = teamVm.teamUiState.value.teams,
             onDismiss = { dismissDialog.invoke(false) },
-            onConfirmClick = { teamId, teamName ->
+            onConfirmClick = { teamId, teamName,isOrganization ->
                 if (UserStorage.teamId != teamId) {
                     if (teamId == teamState.allBallId) {
                         vm.showBottomAppBar(false)
                     }
                     onTeamSelectionConfirmed(teamState.selectedTeam)
-                    teamVm.onEvent(TeamUIEvent.OnConfirmTeamClick(teamId, teamName))
+                    teamVm.onEvent(TeamUIEvent.OnConfirmTeamClick(teamId, teamName,isOrganization))
                 }
             },
             onSelectionChange = onTeamSelectionChange,

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.allballapp.android.common.ResultWrapper
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.domain.repository.ITeamRepository
+import com.allballapp.android.ui.features.components.UserType
 import com.allballapp.android.ui.utils.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -48,6 +49,15 @@ class InvitationViewModel @Inject constructor(
                     teamId = event.invitation.team._id,
                     showDeclineDialog = false,
                 )
+
+                /* On click of accept button showing invitation specific role */
+                viewModelScope.launch {
+                    if (event.invitation.team.organizationAdded) {
+                        getUserRoles(UserType.REFEREE.key)
+                    } else {
+                        getUserRoles()
+                    }
+                }
             }
             is InvitationEvent.OnDeclineCLick -> {
                 invitationState.value = invitationState.value.copy(
@@ -153,7 +163,7 @@ class InvitationViewModel @Inject constructor(
 
             is InvitationEvent.GetRoles -> {
                 viewModelScope.launch {
-                    getUserRoles()
+                    getUserRoles(event.type)
                 }
             }
         }
@@ -192,7 +202,6 @@ class InvitationViewModel @Inject constructor(
                             invitationState.value.copy(
                                 invitations = response.data
                             )
-                        getUserRoles()
                     } else {
                         _invitationChannel.send(
                             InvitationChannel.ShowToast(
@@ -299,10 +308,10 @@ class InvitationViewModel @Inject constructor(
         }
     }
 
-    suspend fun getUserRoles() {
+    suspend fun getUserRoles(type: String = "") {
         invitationState.value = invitationState.value.copy(showLoading = true)
 
-        when (val userRoles = teamRepo.getUserRoles("")) {
+        when (val userRoles = teamRepo.getUserRoles(type)) {
             is ResultWrapper.GenericError -> {
                 invitationState.value = invitationState.value.copy(showLoading = false)
 
