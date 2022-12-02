@@ -6,7 +6,6 @@ import android.location.Geocoder
 import android.net.Uri
 import android.provider.ContactsContract
 import android.widget.Toast
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
@@ -432,6 +431,7 @@ fun TeamSetupScreenUpdated(
                     )
                 )
                 homeVm.onEvent(HomeScreenEvent.HideSwap(false))
+                showSwapDialog.value = false
             },
             showLoading = homeState.isDataLoading,
             onCreatePlayerClick = {
@@ -445,13 +445,13 @@ fun TeamSetupScreenUpdated(
         InvitationSuccessfullySentDialog(
             onDismiss = {
                 inviteVm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
-                vm.onEvent(TeamSetupUIEventUpdated.Clear)
+                //vm.onEvent(TeamSetupUIEventUpdated.Clear)
                 onBackClick()
             },
             onConfirmClick = {
                 inviteVm.onEvent(InvitationEvent.OnPlayerAddedSuccessDialog(false))
                 homeVm.onEvent(HomeScreenEvent.HideSwap(false))
-                vm.onEvent(TeamSetupUIEventUpdated.Clear)
+                //vm.onEvent(TeamSetupUIEventUpdated.Clear)
                 onNextClick(
                     inviteState.teamId.ifEmpty {
                         ""
@@ -1105,9 +1105,9 @@ fun TeamSetupScreenUpdated(
                 )
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
 
-                if (enable) {
-                    BackHandler {}
-                }
+                /* if (enable) {
+                     BackHandler {}
+                 }*/
             }
         }
     }

@@ -6,12 +6,17 @@ import com.allballapp.android.ui.theme.Yellow700
 import timber.log.Timber
 
 object AppConstants {
-    const val DATE_DAY_FORMAT: String="EEE, MMM DD"
+    const val ENV_DEVELOP: String = "https://api.allballapp.com/api/"
+    const val ENV_QA: String = "http://staging.allballapp.com/api/"
+    const val ENV_PROD: String = "http://qa.allballapp.com/api/"
+    var ENV: String = ""
+    const val DATE_DAY_FORMAT: String = "EEE, MMM DD"
     const val ENABLE_CHAT: Boolean = true
     const val TYPE_ACCEPT_INVITATION = "acceptInvitation"
     const val TYPE_CREATE_TEAM = "createTeam"
     val REQUEST_CONTACT_CODE: Int = 1122
     val REQUEST_CONTACT: Int = 1125
+    val REQUEST_GALLERY: Int = 1130
     val REQUEST_CAMERA_CODE: Int = 1123
     const val ROLE = "role"
     const val TEAM_LOGO: String = "teamLogo"
@@ -92,10 +97,12 @@ object Route {
     const val TEAM_TAB = "teamTab"
     const val WEB_VIEW = "webview"
     const val ROASTER_PROFILE_VIEW = "roasterProfileView"
+    const val SETTINGS_SCREEN = "settingsScreen"
 }
 
 object ApiConstants {
     const val BASE_URL = "http://baller-app.softprodigyphp.in"
+
     //Auth
     const val LOGIN = "v1/auth/login"
     const val SIGNUP = "v1/auth/register"
@@ -146,7 +153,8 @@ object ApiConstants {
     const val GET_VENUES = "v1/event/getMyLeague/venues"
     const val GET_ALL_TEAMS_BY_DIVISION_AND_LEAGUES = "v1/event/getMyLeague/allTeams/byDivisionId"
     const val GET_ALL_TEAMS_BY_LEAGUE_ID_All_DIVISIONS = "v1/event/getMyLeague/allTeams/byDivisions"
-    const val GET_ALL_TEAMS_STANDING_BY_LEAGUE_AND_DIVISION = "v1/event/getMyLeague/allTeamsStanding/byDivisionId"
+    const val GET_ALL_TEAMS_STANDING_BY_LEAGUE_AND_DIVISION =
+        "v1/event/getMyLeague/allTeamsStanding/byDivisionId"
     const val GET_VENUE_DETAILS_BY_ID = "v1/event/getMyLeague/venueById"
     const val GET_EVENT_SCHEDULE = "v1/event/getMyLeagueSchedule"
     const val EVENT_GET_DIVISIONS = "v1/division/getAllDivisions"
@@ -165,7 +173,7 @@ object ApiConstants {
     const val RESEND_OTP = "/resendOtp"
 
     const val GET_USER_DETAILS = "v1/auth/getUserProfile"
-     const val GET_USER_FULL_DETAILS = "v1/userDetails/"
+    const val GET_USER_FULL_DETAILS = "v1/userDetails/"
     const val UPDATE_USER_FULL_DETAILS = "v1/userDetails"
 
     const val LEAVE_TEAM = "v1/userDetails/leaveTeam"

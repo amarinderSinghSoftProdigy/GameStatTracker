@@ -8,12 +8,11 @@ import androidx.lifecycle.viewModelScope
 import com.allballapp.android.common.ApiConstants
 import com.allballapp.android.common.ResultWrapper
 import com.allballapp.android.common.ResultWrapper.GenericError
-import com.allballapp.android.ui.utils.UiText
-import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.data.request.LoginRequest
 import com.allballapp.android.data.response.UserInfo
 import com.allballapp.android.domain.repository.IUserRepository
+import com.allballapp.android.ui.utils.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -125,7 +124,6 @@ class LoginViewModel @Inject constructor(
 
     private fun setToken(token: String, role: String, email: String) {
         viewModelScope.launch {
-            UserStorage.token = token
             dataStore.saveToken(token)
             dataStore.setRole(role)
             dataStore.setEmail(email)

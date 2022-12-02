@@ -1,7 +1,6 @@
 package com.allballapp.android.ui.features.profile.tabs
 
 import android.widget.Toast
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -29,9 +28,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.allballapp.android.BuildConfig
+import com.allballapp.android.R
 import com.allballapp.android.common.apiToUIDateFormat2
-import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.data.response.TeamDetails
 import com.allballapp.android.ui.features.components.*
@@ -43,7 +41,6 @@ import com.allballapp.android.ui.theme.ColorBWGrayLight
 import com.allballapp.android.ui.theme.ColorMainPrimary
 import com.allballapp.android.ui.theme.appColors
 import com.google.accompanist.flowlayout.FlowRow
-import com.allballapp.android.R
 
 @Composable
 fun ProfileTabScreen(vm: ProfileViewModel, id: String) {
@@ -166,7 +163,6 @@ fun ProfileTabScreen(vm: ProfileViewModel, id: String) {
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
                         FlowRow {
                             state.user.parentDetails.forEachIndexed { index, item ->
-
                                 if (item != null) {
                                     ParentItem(
                                         width,

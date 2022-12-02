@@ -39,6 +39,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -49,7 +50,6 @@ import com.allballapp.android.ui.features.components.AppButton
 import com.allballapp.android.ui.features.components.AppOutlineTextField
 import com.allballapp.android.ui.features.components.AppText
 import com.allballapp.android.ui.features.components.CommonProgressBar
-import com.allballapp.android.ui.features.sign_up.SignUpUIEvent
 import com.allballapp.android.ui.theme.appColors
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
@@ -117,8 +117,13 @@ fun NewEventScreen(
                 style = MaterialTheme.typography.h6,
                 modifier = Modifier.padding(all = dimensionResource(id = R.dimen.size_16dp))
             )
+            val configuration = LocalConfiguration.current
+            val screenWidth = configuration.screenWidthDp.dp
+            val width = screenWidth.minus(dimensionResource(id = R.dimen.size_16dp).times(4))
+            val list =
+                listOf(EventTabItems.Practice, /*EventTabItems.Game,*/ EventTabItems.Activity)
             Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
-                EventTabs(pagerState = pagerState, onSelectionChange = {
+                EventTabs(pagerState = pagerState, width = width, list = list, onSelectionChange = {
                     vm.onEvent(NewEvEvent.OnEventTypeChange(it))
                 })
             }
@@ -153,12 +158,13 @@ fun NewEventScreen(
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun EventTabs(pagerState: PagerState, onSelectionChange: (String) -> Unit) {
-    val configuration = LocalConfiguration.current
-    val screenWidth = configuration.screenWidthDp.dp
-    val width = screenWidth.minus(dimensionResource(id = R.dimen.size_16dp).times(4))
-
-    val list = listOf(EventTabItems.Practice, /*EventTabItems.Game,*/ EventTabItems.Activity)
+fun EventTabs(
+    index: Int = 0,
+    pagerState: PagerState,
+    width: Dp,
+    list: List<EventTabItems>,
+    onSelectionChange: (String) -> Unit
+) {
     val scope = rememberCoroutineScope()
     TabRow(selectedTabIndex = pagerState.currentPage,
         backgroundColor = MaterialTheme.colors.primary,
@@ -166,7 +172,6 @@ fun EventTabs(pagerState: PagerState, onSelectionChange: (String) -> Unit) {
             .width(width)
             .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_6dp))),
         indicator = {}) {
-
         list.forEachIndexed { index, text ->
             val selected = pagerState.currentPage == index
             Tab(modifier = Modifier
@@ -187,12 +192,14 @@ fun EventTabs(pagerState: PagerState, onSelectionChange: (String) -> Unit) {
             })
         }
         onSelectionChange.invoke(list[pagerState.currentPage].stringId)
-
     }
 }
 
 enum class EventTabItems(val stringId: String) {
-    Practice(stringId = "practice"), Game(stringId = "game"), Activity(stringId = "activity")
+    Accept(stringId = "accept"), Decline(stringId = "decline"), Practice(stringId = "practice"), Game(
+        stringId = "game"
+    ),
+    Activity(stringId = "activity")
 }
 
 @SuppressLint("SimpleDateFormat")

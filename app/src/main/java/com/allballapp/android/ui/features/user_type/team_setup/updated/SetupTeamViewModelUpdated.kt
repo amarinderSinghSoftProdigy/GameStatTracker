@@ -253,6 +253,21 @@ class SetupTeamViewModelUpdated @Inject constructor(
                         .apply {
                             this[event.index].countryCode = event.code
                         })
+                /* To achieve recomposition only*/
+
+                _teamSetupUiState.value =
+                    _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList
+                        .apply {
+                            add(InviteObject())
+                        })
+
+                event.index.let {
+                    _teamSetupUiState.value =
+                        _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList
+                            .apply {
+                                removeLast()
+                            })
+                }
             }
             is TeamSetupUIEventUpdated.OnRoleValueChange -> {
                 _teamSetupUiState.value =
@@ -260,6 +275,21 @@ class SetupTeamViewModelUpdated @Inject constructor(
                         .apply {
                             this[event.index].role = event.role
                         })
+                /* To achieve recomposition only*/
+
+                _teamSetupUiState.value =
+                    _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList
+                        .apply {
+                            add(InviteObject())
+                        })
+
+                event.index.let {
+                    _teamSetupUiState.value =
+                        _teamSetupUiState.value.copy(inviteList = _teamSetupUiState.value.inviteList
+                            .apply {
+                                removeLast()
+                            })
+                }
 
             }
 

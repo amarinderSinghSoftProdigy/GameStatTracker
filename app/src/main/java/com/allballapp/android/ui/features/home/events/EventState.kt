@@ -12,7 +12,7 @@ import com.allballapp.android.ui.features.venue.VenueDetails
 data class EventState(
     val isLoading: Boolean = false,
     val upcomingAndGameData: List<Any> = arrayListOf(),
-    val currentEvents: ArrayList<Events> = arrayListOf(),
+    //val currentEvents: ArrayList<Events> = arrayListOf(),
     val pastEvents: ArrayList<Events> = arrayListOf(),
     val leagues: ArrayList<Leagues> = arrayListOf(),
     val oppotuntities: ArrayList<Leagues> = arrayListOf(),
@@ -20,6 +20,7 @@ data class EventState(
     val showDeclineDialog: Boolean = false,
     val showLoading: Boolean = false,
     val selectedMyEventId: String = "",
+    val status : String = "",
     val selectedMyEventType: String = "",
     val selectionTeam: String = "",
     val reasonTeam: String = "",
@@ -63,5 +64,8 @@ data class EventState(
     val scheduleResponse: List<ScheduleResponse> = mutableListOf(),
     val price: String? = null,
     val roles: List<UserRoles> = mutableListOf(),
-    val selectedRole:String = ""
+    val selectedRole: String = "",
+    val showAcceptDialog: Boolean = false,
+    val selectedUsers: List<SwapUser> = mutableListOf(),
+    val users: Boolean = false
 )

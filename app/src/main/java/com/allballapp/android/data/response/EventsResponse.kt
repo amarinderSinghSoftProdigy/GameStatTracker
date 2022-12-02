@@ -266,3 +266,10 @@ data class GameData(
     @SerializedName("name") val name: String = "",
     @SerializedName("logo") val logo: String = ""
 )
+
+data class AcceptDeclineRequest(
+    @SerializedName("eventId") val eventId: String = "",
+    @SerializedName("gameType") val gameType: String = "",
+    @SerializedName("userId") val userId: List<String> = mutableListOf(),
+    @SerializedName("reason") val reason: String? = null
+)

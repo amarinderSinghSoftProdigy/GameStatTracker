@@ -56,6 +56,7 @@ import com.allballapp.android.ui.features.home.events.team.team_tabs.EventTeamTa
 import com.allballapp.android.ui.features.home.events.venues.openVenue.OpenVenueTopTabs
 import com.allballapp.android.ui.features.home.home_screen.HomeScreen
 import com.allballapp.android.ui.features.home.home_screen.HomeScreenEvent
+import com.allballapp.android.ui.features.home.home_screen.SettingsScreen
 import com.allballapp.android.ui.features.home.invitation.InvitationScreen
 import com.allballapp.android.ui.features.home.manage_team.MainManageTeamScreen
 import com.allballapp.android.ui.features.home.teams.TeamUIEvent
@@ -81,10 +82,8 @@ import com.allballapp.android.ui.utils.anims.slideOutHorizont
 import com.cometchat.pro.constants.CometChatConstants
 import com.cometchat.pro.core.CometChat
 import com.cometchat.pro.models.*
-import com.cometchat.pro.uikit.ui_components.chats.CometChatConversationList
 import com.cometchat.pro.uikit.ui_components.chats.CustomCometListener
 import com.cometchat.pro.uikit.ui_components.cometchat_ui.CometChatUI
-import com.cometchat.pro.uikit.ui_components.messages.message_list.CometChatMessageList
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -115,6 +114,9 @@ class HomeActivity : FragmentActivity(), CustomCometListener {
 //        CometChatConversationList.newCustomCometListener = this
 //        CometChatMessageList.newCustomCometListener = this
         setContent {
+            val userToken = dataStoreManager.userToken.collectAsState(initial = "")
+            if (userToken.value.isNotEmpty())
+                UserStorage.token = userToken.value
             //val fromSplash = intent.getBooleanExtra(IntentData.FROM_SPLASH, false)
             homeViewModel = hiltViewModel()
             val signUpViewModel: SignUpViewModel = hiltViewModel()
@@ -122,10 +124,7 @@ class HomeActivity : FragmentActivity(), CustomCometListener {
             val eventViewModel: EventViewModel = hiltViewModel()
             setupTeamViewModelUpdated = hiltViewModel()
             val state = homeViewModel.state.value
-            dataStoreManager = DataStoreManager(LocalContext.current)
-            /* val userToken = dataStoreManager.userToken.collectAsState(initial = "")
-             UserStorage.token = userToken.value
-             */
+            //dataStoreManager = DataStoreManager(LocalContext.current)
             val color =
                 dataStoreManager.getColor.collectAsState(initial = AppConstants.DEFAULT_COLOR)
             val teamId = dataStoreManager.getId.collectAsState(initial = "")
@@ -180,8 +179,17 @@ class HomeActivity : FragmentActivity(), CustomCometListener {
                                                 navController.navigate(Route.MANAGED_TEAM_SCREEN)
                                             }
                                             TopBar.MANAGE_TEAM -> {
-                                                if (!teamViewModel.teamUiState.value.isLoading)
-                                                    teamViewModel.onEvent(TeamUIEvent.OnTeamUpdate)
+                                                if (!teamViewModel.teamUiState.value.isLoading) {
+                                                    if (teamViewModel.teamUiState.value.saveEnable) {
+                                                        teamViewModel.onEvent(TeamUIEvent.OnTeamUpdate)
+                                                    } else {
+                                                        teamViewModel.onEvent(
+                                                            TeamUIEvent.ShowToast(
+                                                                this@HomeActivity.getString(R.string.valid_team_name)
+                                                            )
+                                                        )
+                                                    }
+                                                }
                                             }
                                             TopBar.PROFILE -> {
                                                 navController.navigate(Route.PROFILE_EDIT_SCREEN)
@@ -445,7 +453,10 @@ fun NavControllerComposable(
             homeViewModel.setBottomNav(BottomNavKey.HOME)
             homeViewModel.setTopAppBar(false)
             HomeScreen(
-//                isOrganization,
+ //               role,
+                onSettingClick = {
+                    navController.navigate(Route.SETTINGS_SCREEN)
+                },
                 onOpportunityClick = {
                     navController.navigate(Route.OPPORTUNITIES_SCREEN + "/" + it)
                 },
@@ -722,6 +733,7 @@ fun NavControllerComposable(
         composable(route = Route.EVENTS_SCREEN) {
             homeViewModel.setBottomNav(BottomNavKey.EVENTS)
             EventsScreen(
+                homeViewModel,
                 teamViewModel,
                 eventViewModel,
                 showDialog = showDialog,
@@ -976,7 +988,10 @@ fun NavControllerComposable(
                     navController.navigate(Route.ADD_PROFILE_SCREEN)
                 },
                 vm = setupTeamViewModelUpdated,
-                onBackClick = { navController.popBackStack() },
+                onBackClick = {
+                    setupTeamViewModelUpdated.initialInviteCount(2)
+                    navController.popBackStack()
+                },
                 onNextClick = {
                     navController.navigate(state.bottomBar.route) {
                         popUpTo(Route.TEAM_SETUP_SCREEN) {
@@ -1011,6 +1026,10 @@ fun NavControllerComposable(
                 //homeViewModel.showBottomAppBar(true)
                 moveBackFromAddPlayer(homeViewModel, navController)
             }
+            remember {
+                setupTeamViewModelUpdated.initialInviteCount(2)
+            }
+
             val teamId = it.arguments?.getString("teamId")
             AddPlayersScreenUpdated(
                 homeVm = homeViewModel,
@@ -1018,6 +1037,7 @@ fun NavControllerComposable(
                 teamId = teamId,
                 vm = setupTeamViewModelUpdated,
                 onBackClick = {
+                    setupTeamViewModelUpdated.initialInviteCount(2)
                     moveBackFromAddPlayer(homeViewModel, navController)
                 },
                 onNextClick = {
@@ -1101,13 +1121,15 @@ fun NavControllerComposable(
                 )
                 setupTeamViewModelUpdated.onEvent(TeamSetupUIEventUpdated.Clear)
             }
+            remember {
+                setupTeamViewModelUpdated.onEvent(TeamSetupUIEventUpdated.Clear)
+            }
             TeamSetupScreenUpdated(
                 homeVm = homeViewModel,
                 venue = venue,
                 vm = setupTeamViewModelUpdated,
                 addProfileClick = {
                     navController.navigate(Route.ADD_PROFILE_SCREEN)
-
                 },
                 onBackClick = {
                     setColorToOriginalOnBack(
@@ -1365,7 +1387,7 @@ fun NavControllerComposable(
             remember {
                 eventViewModel.onEvent(EvEvents.ClearListEvents)
             }
-            MyEvents(eventViewModel,
+            MyEvents(eventViewModel, homeViewModel,
                 moveToPracticeDetail = { eventId, eventName ->
                     eventTitle = eventName
                     navController.navigate(Route.EVENTS_DETAIL_SCREEN + "/$eventId")
@@ -1379,7 +1401,11 @@ fun NavControllerComposable(
                 })
         }
 
-        composable(route = Route.ROASTER_PROFILE_VIEW) {
+        composable(route = Route.ROASTER_PROFILE_VIEW,
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+        ) {
             homeViewModel.setTopBar(
                 TopBarData(
                     label = name,
@@ -1389,6 +1415,25 @@ fun NavControllerComposable(
 
             RoasterProfileDetails(vm = profileViewModel, userId = userid)
 
+        }
+
+        composable(route = Route.SETTINGS_SCREEN,
+            enterTransition = { slideInHorizont(animeDuration) },
+            exitTransition = { exitTransition(animeDuration) },
+            popExitTransition = { slideOutHorizont(animeDuration) }
+        ) {
+            homeViewModel.setTopBar(
+                TopBarData(
+                    label = stringResource(id = R.string.change_env),
+                    topBar = TopBar.SINGLE_LABEL_BACK,
+                )
+            )
+            val context = LocalContext.current
+            SettingsScreen(type = state.selectedEnv, vm = homeViewModel) {
+                AppConstants.ENV = it
+                homeViewModel.clearToken()
+                moveToLogin(activity = context as HomeActivity)
+            }
         }
 
     }

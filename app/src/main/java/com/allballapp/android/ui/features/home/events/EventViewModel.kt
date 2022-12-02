@@ -67,9 +67,9 @@ class EventViewModel @Inject constructor(
             }
             is ResultWrapper.Success -> {
                 eventResponse.value.let { response ->
-                    if (response.status && (response.data.upcommingEvents.isNotEmpty())
-                        || (response.data.upcommingEvents.isNotEmpty())
-                        || (response.data.publishedGames.isNotEmpty())
+                    if (response.status && (response.data.upcommingEvents.isNotEmpty()
+                                || response.data.pastEvents.isNotEmpty()
+                                || response.data.publishedGames.isNotEmpty())
                     ) {
                         val upcomingAndGameData =
                             response.data.upcommingEvents + response.data.publishedGames
@@ -91,9 +91,9 @@ class EventViewModel @Inject constructor(
 
                         _state.value =
                             _state.value.copy(
-                                currentEvents = response.data.upcommingEvents,
+                                //currentEvents = response.data.upcommingEvents,
                                 pastEvents = response.data.pastEvents,
-                                upcomingAndGameData = sortedUpcomingAndGameData
+                                upcomingAndGameData = sortedUpcomingAndGameData,
                             )
                     } else {
                         /* _channel.send(
@@ -118,6 +118,12 @@ class EventViewModel @Inject constructor(
 
         when (eventResponse) {
             is ResultWrapper.GenericError -> {
+                _state.value =
+                    _state.value.copy(
+                        //currentEvents = arrayListOf(),
+                        pastEvents = arrayListOf(),
+                        upcomingAndGameData = arrayListOf()
+                    )
                 _channel.send(
                     EventChannel.ShowEventDetailsToast(
                         UiText.DynamicString(
@@ -127,13 +133,19 @@ class EventViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
+                _state.value =
+                    _state.value.copy(
+                        //currentEvents = arrayListOf(),
+                        pastEvents = arrayListOf(),
+                        upcomingAndGameData = arrayListOf()
+                    )
                 /* _channel.send(
-                     EventChannel.ShowEventDetailsToast(
-                         UiText.DynamicString(
-                             eventResponse.message
+                         EventChannel.ShowEventDetailsToast(
+                             UiText.DynamicString(
+                                 eventResponse.message
+                             )
                          )
-                     )
-                 )*/
+                     )*/
             }
             is ResultWrapper.Success -> {
                 eventResponse.value.let { response ->
@@ -161,7 +173,7 @@ class EventViewModel @Inject constructor(
             is EvEvents.ClearListEvents -> {
                 _state.value =
                     _state.value.copy(
-                        currentEvents = arrayListOf(),
+                        //currentEvents = arrayListOf(),
                         pastEvents = arrayListOf(),
                         upcomingAndGameData = arrayListOf()
                     )
@@ -269,7 +281,8 @@ class EventViewModel @Inject constructor(
                 _state.value = _state.value.copy(
                     showGoingDialog = true,
                     selectedMyEventId = event.eventId,
-                    selectedEventType = event.eventType
+                    selectedEventType = event.eventType,
+                    selectedUsers = event.list.filter { it._Id == event.id }
                 )
 
             }
@@ -277,7 +290,8 @@ class EventViewModel @Inject constructor(
                 _state.value = _state.value.copy(
                     showDeclineDialog = true,
                     selectedMyEventId = event.eventId,
-                    selectedEventType = event.eventType
+                    selectedEventType = event.eventType,
+                    selectedUsers = event.list.filter { it._Id == event.id }
                 )
             }
             is EvEvents.onCancel -> {
@@ -454,6 +468,26 @@ class EventViewModel @Inject constructor(
             is EvEvents.ClearOpportunities -> {
                 _state.value = _state.value.copy(opportunitiesDetail = OpportunitiesDetail())
             }
+            is EvEvents.ShowAcceptEditDialog -> {
+                _state.value = _state.value.copy(showAcceptDialog = event.show)
+            }
+            is EvEvents.SetSelectedEventId -> {
+                _state.value = _state.value.copy(
+                    selectedMyEventId = event.id,
+                    status = event.status,
+                    selectedUsers = event.list
+                )
+            }
+            is EvEvents.SetSelectedId -> {
+                _state.value = _state.value.copy(
+                    selectedUsers = _state.value.selectedUsers.toMutableList().apply {
+                        if (this.contains(event.id)) {
+                            this.remove(event.id)
+                        } else {
+                            this.add(event.id)
+                        }
+                    })
+            }
 
             is EvEvents.PaymentOption -> {
                 if (event.paymentOption != _state.value.registerRequest.paymentOption) {
@@ -472,7 +506,7 @@ class EventViewModel @Inject constructor(
     private suspend fun getGameDetails(gameId: String) {
         _state.value =
             eventState.value.copy(showLoading = true)
-        val gameResponse = eventsRepo.getGameDetails(gameId,EventType.GAME.type)
+        val gameResponse = eventsRepo.getGameDetails(gameId, EventType.GAME.type)
         _state.value =
             eventState.value.copy(showLoading = false)
 
@@ -867,7 +901,7 @@ class EventViewModel @Inject constructor(
 
         when (userResponse) {
             is ResultWrapper.GenericError -> {
-                //_state.value = _state.value.copy(opportunitiesList = mutableListOf())
+                _state.value = _state.value.copy(opportunitiesList = mutableListOf())
                 _channel.send(
                     EventChannel.ShowToast(
                         UiText.DynamicString(
@@ -877,7 +911,7 @@ class EventViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
-                // _state.value = _state.value.copy(opportunitiesList = mutableListOf())
+                _state.value = _state.value.copy(opportunitiesList = mutableListOf())
                 /*  _channel.send(
               EventChannel.ShowToast(
                   UiText.DynamicString(
@@ -912,7 +946,8 @@ class EventViewModel @Inject constructor(
 
         val acceptResponse = eventsRepo.acceptEventInvite(
             eventState.value.selectedMyEventId,
-            eventType = eventState.value.selectedEventType
+            eventType = eventState.value.selectedEventType,
+            userId = eventState.value.selectedUsers.toMutableList().map { it._Id }
         )
 
 
@@ -965,6 +1000,7 @@ class EventViewModel @Inject constructor(
             eventState.value.selectedMyEventId,
             eventState.value.declineReason,
             eventType = eventState.value.selectedEventType,
+            userId = eventState.value.selectedUsers.toMutableList().map { it._Id }
         )
 
         _state.value =
@@ -1016,7 +1052,7 @@ class EventViewModel @Inject constructor(
 
         when (userResponse) {
             is ResultWrapper.GenericError -> {
-                //_state.value = _state.value.copy(isLoading = false,myLeaguesList = arrayListOf())
+                _state.value = _state.value.copy(isLoading = false, myLeaguesList = arrayListOf())
                 /* _state.value = _state.value.copy(isLoading = false,myLeaguesList = arrayListOf())*/
                 /* _channel.send(
                      EventChannel.ShowToast(
@@ -1027,7 +1063,7 @@ class EventViewModel @Inject constructor(
                  )*/
             }
             is ResultWrapper.NetworkError -> {
-                _state.value = _state.value.copy(isLoading = false)//,myLeaguesList = arrayListOf())
+                _state.value = _state.value.copy(isLoading = false, myLeaguesList = arrayListOf())
                 /*_channel.send(
                     EventChannel.ShowToast(
                         UiText.DynamicString(
