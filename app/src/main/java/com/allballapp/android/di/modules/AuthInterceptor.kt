@@ -13,11 +13,10 @@ class AuthInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val requestBuilder = chain.request().newBuilder()
 
-        if (!UserStorage.token.isEmpty()) {
+        if (UserStorage.token.isNotEmpty()) {
             requestBuilder.addHeader("Authorization", "Bearer ${UserStorage.token}")
-            Timber.e("Token ${UserStorage.token}")
         }
-
+        Timber.e("Token ${UserStorage.token}")
         return chain.proceed(requestBuilder.build())
     }
 }

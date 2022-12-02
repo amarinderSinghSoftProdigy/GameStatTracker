@@ -5,13 +5,9 @@ import android.content.Intent
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
-import androidx.compose.runtime.saveable.rememberSaveable
 import android.provider.ContactsContract
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,13 +15,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -34,7 +26,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.allballapp.android.common.AppConstants
-import com.allballapp.android.common.IntentData
 import com.allballapp.android.common.Route
 import com.allballapp.android.common.Route.LOGIN_SCREEN
 import com.allballapp.android.common.Route.OTP_VERIFICATION_SCREEN
@@ -47,8 +38,6 @@ import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.ui.features.components.CommonTabView
 import com.allballapp.android.ui.features.components.TabBar
-import com.allballapp.android.ui.features.components.TopBar
-import com.allballapp.android.ui.features.components.TopBarData
 import com.allballapp.android.ui.features.confirm_phone.OtpScreen
 import com.allballapp.android.ui.features.home.HomeActivity
 import com.allballapp.android.ui.features.home.webview.CommonWebView
@@ -67,11 +56,15 @@ import com.allballapp.android.ui.theme.BallerAppTheme
 import com.allballapp.android.ui.theme.appColors
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     var setupTeamViewModelUpdated: SetupTeamViewModelUpdated? = null
+
+    @Inject
+    lateinit var dataStoreManager: DataStoreManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,10 +85,10 @@ class MainActivity : ComponentActivity() {
                     ) {
 
                         NavControllerComposable(
+                            dataStoreManager,
                             this,
                             mainViewModel,
-                            navController,
-                            setupTeamViewModelUpdated ?: hiltViewModel()
+                            navController
                         )
                     }
 
@@ -107,7 +100,7 @@ class MainActivity : ComponentActivity() {
                                 TabBar(color = MaterialTheme.appColors.material.primaryVariant) {
                                     CommonTabView(
                                         topBarData = state.topBar,
-                                        userRole = "",
+//                                        userRole = "",
                                         backClick = {
                                             mainViewModel.onEvent(MainEvent.OnShowTopBar(showAppBar = false))
                                             navController.popBackStack()
@@ -130,10 +123,10 @@ class MainActivity : ComponentActivity() {
                             ) {
 
                                 NavControllerComposable(
+                                    dataStoreManager,
                                     this@MainActivity,
                                     mainViewModel,
-                                    navController,
-                                    setupTeamViewModelUpdated ?: hiltViewModel()
+                                    navController
                                 )
                             }
 
@@ -188,16 +181,13 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun NavControllerComposable(
+    dataStoreManager: DataStoreManager,
     activity: MainActivity,
     mainViewModel: MainViewModel,
     navController: NavHostController,
-    setupTeamViewModelUpdated: SetupTeamViewModelUpdated
 ) {
     val signUpViewModel: SignUpViewModel = viewModel()
-    val context = LocalContext.current
-    val dataStoreManager = DataStoreManager(activity)
     val userToken = dataStoreManager.userToken.collectAsState(initial = "")
-    UserStorage.token = userToken.value
     val teamId = dataStoreManager.getId.collectAsState(initial = "")
     UserStorage.teamId = teamId.value
     val scope = rememberCoroutineScope()
@@ -210,7 +200,7 @@ fun NavControllerComposable(
             SplashScreen {
                 scope.launch {
                     if (userToken.value.isNotEmpty()) {
-                        moveToHome(activity, true)
+                        moveToHome(activity)
                     } else if (color.value.isNotEmpty()) {
                         navController.popBackStack()
                         navController.navigate(LOGIN_SCREEN)
@@ -319,28 +309,8 @@ fun NavControllerComposable(
 }
 
 
-private fun moveToHome(activity: MainActivity, fromSplash: Boolean = false) {
+private fun moveToHome(activity: MainActivity) {
     val intent = Intent(activity, HomeActivity::class.java)
-    if (fromSplash) {
-        intent.putExtra(IntentData.FROM_SPLASH, fromSplash)
-    }
     activity.startActivity(intent)
     activity.finish()
 }
-
-/*
-private fun checkRole(
-    check: Boolean,
-    navController: NavController,
-    activity: MainActivity,
-    fromSplash: Boolean = false
-) {
-    if (check) {
-        navController.navigate(SELECT_USER_TYPE) {
-            navController.popBackStack()
-        }
-    } else {
-        moveToHome(activity, fromSplash)
-    }
-}
-*/

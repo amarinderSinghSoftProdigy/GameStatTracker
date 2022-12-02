@@ -31,7 +31,8 @@ fun ProfileScreen(
 ) {
     val state = vm.state.value
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        if (UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
+//        if (UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
+        if (UserStorage.isOrganization) {
             val list = listOf(
                 TabItems.RefereeProfile,
                 TabItems.Documents,
@@ -48,9 +49,9 @@ fun ProfileScreen(
         }
     }
 
-    if (state.isLoading) {
+   /* if (state.isLoading) {
         CommonProgressBar()
-    }
+    }*/
 }
 
 
@@ -143,8 +144,7 @@ fun TabsContent(
 fun TabsRefereeContent(
     pagerState: PagerState,
     vm: ProfileViewModel,
-
-    ) {
+) {
     HorizontalPager(state = pagerState) { page ->
         when (page) {
             0 -> RefereeProfileScreen(vm)

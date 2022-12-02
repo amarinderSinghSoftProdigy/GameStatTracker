@@ -1,12 +1,10 @@
 package com.allballapp.android.di.modules
 
+import com.allballapp.android.BuildConfig.*
+import com.allballapp.android.common.AppConstants
+import com.allballapp.android.network.APIService
 import com.slack.eithernet.ApiResultCallAdapterFactory
 import com.slack.eithernet.ApiResultConverterFactory
-import com.allballapp.android.BuildConfig.API_SERVER
-import com.allballapp.android.BuildConfig.CONNECT_TIMEOUT
-import com.allballapp.android.BuildConfig.READ_TIMEOUT
-import com.allballapp.android.BuildConfig.WRITE_TIMEOUT
-import com.allballapp.android.network.APIService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -42,7 +40,7 @@ object NetworkingModule {
     @Singleton
     fun provideRestApiService(okHttpClient: OkHttpClient): APIService {
         return Retrofit.Builder()
-            .baseUrl(API_SERVER)
+            .baseUrl(AppConstants.ENV.ifEmpty { API_SERVER })
             .client(okHttpClient)
             .addConverterFactory(ScalarsConverterFactory.create())
             .addCallAdapterFactory(ApiResultCallAdapterFactory)

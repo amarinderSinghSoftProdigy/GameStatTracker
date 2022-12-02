@@ -20,7 +20,6 @@ import com.allballapp.android.data.response.SwapUser
 import com.allballapp.android.data.response.UserInfo
 import com.allballapp.android.domain.repository.IImageUploadRepo
 import com.allballapp.android.domain.repository.IUserRepository
-import com.allballapp.android.ui.features.components.getFCMToken
 import com.allballapp.android.ui.utils.UiText
 import com.cometchat.pro.core.CometChat
 import com.cometchat.pro.exceptions.CometChatException
@@ -934,7 +933,6 @@ class SignUpViewModel @Inject constructor(
         viewModelScope.launch {
             if (token.isNotEmpty()) {
                 dataStore.saveToken(token)
-                UserStorage.token = token
             }
             if (role.isNotEmpty())
                 dataStore.setRole(role)

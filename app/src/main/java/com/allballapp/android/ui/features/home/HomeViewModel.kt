@@ -1,7 +1,6 @@
 package com.allballapp.android.ui.features.home
 
 import android.app.Application
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
@@ -48,14 +47,13 @@ class HomeViewModel @Inject constructor(
     private val _homeChannel = Channel<HomeChannel>()
     val homeChannel = _homeChannel.receiveAsFlow()
 
-    init {
-
+/*    init {
         viewModelScope.launch {
             if (UserStorage.token.isNotEmpty()) {
                 getUserInfo()
             }
         }
-    }
+    }*/
 
     private fun getHomeList() {
         val homeList = ArrayList<HomeItemResponse>()
@@ -134,6 +132,7 @@ class HomeViewModel @Inject constructor(
             dataStoreManager.saveToken("")
             dataStoreManager.setId("")
             dataStoreManager.setRole("")
+            dataStoreManager.isOrganisation(false)
             dataStoreManager.setEmail("")
             dataStoreManager.setColor("")
             dataStoreManager.setTeamName("")
@@ -146,6 +145,9 @@ class HomeViewModel @Inject constructor(
 
     fun onEvent(event: HomeScreenEvent) {
         when (event) {
+            is HomeScreenEvent.OnEnvUpdate -> {
+                _state.value = _state.value.copy(selectedEnv = event.env)
+            }
             is HomeScreenEvent.OnSwapClick -> {
                 viewModelScope.launch {
                     getSwapProfiles(event.check)
@@ -171,10 +173,9 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getUserInfo(showToast: Boolean = false) {
+    suspend fun getUserInfo(showToast: Boolean = false) {
         _state.value = _state.value.copy(isDataLoading = true)
         val userResponse = userRepo.getUserProfile()
-
 
         when (userResponse) {
             is ResultWrapper.GenericError -> {
@@ -378,7 +379,6 @@ class HomeViewModel @Inject constructor(
 
     private fun setToken(token: String) {
         viewModelScope.launch {
-            UserStorage.token = token
             dataStoreManager.saveToken(token)
         }
     }

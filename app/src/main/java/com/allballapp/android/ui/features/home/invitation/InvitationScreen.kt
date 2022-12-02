@@ -167,12 +167,16 @@ fun InvitationScreen(
             onConfirmClick = { /*vm.onEvent(InvitationEvent.OnRoleConfirmClick)*/
 
                 //if (state.selectedRoleKey == UserType.PARENT.key || (state.selectedRoleKey == UserType.PLAYER.key)) {
-                vm.onEvent(InvitationEvent.OnRoleConfirmClick)
-                vm.onEvent(InvitationEvent.OnGuardianDialogClick(true))
-                /* } else {
-                     vm.onEvent(InvitationEvent.OnInvitationConfirm(homeState.user.gender))
-                     vm.onEvent(InvitationEvent.OnRoleDialogClick(false))
-                 }*/
+                if (!state.selectedInvitation.team.organizationAdded) {
+                    vm.onEvent(InvitationEvent.OnRoleConfirmClick)
+                    vm.onEvent(InvitationEvent.OnGuardianDialogClick(true))
+                    /* } else {
+                         vm.onEvent(InvitationEvent.OnInvitationConfirm(homeState.user.gender))
+                         vm.onEvent(InvitationEvent.OnRoleDialogClick(false))
+                     }*/
+                } else {
+                    vm.onEvent(InvitationEvent.OnInvitationConfirm(homeState.user.gender))
+                }
             },
             onSelectionChange = { vm.onEvent(InvitationEvent.OnRoleClick(roleKey = it)) },
             title = stringResource(
@@ -204,7 +208,7 @@ fun InvitationScreen(
             onSelectionChange = { vm.onEvent(InvitationEvent.OnGuardianClick(guardian = it)) },
             //selected = state.selectedGuardian,
             selected = state.selectedIds,
-            guardianList = if (state.selectedRoleKey == UserType.PARENT.key)
+            guardianList = if (state.selectedRoleKey != UserType.PLAYER.key)
                 state.playerDetails.filter { member -> member.role == UserType.PLAYER.key }
             else state.playerDetails.filter { member -> member.role != UserType.PLAYER.key },
             onValueSelected = {
@@ -476,7 +480,7 @@ fun InvitationItem(
                         fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
                         fontWeight = FontWeight.W500,
                     )
-                    
+
                     Space(dp = dimensionResource(id = R.dimen.size_5dp))
 
                     Text(

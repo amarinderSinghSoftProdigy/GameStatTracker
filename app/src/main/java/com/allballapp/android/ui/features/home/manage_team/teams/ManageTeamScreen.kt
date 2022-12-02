@@ -8,6 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,15 +22,9 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import com.github.skydoves.colorpicker.compose.rememberColorPickerController
-import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.widget.Autocomplete
-import com.google.android.libraries.places.widget.AutocompleteActivity
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
-import com.allballapp.android.BuildConfig
 import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
 import com.allballapp.android.common.argbToHexString
@@ -43,6 +38,12 @@ import com.allballapp.android.ui.features.user_type.team_setup.updated.ColorPick
 import com.allballapp.android.ui.features.user_type.team_setup.updated.ColorType
 import com.allballapp.android.ui.features.user_type.team_setup.updated.UpdateColor
 import com.allballapp.android.ui.theme.*
+import com.github.skydoves.colorpicker.compose.rememberColorPickerController
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.AutocompleteActivity
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.IOException
@@ -135,7 +136,6 @@ fun ManageTeamScreen(
 
         }
     )
-
     ModalBottomSheetLayout(
         sheetContent = {
             ColorPickerBottomSheet(controller, colorEnvelope = { colorEnvelope ->
@@ -207,7 +207,8 @@ fun ManageTeamScreen(
                                 cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
                             ),
                             isError = !validTeamName(state.teamName) && state.teamName.isNotEmpty(),
-                            errorMessage = stringResource(id = R.string.valid_team_name)
+                            errorMessage = stringResource(id = R.string.valid_team_name),
+                            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email)
                         )
 
 

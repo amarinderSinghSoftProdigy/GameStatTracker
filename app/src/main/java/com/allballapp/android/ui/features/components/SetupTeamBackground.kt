@@ -1,6 +1,8 @@
 package com.allballapp.android.ui.features.components
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -81,7 +83,7 @@ fun CoachFlowBackground(
                     ),
                     modifier = Modifier
                         .padding(
-                            bottom = dimensionResource(id = R.dimen.size_10dp),
+                            bottom = dimensionResource(id = R.dimen.size_20dp),
                             end = dimensionResource(id = R.dimen.size_20dp),
                             start = dimensionResource(id = R.dimen.size_20dp),
                             top = dimensionResource(id = R.dimen.size_20dp)
@@ -89,8 +91,7 @@ fun CoachFlowBackground(
                         .size(dimensionResource(id = R.dimen.size_225dp))
                 ) {
                     Box(
-                        modifier = Modifier
-                            .size(dimensionResource(id = R.dimen.size_270dp))
+                        modifier = Modifier.fillMaxSize()
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_ball_lines),
@@ -184,7 +185,7 @@ fun CoachFlowBackground(
                                     R.drawable.ic_settings
                                 ) {
                                     showOptions.value = false
-                                    //click(Options.SWAP_PROFILES)
+                                    click(Options.SETTINGS)
                                 }
                                 Divider(thickness = dimensionResource(id = R.dimen.divider))
                                 OptionItem(

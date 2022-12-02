@@ -49,6 +49,13 @@ fun MainManageTeamScreen(
                     ).show()
                     onSuccess()
                 }
+                is TeamChannel.ShowToast -> {
+                    Toast.makeText(
+                        context,
+                        uiEvent.message.asString(context),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
         }
     }

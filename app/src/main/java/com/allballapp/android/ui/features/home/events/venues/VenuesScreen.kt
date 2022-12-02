@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -21,17 +20,18 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import com.allballapp.android.BuildConfig
+import com.allballapp.android.R
 import com.allballapp.android.data.response.VenuesId
 import com.allballapp.android.ui.features.components.AppText
 import com.allballapp.android.ui.features.components.CoilImage
+import com.allballapp.android.ui.features.components.CommonProgressBar
 import com.allballapp.android.ui.features.components.PlaceholderRect
 import com.allballapp.android.ui.features.home.EmptyScreen
 import com.allballapp.android.ui.features.home.events.EvEvents
 import com.allballapp.android.ui.features.home.events.EventViewModel
 import com.allballapp.android.ui.theme.ColorGreyLighter
 import com.allballapp.android.ui.theme.appColors
-import com.allballapp.android.R
+
 @Composable
 fun VenuesScreen(moveToOpenVenues: (String, String) -> Unit, eventViewModel: EventViewModel) {
     val state = eventViewModel.eventState.value
@@ -43,16 +43,10 @@ fun VenuesScreen(moveToOpenVenues: (String, String) -> Unit, eventViewModel: Eve
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
-
         if (state.isLoading) {
-            CircularProgressIndicator(
-                color = MaterialTheme.appColors.material.primaryVariant, modifier = Modifier.align(
-                    Alignment.Center
-                )
-            )
+            CommonProgressBar()
         } else if (state.venuesList.isEmpty()) {
             EmptyScreen(singleText = true, stringResource(id = R.string.no_data_found))
-
         } else {
             Column(modifier = Modifier.fillMaxSize()) {
                 LazyColumn(
@@ -124,8 +118,8 @@ fun VenuesItem(item: VenuesId, moveToOpenVenues: () -> Unit) {
                 contentDescription = "",
                 modifier = Modifier
                     .size(
-                        height = dimensionResource(id = R.dimen.size_12dp),
-                        width = dimensionResource(id = R.dimen.size_12dp)
+                        height = dimensionResource(id = R.dimen.size_14dp),
+                        width = dimensionResource(id = R.dimen.size_14dp)
                     )
                     .then(
                         Modifier.rotate(270f)

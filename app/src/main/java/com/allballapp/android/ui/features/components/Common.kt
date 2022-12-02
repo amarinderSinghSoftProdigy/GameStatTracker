@@ -115,7 +115,7 @@ fun TabBar(
 @Composable
 fun BoxScope.CommonTabView(
     topBarData: TopBarData,
-    userRole: String,
+//    userRole: String,
     backClick: () -> Unit = {},
     iconClick: (() -> Unit)? = null,
     labelClick: (() -> Unit)? = null,
@@ -1015,7 +1015,7 @@ fun requestFileManagerPermission(context: Context, activity: Activity) {
         ActivityCompat.requestPermissions(
             activity,
             arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-            1
+            AppConstants.REQUEST_GALLERY
         )
     }
 }
@@ -1055,6 +1055,25 @@ fun Modifier.scrollOnFocus(
 fun <T> getCommonElementsCount(first: List<T>, second: List<T>): Int {
     return first.filter(second::contains).size
 }
+
+fun getValidatedNumber(text: String): String {
+    // Start by filtering out unwanted characters like commas and multiple decimals
+    val filteredChars = text.filterIndexed { index, c ->
+        c in "0123456789" ||                      // Take all digits
+                (c == '.' && text.indexOf('.') == index)  // Take only the first decimal
+    }
+    // Now we need to remove extra digits from the input
+    return if (filteredChars.contains('.')) {
+        val beforeDecimal = filteredChars.substringBefore('.')
+        val afterDecimal = filteredChars.substringAfter('.')
+        beforeDecimal.take(10) + "." + afterDecimal.take(2)    // If decimal is present, take first 3 digits before decimal and first 2 digits after decimal
+    } else {
+        filteredChars.take(10)                     // If there is no decimal, just take the first 3 digits
+    }
+}
+
+
+
 
 fun getFCMToken(onNewToken: (String) -> Unit) {
     FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->

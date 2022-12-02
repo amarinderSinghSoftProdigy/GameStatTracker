@@ -1,7 +1,6 @@
 package com.allballapp.android.ui.features.profile.tabs
 
 import android.widget.Toast
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -29,9 +28,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.allballapp.android.BuildConfig
+import com.allballapp.android.R
 import com.allballapp.android.common.apiToUIDateFormat2
-import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.datastore.DataStoreManager
 import com.allballapp.android.data.response.TeamDetails
 import com.allballapp.android.ui.features.components.*
@@ -43,7 +41,6 @@ import com.allballapp.android.ui.theme.ColorBWGrayLight
 import com.allballapp.android.ui.theme.ColorMainPrimary
 import com.allballapp.android.ui.theme.appColors
 import com.google.accompanist.flowlayout.FlowRow
-import com.allballapp.android.R
 
 @Composable
 fun ProfileTabScreen(vm: ProfileViewModel, id: String) {
@@ -56,7 +53,7 @@ fun ProfileTabScreen(vm: ProfileViewModel, id: String) {
     val screenWidth = configuration.screenWidthDp.dp / 2
     val width = screenWidth.minus(dimensionResource(id = R.dimen.size_16dp).times(2))
     val dataStoreManager = DataStoreManager(LocalContext.current)
-    val role = dataStoreManager.getRole.collectAsState(initial = "")
+//    val role = dataStoreManager.getRole.collectAsState(initial = "")
 
     remember {
         vm.onEvent(ProfileEvent.ClearUserData)
@@ -130,7 +127,17 @@ fun ProfileTabScreen(vm: ProfileViewModel, id: String) {
                     ) {
                         DetailItem(stringResource(id = R.string.email), state.user.email)
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                        DetailItem(stringResource(id = R.string.number), state.user.phone)
+
+                        var result = ""
+
+                        if (state.user.phone.isNotEmpty()) {
+                            result = state.user.phone.substring(
+                                0,
+                                state.user.phone.length - 10
+                            ) + " " + state.user.phone.substring(state.user.phone.length-10)
+                        }
+
+                        DetailItem(stringResource(id = R.string.number), result)
                     }
                 }
             }
@@ -156,7 +163,6 @@ fun ProfileTabScreen(vm: ProfileViewModel, id: String) {
                         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
                         FlowRow {
                             state.user.parentDetails.forEachIndexed { index, item ->
-
                                 if (item != null) {
                                     ParentItem(
                                         width,
@@ -382,7 +388,7 @@ fun ParentItem(
                 style = MaterialTheme.typography.h6,
                 color = ColorBWBlack
             )
-            if(relation.isNotEmpty()){
+            if (relation.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_5dp)))
                 AppText(
                     text = relation,
@@ -504,7 +510,7 @@ private fun PreferenceItem(
                     text = firstValue,
                     style = MaterialTheme.typography.h5,
                     color = ColorBWBlack,
-                    )
+                )
 
             }
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_5dp)))

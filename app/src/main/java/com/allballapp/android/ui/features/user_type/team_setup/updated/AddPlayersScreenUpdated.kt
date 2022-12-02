@@ -10,7 +10,6 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -22,7 +21,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -31,15 +29,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
-import com.allballapp.android.common.getCustomColorCode
 import com.allballapp.android.common.validName
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.request.Members
@@ -97,7 +92,6 @@ fun AddPlayersScreenUpdated(
         if (!teamId.isNullOrEmpty()) {
             if (teamData != null) {
                 teamData.onEvent(TeamUIEvent.GetTeam(teamId))
-
             }
             vm.onEvent(TeamSetupUIEventUpdated.GetInvitedTeamPlayers(teamId))
         }
@@ -286,7 +280,7 @@ fun AddPlayersScreenUpdated(
                     }*/
                 },
                 enableState = !state.isLoading && state.inviteList.isNotEmpty() &&
-                        state.inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() && it.contact.length >= 10 },
+                        state.inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() && it.contact.length >= 10 && it.role.key.isNotEmpty() },
                 themed = true,
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
@@ -359,7 +353,6 @@ fun AddPlayersScreenUpdated(
                            )
                        )
                    )*/
-                showSwapDialog.value = false
                 homeVm.onEvent(HomeScreenEvent.HideSwap(false))
             },
             showLoading = homeState.isDataLoading,
@@ -471,7 +464,6 @@ fun InviteItem(
                         roles.forEach { label ->
                             DropdownMenuItem(onClick = {
                                 roleObject.value = label
-
                                 vm.onEvent(
                                     TeamSetupUIEventUpdated.OnRoleValueChange(
                                         index = index,
@@ -599,28 +591,6 @@ fun InviteItem(
                     }
             )
         }
-    }
-}
-
-@Composable
-fun AddRemoveButton(icon: Painter, teamColor: String, onItemClick: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .size(dimensionResource(id = R.dimen.size_20dp))
-            .background(
-                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)),
-                color = Color(android.graphics.Color.parseColor("#${getCustomColorCode(teamColor)}"))
-            )
-    ) {
-
-        Icon(
-            painter = icon, contentDescription = "",
-            modifier = Modifier
-                .align(Alignment.Center)
-                .size(dimensionResource(id = R.dimen.size_20dp))
-                .clickable(onClick = { onItemClick() }),
-            tint = Color.White
-        )
     }
 }
 

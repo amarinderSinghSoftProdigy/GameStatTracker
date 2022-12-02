@@ -176,7 +176,7 @@ fun ProfileEditScreen(
                     ).show()
                 }
 
-                ProfileChannel.OnDefaultTeamRemove ->{
+                ProfileChannel.OnDefaultTeamRemove -> {
                     scope.launch {
                         teamViewModel.updateColorData("")
                     }
@@ -320,8 +320,17 @@ fun ProfileEditScreen(
                             readOnly = false
                         )
                         DividerCommon()
+                        var result = ""
+
+                        if (state.user.phone.isNotEmpty()) {
+                            result = state.user.phone.substring(
+                                0,
+                                state.user.phone.length - 10
+                            ) + " " + state.user.phone.substring(state.user.phone.length-10)
+                        }
+
                         EditProfileFields(
-                            state.user.phone,
+                            result,
                             onValueChange = {
                                 if (it.length <= maxPhoneNumber)
                                     vm.onEvent(ProfileEvent.OnPhoneChange(it))
@@ -455,7 +464,7 @@ fun ProfileEditScreen(
                                 vm.onEvent(ProfileEvent.OnPrefJerseyNoChange(it))
                         },
                         stringResource(id = R.string.jersey_number),
-                        errorMessage = stringResource(id = R.string.valid_first_name),
+                        errorMessage = "",
                         keyboardOptions = KeyboardOptions(
                             imeAction = ImeAction.Next,
                             capitalization = KeyboardCapitalization.Sentences,
@@ -472,7 +481,7 @@ fun ProfileEditScreen(
                                 vm.onEvent(ProfileEvent.OnGenderChange(it))
                             },
                             stringResource(id = R.string.gender),
-                            errorMessage = stringResource(id = R.string.valid_first_name),
+                            errorMessage = "",
                             keyboardOptions = KeyboardOptions(
                                 imeAction = ImeAction.Next,
                                 capitalization = KeyboardCapitalization.Sentences
@@ -510,10 +519,10 @@ fun ProfileEditScreen(
                         EditProfileFields(
                             state.shirtSize,
                             onValueChange = {
-                                vm.onEvent(ProfileEvent.OnShirtChange(it))
+                                //vm.onEvent(ProfileEvent.OnShirtChange(it))
                             },
                             stringResource(id = R.string.shirt_size),
-                            errorMessage = stringResource(id = R.string.valid_first_name),
+                            errorMessage = "",
                             keyboardOptions = KeyboardOptions(
                                 imeAction = ImeAction.Next,
                                 capitalization = KeyboardCapitalization.Sentences
@@ -534,11 +543,11 @@ fun ProfileEditScreen(
                         ) {
                             vm.size.forEach { label ->
                                 DropdownMenuItem(onClick = {
-                                    vm.onEvent(ProfileEvent.OnShirtChange(label))
+                                    vm.onEvent(ProfileEvent.OnShirtChange(label.key))
                                     shirtSizeExpanded = false
                                 }) {
                                     Text(
-                                        text = label,
+                                        text = stringResourceByName(name = label.stringId),
                                         textAlign = TextAlign.Center
                                     )
                                 }
@@ -547,14 +556,14 @@ fun ProfileEditScreen(
                     }
                     DividerCommon()
 
-                    Column() {
+                    Column {
                         EditProfileFields(
                             state.waistSize,
                             onValueChange = {
-                                vm.onEvent(ProfileEvent.OnWaistChange(it))
+                                //vm.onEvent(ProfileEvent.OnWaistChange(it))
                             },
                             stringResource(id = R.string.waist_size),
-                            errorMessage = stringResource(id = R.string.valid_first_name),
+                            errorMessage = "",
                             keyboardOptions = KeyboardOptions(
                                 imeAction = ImeAction.Next,
                                 capitalization = KeyboardCapitalization.Sentences,
@@ -578,11 +587,11 @@ fun ProfileEditScreen(
                         ) {
                             vm.waistSize.forEach { label ->
                                 DropdownMenuItem(onClick = {
-                                    vm.onEvent(ProfileEvent.OnWaistChange(label))
+                                    vm.onEvent(ProfileEvent.OnWaistChange(label.key))
                                     waistSizeExpanded = false
                                 }) {
                                     Text(
-                                        text = label,
+                                        text = stringResourceByName(name = label.stringId),
                                         textAlign = TextAlign.Center
                                     )
                                 }
@@ -639,7 +648,7 @@ fun ProfileEditScreen(
 
                         },
                         stringResource(id = R.string.favorite_active_player),
-                        errorMessage = stringResource(id = R.string.valid_first_name),
+                        errorMessage = "",
                         keyboardOptions = KeyboardOptions(
                             imeAction = ImeAction.Next,
                             capitalization = KeyboardCapitalization.Sentences,
@@ -655,7 +664,7 @@ fun ProfileEditScreen(
                                 vm.onEvent(ProfileEvent.OnAllTimeFavChange(it))
                         },
                         stringResource(id = R.string.favoritea_all_time_tlayer),
-                        errorMessage = stringResource(id = R.string.valid_first_name),
+                        errorMessage = "",
                         keyboardOptions = KeyboardOptions(
                             imeAction = ImeAction.Next,
                             capitalization = KeyboardCapitalization.Sentences,
@@ -786,7 +795,7 @@ fun Teams(
 
                     },
                     stringResource(id = R.string.role),
-                    errorMessage = stringResource(id = R.string.valid_first_name),
+                    errorMessage = "",
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Next,
                         capitalization = KeyboardCapitalization.Sentences
@@ -801,7 +810,7 @@ fun Teams(
                         onPositionChange.invoke(index, it)
                     },
                     stringResource(id = R.string.position),
-                    errorMessage = stringResource(id = R.string.valid_first_name),
+                    errorMessage = "",
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Next,
                         capitalization = KeyboardCapitalization.Sentences
@@ -818,7 +827,7 @@ fun Teams(
                             onJerseyNumberChange.invoke(index, it)
                     },
                     stringResource(id = R.string.jersey_number),
-                    errorMessage = stringResource(id = R.string.valid_first_name),
+                    errorMessage = "",
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Next,
                         capitalization = KeyboardCapitalization.Sentences,
