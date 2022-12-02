@@ -1,5 +1,6 @@
 package com.allballapp.android.ui.features.home.events
 
+import android.provider.ContactsContract.CommonDataKinds.Organization
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -53,7 +54,8 @@ fun EventsScreen(
     val teamState = teamVm.teamUiState.value
     val state = vm.eventState.value
     val dataStoreManager = DataStoreManager(LocalContext.current)
-    val role = dataStoreManager.getRole.collectAsState(initial = "")
+//    val role = dataStoreManager.getRole.collectAsState(initial = "")
+    val isOrganization = dataStoreManager.getOrganisation.collectAsState(initial = false).value
     // on below line we are creating variable for pager state.
     // Add the count for number of pages
 
@@ -62,7 +64,8 @@ fun EventsScreen(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            if (role.value == UserType.REFEREE.key) {
+//            if (role.value == UserType.REFEREE.key) {
+            if (isOrganization) {
                 val list = listOf(
                     TabItems.MyShifts,
                     TabItems.Opportunity,
@@ -77,7 +80,8 @@ fun EventsScreen(
                     vm,
                     moveToOppDetails,
                     updateTopBar,
-                    role
+//                    role
+                    isOrganization
                 )
             } else {
                 val list = listOf(
@@ -100,7 +104,7 @@ fun EventsScreen(
                     moveToOppDetails,
                     moveToEventDetail,
                     updateTopBar,
-                    role,
+                    isOrganization,
                 )
             }
         }
@@ -190,7 +194,8 @@ fun TabsContent(
     moveToOppDetails: (String) -> Unit,
     moveToEventDetail: (String) -> Unit,
     updateTopBar: (TopBarData) -> Unit,
-    role: State<String>
+//    role: State<String>
+    isOrganization: Boolean
 ) {
 
     HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
@@ -214,7 +219,7 @@ fun TabsContent(
             }
 
         }
-        SetTopBar(pagerState, page, updateTopBar, role)
+        SetTopBar(pagerState, page, updateTopBar, /*role*/isOrganization)
     }
 }
 
@@ -225,7 +230,8 @@ fun TabsContentForReferee(
     vm: EventViewModel,
     moveToOppDetails: (String) -> Unit,
     updateTopBar: (TopBarData) -> Unit,
-    role: State<String>
+//    role: State<String>
+isOrganization: Boolean
 ) {
 
     HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
@@ -240,7 +246,7 @@ fun TabsContentForReferee(
             }
 
         }
-        SetTopBar(pagerState, page, updateTopBar, role)
+        SetTopBar(pagerState, page, updateTopBar, /*role*/ isOrganization )
     }
 }
 
@@ -250,14 +256,17 @@ fun SetTopBar(
     pagerState: PagerState,
     page: Int,
     updateTopBar: (TopBarData) -> Unit,
-    role: State<String>
+//    role: State<String>
+    isOrganization: Boolean
 ) {
     val label = stringResource(id = R.string.events_label)
     if (!pagerState.isScrollInProgress) {
         if (pagerState.currentPage == page) {
             val top = when (page) {
-                0 -> if (role.value == UserType.REFEREE.key) TopBar.SINGLE_LABEL else TopBar.MY_EVENT
-                1 -> if (role.value == UserType.REFEREE.key) TopBar.EVENT_OPPORTUNITIES else TopBar.SINGLE_LABEL
+//                0 -> if (role.value == UserType.REFEREE.key) TopBar.SINGLE_LABEL else TopBar.MY_EVENT
+                0 -> if (isOrganization) TopBar.SINGLE_LABEL else TopBar.MY_EVENT
+//                1 -> if (role.value == UserType.REFEREE.key) TopBar.EVENT_OPPORTUNITIES else TopBar.SINGLE_LABEL
+                1 -> if (isOrganization) TopBar.EVENT_OPPORTUNITIES else TopBar.SINGLE_LABEL
                 2 -> TopBar.EVENT_OPPORTUNITIES
                 else -> TopBar.SINGLE_LABEL
             }

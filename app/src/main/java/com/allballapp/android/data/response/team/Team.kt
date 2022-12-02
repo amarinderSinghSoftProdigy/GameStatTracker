@@ -52,6 +52,8 @@ data class Team(
     @SerializedName("title") val title: String = "",
     @SerializedName("location") val location: Location = Location(),
     @SerializedName("address") val address: Address = Address(),
+    @SerializedName("organizationid") val organizationId: String = "",
+    @SerializedName("organizationAdded") val organizationAdded: Boolean = false,
 )
 
 data class TeamChatGroup(

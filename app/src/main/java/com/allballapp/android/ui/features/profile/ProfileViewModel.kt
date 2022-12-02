@@ -64,8 +64,13 @@ class ProfileViewModel @Inject constructor(
              waistSize.add(i.toString())
          }*/
         viewModelScope.launch {
-            dataStoreManager.getRole.collect {
+           /* dataStoreManager.getRole.collect {
                 if (it == UserType.REFEREE.key) {
+                    getPayData()
+                }
+            }*/
+            dataStoreManager.getOrganisation.collect {
+                if (it) {
                     getPayData()
                 }
             }
@@ -700,7 +705,11 @@ class ProfileViewModel @Inject constructor(
 
         _state.value = _state.value.copy(isLoading = true)
 
-        val request = if (UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
+/*        val request = if (UserStorage.role.equals(
+                UserType.REFEREE.key, ignoreCase = true
+            )
+        ) */
+        val request = if (UserStorage.isOrganization) {
             generateRefereeUpdateRequest()
         } else {
             generateUpdateRequest()

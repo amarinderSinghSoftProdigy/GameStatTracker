@@ -320,8 +320,17 @@ fun ProfileEditScreen(
                             readOnly = false
                         )
                         DividerCommon()
+                        var result = ""
+
+                        if (state.user.phone.isNotEmpty()) {
+                            result = state.user.phone.substring(
+                                0,
+                                state.user.phone.length - 10
+                            ) + " " + state.user.phone.substring(state.user.phone.length-10)
+                        }
+
                         EditProfileFields(
-                            state.user.phone,
+                            result,
                             onValueChange = {
                                 if (it.length <= maxPhoneNumber)
                                     vm.onEvent(ProfileEvent.OnPhoneChange(it))

@@ -210,10 +210,14 @@ fun EventRegistraionDetails(
                     },*/
                     value = state.registerRequest.payment,
                     onValueChange = {
-                        if (it.isNotEmpty() || it != "0") {
-                            showError.value = false
-                            if (it.length <= maxCash) {
-                                vm.onEvent(EvEvents.RegisterCash(it))
+                        if (state.registerRequest.paymentOption.isEmpty()) {
+                            vm.onEvent(EvEvents.ShowToast(context.getString(R.string.please_select_payment_method)))
+                        } else {
+                            if (it.isNotEmpty() || it != "0") {
+                                showError.value = false
+                                if (it.length <= maxCash) {
+                                    vm.onEvent(EvEvents.RegisterCash(getValidatedNumber(it)))
+                                }
                             }
                         }
                     },
@@ -222,7 +226,7 @@ fun EventRegistraionDetails(
                         .padding(horizontal = dimensionResource(id = R.dimen.size_16dp)),
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Next,
-                        keyboardType = KeyboardType.Number
+                        keyboardType = KeyboardType.Decimal
                     ),
                     placeholder = {
                         AppText(
@@ -243,12 +247,12 @@ fun EventRegistraionDetails(
             /*}
             Heading(stringResource(id = R.string.division))
             UserFlowBackground(modifier = Modifier.fillMaxWidth(), color = Color.White) {*/
-           /* Column(
-                modifier = Modifier
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                *//* RegisterItem(
+            /* Column(
+                 modifier = Modifier
+                     .fillMaxSize(),
+                 horizontalAlignment = Alignment.CenterHorizontally
+             ) {
+                 *//* RegisterItem(
                      stringResource(id = R.string.division),
                      "Division 1"
                  )*//*
@@ -499,7 +503,7 @@ fun RegisterItem(
                 Icon(
                     modifier = Modifier
                         .clickable {
-                                   onClick()
+                            onClick()
                         },
                     painter = painterResource(id = R.drawable.ic_forward),
                     contentDescription = "", tint = ColorGreyLighter

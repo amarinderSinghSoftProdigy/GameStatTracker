@@ -31,6 +31,8 @@ import com.allballapp.android.ui.features.home.events.EvEvents
 import com.allballapp.android.ui.features.home.events.EventViewModel
 import com.allballapp.android.ui.theme.ColorGreyLighter
 import com.allballapp.android.ui.theme.appColors
+import com.allballapp.android.R
+
 @Composable
 fun VenuesScreen(moveToOpenVenues: (String, String) -> Unit, eventViewModel: EventViewModel) {
     val state = eventViewModel.eventState.value
@@ -117,8 +119,8 @@ fun VenuesItem(item: VenuesId, moveToOpenVenues: () -> Unit) {
                 contentDescription = "",
                 modifier = Modifier
                     .size(
-                        height = dimensionResource(id = R.dimen.size_12dp),
-                        width = dimensionResource(id = R.dimen.size_12dp)
+                        height = dimensionResource(id = R.dimen.size_14dp),
+                        width = dimensionResource(id = R.dimen.size_14dp)
                     )
                     .then(
                         Modifier.rotate(270f)

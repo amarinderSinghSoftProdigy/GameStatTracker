@@ -8,6 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,6 +22,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.allballapp.android.R
@@ -205,7 +207,8 @@ fun ManageTeamScreen(
                                 cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
                             ),
                             isError = !validTeamName(state.teamName) && state.teamName.isNotEmpty(),
-                            errorMessage = stringResource(id = R.string.valid_team_name)
+                            errorMessage = stringResource(id = R.string.valid_team_name),
+                            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email)
                         )
 
 

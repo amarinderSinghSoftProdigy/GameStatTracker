@@ -132,6 +132,9 @@ class TeamViewModel @Inject constructor(
                     dataStoreManager.setTeamName(event.teamName)
                     UserStorage.teamName = event.teamName
 
+                    dataStoreManager.isOrganisation(event.isOrganization)
+                    UserStorage.isOrganization = event.isOrganization
+
                     getTeamByTeamId(event.teamId)
                 }
             }
@@ -374,6 +377,7 @@ class TeamViewModel @Inject constructor(
                                 _teamUiState.value.copy(allBallId = response.data.result[0].teamId._id)
                             if (response.data.result.size == 1) {
                                 setRole(response.data.result[0].role)
+                                setOrganization(response.data.result[0].teamId.organizationAdded)
                                 setDefaultTeam(response.data.result[0].teamId)
                                 return
                             }
@@ -384,11 +388,13 @@ class TeamViewModel @Inject constructor(
                                         if (response.data.teamId == it.teamId._id) {
                                             selectionTeam = it.teamId
                                             setRole(it.role)
+                                            setOrganization(it.teamId.organizationAdded)
                                         }
                                     } else {
                                         if (UserStorage.teamId == it.teamId._id) {
                                             selectionTeam = it.teamId
                                             setRole(it.role)
+                                            setOrganization(it.teamId.organizationAdded)
                                         }
                                     }
                                 }
@@ -407,6 +413,7 @@ class TeamViewModel @Inject constructor(
                                 )
                             if (selectionTeam == null) {
                                 setRole(response.data.result[0].role)
+                                setOrganization(response.data.result[0].teamId.organizationAdded)
                                 setDefaultData(response.data.result[0].teamId)
                             } else {
                                 viewModelScope.launch {
@@ -836,10 +843,15 @@ class TeamViewModel @Inject constructor(
             dataStoreManager.setRole(role)
         }
     }
-
-    private fun setTeamAllBallId(role: String) {
+    private fun setOrganization(isOrganization: Boolean) {
         viewModelScope.launch {
-            dataStoreManager.setAllBallId(role)
+            dataStoreManager.isOrganisation(isOrganization)
+        }
+    }
+
+    private fun setTeamAllBallId(allBallId: String) {
+        viewModelScope.launch {
+            dataStoreManager.setAllBallId(allBallId)
         }
     }
 

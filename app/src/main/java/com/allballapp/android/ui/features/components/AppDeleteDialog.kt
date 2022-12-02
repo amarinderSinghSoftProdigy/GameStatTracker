@@ -140,7 +140,7 @@ fun <T> DeleteDialog(
 @Composable
 fun SelectTeamDialog(
     onDismiss: () -> Unit,
-    onConfirmClick: (String, String) -> Unit,
+    onConfirmClick: (teamId: String, teamName: String, isOrganization: Boolean) -> Unit,
     onSelectionChange: (Team) -> Unit,
     selected: Team?,
     showLoading: Boolean,
@@ -148,11 +148,14 @@ fun SelectTeamDialog(
     onCreateTeamClick: () -> Unit,
     teamVm: TeamViewModel
 ) {
-    val teamId = remember {
+    val teamId = rememberSaveable {
         mutableStateOf(if (UserStorage.teamId.isEmpty()) teamVm.teamUiState.value.teamId else UserStorage.teamId)
     }
-    val teamName = remember {
+    val teamName = rememberSaveable {
         mutableStateOf(UserStorage.teamName)
+    }
+    val isOrganization = rememberSaveable {
+        mutableStateOf(UserStorage.isOrganization)
     }
 
     BallerAppMainTheme {
@@ -219,7 +222,12 @@ fun SelectTeamDialog(
                                         onSelectionChange.invoke(team)
                                         teamId.value = team._id
                                         teamName.value = team.name
-                                        onConfirmClick.invoke(teamId.value, teamName.value)
+                                        isOrganization.value = team.organizationAdded
+                                        onConfirmClick.invoke(
+                                            teamId.value,
+                                            teamName.value,
+                                            isOrganization.value
+                                        )
                                         onDismiss.invoke()
                                     }
                             }
@@ -1879,7 +1887,6 @@ fun DeclineEventDialog(
                             textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                             placeholderColor = MaterialTheme.appColors.textField.label,
                             cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
-
                         ),
                         keyboardActions = KeyboardActions(onDone = {
                             keyboardController?.hide()
@@ -1993,6 +2000,7 @@ fun SwapProfile(
                         item {
 
                         }
+
                         item {
                             if (showLoading) {
                                 CommonProgressBar()
@@ -2044,8 +2052,10 @@ fun SwapProfile(
                         DialogButton(
                             text = actionButtonText.ifEmpty { stringResource(R.string.dialog_button_confirm) },
                             onClick = {
-                                onConfirmClick.invoke(selectedUser.value)
-                                /* onDismiss.invoke()*/
+                                if(selectedUser.value._Id.isNotEmpty()) {
+                                    onConfirmClick.invoke(selectedUser.value)
+                                     onDismiss.invoke()
+                                }
                             },
                             modifier = Modifier
                                 .weight(1f),

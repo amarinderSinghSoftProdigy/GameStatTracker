@@ -57,7 +57,8 @@ fun TeamsScreen(
 
     remember {
         scope.launch {
-            if (UserStorage.role != UserType.REFEREE.key) {
+//            if (UserStorage.role != UserType.REFEREE.key) {
+            if (!UserStorage.isOrganization) {
                 vm.getTeams()
             }
         }
@@ -95,7 +96,8 @@ fun TeamsScreen(
         }
     }
 
-    val tabData = if (UserStorage.role == UserType.REFEREE.key) {
+//    val tabData = if (UserStorage.role == UserType.REFEREE.key) {
+    val tabData = if (UserStorage.isOrganization) {
         listOf(TeamsTabItems.Chat)
     } else if (!AppConstants.ENABLE_CHAT)
         listOf(TeamsTabItems.Roaster)
@@ -114,7 +116,8 @@ fun TeamsScreen(
     )
 
     Column {
-        if (UserStorage.role == UserType.REFEREE.key) {
+//        if (UserStorage.role == UserType.REFEREE.key) {
+        if (UserStorage.isOrganization) {
             RefereeTeamsTopTabs(pagerState = pagerState, tabData = tabData)
             TeamsChatScreen(
                 vm.teamUiState.value.teamColorPrimary,
@@ -149,10 +152,10 @@ fun TeamsScreen(
             SelectTeamDialog(
                 teams = vm.teamUiState.value.teams,
                 onDismiss = { dismissDialog.invoke(false) },
-                onConfirmClick = { teamId, teamName ->
+                onConfirmClick = { teamId, teamName ,isOrganization ->
                     if (UserStorage.teamId != teamId) {
                         onTeamSelectionConfirmed(state.selectedTeam)
-                        vm.onEvent(TeamUIEvent.OnConfirmTeamClick(teamId, teamName))
+                        vm.onEvent(TeamUIEvent.OnConfirmTeamClick(teamId, teamName,isOrganization))
                         //if (teamName == context.getString(R.string.team_total_hoop)) {
                         if (teamId == state.allBallId) {
                             onHomeClick()

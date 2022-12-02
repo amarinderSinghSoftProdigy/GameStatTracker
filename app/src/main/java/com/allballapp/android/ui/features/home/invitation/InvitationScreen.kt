@@ -167,12 +167,16 @@ fun InvitationScreen(
             onConfirmClick = { /*vm.onEvent(InvitationEvent.OnRoleConfirmClick)*/
 
                 //if (state.selectedRoleKey == UserType.PARENT.key || (state.selectedRoleKey == UserType.PLAYER.key)) {
-                vm.onEvent(InvitationEvent.OnRoleConfirmClick)
-                vm.onEvent(InvitationEvent.OnGuardianDialogClick(true))
-                /* } else {
-                     vm.onEvent(InvitationEvent.OnInvitationConfirm(homeState.user.gender))
-                     vm.onEvent(InvitationEvent.OnRoleDialogClick(false))
-                 }*/
+                if (!state.selectedInvitation.team.organizationAdded) {
+                    vm.onEvent(InvitationEvent.OnRoleConfirmClick)
+                    vm.onEvent(InvitationEvent.OnGuardianDialogClick(true))
+                    /* } else {
+                         vm.onEvent(InvitationEvent.OnInvitationConfirm(homeState.user.gender))
+                         vm.onEvent(InvitationEvent.OnRoleDialogClick(false))
+                     }*/
+                } else {
+                    vm.onEvent(InvitationEvent.OnInvitationConfirm(homeState.user.gender))
+                }
             },
             onSelectionChange = { vm.onEvent(InvitationEvent.OnRoleClick(roleKey = it)) },
             title = stringResource(
