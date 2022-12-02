@@ -1880,7 +1880,6 @@ fun DeclineEventDialog(
                             textColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                             placeholderColor = MaterialTheme.appColors.textField.label,
                             cursorColor = MaterialTheme.appColors.buttonColor.bckgroundEnabled
-
                         ),
                         keyboardActions = KeyboardActions(onDone = {
                             keyboardController?.hide()
@@ -1994,6 +1993,7 @@ fun SwapProfile(
                         item {
 
                         }
+
                         item {
                             if (showLoading) {
                                 CommonProgressBar()
@@ -2045,8 +2045,10 @@ fun SwapProfile(
                         DialogButton(
                             text = actionButtonText.ifEmpty { stringResource(R.string.dialog_button_confirm) },
                             onClick = {
-                                onConfirmClick.invoke(selectedUser.value)
-                               /* onDismiss.invoke()*/
+                                if(selectedUser.value._Id.isNotEmpty()) {
+                                    onConfirmClick.invoke(selectedUser.value)
+                                     onDismiss.invoke()
+                                }
                             },
                             modifier = Modifier
                                 .weight(1f),

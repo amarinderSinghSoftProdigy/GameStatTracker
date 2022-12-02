@@ -79,7 +79,7 @@ fun OtpScreen(
     var otp by rememberSaveable { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
     val state = viewModel.signUpUiState.value
-
+    val pattern = remember { Regex("^\\d+\$") }
     LaunchedEffect(key1 = true) {
         CoroutineScope(Dispatchers.IO).launch {
             while (true) {
@@ -154,20 +154,21 @@ fun OtpScreen(
                 AppOutlineTextField(
                     value = editValue,
                     onValueChange = {
-                        if (it.length <= otpLength) {
-                            setEditValue(it)
-                            otp = it
-                            if (otpLength == otp.length) {
-                                keyboardController?.hide()
-                                viewModel.onEvent(
-                                    SignUpUIEvent.OnConfirmNumber(
-                                        phoneNumber = state.signUpData.phone,
-                                        otp = otp
+                        if(it.isEmpty() || it.matches(pattern)){
+                            if (it.length <= otpLength) {
+                                setEditValue(it)
+                                otp = it
+                                if (otpLength == otp.length) {
+                                    keyboardController?.hide()
+                                    viewModel.onEvent(
+                                        SignUpUIEvent.OnConfirmNumber(
+                                            phoneNumber = state.signUpData.phone,
+                                            otp = otp
+                                        )
                                     )
-                                )
+                                }
                             }
                         }
-
                     },
                     modifier = Modifier
                         .size(0.dp)
@@ -191,7 +192,7 @@ fun OtpScreen(
                                     keyboard?.show()
                                 }
                                 .border(
-                                    width = dimensionResource(id = R.dimen.size_1dp),
+                                    width = dimensionResource(id = R.dimen.size_2dp),
                                     color = if (editValue.length == index) MaterialTheme.appColors.material.primaryVariant else MaterialTheme.appColors.editField.borderUnFocused,
                                     RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp))
                                 )
@@ -227,8 +228,7 @@ fun OtpScreen(
                         )
                         withStyle(
                             style = SpanStyle(
-                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                                textDecoration = TextDecoration.Underline
+                                color = ColorBWGrayDark,
                             )
                         ) {
                             append(stringResource(id = R.string.resend_it))
@@ -240,7 +240,7 @@ fun OtpScreen(
                     val timer = buildAnnotatedString {
                         withStyle(
                             style = SpanStyle(
-                                color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                                color = ColorBWGrayDark,
                             )
                         ) {
                             append("00:" + if ((currentTime / 1000L).toString().length == 1) "0" + (currentTime / 1000L).toString() else (currentTime / 1000L).toString())
@@ -261,7 +261,7 @@ fun OtpScreen(
                                         SignUpUIEvent.OnVerifyNumber
                                     )
                                 }
-                                currentTime = 60L * 1000L
+                                currentTime = 59L * 1000L
                             },
                             style = MaterialTheme.typography.h6.copy(color = ColorBWGrayDark)
                         )

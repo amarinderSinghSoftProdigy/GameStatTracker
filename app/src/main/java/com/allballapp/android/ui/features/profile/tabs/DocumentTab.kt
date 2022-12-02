@@ -5,11 +5,10 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
@@ -59,29 +58,23 @@ fun DocumentTab(vm: ProfileViewModel) {
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Column {
-            LazyColumn {
-                item {
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
-                }
-                itemsIndexed(state.userDocTypes) { index, item ->
-                    DocumentItem(item, {
-                        if (hasFileManagerPermission(context)) {
-                            launcher.launch("*/*")
-                            vm.onEvent(ProfileEvent.SetUploadKey(it))
-                        } else {
-                            requestFileManagerPermission(context, context as Activity)
-                        }
-                    }, {
-                        vm.onEvent(ProfileEvent.SetDeleteDocument(item))
-                        vm.onEvent(ProfileEvent.ImageUploadedDialog(true))
-                    }) {
-                        vm.onEvent(ProfileEvent.SetDeleteDocument(item))
-                        vm.onEvent(ProfileEvent.ShowDeleteDialog(true))
+        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+
+            state.userDocTypes.forEach { item ->
+
+                DocumentItem(item, {
+                    if (hasFileManagerPermission(context)) {
+                        launcher.launch("*/*")
+                        vm.onEvent(ProfileEvent.SetUploadKey(it))
+                    } else {
+                        requestFileManagerPermission(context, context as Activity)
                     }
-                }
-                item {
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+                }, {
+                    vm.onEvent(ProfileEvent.SetDeleteDocument(item))
+                    vm.onEvent(ProfileEvent.ImageUploadedDialog(true))
+                }) {
+                    vm.onEvent(ProfileEvent.SetDeleteDocument(item))
+                    vm.onEvent(ProfileEvent.ShowDeleteDialog(true))
                 }
             }
         }
@@ -111,9 +104,9 @@ fun DocumentTab(vm: ProfileViewModel) {
             )
         }
 
-        /* if (state.isLoading) {
-             CommonProgressBar()
-         }*/
+        if (state.isLoading) {
+            CommonProgressBar()
+        }
     }
 }
 

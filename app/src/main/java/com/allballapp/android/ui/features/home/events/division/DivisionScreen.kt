@@ -186,8 +186,8 @@ fun DivisionItems(
                 contentDescription = "",
                 modifier = Modifier
                     .size(
-                        height = dimensionResource(id = R.dimen.size_12dp),
-                        width = dimensionResource(id = R.dimen.size_12dp)
+                        height = dimensionResource(id = R.dimen.size_14dp),
+                        width = dimensionResource(id = R.dimen.size_14dp)
                     )
                     .then(
                         Modifier.rotate(270f)

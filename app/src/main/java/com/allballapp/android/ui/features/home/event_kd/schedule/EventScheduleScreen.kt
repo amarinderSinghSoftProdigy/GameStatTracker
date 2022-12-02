@@ -118,8 +118,8 @@ fun EventScheduleHeaderItem(date: String, gamesCount: String, isExpanded: Boolea
                 contentDescription = "",
                 modifier = Modifier
                     .size(
-                        height = dimensionResource(id = R.dimen.size_4dp),
-                        width = dimensionResource(id = R.dimen.size_8dp)
+                        height = dimensionResource(id = R.dimen.size_14dp),
+                        width = dimensionResource(id = R.dimen.size_14dp)
                     )
                     .then(
                         if (!isExpanded) Modifier.rotate(180f) else Modifier
