@@ -31,7 +31,6 @@ import com.allballapp.android.ui.features.home.events.EvEvents
 import com.allballapp.android.ui.features.home.events.EventViewModel
 import com.allballapp.android.ui.theme.ColorGreyLighter
 import com.allballapp.android.ui.theme.appColors
-import com.allballapp.android.R
 
 @Composable
 fun VenuesScreen(moveToOpenVenues: (String, String) -> Unit, eventViewModel: EventViewModel) {
