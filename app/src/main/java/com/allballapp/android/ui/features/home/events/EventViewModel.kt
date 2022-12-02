@@ -14,6 +14,7 @@ import com.allballapp.android.data.response.Format
 import com.allballapp.android.data.response.GenderList
 import com.allballapp.android.domain.repository.IEventsRepository
 import com.allballapp.android.domain.repository.ITeamRepository
+import com.allballapp.android.ui.features.components.UserType
 import com.allballapp.android.ui.features.venue.VenueDetails
 import com.allballapp.android.ui.utils.CommonUtils
 import com.allballapp.android.ui.utils.UiText
@@ -1394,7 +1395,11 @@ class EventViewModel @Inject constructor(
     private suspend fun getUserRoles() {
         _state.value = _state.value.copy(showLoading = true)
 
-        when (val userRoles = UserStorage.role?.let { teamRepo.getUserRoles(it) }) {
+//        when (val userRoles = UserStorage.role?.let { teamRepo.getUserRoles(it) }) {
+        when (val userRoles =
+            teamRepo.getUserRoles(if (UserStorage.isOrganization) UserType.REFEREE.key else "")) {
+
+
             is ResultWrapper.GenericError -> {
                 _state.value = _state.value.copy(showLoading = false)
 

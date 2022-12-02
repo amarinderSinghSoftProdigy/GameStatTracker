@@ -97,7 +97,7 @@ fun TeamSetupScreenUpdated(
     val inviteState = inviteVm.invitationState.value
 
     remember {
-        inviteVm.onEvent(InvitationEvent.GetRoles)
+        inviteVm.onEvent(InvitationEvent.GetRoles())
         homeVm.onEvent(HomeScreenEvent.OnSwapClick())
     }
 

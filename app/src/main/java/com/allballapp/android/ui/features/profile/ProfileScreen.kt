@@ -31,7 +31,8 @@ fun ProfileScreen(
 ) {
     val state = vm.state.value
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        if (UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
+//        if (UserStorage.role.equals(UserType.REFEREE.key, ignoreCase = true)) {
+        if (UserStorage.isOrganization) {
             val list = listOf(
                 TabItems.RefereeProfile,
                 TabItems.Documents,
