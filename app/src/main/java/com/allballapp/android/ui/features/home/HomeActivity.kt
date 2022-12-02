@@ -1092,6 +1092,7 @@ fun NavControllerComposable(
                     homeViewModel,
                     teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
                 )
+                setupTeamViewModelUpdated.onEvent(TeamSetupUIEventUpdated.Clear)
             }
             TeamSetupScreenUpdated(
                 homeVm = homeViewModel,

@@ -130,7 +130,17 @@ fun ProfileTabScreen(vm: ProfileViewModel, id: String) {
                     ) {
                         DetailItem(stringResource(id = R.string.email), state.user.email)
                         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
-                        DetailItem(stringResource(id = R.string.number), state.user.phone)
+
+                        var result = ""
+
+                        if (state.user.phone.isNotEmpty()) {
+                            result = state.user.phone.substring(
+                                0,
+                                state.user.phone.length - 10
+                            ) + " " + state.user.phone.substring(state.user.phone.length-10)
+                        }
+
+                        DetailItem(stringResource(id = R.string.number), result)
                     }
                 }
             }
@@ -382,7 +392,7 @@ fun ParentItem(
                 style = MaterialTheme.typography.h6,
                 color = ColorBWBlack
             )
-            if(relation.isNotEmpty()){
+            if (relation.isNotEmpty()) {
                 Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_5dp)))
                 AppText(
                     text = relation,
@@ -504,7 +514,7 @@ private fun PreferenceItem(
                     text = firstValue,
                     style = MaterialTheme.typography.h5,
                     color = ColorBWBlack,
-                    )
+                )
 
             }
             Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_5dp)))

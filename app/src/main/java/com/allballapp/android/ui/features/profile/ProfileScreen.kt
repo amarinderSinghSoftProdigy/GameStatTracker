@@ -48,9 +48,9 @@ fun ProfileScreen(
         }
     }
 
-    if (state.isLoading) {
+   /* if (state.isLoading) {
         CommonProgressBar()
-    }
+    }*/
 }
 
 
@@ -143,8 +143,7 @@ fun TabsContent(
 fun TabsRefereeContent(
     pagerState: PagerState,
     vm: ProfileViewModel,
-
-    ) {
+) {
     HorizontalPager(state = pagerState) { page ->
         when (page) {
             0 -> RefereeProfileScreen(vm)

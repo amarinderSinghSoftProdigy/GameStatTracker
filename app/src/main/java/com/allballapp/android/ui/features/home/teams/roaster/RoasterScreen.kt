@@ -247,13 +247,13 @@ fun CoachListItem(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (data.role != UserType.PLAYER.key) {
+            /*if (data.role != UserType.PLAYER.key) {*/
                 AppText(
                     text = stringResourceByName(name = CommonUtils.getRole(data.role)),
                     color = MaterialTheme.appColors.material.primaryVariant,
                     style = MaterialTheme.typography.h6
                 )
-            }
+          /*  }*/
 
            /* if (data.role == UserType.PLAYER.key) {
                 Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_6dp)))

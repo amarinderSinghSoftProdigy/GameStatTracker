@@ -31,6 +31,7 @@ import com.allballapp.android.ui.features.home.events.EventViewModel
 import com.allballapp.android.ui.theme.ColorGreyLighter
 import com.allballapp.android.ui.theme.appColors
 import com.allballapp.android.R
+
 @Composable
 fun EventTeamsScreen(moveToOpenTeams: (String, String) -> Unit, eventViewModel: EventViewModel) {
     val state = eventViewModel.eventState.value.divisionWiseTeamResponse
@@ -128,8 +129,8 @@ fun EventTeamHeader(divisionName: String, isExpanded: Boolean = false) {
             contentDescription = "",
             modifier = Modifier
                 .size(
-                    height = dimensionResource(id = R.dimen.size_12dp),
-                    width = dimensionResource(id = R.dimen.size_12dp)
+                    height = dimensionResource(id = R.dimen.size_14dp),
+                    width = dimensionResource(id = R.dimen.size_14dp)
                 )
                 .then(
                     if (isExpanded) Modifier else Modifier.rotate(180f)
@@ -189,8 +190,8 @@ fun EventTeamSubItem(team: Team, onClick: () -> Unit) {
                 contentDescription = "",
                 modifier = Modifier
                     .size(
-                        height = dimensionResource(id = R.dimen.size_12dp),
-                        width = dimensionResource(id = R.dimen.size_12dp)
+                        height = dimensionResource(id = R.dimen.size_14dp),
+                        width = dimensionResource(id = R.dimen.size_14dp)
                     )
                     .rotate(270f),
                 tint = ColorGreyLighter
