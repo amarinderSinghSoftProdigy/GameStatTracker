@@ -1,5 +1,6 @@
 package com.allballapp.android.ui.features.home.events
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -28,13 +29,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.allballapp.android.R
-import com.allballapp.android.common.apiToUIDateFormat
-import com.allballapp.android.common.apiToUIDateFormat2
-import com.allballapp.android.common.convertServerUtcDateToLocal
-import com.allballapp.android.common.uiToAPiDate
+import com.allballapp.android.common.*
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.ui.features.components.*
 import com.allballapp.android.ui.features.venue.Location
@@ -43,6 +42,7 @@ import com.allballapp.android.ui.theme.ColorButtonRed
 import com.allballapp.android.ui.theme.appColors
 import com.google.android.gms.maps.model.LatLng
 import timber.log.Timber
+import java.time.ZoneId
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -51,7 +51,7 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
     val state = vm.eventState.value
     val context = LocalContext.current
     remember {
-        vm.onEvent(EvEvents.RefreshEventDetailsScreen(eventId,EventType.PRACTICE.type))
+        vm.onEvent(EvEvents.RefreshEventDetailsScreen(eventId, EventType.PRACTICE.type))
     }
     Column(
         Modifier
@@ -63,13 +63,21 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
 
         LaunchedEffect(key1 = state.event.serverDate) {
             val arrivalTime =
-                uiToAPiDate("${apiToUIDateFormat2(state.event.date)} ${state.event.arrivalTime}")
+                if (state.event.arrivalTime.isNotEmpty() && state.event.startTime.isNotEmpty() && state.event.date.isNotEmpty())
+                    getArrivalTime(
+                        arrivalTime = state.event.arrivalTime,
+                        startTime = state.event.startTime,
+                        date = state.event.date
+                    ) else null
             val endTime =
                 uiToAPiDate("${apiToUIDateFormat2(state.event.date)} ${state.event.endTime}")
             val serverDateTime = convertServerUtcDateToLocal(state.event.serverDate)
 
+            Log.d("====", "EventDetailsScreen: " + arrivalTime)
             /*Comparing arrival time and server time to show pre note button*/
-            val preCompare = arrivalTime?.compareTo(serverDateTime)
+            val preCompare = arrivalTime?.compareTo(
+                serverDateTime!!.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()
+            )
             if (preCompare != null) {
                 when {
                     preCompare > 0 -> {
@@ -121,7 +129,12 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
                             Toast.LENGTH_LONG
                         )
                             .show()
-                        vm.onEvent(EvEvents.RefreshEventDetailsScreen(eventId = eventId,EventType.PRACTICE.type))
+                        vm.onEvent(
+                            EvEvents.RefreshEventDetailsScreen(
+                                eventId = eventId,
+                                EventType.PRACTICE.type
+                            )
+                        )
                     }
                 }
             }
@@ -166,16 +179,17 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
             Row {
                 Text(
-                    text = apiToUIDateFormat(state.event.date),
+                    text = apiToUIDateFormat3(state.event.date),
                     color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                     style = MaterialTheme.typography.h5,
-                    modifier = Modifier.weight(1.8f)
+                    modifier = Modifier.weight(1.8f),
+
                 )
                 Text(
                     text = state.event.arrivalTime,
                     color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                     style = MaterialTheme.typography.h5,
-                    modifier = Modifier.weight(1.5f)
+                    modifier = Modifier.weight(1.5f),
 
                 )
                 var startTime = state.event.startTime
@@ -194,7 +208,7 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
                     text = "$startTime - $endTime",
                     color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                     style = MaterialTheme.typography.h5,
-                    modifier = Modifier.weight(1.8f)
+                    modifier = Modifier.weight(1.8f),
                 )
             }
             LocationBlock(

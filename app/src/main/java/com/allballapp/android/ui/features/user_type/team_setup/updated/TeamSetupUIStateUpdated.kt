@@ -50,7 +50,7 @@ data class InviteObject(
     var name: String = "",
     var contact: String = "",
     var id: String = "",
-    var role: UserRoles = UserRoles(),
+    var role:  UserRoles = UserRoles(),
     var countryCode: String = "",
     var profileSelected: String = "false",
 )

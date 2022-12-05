@@ -233,6 +233,7 @@ fun HomeScreen(
                                 UserFlowBackground(
                                     padding = 0.dp, color = Color.White.copy(0.95F)
                                 ) {
+
                                     Box(modifier = Modifier
                                         .fillMaxWidth()
                                         .clickable { /*logoClick()*/

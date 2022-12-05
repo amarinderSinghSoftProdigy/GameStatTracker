@@ -41,6 +41,17 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
         preferences[ROLE] ?: ""
     }
 
+    suspend fun setTeamRole(role: String) {
+        UserStorage.teamRole = role
+        settingsDataStore.edit { settings ->
+            settings[TEAM_ROLE] = role
+        }
+    }
+
+    val getTeamRole: Flow<String> = settingsDataStore.data.map { preferences ->
+        preferences[TEAM_ROLE] ?: ""
+    }
+
     suspend fun isOrganisation(organization: Boolean) {
         UserStorage.isOrganization = organization
         settingsDataStore.edit { settings ->
@@ -149,5 +160,6 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
         val FCM = stringPreferencesKey("FCM")
         val TEAM_NAME = stringPreferencesKey("TEAM_NAME")
         val ORGANIZATION = booleanPreferencesKey("ORGANIZATION")
+        val TEAM_ROLE = stringPreferencesKey("TEAM_ROLE")
     }
 }

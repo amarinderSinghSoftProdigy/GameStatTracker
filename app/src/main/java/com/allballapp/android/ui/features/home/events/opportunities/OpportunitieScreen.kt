@@ -154,7 +154,7 @@ fun OpportunitiesItem(league: OpportunitiesItem, showLabel: Boolean, OnNextClick
                                 .clip(RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)))
                                 .background(MaterialTheme.appColors.material.primaryVariant)
                                 .padding(
-                                    horizontal = dimensionResource(id = R.dimen.size_12dp),
+                                    horizontal = dimensionResource(id = R.dimen.size_8dp),
                                     vertical = dimensionResource(
                                         id = R.dimen.size_6dp
                                     )
@@ -164,7 +164,7 @@ fun OpportunitiesItem(league: OpportunitiesItem, showLabel: Boolean, OnNextClick
                             Text(
                                 text = league.participation.type.capitalize() + " " + league.participation.minRange + "-" + league.participation.maxRange,
                                 color = Color.White,
-                                fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+                                fontSize = dimensionResource(id = R.dimen.txt_size_10).value.sp,
                                 fontWeight = FontWeight.Bold,
                             )
                         }

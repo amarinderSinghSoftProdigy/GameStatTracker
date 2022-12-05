@@ -234,6 +234,7 @@ fun OptionItem(label: String, resource: Int, click: () -> Unit) {
             tint = ColorGreyLighter,
             painter = painterResource(id = resource),
             contentDescription = "",
+            modifier = Modifier.size(dimensionResource(id = R.dimen.size_18dp))
         )
         Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.size_8dp)))
         AppText(

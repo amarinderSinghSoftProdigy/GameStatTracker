@@ -34,6 +34,7 @@ sealed class TeamSetupUIEventUpdated {
     data class OnEmailValueChange(val index: Int, val email: String) : TeamSetupUIEventUpdated()
     data class OnCountryValueChange(val index: Int, val code: String) : TeamSetupUIEventUpdated()
     data class OnRoleValueChange(val index: Int, val role: UserRoles) : TeamSetupUIEventUpdated()
+    data class OnUpdatedRoleValueChange(val index:Int, val role: UserRoles) : TeamSetupUIEventUpdated()
     data class OnInviteCountValueChange(val index: Int? = null, val addIntent: Boolean) :
         TeamSetupUIEventUpdated()
 

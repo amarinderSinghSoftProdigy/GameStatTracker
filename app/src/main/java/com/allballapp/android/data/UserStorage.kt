@@ -13,4 +13,5 @@ object UserStorage {
     var teamName: String = ""
     var playerId: String = ""
     var isOrganization: Boolean = false
+    var teamRole: String = ""
 }
