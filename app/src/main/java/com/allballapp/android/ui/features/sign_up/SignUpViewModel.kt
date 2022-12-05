@@ -763,7 +763,7 @@ class SignUpViewModel @Inject constructor(
                         _signUpUiState.value = _signUpUiState.value.copy(isLoading = false)
                         _signUpChannel.send(
                             SignUpChannel.OnAuthorizeSuccess(
-                                UiText.DynamicString(response.statusMessage)
+                                UiText.DynamicString(response.statusMessage),true
                             )
                         )
                     }
@@ -972,7 +972,7 @@ sealed class SignUpChannel {
         SignUpChannel()
 
     object OnAuthorize : SignUpChannel()
-    data class OnAuthorizeSuccess(val message: UiText) : SignUpChannel()
+    data class OnAuthorizeSuccess(val message: UiText, val showDialog : Boolean = false) : SignUpChannel()
 
     object OnOTPScreen : SignUpChannel()
     object OnSignUpSelected : SignUpChannel()

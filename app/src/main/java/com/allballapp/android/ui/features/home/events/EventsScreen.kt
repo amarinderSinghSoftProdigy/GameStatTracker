@@ -507,7 +507,7 @@ fun EventItem(
                             Text(
                                 text = events.eventType.capitalize(),
                                 color = Color.White,
-                                fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
+                                fontSize = dimensionResource(id = R.dimen.txt_size_10).value.sp,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.size_5dp))
                             )

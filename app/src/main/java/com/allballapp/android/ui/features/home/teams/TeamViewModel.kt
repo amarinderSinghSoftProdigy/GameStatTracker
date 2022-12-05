@@ -372,6 +372,7 @@ class TeamViewModel @Inject constructor(
                 teamResponse.value.let { response ->
                     if (response.status) {
                         if (response.data.result.size > 0) {
+                            setColor(response.data.result[0].teamId.colorCode)
                             setTeamAllBallId(response.data.result[0].teamId._id)
                             _teamUiState.value =
                                 _teamUiState.value.copy(allBallId = response.data.result[0].teamId._id)
@@ -384,6 +385,7 @@ class TeamViewModel @Inject constructor(
                             var selectionTeam: Team? = null
                             response.data.result.toMutableList().forEach {
                                 if (it.teamId != null) {
+
                                     if (UserStorage.teamId.isEmpty()) {
                                         if (response.data.teamId == it.teamId._id) {
                                             selectionTeam = it.teamId
@@ -438,6 +440,12 @@ class TeamViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private suspend fun setColor(colorCode: String) {
+        dataStoreManager.setPrimaryColor(colorCode)
+        dataStoreManager.setSecondaryColor(colorCode)
+        dataStoreManager.setTertiaryColor(colorCode)
     }
 
     private suspend fun updateTeam() {
@@ -843,6 +851,7 @@ class TeamViewModel @Inject constructor(
             dataStoreManager.setRole(role)
         }
     }
+
     private fun setOrganization(isOrganization: Boolean) {
         viewModelScope.launch {
             dataStoreManager.isOrganisation(isOrganization)

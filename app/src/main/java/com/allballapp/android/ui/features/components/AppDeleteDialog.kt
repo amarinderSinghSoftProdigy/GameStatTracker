@@ -1586,7 +1586,7 @@ fun SwitchPlayerDialog(
                     ) {
                         items(teams) { team ->
                             val status = remember {
-                                mutableStateOf(list.contains(team.id))
+                                mutableStateOf(list.contains(team.memberDetails.id))
                             }
                             Column(
                                 modifier = Modifier
@@ -1656,7 +1656,7 @@ fun SwitchPlayerDialog(
                             text = stringResource(R.string.dialog_button_confirm),
                             onClick = {
                                 onConfirmClick.invoke(list)
-                               /* onDismiss.invoke()*/
+                                /* onDismiss.invoke()*/
                             },
                             modifier = Modifier
                                 .weight(1f),
@@ -1677,11 +1677,11 @@ fun SelectDivisionDialog(
     title: String,
     teams: List<DivisionData>,
     division: DivisionData,
-    onDivisionSelection : (teams: DivisionData) -> Unit
+    onDivisionSelection: (teams: DivisionData) -> Unit
 ) {
-  /*  var divisionSelected = remember {
+    var divisionSelected = remember {
         mutableStateOf(division)
-    }*/
+    }
     BallerAppMainTheme {
         AlertDialog(
             modifier = Modifier
@@ -1747,9 +1747,10 @@ fun SelectDivisionDialog(
                                         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                                         fontWeight = FontWeight.W500,
                                     )
-                                    CustomCheckBox(division._id == team._id) {
+                                    CustomCheckBox(divisionSelected.value._id == team._id) {
                                         /*division._id == team._id*/
-                                        onDivisionSelection(team)
+                                        /* onDivisionSelection(team)*/
+                                        divisionSelected.value = team
                                     }
                                 }
                             }
@@ -1779,8 +1780,8 @@ fun SelectDivisionDialog(
                         DialogButton(
                             text = stringResource(R.string.dialog_button_confirm),
                             onClick = {
-                                onConfirmClick.invoke(division)
-                              /*  onDismiss.invoke()*/
+                                onConfirmClick.invoke(divisionSelected.value)
+                                /*  onDismiss.invoke()*/
                             },
                             modifier = Modifier
                                 .weight(1f),
@@ -2053,9 +2054,9 @@ fun SwapProfile(
                         DialogButton(
                             text = actionButtonText.ifEmpty { stringResource(R.string.dialog_button_confirm) },
                             onClick = {
-                                if(selectedUser.value._Id.isNotEmpty()) {
+                                if (selectedUser.value._Id.isNotEmpty()) {
                                     onConfirmClick.invoke(selectedUser.value)
-                                     onDismiss.invoke()
+                                    onDismiss.invoke()
                                 }
                             },
                             modifier = Modifier
@@ -3623,5 +3624,50 @@ fun EventUsersDialogItem(
         }
     }
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_12dp)))
+}
+
+@Composable
+fun SuccessDialog(message: String, onDismiss: () -> Unit) {
+
+    BallerAppMainTheme {
+        AlertDialog(
+            modifier = Modifier
+                .clip(shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp))),
+            onDismissRequest = {
+                /*onDismiss.invoke()*/
+            },
+            buttons = {
+                Column(
+                    modifier = Modifier
+                        .background(color = Color.White)
+                        .padding(
+                            all = dimensionResource(
+                                id = R.dimen.size_16dp
+                            )
+                        ),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    AppText(
+                        text = message,
+                        style = MaterialTheme.typography.h4,
+                        color = MaterialTheme.appColors.buttonColor.textDisabled,
+                    )
+                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+
+                    DialogButton(
+                        text = stringResource(R.string.ok),
+                        onClick = {
+                            onDismiss.invoke()
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        enabled = true,
+                        onlyBorder = false,
+                    )
+                }
+            }
+        )
+    }
 }
 

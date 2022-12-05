@@ -9,6 +9,7 @@ import com.allballapp.android.data.response.team.Player
 
 data class TeamSetupUIStateUpdated(
     val teamColorPrimary: String = "",
+    val teamColorPri: String = "",
     val teamColorSec: String = "",
     val teamColorThird: String = "",
     val teamName: String = "",

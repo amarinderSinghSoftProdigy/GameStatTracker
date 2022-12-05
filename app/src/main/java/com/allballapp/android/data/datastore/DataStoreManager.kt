@@ -121,6 +121,8 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
         }
     }
 
+
+
     suspend fun setId(id: String) {
         settingsDataStore.edit { settings ->
             settings[ID] = id
@@ -130,6 +132,51 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
         settingsDataStore.edit { settings ->
             settings[FCM] = token
         }
+    }
+
+    suspend fun setPrimaryColor(color:String) {
+        val newColor = color.replace("#","")
+        settingsDataStore.edit { settings ->
+            settings[PRIMARY_COLOR] = newColor
+        }
+    }
+
+    val getPrimaryColor: Flow<String> = settingsDataStore.data.map { preferences ->
+        val color = preferences[PRIMARY_COLOR]?.replace(
+            "#",
+            ""
+        )?: ""
+        color
+    }
+
+    suspend fun setSecondaryColor(color:String) {
+        val newColor = color.replace("#","")
+        settingsDataStore.edit { settings ->
+            settings[SECONDARY_COLOR] = newColor
+        }
+    }
+
+    val getSecondaryColor: Flow<String> = settingsDataStore.data.map { preferences ->
+        val color = preferences[SECONDARY_COLOR]?.replace(
+            "#",
+            ""
+        )?: ""
+        color
+    }
+
+    suspend fun setTertiaryColor(color:String) {
+        val newColor = color.replace("#","")
+        settingsDataStore.edit { settings ->
+            settings[TERTIARY_COLOR] = newColor
+        }
+    }
+
+    val getTertiaryColor: Flow<String> = settingsDataStore.data.map { preferences ->
+        val color = preferences[TERTIARY_COLOR]?.replace(
+            "#",
+            ""
+        )?: ""
+        color
     }
 
     val getFCM: Flow<String> = settingsDataStore.data.map { preferences ->
@@ -161,5 +208,8 @@ class DataStoreManager @Inject constructor(@ApplicationContext appContext: Conte
         val TEAM_NAME = stringPreferencesKey("TEAM_NAME")
         val ORGANIZATION = booleanPreferencesKey("ORGANIZATION")
         val TEAM_ROLE = stringPreferencesKey("TEAM_ROLE")
+        val PRIMARY_COLOR = stringPreferencesKey("PRIMARY_COLOR")
+        val SECONDARY_COLOR = stringPreferencesKey("SECONDARY_COLOR")
+        val TERTIARY_COLOR = stringPreferencesKey("TERTIARY_COLOR")
     }
 }

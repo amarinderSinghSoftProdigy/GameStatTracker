@@ -465,6 +465,7 @@
     <string name="no_label">No</string>
     <string name="age_ok">I\'m 13 or older</string>
     <string name="age_zero">I\'m younger than 13</string>
+    <string name="ok">Okay</string>
     <string name="age_conformation">To begin, Please select your age</string>
     <string name="authorize_message">Awesome! We need your parents help to get started. Enter either of your parent\'s phone number below and we\'ll send them a message to help you get started.</string>
     <string name="valid_cash_message">Cash must be greater or equal to league price</string>
