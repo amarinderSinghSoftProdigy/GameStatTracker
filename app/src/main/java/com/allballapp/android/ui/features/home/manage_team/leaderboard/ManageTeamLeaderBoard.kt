@@ -141,6 +141,7 @@ fun ManageTeamLeaderBoard(vm: TeamViewModel) {
                             item = item,
                             status = status,
                             all = state.all,
+                            index = index,
                         ) {
                             vm.onEvent(TeamUIEvent.OnItemSelected(it.name))
                         }
@@ -164,9 +165,10 @@ inline fun LeaderBoardItem(
     item: TeamLeaderBoard,
     status: Boolean,
     all: Boolean,
+    index: Int,
     crossinline onSelectionChange: (TeamLeaderBoard) -> Unit,
 ) {
-    val selection = remember {
+    val selection = remember(item.status) {
         mutableStateOf(item.status)
     }
 
@@ -252,5 +254,6 @@ inline fun LeaderBoardItem(
                 .size(dimensionResource(id = R.dimen.size_12dp))
         )
     }
-    AppDivider(color = MaterialTheme.colors.primary)
+    if (index !=0)
+     AppDivider(color = MaterialTheme.colors.primary)
 }
