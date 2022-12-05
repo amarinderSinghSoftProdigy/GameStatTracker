@@ -232,6 +232,7 @@ fun FilterItem(
                                     checkedThumbColor = MaterialTheme.appColors.material.primaryVariant
                                 )
                             )
+
                         }
                         if (index != list.size - 1)
                             AppDivider()

@@ -571,4 +571,7 @@
     <string name="env_change_message">Are you sure you want to change the Environment and Log-out?</string>
 
     <string name="please_select_payment_method">Please select payment method.</string>
+    <string name="guardians">Guardians</string>
+    <string name="guardian">Guardian</string>
+
 </resources>

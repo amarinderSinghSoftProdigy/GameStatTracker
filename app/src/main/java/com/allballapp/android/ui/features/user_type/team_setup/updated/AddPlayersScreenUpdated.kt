@@ -21,6 +21,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -35,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import com.allballapp.android.R
 import com.allballapp.android.common.AppConstants
+import com.allballapp.android.common.getCustomColorCode
 import com.allballapp.android.common.validName
 import com.allballapp.android.data.UserStorage
 import com.allballapp.android.data.request.Members
@@ -99,7 +101,7 @@ fun AddPlayersScreenUpdated(
     }
     BackHandler {
         onBackClick.invoke()
-        vm.onEvent(TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen)
+       /* vm.onEvent(TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen)*/
     }
 
     fun updateItem(index: Int? = null, addIntent: Boolean) {
@@ -225,7 +227,7 @@ fun AddPlayersScreenUpdated(
                 secondText = stringResource(id = R.string.finish),
                 onBackClick = {
                     onBackClick.invoke()
-                    vm.onEvent(TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen)
+                /*    vm.onEvent(TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen)*/
                 },
                 onNextClick = {
                     if (!state.isLoading) {
@@ -280,7 +282,7 @@ fun AddPlayersScreenUpdated(
                     }*/
                 },
                 enableState = !state.isLoading && state.inviteList.isNotEmpty() &&
-                        state.inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() && it.contact.length >= 10 && it.role.key.isNotEmpty() },
+                        state.inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() && it.contact.length >= 10 && it.role.value.isNotEmpty()},
                 themed = true,
             )
             Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_22dp)))
@@ -439,7 +441,7 @@ fun InviteItem(
             Box(modifier = Modifier.weight(1f)) {
                 Column {
                     InviteField(
-                        roleObject.value.value,
+                        item.role.value,
                         modifier = Modifier
                             .height(dimensionResource(id = R.dimen.size_56dp))
                             .onGloballyPositioned {
@@ -464,6 +466,7 @@ fun InviteItem(
                         roles.forEach { label ->
                             DropdownMenuItem(onClick = {
                                 roleObject.value = label
+
                                 vm.onEvent(
                                     TeamSetupUIEventUpdated.OnRoleValueChange(
                                         index = index,
@@ -591,6 +594,28 @@ fun InviteItem(
                     }
             )
         }
+    }
+}
+
+@Composable
+fun AddRemoveButton(icon: Painter, teamColor: String, onItemClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .size(dimensionResource(id = R.dimen.size_20dp))
+            .background(
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_4dp)),
+                color = Color(android.graphics.Color.parseColor("#${getCustomColorCode(teamColor)}"))
+            )
+    ) {
+
+        Icon(
+            painter = icon, contentDescription = "",
+            modifier = Modifier
+                .align(Alignment.Center)
+                .size(dimensionResource(id = R.dimen.size_20dp))
+                .clickable(onClick = { onItemClick() }),
+            tint = Color.White
+        )
     }
 }
 

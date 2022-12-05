@@ -74,6 +74,7 @@ import com.togitech.ccp.data.utils.getDefaultPhoneCode
 import com.togitech.ccp.data.utils.getLibCountries
 import timber.log.Timber
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 @Composable
@@ -287,6 +288,7 @@ fun ShowParentDialog(
     parentDetails: Parent,
     onDismiss: () -> Unit,
     onConfirmClick: () -> Unit,
+    label: String
 ) {
     val context = LocalContext.current
     BallerAppMainTheme {
@@ -310,7 +312,7 @@ fun ShowParentDialog(
                 ) {
                     Box(modifier = Modifier.fillMaxWidth()) {
                         AppText(
-                            text = stringResource(id = R.string.parent),
+                            text = label,
                             style = MaterialTheme.typography.h5,
                             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                             fontWeight = FontWeight.W500
@@ -925,6 +927,7 @@ fun SelectInvitationRoleDialog(
                             style = MaterialTheme.typography.h5,
                             color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                             fontWeight = FontWeight.W500,
+                            modifier = Modifier.padding(end = dimensionResource(id = R.dimen.size_20dp))
                         )
 
                         Icon(
@@ -1537,9 +1540,7 @@ fun SwitchPlayerDialog(
     teams: ArrayList<PlayerDetails>,
     player: ArrayList<String>,
 ) {
-    val teamSelected = remember {
-        mutableStateOf(player)
-    }
+
     BallerAppMainTheme {
         AlertDialog(
             modifier = Modifier
@@ -1577,7 +1578,7 @@ fun SwitchPlayerDialog(
                         )
                     }
                     Spacer(modifier = Modifier.size(dimensionResource(id = R.dimen.size_20dp)))
-                    val list = teamSelected.value
+                    val list = player
                     LazyColumn(
                         modifier = Modifier.height(dimensionResource(id = R.dimen.size_200dp)),
                         verticalArrangement = Arrangement.Top,
@@ -1627,7 +1628,6 @@ fun SwitchPlayerDialog(
                                         } else {
                                             list.add(team.memberDetails.id)
                                         }
-                                        teamSelected.value = list
                                     }
                                 }
                             }
@@ -1655,8 +1655,8 @@ fun SwitchPlayerDialog(
                         DialogButton(
                             text = stringResource(R.string.dialog_button_confirm),
                             onClick = {
-                                onConfirmClick.invoke(teamSelected.value)
-                                onDismiss.invoke()
+                                onConfirmClick.invoke(list)
+                               /* onDismiss.invoke()*/
                             },
                             modifier = Modifier
                                 .weight(1f),
@@ -1677,10 +1677,11 @@ fun SelectDivisionDialog(
     title: String,
     teams: List<DivisionData>,
     division: DivisionData,
+    onDivisionSelection : (teams: DivisionData) -> Unit
 ) {
-    var divisionSelected = remember {
+  /*  var divisionSelected = remember {
         mutableStateOf(division)
-    }
+    }*/
     BallerAppMainTheme {
         AlertDialog(
             modifier = Modifier
@@ -1732,7 +1733,7 @@ fun SelectDivisionDialog(
                                 modifier = Modifier
                                     .padding(bottom = dimensionResource(id = R.dimen.size_8dp))
                                     .background(
-                                        color = if (divisionSelected.value._id == team._id) MaterialTheme.appColors.material.primary else Color.White,
+                                        color = if (division._id == team._id) MaterialTheme.appColors.material.primary else Color.White,
                                         shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_8dp)),
                                     )
                             ) {
@@ -1746,8 +1747,9 @@ fun SelectDivisionDialog(
                                         fontSize = dimensionResource(id = R.dimen.txt_size_14).value.sp,
                                         fontWeight = FontWeight.W500,
                                     )
-                                    CustomCheckBox(divisionSelected.value._id == team._id) {
-                                        divisionSelected.value = team
+                                    CustomCheckBox(division._id == team._id) {
+                                        /*division._id == team._id*/
+                                        onDivisionSelection(team)
                                     }
                                 }
                             }
@@ -1766,7 +1768,6 @@ fun SelectDivisionDialog(
                             text = stringResource(R.string.dialog_button_cancel),
                             onClick = {
                                 onDismiss()
-                                divisionSelected.value = DivisionData()
                             },
                             modifier = Modifier
                                 .weight(1f)
@@ -1778,8 +1779,8 @@ fun SelectDivisionDialog(
                         DialogButton(
                             text = stringResource(R.string.dialog_button_confirm),
                             onClick = {
-                                onConfirmClick.invoke(divisionSelected.value)
-                                onDismiss.invoke()
+                                onConfirmClick.invoke(division)
+                              /*  onDismiss.invoke()*/
                             },
                             modifier = Modifier
                                 .weight(1f),
@@ -3177,6 +3178,7 @@ fun NumberPickerDialog(
                                 minValue = mYear - 100
                                 maxValue = mYear
                                 value = mYear
+                                wrapSelectorWheel = false
                             }
                         }
                     )

@@ -364,7 +364,7 @@ fun TransparentButtonButton(
     shape: Shape = RoundedCornerShape(8.dp),
     border: BorderStroke? = BorderStroke(
         width = dimensionResource(id = R.dimen.size_1dp),
-        color = ColorGreyLighter
+        color = MaterialTheme.appColors.textField.label.copy(0.15f)
     ),
     contentPadding: PaddingValues = PaddingValues(
         vertical = dimensionResource(id = R.dimen.size_10dp),

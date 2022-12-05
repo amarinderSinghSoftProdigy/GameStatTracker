@@ -509,6 +509,7 @@ fun NavControllerComposable(
                         setupTeamViewModelUpdated,
                         teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
                     )
+                        setupTeamViewModelUpdated.onEvent(TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen)
                     navController.navigate(Route.ADD_MY_PLAYER_SCREEN + "/${UserStorage.teamId}")
                 },
                 setupTeamViewModelUpdated = setupTeamViewModelUpdated,
@@ -685,6 +686,7 @@ fun NavControllerComposable(
                         setupTeamViewModelUpdated,
                         teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
                     )
+                    setupTeamViewModelUpdated.onEvent(TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen)
                     navController.navigate(Route.ADD_MY_PLAYER_SCREEN + "/${UserStorage.teamId}")
                 }, onHomeClick = {
                     homeViewModel.showBottomAppBar(false)
@@ -959,6 +961,7 @@ fun NavControllerComposable(
                     setupTeamViewModelUpdated,
                     teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
                 )
+                setupTeamViewModelUpdated.onEvent(TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen)
                 navController.navigate(Route.ADD_MY_PLAYER_SCREEN + "/${UserStorage.teamId}")
             }, venue = venue, onVenueClick = {
                 navController.navigate(Route.SELECT_VENUE)
@@ -1089,6 +1092,7 @@ fun NavControllerComposable(
                         setupTeamViewModelUpdated,
                         teamViewModel.teamUiState.value.selectedTeam?.colorCode ?: ""
                     )*/
+                    setupTeamViewModelUpdated.onEvent(TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen)
                     navController.navigate(Route.ADD_MY_PLAYER_SCREEN + "/${teamId}")
                 },
                 onBackClick = {
@@ -1121,9 +1125,6 @@ fun NavControllerComposable(
                 )
                 setupTeamViewModelUpdated.onEvent(TeamSetupUIEventUpdated.Clear)
             }
-            remember {
-                setupTeamViewModelUpdated.onEvent(TeamSetupUIEventUpdated.Clear)
-            }
             TeamSetupScreenUpdated(
                 homeVm = homeViewModel,
                 venue = venue,
@@ -1146,10 +1147,12 @@ fun NavControllerComposable(
                     )
                     homeViewModel.onEvent(HomeScreenEvent.HideSwap(false))
                     if (it.isNullOrEmpty()) {
+                        setupTeamViewModelUpdated.onEvent(TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen)
                         navController.navigate(Route.ADD_PLAYER_SCREEN) {
                             navController.popBackStack()
                         }
                     } else {
+                        setupTeamViewModelUpdated.onEvent(TeamSetupUIEventUpdated.OnBackButtonClickFromPlayerScreen)
                         navController.navigate(Route.ADD_MY_PLAYER_SCREEN + "/${it}") {
                             navController.popBackStack()
                         }

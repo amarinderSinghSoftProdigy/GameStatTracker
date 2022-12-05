@@ -672,15 +672,19 @@ fun LocationBlock(location: Location, padding: Dp = dimensionResource(id = R.dim
         Modifier.padding(horizontal = padding)
     ) {
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+        Text(
+            text = stringResource(id = R.string.location),
+            style = MaterialTheme.typography.h6,
+            color = MaterialTheme.appColors.textField.label,
+            fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
+        )
+
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+
         Row(modifier = Modifier.fillMaxWidth()) {
+
             Column(modifier = Modifier.weight(2F)) {
-                Text(
-                    text = stringResource(id = R.string.location),
-                    color = ColorBWGrayLight,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = dimensionResource(id = R.dimen.txt_size_12).value.sp,
-                )
-                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_8dp)))
+
                 Text(
                     text = location.address,
                     color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
@@ -706,6 +710,7 @@ fun LocationBlock(location: Location, padding: Dp = dimensionResource(id = R.dim
                 enabled = true,
             )
         }
+
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
         Box(
             modifier = Modifier
