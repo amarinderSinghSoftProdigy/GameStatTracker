@@ -34,7 +34,9 @@ fun OpenVenuesDetailsScreen(venueId: String, eventViewModel: EventViewModel) {
     remember {
         eventViewModel.onEvent(EvEvents.RefreshVenueDetailsById(venueId))
     }
-    if (state.Id.isNotEmpty()) {
+    if (vmState.isLoading) {
+        CommonProgressBar()
+    } else if (state.Id.isNotEmpty()) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -131,9 +133,6 @@ fun OpenVenuesDetailsScreen(venueId: String, eventViewModel: EventViewModel) {
         }
     } else {
         EmptyScreen(singleText = true, stringResource(id = R.string.no_data_found))
-    }
-    if (vmState.isLoading) {
-        CommonProgressBar()
     }
 }
 

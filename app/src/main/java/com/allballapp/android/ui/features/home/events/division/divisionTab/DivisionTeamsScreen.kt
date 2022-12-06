@@ -35,6 +35,7 @@ import com.allballapp.android.ui.features.home.events.EventChannel
 import com.allballapp.android.ui.features.home.events.EventViewModel
 import com.allballapp.android.ui.theme.appColors
 import com.allballapp.android.R
+import com.allballapp.android.ui.features.components.CommonProgressBar
 
 @Composable
 fun DivisionTeamScreen(
@@ -53,47 +54,50 @@ fun DivisionTeamScreen(
         eventViewModel.eventChannel.collect { uiEvent ->
             when (uiEvent) {
                 is EventChannel.ShowDivisionTeamToast -> {
-                   /* Toast.makeText(
-                        context,
-                        uiEvent.message.asString(context),
-                        Toast.LENGTH_LONG
-                    )
-                        .show()*/
+                    /* Toast.makeText(
+                         context,
+                         uiEvent.message.asString(context),
+                         Toast.LENGTH_LONG
+                     )
+                         .show()*/
                 }
                 else -> Unit
             }
         }
     }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = MaterialTheme.appColors.material.primary)
-    ) {
-
-        if(state.isEmpty()){
+    Box() {
+        if (eventViewModel.eventState.value.isLoading) {
+            CommonProgressBar()
+        } else if (state.isEmpty()) {
             EmptyScreen(singleText = true, stringResource(id = R.string.no_data_found))
-        }
-        else {
-            Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
-
-            LazyColumn(
+        } else {
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
-                    .background(
-                        color = Color.White,
-                        shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_16dp))
-                    )
+                    .fillMaxSize()
+                    .background(color = MaterialTheme.appColors.material.primary)
             ) {
-                items(state) { item ->
-                    DivisionTeamItem(item)
 
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_16dp)))
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = dimensionResource(id = R.dimen.size_16dp))
+                        .background(
+                            color = Color.White,
+                            shape = RoundedCornerShape(dimensionResource(id = R.dimen.size_16dp))
+                        )
+                ) {
+                    items(state) { item ->
+                        DivisionTeamItem(item)
+
+                    }
                 }
             }
         }
 
-
     }
+
 }
 
 @Composable

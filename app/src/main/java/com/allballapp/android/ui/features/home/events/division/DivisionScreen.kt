@@ -151,6 +151,7 @@ fun DivisionData(
         itemsIndexed(divisionList) { index, item ->
 
             DivisionItems(item) {
+                vm.onEvent(EvEvents.RefreshData)
                 moveToOpenDivisions(item.divisionName, item._id)
             }
 

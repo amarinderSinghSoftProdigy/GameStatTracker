@@ -1203,7 +1203,7 @@ fun SelectGuardianRoleDialog(
     guardianList: List<PlayerDetails>,
     onValueSelected: (PlayerDetails) -> Unit
 ) {
-    Timber.e("selected " + selected)
+
     BallerAppMainTheme {
         AlertDialog(
             properties = DialogProperties(usePlatformDefaultWidth = false),
@@ -2929,7 +2929,7 @@ fun InviteTeamMembersDialog(
                             text = stringResource(R.string.invite),
                             onClick = {
                                 if (inviteList.isNotEmpty() &&
-                                    inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() && it.role.key.isNotEmpty() && it.contact.length == 10 }
+                                    inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() && it.contact.length == 10 }
                                 ) {
                                     onConfirmClick.invoke()
                                 }
@@ -2938,7 +2938,7 @@ fun InviteTeamMembersDialog(
                                 .weight(1f),
                             border = ButtonDefaults.outlinedBorder,
                             enabled = inviteList.isNotEmpty() &&
-                                    inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() && it.role.key.isNotEmpty() && it.contact.length == 10 },
+                                    inviteList.all { it.name.isNotEmpty() && it.contact.isNotEmpty() && it.contact.length == 10 },
                             onlyBorder = false,
                         )
                     }

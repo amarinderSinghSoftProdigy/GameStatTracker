@@ -614,6 +614,7 @@ class SignUpViewModel @Inject constructor(
             firstName = _signUpUiState.value.signUpData.firstName,
             lastName = _signUpUiState.value.signUpData.lastName,
             profileImage = _signUpUiState.value.signUpData.profileImage,
+            email = _signUpUiState.value.signUpData.email
 //            city = "",
 //            state = "",
 //            zip = "",
@@ -719,11 +720,13 @@ class SignUpViewModel @Inject constructor(
                             role = signUpUiState.value.signUpData.role ?: "",
                             email = signUpUiState.value.signUpData.email ?: "",
                         )
+
                         _signUpUiState.value = _signUpUiState.value.copy(
                             isLoading = false,
                             errorMessage = null,
                             successMessage = response.statusMessage
                         )
+
                         _signUpChannel.send(
                             SignUpChannel.OnProfileUpdateSuccess(
                                 UiText.DynamicString(

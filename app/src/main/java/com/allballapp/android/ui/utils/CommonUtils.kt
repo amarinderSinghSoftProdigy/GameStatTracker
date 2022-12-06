@@ -99,7 +99,7 @@ class CommonUtils {
                         endDate.indexOf("T")
                     ) else endDate
                 val inputPattern = "yyyy-MM-dd"
-                val outputStartPattern = "MMM dd"
+                val outputStartPattern = "MMM dd, yyyy"
                 val outputPattern = "MMM dd, yyyy"
                 val inputFormat = SimpleDateFormat(inputPattern)
 
