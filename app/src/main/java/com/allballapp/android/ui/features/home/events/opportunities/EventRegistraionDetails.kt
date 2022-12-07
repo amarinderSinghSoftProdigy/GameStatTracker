@@ -97,6 +97,7 @@ fun EventRegistraionDetails(
                         Toast.LENGTH_LONG
                     )
                     toast?.show()
+                    onSuccess()
                 }
             }
         }
@@ -425,7 +426,7 @@ fun EventRegistraionDetails(
             title = stringResource(id = R.string.select_player),
             onDismiss = {
                 showPlayerDialog.value = false
-                vm.onEvent(EvEvents.ClearPlayer)
+//                vm.onEvent(EvEvents.ClearPlayer)
             },
             onConfirmClick = {
                 vm.onEvent(EvEvents.RegisterPlayer(it))
@@ -452,7 +453,7 @@ fun EventRegistraionDetails(
             title = stringResource(id = R.string.select_division),
             onDismiss = {
                 showDivisionDialog.value = false
-                vm.onEvent(EvEvents.ClearDivisionData)
+             /*   vm.onEvent(EvEvents.ClearDivisionData)*/
             },
             onConfirmClick = {
                 vm.onEvent(EvEvents.RegisterDivision(it))

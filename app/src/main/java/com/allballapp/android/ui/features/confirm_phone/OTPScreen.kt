@@ -69,7 +69,6 @@ fun OtpScreen(
     val showGuardianDialog = remember {
         mutableStateOf(false)
     }
-
     val totalTime = 60L * 1000L
     val context = LocalContext.current
     val (editValue, setEditValue) = remember { mutableStateOf("") }
@@ -80,6 +79,12 @@ fun OtpScreen(
     val keyboardController = LocalSoftwareKeyboardController.current
     val state = viewModel.signUpUiState.value
     val pattern = remember { Regex("^\\d+\$") }
+    val showSuccessDialog = remember {
+        mutableStateOf(false)
+    }
+    val showSuccessMessage = remember {
+        mutableStateOf("")
+    }
     LaunchedEffect(key1 = true) {
         CoroutineScope(Dispatchers.IO).launch {
             while (true) {
@@ -100,9 +105,19 @@ fun OtpScreen(
                         .show()
                 }
                 is SignUpChannel.OnAuthorizeSuccess -> {
-                    Toast.makeText(context, uiEvent.message.asString(context), Toast.LENGTH_LONG)
-                        .show()
-                    onAuthorize()
+                    if (uiEvent.showDialog) {
+                        showSuccessMessage.value = uiEvent.message.asString(context)
+                        showSuccessDialog.value = uiEvent.showDialog
+                    } else {
+                        Toast.makeText(
+                            context,
+                            uiEvent.message.asString(context),
+                            Toast.LENGTH_LONG
+                        )
+                            .show()
+                    }
+
+                    /* onAuthorize()*/
                 }
                 is SignUpChannel.OnAuthorize -> {
                     showAgeDialog.value = true
@@ -154,7 +169,7 @@ fun OtpScreen(
                 AppOutlineTextField(
                     value = editValue,
                     onValueChange = {
-                        if(it.isEmpty() || it.matches(pattern)){
+                        if (it.isEmpty() || it.matches(pattern)) {
                             if (it.length <= otpLength) {
                                 setEditValue(it)
                                 otp = it
@@ -307,6 +322,14 @@ fun OtpScreen(
                     )
                 })
         }
+
+        if (showSuccessDialog.value) {
+            SuccessDialog(showSuccessMessage.value) {
+                showSuccessDialog.value = false
+                onAuthorize()
+            }
+        }
+
         if (state.isLoading) {
             CommonProgressBar()
         }

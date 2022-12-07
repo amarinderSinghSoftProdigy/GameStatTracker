@@ -136,6 +136,9 @@ class HomeViewModel @Inject constructor(
             dataStoreManager.setEmail("")
             dataStoreManager.setColor("")
             dataStoreManager.setTeamName("")
+            dataStoreManager.setPrimaryColor("")
+            dataStoreManager.setTertiaryColor("")
+            dataStoreManager.setSecondaryColor("")
             logoutFromCometChat()
             UserStorage.userId = ""
             UserStorage.teamId = ""

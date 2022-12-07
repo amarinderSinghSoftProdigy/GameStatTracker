@@ -13,6 +13,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.provider.ContactsContract.Data
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -224,7 +225,8 @@ class HomeActivity : FragmentActivity(), CustomCometListener {
                                 isOrganization = isOrganization.value,
                                 cometChat = cometChat,
                                 setupTeamViewModelUpdated = setupTeamViewModelUpdated
-                                    ?: hiltViewModel()
+                                    ?: hiltViewModel(),
+                                dataStoreManager = dataStoreManager
                             )
                         }
                     },
@@ -415,13 +417,18 @@ fun NavControllerComposable(
 //    role: String = "",
     isOrganization: Boolean = false,
     cometChat: CometChatUI,
-    setupTeamViewModelUpdated: SetupTeamViewModelUpdated
+    setupTeamViewModelUpdated: SetupTeamViewModelUpdated,
+    dataStoreManager: DataStoreManager
 ) {
     val state = homeViewModel.state.value
 
     //val setupTeamViewModelUpdated: SetupTeamViewModelUpdated = hiltViewModel()
     val profileViewModel: ProfileViewModel = hiltViewModel()
     val chatViewModel: ChatViewModel = hiltViewModel()
+    val primaryColor = dataStoreManager.getPrimaryColor.collectAsState(initial = AppConstants.DEFAULT_COLOR)
+    val secondaryColor = dataStoreManager.getSecondaryColor.collectAsState(initial = AppConstants.DEFAULT_COLOR)
+    val tertiaryColor = dataStoreManager.getTertiaryColor.collectAsState(initial = AppConstants.DEFAULT_COLOR)
+
     var eventTitle by rememberSaveable { mutableStateOf("") }
     var teamLogo by rememberSaveable {
         mutableStateOf("")
@@ -494,14 +501,29 @@ fun NavControllerComposable(
                 onCreateTeamClick = {
                     homeViewModel.setDialog(false)
                     navController.navigate(Route.TEAM_SETUP_SCREEN) {
-                        if (it != null)
-                            setupTeamViewModelUpdated.onEvent(
-                                TeamSetupUIEventUpdated.OnColorSelected(
-                                    (it.colorCode).replace(
-                                        "#", ""
-                                    )
+                        setupTeamViewModelUpdated.onEvent(TeamSetupUIEventUpdated.Clear)
+
+                        setupTeamViewModelUpdated.onEvent(
+                            TeamSetupUIEventUpdated.OnColorSelected(
+                                (primaryColor.value ?: "").replace(
+                                    "#", ""
                                 )
                             )
+                        )
+                        setupTeamViewModelUpdated.onEvent(
+                            TeamSetupUIEventUpdated.OnSecColorSelected(
+                                (secondaryColor.value ?: "").replace(
+                                    "#", ""
+                                )
+                            )
+                        )
+                        setupTeamViewModelUpdated.onEvent(
+                            TeamSetupUIEventUpdated.OnTerColorSelected(
+                                (tertiaryColor.value ?: "").replace(
+                                    "#", ""
+                                )
+                            )
+                        )
                     }
                 },
                 onInviteClick = {
@@ -666,9 +688,25 @@ fun NavControllerComposable(
                 onCreateTeamClick = {
                     navController.navigate(Route.TEAM_SETUP_SCREEN) {
 //                        navController.popBackStack()
+                        setupTeamViewModelUpdated.onEvent(TeamSetupUIEventUpdated.Clear)
+
                         setupTeamViewModelUpdated.onEvent(
                             TeamSetupUIEventUpdated.OnColorSelected(
-                                (it?.colorCode ?: "").replace(
+                                (primaryColor.value ?: "").replace(
+                                    "#", ""
+                                )
+                            )
+                        )
+                        setupTeamViewModelUpdated.onEvent(
+                            TeamSetupUIEventUpdated.OnSecColorSelected(
+                                (secondaryColor.value ?: "").replace(
+                                    "#", ""
+                                )
+                            )
+                        )
+                        setupTeamViewModelUpdated.onEvent(
+                            TeamSetupUIEventUpdated.OnTerColorSelected(
+                                (tertiaryColor.value ?: "").replace(
                                     "#", ""
                                 )
                             )
@@ -1116,6 +1154,7 @@ fun NavControllerComposable(
                     topBar = TopBar.CREATE_TEAM,
                 )
             )
+
             BackHandler {
                 setColorToOriginalOnBack(
                     navController,

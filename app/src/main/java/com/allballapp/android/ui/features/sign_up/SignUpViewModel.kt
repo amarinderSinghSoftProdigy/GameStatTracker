@@ -614,6 +614,7 @@ class SignUpViewModel @Inject constructor(
             firstName = _signUpUiState.value.signUpData.firstName,
             lastName = _signUpUiState.value.signUpData.lastName,
             profileImage = _signUpUiState.value.signUpData.profileImage,
+            email = _signUpUiState.value.signUpData.email
 //            city = "",
 //            state = "",
 //            zip = "",
@@ -719,11 +720,13 @@ class SignUpViewModel @Inject constructor(
                             role = signUpUiState.value.signUpData.role ?: "",
                             email = signUpUiState.value.signUpData.email ?: "",
                         )
+
                         _signUpUiState.value = _signUpUiState.value.copy(
                             isLoading = false,
                             errorMessage = null,
                             successMessage = response.statusMessage
                         )
+
                         _signUpChannel.send(
                             SignUpChannel.OnProfileUpdateSuccess(
                                 UiText.DynamicString(
@@ -763,7 +766,7 @@ class SignUpViewModel @Inject constructor(
                         _signUpUiState.value = _signUpUiState.value.copy(isLoading = false)
                         _signUpChannel.send(
                             SignUpChannel.OnAuthorizeSuccess(
-                                UiText.DynamicString(response.statusMessage)
+                                UiText.DynamicString(response.statusMessage),true
                             )
                         )
                     }
@@ -972,7 +975,7 @@ sealed class SignUpChannel {
         SignUpChannel()
 
     object OnAuthorize : SignUpChannel()
-    data class OnAuthorizeSuccess(val message: UiText) : SignUpChannel()
+    data class OnAuthorizeSuccess(val message: UiText, val showDialog : Boolean = false) : SignUpChannel()
 
     object OnOTPScreen : SignUpChannel()
     object OnSignUpSelected : SignUpChannel()

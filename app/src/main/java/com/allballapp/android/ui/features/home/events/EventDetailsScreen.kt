@@ -184,14 +184,14 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
                     style = MaterialTheme.typography.h5,
                     modifier = Modifier.weight(1.8f),
 
-                )
+                    )
                 Text(
                     text = state.event.arrivalTime,
                     color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
                     style = MaterialTheme.typography.h5,
                     modifier = Modifier.weight(1.5f),
 
-                )
+                    )
                 var startTime = state.event.startTime
                 var endTime = state.event.endTime
 
@@ -246,89 +246,81 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
 
         LazyRow {
             itemsIndexed(state.event.invites) { index, item ->
-                Column(
-                    modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.size_16dp)),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                val showTooltip = remember { mutableStateOf(false) }
+
+                // Buttons and Surfaces don't support onLongClick out of the box,
+                // so use a simple Box with combinedClickable
+                Box(
+                    modifier = Modifier
+                        .combinedClickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = rememberRipple(),
+                            onClickLabel = "Button action description",
+                            role = Role.Button,
+                            onClick = { showTooltip.value = true },
+                            onLongClick = { showTooltip.value = true },
+                        ),
                 ) {
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_14dp)))
-                    CoilImage(
-                        src = com.allballapp.android.BuildConfig.IMAGE_SERVER + item.profileImage,
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .size(dimensionResource(id = R.dimen.size_44dp)),
-                        onError = {
-                            Placeholder(R.drawable.ic_profile_placeholder)
-                        },
-                        onLoading = { Placeholder(R.drawable.ic_profile_placeholder) },
-                        isCrossFadeEnabled = false,
-                        contentScale = ContentScale.Crop
-                    )
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
-
-                    Text(
-                        text = item.name.substring(0, item.name.indexOf(' ')).capitalize()
-                            .ifEmpty { stringResource(id = R.string.na) },
-                        color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
-                        style = MaterialTheme.typography.h5,
-                        fontWeight = FontWeight.W500
-                    )
-                    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_6dp)))
-
-                    Box {
-                        val showTooltip = remember { mutableStateOf(false) }
-
-                        // Buttons and Surfaces don't support onLongClick out of the box,
-                        // so use a simple Box with combinedClickable
-                        Box(
+                    Column(
+                        modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.size_16dp)),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_14dp)))
+                        CoilImage(
+                            src = com.allballapp.android.BuildConfig.IMAGE_SERVER + item.profileImage,
                             modifier = Modifier
-                                .combinedClickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = rememberRipple(),
-                                    onClickLabel = "Button action description",
-                                    role = Role.Button,
-                                    onClick = { showTooltip.value = true },
-                                    onLongClick = { showTooltip.value = true },
-                                ),
-                        ) {
-                            Text(
-                                text = if (item.status.equals(
-                                        EventStatus.GOING.status,
-                                        ignoreCase = true
-                                    )
+                                .clip(CircleShape)
+                                .size(dimensionResource(id = R.dimen.size_44dp)),
+                            onError = {
+                                Placeholder(R.drawable.ic_profile_placeholder)
+                            },
+                            onLoading = { Placeholder(R.drawable.ic_profile_placeholder) },
+                            isCrossFadeEnabled = false,
+                            contentScale = ContentScale.Crop
+                        )
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_10dp)))
+
+                        Text(
+                            text = item.name.substring(0, item.name.indexOf(' ')).capitalize()
+                                .ifEmpty { stringResource(id = R.string.na) },
+                            color = MaterialTheme.appColors.buttonColor.bckgroundEnabled,
+                            style = MaterialTheme.typography.h5,
+                            fontWeight = FontWeight.W500
+                        )
+                        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.size_6dp)))
+
+
+                        Text(
+                            text = if (item.status.equals(
+                                    EventStatus.GOING.status,
+                                    ignoreCase = true
                                 )
-                                    stringResource(id = R.string.accepted)
-                                else if (item.status.equals(
-                                        EventStatus.NOT_GOING.status,
-                                        ignoreCase = true
-                                    )
-                                )
-                                    stringResource(id = R.string.declined)
-                                else stringResource(id = R.string.pending),
-                                color = if (item.status.equals(
-                                        EventStatus.GOING.status,
-                                        ignoreCase = true
-                                    )
-                                )
-                                    ColorButtonGreen
-                                else if (item.status.equals(
-                                        EventStatus.NOT_GOING.status,
-                                        ignoreCase = true
-                                    )
-                                )
-                                    ColorButtonRed
-                                else
-                                    MaterialTheme.appColors.textField.labelDark,
-                                style = MaterialTheme.typography.h6
                             )
-                        }
-                        if (item.reason.isNotEmpty()) {
-                            Tooltip(showTooltip) {
-                                // Tooltip content goes here.
-                                Text(item.reason)
-                            }
-                        }
-                    }
-                    /*                 Text(
+                                stringResource(id = R.string.accepted)
+                            else if (item.status.equals(
+                                    EventStatus.NOT_GOING.status,
+                                    ignoreCase = true
+                                )
+                            )
+                                stringResource(id = R.string.declined)
+                            else stringResource(id = R.string.pending),
+                            color = if (item.status.equals(
+                                    EventStatus.GOING.status,
+                                    ignoreCase = true
+                                )
+                            )
+                                ColorButtonGreen
+                            else if (item.status.equals(
+                                    EventStatus.NOT_GOING.status,
+                                    ignoreCase = true
+                                )
+                            )
+                                ColorButtonRed
+                            else
+                                MaterialTheme.appColors.textField.labelDark,
+                            style = MaterialTheme.typography.h6
+                        )
+                        /*                 Text(
                                          text = item.status,
                                          color = if (item.status.equals(
                                                  EventStatus.GOING.status,
@@ -346,6 +338,13 @@ fun EventDetailsScreen(vm: EventViewModel, eventId: String) {
                                              MaterialTheme.appColors.textField.labelDark,
                                          style = MaterialTheme.typography.h6
                                      )*/
+                    }
+                    if (item.reason.isNotEmpty()) {
+                        Tooltip(showTooltip) {
+                            // Tooltip content goes here.
+                            Text(item.reason)
+                        }
+                    }
                 }
             }
         }

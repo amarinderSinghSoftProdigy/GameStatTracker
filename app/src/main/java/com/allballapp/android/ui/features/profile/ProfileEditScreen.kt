@@ -460,7 +460,7 @@ fun ProfileEditScreen(
                         data =
                         state.jerseyNumerPerferences.filter { !it.isWhitespace() },
                         onValueChange = {
-                            if(it.length <= 8){
+                            if (it.length <= 8) {
                                 if (p.matches(it))
                                     vm.onEvent(ProfileEvent.OnPrefJerseyNoChange(it))
                             }
@@ -693,11 +693,12 @@ fun ProfileEditScreen(
                     icon = null,
                     themed = true,
                     onClick = {
-                        if (state.selectedImage.isNullOrEmpty()) {
-                            vm.onEvent(ProfileEvent.OnSaveUserDetailsClick)
-                        } else {
-                            vm.onEvent(ProfileEvent.ProfileUpload)
-                        }
+                        if (state.user.email.isValidEmail() && state.user.email.isNotEmpty())
+                            if (state.selectedImage.isNullOrEmpty()) {
+                                vm.onEvent(ProfileEvent.OnSaveUserDetailsClick)
+                            } else {
+                                vm.onEvent(ProfileEvent.ProfileUpload)
+                            }
                     },
                     text = stringResource(id = R.string.save),
                     isForceEnableNeeded = true

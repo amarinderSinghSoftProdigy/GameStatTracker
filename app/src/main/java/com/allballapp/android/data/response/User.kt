@@ -183,6 +183,7 @@ data class AddProfileRequest(
     val firstName: String = "",
     val lastName: String = "",
     val profileImage: String? = "",
+    val email: String? = ""
 //    val address: String = "",
 //    val city: String = "",
 //    val state: String = "",

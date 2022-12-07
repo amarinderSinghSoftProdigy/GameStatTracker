@@ -9,6 +9,7 @@ import com.allballapp.android.data.response.team.Player
 
 sealed class TeamSetupUIEventUpdated {
     data class OnColorSelected(val primaryColor: String) : TeamSetupUIEventUpdated()
+    data class OnPrimaryColorSelected(val primaryColor: String) : TeamSetupUIEventUpdated()
     data class OnSecColorSelected(val secondaryColor: String) : TeamSetupUIEventUpdated()
     data class OnTerColorSelected(val ternaryColor: String) : TeamSetupUIEventUpdated()
     data class OnTeamNameChange(val teamName: String) : TeamSetupUIEventUpdated()

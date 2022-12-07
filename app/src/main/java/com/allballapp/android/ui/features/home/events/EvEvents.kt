@@ -88,6 +88,7 @@ sealed class EvEvents {
 
     object GetVenues : EvEvents()
     data class RefreshTeamsByLeagueAndDivision(val divisionId: String) : EvEvents()
+    object RefreshData : EvEvents()
     object RefreshTeamsByDivision : EvEvents()
     data class RefreshVenueDetailsById(val venueId: String) : EvEvents()
     data class OnLeagueDivisionStandingSelected(val standing: Standing) : EvEvents()

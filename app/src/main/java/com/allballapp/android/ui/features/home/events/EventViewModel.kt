@@ -419,16 +419,19 @@ class EventViewModel @Inject constructor(
             }
 
             is EvEvents.RefreshTeamsByLeagueAndDivision -> {
-                _state.value = _state.value.copy(teamsByLeagueDivision = emptyList())
                 viewModelScope.launch { getTeamsByLeagueAndDivision(divisionId = event.divisionId) }
 
+            }
+
+            is EvEvents.RefreshData -> {
+                _state.value = _state.value.copy(teamsByLeagueDivision = emptyList())
             }
 
             is EvEvents.RefreshTeamsByDivision -> {
                 viewModelScope.launch { getTeamsByLeagueIdAllDivision(_state.value.eventId) }
             }
             is EvEvents.RefreshVenueDetailsById -> {
-                _state.value = _state.value.copy(venueDetails = VenueDetails())
+
                 viewModelScope.launch { getVenueDetailsById(event.venueId) }
             }
 
@@ -486,6 +489,7 @@ class EventViewModel @Inject constructor(
 
             is EvEvents.ClearTeam -> {
                 _state.value = _state.value.copy(teamsByLeagueDivision = emptyList())
+                _state.value = _state.value.copy(venueDetails = VenueDetails())
             }
             is EvEvents.ClearOpportunities -> {
                 _state.value = _state.value.copy(opportunitiesDetail = OpportunitiesDetail())
@@ -1218,10 +1222,11 @@ class EventViewModel @Inject constructor(
                 eventId = _state.value.eventId,
                 divisionId = divisionId
             )
-        _state.value = _state.value.copy(isLoading = false)
 
         when (teamResponse) {
             is ResultWrapper.GenericError -> {
+                _state.value = _state.value.copy(isLoading = false)
+
                 _channel.send(
                     EventChannel.ShowDivisionTeamToast(
                         UiText.DynamicString(
@@ -1231,6 +1236,8 @@ class EventViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
+                _state.value = _state.value.copy(isLoading = false)
+
                 /* _channel.send(
                      EventChannel.ShowDivisionTeamToast(
                          UiText.DynamicString(
@@ -1240,6 +1247,7 @@ class EventViewModel @Inject constructor(
                  )*/
             }
             is ResultWrapper.Success -> {
+                _state.value = _state.value.copy(isLoading = false)
                 teamResponse.value.let { response ->
                     if (response.status && response.data != null) {
                         _state.value = _state.value.copy(teamsByLeagueDivision = response.data)
@@ -1364,10 +1372,11 @@ class EventViewModel @Inject constructor(
                 venueId = venueId,
                 eventId = _state.value.eventId
             )
-        _state.value = _state.value.copy(isLoading = false)
 
         when (venueResponse) {
             is ResultWrapper.GenericError -> {
+                _state.value = _state.value.copy(isLoading = false)
+
                 _channel.send(
                     EventChannel.ShowToast(
                         UiText.DynamicString(
@@ -1377,6 +1386,8 @@ class EventViewModel @Inject constructor(
                 )
             }
             is ResultWrapper.NetworkError -> {
+                _state.value = _state.value.copy(isLoading = false)
+
                 /* _channel.send(
                      EventChannel.ShowToast(
                          UiText.DynamicString(
@@ -1386,6 +1397,8 @@ class EventViewModel @Inject constructor(
                  )*/
             }
             is ResultWrapper.Success -> {
+                _state.value = _state.value.copy(isLoading = false)
+
                 venueResponse.value.let { response ->
                     if (response.status && response.data != null) {
                         _state.value = _state.value.copy(venueDetails = response.data)
